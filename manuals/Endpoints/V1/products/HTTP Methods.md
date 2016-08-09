@@ -20,7 +20,7 @@
 
 ##### Get a Products           
             
-##### `GET /companies/{companyId}/branches/{branchId}/products/`
+##### `GET /company/{CompanyId}/branch/{branchId}/products/`
 + Header 
 	- Authentication Token
 
@@ -32,7 +32,7 @@
 
 **NOTES:** List all the product in particular company and branch
 
-##### `GET /companies/{companyId}/branches/{branchId}/products/{productId}`
+##### `GET /products/{productId}`
 + Header
 	- Authentication Token
 
@@ -42,10 +42,10 @@
 				... Standard Product Object
 			} 
 
-**NOTES:** Give only particular product in the company and branch 
+**NOTES:** Give only particular product from productId  
 
 
-##### `GET /products/{productId}`
+##### `GET /products`
 + Header
 	- Authentication Token
 
@@ -56,6 +56,7 @@
             }
             
 **NOTES:** List All the products available in the system
+
 
 ##### Updates a products    
        

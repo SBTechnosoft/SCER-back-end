@@ -1,14 +1,14 @@
-##### Standard Product Object
+##### Standard Products Object
 
             {
                 "productId": int,
                 "productName": string,
                 "meausurementUnit": string,
 				"productCategory": {
-					... Standard Product Category Object
+					... Standard Products Category Object
 				},
 				"productGroup": {
-					... Standard Product Group Object
+					... Standard Products Group Object
 				}
 				"company": {
 					... Standard Company Object
@@ -21,41 +21,41 @@
             }
             
             
-##### Standard Product Persistable Object
+##### Standard Products Persistable Object
 
  			{
             	"productName": string,
             	"meausurementUnit": string,
 				"productCategory": {
-					... Standard Product Cateogory Persistable Object
+					... Standard Products Cateogory Persistable Object
 				},
 				"productGroup": {
-					... Standard Product Group Persistable Object
+					... Standard Products Group Persistable Object
 				},
 				"CompanyId": string,
 				"BranchId" : string
             }
 
-##### Standard Product Category Object
+##### Standard Products Category Object
 			
 			{
-				//Define Standard Product Category Object Here
+				//Define Standard Products Category Object Here
 			}
 
-##### Standard Product Category Persistable Object
+##### Standard Products Category Persistable Object
 
 			{
-				//define Standard Product Cateogry Persistable Object here
+				//define Standard Products Cateogry Persistable Object here
 			}
 
-##### Standard Product Group Object
+##### Standard Products Group Object
 
 			{
-				//define Standard Product Group Object here
+				//define Standard Products Group Object here
 			}
 
-##### Standard Product Group Persistable Object 
+##### Standard Products Group Persistable Object 
 
 			{
-				//define Standard Product group Object Here
+				//define Standard Products group Object Here
 			}
