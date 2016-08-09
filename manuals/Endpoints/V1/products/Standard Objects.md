@@ -33,7 +33,7 @@
 					... Standard Product Group Persistable Object
 				},
 				"CompanyId": string,
-				"branchId" : string
+				"BranchId" : string
             }
 
 ##### Standard Product Category Object

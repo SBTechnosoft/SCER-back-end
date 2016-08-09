@@ -1,41 +1,80 @@
-##### Creates an appraiser products
+##### Creates a Product
 
 ##### `POST /products`
++ Header
+	- Authentication Token
+
 
 + Body
 
             {
-                ... Standard Appraiser products Persistable Object
+                ... Standard Products Persistable Object
             }
             
 + Response
 
             {
-                ... Standard Appraiser products Object
+                ... Standard Products Object
             }
     
-##### Gets a products           
+
+##### Get a Products           
             
+##### `GET /companies/{companyId}/branches/{branchId}/products/`
++ Header 
+	- Authentication Token
+
++ Response
+
+			{
+				... Standard Product Object
+			}
+
+**NOTES:** List all the product in particular company and branch
+
+##### `GET /companies/{companyId}/branches/{branchId}/products/{productId}`
++ Header
+	- Authentication Token
+
++ Response 
+
+			{
+				... Standard Product Object
+			} 
+
+**NOTES:** Give only particular product in the company and branch 
+
+
 ##### `GET /products/{productId}`
++ Header
+	- Authentication Token
 
 + Response
 
             {
-                ... Standard Appraiser products Object
+                ... Standard Products Object
             }
             
+**NOTES:** List All the products available in the system
 
 ##### Updates a products    
        
 ##### `PATCH /products/{productId}`
++ Header
+	- Authentication Token
 
 + Body
 
             {
-                ... Standard Appraiser products Persistable Object
+                ... Standard Products Persistable Object
             }
             
             
 ##### Deletes a products    
        
 ##### `DELETE /products/{productId}`
++ Response
+
+			{
+				//Define reponse
+			}
