@@ -32,8 +32,8 @@
 				"productGroup": {
 					... Standard Products Group Persistable Object
 				},
-				"CompanyId": string,
-				"BranchId" : string
+				"CompanyId": int,
+				"BranchId" : int
             }
 
 ##### Standard Products Category Object

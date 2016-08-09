@@ -57,6 +57,30 @@
             
 **NOTES:** List All the products available in the system
 
+##### `GET /products/{productId}/branchId`
++ Header
+	- Authentication Token
+
++ Response
+
+            {
+                ... Standard branch Object
+            }
+            
+**NOTES:** List All the branchId of products
+
+##### `GET /products/{productId}/companyId`
++ Header
+	- Authentication Token
+
++ Response
+
+            {
+                ... Standard company Object
+            }
+            
+**NOTES:** List All the company of products
+
 
 ##### Updates a products    
        
