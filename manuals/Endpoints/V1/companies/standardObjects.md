@@ -1,8 +1,8 @@
 ##### Standard Company Object
 
             {
-                "id": int,
-                "name": string,
+                "companyId": int,
+                "companyName": string,
 				"displayName": string,
                 "address1": string,
                 "address2": string,
@@ -21,9 +21,13 @@
 				"logo": {
 					... Standard Document Object
 				},
-				"isDefault": bool
-				"isDisplay": bool
-				"createdAt" datetime
+				"basicCurrencySymbol":varchar,
+				"formalName":varchar,
+				"noOfDecimalItems":int,
+				"currencySymbol":int,
+				"isDefault": bool,
+				"isDisplay": bool,
+				"createdAt" timestamp,
 				"updatedAt": datetime
             }
             
@@ -43,11 +47,15 @@
 			"tin": string,
 			"vat": string,
 			"serviceTax": string,
-			"logo": {
-				
-			},
-			"isDisplay": bool
-			"isDefault": bool 
+			"documentId": int,
+			"basicCurrencySymbol":varchar,
+			"formalName":varchar,
+			"noOfDecimalItems":int,
+			"currencySymbol":int,
+			"isDefault": bool,
+			"isDisplay": bool,
+			"createdAt" timestamp,
+			"updatedAt": datetime,
+			"deletedAt":datetime			
          }
-
 

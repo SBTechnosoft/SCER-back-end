@@ -1,4 +1,4 @@
-##### Creates a branch
+##### Creates Branch
 
 ##### `POST /branch`
 + Header
@@ -8,17 +8,17 @@
 + Body
 
             {
-                ... Standard branch Persistable Object
+                ... Standard Branch Persistable Object
             }
             
 + Response
 
             {
-                ... Standard branch Object
+                ... Standard Branch Object
             }
     
 
-##### Get a branch           
+##### Gets Branch           
             
 ##### `GET /company/{CompanyId}/branch`
 + Header 
@@ -27,7 +27,7 @@
 + Response
 
 			{
-				... Standard branch Object
+				... Standard Branch Object
 			}
 
 **NOTES:** List all the branch in particular company 
@@ -39,7 +39,7 @@
 + Response 
 
 			{
-				... Standard branch Object
+				... Standard Branch Object
 			} 
 
 **NOTES:** Give only particular branch as per branchId  
@@ -52,13 +52,13 @@
 + Response
 
             {
-                ... Standard branch Object
+                ... Standard Branch Object
             }
             
-**NOTES:** List All the branch available in the system
+**NOTES:** List all the branch available in the system
 
 
-##### Updates a branch    
+##### Updates Branch    
        
 ##### `PATCH /branch/{branchId}`
 + Header
@@ -67,15 +67,15 @@
 + Body
 
             {
-                ... Standard branch Persistable Object
+                ... Standard Branch Persistable Object
             }
             
             
-##### Deletes a branch    
+##### Deletes Branch    
        
 ##### `DELETE /branch/{branchId}`
 + Response
 
 			{
-				//Define reponse
+				HTTP_Status:200
 			}

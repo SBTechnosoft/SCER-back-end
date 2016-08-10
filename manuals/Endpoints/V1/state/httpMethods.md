@@ -1,4 +1,4 @@
-##### Creates a state
+##### Creates State
 
 ##### `POST /state`
 + Header
@@ -8,17 +8,17 @@
 + Body
 
             {
-                ... Standard state Persistable Object
+                ... Standard State Persistable Object
             }
             
 + Response
 
             {
-                ... Standard state Object
+                ... Standard State Object
             }
     
 
-##### Get a state           
+##### Get State           
             
 ##### `GET /state/{stateAbb}`
 + Header 
@@ -27,7 +27,7 @@
 + Response
 
 			{
-				... Standard state Object
+				... Standard State Object
 			}
 
 **NOTES:** List all the state in particular stateAbb(ISO_Code)
@@ -39,14 +39,14 @@
 + Response 
 
 			{
-				... Standard state Object
+				... Standard State Object
 			} 
 
 **NOTES:** List All the state available in the system
 
 
 
-##### Updates a state    
+##### Updates State    
        
 ##### `PATCH /state/{stateAbb}`
 + Header
@@ -55,15 +55,15 @@
 + Body
 
             {
-                ... Standard state Persistable Object
+                ... Standard State Persistable Object
             }
             
             
-##### Deletes a state    
+##### Deletes State    
        
 ##### `DELETE /state/{stateAbb}`
 + Response
 
 			{
-				//Define reponse
+				HTTP_Status:200
 			}

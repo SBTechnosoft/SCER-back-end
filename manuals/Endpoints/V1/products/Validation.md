@@ -6,6 +6,3 @@
 	- `required`
 - branch
 	- `required`
-	
-
-**Note:** 

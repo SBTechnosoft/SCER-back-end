@@ -1,4 +1,4 @@
-##### Creates a Products Category
+##### Creates Products Category
 
 ##### `POST /productCategory`
 + Header
@@ -8,17 +8,17 @@
 + Body
 
             {
-                ... Standard productCategory Persistable Object
+                ... Standard ProductCategory Persistable Object
             }
             
 + Response
 
             {
-                ... Standard productCategory Object
+                ... Standard ProductCategory Object
             }
     
 
-##### Get a Products Category           
+##### Get Products Category           
             
 ##### `GET /productCategory/{productCategoryId}/`
 + Header
@@ -27,7 +27,7 @@
 + Response
 
             {
-                ... Standard productCategory Object
+                ... Standard ProductCategory Object
             }
             
 
@@ -38,7 +38,7 @@
 + Response
 
             {
-                ... Standard productCategory Object
+                ... Standard ProductCategory Object
             }
             
 **NOTES:** List All the Product Category available in the system
@@ -52,16 +52,17 @@
 + Body
 
             {
-                ... Standard productCategory Persistable Object
+                ... Standard ProductCategory Persistable Object
             }
             
             
-##### Deletes a Products Category 
+##### Deletes Products Category 
        
 ##### `DELETE /productCategory/{productCategoryId}`
 + Response
 
 			{
-				//Define reponse
+				HTTP_Status:200
+			
 			}
 

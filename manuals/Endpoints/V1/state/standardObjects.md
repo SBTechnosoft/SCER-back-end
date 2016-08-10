@@ -1,9 +1,11 @@
-##### Standard state Object
+##### Standard State Object
 
             {
                 "stateAbb": char,
                 "stateName": string,
-                "createdAt": datetime
+				"isDisplay": bool,
+				"createdAt" timestamp,
+				"updatedAt": datetime
                 
             }
             
@@ -12,5 +14,9 @@
 
  			{
             	"stateName": string,
+				"isDisplay": bool,
+				"createdAt" timestamp,
+				"updatedAt": datetime,
+				"deletedAt":datetime	
             }
 

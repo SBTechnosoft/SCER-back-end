@@ -1,4 +1,4 @@
-##### product Validation Rules
+##### Product Validation Rules
 
 - cityName
 	- `required`

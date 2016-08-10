@@ -1,4 +1,4 @@
-##### Creates a products Group
+##### Creates Products Group
 
 ##### `POST /productGroup`
 + Header
@@ -8,17 +8,17 @@
 + Body
 
             {
-                ... Standard productGroup Persistable Object
+                ... Standard Product Group Persistable Object
             }
             
 + Response
 
             {
-                ... Standard productGroup Object
+                ... Standard Product Group Object
             }
     
 
-##### Get a products Group           
+##### Get Products Group           
             
 ##### `GET /productGroup/{productGroupId}/`
 + Header
@@ -27,7 +27,7 @@
 + Response
 
             {
-                ... Standard productGroup Object
+                ... Standard Product Group Object
             }
             
 ##### `GET /productGroup`
@@ -37,12 +37,12 @@
 + Response
 
             {
-                ... Standard productGroup Object
+                ... Standard Product Group Object
             }
             
-**NOTES:** List All the Product Group available in the system
+**NOTES:** List all the product group available in the system
 
-##### Updates a products Group  
+##### Updates Products Group  
        
 ##### `PATCH /productGroup/{productGroupId}`
 + Header
@@ -51,16 +51,16 @@
 + Body
 
             {
-                ... Standard productGroup Persistable Object
+                ... Standard Product Group Persistable Object
             }
             
             
-##### Deletes a products Group
+##### Deletes Products Group
        
 ##### `DELETE /productGroup/{productGroupId}`
 + Response
 
 			{
-				//Define reponse
+				HTTP_Status:200
 			}
 

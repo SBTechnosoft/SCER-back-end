@@ -1,8 +1,8 @@
-##### Standard Product transaction Object
+##### Standard Product Transaction Object
 
             {
                 "productTrnId": int,
-                "transactionDate": DateTime,
+                "transactionDate": datetime,
                 "transactionType": string,
                 "quantity": string,
                 "price": string,
@@ -12,19 +12,25 @@
 				"branch": {
 					... Standard Branch Object
 				}
-				"createdAt": datetime
+				"isDisplay": bool,
+				"createdAt" timestamp,
+				"updatedAt": datetime
                 
             }
             
             
-##### Standard Product transaction Persistable Object
+##### Standard Product Transaction Persistable Object
 
  			{
-            	"transactionDate": DateTime,
+            	"transactionDate": datetime,
                 "transactionType": string,
                 "quantity": string,
                 "price": string,
-				"CompanyId": int,
-				"BranchId" : int
+				"companyId": int,
+				"branchId" : int,
+				"isDisplay": bool,
+				"createdAt" timestamp,
+				"updatedAt": datetime,
+				"deletedAt":datetime
             }
 

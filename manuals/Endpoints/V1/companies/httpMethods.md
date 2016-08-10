@@ -14,7 +14,7 @@
                 ... Standard Company Object
             }
     
-##### Gets a company           
+##### Gets Company           
             
 ##### `GET /companies/{companyId}`
 
@@ -36,7 +36,7 @@
 
 **NOTES:** List All the company available in the system         
 
-##### Updates a company    
+##### Updates Company    
        
 ##### `PATCH /companies/{companyId}`
 + Header
@@ -48,11 +48,11 @@
             }
             
             
-##### Deletes a company    
+##### Deletes Company    
        
 ##### `DELETE /companies/{companyId}`
 + Response
 
 			{
-				//Define reponse
+				HTTP_Status:200
 			}

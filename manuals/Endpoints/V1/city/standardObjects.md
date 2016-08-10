@@ -1,4 +1,4 @@
-##### Standard city Object
+##### Standard City Object
 
             {
                 "cityId": int,
@@ -6,8 +6,9 @@
 				"state": {
                     ... Standard State Object
 				},
-				
-				"createdAt": datetime
+				"isDisplay": bool,
+				"createdAt" timestamp,
+				"updatedAt": datetime
                 
             }
             
@@ -17,5 +18,9 @@
  			{
             	"cityName": string,
             	"stateId": int,
+				"isDisplay": bool,
+				"createdAt" timestamp,
+				"updatedAt": datetime,
+				"deletedAt":datetime	
             }
 

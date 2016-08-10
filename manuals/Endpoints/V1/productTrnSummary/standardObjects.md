@@ -1,8 +1,8 @@
-##### Standard productsTrnSummary Object
+##### Standard ProductsTrnSummary Object
 
             {
                 "productTrnSummId": int,
-                "transactionDate": DateTime,
+                "transactionDate": datetime,
                 "transactionType": string,
                 "quantity": string,
 				"company": {
@@ -14,19 +14,26 @@
 				"products": {
 					... Standard products Object
 				}
-				"createdAt": datetime
+				"isDisplay": bool,
+				"createdAt" timestamp,
+				"updatedAt": datetime
+				
                 
             }
             
             
-##### Standard productsTrnSummary Persistable Object
+##### Standard ProductsTrnSummary Persistable Object
 
  			{
-            	"transactionDate": DateTime,
+            	"transactionDate": datetime,
                 "transactionType": string,
                 "quantity": string,
                 "productId": int,
                 "CompanyId": int,
-				"BranchId" : int
+				"BranchId" : int,
+				"isDisplay": bool,
+				"createdAt" timestamp,
+				"updatedAt": datetime,
+				"deletedAt":datetime
             }
 

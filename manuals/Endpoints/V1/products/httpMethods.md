@@ -1,4 +1,4 @@
-##### Creates a Product
+##### Creates Product
 
 ##### `POST /products`
 + Header
@@ -18,7 +18,7 @@
             }
     
 
-##### Get a Products           
+##### Gets Products           
             
 ##### `GET /company/{CompanyId}/branch/{branchId}/products/`
 + Header 
@@ -60,7 +60,7 @@
 
 
 
-##### Updates a products    
+##### Updates Products    
        
 ##### `PATCH /products/{productId}`
 + Header
@@ -73,11 +73,11 @@
             }
             
             
-##### Deletes a products    
+##### Deletes Products    
        
 ##### `DELETE /products/{productId}`
 + Response
 
 			{
-				//Define reponse
+				HTTP_Status:200
 			}

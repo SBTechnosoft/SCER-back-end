@@ -1,4 +1,4 @@
-##### Creates a Product transaction summary
+##### Creates Product Transaction Summary
 
 ##### `POST /productTrnSumm`
 + Header
@@ -8,17 +8,17 @@
 + Body
 
             {
-                ... Standard productsTrnSummary Persistable Object
+                ... Standard Products TrnSummary Persistable Object
             }
             
 + Response
 
             {
-                ... Standard productsTrnSummary Object
+                ... Standard ProductsTrnSummary Object
             }
     
 
-##### Get a Product transaction summary           
+##### Gets Product Transaction Summary           
             
 ##### `GET /productTrnSumm/productTrnSummId`
 + Header 
@@ -27,10 +27,10 @@
 + Response
 
 			{
-				... Standard productsTrnSummary Object
+				... Standard ProductsTrnSummary Object
 			}
 
-**NOTES:** List all the productsTrnSummary at particular product_Transaction_Summary_Id
+**NOTES:** List all the productsTrnSummary at particular productTrnSumm
 
 
 ##### `GET /productTrnSumm`
@@ -40,7 +40,7 @@
 + Response
 
             {
-                ... Standard productsTrnSummary Object
+                ... Standard ProductsTrnSummary Object
             }
             
 **NOTES:** List All the productsTrnSummary available in the system
@@ -55,7 +55,7 @@
                 ... Standard productTrnSumm Object
             }
             
-**NOTES:** List All the productTransactionSummary at particular product_id
+**NOTES:** List all the product transaction summary at particular productId
 
 
 

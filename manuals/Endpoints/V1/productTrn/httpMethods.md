@@ -1,4 +1,4 @@
-##### Creates a Product transaction
+##### Creates Product Transaction
 
 ##### `POST /productTrn`
 + Header
@@ -8,17 +8,17 @@
 + Body
 
             {
-                ... Standard Product transaction Persistable Object
+                ... Standard Product Transaction Persistable Object
             }
             
 + Response
 
             {
-                ... Standard Product transaction Object
+                ... Standard Product Transaction Object
             }
     
 
-##### Get a Product transaction           
+##### Get Product Transaction           
             
 ##### `GET /productTrn/{productTrnId}`
 + Header 
@@ -27,7 +27,7 @@
 + Response
 
 			{
-				... Standard Product transaction  Object
+				... Standard Product Transaction  Object
 			}
 
 **NOTES:** List all the product transact at particular product Transaction Id
@@ -39,7 +39,7 @@
 + Response
 
             {
-                ... Standard productTransaction Object
+                ... Standard Product Transaction Object
             }
             
 **NOTES:** List All the productTransaction at particular product_id
@@ -58,7 +58,7 @@
 
 
 
-##### Updates a Product transaction    
+##### Updates Product Transaction    
        
 ##### `PATCH /productTrn/{productTrnId}`
 + Header
@@ -67,15 +67,15 @@
 + Body
 
             {
-                ... Standard Product transaction Persistable Object
+                ... Standard Product Transaction Persistable Object
             }
             
             
-##### Deletes a Product transaction    
+##### Deletes  Product Transaction    
        
 ##### `DELETE /productTrn/{productTrnId}`
 + Response
 
 			{
-				//Define reponse
+				HTTP_Status:200
 			}

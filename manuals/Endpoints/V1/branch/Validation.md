@@ -6,6 +6,3 @@
 	- `required`
 - state
 	- `required`
-	
-
-**Note:** 

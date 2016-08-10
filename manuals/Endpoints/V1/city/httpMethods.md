@@ -1,4 +1,4 @@
-##### Creates a city
+##### Creates City
 
 ##### `POST /city`
 + Header
@@ -8,17 +8,17 @@
 + Body
 
             {
-                ... Standard city Persistable Object
+                ... Standard City Persistable Object
             }
             
 + Response
 
             {
-                ... Standard city Object
+                ... Standard City Object
             }
     
 
-##### Get a city           
+##### Gets City           
             
 ##### `GET /city/`
 + Header 
@@ -27,10 +27,10 @@
 + Response
 
 			{
-				... Standard city Object
+				... Standard City Object
 			}
 
-**NOTES:** List All the city available in the system
+**NOTES:** List all the city available in the system
 
 ##### `GET /city/{cityId}`
 + Header
@@ -39,7 +39,7 @@
 + Response 
 
 			{
-				... Standard city Object
+				... Standard City Object
 			} 
 
 **NOTES:** Give only particular city at particular cityId 
@@ -52,7 +52,7 @@
 + Response
 
             {
-                ... Standard city Object
+                ... Standard City Object
             }
             
 **NOTES:** List the city at particular stateAbb[ISO_Code] 
@@ -60,7 +60,7 @@
 
 
 
-##### Updates a city    
+##### Updates City    
        
 ##### `PATCH /city/{cityId}`
 + Header
@@ -69,15 +69,15 @@
 + Body
 
             {
-                ... Standard city Persistable Object
+                ... Standard City Persistable Object
             }
             
             
-##### Deletes a city    
+##### Deletes City    
        
 ##### `DELETE /city/{cityId}`
 + Response
 
 			{
-				//Define reponse
+				HTTP_Status:200
 			}
