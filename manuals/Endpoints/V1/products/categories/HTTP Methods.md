@@ -1,6 +1,3 @@
-
-
-
 ##### Creates a Products Category
 
 ##### `POST /productCategory`
@@ -23,31 +20,6 @@
 
 ##### Get a Products Category           
             
-##### `GET /products/{productId}/productCategory`
-+ Header 
-	- Authentication Token
-
-+ Response
-
-			{
-				... Standard productCategory Object
-			}
-
-**NOTES:** List all the product Category in particular product
-
-##### `GET /products/{productId}/productCategory/{productCategoryId}`
-+ Header
-	- Authentication Token
-
-+ Response 
-
-			{
-				... Standard productCategory Object
-			} 
-
-**NOTES:** Give only particular productCategory of the particular product 
-
-
 ##### `GET /productCategory/{productCategoryId}/`
 + Header
 	- Authentication Token
@@ -58,7 +30,6 @@
                 ... Standard productCategory Object
             }
             
-**NOTES:** List All the productCategory of productCategoryId
 
 ##### `GET /productCategory`
 + Header
@@ -70,7 +41,7 @@
                 ... Standard productCategory Object
             }
             
-**NOTES:** List All the productCategory available in the system
+**NOTES:** List All the Product Category available in the system
 
 ##### Updates a Products Category  
        
@@ -87,7 +58,7 @@
             
 ##### Deletes a Products Category 
        
-##### `DELETE /productCategory/{productGroupId}`
+##### `DELETE /productCategory/{productCategoryId}`
 + Response
 
 			{
