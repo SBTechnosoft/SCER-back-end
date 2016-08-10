@@ -1,67 +1,56 @@
-##### Creates an appraiser company
+##### Creates Company
 
-##### `POST /company`
+##### `POST /companies`
 
 + Body
 
             {
-                ... Standard Appraiser Company Persistable Object
+                ... Standard Company Persistable Object
             }
             
 + Response
 
             {
-                ... Standard Appraiser Company Object
+                ... Standard Company Object
             }
     
 ##### Gets a company           
             
-##### `GET /company/{companyId}`
+##### `GET /companies/{companyId}`
 
 + Response
 
             {
-                ... Standard Appraiser Company Object
+                ... Standard Company Object
             }
 **NOTES:** List the company of particular companyId
 
-##### `GET /company`
+##### `GET /companies`
 
 + Response
 
             {
-                ... Standard Appraiser Company Object
+                ... Standard Company Object
             }
             
 
 **NOTES:** List All the company available in the system         
 
-
-##### `GET branch/{branchId}/company`
-
-+ Response
-
-            {
-                ... Standard Appraiser Company Object
-            }
-           
-**NOTES:** List the company of particular branch
-
 ##### Updates a company    
        
-##### `PATCH /company/{companyId}`
+##### `PATCH /companies/{companyId}`
 + Header
 	- Authentication Token
 + Body
 
             {
-                ... Standard Appraiser Company Persistable Object
+                ... Standard Company Persistable Object
             }
             
             
 ##### Deletes a company    
        
-##### `DELETE /company/{companyId}`
+##### `DELETE /companies/{companyId}`
 + Response
 
 			{
