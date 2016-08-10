@@ -7,7 +7,7 @@
                 "address1": string,
                 "address2": string,
                 "city":  {
-					... Standard city Object
+					... Standard City Object
 				},
                 "state": {
                     ... Standard State Object
@@ -18,9 +18,13 @@
 				"tin": string,
 				"vat": string,
 				"serviceTax": string,
-				"logo": String,
+				"logo": {
+					... Standard Document Object
+				},
+				"isDefault": bool
 				"isDisplay": bool
-				
+				"createdAt" datetime
+				"updatedAt": datetime
             }
             
             
@@ -39,9 +43,11 @@
 			"tin": string,
 			"vat": string,
 			"serviceTax": string,
-			"logo": String,
+			"logo": {
+				
+			},
 			"isDisplay": bool
-			 
+			"isDefault": bool 
          }
 
 
