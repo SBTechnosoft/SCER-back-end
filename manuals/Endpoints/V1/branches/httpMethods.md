@@ -1,6 +1,6 @@
 ##### Creates Branch
 
-##### `POST /branch`
+##### `POST /branches`
 + Header
 	- Authentication Token
 
@@ -20,7 +20,7 @@
 
 ##### Gets Branch           
             
-##### `GET /company/{CompanyId}/branch`
+##### `GET /companies/{CompanyId}/branches`
 + Header 
 	- Authentication Token
 
@@ -32,7 +32,7 @@
 
 **NOTES:** List all the branch in particular company 
 
-##### `GET /branch/{branchId}`
+##### `GET /companies/{CompanyId}/branches/{branchId}`
 + Header
 	- Authentication Token
 
@@ -45,7 +45,7 @@
 **NOTES:** Give only particular branch as per branchId  
 
 
-##### `GET /branch`
+##### `GET /branches`
 + Header
 	- Authentication Token
 
@@ -60,7 +60,7 @@
 
 ##### Updates Branch    
        
-##### `PATCH /branch/{branchId}`
+##### `PATCH /companies/{CompanyId}/branches/{branchId}`
 + Header
 	- Authentication Token
 
@@ -73,7 +73,7 @@
             
 ##### Deletes Branch    
        
-##### `DELETE /branch/{branchId}`
+##### `DELETE /companies/{CompanyId}/branches/{branchId}`
 + Response
 
 			{

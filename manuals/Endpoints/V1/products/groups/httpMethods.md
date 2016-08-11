@@ -1,6 +1,6 @@
 ##### Creates Products Group
 
-##### `POST /productGroup`
+##### `POST /product-groups`
 + Header
 	- Authentication Token
 
@@ -20,7 +20,7 @@
 
 ##### Get Products Group           
             
-##### `GET /productGroup/{productGroupId}/`
+##### `GET /product-groups/{productGroupId}/`
 + Header
 	- Authentication Token
 
@@ -30,7 +30,7 @@
                 ... Standard Product Group Object
             }
             
-##### `GET /productGroup`
+##### `GET /product-groups`
 + Header
 	- Authentication Token
 
@@ -44,7 +44,7 @@
 
 ##### Updates Products Group  
        
-##### `PATCH /productGroup/{productGroupId}`
+##### `PATCH /product-groups/{productGroupId}`
 + Header
 	- Authentication Token
 
@@ -57,7 +57,7 @@
             
 ##### Deletes Products Group
        
-##### `DELETE /productGroup/{productGroupId}`
+##### `DELETE /product-groups/{productGroupId}`
 + Response
 
 			{
