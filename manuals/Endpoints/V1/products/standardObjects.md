@@ -1,4 +1,4 @@
-Standard Products Object
+##### Standard Products Object
 
         {
             "productId": int,
@@ -23,7 +23,7 @@ Standard Products Object
 
         }
 
-Standard Products Persistable Object
+##### Standard Products Persistable Object
 
         {
             "productName": string,
@@ -42,50 +42,44 @@ Standard Products Persistable Object
 			"deletedAt":datetime
         }
 
-Standard Products Category Object
+##### Standard Products Category Object
 
         {
-             "productCatId": int,
-            "productCatName": string,
-            "productCatDesc": string,
-            "productParentCatId": int,
+            "productCategoryId": int,
+            "productCategoryName": string,
+            "productCategoryDesc": string,
+            "productParentCategoryId": int,
 			"isDisplay": bool,
-			"createdAt" timestamp,
+			"createdAt" datetime,
 			"updatedAt": datetime
         }
 
-Standard Products Category Persistable Object
+##### Standard Products Category Persistable Object
 
         {
-            "productCatName": string,
-            "productCatDesc": string,
-            "productParentCatId": int,
+            "productCategoryName": string,
+            "productCategoryDesc": string,
+            "productParentCategoryId": int,
 			"isDisplay": bool,
-			"createdAt" timestamp,
-			"updatedAt": datetime,
-			"deletedAt":datetime
         }
 
-Standard Products Group Object
+##### Standard Products Group Object
 
         {
 			"productGroupId": int,
             "productGroupName": string,
             "productGroupDesc": string,
-            "productGroupParentCatId": int,
+            "productParentGroupId": int,
 			"isDisplay": bool,
-			"createdAt" timestamp,
+			"createdAt" datetime,
 			"updatedAt": datetime
         }
 
-Standard Products Group Persistable Object
+##### Standard Products Group Persistable Object
 
         {
             "productGroupName": string,
             "productGroupDesc": string,
             "productGroupParentCatId": int,
-			"isDisplay": bool,
-			"createdAt" timestamp,
-			"updatedAt": datetime,
-			"deletedAt":datetime
+			"isDisplay": bool
         }

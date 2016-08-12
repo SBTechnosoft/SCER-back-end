@@ -16,7 +16,7 @@
 				},
 				
 				"pincode": char,
-				"is_default":bool,
+				"isDefault":bool,
 				"isDisplay": bool,
 				"createdAt" timestamp,
 				"updatedAt": datetime
@@ -34,10 +34,7 @@
                 "cityId": int,
 				"stateAbb": char,
 				"pincode": char,
-				"is_default":bool,
-				"isDisplay": bool,
-				"createdAt" timestamp,
-				"updatedAt": datetime,
-				"deletedAt":datetime	
+				"isDefault":bool,
+				"isDisplay": bool	
             }
 

@@ -1,6 +1,6 @@
 ##### Creates Products Category
 
-##### `POST /productCategory`
+##### `POST /product-categories`
 + Header
 	- Authentication Token
 
@@ -8,7 +8,7 @@
 + Body
 
             {
-                ... Standard ProductCategory Persistable Object
+                ... Standard Product Category Persistable Object
             }
             
 + Response
@@ -20,7 +20,7 @@
 
 ##### Get Products Category           
             
-##### `GET /productCategory/{productCategoryId}/`
+##### `GET /product-categories/{productCategoryId}/`
 + Header
 	- Authentication Token
 
@@ -31,7 +31,7 @@
             }
             
 
-##### `GET /productCategory`
+##### `GET /product-categories`
 + Header
 	- Authentication Token
 
@@ -45,7 +45,7 @@
 
 ##### Updates a Products Category  
        
-##### `PATCH /productCategory/{productCategoryId}`
+##### `PATCH /product-category/{productCategoryId}`
 + Header
 	- Authentication Token
 
@@ -58,11 +58,10 @@
             
 ##### Deletes Products Category 
        
-##### `DELETE /productCategory/{productCategoryId}`
+##### `DELETE /product-categories/{productCategoryId}`
 + Response
 
 			{
 				HTTP_Status:200
-			
 			}
 
