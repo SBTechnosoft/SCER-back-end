@@ -12,5 +12,11 @@
 */
 
 Route::get('/', function () {
+	echo "dfghdfsg";
     return view('welcome');
 });
+// Route::get('/controllerDemo', function () {
+    // return view('Sample.SampleController');
+// });
+Route::resource('sample', 'Sample\SampleController');
+

@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c284a9c122da36c99a8b6597bdce7aa6",
-    "content-hash": "8b1485987e7c5949da82435d403e52e8",
+    "hash": "0bfce4f1452e830f1ba1bd55cc0e2ab8",
+    "content-hash": "f0fa652f79b761878f50b03b903bd08d",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -1728,6 +1728,48 @@
                 "dump"
             ],
             "time": "2016-07-26 08:03:56"
+        },
+        {
+            "name": "symphonycms/symphony12",
+            "version": "2.6.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symphonycms/symphony12.git",
+                "reference": "1ff58f8c82c5da4900616647c4aa494e651fa6ec"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symphonycms/symphony12/zipball/1ff58f8c82c5da4900616647c4aa494e651fa6ec",
+                "reference": "1ff58f8c82c5da4900616647c4aa494e651fa6ec",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "symphony/content",
+                    "symphony/lib",
+                    "symphony/template",
+                    "install"
+                ],
+                "files": [
+                    "symphony/lib/boot/funcUtilities.php",
+                    "symphony/lib/boot/defines.php",
+                    "symphony/lib/toolkit/util.validators.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Symphony Team",
+                    "email": "team@getsymphony.com"
+                }
+            ],
+            "description": "Symphony is a PHP & MySQL based CMS that utilises XML and XSLT as its core technologies.",
+            "homepage": "http://www.getsymphony.com",
+            "time": "2016-02-08 21:46:01"
         },
         {
             "name": "vlucas/phpdotenv",

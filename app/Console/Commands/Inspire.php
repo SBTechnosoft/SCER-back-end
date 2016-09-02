@@ -1,10 +1,12 @@
 <?php
-
-namespace App\Console\Commands;
+namespace ERP\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Inspiring;
-
+/**
+ *
+ * @author Reema Patel<reema.p@siliconbrain.in>
+ */
 class Inspire extends Command
 {
     /**
@@ -13,14 +15,12 @@ class Inspire extends Command
      * @var string
      */
     protected $signature = 'inspire';
-
     /**
      * The console command description.
      *
      * @var string
      */
     protected $description = 'Display an inspiring quote';
-
     /**
      * Execute the console command.
      *

@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'env' => env('APP_ENV', 'production'),
+    'env' => env('APP_ENV', 'local'),
 
     /*
     |--------------------------------------------------------------------------
@@ -151,10 +151,14 @@ return [
         /*
          * Application Service Providers...
          */
-        App\Providers\AppServiceProvider::class,
-        App\Providers\AuthServiceProvider::class,
-        App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
+		ERP\Api\V1_0\Support\RouteServiceProvider::class,
+		// ERP\Api\V1_0\Support\AppServiceProvider::class,
+		ERP\Debug\Support\RouteServiceProvider::class,
+         
+		// ERP\Providers\AppServiceProvider::class,
+        // ERP\Providers\AuthServiceProvider::class,
+        // ERP\Providers\EventServiceProvider::class,
+        // ERP\Providers\RouteServiceProvider::class,
 
     ],
 
@@ -201,7 +205,44 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        'Carbon' => 'Carbon\Carbon'
 
     ],
+	
+	/*
+    |--------------------------------------------------------------------------
+    | Packages
+    |--------------------------------------------------------------------------
+    |
+    | In order to automate a routine work, it is required to register
+    | all the entity packages in the system here.
+    */
+
+    'packages' => [
+        'Sample',
+		'Sample1',
+		'Sample2',
+		'Companies'
+	],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Support
+    |--------------------------------------------------------------------------
+    |
+    | An array containing support-related information.
+    |
+    */
+
+    'support' => [
+        'email' => env('SUPPORT_EMAIL', 'support@appraisalscope.com'),
+    ],
+
+	'secret_license' => env('SECRET_LICENSE')
 
 ];
+if (env('APP_DEBUG', false)){
+	$config['providers'][] =  ERP\Debug\Support\RouteServiceProvider::class;
+}
+
+return $config;
