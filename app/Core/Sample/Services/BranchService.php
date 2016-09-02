@@ -66,31 +66,38 @@ class BranchService extends AbstractService
 	{
 		$branchModel = new BranchModel();
 		$status = $branchModel->getData($id);
-		$decodedJson = json_decode($status,true);
-		
-		$createdAt = $decodedJson[0]['created_at'];
-		$updatedAt = $decodedJson[0]['updated_at'];
-		$name = $decodedJson[0]['name'];
-		$age = $decodedJson[0]['age'];
-		$imageName = $decodedJson[0]['image_name'];
-		
-		$branch = new Branch();
-		$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt)->format('d-m-Y');
-		$branch->setCreated_at($convertedCreatedDate);
-		$getCreatedDate = $branch->getCreated_at();
-		
-		$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
-		$branch->setCreated_at($convertedUpdatedDate);
-		$getUpdatedDate = $branch->getUpdated_at();
-		
-		$data = array();
-		$data['name']=$name;
-		$data['age']=$age;
-		$data['image_name']=$imageName;
-		$data['created_at']=$getCreatedDate;
-		$data['updated_at']=$getUpdatedDate;
-		$encodeData = json_encode($data);
-		return $encodeData;
+		if($status=="404:Id Not Found")
+		{
+			return $status;
+		}
+		else
+		{
+			$decodedJson = json_decode($status,true);
+			
+			$createdAt = $decodedJson[0]['created_at'];
+			$updatedAt = $decodedJson[0]['updated_at'];
+			$name = $decodedJson[0]['name'];
+			$age = $decodedJson[0]['age'];
+			$imageName = $decodedJson[0]['image_name'];
+			
+			$branch = new Branch();
+			$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt)->format('d-m-Y');
+			$branch->setCreated_at($convertedCreatedDate);
+			$getCreatedDate = $branch->getCreated_at();
+			
+			$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
+			$branch->setCreated_at($convertedUpdatedDate);
+			$getUpdatedDate = $branch->getUpdated_at();
+			
+			$data = array();
+			$data['name']=$name;
+			$data['age']=$age;
+			$data['image_name']=$imageName;
+			$data['created_at']=$getCreatedDate;
+			$data['updated_at']=$getUpdatedDate;
+			$encodeData = json_encode($data);
+			return $encodeData;
+		}
 	}
 	
 	/**
@@ -101,41 +108,51 @@ class BranchService extends AbstractService
 	{
 		$branchModel = new BranchModel();
 		$status = $branchModel->getAllData();
-		$decodedJson = json_decode($status,true);
 		
-		for($decodedData=0;$decodedData<count($decodedJson);$decodedData++)
+		if($status=="204: No Content")
 		{
-			$createdAt[$decodedData] = $decodedJson[$decodedData]['created_at'];
-			$updatedAt[$decodedData] = $decodedJson[$decodedData]['updated_at'];
-			$name[$decodedData] = $decodedJson[$decodedData]['name'];
-			$age[$decodedData] = $decodedJson[$decodedData]['age'];
-			$imageName[$decodedData] = $decodedJson[$decodedData]['image_name'];
+			return $status;
+		}
+		else
+		{
+			$convertedCreatedDate =  array();
+			$convertedUpdatedDate =  array();
+			$encodeData =  array();
 			
+			$decodedJson = json_decode($status,true);
 			$branch = new Branch();
-			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
+			for($decodedData=0;$decodedData<count($decodedJson);$decodedData++)
+			{
+				$createdAt[$decodedData] = $decodedJson[$decodedData]['created_at'];
+				$updatedAt[$decodedData] = $decodedJson[$decodedData]['updated_at'];
+				$name[$decodedData] = $decodedJson[$decodedData]['name'];
+				$age[$decodedData] = $decodedJson[$decodedData]['age'];
+				$imageName[$decodedData] = $decodedJson[$decodedData]['image_name'];
+				$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
+				
+				$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
+				
+			}
+			$branch->setCreated_at($convertedCreatedDate);
+			$getCreatedDate = $branch->getCreated_at();
 			
-			$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
+			$branch->setCreated_at($convertedUpdatedDate);
+			$getUpdatedDate = $branch->getUpdated_at();
 			
+			$data = array();
+			for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
+			{
+				$data['name'] = $name[$jsonData];
+				$data['age'] = $age[$jsonData];
+				$data['image_name'] = $imageName[$jsonData];
+				$data['created_at'] = $getCreatedDate[$jsonData];
+				$data['updated_at'] = $getUpdatedDate[$jsonData];
+				$encodeData[$jsonData] = json_encode($data);	
+			}
+			header("Content-type:application/json"); 
+			print_r($encodeData);
+			return $encodeData;
 		}
-		$branch->setCreated_at($convertedCreatedDate);
-		$getCreatedDate = $branch->getCreated_at();
-		
-		$branch->setCreated_at($convertedUpdatedDate);
-		$getUpdatedDate = $branch->getUpdated_at();
-		
-		$data = array();
-		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
-		{
-			$data['name'] = $name[$jsonData];
-			$data['age'] = $age[$jsonData];
-			$data['image_name'] = $imageName[$jsonData];
-			$data['created_at'] = $getCreatedDate[$jsonData];
-			$data['updated_at'] = $getUpdatedDate[$jsonData];
-			$encodeData[$jsonData] = json_encode($data);	
-		}
-		header("Content-type:application/json"); 
-		print_r($encodeData);
-		// return $encodeData;
 	}
 	
     /**

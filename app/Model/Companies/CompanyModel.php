@@ -3,6 +3,7 @@ namespace ERP\Model\Companies;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use Carbon;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -50,13 +51,14 @@ class CompanyModel extends Model
 			// return "0";
 		// }
 	// }
+	
 	/**
 	 * get All data 
-	 * @param  id
 	 * returns the status
 	*/
 	public function getAllData()
-	{		
+	{	
+		DB::beginTransaction();		
 		$raw = DB::select("select 
 		company_name,
 		company_display_name,
@@ -71,6 +73,10 @@ class CompanyModel extends Model
 		formal_name,
 		no_of_decimal_points,
 		currency_symbol,
+		document_name,
+		document_url,
+		document_size,
+		document_format,
 		is_display,
 		is_default,
 		created_at,
@@ -78,21 +84,28 @@ class CompanyModel extends Model
 		deleted_at,
 		state_abb,
 		city_id 
-		from company_mst");
+		from company_mst where deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
 		
-		$enocodedData = json_encode($raw); 	
-		if($enocodedData=='[]')
+		if(count($raw)==0)
 		{
-			return "404:Data not found!";
+			return "204: No Content";
 		}
 		else
 		{
+			$enocodedData = json_encode($raw);
 			return $enocodedData;
 		}
 	}
+	
+	/**
+	 * get data as per given Company Id
+	 * @param $companyId
+	 * returns the status
+	*/
 	public function getData($companyId)
 	{		
-		
+		DB::beginTransaction();
 		$raw = DB::select("select 
 		company_name,
 		company_display_name,
@@ -107,6 +120,10 @@ class CompanyModel extends Model
 		formal_name,
 		no_of_decimal_points,
 		currency_symbol,
+		document_name,
+		document_url,
+		document_size,
+		document_format,
 		is_display,
 		is_default,
 		created_at,
@@ -114,18 +131,16 @@ class CompanyModel extends Model
 		deleted_at,
 		state_abb,
 		city_id 
-		from company_mst where company_id = ".$companyId);
+		from company_mst where company_id = ".$companyId." and deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
 		
-		$enocodedData = json_encode($raw,true); 	
-		// print_r($raw[0]->{'company_display_name'});
-		// print_r($raw);
-		// print_r($enocodedData['company_display_name']);
-		if($enocodedData=='[]')
+		if(count($raw)==0)
 		{
-			return "404:Data not found!";
+			return "404:Id Not Found";
 		}
 		else
 		{
+			$enocodedData = json_encode($raw,true); 	
 			return $enocodedData;
 		}
 	}

@@ -128,12 +128,9 @@ include ('connection.php');
 			 var formdata = new FormData();
 			 var imageFile;
              $scope.getTheFiles = function ($files) {
-				// console.log($files);
-				// imageFile = $files;
-                angular.forEach($files, function (value,key) {
-					// imageFile = value;
-					formdata.append('file[]',value);
-					console.log(value);
+				angular.forEach($files, function (value,key) {
+				formdata.append('file[]',value);
+				console.log(value);
                  
                 });
 				
@@ -142,82 +139,81 @@ include ('connection.php');
 			{
 				// var formdata = new FormData();
 				// alert($scope.formAdata.txtname);
-				formdata.append('txtname',$scope.formAdata.txtname);
-				formdata.append('txtphone',$scope.formAdata.txtphone);
+				$scope.formAdata.company_name = "abcd";
+				$scope.formAdata.company_display_name = "abcdddddddd";
+				$scope.formAdata.address1 ="35,gdsgsdgsa dsgasdf";
+				$scope.formAdata.address2 = "sdgdsg,gdsagsdg";
+				$scope.formAdata.pincode = 624364;
+				$scope.formAdata.pan= 5434545676;
+				$scope.formAdata.tin= 32343454567;
+				$scope.formAdata.vat_no= 32343454567;
+				$scope.formAdata.service_tax_no = 323434545672123;
+				$scope.formAdata.basic_currency_symbol= "INR";
+				$scope.formAdata.formal_name = "sdgdsgsaddsg";
+				$scope.formAdata.no_of_decimal_points = 2;
+				$scope.formAdata.currency_symbol = 'suffix';
+				$scope.formAdata.document_name= "sagdsds";
+				$scope.formAdata.document_url= "sdgsd\gdsgg.dsgds";
+				$scope.formAdata.document_size= 5454444;
+				$scope.formAdata.document_format= 'png';
+				$scope.formAdata.is_display = 'yes';
+				$scope.formAdata.is_default = 'ok';
+				$scope.formAdata.state_abb= 'IN-MP';
+				$scope.formAdata.city_id= 1;
+				
+				
+				formdata.append('company_name',$scope.formAdata.company_name);
+				formdata.append('company_display_name',$scope.formAdata.company_display_name);
+				formdata.append('address1',$scope.formAdata.address1 );
+				formdata.append('address2',$scope.formAdata.address2 );
+				formdata.append('pincode',$scope.formAdata.pincode);
+				formdata.append('pan',$scope.formAdata.pan);
+				formdata.append('tin',$scope.formAdata.tin);
+				formdata.append('vat_no',$scope.formAdata.vat_no);
+				formdata.append('service_tax_no',$scope.formAdata.service_tax_no);
+				formdata.append('basic_currency_symbol',$scope.formAdata.basic_currency_symbol);
+				formdata.append('formal_name',$scope.formAdata.formal_name);
+				formdata.append('no_of_decimal_points',$scope.formAdata.no_of_decimal_points);
+				formdata.append('currency_symbol',$scope.formAdata.currency_symbol);
+				formdata.append('document_name',$scope.formAdata.document_name);
+				formdata.append('document_url',$scope.formAdata.document_url);
+				formdata.append('document_size',$scope.formAdata.document_size);
+				formdata.append('document_format',$scope.formAdata.document_format);
+				formdata.append('is_display',$scope.formAdata.is_display);
+				formdata.append('is_default',$scope.formAdata.is_default);
+				formdata.append('state_abb',$scope.formAdata.state_abb);
+				formdata.append('city_id',$scope.formAdata.city_id);
 				
 				// console.log(formdata);
 				// var data  = angular.toJson(formdata);
 				var companyId = 1;
-				var id = 40;
-				var url="http://localhost.scerp.com/Sample/Branch";
-				// var url="http://localhost.scerp.com/Companies/Company/"+companyId;
+				// var id = 42;
+				// var url="http://localhost.scerp.com/Sample/Branch";
+				var url="http://localhost.scerp.com/Companies/Company";
 				$http({
                         url: url,
                         // type:'patch',
-						// method: 'post',
-						method: 'get',
+						method: 'post',
+						// method: 'get',
 						// method: "PATCH",
 						// method:'delete',
 						processData: false,
                         headers: {'Content-Type': undefined},
-                        // data:formdata						
+                        data:formdata						
                         
                     }).success(function(data, status, headers, config) {
 						// console.log(JSON.stringify(data));						
-						console.log(data);						
+						console.log(data);	//post	//get				
 						$scope.status = status;
                     }).error(function(data, status, headers, config) {
                         $scope.status = status;
                     });
 					
 			}
-			//$scope.imgsrc = ngFileSelect;
+			
          }]); 
-		 /*app.directive('fileModel',['$parse',function($parse){
-			 
-			 return{
-				 
-				 restrict: 'A',
-				 link: function(scope,element,attrs){
-					 
-					 var model = $parse(attrs,fileModel);
-					 var modelSetter = model.assign;
-					 
-					 element.bind('change',function(){
-						 
-						 $scope.$apply(function(){
-							 
-							 modelSetter(scope,elemets[0],files[0]);
-						 })
-					 })
-					 
-				 }
-			 }
-			 
-		 }]);
-		 app.service('multipartform',['$http',function($http){
-			 
-			 this.post = function(uploadUrl,data){
-				 
-				 var fd= new FormData();
-				 
-				 for(var key in data)
-					 fd.append(key,data[key]);
-				 
-				 $http.post(uploadUrl,fd,{
-					 
-					 transformRequest:angular.indentity,
-					 header: {'Content-Type': undefined }
-				 })
-			 }
-			 
-		 }]);*/
-		 
 		 
       </script> 
-  
-	
-
 </html>
 
 

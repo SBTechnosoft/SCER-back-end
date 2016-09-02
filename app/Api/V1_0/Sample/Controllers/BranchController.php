@@ -65,7 +65,7 @@ class BranchController extends BaseController implements ContainerInterface
 		{			
 			$branchService= new BranchService();
 			$status = $branchService->getAllBranchData();
-			// return $status;
+			return $status;
 		}
 		else
 		{	

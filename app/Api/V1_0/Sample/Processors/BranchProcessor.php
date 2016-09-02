@@ -41,9 +41,8 @@ class BranchProcessor extends BaseProcessor
 		{
 			$file = $request->file();
 			$path1 = 'storage/';
-			$imageName = $file['file'][0]->getClientOriginalName();
+			$imageName = $file['file'][0]->getClientOriginalName().'<br>';
 			$file['file'][0]->move($path1,$imageName);
-			
 			$name = $request->input('txtname'); 
 			$age = $request->input('txtphone'); 			
 			$branchPersistable = new BranchPersistable();		
@@ -51,9 +50,6 @@ class BranchProcessor extends BaseProcessor
 			$branchPersistable->setAge($age);
 			$branchPersistable->setImageName($imageName);
 			$file = $request->file();
-			
-			// return $persistable;
-				
 			return $branchPersistable;		
 		}		
 		else{	

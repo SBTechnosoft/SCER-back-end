@@ -94,10 +94,8 @@ class BranchModel extends Model
 		where id = ".$id." and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
-		print_r(count($raw));
 		if(count($raw)==0)
 		{
-			print_r("ggggggggg");
 			return "404:Id Not Found";
 		}
 		else
@@ -120,6 +118,7 @@ class BranchModel extends Model
 		set deleted_at='".$mytime."' 
 		where id = ".$id);
 		DB::commit();
+		
 		if($raw==1)
 		{
 			return "200 :Data Deleted Successfully";
