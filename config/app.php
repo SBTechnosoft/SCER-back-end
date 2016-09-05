@@ -226,7 +226,8 @@ return [
 		'States',
 		'Cities',
 		'Branches',
-		'ProductCategories'
+		'ProductCategories',
+		'ProductGroups'
 	],
 
     /*

@@ -16,7 +16,7 @@ class ProductCategoryController extends BaseController implements ContainerInter
 	/**
      * @var ProductCategoryService
      * @var Processor
-     * @var ProductCategoryName
+     * @var name
      * @var request
      * @var ProductCategoryPersistable
      */
@@ -29,7 +29,7 @@ class ProductCategoryController extends BaseController implements ContainerInter
 	/**
 	 * get and invoke method is of ContainerInterface method
 	 */		
-    public function get($id,$ProductCategoryName)
+    public function get($id,$name)
 	{
 		// echo "get";
 	}

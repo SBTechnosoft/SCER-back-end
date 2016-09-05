@@ -199,17 +199,29 @@ include ('connection.php');
 				// formdata.append('city_id',$scope.formAdata.city_id);
 				
 				//productCategory
-				$scope.formAdata.productCatName = "abc1234";
-				$scope.formAdata.product_cat_desc = "abcdddddddd";
-				$scope.formAdata.is_display = 'no';
-				$scope.formAdata.product_parent_cat_id = 0;
+				// $scope.formAdata.productCatName = "abc1234";
+				// $scope.formAdata.product_cat_desc = "abcdddddddd";
+				// $scope.formAdata.is_display = 'no';
+				// $scope.formAdata.product_parent_cat_id = 0;
 				
-				formdata.append('product_cat_name',$scope.formAdata.productCatName);
-				formdata.append('product_cat_desc',$scope.formAdata.product_cat_desc);
-				formdata.append('is_display',$scope.formAdata.is_display);
-				formdata.append('product_parent_cat_id',$scope.formAdata.product_parent_cat_id);
+				// formdata.append('product_cat_name',$scope.formAdata.productCatName);
+				// formdata.append('product_cat_desc',$scope.formAdata.product_cat_desc);
+				// formdata.append('is_display',$scope.formAdata.is_display);
+				// formdata.append('product_parent_cat_id',$scope.formAdata.product_parent_cat_id);
 				
-				var productCatId = 5;
+				//productGroup
+				// $scope.formAdata.product_group_name = "abc1234";
+				// $scope.formAdata.product_group_desc = "abcdddddddd";
+				// $scope.formAdata.is_display = 'no';
+				// $scope.formAdata.product_group_parent_id = 0;
+				
+				// formdata.append('product_group_name',$scope.formAdata.product_group_name);
+				// formdata.append('product_group_desc',$scope.formAdata.product_group_desc);
+				// formdata.append('is_display',$scope.formAdata.is_display);
+				// formdata.append('product_group_parent_id',$scope.formAdata.product_group_parent_id);
+				
+				var productGrpId = 1;
+				// var productCatId = 5;
 				// var companyId = 1;
 				// var cityId = 2;
 				// var stateAbb = "IN-GJ";
@@ -222,7 +234,8 @@ include ('connection.php');
 				// var url="http://localhost.scerp.com/States/State/"+stateAbb;
 				// var url="http://localhost.scerp.com/Cities/City/state/"+stateAbb;
 				// var url="http://localhost.scerp.com/Cities/City/"+cityId;
-				var url="http://localhost.scerp.com/ProductCategories/ProductCategory/"+productCatId;
+				// var url="http://localhost.scerp.com/ProductCategories/ProductCategory/"+productCatId;
+				var url="http://localhost.scerp.com/ProductGroups/ProductGroup/"+productGrpId;
 				$http({
                         url: url,
                         // type:'patch',
@@ -232,7 +245,7 @@ include ('connection.php');
 						method:'delete',
 						processData: false,
                         headers: {'Content-Type': undefined},
-                        // data:formdata						
+                        data:formdata						
                         
                     }).success(function(data, status, headers, config) {
 						// console.log(JSON.stringify(data));						
