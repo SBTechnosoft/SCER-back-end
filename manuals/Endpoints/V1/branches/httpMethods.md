@@ -32,7 +32,7 @@
 
 **NOTES:** List all the branch in particular company 
 
-##### `GET /companies/{CompanyId}/branches/{branchId}`
+##### `GET branches/{branchId}`
 + Header
 	- Authentication Token
 

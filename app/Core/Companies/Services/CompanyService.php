@@ -63,11 +63,12 @@ class CompanyService extends AbstractService
 		$documentSize = $persistable->getDocumentSize();
 		$documentFormat = $persistable->getDocumentFormat();
 		$isDisplay = $persistable->getIsDisplay();
+		$isDefault = $persistable->getIsDefault();
 		$stateAbb = $persistable->getStateAbb();
 		$cityId = $persistable->getId();
 		$companyModel = new CompanyModel();
 		
-		$status = $companyModel->insertData($companyName,$companyDispName,$address1,$address2,$pincode,$panNo,$tinNo,$vatNo,$serviceTaxNO,$basicCurrencySymbol,$formalName,$noOfDecimalPoints,$currencySymbol,$documentName,$documentUrl,$documentSize,$documentFormat,$isDisplay,$stateAbb,$cityId);
+		$status = $companyModel->insertData($companyName,$companyDispName,$address1,$address2,$pincode,$panNo,$tinNo,$vatNo,$serviceTaxNO,$basicCurrencySymbol,$formalName,$noOfDecimalPoints,$currencySymbol,$documentName,$documentUrl,$documentSize,$documentFormat,$isDisplay,$isDefault,$stateAbb,$cityId);
 		return $status;
 	}
 	
@@ -138,12 +139,13 @@ class CompanyService extends AbstractService
 		$documentSize = $persistable->getDocumentSize();
 		$documentFormat = $persistable->getDocumentFormat();
 		$isDisplay = $persistable->getIsDisplay();
+		$isDefault = $persistable->getIsDefault();
 		$stateAbb = $persistable->getStateAbb();
 		$cityId = $persistable->getId();
 		$companyId = $persistable->getCompanyId();
 		$companyModel = new CompanyModel();
 	    
-		$status = $companyModel->updateData($companyName,$companyDispName,$address1,$address2,$pincode,$panNo,$tinNo,$vatNo,$serviceTaxNO,$basicCurrencySymbol,$formalName,$noOfDecimalPoints,$currencySymbol,$documentName,$documentUrl,$documentSize,$documentFormat,$isDisplay,$stateAbb,$cityId,$companyId);
+		$status = $companyModel->updateData($companyName,$companyDispName,$address1,$address2,$pincode,$panNo,$tinNo,$vatNo,$serviceTaxNO,$basicCurrencySymbol,$formalName,$noOfDecimalPoints,$currencySymbol,$documentName,$documentUrl,$documentSize,$documentFormat,$isDisplay,$isDefault,$stateAbb,$cityId,$companyId);
 		return $status;		
     }
 

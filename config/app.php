@@ -224,7 +224,9 @@ return [
 		'Sample2',
 		'Companies',
 		'States',
-		'Cities'
+		'Cities',
+		'Branches',
+		'ProductCategories'
 	],
 
     /*

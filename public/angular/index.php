@@ -13,7 +13,7 @@ include ('connection.php');
 <script src="js/jquery-1.12.0.js" type="text/javascript"></script>
 	<body>
 		<center>
-			<form id="myform" enctype="multipart/formdata" method="POST" ng-controller="HelloController"  >
+			<form id="myform" enctype="multipart/formdata" method="GET" ng-controller="HelloController"  >
 			
 				<table id="data" style="height:250px">
 					
@@ -106,7 +106,7 @@ include ('connection.php');
 			 var imageFile;
              $scope.getTheFiles = function ($files) {
 				angular.forEach($files, function (value,key) {
-				// formdata.append('file[]',value);
+				formdata.append('file[]',value);
 				// console.log(value);
                  
                 });
@@ -132,23 +132,44 @@ include ('connection.php');
 				// formdata.append('state_abb',$scope.formAdata.state_abb);
 				// formdata.append('is_display',$scope.formAdata.is_display);
 				
+				//branch
+				// $scope.formAdata.branch_name = "a3bcd12";
+				// $scope.formAdata.address1 ="35,gdsgsdgsa dsgasdf1";
+				// $scope.formAdata.address2 = "sdgdsg,gdsagsdg1";
+				// $scope.formAdata.pincode = 324362;
+				// $scope.formAdata.is_display = 'yes';
+				// $scope.formAdata.is_default = 'not';
+				// $scope.formAdata.state_abb= 'IN-MP';
+				// $scope.formAdata.city_id= 1;
+				// $scope.formAdata.company_id= 1;
+				
+				// formdata.append('branch_name',$scope.formAdata.branch_name);
+				// formdata.append('address1',$scope.formAdata.address1 );
+				// formdata.append('address2',$scope.formAdata.address2 );
+				// formdata.append('pincode',$scope.formAdata.pincode);
+				// formdata.append('is_display',$scope.formAdata.is_display);
+				// formdata.append('is_default',$scope.formAdata.is_default);
+				// formdata.append('state_abb',$scope.formAdata.state_abb);
+				// formdata.append('city_id',$scope.formAdata.city_id);
+				// formdata.append('company_id',$scope.formAdata.company_id);
+				
 				//company
-				// $scope.formAdata.company_name = "abcd12";
-				// $scope.formAdata.company_display_name = "abcdddddddd2";
-				// $scope.formAdata.address1 ="35,gdsgsdgsa dsgasdf2";
-				// $scope.formAdata.address2 = "sdgdsg,gdsagsdg2";
-				// $scope.formAdata.pincode = 624362;
-				// $scope.formAdata.pan= 5434545672;
-				// $scope.formAdata.tin= 32343454562;
-				// $scope.formAdata.vat_no= 32343454562;
-				// $scope.formAdata.service_tax_no = 323434545672122;
+				// $scope.formAdata.company_name = "a3bcd19";
+				// $scope.formAdata.company_display_name = "a3bcdddddddd9";
+				// $scope.formAdata.address1 ="35,gdsgsdgsa dsgasdf9";
+				// $scope.formAdata.address2 = "sdgdsg,gdsagsdg9";
+				// $scope.formAdata.pincode = 324369;
+				// $scope.formAdata.pan= 3434545679;
+				// $scope.formAdata.tin= 32343454569;
+				// $scope.formAdata.vat_no= 32343454569;
+				// $scope.formAdata.service_tax_no = 323434545672129;
 				// $scope.formAdata.basic_currency_symbol= "INR";
-				// $scope.formAdata.formal_name = "sdgdsgsaddsg2";
-				// $scope.formAdata.no_of_decimal_points = 2;
+				// $scope.formAdata.formal_name = "sdgdsgsaddsg7";
+				// $scope.formAdata.no_of_decimal_points = 1;
 				// $scope.formAdata.currency_symbol = 'suffix';
-				// $scope.formAdata.document_name= "sagdsds2";
-				// $scope.formAdata.document_url= "sdgsd\gdsgg.dsgds2";
-				// $scope.formAdata.document_size= 5454442;
+				// $scope.formAdata.document_name= "sagdsds7";
+				// $scope.formAdata.document_url= "sdgsd\gdsgg.dsgds5";
+				// $scope.formAdata.document_size= 5454449;
 				// $scope.formAdata.document_format= 'png';
 				// $scope.formAdata.is_display = 'no';
 				// $scope.formAdata.is_default = 'ok';
@@ -177,17 +198,31 @@ include ('connection.php');
 				// formdata.append('state_abb',$scope.formAdata.state_abb);
 				// formdata.append('city_id',$scope.formAdata.city_id);
 				
-				// console.log(formdata);
-				// var data  = angular.toJson(formdata);
-				var companyId = 6;
-				var cityId = 2;
-				var stateAbb = "IN-GJ";
+				//productCategory
+				$scope.formAdata.productCatName = "abc1234";
+				$scope.formAdata.product_cat_desc = "abcdddddddd";
+				$scope.formAdata.is_display = 'no';
+				$scope.formAdata.product_parent_cat_id = 0;
+				
+				formdata.append('product_cat_name',$scope.formAdata.productCatName);
+				formdata.append('product_cat_desc',$scope.formAdata.product_cat_desc);
+				formdata.append('is_display',$scope.formAdata.is_display);
+				formdata.append('product_parent_cat_id',$scope.formAdata.product_parent_cat_id);
+				
+				var productCatId = 5;
+				// var companyId = 1;
+				// var cityId = 2;
+				// var stateAbb = "IN-GJ";
+				// var branchId = 4;
 				// var id = 42;
 				// var url="http://localhost.scerp.com/Sample/Branch";
-				var url="http://localhost.scerp.com/Companies/Company/"+companyId;
+				// var url="http://localhost.scerp.com/Companies/Company";
+				// var url="http://localhost.scerp.com/Branches/Branch/"+branchId;
+				// var url="http://localhost.scerp.com/Branches/Branch/company/"+companyId;
 				// var url="http://localhost.scerp.com/States/State/"+stateAbb;
 				// var url="http://localhost.scerp.com/Cities/City/state/"+stateAbb;
 				// var url="http://localhost.scerp.com/Cities/City/"+cityId;
+				var url="http://localhost.scerp.com/ProductCategories/ProductCategory/"+productCatId;
 				$http({
                         url: url,
                         // type:'patch',
@@ -202,7 +237,6 @@ include ('connection.php');
                     }).success(function(data, status, headers, config) {
 						// console.log(JSON.stringify(data));						
 						console.log(data);	//post	//get	//update //delete
-						
 						$scope.status = status;
                     }).error(function(data, status, headers, config) {
                         $scope.status = status;

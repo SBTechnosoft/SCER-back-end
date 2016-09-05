@@ -74,8 +74,8 @@ class CompanyModel extends Model
 		formal_name='".$formalName."',
 		no_of_decimal_points='".$noOfDecimalPoints."',
 		currency_symbol='".$currencySymbol."',
-		document_name='".$documentName."'
-		,document_url='".$documentUrl."',
+		document_name='".$documentName."',
+		document_url='".$documentUrl."',
 		document_size='".$documentSize."',
 		document_format='".$documentFormat."',
 		is_display='".$isDisplay."',
