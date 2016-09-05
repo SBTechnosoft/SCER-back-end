@@ -1,0 +1,44 @@
+<?php
+namespace ERP\Core\States\Entities;
+
+use ERP\Core\States\Entities\State;
+use Carbon;
+/**
+ *
+ * @author Reema Patel<reema.p@siliconbrain.in>
+ */
+class EncodeData
+{
+	
+    public function getEncodedData($status)
+	{
+		$decodedJson = json_decode($status,true);
+			
+		$createdAt = $decodedJson[0]['created_at'];
+		$updatedAt= $decodedJson[0]['updated_at'];
+		$isDisplay= $decodedJson[0]['is_display'];
+		$stateAbb= $decodedJson[0]['state_abb'];
+		$stateName= $decodedJson[0]['state_name'];
+		
+		//date format conversion['created_at','updated_at']
+		$state = new State();
+		$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt)->format('d-m-Y');
+		$state->setCreated_at($convertedCreatedDate);
+		$getCreatedDate = $state->getCreated_at();
+			
+		$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
+		$state->setCreated_at($convertedUpdatedDate);
+		$getUpdatedDate = $state->getUpdated_at();
+		
+		//set all data into json array
+		$data = array();
+		$data['state_name'] = $stateName;
+		$data['state_abb'] = $stateAbb;
+		$data['is_display'] = $isDisplay;
+		$data['created_at'] = $getCreatedDate;
+		$data['updated_at'] = $getUpdatedDate;	
+		
+		$encodeData = json_encode($data);
+		return $encodeData;
+	}
+}

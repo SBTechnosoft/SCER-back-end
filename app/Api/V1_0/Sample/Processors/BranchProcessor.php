@@ -41,7 +41,7 @@ class BranchProcessor extends BaseProcessor
 		{
 			$file = $request->file();
 			$path1 = 'storage/';
-			$imageName = $file['file'][0]->getClientOriginalName().'<br>';
+			$imageName = $file['file'][0]->getClientOriginalName();
 			$file['file'][0]->move($path1,$imageName);
 			$name = $request->input('txtname'); 
 			$age = $request->input('txtphone'); 			

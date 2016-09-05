@@ -149,7 +149,7 @@ class BranchService extends AbstractService
 				$data['updated_at'] = $getUpdatedDate[$jsonData];
 				$encodeData[$jsonData] = json_encode($data);	
 			}
-			header("Content-type:application/json"); 
+			
 			print_r($encodeData);
 			return $encodeData;
 		}

@@ -2,15 +2,17 @@
 namespace ERP\Core\Companies\Entities;
 
 use ERP\Core\Companies\Entities\Company;
+use ERP\Core\States\Services\StateService;
+use ERP\Core\Companies\Entities\CityName;
 use Carbon;
 /**
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class DecodeData
+class EncodeData extends StateService 
 {
 	
-    public function getDecodedData($status)
+    public function getEncodedData($status)
 	{
 		$decodedJson = json_decode($status,true);
 			
@@ -37,7 +39,19 @@ class DecodeData
 		$isDefault= $decodedJson[0]['is_default'];
 		$stateAbb= $decodedJson[0]['state_abb'];
 		$cityId= $decodedJson[0]['city_id'];
-			
+		
+		//get the state_name from database
+		$encodeStateDataClass = new EncodeData();
+		$stateStatus = $encodeStateDataClass->getStateData($stateAbb);
+		$stateDecodedJson = json_decode($stateStatus,true);
+		$stateName= $stateDecodedJson['state_name'];
+		
+		//get the city_name from database
+		$cityName  = new CityName();
+		$getCityName = $cityName->getCityName($cityId);
+		
+		
+		//date format conversion['created_at','updated_at']
 		$company = new Company();
 		$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt)->format('d-m-Y');
 		$company->setCreated_at($convertedCreatedDate);
@@ -46,9 +60,35 @@ class DecodeData
 		$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
 		$company->setCreated_at($convertedUpdatedDate);
 		$getUpdatedDate = $company->getUpdated_at();
-		include("dataArray.php");	
 		
-			
+		//set all data into json array
+		$data = array();
+		$data['company_name'] = $companyName;
+		$data['company_display_name'] = $companyDisplayName;
+		$data['address1'] = $address1;
+		$data['address2'] = $address2;
+		$data['pincode'] = $pincode;
+		$data['pan'] = $pan;
+		$data['tin'] = $tin;
+		$data['vat_no'] = $vat_no;
+		$data['service_tax_no'] = $serviceTaxNo;
+		$data['basic_currency_symbol'] = $basicCurrencySymbol;
+		$data['formal_name'] = $formalName;
+		$data['no_of_decimal_points'] = $noOfDecimalPoints;
+		$data['currency_symbol'] = $currencySymbol;
+		$data['document_name'] = $documentName;
+		$data['document_url'] = $documentUrl;
+		$data['document_size'] = $documentSize;
+		$data['document_format'] = $documentFormat;
+		$data['is_display'] = $isDisplay;
+		$data['is_default'] = $isDefault;
+		$data['state_abb'] = $stateAbb;
+		$data['city_id'] = $cityId;
+		$data['created_at'] = $getCreatedDate;
+		$data['updated_at'] = $getUpdatedDate;	
+		$data['state_name'] = $stateName;	
+		$data['city_name'] = $getCityName;	
+		
 		$encodeData = json_encode($data);
 		return $encodeData;
 	}

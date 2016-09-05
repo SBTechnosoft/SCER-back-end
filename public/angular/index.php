@@ -13,7 +13,7 @@ include ('connection.php');
 <script src="js/jquery-1.12.0.js" type="text/javascript"></script>
 	<body>
 		<center>
-			<form id="myform" enctype="multipart/formdata" method="GET" ng-controller="HelloController"  >
+			<form id="myform" enctype="multipart/formdata" method="POST" ng-controller="HelloController"  >
 			
 				<table id="data" style="height:250px">
 					
@@ -72,39 +72,15 @@ include ('connection.php');
 					<input type="hidden" value="1" name="id" id="id" />
 						<td> <input type="submit" value="SAVE" name="save" id="save" class="save" ng-click="submit_form()" >{{status}}</td>
 						
+						
 					</tr>	
 				</table>
 			</form>
 				
-				<table border="1" style="height:100px">
-					<thead>
-					
-						<th>Image</th>
-						<th>Student Name</th>
-						<th>Gender</th>
-						<th>Phone</th>
-						<th>Address</th>		
-						<th>Action </th>
-					</thead>
-					
-					
-					<tbody id="showdata">
-					<tr>
-					<td>{{txtimg}}</td>
-					<td>{{txtname}}</td>
-					<td>{{txtgender}}</td>
-					<td>{{txtphone}}</td>
-					<td>{{txtaddress}}</td>
-					<td><a href="#" >Edit</a> <a href="#">Delete</a></td>
-					
-					</tr>
-					</tbody>
-					
-					
-				</table>
-			
+				
 			
 		</center>
+		
 	</body>
 
 	<script src="js/angular.min.js"></script>
@@ -125,85 +101,108 @@ include ('connection.php');
         } ]);
          app.controller("HelloController", ['$scope','$http',function($scope,$http) { 
             $scope.formAdata=[];
+			 
 			 var formdata = new FormData();
 			 var imageFile;
              $scope.getTheFiles = function ($files) {
 				angular.forEach($files, function (value,key) {
-				formdata.append('file[]',value);
-				console.log(value);
+				// formdata.append('file[]',value);
+				// console.log(value);
                  
                 });
 				
             }
 			$scope.submit_form = function()
 			{
-				// var formdata = new FormData();
-				// alert($scope.formAdata.txtname);
-				$scope.formAdata.company_name = "abcd";
-				$scope.formAdata.company_display_name = "abcdddddddd";
-				$scope.formAdata.address1 ="35,gdsgsdgsa dsgasdf";
-				$scope.formAdata.address2 = "sdgdsg,gdsagsdg";
-				$scope.formAdata.pincode = 624364;
-				$scope.formAdata.pan= 5434545676;
-				$scope.formAdata.tin= 32343454567;
-				$scope.formAdata.vat_no= 32343454567;
-				$scope.formAdata.service_tax_no = 323434545672123;
-				$scope.formAdata.basic_currency_symbol= "INR";
-				$scope.formAdata.formal_name = "sdgdsgsaddsg";
-				$scope.formAdata.no_of_decimal_points = 2;
-				$scope.formAdata.currency_symbol = 'suffix';
-				$scope.formAdata.document_name= "sagdsds";
-				$scope.formAdata.document_url= "sdgsd\gdsgg.dsgds";
-				$scope.formAdata.document_size= 5454444;
-				$scope.formAdata.document_format= 'png';
-				$scope.formAdata.is_display = 'yes';
-				$scope.formAdata.is_default = 'ok';
-				$scope.formAdata.state_abb= 'IN-MP';
-				$scope.formAdata.city_id= 1;
+				//state
+				// $scope.formAdata.state_name = "abcd1";
+				// $scope.formAdata.state_abb = "IN-GJ";
+				// $scope.formAdata.is_display = 'no';
 				
+				// formdata.append('state_name',$scope.formAdata.state_name);
+				// formdata.append('state_abb',$scope.formAdata.state_abb);
+				// formdata.append('is_display',$scope.formAdata.is_display);
 				
-				formdata.append('company_name',$scope.formAdata.company_name);
-				formdata.append('company_display_name',$scope.formAdata.company_display_name);
-				formdata.append('address1',$scope.formAdata.address1 );
-				formdata.append('address2',$scope.formAdata.address2 );
-				formdata.append('pincode',$scope.formAdata.pincode);
-				formdata.append('pan',$scope.formAdata.pan);
-				formdata.append('tin',$scope.formAdata.tin);
-				formdata.append('vat_no',$scope.formAdata.vat_no);
-				formdata.append('service_tax_no',$scope.formAdata.service_tax_no);
-				formdata.append('basic_currency_symbol',$scope.formAdata.basic_currency_symbol);
-				formdata.append('formal_name',$scope.formAdata.formal_name);
-				formdata.append('no_of_decimal_points',$scope.formAdata.no_of_decimal_points);
-				formdata.append('currency_symbol',$scope.formAdata.currency_symbol);
-				formdata.append('document_name',$scope.formAdata.document_name);
-				formdata.append('document_url',$scope.formAdata.document_url);
-				formdata.append('document_size',$scope.formAdata.document_size);
-				formdata.append('document_format',$scope.formAdata.document_format);
-				formdata.append('is_display',$scope.formAdata.is_display);
-				formdata.append('is_default',$scope.formAdata.is_default);
-				formdata.append('state_abb',$scope.formAdata.state_abb);
-				formdata.append('city_id',$scope.formAdata.city_id);
+				//city
+				// $scope.formAdata.city_name = "Anand";
+				// $scope.formAdata.is_display = 'yes';
+				// $scope.formAdata.state_abb = 'IN-GJ';
+				
+				// formdata.append('city_name',$scope.formAdata.city_name);
+				// formdata.append('state_abb',$scope.formAdata.state_abb);
+				// formdata.append('is_display',$scope.formAdata.is_display);
+				
+				//company
+				// $scope.formAdata.company_name = "abcd12";
+				// $scope.formAdata.company_display_name = "abcdddddddd2";
+				// $scope.formAdata.address1 ="35,gdsgsdgsa dsgasdf2";
+				// $scope.formAdata.address2 = "sdgdsg,gdsagsdg2";
+				// $scope.formAdata.pincode = 624362;
+				// $scope.formAdata.pan= 5434545672;
+				// $scope.formAdata.tin= 32343454562;
+				// $scope.formAdata.vat_no= 32343454562;
+				// $scope.formAdata.service_tax_no = 323434545672122;
+				// $scope.formAdata.basic_currency_symbol= "INR";
+				// $scope.formAdata.formal_name = "sdgdsgsaddsg2";
+				// $scope.formAdata.no_of_decimal_points = 2;
+				// $scope.formAdata.currency_symbol = 'suffix';
+				// $scope.formAdata.document_name= "sagdsds2";
+				// $scope.formAdata.document_url= "sdgsd\gdsgg.dsgds2";
+				// $scope.formAdata.document_size= 5454442;
+				// $scope.formAdata.document_format= 'png';
+				// $scope.formAdata.is_display = 'no';
+				// $scope.formAdata.is_default = 'ok';
+				// $scope.formAdata.state_abb= 'IN-GJ';
+				// $scope.formAdata.city_id= 2;
+				
+				// formdata.append('company_name',$scope.formAdata.company_name);
+				// formdata.append('company_display_name',$scope.formAdata.company_display_name);
+				// formdata.append('address1',$scope.formAdata.address1 );
+				// formdata.append('address2',$scope.formAdata.address2 );
+				// formdata.append('pincode',$scope.formAdata.pincode);
+				// formdata.append('pan',$scope.formAdata.pan);
+				// formdata.append('tin',$scope.formAdata.tin);
+				// formdata.append('vat_no',$scope.formAdata.vat_no);
+				// formdata.append('service_tax_no',$scope.formAdata.service_tax_no);
+				// formdata.append('basic_currency_symbol',$scope.formAdata.basic_currency_symbol);
+				// formdata.append('formal_name',$scope.formAdata.formal_name);
+				// formdata.append('no_of_decimal_points',$scope.formAdata.no_of_decimal_points);
+				// formdata.append('currency_symbol',$scope.formAdata.currency_symbol);
+				// formdata.append('document_name',$scope.formAdata.document_name);
+				// formdata.append('document_url',$scope.formAdata.document_url);
+				// formdata.append('document_size',$scope.formAdata.document_size);
+				// formdata.append('document_format',$scope.formAdata.document_format);
+				// formdata.append('is_display',$scope.formAdata.is_display);
+				// formdata.append('is_default',$scope.formAdata.is_default);
+				// formdata.append('state_abb',$scope.formAdata.state_abb);
+				// formdata.append('city_id',$scope.formAdata.city_id);
 				
 				// console.log(formdata);
 				// var data  = angular.toJson(formdata);
-				var companyId = 1;
+				var companyId = 6;
+				var cityId = 2;
+				var stateAbb = "IN-GJ";
 				// var id = 42;
 				// var url="http://localhost.scerp.com/Sample/Branch";
-				var url="http://localhost.scerp.com/Companies/Company";
+				var url="http://localhost.scerp.com/Companies/Company/"+companyId;
+				// var url="http://localhost.scerp.com/States/State/"+stateAbb;
+				// var url="http://localhost.scerp.com/Cities/City/state/"+stateAbb;
+				// var url="http://localhost.scerp.com/Cities/City/"+cityId;
 				$http({
                         url: url,
                         // type:'patch',
-						method: 'post',
+						// method: 'post',
 						// method: 'get',
 						// method: "PATCH",
-						// method:'delete',
+						method:'delete',
 						processData: false,
                         headers: {'Content-Type': undefined},
-                        data:formdata						
+                        // data:formdata						
                         
                     }).success(function(data, status, headers, config) {
 						// console.log(JSON.stringify(data));						
-						console.log(data);	//post	//get				
+						console.log(data);	//post	//get	//update //delete
+						
 						$scope.status = status;
                     }).error(function(data, status, headers, config) {
                         $scope.status = status;

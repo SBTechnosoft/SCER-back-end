@@ -16,41 +16,84 @@ class CompanyModel extends Model
 	 * @param  name and age
 	 * returns the status
 	*/
-	// public function insertData($name,$age)
-	// {
-		// DB::beginTransaction();
-		// $raw = DB::statement("insert into product (name,age) values('".$name."', '".$age."')");
-		// DB::commit();
+	public function insertData($companyName,$companyDispName,$address1,$address2,$pincode,$panNo,$tinNo,$vatNo,$serviceTaxNO,$basicCurrencySymbol,$formalName,$noOfDecimalPoints,$currencySymbol,$documentName,$documentUrl,$documentSize,$documentFormat,$isDisplay,$stateAbb,$cityId)
+	{
+		DB::beginTransaction();
+		$raw = DB::statement("insert into company_mst(company_name,company_display_name,address1,address2,pincode,pan,tin,vat_no,service_tax_no,basic_currency_symbol,formal_name,no_of_decimal_points,currency_symbol,document_name,document_url,document_size,document_format,is_display,state_abb,city_id) 
+		values('".$companyName."', 
+		'".$companyDispName."',
+		'".$address1."',
+		'".$address2."',
+		'".$pincode."',
+		'".$panNo."',
+		'".$tinNo."',
+		'".$vatNo."',
+		'".$serviceTaxNO."',
+		'".$basicCurrencySymbol."',
+		'".$formalName."',
+		'".$noOfDecimalPoints."',
+		'".$currencySymbol."',
+		'".$documentName."',
+		'".$documentUrl."',
+		'".$documentSize."',
+		'".$documentFormat."',
+		'".$isDisplay."',
+		'".$stateAbb."',
+		'".$cityId."')");
+		DB::commit();
 		
-		// if($raw==1)
-		// {
-			// return "<br>data inserted successfully";
-		// }
-		// else
-		// {
-			// return "data is not inserted successfully";
-		// }
-	// }
+		if($raw==1)
+		{
+			return "200:Data Inserted Successfully";
+		}
+		else
+		{
+			return "500:Internal Server Error";
+		}
+	}
 	/**
 	 * update data 
 	 * @param  name,age and id
 	 * returns the status
 	*/
-	// public function updateData($name,$age,$id)
-	// {
-		// DB::beginTransaction();
-		// $raw = DB::statement("update product set name='".$name."',age='".$age."' where id = ".$id);
-		// DB::commit();
+	public function updateData($companyName,$companyDispName,$address1,$address2,$pincode,$panNo,$tinNo,$vatNo,$serviceTaxNO,$basicCurrencySymbol,$formalName,$noOfDecimalPoints,$currencySymbol,$documentName,$documentUrl,$documentSize,$documentFormat,$isDisplay,$stateAbb,$cityId,$companyId)
+	{
+		DB::beginTransaction();
+		$mytime = Carbon\Carbon::now();
+		$raw = DB::statement("update company_mst 
+		set company_name='".$companyName."',
+		company_display_name='".$companyDispName."',
+		address1='".$address1."',
+		address2='".$address2."',
+		pincode='".$pincode."',
+		pan='".$panNo."',
+		tin='".$tinNo."',
+		vat_no='".$vatNo."',
+		service_tax_no='".$serviceTaxNO."',
+		basic_currency_symbol='".$basicCurrencySymbol."',
+		formal_name='".$formalName."',
+		no_of_decimal_points='".$noOfDecimalPoints."',
+		currency_symbol='".$currencySymbol."',
+		document_name='".$documentName."'
+		,document_url='".$documentUrl."',
+		document_size='".$documentSize."',
+		document_format='".$documentFormat."',
+		is_display='".$isDisplay."',
+		state_abb='".$stateAbb."',
+		city_id='".$cityId."',
+		updated_at='".$mytime."'
+		where company_id = ".$companyId);
+		DB::commit();
 		
-		// if($raw==1)
-		// {
-			// return "1";
-		// }
-		// else
-		// {
-			// return "0";
-		// }
-	// }
+		if($raw==1)
+		{
+			return "200: Data Updated Successfully";
+		}
+		else
+		{
+			return "500: Internal Server Error";
+		}
+	}
 	
 	/**
 	 * get All data 
@@ -60,6 +103,7 @@ class CompanyModel extends Model
 	{	
 		DB::beginTransaction();		
 		$raw = DB::select("select 
+		company_id,
 		company_name,
 		company_display_name,
 		address1,
@@ -107,6 +151,7 @@ class CompanyModel extends Model
 	{		
 		DB::beginTransaction();
 		$raw = DB::select("select 
+		company_id,
 		company_name,
 		company_display_name,
 		address1,
@@ -144,18 +189,24 @@ class CompanyModel extends Model
 			return $enocodedData;
 		}
 	}
-	// public function deleteData($id)
-	// {
-		// DB::beginTransaction();
-		// $raw = DB::statement("delete from product where id =".$id);
-		// DB::commit();
-		// if($raw==1)
-		// {
-			// return "data deleted successfully";
-		// }
-		// else
-		// {
-			// return "data is not deleted successfully";
-		// }
-	// }
+	
+	//delete
+	public function deleteData($companyId)
+	{
+		DB::beginTransaction();
+		$mytime = Carbon\Carbon::now();
+		$raw = DB::statement("update company_mst 
+		set deleted_at='".$mytime."' 
+		where company_id=".$companyId);
+		DB::commit();
+		
+		if($raw==1)
+		{
+			return "200 :Data Deleted Successfully";
+		}
+		else
+		{
+			return "500 : Internal Server Error";
+		}
+	}
 }

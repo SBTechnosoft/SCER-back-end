@@ -8,8 +8,7 @@
 				"updatedAt": datetime
                 
             }
-            
-            
+
 ##### Standard state Persistable Object
 
  			{
