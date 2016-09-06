@@ -24,6 +24,7 @@ class EncodeAllData
 			$productGrpId[$decodedData] = $decodedJson[$decodedData]['product_group_id'];
 			$productGrpName[$decodedData] = $decodedJson[$decodedData]['product_group_name'];
 			$productGrpDesc[$decodedData] = $decodedJson[$decodedData]['product_group_desc'];
+			$productGrpParentId[$decodedData] = $decodedJson[$decodedData]['product_group_parent_id'];
 			$isDisplay[$decodedData] = $decodedJson[$decodedData]['is_display'];
 			
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
@@ -45,7 +46,8 @@ class EncodeAllData
 				'product_group_desc' =>$productGrpDesc[$jsonData],
 				'isDisplay' => $isDisplay[$jsonData],
 				'created_at' => $getCreatedDate[$jsonData],
-				'updated_at' =>$getUpdatedDate[$jsonData]
+				'updated_at' =>$getUpdatedDate[$jsonData],
+				'product_group_parent_id' =>$productGrpParentId[$jsonData]
 				
 			);	
 		}

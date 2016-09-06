@@ -20,6 +20,7 @@ class EncodeData
 		$productCatId= $decodedJson[0]['product_cat_id'];
 		$productCatName= $decodedJson[0]['product_cat_name'];
 		$productCatDesc= $decodedJson[0]['product_cat_desc'];
+		$productParentCatId= $decodedJson[0]['product_parent_cat_id'];
 		
 		//date format conversion['created_at','updated_at']
 		$productCategory = new ProductCategory();
@@ -39,6 +40,7 @@ class EncodeData
 		$data['is_display'] = $isDisplay;
 		$data['created_at'] = $getCreatedDate;
 		$data['updated_at'] = $getUpdatedDate;	
+		$data['product_parent_cat_id'] = $productParentCatId;	
 		
 		$encodeData = json_encode($data);
 		return $encodeData;

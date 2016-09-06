@@ -40,11 +40,9 @@ class CompanyProcessor extends BaseProcessor
 		{
 			$file = $request->file();
 			$path = 'Storage/Document/';
-			for($imageFiles=0;$imageFiles<count($file['file']);$imageFiles++)
-			{
-				$imageName = $file['file'][$imageFiles]->getClientOriginalName();
-				$file['file'][$imageFiles]->move($path,$imageName);	
-			}		
+			$imageName = $file['file'][0]->getClientOriginalName();
+			$file['file'][0]->move($path,$imageName);	
+			
 			$companyName = $request->input('company_name'); 
 			$companyDispName = $request->input('company_display_name'); 
 			$address1 = $request->input('address1'); 

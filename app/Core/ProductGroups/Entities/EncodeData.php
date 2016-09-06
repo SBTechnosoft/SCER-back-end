@@ -20,6 +20,7 @@ class EncodeData
 		$productGrpId= $decodedJson[0]['product_group_id'];
 		$productGrpName= $decodedJson[0]['product_group_name'];
 		$productGrpDesc= $decodedJson[0]['product_group_desc'];
+		$productGrpParentId= $decodedJson[0]['product_group_parent_id'];
 		
 		//date format conversion['created_at','updated_at']
 		$productGroup = new ProductGroup();
@@ -39,6 +40,7 @@ class EncodeData
 		$data['is_display'] = $isDisplay;
 		$data['created_at'] = $getCreatedDate;
 		$data['updated_at'] = $getUpdatedDate;	
+		$data['product_group_parent_id'] = $productGrpParentId;	
 		
 		$encodeData = json_encode($data);
 		return $encodeData;

@@ -4,7 +4,7 @@ namespace ERP\Core\Branches\Entities;
 use ERP\Core\Branches\Entities\Branch;
 use ERP\Core\States\Services\StateService;
 use ERP\Core\Entities\CityName;
-use ERP\Core\Entities\CompanyName;
+use ERP\Core\Entities\CompanyDetail;
 use Carbon;
 /**
  *
@@ -41,8 +41,8 @@ class EncodeData extends StateService
 		$getCityName = $cityName->getCityName($cityId);
 		
 		//get the company_name from database
-		$companyName  = new CompanyName();
-		$getCompanyName = $companyName->getCompanyName($companyId);
+		$companyDetail  = new CompanyDetail();
+		$getCompanyDetails = $companyDetail->getCompanyDetails($companyId);
 		
 		//date format conversion['created_at','updated_at']
 		$branch = new Branch();
@@ -67,9 +67,10 @@ class EncodeData extends StateService
 		$data['city_id'] = $cityId;
 		$data['created_at'] = $getCreatedDate;
 		$data['updated_at'] = $getUpdatedDate;	
+		$data['company_id'] = $companyId;	
 		$data['state_name'] = $stateName;	
 		$data['city_name'] = $getCityName;	
-		$data['company_name'] = $getCompanyName;	
+		$data['company_name'] = $getCompanyDetails['company_name'];	
 		
 		$encodeData = json_encode($data);
 		return $encodeData;

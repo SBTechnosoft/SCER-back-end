@@ -5,7 +5,7 @@ use ERP\Core\Shared\Properties\NamePropertyTrait;
 use ERP\Core\Companies\Properties\CompanyIdPropertyTrait;
 use ERP\Core\Companies\Properties\CompanyDispNamePropertyTrait;
 use ERP\Core\Properties\Address1PropertyTrait;
-use ERP\CoreProperties\PincodePropertyTrait;
+use ERP\Core\Properties\PincodePropertyTrait;
 use ERP\Core\Properties\Address2PropertyTrait;
 use ERP\Core\Companies\Properties\PanPropertyTrait;
 use ERP\Core\Companies\Properties\TinPropertyTrait;
