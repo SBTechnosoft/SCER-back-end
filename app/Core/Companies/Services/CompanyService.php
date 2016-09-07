@@ -68,12 +68,13 @@ class CompanyService extends AbstractService
 		$cityId = $persistable->getId();
 		$companyModel = new CompanyModel();
 		
+		//data pass to the model object for insertion
 		$status = $companyModel->insertData($companyName,$companyDispName,$address1,$address2,$pincode,$panNo,$tinNo,$vatNo,$serviceTaxNO,$basicCurrencySymbol,$formalName,$noOfDecimalPoints,$currencySymbol,$documentName,$documentUrl,$documentSize,$documentFormat,$isDisplay,$isDefault,$stateAbb,$cityId);
 		return $status;
 	}
 	
 	/**
-     * get all the data as per given id and call the model for database selection opertation
+     * get all the data call the model for database selection opertation
      * @return status
      */
 	public function getAllCompanyData()
@@ -93,8 +94,8 @@ class CompanyService extends AbstractService
 	}
 	
 	/**
-     * get all the data from the table and call the model for database selection opertation
-     * @param $companyId
+     * get all the data as per given id and call the model for database selection opertation
+     * @param company_id
      * @return status
      */
 	public function getCompanyData($companyId)
@@ -145,6 +146,7 @@ class CompanyService extends AbstractService
 		$companyId = $persistable->getCompanyId();
 		$companyModel = new CompanyModel();
 	    
+		//data pass to the model object for update
 		$status = $companyModel->updateData($companyName,$companyDispName,$address1,$address2,$pincode,$panNo,$tinNo,$vatNo,$serviceTaxNO,$basicCurrencySymbol,$formalName,$noOfDecimalPoints,$currencySymbol,$documentName,$documentUrl,$documentSize,$documentFormat,$isDisplay,$isDefault,$stateAbb,$cityId,$companyId);
 		return $status;		
     }
@@ -162,7 +164,8 @@ class CompanyService extends AbstractService
 		echo "invoke";
 	}
     /**
-     * @param int $id
+     * delete
+     * @param CompanyPersistable $persistable
      */
     public function delete(CompanyPersistable $persistable)
     {      

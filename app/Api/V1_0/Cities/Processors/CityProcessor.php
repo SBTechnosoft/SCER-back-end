@@ -13,13 +13,9 @@ class CityProcessor extends BaseProcessor
 {
 	/**
      * @var cityPersistable
-	 * @var cityName
-	 * @var cityId
 	 * @var request
      */
-	private $cityPersistable;
-	private $cityName;
-	private $cityId;   
+	private $cityPersistable;   
 	private $request;    
 	
     /**
@@ -39,7 +35,6 @@ class CityProcessor extends BaseProcessor
 			$cityName = $request->input('city_name'); 
 			$isDisplay = $request->input('is_display'); 			
 			$stateAbb = $request->input('state_abb'); 			
-			
 			$cityPersistable = new CityPersistable();		
 			$cityPersistable->setName($cityName);		 
 			$cityPersistable->setIsDisplay($isDisplay);		 
@@ -52,7 +47,6 @@ class CityProcessor extends BaseProcessor
 	public function createPersistableChange(Request $request,$cityId)
 	{
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
-		
 		// update
 		if($requestMethod == 'POST')
 		{
@@ -65,7 +59,6 @@ class CityProcessor extends BaseProcessor
 			$cityPersistable->setIsDisplay($isDisplay);		 
 			$cityPersistable->setId($cityId);		 
 			return $cityPersistable;
-			
 		}
 		//delete
 		else if($requestMethod == 'DELETE')

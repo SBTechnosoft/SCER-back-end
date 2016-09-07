@@ -1,5 +1,6 @@
 <?php
 namespace ERP\Api\V1_0\Branches\Controllers;
+
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use ERP\Core\Branches\Services\BranchService;
@@ -16,7 +17,6 @@ class BranchController extends BaseController implements ContainerInterface
 	/**
      * @var companyService
      * @var Processor
-     * @var name
      * @var request
      * @var branchPersistable
      */
@@ -78,17 +78,26 @@ class BranchController extends BaseController implements ContainerInterface
      * get the specified resource.
      * @param  int  $companyId
      */
-    public function getAllData($companyId)
+    public function getAllData($companyId=null)
     {
-		$branchService= new BranchService();
-		$status = $branchService->getAllData($companyId);
-		return $status;
-		        
-    }
+		if($companyId=="null")
+		{
+			$branchService= new BranchService();
+			$status = $branchService->getAllBranchData();
+			return $status;
+		}
+		else
+		{
+			$branchService= new BranchService();
+			$status = $branchService->getAllData($companyId);
+			return $status;
+		}
+	}
 	
     /**
      * Update the specified resource in storage.
      * @param  Request object[Request $request]
+     * @param  branch_id
      */
 	public function update(Request $request,$branchId)
     {    
@@ -105,6 +114,7 @@ class BranchController extends BaseController implements ContainerInterface
     /**
      * Remove the specified resource from storage.
      * @param  Request object[Request $request]     
+     * @param  branch_id     
      */
     public function Destroy(Request $request,$branchId)
     {

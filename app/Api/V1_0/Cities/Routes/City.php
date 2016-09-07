@@ -31,8 +31,7 @@ class City implements RouteRegistrarInterface
 		
 		//delete data delete request
 		Route::delete('Cities/City/{cityId}', 'CityController@Destroy');
-			
-    }
+	}
 }
 
 

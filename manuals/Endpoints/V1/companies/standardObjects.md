@@ -3,30 +3,29 @@
             {
                 "companyId": int,
                 "companyName": string,
-				"displayName": string,
+				"companyDispName": string,
                 "address1": string,
                 "address2": string,
-                "city":  {
+                "cityId":  {
 					... Standard City Object
 				},
-                "state": {
+                "stateAbb": {
                     ... Standard State Object
                 },
-                "zip": string,
-				"pincode": char,
-				"pan": string,
-				"tin": string,
-				"vat": string,
-				"serviceTax": string,
+                "pincode": char,
+				"pan": char,
+				"tin": char,
+				"vatNo": char,
+				"serviceTaxNo": char,
 				"logo": {
 					... Standard Document Object
 				},
-				"basicCurrencySymbol":varchar,
+				"basicCurrencySymbol":char,
 				"formalName":varchar,
-				"noOfDecimalItems":int,
+				"noOfDecimalPoints":int,
 				"currencySymbol":int,
-				"isDefault": bool,
-				"isDisplay": bool,
+				"isDefault": enum,
+				"isDisplay": enum,
 				"createdAt" timestamp,
 				"updatedAt": datetime
             }
@@ -35,19 +34,17 @@
 ##### Standard Company Persistable Object
 
          {
-            "name": string,
-			"displayName": string,
+            "companyName": string,
+			"companyDispName": string,
 			"address1": string,
 			"address2": string,
 			"cityId": int,
 			"stateAbb": char,
-			"zip": string,
 			"pincode": char,
 			"pan": string,
 			"tin": string,
-			"vat": string,
-			"serviceTax": string,
-			"documentId": int,
+			"vatNo": string,
+			"serviceTaxNo": string,
 			"basicCurrencySymbol":varchar,
 			"formalName":varchar,
 			"noOfDecimalItems":int,

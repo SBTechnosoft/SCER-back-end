@@ -33,6 +33,7 @@ class BranchProcessor extends BaseProcessor
 		// insert
 		if($requestMethod == 'POST')
 		{
+			//data get from body
 			$branchName = $request->input('branch_name'); 
 			$address1 = $request->input('address1'); 
 			$address2 = $request->input('address2'); 
@@ -43,6 +44,7 @@ class BranchProcessor extends BaseProcessor
 			$cityId = $request->input('city_id'); 			
 			$companyId = $request->input('company_id'); 			
 			
+			//set data to the persistable object
 			$branchPersistable = new BranchPersistable();		
 			$branchPersistable->setName($branchName);		 
 			$branchPersistable->setAddress1($address1);		 
@@ -53,7 +55,6 @@ class BranchProcessor extends BaseProcessor
 			$branchPersistable->setStateAbb($stateAbb);		 
 			$branchPersistable->setId($cityId);		 
 			$branchPersistable->setCompanyId($companyId);		 
-			
 			return $branchPersistable;	
 		}		
 		else{
@@ -63,10 +64,10 @@ class BranchProcessor extends BaseProcessor
 	public function createPersistableChange(Request $request,$branchId)
 	{
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
-		
 		// update
 		if($requestMethod == 'POST')
 		{
+			//data get from body
 			$branchName = $request->input('branch_name'); 
 			$address1 = $request->input('address1'); 
 			$address2 = $request->input('address2'); 
@@ -77,6 +78,7 @@ class BranchProcessor extends BaseProcessor
 			$cityId = $request->input('city_id');
 			$companyId = $request->input('company_id');
 			
+			//set data to the persistable object
 			$branchPersistable = new BranchPersistable();		
 			$branchPersistable->setName($branchName);		 
 			$branchPersistable->setAddress1($address1);		 

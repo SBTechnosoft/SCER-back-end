@@ -21,7 +21,6 @@ class State implements RouteRegistrarInterface
 		{
 			Route::get('States/State/{stateId?}', 'StateController@getData');
 		});
-		
 		// insert data post request
 		Route::post('States/State', 'StateController@store');
 		

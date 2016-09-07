@@ -13,15 +13,9 @@ class StateProcessor extends BaseProcessor
 {
 	/**
      * @var statePersistable
-	 * @var stateName
-	 * @var stateAbb
-	 * @var isDisplay
 	 * @var request
      */
 	private $statePersistable;
-	private $stateName;
-	private $stateAbb;   
-	private $isDisplay;   
 	private $request;    
 	
     /**
@@ -50,10 +44,16 @@ class StateProcessor extends BaseProcessor
 		else{	
 		}		
     }
+	
+	/**
+     * get the form-data and set into the persistable object
+     * $param Request object [Request $request]
+     * $param state_abb
+     * @return State Persistable object
+     */
 	public function createPersistableChange(Request $request,$stateAbb)
 	{
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
-		
 		// update
 		if($requestMethod == 'POST')
 		{

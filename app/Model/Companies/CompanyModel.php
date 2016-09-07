@@ -9,17 +9,14 @@ use Carbon;
  */
 class CompanyModel extends Model
 {
-	protected $table = 'company_mst';
-	
 	/**
 	 * insert data 
-	 * @param  name and age
 	 * returns the status
 	*/
-	public function insertData($companyName,$companyDispName,$address1,$address2,$pincode,$panNo,$tinNo,$vatNo,$serviceTaxNO,$basicCurrencySymbol,$formalName,$noOfDecimalPoints,$currencySymbol,$documentName,$documentUrl,$documentSize,$documentFormat,$isDisplay,$stateAbb,$cityId)
+	public function insertData($companyName,$companyDispName,$address1,$address2,$pincode,$panNo,$tinNo,$vatNo,$serviceTaxNO,$basicCurrencySymbol,$formalName,$noOfDecimalPoints,$currencySymbol,$documentName,$documentUrl,$documentSize,$documentFormat,$isDisplay,$isDefault,$stateAbb,$cityId)
 	{
 		DB::beginTransaction();
-		$raw = DB::statement("insert into company_mst(company_name,company_display_name,address1,address2,pincode,pan,tin,vat_no,service_tax_no,basic_currency_symbol,formal_name,no_of_decimal_points,currency_symbol,document_name,document_url,document_size,document_format,is_display,state_abb,city_id) 
+		$raw = DB::statement("insert into company_mst(company_name,company_display_name,address1,address2,pincode,pan,tin,vat_no,service_tax_no,basic_currency_symbol,formal_name,no_of_decimal_points,currency_symbol,document_name,document_url,document_size,document_format,is_display,is_default,state_abb,city_id) 
 		values('".$companyName."', 
 		'".$companyDispName."',
 		'".$address1."',
@@ -38,6 +35,7 @@ class CompanyModel extends Model
 		'".$documentSize."',
 		'".$documentFormat."',
 		'".$isDisplay."',
+		'".$isDefault."',
 		'".$stateAbb."',
 		'".$cityId."')");
 		DB::commit();
@@ -51,9 +49,9 @@ class CompanyModel extends Model
 			return "500:Internal Server Error";
 		}
 	}
+	
 	/**
 	 * update data 
-	 * @param  name,age and id
 	 * returns the status
 	*/
 	public function updateData($companyName,$companyDispName,$address1,$address2,$pincode,$panNo,$tinNo,$vatNo,$serviceTaxNO,$basicCurrencySymbol,$formalName,$noOfDecimalPoints,$currencySymbol,$documentName,$documentUrl,$documentSize,$documentFormat,$isDisplay,$stateAbb,$cityId,$companyId)

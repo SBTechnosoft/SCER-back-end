@@ -1,5 +1,6 @@
 <?php
 namespace ERP\Api\V1_0\Companies\Controllers;
+
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use ERP\Core\Companies\Services\CompanyService;
@@ -16,13 +17,11 @@ class CompanyController extends BaseController implements ContainerInterface
 	/**
      * @var companyService
      * @var Processor
-     * @var name
      * @var request
-     * @var branchPersistable
+     * @var companyPersistable
      */
 	private $companyService;
-	private $Processor;
-	private $companyName;
+	private $processor;
 	private $request;
 	private $companyPersistable;	
 	
@@ -77,7 +76,8 @@ class CompanyController extends BaseController implements ContainerInterface
 	
     /**
      * Update the specified resource in storage.
-     * @param  Request object[Request $request]
+     * @param  Request object[Request $request] 
+     * @param  company_id 
      */
 	public function update(Request $request,$companyId)
     {    
@@ -94,8 +94,9 @@ class CompanyController extends BaseController implements ContainerInterface
     /**
      * Remove the specified resource from storage.
      * @param  Request object[Request $request]     
+     * @param  company_id     
      */
-    public function Destroy(Request $request,$companyId)
+    public function destroy(Request $request,$companyId)
     {
         $this->request = $request;
 		$Processor = new CompanyProcessor();

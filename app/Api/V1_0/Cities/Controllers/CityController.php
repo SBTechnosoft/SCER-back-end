@@ -16,20 +16,18 @@ class CityController extends BaseController implements ContainerInterface
 	/**
      * @var cityService
      * @var Processor
-     * @var cityName
      * @var request
      * @var cityPersistable
      */
-	private $companyService;
+	private $cityService;
 	private $Processor;
-	private $companyName;
 	private $request;
 	private $cityPersistable;	
 	
 	/**
 	 * get and invoke method is of ContainerInterface method
 	 */		
-    public function get($cityId,$cityName)
+    public function get($id,$name)
 	{
 		// echo "get";
 	}
@@ -57,7 +55,7 @@ class CityController extends BaseController implements ContainerInterface
 	
 	/**
      * get the specified resource.
-     * @param  int  $companyId
+     * @param  int  $cityId
      */
     public function getData($cityId=null)
     {
@@ -77,7 +75,7 @@ class CityController extends BaseController implements ContainerInterface
 	
 	/**
      * get the specified resource.
-     * @param  int  $companyId
+     * @param  int  $stateAbb
      */
     public function getAllData($stateAbb)
     {
@@ -90,6 +88,8 @@ class CityController extends BaseController implements ContainerInterface
     /**
      * Update the specified resource in storage.
      * @param  Request object[Request $request]
+     * @param  city_id
+     * @return status
      */
 	public function update(Request $request,$cityId)
     {    
@@ -106,6 +106,8 @@ class CityController extends BaseController implements ContainerInterface
     /**
      * Remove the specified resource from storage.
      * @param  Request object[Request $request]     
+     * @param  city_id
+     * @return status     
      */
     public function Destroy(Request $request,$cityId)
     {

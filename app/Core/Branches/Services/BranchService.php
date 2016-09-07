@@ -56,12 +56,13 @@ class BranchService extends AbstractService
 		$companyId = $persistable->getCompanyId();
 		$branchModel = new BranchModel();
 		
+		//data pass to the model object for insertion
 		$status = $branchModel->insertData($branchName,$address1,$address2,$pincode,$isDisplay,$isDefault,$stateAbb,$cityId,$companyId);
 		return $status;
 	}
 	
 	/**
-     * get all the data as per given id and call the model for database selection opertation
+     * get all the data and call the model for database selection opertation
      * @return status
      */
 	public function getAllBranchData()
@@ -81,7 +82,7 @@ class BranchService extends AbstractService
 	}
 	
 	/**
-     * get all the data from the table and call the model for database selection opertation
+     * get all the data  as per given id and call the model for database selection opertation
      * @param $branchId
      * @return status
      */
@@ -140,6 +141,7 @@ class BranchService extends AbstractService
 		$branchId = $persistable->getBranchId();
 		$branchModel = new BranchModel();
 	    
+		//data pass to the model object for update
 		$status = $branchModel->updateData($branchName,$address1,$address2,$pincode,$isDisplay,$isDefault,$stateAbb,$cityId,$companyId,$branchId);
 		return $status;		
     }
@@ -156,8 +158,10 @@ class BranchService extends AbstractService
 	{
 		echo "invoke";
 	}
+	
     /**
-     * @param int $id
+     * @param delete
+     * @param BranchPersistable $persistable
      */
     public function delete(BranchPersistable $persistable)
     {      

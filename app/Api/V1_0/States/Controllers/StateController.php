@@ -14,15 +14,13 @@ use ERP\Core\Support\Service\ContainerInterface;
 class StateController extends BaseController implements ContainerInterface
 {
 	/**
-     * @var companyService
+     * @var stateService
      * @var Processor
-     * @var name
      * @var request
-     * @var branchPersistable
+     * @var statePersistable
      */
 	private $stateService;
 	private $Processor;
-	private $stateName;
 	private $request;
 	private $statePersistable;	
 	
@@ -57,7 +55,7 @@ class StateController extends BaseController implements ContainerInterface
 	
 	/**
      * get the specified resource.
-     * @param  int  $companyId
+     * @param  state_id
      */
     public function getData($stateId=null)
     {
@@ -78,6 +76,7 @@ class StateController extends BaseController implements ContainerInterface
     /**
      * Update the specified resource in storage.
      * @param  Request object[Request $request]
+     * @param  state_abb
      */
 	public function update(Request $request,$stateAbb)
     {    
@@ -94,6 +93,7 @@ class StateController extends BaseController implements ContainerInterface
     /**
      * Remove the specified resource from storage.
      * @param  Request object[Request $request]     
+     * @param  state_abb     
      */
     public function Destroy(Request $request,$stateAbb)
     {

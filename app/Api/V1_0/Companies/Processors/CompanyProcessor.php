@@ -12,16 +12,12 @@ use ERP\Core\Sample\Persistables\DocumentPersistable;
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
 class CompanyProcessor extends BaseProcessor
-{
+{   
 	/**
      * @var companyPersistable
-	 * @var name
-	 * @var id
 	 * @var request
      */
 	private $companyPersistable;
-	private $name;
-	private $id;   
 	private $request;    
 	
     /**
@@ -38,11 +34,16 @@ class CompanyProcessor extends BaseProcessor
 		// insert
 		if($requestMethod == 'POST')
 		{
+			//file upload
 			$file = $request->file();
 			$path = 'Storage/Document/';
-			$imageName = $file['file'][0]->getClientOriginalName();
-			$file['file'][0]->move($path,$imageName);	
+			$documentName = $file['file'][0]->getClientOriginalName();
+			$documentFormat = $file['file'][0]->getClientOriginalExtension();
+			$documentSize = $file['file'][0]->getClientSize();
+			$file['file'][0]->move($path,$documentName);	
+			$documentUrl = 'Storage/Document/';
 			
+			//data get from body
 			$companyName = $request->input('company_name'); 
 			$companyDispName = $request->input('company_display_name'); 
 			$address1 = $request->input('address1'); 
@@ -56,15 +57,12 @@ class CompanyProcessor extends BaseProcessor
 			$formalName = $request->input('formal_name'); 			
 			$noOfDecimalPoints = $request->input('no_of_decimal_points'); 			
 			$currencySymbol = $request->input('currency_symbol'); 			
-			$documentName = $request->input('document_name'); 			
-			$documentUrl = $request->input('document_url'); 			
-			$documentSize = $request->input('document_size'); 			
-			$documentFormat = $request->input('document_format'); 			
 			$isDisplay = $request->input('is_display'); 			
 			$isDefault = $request->input('is_default'); 			
 			$stateAbb = $request->input('state_abb'); 			
 			$cityId = $request->input('city_id'); 			
 			
+			//set data to the persistable object
 			$companyPersistable = new CompanyPersistable();		
 			$companyPersistable->setName($companyName);		 
 			$companyPersistable->setCompanyDispName($companyDispName);		 
@@ -87,25 +85,34 @@ class CompanyProcessor extends BaseProcessor
 			$companyPersistable->setIsDefault($isDefault);		 
 			$companyPersistable->setStateAbb($stateAbb);		 
 			$companyPersistable->setId($cityId);		 
-			
 			return $companyPersistable;	
 		}		
 		else{
 			
 		}	
     }
+	
+	/**
+     * get the form-data and set into the persistable object
+     * $param Request object [Request $request]
+     * $param company_id
+     * @return Company Persistable object
+     */	
 	public function createPersistableChange(Request $request,$companyId)
 	{
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
-		
 		// update
 		if($requestMethod == 'POST')
 		{
+			//file uploading
 			$file = $request->file();
-			$imageName = $file['file'][0]->getClientOriginalName();
+			$documentName = $file['file'][0]->getClientOriginalName();
+			$documentFormat = $file['file'][0]->getClientOriginalExtension();
+			$documentSize = $file['file'][0]->getClientSize();
 			$path = 'Storage/Document/';
 			$file['file'][0]->move($path,$imageName);
 			
+			//get data from body 
 			$companyName = $request->input('company_name'); 
 			$companyDispName = $request->input('company_display_name'); 
 			$address1 = $request->input('address1'); 
@@ -119,15 +126,12 @@ class CompanyProcessor extends BaseProcessor
 			$formalName = $request->input('formal_name'); 			
 			$noOfDecimalPoints = $request->input('no_of_decimal_points'); 			
 			$currencySymbol = $request->input('currency_symbol'); 			
-			$documentName = $request->input('document_name'); 			
-			$documentUrl = $request->input('document_url'); 			
-			$documentSize = $request->input('document_size'); 			
-			$documentFormat = $request->input('document_format'); 			
 			$isDisplay = $request->input('is_display'); 			
 			$isDefault = $request->input('is_default'); 			
 			$stateAbb = $request->input('state_abb'); 			
 			$cityId = $request->input('city_id');
 			
+			//set the data in persistable object
 			$companyPersistable = new CompanyPersistable();		
 			$companyPersistable->setName($companyName);		 
 			$companyPersistable->setCompanyDispName($companyDispName);		 
@@ -143,7 +147,7 @@ class CompanyProcessor extends BaseProcessor
 			$companyPersistable->setNoOfDecimalPoints($noOfDecimalPoints);		 
 			$companyPersistable->setCurrencySymbol($currencySymbol);		 
 			$companyPersistable->setDocumentName($documentName);		 
-			$companyPersistable->setDocumentUrl($documentUrl);		 
+			$companyPersistable->setDocumentUrl($path);		 
 			$companyPersistable->setDocumentSize($documentSize);		 
 			$companyPersistable->setDocumentFormat($documentFormat);		 
 			$companyPersistable->setIsDisplay($isDisplay);		 
@@ -151,7 +155,6 @@ class CompanyProcessor extends BaseProcessor
 			$companyPersistable->setStateAbb($stateAbb);		 
 			$companyPersistable->setId($cityId);
 			$companyPersistable->setCompanyId($companyId);
-			
 			return $companyPersistable;
 			
 		}

@@ -20,9 +20,8 @@ class Branch implements RouteRegistrarInterface
 		Route::group(['as' => 'get'], function ()
 		{
 			Route::get('Branches/Branch/{branchId?}', 'BranchController@getData');
-			Route::get('Branches/Branch/company/{companyId}', 'BranchController@getAllData');
+			Route::get('Branches/Branch/company/{companyId?}', 'BranchController@getAllData');
 		});
-		
 		// insert data post request
 		Route::post('Branches/Branch', 'BranchController@store');
 		
@@ -31,8 +30,7 @@ class Branch implements RouteRegistrarInterface
 		
 		//delete data delete request
 		Route::delete('Branches/Branch/{branchId}', 'BranchController@Destroy');
-			
-    }
+	}
 }
 
 

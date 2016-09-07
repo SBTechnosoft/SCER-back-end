@@ -4,12 +4,11 @@ namespace ERP\Core\States\Entities;
 use ERP\Core\States\Entities\State;
 use Carbon;
 /**
- *
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
 class EncodeData
 {
-	
+	//date conversion and merge with json data and returns json array
     public function getEncodedData($status)
 	{
 		$decodedJson = json_decode($status,true);
@@ -20,12 +19,11 @@ class EncodeData
 		$stateAbb= $decodedJson[0]['state_abb'];
 		$stateName= $decodedJson[0]['state_name'];
 		
-		//date format conversion['created_at','updated_at']
+		//date format conversion
 		$state = new State();
 		$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt)->format('d-m-Y');
 		$state->setCreated_at($convertedCreatedDate);
 		$getCreatedDate = $state->getCreated_at();
-			
 		$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
 		$state->setCreated_at($convertedUpdatedDate);
 		$getUpdatedDate = $state->getUpdated_at();

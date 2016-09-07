@@ -19,7 +19,7 @@ class CityService extends AbstractService
 	 * $var cityModel
      */
     private $cityService;
-    private $companyModel;
+    private $cityModel;
 	
     /**
      * @param CityService $cityService
@@ -54,7 +54,7 @@ class CityService extends AbstractService
 	}
 	
 	/**
-     * get all the data as per given id and call the model for database selection opertation
+     * get all the data and call the model for database selection opertation
      * @return status
      */
 	public function getAllCityData()
@@ -75,6 +75,7 @@ class CityService extends AbstractService
 	
 	/**
      * get all the data as per given state_abb and call the model for database selection opertation
+     * @param state_abb
      * @return status
      */
 	public function getAllData($stateAbb)
@@ -95,7 +96,8 @@ class CityService extends AbstractService
 	}
 	
 	/**
-     * get all the data from the table and call the model for database selection opertation
+     * get all the data as per city_id and call the model for database selection opertation
+     * @param city_id
      * @return status
      */
 	public function getCityData($cityId)
@@ -143,8 +145,11 @@ class CityService extends AbstractService
 	{
 		echo "invoke";
 	}
+	
     /**
-     * @param int $cityId
+     * delete
+     * @param CityPersistable $persistable
+     * @return status
      */
     public function delete(CityPersistable $persistable)
     {      

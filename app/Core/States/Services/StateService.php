@@ -40,7 +40,7 @@ class StateService extends AbstractService
 	
 	 /**
      * get the data from persistable object and call the model for database insertion opertation
-     * @param BranchPersistable $persistable
+     * @param StatePersistable $persistable
      * @return status
      */
 	public function insert(StatePersistable $persistable)
@@ -48,13 +48,15 @@ class StateService extends AbstractService
 		$stateAbb = $persistable->getStateAbb();
 		$isDisplay = $persistable->getIsDisplay();
 		$stateName = $persistable->getName();
+		
+		//data pass to the model object for insertion
 		$stateModel = new StateModel();
 		$status = $stateModel->insertData($stateName,$isDisplay,$stateAbb);
 		return $status;
 	}
 	
 	/**
-     * get all the data as per given id and call the model for database selection opertation
+     * get all the data and call the model for database selection opertation
      * @return status
      */
 	public function getAllStateData()
@@ -74,8 +76,8 @@ class StateService extends AbstractService
 	}
 	
 	/**
-     * get all the data from the table and call the model for database selection opertation
-     * @param $stateAbb
+     * get all the dataas per given id and call the model for database selection opertation
+     * @param state_abb
      * @return status
      */
 	public function getStateData($stateAbb)
@@ -106,6 +108,8 @@ class StateService extends AbstractService
 		$stateName = $persistable->getName();
 		$isDisplay = $persistable->getIsDisplay();
 		$stateModel = new StateModel();
+		
+		//data pass to the model object for update
 		$status = $stateModel->updateData($stateAbb,$stateName,$isDisplay);
 		return $status;		
     }
@@ -122,8 +126,10 @@ class StateService extends AbstractService
 	{
 		echo "invoke";
 	}
+	
     /**
-     * @param int $id
+     * delete
+     * @param $StatePersistable $persistable 
      */
     public function delete(StatePersistable $persistable)
     {      

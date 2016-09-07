@@ -3,19 +3,17 @@ namespace ERP\Core\Companies\Entities;
 
 use ERP\Core\Companies\Entities\Company;
 use ERP\Core\States\Services\StateService;
-use ERP\Core\Entities\CityName;
+use ERP\Core\Entities\CityDetail;
 use Carbon;
 /**
- *
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
 class EncodeData extends StateService 
 {
-	
+	//date conversion and merge with json data and returns json array
     public function getEncodedData($status)
 	{
 		$decodedJson = json_decode($status,true);
-			
 		$createdAt = $decodedJson[0]['created_at'];
 		$updatedAt= $decodedJson[0]['updated_at'];
 		$companyId= $decodedJson[0]['company_id'];
@@ -45,14 +43,12 @@ class EncodeData extends StateService
 		$encodeStateDataClass = new EncodeData();
 		$stateStatus = $encodeStateDataClass->getStateData($stateAbb);
 		$stateDecodedJson = json_decode($stateStatus,true);
-		$stateName= $stateDecodedJson['state_name'];
 		
 		//get the city_name from database
-		$cityName  = new CityName();
-		$getCityName = $cityName->getCityName($cityId);
+		$cityDetail  = new CityDetail();
+		$getCityDetail = $cityDetail->getCityDetail($cityId);
 		
-		
-		//date format conversion['created_at','updated_at']
+		//date format conversion
 		$company = new Company();
 		$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt)->format('d-m-Y');
 		$company->setCreated_at($convertedCreatedDate);
@@ -84,13 +80,21 @@ class EncodeData extends StateService
 		$data['document_format'] = $documentFormat;
 		$data['is_display'] = $isDisplay;
 		$data['is_default'] = $isDefault;
-		$data['state_abb'] = $stateAbb;
-		$data['city_id'] = $cityId;
 		$data['created_at'] = $getCreatedDate;
 		$data['updated_at'] = $getUpdatedDate;	
-		$data['state_name'] = $stateName;	
-		$data['city_name'] = $getCityName;	
 		
+		$data['state_abb'] = $stateAbb;
+		$data['state_name'] = $stateDecodedJson['state_name'];	
+		$data['sIs_display'] = $stateDecodedJson['is_display'];	
+		$data['sCreated_at'] = $stateDecodedJson['created_at'];	
+		$data['sUpdated_at'] = $stateDecodedJson['updated_at'];
+		
+		$data['city_id'] = $cityId;
+		$data['city_name'] = $getCityDetail['city_name'];	
+		$data['cIs_display'] = $getCityDetail['is_display'];	
+		$data['cCreated_at'] = $getCityDetail['created_at'];	
+		$data['cUpdated_at'] = $getCityDetail['updated_at'];	
+		$data['cState_abb'] = $getCityDetail['state_abb'];	
 		$encodeData = json_encode($data);
 		return $encodeData;
 	}

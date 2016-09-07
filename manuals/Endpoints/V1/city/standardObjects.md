@@ -3,7 +3,7 @@
             {
                 "cityId": int,
                 "cityName": string,
-				"state": {
+				"stateAbb": {
                     ... Standard State Object
 				},
 				"isDisplay": bool,
@@ -17,7 +17,7 @@
 
  			{
             	"cityName": string,
-            	"stateId": int,
+            	"stateAbb": char,
 				"isDisplay": bool,
 				"createdAt" timestamp,
 				"updatedAt": datetime,

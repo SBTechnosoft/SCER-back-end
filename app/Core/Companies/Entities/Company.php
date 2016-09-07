@@ -9,12 +9,6 @@ use ERP\Core\Shared\Properties\UpdatedAtPropertyTrait;
  */
 class Company
 {
-    // use IdPropertyTrait;
-    // use Address1PropertyTrait;
-    // use Address2PropertyTrait;
-    // use CityIdPropertyTrait;
-    // use StateAbbPropertyTrait;
-    // use NamePropertyTrait;
-	use CreatedAtPropertyTrait;
+    use CreatedAtPropertyTrait;
     use UpdatedAtPropertyTrait;
 }

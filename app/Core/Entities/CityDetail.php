@@ -6,16 +6,14 @@ use ERP\Core\Cities\Services\CityService;
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class CityName extends CityService 
+class CityDetail extends CityService 
 {
-	public function getCityName($cityId)
+	public function getCityDetail($cityId)
 	{
-		//get the city_name from database
-		$encodeCityDataClass = new CityName();
+		//get the city Details from database
+		$encodeCityDataClass = new CityDetail();
 		$cityStatus = $encodeCityDataClass->getCityData($cityId);
 		$cityDecodedJson = json_decode($cityStatus,true);
-		$cityName= $cityDecodedJson['city_name'];
-		return $cityName;
+		return $cityDecodedJson;
 	}
-    
 }

@@ -3,20 +3,20 @@
         {
             "productId": int,
             "productName": string,
-            "meausurementUnit": string,
-            "productCategory": {
+            "measurementUnit": string,
+            "productCatId": {
                 ... Standard Products Category Object
             },
-            "productGroup": {
+            "productGrpId": {
                 ... Standard Products Group Object
             }
-            "company": {
+            "companyId": {
                 ... Standard Company Object
             },
-            "branch": {
+            "branchId": {
                 ... Standard Branch Object
             }
-			"isDisplay": bool,
+			"isDisplay": enum,
 			"createdAt" timestamp,
 			"updatedAt": datetime
             
@@ -27,16 +27,16 @@
 
         {
             "productName": string,
-            "meausurementUnit": string,
-            "productCategory": {
+            "measurementUnit": string,
+            "productCatId": {
                 ... Standard Products Cateogory Persistable Object
             },
-            "productGroup": {
+            "productGrpId": {
                 ... Standard Products Group Persistable Object
             },
             "CompanyId": int,
             "BranchId" : int,
-			"isDisplay": bool,
+			"isDisplay": enum,
 			"createdAt" timestamp,
 			"updatedAt": datetime,
 			"deletedAt":datetime

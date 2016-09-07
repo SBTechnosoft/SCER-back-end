@@ -29,7 +29,7 @@ class Company implements RouteRegistrarInterface
 		Route::post('Companies/Company/{companyId}', 'CompanyController@update');
 		
 		//delete data delete request
-		Route::delete('Companies/Company/{companyId}', 'CompanyController@Destroy');
+		Route::delete('Companies/Company/{companyId}', 'CompanyController@destroy');
 			
     }
 }

@@ -2,31 +2,28 @@
 
             {
                 "branchId": int,
-                "company":  {
+                "companyId":  {
 					... Standard Company Object
 				},
                 "branchName": string,
                 "address1": string,
                 "address2": string,
-                "city":  {
+                "cityId":  {
 					... Standard City Object
 				},
-				"state": {
+				"stateAbb": {
 					... Standard State Object
 				},
 				
 				"pincode": char,
-				"isDefault":bool,
-				"isDisplay": bool,
+				"isDefault":enum,
+				"isDisplay": enum,
 				"createdAt" timestamp,
 				"updatedAt": datetime
-                
             }
             
-            
 ##### Standard Branch Persistable Object
-
- 			{
+			{
             	"companyId":int, 
                 "branchName": string,
                 "address1": string,
@@ -35,6 +32,9 @@
 				"stateAbb": char,
 				"pincode": char,
 				"isDefault":bool,
-				"isDisplay": bool	
+				"isDisplay": bool,
+				"createdAt" timestamp,
+				"updatedAt": datetime,
+				"deletedAt" :datetime
             }
 

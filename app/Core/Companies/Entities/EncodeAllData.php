@@ -3,20 +3,19 @@ namespace ERP\Core\Companies\Entities;
 
 use ERP\Core\Companies\Entities\Company;
 use ERP\Core\States\Services\StateService;
+use ERP\Core\Entities\CityDetail;
 use Carbon;
 /**
- *
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
 class EncodeAllData extends StateService
 {
-	
-    public function getEncodedAllData($status)
+	//date conversion and merge with json data and returns json array
+	public function getEncodedAllData($status)
 	{
-		$convertedCreatedDate =  array();
-		$convertedUpdatedDate =  array();
+		$convertedCreatedDate = array();
+		$convertedUpdatedDate = array();
 		$encodeAllData =  array();
-			
 		$decodedJson = json_decode($status,true);
 		$company = new Company();
 		for($decodedData=0;$decodedData<count($decodedJson);$decodedData++)
@@ -46,25 +45,26 @@ class EncodeAllData extends StateService
 			$stateAbb[$decodedData] = $decodedJson[$decodedData]['state_abb'];
 			$cityId[$decodedData] = $decodedJson[$decodedData]['city_id'];
 			
-			//get the state_name from database
+			//get the state details from database
 			$encodeDataClass = new EncodeAllData();
 			$stateStatus[$decodedData] = $encodeDataClass->getStateData($stateAbb[$decodedData]);
 			$stateDecodedJson[$decodedData] = json_decode($stateStatus[$decodedData],true);
 			$stateName[$decodedData]= $stateDecodedJson[$decodedData]['state_name'];
+			$stateIsDisplay[$decodedData]= $stateDecodedJson[$decodedData]['is_display'];
+			$stateCreatedAt[$decodedData]= $stateDecodedJson[$decodedData]['created_at'];
+			$stateUpdatedAt[$decodedData]= $stateDecodedJson[$decodedData]['updated_at'];
 			
-			//get the city_name from database
-			$cityName = new CityName();
-			$getCityName[$decodedData] = $cityName->getCityName($cityId[$decodedData]);
+			//get the city details from database
+			$cityDetail = new CityDetail();
+			$getCityDetail[$decodedData] = $cityDetail->getCityDetail($cityId[$decodedData]);
 			
-			
+			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
-				
 			$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
 				
 		}
 		$company->setCreated_at($convertedCreatedDate);
 		$getCreatedDate = $company->getCreated_at();
-			
 		$company->setCreated_at($convertedUpdatedDate);
 		$getUpdatedDate = $company->getUpdated_at();
 		$data = array();
@@ -91,12 +91,21 @@ class EncodeAllData extends StateService
 				'document_format' => $documentFormat[$jsonData],
 				'is_display' => $isDisplay[$jsonData],
 				'is_default' => $isDefault[$jsonData],
-				'state_abb' => $stateAbb[$jsonData],
-				'city_id' => $cityId[$jsonData],
 				'created_at' => $getCreatedDate[$jsonData],
 				'updated_at' => $getUpdatedDate[$jsonData],
+				
+				'state_abb' => $stateAbb[$jsonData],
 				'state_name' => $stateName[$jsonData],
-				'city_name' => $getCityName[$jsonData]
+				'sIs_display' => $stateIsDisplay[$jsonData],
+				'sCreated_at' => $stateCreatedAt[$jsonData],
+				'sUpdated_at' => $stateUpdatedAt[$jsonData],
+				
+				'city_id' => $cityId[$jsonData],
+				'city_name' => $getCityDetail[$jsonData]['city_name'],
+				'cIs_display' => $getCityDetail[$jsonData]['is_display'],
+				'cCreated_at' => $getCityDetail[$jsonData]['created_at'],
+				'cUpdated_at' => $getCityDetail[$jsonData]['updated_at'],
+				'cState_abb' => $getCityDetail[$jsonData]['state_abb']
 			);
 		}
 		return json_encode($data);
