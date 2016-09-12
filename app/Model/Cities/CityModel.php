@@ -161,7 +161,21 @@ class CityModel extends Model
 		
 		if($raw==1)
 		{
-			return "200 :Data Deleted Successfully";
+			$branch = DB::statement("update branch_mst 
+			set deleted_at='".$mytime."'
+			where city_id = '".$cityId."'");
+			$company = DB::statement("update company_mst 
+			set deleted_at='".$mytime."'
+			where city_id = '".$cityId."'");
+			if($branch==1 && $company==1)
+			{
+				return "200 :Data Deleted Successfully";
+			}
+			else
+			{
+				return "500 : Internal Server Error";
+			}
+			
 		}
 		else
 		{

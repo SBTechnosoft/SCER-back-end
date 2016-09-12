@@ -36,12 +36,11 @@ class CompanyProcessor extends BaseProcessor
 		{
 			//file upload
 			$file = $request->file();
-			$path = 'Storage/Document/';
+			$documentUrl = 'Storage/Document/';
 			$documentName = $file['file'][0]->getClientOriginalName();
 			$documentFormat = $file['file'][0]->getClientOriginalExtension();
 			$documentSize = $file['file'][0]->getClientSize();
-			$file['file'][0]->move($path,$documentName);	
-			$documentUrl = 'Storage/Document/';
+			$file['file'][0]->move($documentUrl,$documentName);	
 			
 			//data get from body
 			$companyName = $request->input('company_name'); 
@@ -110,7 +109,7 @@ class CompanyProcessor extends BaseProcessor
 			$documentFormat = $file['file'][0]->getClientOriginalExtension();
 			$documentSize = $file['file'][0]->getClientSize();
 			$path = 'Storage/Document/';
-			$file['file'][0]->move($path,$imageName);
+			$file['file'][0]->move($path,$documentName);
 			
 			//get data from body 
 			$companyName = $request->input('company_name'); 

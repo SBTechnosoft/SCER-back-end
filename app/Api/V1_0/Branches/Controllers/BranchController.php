@@ -15,7 +15,7 @@ use ERP\Core\Support\Service\ContainerInterface;
 class BranchController extends BaseController implements ContainerInterface
 {
 	/**
-     * @var companyService
+     * @var branchService
      * @var Processor
      * @var request
      * @var branchPersistable
@@ -61,7 +61,7 @@ class BranchController extends BaseController implements ContainerInterface
     public function getData($branchId=null)
     {
 		if($branchId==null)
-		{			
+		{	
 			$branchService= new BranchService();
 			$status = $branchService->getAllBranchData();
 			return $status;

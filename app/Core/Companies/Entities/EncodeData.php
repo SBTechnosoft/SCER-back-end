@@ -11,9 +11,10 @@ use Carbon;
 class EncodeData extends StateService 
 {
 	//date conversion and merge with json data and returns json array
-    public function getEncodedData($status)
+    public function getEncodedData($status,$documentStatus)
 	{
 		$decodedJson = json_decode($status,true);
+		$decodedJsonDoc = json_decode($documentStatus,true);
 		$createdAt = $decodedJson[0]['created_at'];
 		$updatedAt= $decodedJson[0]['updated_at'];
 		$companyId= $decodedJson[0]['company_id'];
@@ -30,10 +31,10 @@ class EncodeData extends StateService
 		$formalName= $decodedJson[0]['formal_name'];
 		$noOfDecimalPoints= $decodedJson[0]['no_of_decimal_points'];
 		$currencySymbol= $decodedJson[0]['currency_symbol'];
-		$documentName= $decodedJson[0]['document_name'];
-		$documentUrl= $decodedJson[0]['document_url'];
-		$documentSize= $decodedJson[0]['document_size'];
-		$documentFormat= $decodedJson[0]['document_format'];
+		$documentName= $decodedJsonDoc[0]['document_name'];
+		$documentUrl= $decodedJsonDoc[0]['document_url'];
+		$documentSize= $decodedJsonDoc[0]['document_size'];
+		$documentFormat= $decodedJsonDoc[0]['document_format'];
 		$isDisplay= $decodedJson[0]['is_display'];
 		$isDefault= $decodedJson[0]['is_default'];
 		$stateAbb= $decodedJson[0]['state_abb'];
@@ -45,9 +46,9 @@ class EncodeData extends StateService
 		$stateDecodedJson = json_decode($stateStatus,true);
 		
 		//get the city_name from database
-		$cityDetail  = new CityDetail();
+		$cityDetail = new CityDetail();
 		$getCityDetail = $cityDetail->getCityDetail($cityId);
-		
+			
 		//date format conversion
 		$company = new Company();
 		$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt)->format('d-m-Y');

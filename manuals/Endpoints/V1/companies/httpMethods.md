@@ -11,7 +11,7 @@
 + Response
 
             {
-                ... Standard Company Object
+                ... HTTP_Status:200
             }
     
 ##### Gets Company           

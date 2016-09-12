@@ -29,8 +29,8 @@ class BranchModel extends Model
 		'".$stateAbb."',
 		'".$cityId."',
 		'".$companyId."')");
-		DB::commit();
 		
+		DB::commit();
 		if($raw==1)
 		{
 			return "200:Data Inserted Successfully";
@@ -183,14 +183,24 @@ class BranchModel extends Model
 	{
 		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
-		$raw = DB::statement("update branch_mst 
+		$raw = DB::statement("update product_mst 
 		set deleted_at='".$mytime."' 
 		where branch_id=".$branchId);
 		DB::commit();
 		
 		if($raw==1)
 		{
-			return "200 :Data Deleted Successfully";
+			$product = DB::statement("update branch_mst 
+			set deleted_at='".$mytime."' 
+			where branch_id=".$branchId);
+			if($product==1)
+			{
+				return "200 :Data Deleted Successfully";
+			}
+			else
+			{
+				return "500 : Internal Server Error";
+			}
 		}
 		else
 		{

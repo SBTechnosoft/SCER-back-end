@@ -13,10 +13,10 @@ class CompanyModel extends Model
 	 * insert data 
 	 * returns the status
 	*/
-	public function insertData($companyName,$companyDispName,$address1,$address2,$pincode,$panNo,$tinNo,$vatNo,$serviceTaxNO,$basicCurrencySymbol,$formalName,$noOfDecimalPoints,$currencySymbol,$documentName,$documentUrl,$documentSize,$documentFormat,$isDisplay,$isDefault,$stateAbb,$cityId)
+	public function insertData($companyName,$companyDispName,$address1,$address2,$pincode,$panNo,$tinNo,$vatNo,$serviceTaxNO,$basicCurrencySymbol,$formalName,$noOfDecimalPoints,$currencySymbol,$isDisplay,$isDefault,$stateAbb,$cityId)
 	{
 		DB::beginTransaction();
-		$raw = DB::statement("insert into company_mst(company_name,company_display_name,address1,address2,pincode,pan,tin,vat_no,service_tax_no,basic_currency_symbol,formal_name,no_of_decimal_points,currency_symbol,document_name,document_url,document_size,document_format,is_display,is_default,state_abb,city_id) 
+		$raw = DB::statement("insert into company_mst(company_name,company_display_name,address1,address2,pincode,pan,tin,vat_no,service_tax_no,basic_currency_symbol,formal_name,no_of_decimal_points,currency_symbol,is_display,is_default,state_abb,city_id) 
 		values('".$companyName."', 
 		'".$companyDispName."',
 		'".$address1."',
@@ -30,10 +30,6 @@ class CompanyModel extends Model
 		'".$formalName."',
 		'".$noOfDecimalPoints."',
 		'".$currencySymbol."',
-		'".$documentName."',
-		'".$documentUrl."',
-		'".$documentSize."',
-		'".$documentFormat."',
 		'".$isDisplay."',
 		'".$isDefault."',
 		'".$stateAbb."',
@@ -42,7 +38,11 @@ class CompanyModel extends Model
 		
 		if($raw==1)
 		{
-			return "200:Data Inserted Successfully";
+			$companyId = DB::select('SELECT  MAX(company_id) AS company_id from company_mst');
+			$enocodedData = json_encode($companyId);
+			$decodedJson = json_decode($enocodedData,true);
+			$createdAt = $decodedJson[0]['company_id'];
+			return $createdAt;
 		}
 		else
 		{
@@ -54,7 +54,7 @@ class CompanyModel extends Model
 	 * update data 
 	 * returns the status
 	*/
-	public function updateData($companyName,$companyDispName,$address1,$address2,$pincode,$panNo,$tinNo,$vatNo,$serviceTaxNO,$basicCurrencySymbol,$formalName,$noOfDecimalPoints,$currencySymbol,$documentName,$documentUrl,$documentSize,$documentFormat,$isDisplay,$stateAbb,$cityId,$companyId)
+	public function updateData($companyName,$companyDispName,$address1,$address2,$pincode,$panNo,$tinNo,$vatNo,$serviceTaxNO,$basicCurrencySymbol,$formalName,$noOfDecimalPoints,$currencySymbol,$isDisplay,$isDefault,$stateAbb,$cityId,$companyId)
 	{
 		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
@@ -72,11 +72,8 @@ class CompanyModel extends Model
 		formal_name='".$formalName."',
 		no_of_decimal_points='".$noOfDecimalPoints."',
 		currency_symbol='".$currencySymbol."',
-		document_name='".$documentName."',
-		document_url='".$documentUrl."',
-		document_size='".$documentSize."',
-		document_format='".$documentFormat."',
 		is_display='".$isDisplay."',
+		is_default='".$isDefault."',
 		state_abb='".$stateAbb."',
 		city_id='".$cityId."',
 		updated_at='".$mytime."'
@@ -115,10 +112,6 @@ class CompanyModel extends Model
 		formal_name,
 		no_of_decimal_points,
 		currency_symbol,
-		document_name,
-		document_url,
-		document_size,
-		document_format,
 		is_display,
 		is_default,
 		created_at,
@@ -200,7 +193,20 @@ class CompanyModel extends Model
 		
 		if($raw==1)
 		{
-			return "200 :Data Deleted Successfully";
+			$branch = DB::statement("update branch_mst 
+			set deleted_at='".$mytime."' 
+			where company_id=".$companyId);
+			$product = DB::statement("update product_mst 
+			set deleted_at='".$mytime."' 
+			where company_id=".$companyId);
+			if($branch==1 && $product==1)
+			{
+				return "200 :Data Deleted Successfully";
+			}
+			else
+			{
+				return "500 : Internal Server Error";
+			}
 		}
 		else
 		{

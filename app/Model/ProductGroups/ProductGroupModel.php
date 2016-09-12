@@ -127,7 +127,18 @@ class ProductGroupModel extends Model
 		DB::commit();
 		if($raw==1)
 		{
-			return "200 :Data Deleted Successfully";
+			$productGrp = DB::statement("update product_mst 
+			set deleted_at='".$mytime."'
+			where product_group_id = '".$productGrpId."'");
+			if($productGrp==1)
+			{
+				return "200 :Data Deleted Successfully";
+			}
+			else
+			{
+				return "500 : Internal Server Error";
+			}
+			
 		}
 		else
 		{

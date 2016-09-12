@@ -3,8 +3,8 @@ namespace ERP\Core\Branches\Entities;
 
 use ERP\Core\Branches\Entities\Branch;
 use ERP\Core\States\Services\StateService;
-use ERP\Core\Entities\CityDetail;
 use ERP\Core\Entities\CompanyDetail;
+use ERP\Core\Entities\CityDetail;
 use Carbon;
 /**
  *
@@ -34,12 +34,12 @@ class EncodeData extends StateService
 		$stateDecodedJson = json_decode($stateStatus,true);
 		
 		//get the city details from database
-		$cityDetail  = new CityDetail();
+		$cityDetail = new CityDetail();
 		$getCityDetail = $cityDetail->getCityDetail($cityId);
 		
 		//get the company details from database
-		$companyDetail  = new CompanyDetail();
-		$getCompanyDetails = $companyDetail->getCompanyDetails($companyId);
+		$companyDetail = new CompanyDetail();
+		$companyDetails = $companyDetail->getCompanyDetails($companyId);
 		
 		//date format conversion
 		$branch = new Branch();
@@ -64,32 +64,32 @@ class EncodeData extends StateService
 		$data['created_at'] = $getCreatedDate;
 		$data['updated_at'] = $getUpdatedDate;	
 		
-		$data['company_id'] = $getCompanyDetails['company_id'];	
-		$data['company_name'] = $getCompanyDetails['company_name'];	
-		$data['company_display_name'] = $getCompanyDetails['company_display_name'];	
-		$data['address1'] = $getCompanyDetails['address1'];	
-		$data['address2'] = $getCompanyDetails['address2'];	
-		$data['pincode'] = $getCompanyDetails['pincode'];	
-		$data['pan'] = $getCompanyDetails['pan'];	
-		$data['tin'] = $getCompanyDetails['tin'];	
-		$data['vat_no'] = $getCompanyDetails['vat_no'];	
-		$data['service_tax_no'] = $getCompanyDetails['service_tax_no'];	
-		$data['basic_currency_symbol'] = $getCompanyDetails['basic_currency_symbol'];	
-		$data['formal_name'] = $getCompanyDetails['formal_name'];	
-		$data['no_of_decimal_points'] = $getCompanyDetails['no_of_decimal_points'];	
-		$data['currency_symbol'] = $getCompanyDetails['currency_symbol'];	
-		$data['document_name'] = $getCompanyDetails['document_name'];	
-		$data['document_url'] = $getCompanyDetails['document_url'];	
-		$data['document_size'] = $getCompanyDetails['document_size'];	
-		$data['document_format'] = $getCompanyDetails['document_format'];	
-		$data['cIs_display'] = $getCompanyDetails['is_display'];	
-		$data['cIs_default'] = $getCompanyDetails['is_default'];	
-		$data['cCreated_at'] = $getCompanyDetails['created_at'];	
-		$data['cUpdated_at'] = $getCompanyDetails['updated_at'];	
-		$data['cState_abb'] = $getCompanyDetails['state_abb'];	
-		$data['cCity_id'] = $getCompanyDetails['city_id'];	
-		$data['cState_name'] = $getCompanyDetails['state_name'];	
-		$data['cCity_name'] = $getCompanyDetails['city_name'];
+		$data['company_id'] = $companyDetails['company_id'];	
+		$data['company_name'] = $companyDetails['company_name'];	
+		$data['company_display_name'] = $companyDetails['company_display_name'];	
+		$data['address1'] = $companyDetails['address1'];	
+		$data['address2'] = $companyDetails['address2'];	
+		$data['pincode'] = $companyDetails['pincode'];	
+		$data['pan'] = $companyDetails['pan'];	
+		$data['tin'] = $companyDetails['tin'];	
+		$data['vat_no'] = $companyDetails['vat_no'];	
+		$data['service_tax_no'] = $companyDetails['service_tax_no'];	
+		$data['basic_currency_symbol'] = $companyDetails['basic_currency_symbol'];	
+		$data['formal_name'] = $companyDetails['formal_name'];	
+		$data['no_of_decimal_points'] = $companyDetails['no_of_decimal_points'];	
+		$data['currency_symbol'] = $companyDetails['currency_symbol'];	
+		$data['document_name'] = $companyDetails['document_name'];	
+		$data['document_url'] = $companyDetails['document_url'];	
+		$data['document_size'] = $companyDetails['document_size'];	
+		$data['document_format'] = $companyDetails['document_format'];	
+		$data['cIs_display'] = $companyDetails['is_display'];	
+		$data['cIs_default'] = $companyDetails['is_default'];	
+		$data['cCreated_at'] = $companyDetails['created_at'];	
+		$data['cUpdated_at'] = $companyDetails['updated_at'];	
+		$data['cState_abb'] = $companyDetails['state_abb'];	
+		$data['cCity_id'] = $companyDetails['city_id'];	
+		$data['cState_name'] = $companyDetails['state_name'];	
+		$data['cCity_name'] = $companyDetails['city_name'];
 		
 		$data['state_name'] = $stateDecodedJson['state_name'];
 		$data['sIs_display'] = $stateDecodedJson['is_display'];	

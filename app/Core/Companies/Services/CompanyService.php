@@ -9,10 +9,11 @@ use ERP\Core\Support\Service\AbstractService;
 use ERP\Core\User\Entities\User;
 use ERP\Core\Companies\Entities\EncodeData;
 use ERP\Core\Companies\Entities\EncodeAllData;
+use ERP\Core\Documents\Services\DocumentService;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class CompanyService extends AbstractService
+class CompanyService extends AbstractService 
 {
     /**
      * @var companyService
@@ -69,8 +70,16 @@ class CompanyService extends AbstractService
 		$companyModel = new CompanyModel();
 		
 		//data pass to the model object for insertion
-		$status = $companyModel->insertData($companyName,$companyDispName,$address1,$address2,$pincode,$panNo,$tinNo,$vatNo,$serviceTaxNO,$basicCurrencySymbol,$formalName,$noOfDecimalPoints,$currencySymbol,$documentName,$documentUrl,$documentSize,$documentFormat,$isDisplay,$isDefault,$stateAbb,$cityId);
-		return $status;
+		$status = $companyModel->insertData($companyName,$companyDispName,$address1,$address2,$pincode,$panNo,$tinNo,$vatNo,$serviceTaxNO,$basicCurrencySymbol,$formalName,$noOfDecimalPoints,$currencySymbol,$isDisplay,$isDefault,$stateAbb,$cityId);
+		if($status=="500:Internal Server Error")
+		{
+			return $status;
+		}
+		else
+		{
+			$documentStatus = DocumentService::insertDocumentData($documentName,$documentUrl,$documentSize,$documentFormat,$status);
+			return $documentStatus;	
+		}
 	}
 	
 	/**
@@ -87,8 +96,9 @@ class CompanyService extends AbstractService
 		}
 		else
 		{
+			$documentStatus = DocumentService::getAllDocumentData();
 			$encoded = new EncodeAllData();
-			$encodeAllData = $encoded->getEncodedAllData($status);
+			$encodeAllData = $encoded->getEncodedAllData($status,$documentStatus);
 			return $encodeAllData;
 		}
 	}
@@ -108,8 +118,11 @@ class CompanyService extends AbstractService
 		}
 		else
 		{
+			$decodedJsonDoc = json_decode($status,true);
+			$companyId= $decodedJsonDoc[0]['company_id'];
+			$documentStatus = DocumentService::getDocumentData($companyId);
 			$encoded = new EncodeData();
-			$encodeData = $encoded->getEncodedData($status);
+			$encodeData = $encoded->getEncodedData($status,$documentStatus);
 			return $encodeData;
 		}
 	}
@@ -147,9 +160,17 @@ class CompanyService extends AbstractService
 		$companyModel = new CompanyModel();
 	    
 		//data pass to the model object for update
-		$status = $companyModel->updateData($companyName,$companyDispName,$address1,$address2,$pincode,$panNo,$tinNo,$vatNo,$serviceTaxNO,$basicCurrencySymbol,$formalName,$noOfDecimalPoints,$currencySymbol,$documentName,$documentUrl,$documentSize,$documentFormat,$isDisplay,$isDefault,$stateAbb,$cityId,$companyId);
-		return $status;		
-    }
+		$status = $companyModel->updateData($companyName,$companyDispName,$address1,$address2,$pincode,$panNo,$tinNo,$vatNo,$serviceTaxNO,$basicCurrencySymbol,$formalName,$noOfDecimalPoints,$currencySymbol,$isDisplay,$isDefault,$stateAbb,$cityId,$companyId);
+		if($status=="500: Internal Server Error")
+		{
+			return $status;
+		}
+		else
+		{
+			$documentStatus = DocumentService::updateDocumentData($documentName,$documentUrl,$documentSize,$documentFormat,$companyId);
+			return $documentStatus;	
+		}
+	}
 
     /**
      * get and invoke method is of Container Interface method

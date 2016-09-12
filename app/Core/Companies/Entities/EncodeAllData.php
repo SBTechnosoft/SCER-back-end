@@ -11,12 +11,13 @@ use Carbon;
 class EncodeAllData extends StateService
 {
 	//date conversion and merge with json data and returns json array
-	public function getEncodedAllData($status)
+	public function getEncodedAllData($status,$documentStatus)
 	{
 		$convertedCreatedDate = array();
 		$convertedUpdatedDate = array();
 		$encodeAllData =  array();
 		$decodedJson = json_decode($status,true);
+		$decodedJsonDoc = json_decode($documentStatus,true);
 		$company = new Company();
 		for($decodedData=0;$decodedData<count($decodedJson);$decodedData++)
 		{
@@ -36,10 +37,10 @@ class EncodeAllData extends StateService
 			$formalName[$decodedData] = $decodedJson[$decodedData]['formal_name'];
 			$noOfDecimalPoints[$decodedData] = $decodedJson[$decodedData]['no_of_decimal_points'];
 			$currencySymbol[$decodedData] = $decodedJson[$decodedData]['currency_symbol'];
-			$documentName[$decodedData] = $decodedJson[$decodedData]['document_name'];
-			$documentUrl[$decodedData] = $decodedJson[$decodedData]['document_url'];
-			$documentSize[$decodedData] = $decodedJson[$decodedData]['document_size'];
-			$documentFormat[$decodedData] = $decodedJson[$decodedData]['document_format'];
+			$documentName[$decodedData] = $decodedJsonDoc[$decodedData]['document_name'];
+			$documentUrl[$decodedData] = $decodedJsonDoc[$decodedData]['document_url'];
+			$documentSize[$decodedData] = $decodedJsonDoc[$decodedData]['document_size'];
+			$documentFormat[$decodedData] = $decodedJsonDoc[$decodedData]['document_format'];
 			$isDisplay[$decodedData] = $decodedJson[$decodedData]['is_display'];
 			$isDefault[$decodedData] = $decodedJson[$decodedData]['is_default'];
 			$stateAbb[$decodedData] = $decodedJson[$decodedData]['state_abb'];

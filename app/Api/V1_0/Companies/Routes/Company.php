@@ -16,7 +16,7 @@ class Company implements RouteRegistrarInterface
      */
     public function register(RegistrarInterface $Registrar)
     {
-        // all the possible get request 
+		// all the possible get request 
 		Route::group(['as' => 'get'], function ()
 		{
 			Route::get('Companies/Company/{companyId?}', 'CompanyController@getData');

@@ -219,10 +219,7 @@ return [
     */
 
     'packages' => [
-        'Sample',
-		'Sample1',
-		'Sample2',
-		'Companies',
+        'Companies',
 		'States',
 		'Cities',
 		'Branches',

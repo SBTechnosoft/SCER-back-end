@@ -127,7 +127,18 @@ class ProductCategoryModel extends Model
 		DB::commit();
 		if($raw==1)
 		{
-			return "200 :Data Deleted Successfully";
+			$product = DB::statement("update product_mst 
+			set deleted_at='".$mytime."'
+			where product_cat_id = '".$productCatId."'");
+			if($product==1)
+			{
+				return "200 :Data Deleted Successfully";
+			}
+			else
+			{
+				return "500 : Internal Server Error";
+			}
+			
 		}
 		else
 		{
