@@ -35,15 +35,20 @@ class StateModel extends Model
 	}
 	/**
 	 * update data 
-	 * @param state_abb,state_nameand is_display
+	 * @param state_abb,state-data and key of state-data
 	 * returns the status
 	*/
-	public function updateData($stateAbb,$stateName,$isDisplay)
+	public function updateData($stateData,$key,$stateAbb)
 	{
-		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
+		$keyValueString="";
+		for($data=0;$data<count($stateData);$data++)
+		{
+			$keyValueString=$keyValueString.$key[$data]."='".$stateData[$data]."',";
+		}
+		DB::beginTransaction();
 		$raw = DB::statement("update state_mst 
-		set state_name='".$stateName."',is_display='".$isDisplay."',updated_at='".$mytime."'
+		set ".$keyValueString."updated_at='".$mytime."'
 		where state_abb = '".$stateAbb."'");
 		DB::commit();
 		
@@ -128,7 +133,14 @@ class StateModel extends Model
 			$city = DB::statement("update city_mst 
 			set deleted_at='".$mytime."'
 			where state_abb = '".$stateAbb."'");
-			if($city==1)
+			$company = DB::statement("update company_mst 
+			set deleted_at='".$mytime."'
+			where state_abb = '".$stateAbb."'");
+			$branch = DB::statement("update branch_mst 
+			set deleted_at='".$mytime."'
+			where state_abb = '".$stateAbb."'");
+			
+			if($city==1 && $company==1 && $branch==1)
 			{
 				return "200 :Data Deleted Successfully";
 			}

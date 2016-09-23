@@ -13,15 +13,33 @@ class ProductCategoryModel extends Model
 	
 	/**
 	 * insert data 
-	 * @param  state_name,is_display and state_abb
+	 * @param  array
 	 * returns the status
 	*/
-	public function insertData($productParentCatId,$productCatDesc,$isDisplay,$productCatName)
+	public function insertData()
 	{
+		$getProductCatData = array();
+		$getProductCatKey = array();
+		$getProductCatData = func_get_arg(0);
+		$getProductCatKey = func_get_arg(1);
+		$productCatData="";
+		$keyName = "";
+		for($data=0;$data<count($getProductCatData);$data++)
+		{
+			if($data == (count($getProductCatData)-1))
+			{
+				$productCatData = $productCatData."'".$getProductCatData[$data]."'";
+				$keyName =$keyName.$getProductCatKey[$data];
+			}
+			else
+			{
+				$productCatData = $productCatData."'".$getProductCatData[$data]."',";
+				$keyName =$keyName.$getProductCatKey[$data].",";
+			}
+		}
 		DB::beginTransaction();
-		$raw = DB::statement("insert 
-		into product_category_mst(product_parent_cat_id,product_cat_desc,is_display,product_cat_name)
-		values('".$productParentCatId."', '".$productCatDesc."','".$isDisplay."','".$productCatName."')");
+		$raw = DB::statement("insert into product_category_mst(".$keyName.") 
+		values(".$productCatData.")");
 		DB::commit();
 		
 		if($raw==1)
@@ -35,15 +53,20 @@ class ProductCategoryModel extends Model
 	}
 	/**
 	 * update data 
-	 * @param state_abb,state_nameand is_display
+	 * @param productCatData,$key of productCatData,productCatId
 	 * returns the status
 	*/
-	public function updateData($productParentCatId,$productCatDesc,$isDisplay,$productCatName,$productCatId)
+	public function updateData($productCatData,$key,$productCatId)
 	{
-		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
+		$keyValueString="";
+		for($data=0;$data<count($productCatData);$data++)
+		{
+			$keyValueString=$keyValueString.$key[$data]."='".$productCatData[$data]."',";
+		}
+		DB::beginTransaction();
 		$raw = DB::statement("update product_category_mst 
-		set product_cat_name='".$productCatName."',product_cat_desc='".$productCatDesc."',product_parent_cat_id='".$productParentCatId."',is_display='".$isDisplay."',updated_at='".$mytime."'
+		set ".$keyValueString."updated_at='".$mytime."'
 		where product_cat_id = '".$productCatId."'");
 		DB::commit();
 		

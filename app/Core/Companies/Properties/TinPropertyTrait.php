@@ -13,14 +13,14 @@ trait TinPropertyTrait
 	/**
 	 * @param int $tin
 	 */
-	public function setTinNo($tin)
+	public function setTin($tin)
 	{
 		$this->tin = $tin;
 	}
 	/**
 	 * @return tin
 	 */
-	public function getTinNo()
+	public function getTin()
 	{
 		return $this->tin;
 	}

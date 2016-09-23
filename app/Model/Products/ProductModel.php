@@ -13,21 +13,33 @@ class ProductModel extends Model
 	
 	/**
 	 * insert data 
-	 * @param  name and age
+	 * @param  array
 	 * returns the status
 	*/
-	public function insertData($productName,$isDisplay,$companyId,$getMeasureUnit,$productCatId,$branchId,$productGrpId)
+	public function insertData()
 	{
+		$getProductData = array();
+		$getproductKey = array();
+		$getProductData = func_get_arg(0);
+		$getProductKey = func_get_arg(1);
+		$productData="";
+		$keyName = "";
+		for($data=0;$data<count($getProductData);$data++)
+		{
+			if($data == (count($getProductData)-1))
+			{
+				$productData = $productData."'".$getProductData[$data]."'";
+				$keyName =$keyName.$getProductKey[$data];
+			}
+			else
+			{
+				$productData = $productData."'".$getProductData[$data]."',";
+				$keyName =$keyName.$getProductKey[$data].",";
+			}
+		}
 		DB::beginTransaction();
-		$raw = DB::statement("insert into product_mst(product_name,is_display,company_id,measurement_unit,product_cat_id,branch_id,product_group_id) 
-		values('".$productName."', 
-		'".$isDisplay."',
-		'".$companyId."',
-		'".$getMeasureUnit."',
-		'".$productCatId."',
-		'".$branchId."',
-		'".$productGrpId."'
-		)");
+		$raw = DB::statement("insert into product_mst(".$keyName.") 
+		values(".$productData.")");
 		DB::commit();
 		
 		if($raw==1)
@@ -44,20 +56,18 @@ class ProductModel extends Model
 	 * @param  name,age and id
 	 * returns the status
 	*/
-	public function updateData($productName,$isDisplay,$companyId,$productId,$productCatId,$getMeasureUnit,$branchId,$productGrpId)
+	public function updateData($productData,$key,$productId)
 	{
-		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
+		$keyValueString="";
+		for($data=0;$data<count($productData);$data++)
+		{
+			$keyValueString=$keyValueString.$key[$data]."='".$productData[$data]."',";
+		}
+		DB::beginTransaction();
 		$raw = DB::statement("update product_mst 
-		set product_name='".$productName."',
-		is_display='".$isDisplay."',
-		measurement_unit='".$getMeasureUnit."',
-		product_cat_id='".$productCatId."',
-		product_group_id='".$productGrpId."',
-		branch_id='".$branchId."',
-		company_id='".$companyId."',
-		updated_at='".$mytime."'
-		where product_id = ".$productId);
+		set ".$keyValueString."updated_at='".$mytime."'
+		where product_id = '".$productId."'");
 		DB::commit();
 		
 		if($raw==1)

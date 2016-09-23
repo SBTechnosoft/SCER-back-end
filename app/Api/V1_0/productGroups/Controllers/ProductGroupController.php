@@ -46,13 +46,28 @@ class ProductGroupController extends BaseController implements ContainerInterfac
     public function store(Request $request)
     {
 		$this->request = $request;
-		$Processor = new productGroupProcessor();
-		$productGroupPersistable = new ProductGroupPersistable();		
-		$productGroupService= new ProductGroupService();			
-		$productGroupPersistable = $Processor->createPersistable($this->request);
-		$productGroupService->create($productGroupPersistable);
-		$status = $productGroupService->insert($productGroupPersistable);
-		return $status;
+		// check the requested Http method
+		$requestMethod = $_SERVER['REQUEST_METHOD'];
+		// insert
+		if($requestMethod == 'POST')
+		{
+			$productGroupProcessor = new ProductGroupProcessor();
+			$productGroupPersistable = new ProductGroupPersistable();		
+			$productGroupService= new ProductGroupService();			
+			$productGroupPersistable = $productGroupProcessor->createPersistable($this->request);
+			if($productGroupPersistable[0][0]=='[')
+			{
+				return $productGroupPersistable;
+			}
+			else
+			{
+				$status = $productGroupService->insert($productGroupPersistable);
+				return $status;
+			}
+		}
+		else{
+			return $status;
+		}
 	}
 	
 	/**
@@ -82,14 +97,25 @@ class ProductGroupController extends BaseController implements ContainerInterfac
 	public function update(Request $request,$productGroupId)
     {    
 		$this->request = $request;
-		$Processor = new ProductGroupProcessor();
+		$productGroupProcessor = new ProductGroupProcessor();
 		$productGroupPersistable = new ProductGroupPersistable();		
 		$productGroupService= new ProductGroupService();			
-		$productGroupPersistable = $Processor->createPersistableChange($this->request,$productGroupId);
-		$productGroupService->create($productGroupPersistable);
-		$status = $productGroupService->update($productGroupPersistable);
-		return $status;
-    }
+		$productGroupPersistable = $productGroupProcessor->createPersistableChange($this->request,$productGroupId);
+		//here two array and string is return at a time
+		if($productGroupPersistable=="204: No Content Found For Update")
+		{
+			return $productGroupPersistable;
+		}
+		else if(is_array($productGroupPersistable))
+		{
+			$status = $productGroupService->update($productGroupPersistable);
+			return $status;
+		}
+		else
+		{
+			return $productGroupPersistable;
+		}
+	}
 	
     /**
      * Remove the specified resource from storage.
@@ -102,7 +128,6 @@ class ProductGroupController extends BaseController implements ContainerInterfac
 		$productGroupPersistable = new ProductGroupPersistable();		
 		$productGroupService= new ProductGroupService();			
 		$productGroupPersistable = $Processor->createPersistableChange($this->request,$productGroupId);
-		$productGroupService->create($productGroupPersistable);
 		$status = $productGroupService->delete($productGroupPersistable);
 		return $status;
     }

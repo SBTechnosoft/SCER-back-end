@@ -6,6 +6,8 @@ use ERP\Core\ProductGroups\Persistables\ProductGroupPersistable;
 use Illuminate\Http\Request;
 use ERP\Http\Requests;
 use Illuminate\Http\Response;
+use ERP\Core\ProductGroups\Validations\ProductGroupValidate;
+use ERP\Api\V1_0\ProductGroups\Transformers\ProductGroupTransformer;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -32,44 +34,161 @@ class ProductGroupProcessor extends BaseProcessor
     public function createPersistable(Request $request)
 	{	
 		$this->request = $request;	
-		// check the requested Http method
-		$requestMethod = $_SERVER['REQUEST_METHOD'];
+		$productGroupValue = array();
+		$tKeyValue = array();
+		$keyName = array();
+		$value = array();
+		$data=0;
+		//trim an input 
+		$productGroupTransformer = new ProductGroupTransformer();
+		$tRequest = $productGroupTransformer->trimInsertData($this->request);
 		
-		// insert
-		if($requestMethod == 'POST')
+		//validation
+		$productGroupValidate = new ProductGroupValidate();
+		$status = $productGroupValidate->validate($tRequest);
+		if($status=="Success")
 		{
-			$productGroupName = $request->input('product_group_name'); 
-			$productGroupDesc = $request->input('product_group_desc'); 
-			$isDisplay = $request->input('is_display'); 
-			$productParentGrpId = $request->input('product_group_parent_id'); 
-			$productGroupPersistable = new ProductGroupPersistable();		
-			$productGroupPersistable->setName($productGroupName);		 
-			$productGroupPersistable->setProductGrpDesc($productGroupDesc);		 
-			$productGroupPersistable->setProductParentGrpId($productParentGrpId);		 
-			$productGroupPersistable->setIsDisplay($isDisplay);		 
-			return $productGroupPersistable;	
-		}		
-		else{	
-		}		
-    }
+			foreach ($tRequest as $key => $value)
+			{
+				if(!is_numeric($value))
+				{
+					if (strpos($value, '\'') !== FALSE)
+					{
+						$productGroupValue[$data]= str_replace("'","\'",$value);
+						$keyName[$data] = $key;
+					}
+					else
+					{
+						$productGroupValue[$data] = $value;
+						$keyName[$data] = $key;
+					}
+				}
+				else
+				{
+					$productGroupValue[$data]= $value;
+					$keyName[$data] = $key;
+				}
+				$data++;
+			}
+			
+			// set data to the persistable object
+			for($data=0;$data<count($productGroupValue);$data++)
+			{
+				//set the data in persistable object
+				$productGroupPersistable = new ProductGroupPersistable();	
+				$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
+				//make function name dynamically
+				$setFuncName = 'set'.$str;
+				$getFuncName[$data] = 'get'.$str;
+				$productGroupPersistable->$setFuncName($productGroupValue[$data]);
+				$productGroupPersistable->setName($getFuncName[$data]);
+				$productGroupPersistable->setKey($keyName[$data]);
+				$productGroupArray[$data] = array($productGroupPersistable);
+			}
+			return $productGroupArray;
+		}
+		else
+		{
+			return $status;
+		}
+	}
 	public function createPersistableChange(Request $request,$productGrpId)
 	{
+		$productGrpValue = array();
+		$errorCount=0;
+		$errorStatus=array();
+		$flag=0;
+		$productGroupPersistable;
+		$productGrpArray = array();
+		$productGroupValidate = new ProductGroupValidate();
+		$status;
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
-		
 		// update
 		if($requestMethod == 'POST')
 		{
-			$productGrpName = $request->input('product_group_name'); 
-			$productGrpDesc = $request->input('product_group_desc'); 
-			$isDisplay = $request->input('is_display'); 
-			$productParentGrpId = $request->input('product_group_parent_id');
-			$productGroupPersistable = new ProductGroupPersistable();		
-			$productGroupPersistable->setName($productGrpName);		 
-			$productGroupPersistable->setProductGrpDesc($productGrpDesc);		 
-			$productGroupPersistable->setProductParentGrpId($productParentGrpId);		 
-			$productGroupPersistable->setIsDisplay($isDisplay);			 
-			$productGroupPersistable->setId($productGrpId);		 
-			return $productGroupPersistable;
+			//if data is not available in update request
+			if(count($_POST)==0)
+			{
+				$status = "204: No Content Found For Update";
+				return $status;
+			}
+			//data is avalilable for update
+			else
+			{
+				for($data=0;$data<count($_POST);$data++)
+				{
+					//data get from body
+					$productGroupPersistable = new ProductGroupPersistable();
+					$value[$data] = $_POST[array_keys($_POST)[$data]];
+					$key[$data] = array_keys($_POST)[$data];
+					
+					//trim an input 
+					$productGroupTransformer = new ProductGroupTransformer();
+					$tRequest = $productGroupTransformer->trimUpdateData($key[$data],$value[$data]);
+					//get data from trim array
+					
+					$tKeyValue[$data] = array_keys($tRequest[0])[0];
+					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
+					
+					//validation
+					$status = $productGroupValidate->validateUpdateData($key[$data],$value[$data],$tRequest);
+					//enter data is valid(one data validate status return)
+					if($status=="Success")
+					{
+						// check data is string or not
+						if(!is_numeric($tValue[$data]))
+						{
+							if (strpos($tValue[$data], '\'') !== FALSE)
+							{
+								$productGrpValue[$data] = str_replace("'","\'",$tValue[$data]);
+							}
+							else
+							{
+								$productGrpValue[$data] = $tValue[$data];
+							}
+						}
+						else
+						{
+							$productGrpValue[$data] = $tValue[$data];
+						}
+						//flag=0...then data is valid(consider one data at a time)
+						if($flag==0)
+						{
+							$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
+							//make function name dynamically
+							$setFuncName = 'set'.$str;
+							$getFuncName[$data] = 'get'.$str;
+							$productGroupPersistable->$setFuncName($productGrpValue[$data]);
+							$productGroupPersistable->setName($getFuncName[$data]);
+							$productGroupPersistable->setKey($key[$data]);
+							$productGroupPersistable->setProductGroupId($productGrpId);
+							$productGrpArray[$data] = array($productGroupPersistable);
+						}
+					}
+					//enter data is not valid
+					else
+					{
+						//if flag==1 then enter data is not valid ..so error return(consider one data at a time)
+						$flag=1;
+						if(!empty($status[0]))
+						{
+							$errorStatus[$errorCount]=$status[0];
+							$errorCount++;
+						}
+					}
+					if($data==(count($_POST)-1))
+					{
+						if($flag==1)
+						{
+							return json_encode($errorStatus);
+						}
+						else
+						{
+							return $productGrpArray;
+						}
+					}
+				}
+			}
 		}
 		//delete
 		else if($requestMethod == 'DELETE')

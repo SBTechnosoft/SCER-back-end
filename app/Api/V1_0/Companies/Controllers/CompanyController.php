@@ -9,6 +9,7 @@ use ERP\Api\V1_0\Support\BaseController;
 use ERP\Api\V1_0\Companies\Processors\CompanyProcessor;
 use ERP\Core\Companies\Persistables\CompanyPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
+use ERP\Core\Companies\Validations\CompanyValidate;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -45,13 +46,29 @@ class CompanyController extends BaseController implements ContainerInterface
     public function store(Request $request)
     {
 		$this->request = $request;
-		$Processor = new CompanyProcessor();
-		$companyPersistable = new CompanyPersistable();		
-		$companyService= new CompanyService();			
-		$companyPersistable = $Processor->createPersistable($this->request);
-		$companyService->create($companyPersistable);
-		$status = $companyService->insert($companyPersistable);
-		return $status;
+		// check the requested Http method
+		$requestMethod = $_SERVER['REQUEST_METHOD'];
+		// insert
+		if($requestMethod == 'POST')
+		{
+			$Processor = new CompanyProcessor();
+			$companyPersistable = new CompanyPersistable();		
+			$companyService= new CompanyService();			
+			$companyPersistable = $Processor->createPersistable($this->request);
+			if($companyPersistable[0][0]=='[')
+			{
+				return $companyPersistable;
+			}
+			else
+			{
+				$status = $companyService->insert($companyPersistable);
+				return $status;
+			}
+		}
+		else
+		{
+			return $status;
+		}
 	}
 	
 	/**
@@ -86,10 +103,20 @@ class CompanyController extends BaseController implements ContainerInterface
 		$companyPersistable = new CompanyPersistable();		
 		$companyService= new CompanyService();			
 		$companyPersistable = $Processor->createPersistableChange($this->request,$companyId);
-		$companyService->create($companyPersistable);
-		$status = $companyService->update($companyPersistable);
-		return $status;
-    }
+		if($companyPersistable=="204: No Content Found For Update")
+		{
+			return $companyPersistable;
+		}
+		else if(is_array($companyPersistable))
+		{
+			$status = $companyService->update($companyPersistable);
+			return $status;
+		}
+		else
+		{
+			return $companyPersistable;
+		}
+	}
 	
     /**
      * Remove the specified resource from storage.
@@ -103,7 +130,6 @@ class CompanyController extends BaseController implements ContainerInterface
 		$companyPersistable = new CompanyPersistable();		
 		$companyService= new CompanyService();			
 		$companyPersistable = $Processor->createPersistableChange($this->request,$companyId);
-		$companyService->create($companyPersistable);
 		$status = $companyService->delete($companyPersistable);
 		return $status;
     }

@@ -40,17 +40,25 @@ class ProductGroupService extends AbstractService
 	
 	 /**
      * get the data from persistable object and call the model for database insertion opertation
-     * @param BranchPersistable $persistable
+     * @param array
      * @return status
      */
-	public function insert(ProductGroupPersistable $persistable)
+	public function insert()
 	{
-		$productParentGrpId = $persistable->getProductParentGrpId();
-		$productGrpDesc = $persistable->getProductGrpDesc();
-		$isDisplay = $persistable->getIsDisplay();
-		$productGrpName = $persistable->getName();
+		$productGroupArray = array();
+		$getData = array();
+		$keyName = array();
+		$funcName = array();
+		$productGroupArray = func_get_arg(0);
+		for($data=0;$data<count($productGroupArray);$data++)
+		{
+			$funcName[$data] = $productGroupArray[$data][0]->getName();
+			$getData[$data] = $productGroupArray[$data][0]->$funcName[$data]();
+			$keyName[$data] = $productGroupArray[$data][0]->getkey();
+		}
+		//data pass to the model object for insert
 		$productGrpModel = new ProductGroupModel();
-		$status = $productGrpModel->insertData($productParentGrpId,$productGrpDesc,$isDisplay,$productGrpName);
+		$status = $productGrpModel->insertData($getData,$keyName);
 		return $status;
 	}
 	
@@ -97,21 +105,28 @@ class ProductGroupService extends AbstractService
 	
     /**
      * get the data from persistable object and call the model for database update opertation
-     * @param ProductCategoryPersistable $persistable
+     * @param array
      * @param updateOptions $options [optional]
      * @return status
      */
-    public function update(ProductGroupPersistable $persistable, UpdateOptions $options = null)
+    public function update()
     {
-		$productParentGrpId = $persistable->getProductParentGrpId();
-		$productGrpDesc = $persistable->getProductGrpDesc();
-		$isDisplay = $persistable->getIsDisplay();
-		$productGrpName = $persistable->getName();
-		$productGrpId = $persistable->getId();
+		$productGrpArray = array();
+		$getData = array();
+		$funcName = array();
+		$productGrpArray = func_get_arg(0);
+		for($data=0;$data<count($productGrpArray);$data++)
+		{
+			$funcName[$data] = $productGrpArray[$data][0]->getName();
+			$getData[$data] = $productGrpArray[$data][0]->$funcName[$data]();
+			$keyName[$data] = $productGrpArray[$data][0]->getkey();
+		}
+		$productGrpId = $productGrpArray[0][0]->getProductGroupId();
+		// data pass to the model object for update
 		$productGrpModel = new ProductGroupModel();
-		$status = $productGrpModel->updateData($productParentGrpId,$productGrpDesc,$isDisplay,$productGrpName,$productGrpId);
-		return $status;		
-    }
+		$status = $productGrpModel->updateData($getData,$keyName,$productGrpId);
+		return $status;	
+	}
 
     /**
      * get and invoke method is of Container Interface method

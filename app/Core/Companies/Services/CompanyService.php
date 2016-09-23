@@ -44,41 +44,53 @@ class CompanyService extends AbstractService
      * @param CompanyPersistable $persistable
      * @return status
      */
-	public function insert(CompanyPersistable $persistable)
+	public function insert()
 	{
-		$companyName = $persistable->getName();
-		$companyDispName = $persistable->getCompanyDispName();
-		$address1 = $persistable->getAddress1();
-		$address2 = $persistable->getAddress2();
-		$pincode = $persistable->getPincode();
-		$panNo = $persistable->getPanNo();
-		$tinNo = $persistable->getTinNo();
-		$vatNo = $persistable->getVatNo();
-		$serviceTaxNO = $persistable->getServiceTaxNo();
-		$basicCurrencySymbol = $persistable->getBasicCurrencySymbol();
-		$formalName = $persistable->getFormalName();
-		$noOfDecimalPoints = $persistable->getNoOfDecimalPoints();
-		$currencySymbol = $persistable->getCurrencySymbol();
-		$documentName = $persistable->getDocumentName();
-		$documentUrl = $persistable->getDocumentUrl();
-		$documentSize = $persistable->getDocumentSize();
-		$documentFormat = $persistable->getDocumentFormat();
-		$isDisplay = $persistable->getIsDisplay();
-		$isDefault = $persistable->getIsDefault();
-		$stateAbb = $persistable->getStateAbb();
-		$cityId = $persistable->getId();
+		$documentName="";
+		$documentUrl="";
+		$documentSize="";
+		$documentFormat="";
+		$companyArray = array();
+		$getData = array();
+		$keyName = array();
+		$funcName = array();
+		$companyArray = func_get_arg(0);
+		for($data=0;$data<count($companyArray);$data++)
+		{
+			$funcName[$data] = $companyArray[$data][0]->getName();
+			$getData[$data] = $companyArray[$data][0]->$funcName[$data]();
+			$keyName[$data] = $companyArray[$data][0]->getkey();
+			// document data is set into the last object..so
+			if($data==(count($companyArray)-1))
+			{
+				//get document data
+				$documentName = $companyArray[$data][0]->getDocumentName();
+				$documentUrl = $companyArray[$data][0]->getDocumentUrl();
+				$documentSize = $companyArray[$data][0]->getDocumentSize();
+				$documentFormat = $companyArray[$data][0]->getDocumentFormat();
+			}
+		}
+		//data pass to the model object for insert
 		$companyModel = new CompanyModel();
-		
-		//data pass to the model object for insertion
-		$status = $companyModel->insertData($companyName,$companyDispName,$address1,$address2,$pincode,$panNo,$tinNo,$vatNo,$serviceTaxNO,$basicCurrencySymbol,$formalName,$noOfDecimalPoints,$currencySymbol,$isDisplay,$isDefault,$stateAbb,$cityId);
-		if($status=="500:Internal Server Error")
+		$status = $companyModel->insertData($getData,$keyName);
+		if($status=="500: Internal Server Error")
 		{
 			return $status;
 		}
+		//data inserted successfully
 		else
 		{
-			$documentStatus = DocumentService::insertDocumentData($documentName,$documentUrl,$documentSize,$documentFormat,$status);
-			return $documentStatus;	
+			if($documentName!="")
+			{
+				//insert document data(update in company_mst table)
+				$documentStatus = DocumentService::insertDocumentData($documentName,$documentUrl,$documentSize,$documentFormat,$status);
+				return $documentStatus;	
+			}
+			else
+			{
+				//if document is not inserted..
+				return "200: Data Inserted Successfully";
+			}
 		}
 	}
 	
@@ -131,44 +143,53 @@ class CompanyService extends AbstractService
      * get the data from persistable object and call the model for database update opertation
      * @param CompanyPersistable $persistable
      * @param updateOptions $options [optional]
+     * parameter is in array form.
      * @return status
      */
-    public function update(CompanyPersistable $persistable, UpdateOptions $options = null)
+    public function update()
     {
-		$companyName = $persistable->getName();
-		$companyDispName = $persistable->getCompanyDispName();
-		$address1 = $persistable->getAddress1();
-		$address2 = $persistable->getAddress2();
-		$pincode = $persistable->getPincode();
-		$panNo = $persistable->getPanNo();
-		$tinNo = $persistable->getTinNo();
-		$vatNo = $persistable->getVatNo();
-		$serviceTaxNO = $persistable->getServiceTaxNo();
-		$basicCurrencySymbol = $persistable->getBasicCurrencySymbol();
-		$formalName = $persistable->getFormalName();
-		$noOfDecimalPoints = $persistable->getNoOfDecimalPoints();
-		$currencySymbol = $persistable->getCurrencySymbol();
-		$documentName = $persistable->getDocumentName();
-		$documentUrl = $persistable->getDocumentUrl();
-		$documentSize = $persistable->getDocumentSize();
-		$documentFormat = $persistable->getDocumentFormat();
-		$isDisplay = $persistable->getIsDisplay();
-		$isDefault = $persistable->getIsDefault();
-		$stateAbb = $persistable->getStateAbb();
-		$cityId = $persistable->getId();
-		$companyId = $persistable->getCompanyId();
-		$companyModel = new CompanyModel();
-	    
+		$companyArray = array();
+		$getData = array();
+		$funcName = array();
+		$companyArray = func_get_arg(0);
+		for($data=0;$data<count($companyArray);$data++)
+		{
+			$funcName[$data] = $companyArray[$data][0]->getName();
+			$getData[$data] = $companyArray[$data][0]->$funcName[$data]();
+			$keyName[$data] = $companyArray[$data][0]->getkey();
+			// document data is set into the last object..so
+			if($data==(count($companyArray)-1))
+			{
+				//get document data
+				$documentName = $companyArray[$data][0]->getDocumentName();
+				$documentUrl = $companyArray[$data][0]->getDocumentUrl();
+				$documentSize = $companyArray[$data][0]->getDocumentSize();
+				$documentFormat = $companyArray[$data][0]->getDocumentFormat();
+			}
+		}
+		
+		$companyId = $companyArray[0][0]->getCompanyId();
 		//data pass to the model object for update
-		$status = $companyModel->updateData($companyName,$companyDispName,$address1,$address2,$pincode,$panNo,$tinNo,$vatNo,$serviceTaxNO,$basicCurrencySymbol,$formalName,$noOfDecimalPoints,$currencySymbol,$isDisplay,$isDefault,$stateAbb,$cityId,$companyId);
+		$companyModel = new CompanyModel();
+		$status = $companyModel->updateData($getData,$keyName,$companyId);
 		if($status=="500: Internal Server Error")
 		{
 			return $status;
 		}
+		//data updated successfully
 		else
 		{
-			$documentStatus = DocumentService::updateDocumentData($documentName,$documentUrl,$documentSize,$documentFormat,$companyId);
-			return $documentStatus;	
+			if($documentName!='')
+			{
+				//insert document data(update in company_mst table)
+				$documentStatus = DocumentService::updateDocumentData($documentName,$documentUrl,$documentSize,$documentFormat,$companyId);
+				return $documentStatus;	
+			}
+			else
+			{
+				//if document is not changed..
+				return "200: Data Updated Successfully";
+			}
 		}
 	}
 

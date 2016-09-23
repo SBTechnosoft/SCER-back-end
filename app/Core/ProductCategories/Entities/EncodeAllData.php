@@ -24,7 +24,7 @@ class EncodeAllData
 			$productCatId[$decodedData] = $decodedJson[$decodedData]['product_cat_id'];
 			$productCatName[$decodedData] = $decodedJson[$decodedData]['product_cat_name'];
 			$productCatDesc[$decodedData] = $decodedJson[$decodedData]['product_cat_desc'];
-			$productParentCatId[$decodedData] = $decodedJson[$decodedData]['product_parent_cat_desc'];
+			$productParentCatId[$decodedData] = $decodedJson[$decodedData]['product_parent_cat_id'];
 			$isDisplay[$decodedData] = $decodedJson[$decodedData]['is_display'];
 			
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
@@ -46,9 +46,8 @@ class EncodeAllData
 				'product_cat_desc' =>$productCatDesc[$jsonData],
 				'isDisplay' => $isDisplay[$jsonData],
 				'created_at' => $getCreatedDate[$jsonData],
-				'updated_at' =>$getUpdatedDate[$jsonData]
+				'updated_at' =>$getUpdatedDate[$jsonData],
 				'product_parent_cat_id' =>$productParentCatId[$jsonData]
-				
 			);	
 		}
 		return json_encode($data);

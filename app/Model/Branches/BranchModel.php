@@ -13,24 +13,35 @@ class BranchModel extends Model
 	
 	/**
 	 * insert data 
-	 * @param  name and age
+	 * @param  array
 	 * returns the status
 	*/
-	public function insertData($branchName,$address1,$address2,$pincode,$isDisplay,$isDefault,$stateAbb,$cityId,$companyId)
+	public function insertData()
 	{
+		$getBranchData = array();
+		$getBranchKey = array();
+		$getBranchData = func_get_arg(0);
+		$getBranchKey = func_get_arg(1);
+		$branchData="";
+		$keyName = "";
+		for($data=0;$data<count($getBranchData);$data++)
+		{
+			if($data == (count($getBranchData)-1))
+			{
+				$branchData = $branchData."'".$getBranchData[$data]."'";
+				$keyName =$keyName.$getBranchKey[$data];
+			}
+			else
+			{
+				$branchData = $branchData."'".$getBranchData[$data]."',";
+				$keyName =$keyName.$getBranchKey[$data].",";
+			}
+		}
 		DB::beginTransaction();
-		$raw = DB::statement("insert into branch_mst(branch_name,address1,address2,pincode,is_display,is_default,state_abb,city_id,company_id) 
-		values('".$branchName."', 
-		'".$address1."',
-		'".$address2."',
-		'".$pincode."',
-		'".$isDisplay."',
-		'".$isDefault."',
-		'".$stateAbb."',
-		'".$cityId."',
-		'".$companyId."')");
-		
+		$raw = DB::statement("insert into branch_mst(".$keyName.") 
+		values(".$branchData.")");
 		DB::commit();
+		
 		if($raw==1)
 		{
 			return "200:Data Inserted Successfully";
@@ -42,24 +53,20 @@ class BranchModel extends Model
 	}
 	/**
 	 * update data 
-	 * @param  name,age and id
+	 * @param  branch-data,key of branch-data,branch-id
 	 * returns the status
 	*/
-	public function updateData($branchName,$address1,$address2,$pincode,$isDisplay,$isDefault,$stateAbb,$cityId,$companyId,$branchId)
+	public function updateData($branchData,$key,$branchId)
 	{
-		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
+		$keyValueString="";
+		for($data=0;$data<count($branchData);$data++)
+		{
+			$keyValueString=$keyValueString.$key[$data]."='".$branchData[$data]."',";
+		}
+		DB::beginTransaction();
 		$raw = DB::statement("update branch_mst 
-		set branch_name='".$branchName."',
-		address1='".$address1."',
-		address2='".$address2."',
-		pincode='".$pincode."',
-		is_display='".$isDisplay."',
-		is_default='".$isDefault."',
-		state_abb='".$stateAbb."',
-		city_id='".$cityId."',
-		company_id='".$companyId."',
-		updated_at='".$mytime."'
+		set ".$keyValueString."updated_at='".$mytime."'
 		where branch_id = ".$branchId);
 		DB::commit();
 		

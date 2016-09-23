@@ -13,14 +13,14 @@ trait ProductGrpParentIdPropertyTrait
 	/**
 	 * @param int $productParentGrpId
 	 */
-	public function setProductParentGrpId($productParentGrpId)
+	public function setProductGroupParentId($productParentGrpId)
 	{
 		$this->productParentGrpId = $productParentGrpId;
 	}
 	/**
 	 * @return productParentGrpId
 	 */
-	public function getProductParentGrpId()
+	public function getProductGroupParentId()
 	{
 		return $this->productParentGrpId;
 	}

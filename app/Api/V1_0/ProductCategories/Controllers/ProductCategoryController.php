@@ -46,13 +46,29 @@ class ProductCategoryController extends BaseController implements ContainerInter
     public function store(Request $request)
     {
 		$this->request = $request;
-		$Processor = new ProductCategoryProcessor();
-		$productCategoryPersistable = new ProductCategoryPersistable();		
-		$productCategoryService= new ProductCategoryService();			
-		$productCategoryPersistable = $Processor->createPersistable($this->request);
-		$productCategoryService->create($productCategoryPersistable);
-		$status = $productCategoryService->insert($productCategoryPersistable);
-		return $status;
+		// check the requested Http method
+		$requestMethod = $_SERVER['REQUEST_METHOD'];
+		// insert
+		if($requestMethod == 'POST')
+		{
+			$Processor = new ProductCategoryProcessor();
+			$productCategoryPersistable = new ProductCategoryPersistable();		
+			$productCategoryService= new ProductCategoryService();			
+			$productCategoryPersistable = $Processor->createPersistable($this->request);
+			if($productCategoryPersistable[0][0]=='[')
+			{
+				return $productCategoryPersistable;
+			}
+			else
+			{
+				$status = $productCategoryService->insert($productCategoryPersistable);
+				return $status;
+			}
+		}
+		else
+		{
+			return $status;
+		}
 	}
 	
 	/**
@@ -86,10 +102,20 @@ class ProductCategoryController extends BaseController implements ContainerInter
 		$productCategoryPersistable = new ProductCategoryPersistable();		
 		$productCategoryService= new ProductCategoryService();			
 		$productCategoryPersistable = $Processor->createPersistableChange($this->request,$productCategoryId);
-		$productCategoryService->create($productCategoryPersistable);
-		$status = $productCategoryService->update($productCategoryPersistable);
-		return $status;
-    }
+		if($productCategoryPersistable=="204: No Content Found For Update")
+		{
+			return $productCategoryPersistable;
+		}
+		else if(is_array($productCategoryPersistable))
+		{
+			$status = $productCategoryService->update($productCategoryPersistable);
+			return $status;
+		}
+		else
+		{
+			return $productCategoryPersistable;
+		}
+	}
 	
     /**
      * Remove the specified resource from storage.
@@ -102,7 +128,6 @@ class ProductCategoryController extends BaseController implements ContainerInter
 		$productCategoryPersistable = new ProductCategoryPersistable();		
 		$productCategoryService= new ProductCategoryService();			
 		$productCategoryPersistable = $Processor->createPersistableChange($this->request,$productCategoryId);
-		$productCategoryService->create($productCategoryPersistable);
 		$status = $productCategoryService->delete($productCategoryPersistable);
 		return $status;
     }

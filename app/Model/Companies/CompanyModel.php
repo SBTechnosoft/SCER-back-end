@@ -13,27 +13,30 @@ class CompanyModel extends Model
 	 * insert data 
 	 * returns the status
 	*/
-	public function insertData($companyName,$companyDispName,$address1,$address2,$pincode,$panNo,$tinNo,$vatNo,$serviceTaxNO,$basicCurrencySymbol,$formalName,$noOfDecimalPoints,$currencySymbol,$isDisplay,$isDefault,$stateAbb,$cityId)
+	public function insertData()
 	{
+		$getCompanyData = array();
+		$getCompanyKey = array();
+		$getCompanyData = func_get_arg(0);
+		$getCompanyKey = func_get_arg(1);
+		$companyData="";
+		$keyName = "";
+		for($data=0;$data<count($getCompanyData);$data++)
+		{
+			if($data == (count($getCompanyData)-1))
+			{
+				$companyData = $companyData."'".$getCompanyData[$data]."'";
+				$keyName =$keyName.$getCompanyKey[$data];
+			}
+			else
+			{
+				$companyData = $companyData."'".$getCompanyData[$data]."',";
+				$keyName =$keyName.$getCompanyKey[$data].",";
+			}
+		}
 		DB::beginTransaction();
-		$raw = DB::statement("insert into company_mst(company_name,company_display_name,address1,address2,pincode,pan,tin,vat_no,service_tax_no,basic_currency_symbol,formal_name,no_of_decimal_points,currency_symbol,is_display,is_default,state_abb,city_id) 
-		values('".$companyName."', 
-		'".$companyDispName."',
-		'".$address1."',
-		'".$address2."',
-		'".$pincode."',
-		'".$panNo."',
-		'".$tinNo."',
-		'".$vatNo."',
-		'".$serviceTaxNO."',
-		'".$basicCurrencySymbol."',
-		'".$formalName."',
-		'".$noOfDecimalPoints."',
-		'".$currencySymbol."',
-		'".$isDisplay."',
-		'".$isDefault."',
-		'".$stateAbb."',
-		'".$cityId."')");
+		$raw = DB::statement("insert into company_mst(".$keyName.") 
+		values(".$companyData.")");
 		DB::commit();
 		
 		if($raw==1)
@@ -52,32 +55,21 @@ class CompanyModel extends Model
 	
 	/**
 	 * update data 
+	 * @param company_id,company-data and key of company-data
 	 * returns the status
 	*/
-	public function updateData($companyName,$companyDispName,$address1,$address2,$pincode,$panNo,$tinNo,$vatNo,$serviceTaxNO,$basicCurrencySymbol,$formalName,$noOfDecimalPoints,$currencySymbol,$isDisplay,$isDefault,$stateAbb,$cityId,$companyId)
+	public function updateData($companyData,$key,$companyId)
 	{
-		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
+		$keyValueString="";
+		for($data=0;$data<count($companyData);$data++)
+		{
+			$keyValueString=$keyValueString.$key[$data]."='".$companyData[$data]."',";
+		}
+		DB::beginTransaction();
 		$raw = DB::statement("update company_mst 
-		set company_name='".$companyName."',
-		company_display_name='".$companyDispName."',
-		address1='".$address1."',
-		address2='".$address2."',
-		pincode='".$pincode."',
-		pan='".$panNo."',
-		tin='".$tinNo."',
-		vat_no='".$vatNo."',
-		service_tax_no='".$serviceTaxNO."',
-		basic_currency_symbol='".$basicCurrencySymbol."',
-		formal_name='".$formalName."',
-		no_of_decimal_points='".$noOfDecimalPoints."',
-		currency_symbol='".$currencySymbol."',
-		is_display='".$isDisplay."',
-		is_default='".$isDefault."',
-		state_abb='".$stateAbb."',
-		city_id='".$cityId."',
-		updated_at='".$mytime."'
-		where company_id = ".$companyId);
+		set ".$keyValueString."updated_at='".$mytime."'
+		where company_id = '".$companyId."'");
 		DB::commit();
 		
 		if($raw==1)

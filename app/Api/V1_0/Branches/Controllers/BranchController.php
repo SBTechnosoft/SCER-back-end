@@ -45,13 +45,28 @@ class BranchController extends BaseController implements ContainerInterface
     public function store(Request $request)
     {
 		$this->request = $request;
-		$Processor = new BranchProcessor();
-		$branchPersistable = new BranchPersistable();		
-		$branchService= new BranchService();			
-		$branchPersistable = $Processor->createPersistable($this->request);
-		$branchService->create($branchPersistable);
-		$status = $branchService->insert($branchPersistable);
-		return $status;
+		// check the requested Http method
+		$requestMethod = $_SERVER['REQUEST_METHOD'];
+		// insert
+		if($requestMethod == 'POST')
+		{
+			$Processor = new BranchProcessor();
+			$branchPersistable = new BranchPersistable();		
+			$branchService= new BranchService();			
+			$branchPersistable = $Processor->createPersistable($this->request);
+			if($branchPersistable[0][0]=='[')
+			{
+				return $branchPersistable;
+			}
+			else
+			{
+				$status = $branchService->insert($branchPersistable);
+				return $status;
+			}
+		}
+		else{
+			return $status;
+		}
 	}
 	
 	/**
@@ -106,10 +121,21 @@ class BranchController extends BaseController implements ContainerInterface
 		$branchPersistable = new BranchPersistable();		
 		$branchService= new BranchService();			
 		$branchPersistable = $Processor->createPersistableChange($this->request,$branchId);
-		$branchService->create($branchPersistable);
-		$status = $branchService->update($branchPersistable);
-		return $status;
-    }
+		//here two array and string is return at a time
+		if($branchPersistable=="204: No Content Found For Update")
+		{
+			return $branchPersistable;
+		}
+		else if(is_array($branchPersistable))
+		{
+			$status = $branchService->update($branchPersistable);
+			return $status;
+		}
+		else
+		{
+			return $branchPersistable;
+		}
+	}
 	
     /**
      * Remove the specified resource from storage.

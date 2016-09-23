@@ -13,14 +13,14 @@ trait CompanyDispNamePropertyTrait
 	/**
 	 * @param int $companyDispName
 	 */
-	public function setCompanyDispName($companyDispName)
+	public function setCompanyDisplayName($companyDispName)
 	{
 		$this->companyDispName = $companyDispName;
 	}
 	/**
 	 * @return companyDispName
 	 */
-	public function getCompanyDispName()
+	public function getCompanyDisplayName()
 	{
 		return $this->companyDispName;
 	}

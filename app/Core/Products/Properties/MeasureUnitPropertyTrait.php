@@ -13,14 +13,14 @@ trait MeasureUnitPropertyTrait
 	/**
 	 * @param int $measureUnit
 	 */
-	public function setMeasureUnit($measureUnit)
+	public function setMeasurementUnit($measureUnit)
 	{
 		$this->measureUnit = $measureUnit;
 	}
 	/**
 	 * @return measureUnit
 	 */
-	public function getMeasureUnit()
+	public function getMeasurementUnit()
 	{
 		return $this->measureUnit;
 	}

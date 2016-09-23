@@ -45,13 +45,29 @@ class ProductController extends BaseController implements ContainerInterface
     public function store(Request $request)
     {
 		$this->request = $request;
-		$Processor = new ProductProcessor();
-		$productPersistable = new ProductPersistable();		
-		$productService= new ProductService();			
-		$productPersistable = $Processor->createPersistable($this->request);
-		$productService->create($productPersistable);
-		$status = $productService->insert($productPersistable);
-		return $status;
+		// check the requested Http method
+		$requestMethod = $_SERVER['REQUEST_METHOD'];
+		// insert
+		if($requestMethod == 'POST')
+		{
+			$Processor = new ProductProcessor();
+			$productPersistable = new ProductPersistable();		
+			$productService= new ProductService();			
+			$productPersistable = $Processor->createPersistable($this->request);
+			if($productPersistable[0][0]=='[')
+			{
+				return $productPersistable;
+			}
+			else
+			{
+				$status = $productService->insert($productPersistable);
+				return $status;
+			}
+		}
+		else
+		{
+			return $status;
+		}
 	}
 	
 	/**
@@ -120,10 +136,20 @@ class ProductController extends BaseController implements ContainerInterface
 		$productPersistable = new ProductPersistable();		
 		$productService= new ProductService();			
 		$productPersistable = $Processor->createPersistableChange($this->request,$productId);
-		$productService->create($productPersistable);
-		$status = $productService->update($productPersistable);
-		return $status;
-    }
+		if($productPersistable=="204: No Content Found For Update")
+		{
+			return $productPersistable;
+		}
+		else if(is_array($productPersistable))
+		{
+			$status = $productService->update($productPersistable);
+			return $status;
+		}
+		else
+		{
+			return $productPersistable;
+		}
+	}
 	
     /**
      * Remove the specified resource from storage.

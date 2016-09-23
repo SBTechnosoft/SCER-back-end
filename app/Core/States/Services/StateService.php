@@ -32,12 +32,7 @@ class StateService extends AbstractService
     /**
      * @param StatePersistable $persistable
      */
-    public function create(StatePersistable $persistable)
-    {
-		return "create method of StateService";
-		
-    }
-	
+    
 	 /**
      * get the data from persistable object and call the model for database insertion opertation
      * @param StatePersistable $persistable
@@ -100,17 +95,25 @@ class StateService extends AbstractService
      * get the data from persistable object and call the model for database update opertation
      * @param StatePersistable $persistable
      * @param updateOptions $options [optional]
+	 * parameter is in array form.
      * @return status
      */
-    public function update(StatePersistable $persistable, UpdateOptions $options = null)
+    public function update()
     {
-	    $stateAbb = $persistable->getStateAbb();		
-		$stateName = $persistable->getName();
-		$isDisplay = $persistable->getIsDisplay();
-		$stateModel = new StateModel();
-		
+		$stateArray = array();
+		$getData = array();
+		$funcName = array();
+		$stateArray = func_get_arg(0);
+		for($data=0;$data<count($stateArray);$data++)
+		{
+			$funcName[$data] = $stateArray[$data][0]->getName();
+			$getData[$data] = $stateArray[$data][0]->$funcName[$data]();
+			$keyName[$data] = $stateArray[$data][0]->getkey();
+		}
+		$stateAbb = $stateArray[0][0]->getStateAbb();
 		//data pass to the model object for update
-		$status = $stateModel->updateData($stateAbb,$stateName,$isDisplay);
+		$stateModel = new StateModel();
+		$status = $stateModel->updateData($getData,$keyName,$stateAbb);
 		return $status;		
     }
 

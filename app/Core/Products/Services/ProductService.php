@@ -43,18 +43,22 @@ class ProductService extends AbstractService
      * @param ProductPersistable $persistable
      * @return status
      */
-	public function insert(ProductPersistable $persistable)
+	public function insert()
 	{
-		$productName = $persistable->getName();
-		$isDisplay = $persistable->getIsDisplay();
-		$companyId = $persistable->getCompanyId();
-		$getMeasureUnit = $persistable->getMeasureUnit();
-		$productCatId = $persistable->getId();
-		$branchId = $persistable->getBranchId();
-		$productGrpId = $persistable->getProductGrpId();
-		
+		$productArray = array();
+		$getData = array();
+		$keyName = array();
+		$funcName = array();
+		$productArray = func_get_arg(0);
+		for($data=0;$data<count($productArray);$data++)
+		{
+			$funcName[$data] = $productArray[$data][0]->getName();
+			$getData[$data] = $productArray[$data][0]->$funcName[$data]();
+			$keyName[$data] = $productArray[$data][0]->getkey();
+		}
+		//data pass to the model object for insert
 		$productModel = new ProductModel();
-		$status = $productModel->insertData($productName,$isDisplay,$companyId,$getMeasureUnit,$productCatId,$branchId,$productGrpId);
+		$status = $productModel->insertData($getData,$keyName);
 		return $status;
 	}
 	
@@ -182,21 +186,24 @@ class ProductService extends AbstractService
      * @param updateOptions $options [optional]
      * @return status
      */
-    public function update(ProductPersistable $persistable, UpdateOptions $options = null)
+    public function update()
     {
-		$productName = $persistable->getName();
-		$isDisplay = $persistable->getIsDisplay();
-		$productCatId = $persistable->getId();
-		$getMeasureUnit = $persistable->getMeasureUnit();
-		$companyId = $persistable->getCompanyId();
-		$productId = $persistable->getProductId();
-		$branchId = $persistable->getBranchId();
-		$productGrpId = $persistable->getProductGrpId();
+		$productArray = array();
+		$getData = array();
+		$funcName = array();
+		$productArray = func_get_arg(0);
+		for($data=0;$data<count($productArray);$data++)
+		{
+			$funcName[$data] = $productArray[$data][0]->getName();
+			$getData[$data] = $productArray[$data][0]->$funcName[$data]();
+			$keyName[$data] = $productArray[$data][0]->getkey();
+		}
+		$productId = $productArray[0][0]->getProductId();
+		//data pass to the model object for update
 		$productModel = new ProductModel();
-	    
-		$status = $productModel->updateData($productName,$isDisplay,$companyId,$productId,$productCatId,$getMeasureUnit,$branchId,$productGrpId);
-		return $status;		
-    }
+		$status = $productModel->updateData($getData,$keyName,$productId);
+		return $status;
+	}
 
     /**
      * get and invoke method is of Container Interface method

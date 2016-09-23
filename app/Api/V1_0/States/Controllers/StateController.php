@@ -44,13 +44,29 @@ class StateController extends BaseController implements ContainerInterface
     public function store(Request $request)
     {
 		$this->request = $request;
-		$Processor = new StateProcessor();
-		$statePersistable = new StatePersistable();		
-		$stateService= new StateService();			
-		$statePersistable = $Processor->createPersistable($this->request);
-		$stateService->create($statePersistable);
-		$status = $stateService->insert($statePersistable);
-		return $status;
+		// check the requested Http method
+		$requestMethod = $_SERVER['REQUEST_METHOD'];
+		// insert
+		if($requestMethod == 'POST')
+		{
+			$Processor = new StateProcessor();
+			$statePersistable = new StatePersistable();		
+			$stateService= new StateService();			
+			$statePersistable = $Processor->createPersistable($this->request);
+			if(is_array($statePersistable))
+			{
+				return $statePersistable;
+			}
+			else
+			{
+				$status = $stateService->insert($statePersistable);
+				return $status;
+			}
+		}
+		else
+		{
+			return $status;
+		}
 	}
 	
 	/**
@@ -85,10 +101,20 @@ class StateController extends BaseController implements ContainerInterface
 		$statePersistable = new StatePersistable();		
 		$stateService= new StateService();			
 		$statePersistable = $Processor->createPersistableChange($this->request,$stateAbb);
-		$stateService->create($statePersistable);
-		$status = $stateService->update($statePersistable);
-		return $status;
-    }
+		if($statePersistable=="204: No Content Found For Update")
+		{
+			return $statePersistable;
+		}
+		else if(is_array($statePersistable))
+		{
+			$status = $stateService->update($statePersistable);
+			return $status;
+		}
+		else
+		{
+			return $statePersistable;
+		}
+	}
 	
     /**
      * Remove the specified resource from storage.
@@ -102,7 +128,6 @@ class StateController extends BaseController implements ContainerInterface
 		$statePersistable = new StatePersistable();		
 		$stateService= new StateService();			
 		$statePersistable = $Processor->createPersistableChange($this->request,$stateAbb);
-		$stateService->create($statePersistable);
 		$status = $stateService->delete($statePersistable);
 		return $status;
     }

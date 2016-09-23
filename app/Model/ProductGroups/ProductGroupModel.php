@@ -13,15 +13,33 @@ class ProductGroupModel extends Model
 	
 	/**
 	 * insert data 
-	 * @param  state_name,is_display and state_abb
+	 * @param  array
 	 * returns the status
 	*/
-	public function insertData($productParentGrpId,$productGrpDesc,$isDisplay,$productGrpName)
+	public function insertData()
 	{
+		$getProductGrpData = array();
+		$getProductGrpKey = array();
+		$getProductGrpData = func_get_arg(0);
+		$getProductGrpKey = func_get_arg(1);
+		$productGrpData="";
+		$keyName = "";
+		for($data=0;$data<count($getProductGrpData);$data++)
+		{
+			if($data == (count($getProductGrpData)-1))
+			{
+				$productGrpData = $productGrpData."'".$getProductGrpData[$data]."'";
+				$keyName =$keyName.$getProductGrpKey[$data];
+			}
+			else
+			{
+				$productGrpData = $productGrpData."'".$getProductGrpData[$data]."',";
+				$keyName =$keyName.$getProductGrpKey[$data].",";
+			}
+		}
 		DB::beginTransaction();
-		$raw = DB::statement("insert 
-		into product_group_mst(product_group_parent_id,product_group_desc,is_display,product_group_name)
-		values('".$productParentGrpId."', '".$productGrpDesc."','".$isDisplay."','".$productGrpName."')");
+		$raw = DB::statement("insert into product_group_mst(".$keyName.") 
+		values(".$productGrpData.")");
 		DB::commit();
 		
 		if($raw==1)
@@ -38,12 +56,17 @@ class ProductGroupModel extends Model
 	 * @param state_abb,state_nameand is_display
 	 * returns the status
 	*/
-	public function updateData($productParentGrpId,$productGrpDesc,$isDisplay,$productGrpName,$productGrpId)
+	public function updateData($productGrpData,$key,$productGrpId)
 	{
-		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
+		$keyValueString="";
+		for($data=0;$data<count($productGrpData);$data++)
+		{
+			$keyValueString=$keyValueString.$key[$data]."='".$productGrpData[$data]."',";
+		}
+		DB::beginTransaction();
 		$raw = DB::statement("update product_group_mst 
-		set product_group_name='".$productGrpName."',product_group_desc='".$productGrpDesc."',product_group_parent_id='".$productParentGrpId."',is_display='".$isDisplay."',updated_at='".$mytime."'
+		set ".$keyValueString."updated_at='".$mytime."'
 		where product_group_id = '".$productGrpId."'");
 		DB::commit();
 		

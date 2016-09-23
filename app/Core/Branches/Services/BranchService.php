@@ -43,21 +43,22 @@ class BranchService extends AbstractService
      * @param BranchPersistable $persistable
      * @return status
      */
-	public function insert(BranchPersistable $persistable)
+	public function insert()
 	{
-		$branchName = $persistable->getName();
-		$address1 = $persistable->getAddress1();
-		$address2 = $persistable->getAddress2();
-		$pincode = $persistable->getPincode();
-		$isDisplay = $persistable->getIsDisplay();
-		$isDefault = $persistable->getIsDefault();
-		$stateAbb = $persistable->getStateAbb();
-		$cityId = $persistable->getId();
-		$companyId = $persistable->getCompanyId();
+		$branchArray = array();
+		$getData = array();
+		$keyName = array();
+		$funcName = array();
+		$branchArray = func_get_arg(0);
+		for($data=0;$data<count($branchArray);$data++)
+		{
+			$funcName[$data] = $branchArray[$data][0]->getName();
+			$getData[$data] = $branchArray[$data][0]->$funcName[$data]();
+			$keyName[$data] = $branchArray[$data][0]->getkey();
+		}
+		//data pass to the model object for insert
 		$branchModel = new BranchModel();
-		
-		//data pass to the model object for insertion
-		$status = $branchModel->insertData($branchName,$address1,$address2,$pincode,$isDisplay,$isDefault,$stateAbb,$cityId,$companyId);
+		$status = $branchModel->insertData($getData,$keyName);
 		return $status;
 	}
 	
@@ -125,26 +126,27 @@ class BranchService extends AbstractService
      * get the data from persistable object and call the model for database update opertation
      * @param BranchPersistable $persistable
      * @param updateOptions $options [optional]
+	 * parameter is in array form.
      * @return status
      */
-    public function update(BranchPersistable $persistable, UpdateOptions $options = null)
+    public function update()
     {
-		$branchName = $persistable->getName();
-		$address1 = $persistable->getAddress1();
-		$address2 = $persistable->getAddress2();
-		$pincode = $persistable->getPincode();
-		$isDisplay = $persistable->getIsDisplay();
-		$isDefault = $persistable->getIsDefault();
-		$stateAbb = $persistable->getStateAbb();
-		$cityId = $persistable->getId();
-		$companyId = $persistable->getCompanyId();
-		$branchId = $persistable->getBranchId();
+		$branchArray = array();
+		$getData = array();
+		$funcName = array();
+		$branchArray = func_get_arg(0);
+		for($data=0;$data<count($branchArray);$data++)
+		{
+			$funcName[$data] = $branchArray[$data][0]->getName();
+			$getData[$data] = $branchArray[$data][0]->$funcName[$data]();
+			$keyName[$data] = $branchArray[$data][0]->getkey();
+		}
+		$branchId = $branchArray[0][0]->getBranchId();
+		// data pass to the model object for update
 		$branchModel = new BranchModel();
-	    
-		//data pass to the model object for update
-		$status = $branchModel->updateData($branchName,$address1,$address2,$pincode,$isDisplay,$isDefault,$stateAbb,$cityId,$companyId,$branchId);
-		return $status;		
-    }
+		$status = $branchModel->updateData($getData,$keyName,$branchId);
+		return $status;	
+	}
 
     /**
      * get and invoke method is of Container Interface method

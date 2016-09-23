@@ -29,28 +29,27 @@ class ProductCategoryService extends AbstractService
 		echo "init";
     }
 	
-    /**
-     * @param ProductCategoryPersistable $persistable
-     */
-    public function create(ProductCategoryPersistable $persistable)
-    {
-		return "create method of ProductCategoryService";
-		
-    }
-	
 	 /**
      * get the data from persistable object and call the model for database insertion opertation
-     * @param BranchPersistable $persistable
+     * @param array
      * @return status
      */
-	public function insert(ProductCategoryPersistable $persistable)
+	public function insert()
 	{
-		$productParentCatId = $persistable->getProductParentCatId();
-		$productCatDesc = $persistable->getProductCatDesc();
-		$isDisplay = $persistable->getIsDisplay();
-		$productCatName = $persistable->getName();
+		$productCatArray = array();
+		$getData = array();
+		$keyName = array();
+		$funcName = array();
+		$productCatArray = func_get_arg(0);
+		for($data=0;$data<count($productCatArray);$data++)
+		{
+			$funcName[$data] = $productCatArray[$data][0]->getName();
+			$getData[$data] = $productCatArray[$data][0]->$funcName[$data]();
+			$keyName[$data] = $productCatArray[$data][0]->getkey();
+		}
+		//data pass to the model object for insert
 		$productCatModel = new ProductCategoryModel();
-		$status = $productCatModel->insertData($productParentCatId,$productCatDesc,$isDisplay,$productCatName);
+		$status = $productCatModel->insertData($getData,$keyName);
 		return $status;
 	}
 	
@@ -101,17 +100,24 @@ class ProductCategoryService extends AbstractService
      * @param updateOptions $options [optional]
      * @return status
      */
-    public function update(ProductCategoryPersistable $persistable, UpdateOptions $options = null)
+    public function update()
     {
-	   $productParentCatId = $persistable->getProductParentCatId();
-		$productCatDesc = $persistable->getProductCatDesc();
-		$isDisplay = $persistable->getIsDisplay();
-		$productCatName = $persistable->getName();
-		$productCatId = $persistable->getId();
+		$productCatArray = array();
+		$getData = array();
+		$funcName = array();
+		$productCatArray = func_get_arg(0);
+		for($data=0;$data<count($productCatArray);$data++)
+		{
+			$funcName[$data] = $productCatArray[$data][0]->getName();
+			$getData[$data] = $productCatArray[$data][0]->$funcName[$data]();
+			$keyName[$data] = $productCatArray[$data][0]->getkey();
+		}
+		$productCatId = $productCatArray[0][0]->getProductCatId();
+		//data pass to the model object for update
 		$productCategoryModel = new ProductCategoryModel();
-		$status = $productCategoryModel->updateData($productParentCatId,$productCatDesc,$isDisplay,$productCatName,$productCatId);
-		return $status;		
-    }
+		$status = $productCategoryModel->updateData($getData,$keyName,$productCatId);
+		return $status;
+	}
 
     /**
      * get and invoke method is of Container Interface method

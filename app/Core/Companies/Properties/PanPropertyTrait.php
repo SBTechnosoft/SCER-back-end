@@ -13,14 +13,14 @@ trait PanPropertyTrait
 	/**
 	 * @param int $pan
 	 */
-	public function setPanNo($pan)
+	public function setPan($pan)
 	{
 		$this->pan = $pan;
 	}
 	/**
 	 * @return pan
 	 */
-	public function getPanNo()
+	public function getPan()
 	{
 		return $this->pan;
 	}
