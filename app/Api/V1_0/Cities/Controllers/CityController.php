@@ -44,13 +44,29 @@ class CityController extends BaseController implements ContainerInterface
     public function store(Request $request)
     {
 		$this->request = $request;
-		$Processor = new CityProcessor();
-		$cityPersistable = new CityPersistable();		
-		$cityService= new CityService();			
-		$cityPersistable = $Processor->createPersistable($this->request);
-		$cityService->create($cityPersistable);
-		$status = $cityService->insert($cityPersistable);
-		return $status;
+		// check the requested Http method
+		$requestMethod = $_SERVER['REQUEST_METHOD'];
+		// insert
+		if($requestMethod == 'POST')
+		{
+			$Processor = new CityProcessor();
+			$cityPersistable = new CityPersistable();		
+			$cityService= new CityService();			
+			$cityPersistable = $Processor->createPersistable($this->request);
+			if(is_array($cityPersistable))
+			{
+				return $cityPersistable;
+			}
+			else
+			{
+				$status = $cityService->insert($cityPersistable);
+				return $status;
+			}
+		}
+		else
+		{
+			return $status;
+		}
 	}
 	
 	/**
@@ -98,10 +114,20 @@ class CityController extends BaseController implements ContainerInterface
 		$cityPersistable = new CityPersistable();		
 		$cityService= new CityService();			
 		$cityPersistable = $Processor->createPersistableChange($this->request,$cityId);
-		$cityService->create($cityPersistable);
-		$status = $cityService->update($cityPersistable);
-		return $status;
-    }
+		if($cityPersistable=="204: No Content Found For Update")
+		{
+			return $cityPersistable;
+		}
+		else if(is_array($cityPersistable))
+		{
+			$status = $cityService->update($cityPersistable);
+			return $status;
+		}
+		else
+		{
+			return $cityPersistable;
+		}
+	}
 	
     /**
      * Remove the specified resource from storage.
@@ -116,7 +142,6 @@ class CityController extends BaseController implements ContainerInterface
 		$cityPersistable = new CityPersistable();		
 		$cityService= new CityService();			
 		$cityPersistable = $Processor->createPersistableChange($this->request,$cityId);
-		$cityService->create($cityPersistable);
 		$status = $cityService->delete($cityPersistable);
 		return $status;
     }

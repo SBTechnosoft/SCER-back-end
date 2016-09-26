@@ -122,16 +122,24 @@ class CityService extends AbstractService
      * @param updateOptions $options [optional]
      * @return status
      */
-    public function update(CityPersistable $persistable, UpdateOptions $options = null)
+    public function update()
     {
-	    $cityName = $persistable->getName();		
-		$stateAbb = $persistable->getStateAbb();
-		$isDisplay = $persistable->getIsDisplay();
-		$cityId = $persistable->getId();
+		$cityArray = array();
+		$getData = array();
+		$funcName = array();
+		$cityArray = func_get_arg(0);
+		for($data=0;$data<count($cityArray);$data++)
+		{
+			$funcName[$data] = $cityArray[$data][0]->getName();
+			$getData[$data] = $cityArray[$data][0]->$funcName[$data]();
+			$keyName[$data] = $cityArray[$data][0]->getkey();
+		}
+		$cityId = $cityArray[0][0]->getCityId();
+		//data pass to the model object for update
 		$cityModel = new CityModel();
-		$status = $cityModel->updateData($cityName,$stateAbb,$isDisplay,$cityId);
-		return $status;		
-    }
+		$status = $cityModel->updateData($getData,$keyName,$cityId);
+		return $status;
+	}
 
     /**
      * get and invoke method is of Container Interface method

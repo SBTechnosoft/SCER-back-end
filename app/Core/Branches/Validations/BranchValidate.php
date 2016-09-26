@@ -13,10 +13,10 @@ class BranchValidate
 	public function validate($request)
 	{
 		$rules = array(
-			'branch_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 -.#&_()*\'`]+$/', 
-			'address1'=>'between:1,35|regex:/^[a-zA-Z0-9 *$,\\/\']+$/',
-			'address2'=>'between:1,35|regex:/^[a-zA-Z0-9 *$,\\/\']+$/',
-			'pincode'=>'between:6,10',
+			'branch_name'=> 'between:1,35|regex:/^[a-zA-Z &-_`#().\']+$/', 
+			'address1'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
+			'address2'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
+			'pincode'=>'between:6,10|regex:/^[0-9]+$/',
 		);
 		$messages = [
 			'branch_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
@@ -26,6 +26,7 @@ class BranchValidate
 			'address2.between' => 'StringLengthException :Enter the :attribute less then 35 character',
 			'address2.regex' => 'address2 invalid',
 			'pincode.between' => 'NumberFormatException :Enter the :attribute between 6 and 10 character',
+			'pincode.regex' => 'pincode',
 		];
 		$validator = Validator::make($request,$rules,$messages);
 		if ($validator->fails()) {
@@ -45,11 +46,10 @@ class BranchValidate
 	}
 	public function validateUpdateData($keyName,$value,$request)
 	{
-		$validationArray = array(
-			'branch_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 -.#&_()*\'`]+$/', 
-			'address1'=>'between:1,35|regex:/^[a-zA-Z0-9 *$,\\/\']+$/',
-			'address2'=>'between:1,35|regex:/^[a-zA-Z0-9 *$,\\/\']+$/',
-			'pincode'=>'between:6,10');
+		$val'branch_name'=> 'between:1,35|regex:/^[a-zA-Z &-_`#().\']+$/', 
+			'address1'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
+			'address2'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
+			'pincode'=>'between:6,10|regex:/^[0-9]+$/');
 		$rules =array();
 		foreach ($validationArray as $key => $value) 
 		{
@@ -72,6 +72,7 @@ class BranchValidate
 				'address2.between' => 'StringLengthException :Enter the :attribute less then 35 character',
 				'address2.regex' => 'address2 invalid',
 				'pincode.between' => 'NumberFormatException :Enter the :attribute between 6 and 10 character',
+				'pincode.regex' => 'pincode',
 			];
 			$validator = Validator::make($request,$rules,$messages);
 			

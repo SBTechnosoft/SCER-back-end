@@ -14,14 +14,13 @@ class StateValidate
 	{
 		$rules = array(
 			'state_abb'=> "required|max:5|min:5|unique:state_mst", 
-			'state_name'=>"required|between:1,35|regex:/^[a-zA-Z &-]+$/",
+			'state_name'=>"between:1,35|regex:/^[a-zA-Z &-]+$/",
         );
 		$messages = [
 			'state_abb.required' => 'NullPointerException :Enter the state ISO code',
 			'state_abb.max' => 'NumberFormatException :Enter the 5 character state ISO code ',
 			'state_abb.min' => 'NumberFormatException :Enter the 5 character state ISO code ',
 			'state_abb.unique' => 'SqlException/UniqueKeyViolation :Enter the unique state ISO code',
-			'state_name.required' => 'NullPointerException :Enter the :attribute',
 			'state_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
 			'state_name.regex' => 'regular expression',
 		];

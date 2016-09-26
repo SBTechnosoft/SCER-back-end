@@ -14,7 +14,7 @@ class ProductGroupValidate
 	public function validate($request)
 	{
 		$rules = array(
-			'product_group_name'=> "between:1,35|regex:/^[a-zA-Z0-9 ,-\/_`().\']+$/", 
+			'product_group_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 &,-\/_`#().\']+$/', 
 			// 'product_cat_desc'=>"between:1,50",
         );
 		$messages = [
@@ -44,7 +44,7 @@ class ProductGroupValidate
 	public function validateUpdateData($keyName,$value,$request)
 	{
 		$validationArray = array(
-			'product_group_name'=> "between:1,35|regex:/^[a-zA-Z0-9 ,-_`&()\.]+$/", 
+			'product_group_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 &,-\/_`#().\']+$/', 
 			// 'product_cat_desc'=>"between:1,50",
 		);
 		$rules = array();

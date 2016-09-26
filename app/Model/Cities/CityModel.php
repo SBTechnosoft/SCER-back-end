@@ -35,18 +35,20 @@ class CityModel extends Model
 	
 	/**
 	 * update data 
-	 * @param city_name,state_abb and is_display
+	 * @param city-data,key of city-data  and city-id
 	 * returns the status
 	*/
-	public function updateData($cityName,$stateAbb,$isDisplay,$cityId)
+	public function updateData($cityData,$key,$cityId)
 	{
-		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
+		$keyValueString="";
+		for($data=0;$data<count($cityData);$data++)
+		{
+			$keyValueString=$keyValueString.$key[$data]."='".$cityData[$data]."',";
+		}
+		DB::beginTransaction();
 		$raw = DB::statement("update city_mst 
-		set city_name='".$cityName."',
-		is_display='".$isDisplay."',
-		state_abb='".$stateAbb."',
-		updated_at='".$mytime."'
+		set ".$keyValueString."updated_at='".$mytime."'
 		where city_id = '".$cityId."'");
 		DB::commit();
 		

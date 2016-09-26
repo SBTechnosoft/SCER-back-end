@@ -8,13 +8,12 @@ use Illuminate\Support\Facades\Route;
 /**
   * @author Reema Patel<reema.p@siliconbrain.in>
   */
-  //a-zA-Z0-9 ,-_`&().\'
 class ProductValidate
 {
 	public function validate($request)
 	{
 		$rules = array(
-			'product_name'=> "between:1,35|regex:/^[a-zA-Z0-9 ,-\/_`().\']+$/", 
+			'product_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 &,-\/_`#().\']+$/', 
 			// 'measurement_unit'=>"between:1,15|regex:/^[a-z ]+$/",
         );
 		$messages = [
@@ -44,7 +43,7 @@ class ProductValidate
 	public function validateUpdateData($keyName,$value)
 	{
 		$validationArray = array(
-			'product_name'=> "between:1,35|regex:/^[a-zA-Z0-9 ,-_`&()\.]+$/", 
+			'product_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 &,-\/_`#().\']+$/', 
 			// 'measurement_unit'=>"between:1,15|regex:/^[a-z ]+$/"
 		);
 		$rules = array();

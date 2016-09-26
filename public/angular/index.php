@@ -124,7 +124,7 @@ include ('connection.php');
 				// formdata.append('is_display',$scope.formAdata.is_display);
 				
 				//city
-				// $scope.formAdata.city_name = " Ananddd ";
+				// $scope.formAdata.city_name = " Anan1dd ";
 				// $scope.formAdata.is_display = 'yes';
 				// $scope.formAdata.state_abb = 'IN-GJ';
 				
@@ -133,11 +133,11 @@ include ('connection.php');
 				// formdata.append('is_display',$scope.formAdata.is_display);
 				
 				//branch
-				// $scope.formAdata.branch_name = "abcccc11#11";
+				// $scope.formAdata.branch_name = "abcc!cc&-_`#().\'11";
 				// $scope.formAdata.branch_name = "abcdfc`dfd dd'ddddd#sddd";
-				// $scope.formAdata.address1 ="35,abc,abc";
-				// $scope.formAdata.address2 = "sdgdsg,gdsdagdg11'abcd'sc";
-				// $scope.formAdata.pincode = 324699;
+				// $scope.formAdata.address1 ="35,abc,a*,-\/_`#\[\]().\'bc";
+				// $scope.formAdata.address2 = "sdg*,-\/_`#\[\]().\'d,gdsdg11'abd's";
+				// $scope.formAdata.pincode = 324696;
 				// $scope.formAdata.is_display = 'no';
 				// $scope.formAdata.is_default = 'not';
 				// $scope.formAdata.state_abb= 'IN-AP';
@@ -156,18 +156,18 @@ include ('connection.php');
 				
 				//company
 				// $scope.formAdata.company_name = "reema2232323222222222222222222222222222222222222";
-				// $scope.formAdata.company_name = " shllbaaaaa-.#&_()*'`aadks ";
-				// $scope.formAdata.company_name = " shll&baaaaaaa.dks "; //Problem : *+ allow 
-				// $scope.formAdata.company_display_name = " '`rc.fdg'a ";
-				// $scope.formAdata.address1 =" sdxcz*,-_`#&()/[]fs.' ";
+				// $scope.formAdata.company_name = " 1sh1l lbaaaaa-&_().\'aadks "; //0-9 not allow(error:allow)
+				// $scope.formAdata.company_name = " shll&baaaaaaa.dks ";
+				// $scope.formAdata.company_display_name = " '`1r2c a-zA-Z -#&)\'`.a ";
+				// $scope.formAdata.address1 =" sdx cz99 *,-\/_`#\[\]().\'fs.' ";
 				// $scope.formAdata.address2 = " aEbc abc*dfghjd/ih'b1 ";
 				// $scope.formAdata.pincode = 311411;
 				// $scope.formAdata.pan= ' qqqas1122a ';
 				// $scope.formAdata.tin= ' 42aa3dgg778 ';
 				// $scope.formAdata.vat_no= ' aadgg78w1a0 ';
-				// $scope.formAdata.service_tax_no = ' 71j01rg778a22b011 ';
-				// $scope.formAdata.basic_currency_symbol= " DLR ";
-				// $scope.formAdata.formal_name = " qgfrdfrtgfrtgfrtgfgfffff ";
+				// $scope.formAdata.service_tax_no = ' 71j0rg778a22b01 ';
+				// $scope.formAdata.basic_currency_symbol= " ALR ";
+				// $scope.formAdata.formal_name = " qgfrd-&_().\'frtgfrtg frtgfgfffff ";
 				// $scope.formAdata.no_of_decimal_points = 4;
 				// $scope.formAdata.currency_symbol = ' prefix ';
 				// $scope.formAdata.is_display = ' no ';
@@ -194,7 +194,7 @@ include ('connection.php');
 				// formdata.append('city_id',$scope.formAdata.city_id);
 				
 				//productCategory
-				// $scope.formAdata.productCatName = "abc12  ,-\/_`().\'34";
+				// $scope.formAdata.productCatName = "abc12  ,-_`#().\'34";
 				// $scope.formAdata.product_cat_desc = "abcdddddcc ddd";
 				// $scope.formAdata.is_display = 'yes';
 				// $scope.formAdata.product_parent_cat_id = 1;
@@ -205,18 +205,18 @@ include ('connection.php');
 				// formdata.append('product_parent_cat_id',$scope.formAdata.product_parent_cat_id);
 				
 				//productGroup
-				$scope.formAdata.product_group_name = "abc12  ,-\/_`().\'34";
-				$scope.formAdata.product_group_desc = "abcdddd'dd''dd";
-				$scope.formAdata.is_display = 'no';
-				$scope.formAdata.product_group_parent_id = 0;
+				// $scope.formAdata.product_group_name = "\a&b#c12  ,-_`#().\'34";
+				// $scope.formAdata.product_group_desc = "abcdddd'dd''dd";
+				// $scope.formAdata.is_display = 'no';
+				// $scope.formAdata.product_group_parent_id = 0;
 				
-				formdata.append('product_group_name',$scope.formAdata.product_group_name);
-				formdata.append('product_group_desc',$scope.formAdata.product_group_desc);
-				formdata.append('is_display',$scope.formAdata.is_display);
-				formdata.append('product_group_parent_id',$scope.formAdata.product_group_parent_id);
+				// formdata.append('product_group_name',$scope.formAdata.product_group_name);
+				// formdata.append('product_group_desc',$scope.formAdata.product_group_desc);
+				// formdata.append('is_display',$scope.formAdata.is_display);
+				// formdata.append('product_group_parent_id',$scope.formAdata.product_group_parent_id);
 				
 				//product
-				// $scope.formAdata.product_name = "abc12  ,-\/_`().\'34";
+				// $scope.formAdata.product_name = "abc12 ,-\/_`#(.34";
 				// $scope.formAdata.is_display = 'yes';
 				// $scope.formAdata.measurement_unit='litre';
 				// $scope.formAdata.product_cat_id='1';
@@ -236,7 +236,7 @@ include ('connection.php');
 				// var productGrpId = 2;
 				// var productCatId = 13;
 				// var companyId=156;
-				// var cityId = 1;
+				// var cityId = 2;
 				// var stateAbb = "IN-GJ";
 				// var branchId = 2;
 				// var id = 42;

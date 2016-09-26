@@ -6,6 +6,8 @@ use ERP\Core\Cities\Persistables\CityPersistable;
 use Illuminate\Http\Request;
 use ERP\Http\Requests;
 use Illuminate\Http\Response;
+use ERP\Core\Cities\Validations\CityValidate;
+use ERP\Api\V1_0\Cities\Transformers\CityTransformer;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -25,40 +27,114 @@ class CityProcessor extends BaseProcessor
      */	
     public function createPersistable(Request $request)
 	{	
-		$this->request = $request;	
-		// check the requested Http method
-		$requestMethod = $_SERVER['REQUEST_METHOD'];
-	
-		// insert
-		if($requestMethod == 'POST')
+		$this->request = $request;
+		//trim an input 
+		$cityTransformer = new CityTransformer();
+		$tRequest = $cityTransformer->trimInsertData($this->request);
+		
+		//get data from trim array
+		$tStateAbb = $tRequest['state_abb'];
+		$tCityName = $tRequest['city_name'];
+		$tIsDisplay = $tRequest['is_display'];
+		
+		//validation
+		$cityValidate = new CityValidate();
+		$status = $cityValidate->validate($tRequest);
+		
+		//if form-data is valid then return status 'Success' otherwise return with error message
+		if($status=="Success")
 		{
-			$cityName = $request->input('city_name'); 
-			$isDisplay = $request->input('is_display'); 			
-			$stateAbb = $request->input('state_abb'); 			
 			$cityPersistable = new CityPersistable();		
-			$cityPersistable->setName($cityName);		 
-			$cityPersistable->setIsDisplay($isDisplay);		 
-			$cityPersistable->setStateAbb($stateAbb);		 
+			$cityPersistable->setName($tCityName);		 
+			$cityPersistable->setStateAbb($tStateAbb);		 
+			$cityPersistable->setIsDisplay($tIsDisplay);
 			return $cityPersistable;	
 		}		
-		else{	
-		}		
-    }
+		else
+		{
+			return $status;
+		}
+	}
 	public function createPersistableChange(Request $request,$cityId)
 	{
+		$errorCount=0;
+		$errorStatus=array();
+		$flag=0;
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
 		// update
 		if($requestMethod == 'POST')
 		{
-			$cityName = $request->input('city_name'); 
-			$stateAbb= $request->input('state_abb'); 
-			$isDisplay= $request->input('is_display'); 
-			$cityPersistable = new CityPersistable();		
-			$cityPersistable->setName($cityName);		 
-			$cityPersistable->setStateAbb($stateAbb);		 
-			$cityPersistable->setIsDisplay($isDisplay);		 
-			$cityPersistable->setId($cityId);		 
-			return $cityPersistable;
+			$cityPersistable;
+			$cityArray = array();
+			$cityValidate = new CityValidate();
+			$status;
+			//if data is not available in update request
+			if(count($_POST)==0)
+			{
+				$status = "204: No Content Found For Update";
+				return $status;
+			}
+			//data is avalilable for update
+			else
+			{
+				for($data=0;$data<count($_POST);$data++)
+				{
+					//data get from body
+					$cityPersistable = new CityPersistable();
+					$value[$data] = $_POST[array_keys($_POST)[$data]];
+					$key[$data] = array_keys($_POST)[$data];
+					
+					//trim an input 
+					$cityTransformer = new CityTransformer();
+					$tRequest = $cityTransformer->trimUpdateData($key[$data],$value[$data]);
+					
+					//get key value from trim array
+					$tKeyValue[$data] = array_keys($tRequest[0])[0];
+					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
+					
+					//validation
+					$status = $cityValidate->validateUpdateData($key[$data],$value[$data],$tRequest);
+					//enter data is valid(one data validate status return)
+					if($status=="Success")
+					{
+						//flag=0...then data is valid(consider one data at a time)
+						if($flag==0)
+						{
+							$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
+							//make function name dynamically
+							$setFuncName = 'set'.$str;
+							$getFuncName[$data] = 'get'.$str;
+							$cityPersistable->$setFuncName($tValue[$data]);
+							$cityPersistable->setName($getFuncName[$data]);
+							$cityPersistable->setKey($key[$data]);
+							$cityPersistable->setCityId($cityId);
+							$cityArray[$data] = array($cityPersistable);
+						}
+					}
+					//enter data is not valid
+					else
+					{
+						//if flag==1 then enter data is not valid ..so error return(consider one data at a time)
+						$flag=1;
+						if(!empty($status[0]))
+						{
+							$errorStatus[$errorCount]=$status[0];
+							$errorCount++;
+						}
+					}
+					if($data==(count($_POST)-1))
+					{
+						if($flag==1)
+						{
+							return json_encode($errorStatus);
+						}
+						else
+						{
+							return $cityArray;
+						}
+					}
+				}
+			}
 		}
 		//delete
 		else if($requestMethod == 'DELETE')

@@ -65,10 +65,10 @@ class CompanyController extends BaseController implements ContainerInterface
 				return $status;
 			}
 		}
-		else
-		{
-			return $status;
-		}
+		// else
+		// {
+			// return $status;
+		// }
 	}
 	
 	/**
