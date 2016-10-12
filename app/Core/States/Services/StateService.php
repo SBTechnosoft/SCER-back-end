@@ -38,15 +38,22 @@ class StateService extends AbstractService
      * @param StatePersistable $persistable
      * @return status
      */
-	public function insert(StatePersistable $persistable)
+	public function insert()
 	{
-		$stateAbb = $persistable->getStateAbb();
-		$isDisplay = $persistable->getIsDisplay();
-		$stateName = $persistable->getName();
-		
-		//data pass to the model object for insertion
+		$stateArray = array();
+		$getData = array();
+		$keyName = array();
+		$funcName = array();
+		$stateArray = func_get_arg(0);
+		for($data=0;$data<count($stateArray);$data++)
+		{
+			$funcName[$data] = $stateArray[$data][0]->getName();
+			$getData[$data] = $stateArray[$data][0]->$funcName[$data]();
+			$keyName[$data] = $stateArray[$data][0]->getkey();
+		}
+		//data pass to the model object for insert
 		$stateModel = new StateModel();
-		$status = $stateModel->insertData($stateName,$isDisplay,$stateAbb);
+		$status = $stateModel->insertData($getData,$keyName);
 		return $status;
 	}
 	

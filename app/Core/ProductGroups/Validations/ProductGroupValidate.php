@@ -14,14 +14,11 @@ class ProductGroupValidate
 	public function validate($request)
 	{
 		$rules = array(
-			'product_group_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 &,-\/_`#().\']+$/', 
-			// 'product_cat_desc'=>"between:1,50",
-        );
+			'product_group_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 &,\/_`#().\'-]+$/', 
+		);
 		$messages = [
 			'product_group_name.between' => 'StringLengthException :Enter the product group name less then 35 character',
-			'product_group_name.regex' => 'RegularExpressionFormatException :Enter the proper prouct group name',
-			// 'product_cat_desc.between' => 'StringLengthException :Enter the measurement_unit less then 15 character ',
-			// 'product_cat_desc.regex' => 'RegularExpressionFormatException :Enter the proper measurement unit',
+			'product_group_name.regex' => 'product-group-name contains character from "a-zA-Z0-9 &,\/_`#().\'-" only',
 		];
 		
 		$validator = Validator::make($request,$rules,$messages);
@@ -44,8 +41,7 @@ class ProductGroupValidate
 	public function validateUpdateData($keyName,$value,$request)
 	{
 		$validationArray = array(
-			'product_group_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 &,-\/_`#().\']+$/', 
-			// 'product_cat_desc'=>"between:1,50",
+			'product_group_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 &,\/_`#().\'-]+$/', 
 		);
 		$rules = array();
 		foreach ($validationArray as $key => $value) 
@@ -63,9 +59,7 @@ class ProductGroupValidate
 			);
 			$messages = [
 				'product_group_name.between' => 'StringLengthException :Enter the product category name less then 35 character',
-				'product_group_name.regex' => 'RegularExpressionFormatException :Enter the proper prouct category name',
-				// 'product_cat_desc.between' => 'StringLengthException :Enter the measurement_unit less then 15 character ',
-				// 'product_cat_desc.regex' => 'RegularExpressionFormatException :Enter the proper measurement unit',
+				'product_group_name.regex' => 'product-group-name contains character from "a-zA-Z0-9 &,\/_`#().\'-" only',
 			];
 			$validator = Validator::make($request,$rules,$messages);
 			

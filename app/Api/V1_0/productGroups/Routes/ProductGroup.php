@@ -16,6 +16,9 @@ class ProductGroup implements RouteRegistrarInterface
      */
     public function register(RegistrarInterface $Registrar)
     {
+		// echo "function ";
+		// print_r($Registrar);
+		// exit;
         // all the possible get request 
 		Route::group(['as' => 'get'], function ()
 		{

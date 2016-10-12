@@ -13,14 +13,11 @@ class ProductValidate
 	public function validate($request)
 	{
 		$rules = array(
-			'product_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 &,-\/_`#().\']+$/', 
-			// 'measurement_unit'=>"between:1,15|regex:/^[a-z ]+$/",
-        );
+			'product_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 &,\/_`#().\'-]+$/', 
+		);
 		$messages = [
 			'product_name.between' => 'StringLengthException :Enter the product name less then 35 character',
-			'product_name.regex' => 'RegularExpressionFormatException :Enter the proper prouct name',
-			// 'measurement_unit.between' => 'StringLengthException :Enter the measurement_unit less then 15 character ',
-			// 'measurement_unit.regex' => 'RegularExpressionFormatException :Enter the proper measurement unit',
+			'product_name.regex' => 'product-name contains character from "a-zA-Z0-9 &,\/_`#().\'-" only',
 		];
 		
 		$validator = Validator::make($request,$rules,$messages);
@@ -40,11 +37,10 @@ class ProductValidate
 			return "Success";
 		}
 	}
-	public function validateUpdateData($keyName,$value)
+	public function validateUpdateData($keyName,$value,$request)
 	{
 		$validationArray = array(
-			'product_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 &,-\/_`#().\']+$/', 
-			// 'measurement_unit'=>"between:1,15|regex:/^[a-z ]+$/"
+			'product_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 &,\/_`#().\'-]+$/', 
 		);
 		$rules = array();
 		foreach ($validationArray as $key => $value) 
@@ -62,11 +58,10 @@ class ProductValidate
 			);
 			$messages = [
 				'product_name.between' => 'StringLengthException :Enter the product name less then 35 character',
-				'product_name.regex' => 'RegularExpressionFormatException :Enter the proper prouct name',
-				// 'measurement_unit.between' => 'StringLengthException :Enter the measurement_unit less then 15 character ',
-				// 'measurement_unit.regex' => 'RegularExpressionFormatException :Enter the proper measurement unit',
+				'product_name.regex' => 'product-name contains character from "a-zA-Z0-9 &,\/_`#().\'-" only',
 			];
-			$validator = Validator::make(Input::all(),$rules,$messages);
+			
+			$validator = Validator::make($request,$rules,$messages);
 			
 			if ($validator->fails()) 
 			{

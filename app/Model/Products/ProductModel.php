@@ -150,7 +150,7 @@ class ProductModel extends Model
 	 * get All data 
 	 * returns the status
 	*/
-	public function getCBProductData($companyId,$branchId)
+	public function getBCProductData($companyId,$branchId)
 	{	
 		DB::beginTransaction();		
 		$raw = DB::select("select 

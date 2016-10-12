@@ -11,7 +11,7 @@ use ERP\Core\Companies\Properties\CompanyIdPropertyTrait;
 use ERP\Core\Products\Properties\ProductGrpIdPropertyTrait;
 use ERP\Core\Branches\Properties\BranchIdPropertyTrait;
 use ERP\Core\Shared\Properties\KeyPropertyTrait;
-use ERP\Core\productCategories\Properties\ProductCatIdPropertyTrait;
+use ERP\Core\ProductCategories\Properties\ProductCatIdPropertyTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */

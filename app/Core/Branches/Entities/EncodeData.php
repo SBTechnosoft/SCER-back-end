@@ -67,9 +67,9 @@ class EncodeData extends StateService
 		$data['company_id'] = $companyDetails['company_id'];	
 		$data['company_name'] = $companyDetails['company_name'];	
 		$data['company_display_name'] = $companyDetails['company_display_name'];	
-		$data['address1'] = $companyDetails['address1'];	
-		$data['address2'] = $companyDetails['address2'];	
-		$data['pincode'] = $companyDetails['pincode'];	
+		$data['companyAddress1'] = $companyDetails['address1'];	
+		$data['companyAddress2'] = $companyDetails['address2'];	
+		$data['companyPincode'] = $companyDetails['pincode'];	
 		$data['pan'] = $companyDetails['pan'];	
 		$data['tin'] = $companyDetails['tin'];	
 		$data['vat_no'] = $companyDetails['vat_no'];	
@@ -82,25 +82,25 @@ class EncodeData extends StateService
 		$data['document_url'] = $companyDetails['document_url'];	
 		$data['document_size'] = $companyDetails['document_size'];	
 		$data['document_format'] = $companyDetails['document_format'];	
-		$data['cIs_display'] = $companyDetails['is_display'];	
-		$data['cIs_default'] = $companyDetails['is_default'];	
-		$data['cCreated_at'] = $companyDetails['created_at'];	
-		$data['cUpdated_at'] = $companyDetails['updated_at'];	
-		$data['cState_abb'] = $companyDetails['state_abb'];	
-		$data['cCity_id'] = $companyDetails['city_id'];	
-		$data['cState_name'] = $companyDetails['state_name'];	
-		$data['cCity_name'] = $companyDetails['city_name'];
+		$data['companyIs_display'] = $companyDetails['is_display'];	
+		$data['companyIs_default'] = $companyDetails['is_default'];	
+		$data['companyCreated_at'] = $companyDetails['created_at'];	
+		$data['companyUpdated_at'] = $companyDetails['updated_at'];	
+		$data['companyState_abb'] = $companyDetails['state_abb'];	
+		$data['companyCity_id'] = $companyDetails['city_id'];	
+		$data['companyState_name'] = $companyDetails['state_name'];	
+		$data['companyCity_name'] = $companyDetails['city_name'];
 		
 		$data['state_name'] = $stateDecodedJson['state_name'];
-		$data['sIs_display'] = $stateDecodedJson['is_display'];	
-		$data['sCreated_at'] = $stateDecodedJson['created_at'];	
-		$data['sUpdated_at'] = $stateDecodedJson['updated_at'];	
+		$data['stateIs_display'] = $stateDecodedJson['is_display'];	
+		$data['stateCreated_at'] = $stateDecodedJson['created_at'];	
+		$data['stateUpdated_at'] = $stateDecodedJson['updated_at'];	
 		
 		$data['city_name'] = $getCityDetail['city_name'];	
-		$data['cIs_display'] = $getCityDetail['is_display'];	
-		$data['cCreated_at'] = $getCityDetail['created_at'];	
-		$data['cUpdated_at'] = $getCityDetail['updated_at'];	
-		$data['cState_abb'] = $getCityDetail['state_abb'];
+		$data['cityIs_display'] = $getCityDetail['is_display'];	
+		$data['cityCreated_at'] = $getCityDetail['created_at'];	
+		$data['cityUpdated_at'] = $getCityDetail['updated_at'];	
+		$data['cityState_abb'] = $getCityDetail['state_abb'];
 		$encodeData = json_encode($data);
 		return $encodeData;
 	}

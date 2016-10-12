@@ -13,8 +13,8 @@ class CompanyValidate
 	public function validate($request)
 	{
 		$rules = array(
-			'company_name'=> 'between:1,35|regex:/^[a-zA-Z &-_`#().\']+$/', 
-			'company_display_name'=>'between:1,50|regex:/^[a-zA-Z &-_`#().\']+$/',
+			'company_name'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]+$/', 
+			'company_display_name'=>'between:1,50|regex:/^[a-zA-Z &_`#().\'-]+$/',
 			'address1'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'address2'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'pincode'=>'between:6,10|regex:/^[0-9]+$/',
@@ -23,46 +23,37 @@ class CompanyValidate
 			'vat_no'=>'max:11|min:11|regex:/^([a-zA-Z0-9])+$/',
 			'service_tax_no'=>'between:1,35|regex:/^([a-zA-Z0-9]{15})+$/',
 			'basic_currency_symbol'=>'max:3|min:3',
-			'formal_name'=>'between:1,35|regex:/^[a-zA-Z &-_`#().\']+$/',
-			'document_name'=>'between:1,35',
-			'document_url'=>'max:2083',
-			'document_size'=>'Integer',
-			'document_format'=>'max:10',
+			'formal_name'=>'between:1,35|regex:/^[a-zA-Z &_`#().\'-]+$/',
+			
 		);
 		$messages = [
 			'company_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
-			'company_name.regex' => 'Enter the character',
+			'company_name.regex' => 'company-name contains character from "a-zA-Z &_`#().\'-" only',
 			'company_display_name.between' => 'StringLengthException :Enter the :attribute less then 50 character',
-			'company_display_name.regex' => 'company display name',
+			'company_display_name.regex' => 'company-display-name contains character from "a-zA-Z &_`#().\'-" only',
 			'address1.between' => 'StringLengthException :Enter the :attribute less then 35 character',
-			'address1.regex' => 'address1',
+			'address1.regex' => 'address1 contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
 			'address2.between' => 'StringLengthException :Enter the :attribute less then 35 character',
-			'address2.regex' => 'address2',
+			'address2.regex' => 'address2 contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
 			'pincode.between' => 'NumberFormatException :Enter the :attribute between 6 and 10 character',
-			'pincode.regex' => 'pincode',
+			'pincode.regex' => 'pincode contains numbers only',
 			'pan.max' => 'NumberFormatException :Enter the :attribute number of 10 character',
 			'pan.min' => 'NumberFormatException :Enter the :attribute number of 10 character',
-			'pan.regex' => 'pan',
+			'pan.regex' => 'pan number is wrong',
 			'tin.max' => 'NumberFormatException :Enter the :attribute number of 11 character',
 			'tin.max' => 'NumberFormatException :Enter the :attribute number of 11 character',
-			'tin.regex' => 'tin',
-			'vat_no.regex' => 'vat no',
+			'tin.regex' => 'tin number is wrong',
+			'vat_no.regex' => 'vat number is wrong',
 			'vat_no.max' => 'NumberFormatException :Enter the :attribute number of 11 character',
 			'vat_no.min' => 'NumberFormatException :Enter the :attribute number of 11 character',
-			'tin.min' => 'NumberFormatException :Enter the :attribute number of 11 character',
-			'tin.min' => 'NumberFormatException :Enter the :attribute number of 11 character',
-			'tin.regex' => 'tin',
 			'service_tax_no.between' => 'NumberFormatException :Enter the:attribute less then 15 character',
-			'service_tax_no.regex' => 'service tax no',
+			'service_tax_no.regex' => 'service tax number is wrong',
 			'basic_currency_symbol.min' => 'StringLengthException :Enter the :attribute of 3 character',
 			'basic_currency_symbol.max' => 'StringLengthException :Enter the :attribute of 3 character',
-			'basic_currency_symbol.regex' => 'basic currency symbol',
+			'basic_currency_symbol.regex' => 'basic currency symbol contains character only',
 			'formal_name.between' => 'StringLengthException :Enter the :attribute less the 35 character',
-			'formal_name.regex' => 'formal name',
-			'document_name.between' => 'StringLengthException :Enter the :attribute less the 35 character',
-			'document_url.max' => 'StringLengthException :Enter the :attribute less the 2083 character',
-			'document_size.Integer' => 'NumberFormatException :Enter the :attribute in integer',
-			'document_format.max' => 'StringLengthException :Enter the :attribute less then 10 character',
+			'formal_name.regex' => 'formal-name contains character from "a-zA-Z &_`#().\'-" only',
+			
 		];
 		$validator = Validator::make($request,$rules,$messages);
 		if ($validator->fails()) 
@@ -84,8 +75,8 @@ class CompanyValidate
 	public function validateUpdateData($keyName,$value,$request)
 	{
 		$validationArray = array(
-			'company_name'=> 'between:1,35|regex:/^[a-zA-Z &-_`#().\']+$/', 
-			'company_display_name'=>'between:1,50|regex:/^[a-zA-Z &-_`#().\']+$/',
+			'company_name'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]+$/', 
+			'company_display_name'=>'between:1,50|regex:/^[a-zA-Z &_`#().\'-]+$/',
 			'address1'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'address2'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'pincode'=>'between:6,10|regex:/^[0-9]+$/',
@@ -94,11 +85,8 @@ class CompanyValidate
 			'vat_no'=>'max:11|min:11|regex:/^([a-zA-Z0-9])+$/',
 			'service_tax_no'=>'between:1,35|regex:/^([a-zA-Z0-9]{15})+$/',
 			'basic_currency_symbol'=>'max:3|min:3',
-			'formal_name'=>'between:1,35|regex:/^[a-zA-Z &-_`#().\']+$/',
-			'document_name'=>'between:1,35',
-			'document_url'=>'max:2083',
-			'document_size'=>'Integer',
-			'document_format'=>'max:10');
+			'formal_name'=>'between:1,35|regex:/^[a-zA-Z &_`#().\'-]+$/'
+			);
 		$rules =array();
 		foreach ($validationArray as $key => $value) 
 		{
@@ -115,38 +103,31 @@ class CompanyValidate
 			);
 			$messages = [
 				'company_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
-				'company_name.regex' => 'Enter the character',
+				'company_name.regex' => 'company-name contains character from "a-zA-Z &_`#().\'-" only',
 				'company_display_name.between' => 'StringLengthException :Enter the :attribute less then 50 character',
-				'company_display_name.regex' => 'company display name',
+				'company_display_name.regex' => 'company-display-name contains character from "a-zA-Z &_`#().\'-" only',
 				'address1.between' => 'StringLengthException :Enter the :attribute less then 35 character',
-				'address1.regex' => 'address1',
+				'address1.regex' => 'address1 contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
 				'address2.between' => 'StringLengthException :Enter the :attribute less then 35 character',
-				'address2.regex' => 'address2',
+				'address2.regex' => 'address2 contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
 				'pincode.between' => 'NumberFormatException :Enter the :attribute between 6 and 10 character',
-				'pincode.regex' => 'pincode',
+				'pincode.regex' => 'pincode contains numbers only',
 				'pan.max' => 'NumberFormatException :Enter the :attribute number of 10 character',
 				'pan.min' => 'NumberFormatException :Enter the :attribute number of 10 character',
-				'pan.regex' => 'pan',
+				'pan.regex' => 'pan number is wrong',
 				'tin.max' => 'NumberFormatException :Enter the :attribute number of 11 character',
 				'tin.max' => 'NumberFormatException :Enter the :attribute number of 11 character',
-				'tin.regex' => 'tin',
-				'vat_no.regex' => 'vat no',
+				'tin.regex' => 'tin number is wrong',
+				'vat_no.regex' => 'vat number is wrong',
 				'vat_no.max' => 'NumberFormatException :Enter the :attribute number of 11 character',
 				'vat_no.min' => 'NumberFormatException :Enter the :attribute number of 11 character',
-				'tin.min' => 'NumberFormatException :Enter the :attribute number of 11 character',
-				'tin.min' => 'NumberFormatException :Enter the :attribute number of 11 character',
-				'tin.regex' => 'tin',
 				'service_tax_no.between' => 'NumberFormatException :Enter the:attribute less then 15 character',
-				'service_tax_no.regex' => 'service tax no',
+				'service_tax_no.regex' => 'service tax number is wrong',
 				'basic_currency_symbol.min' => 'StringLengthException :Enter the :attribute of 3 character',
 				'basic_currency_symbol.max' => 'StringLengthException :Enter the :attribute of 3 character',
-				'basic_currency_symbol.regex' => 'basic currency symbol',
+				'basic_currency_symbol.regex' => 'basic currency symbol contains character only',
 				'formal_name.between' => 'StringLengthException :Enter the :attribute less the 35 character',
-				'formal_name.regex' => 'formal name',
-				'document_name.between' => 'StringLengthException :Enter the :attribute less the 35 character',
-				'document_url.max' => 'StringLengthException :Enter the :attribute less the 2083 character',
-				'document_size.Integer' => 'NumberFormatException :Enter the :attribute in integer',
-				'document_format.max' => 'StringLengthException :Enter the :attribute less then 10 character',
+				'formal_name.regex' => 'formal-name contains character from "a-zA-Z &_`#().\'-" only',
 			];
 			$validator = Validator::make($request,$rules,$messages);
 			

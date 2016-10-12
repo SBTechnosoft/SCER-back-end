@@ -131,6 +131,7 @@ class ProductService extends AbstractService
 	{
 		if($branchId=="null")
 		{
+			//getCompanyProductData(getCProductData)
 			$productModel = new ProductModel();
 			$status = $productModel->getCProductData($companyId);
 			if($status=="204: No Content")
@@ -147,6 +148,7 @@ class ProductService extends AbstractService
 		}
 		else if($companyId=="null")
 		{
+			//getBranchProductData(getBProductData)
 			$productModel = new ProductModel();
 			$status = $productModel->getBProductData($branchId);
 			if($status=="204: No Content")
@@ -165,12 +167,12 @@ class ProductService extends AbstractService
 		}
 		else
 		{
+			//getBranchCompanyProductData(getBCProductData)
 			$productModel = new ProductModel();
-			$status = $productModel->getCBProductData($companyId,$branchId);
+			$status = $productModel->getBCProductData($companyId,$branchId);
 			if($status=="204: No Content")
 			{
-				print_r("else");
-				// return $status;
+				return $status;
 			}
 			else
 			{

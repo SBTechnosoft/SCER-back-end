@@ -56,9 +56,9 @@ class EncodeAllData extends StateService
 				
 				'state_abb' =>$stateAbb[$jsonData],
 				'state_name' => $stateName[$jsonData],
-				'sIs_display' => $stateIsDisplay[$jsonData],
-				'sCreated_at' => $stateCreatedAt[$jsonData],
-				'sUpdated_at' => $stateUpdatedAt[$jsonData]
+				'stateIs_display' => $stateIsDisplay[$jsonData],
+				'stateCreated_at' => $stateCreatedAt[$jsonData],
+				'stateUpdated_at' => $stateUpdatedAt[$jsonData]
 			);
 		}
 		return json_encode($data);

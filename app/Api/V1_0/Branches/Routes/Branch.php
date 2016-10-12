@@ -16,7 +16,7 @@ class Branch implements RouteRegistrarInterface
      */
     public function register(RegistrarInterface $Registrar)
     {
-        // all the possible get request 
+		// all the possible get request 
 		Route::group(['as' => 'get'], function ()
 		{
 			Route::get('Branches/Branch/{branchId?}', 'BranchController@getData');

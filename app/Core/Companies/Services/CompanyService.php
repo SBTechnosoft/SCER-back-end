@@ -157,6 +157,7 @@ class CompanyService extends AbstractService
 			$funcName[$data] = $companyArray[$data][0]->getName();
 			$getData[$data] = $companyArray[$data][0]->$funcName[$data]();
 			$keyName[$data] = $companyArray[$data][0]->getkey();
+			
 			// document data is set into the last object..so
 			if($data==(count($companyArray)-1))
 			{
@@ -179,6 +180,7 @@ class CompanyService extends AbstractService
 		//data updated successfully
 		else
 		{
+			
 			if($documentName!='')
 			{
 				//insert document data(update in company_mst table)

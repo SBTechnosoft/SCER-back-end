@@ -17,7 +17,7 @@ class CityValidate
         );
 		$messages = [
 			'city_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
-			'city_name.regex' => 'regular expression',
+			'city_name.regex' => 'city-name contains character from "a-zA-Z &-" only',
 		];
 		
 		$validator = Validator::make($request,$rules,$messages);
@@ -52,14 +52,13 @@ class CityValidate
 		if(!empty($rules))
 		{
 			$rules = array(
-				$key=> $rules[$key]
+				$key=> $rules[$key],
 			);
 			$messages = [
 				'city_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
-				'city_name.regex' => 'regular expression',
+				'city_name.regex' => 'city-name contains character from "a-zA-Z &-" only',
 			];
 			$validator = Validator::make($request,$rules,$messages);
-			
 			if ($validator->fails()) 
 			{
 				$errors = $validator->errors()->toArray();

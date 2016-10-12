@@ -53,7 +53,7 @@ class StateController extends BaseController implements ContainerInterface
 			$statePersistable = new StatePersistable();		
 			$stateService= new StateService();			
 			$statePersistable = $Processor->createPersistable($this->request);
-			if(is_array($statePersistable))
+			if($statePersistable[0][0]=='[')
 			{
 				return $statePersistable;
 			}

@@ -67,11 +67,12 @@ class ProductCategoryModel extends Model
 		DB::beginTransaction();
 		$raw = DB::statement("update product_category_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
-		where product_cat_id = '".$productCatId."'");
+		where product_cat_id ='".$productCatId."'");
 		DB::commit();
 		
 		if($raw==1)
 		{
+			
 			return "200: Data Updated Successfully";
 		}
 		else

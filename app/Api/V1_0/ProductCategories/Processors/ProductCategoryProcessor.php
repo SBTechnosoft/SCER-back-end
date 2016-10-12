@@ -132,7 +132,7 @@ class ProductCategoryProcessor extends BaseProcessor
 					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
 					
 					//validation
-					$status = $productCategoryValidate->validateUpdateData($key[$data],$value[$data],$tRequest);
+					$status = $productCategoryValidate->validateUpdateData($key[$data],$value[$data],$tRequest[0]);
 					
 					//enter data is valid(one data validate status return)
 					if($status=="Success")

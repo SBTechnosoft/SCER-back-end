@@ -97,16 +97,16 @@ class EncodeAllData extends StateService
 				
 				'state_abb' => $stateAbb[$jsonData],
 				'state_name' => $stateName[$jsonData],
-				'sIs_display' => $stateIsDisplay[$jsonData],
-				'sCreated_at' => $stateCreatedAt[$jsonData],
-				'sUpdated_at' => $stateUpdatedAt[$jsonData],
+				'stateIs_display' => $stateIsDisplay[$jsonData],
+				'stateCreated_at' => $stateCreatedAt[$jsonData],
+				'stateUpdated_at' => $stateUpdatedAt[$jsonData],
 				
 				'city_id' => $cityId[$jsonData],
 				'city_name' => $getCityDetail[$jsonData]['city_name'],
-				'cIs_display' => $getCityDetail[$jsonData]['is_display'],
-				'cCreated_at' => $getCityDetail[$jsonData]['created_at'],
-				'cUpdated_at' => $getCityDetail[$jsonData]['updated_at'],
-				'cState_abb' => $getCityDetail[$jsonData]['state_abb']
+				'cityIs_display' => $getCityDetail[$jsonData]['is_display'],
+				'cityCreated_at' => $getCityDetail[$jsonData]['created_at'],
+				'cityUpdated_at' => $getCityDetail[$jsonData]['updated_at'],
+				'cityState_abb' => $getCityDetail[$jsonData]['state_abb']
 			);
 		}
 		return json_encode($data);

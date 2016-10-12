@@ -28,6 +28,12 @@ class CityProcessor extends BaseProcessor
     public function createPersistable(Request $request)
 	{	
 		$this->request = $request;
+		$cityArray = array();
+		$cityValue = array();
+		$keyName = array();
+		$value = array();
+		$data=0;
+		
 		//trim an input 
 		$cityTransformer = new CityTransformer();
 		$tRequest = $cityTransformer->trimInsertData($this->request);
@@ -44,11 +50,44 @@ class CityProcessor extends BaseProcessor
 		//if form-data is valid then return status 'Success' otherwise return with error message
 		if($status=="Success")
 		{
-			$cityPersistable = new CityPersistable();		
-			$cityPersistable->setName($tCityName);		 
-			$cityPersistable->setStateAbb($tStateAbb);		 
-			$cityPersistable->setIsDisplay($tIsDisplay);
-			return $cityPersistable;	
+			foreach ($tRequest as $key => $value)
+			{
+				if(!is_numeric($value))
+				{
+					if (strpos($value, '\'') !== FALSE)
+					{
+						$cityValue[$data]= str_replace("'","\'",$value);
+						$keyName[$data] = $key;
+					}
+					else
+					{
+						$cityValue[$data] = $value;
+						$keyName[$data] = $key;
+					}
+				}
+				else
+				{
+					$cityValue[$data]= $value;
+					$keyName[$data] = $key;
+				}
+				$data++;
+			}
+			
+			// set data to the persistable object
+			for($data=0;$data<count($cityValue);$data++)
+			{
+				//set the data in persistable object
+				$cityPersistable = new CityPersistable();	
+				$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
+				//make function name dynamically
+				$setFuncName = 'set'.$str;
+				$getFuncName[$data] = 'get'.$str;
+				$cityPersistable->$setFuncName($cityValue[$data]);
+				$cityPersistable->setName($getFuncName[$data]);
+				$cityPersistable->setKey($keyName[$data]);
+				$cityArray[$data] = array($cityPersistable);
+			}
+			return $cityArray;
 		}		
 		else
 		{
@@ -93,7 +132,7 @@ class CityProcessor extends BaseProcessor
 					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
 					
 					//validation
-					$status = $cityValidate->validateUpdateData($key[$data],$value[$data],$tRequest);
+					$status = $cityValidate->validateUpdateData($key[$data],$value[$data],$tRequest[0]);
 					//enter data is valid(one data validate status return)
 					if($status=="Success")
 					{

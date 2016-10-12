@@ -67,15 +67,17 @@ class BranchModel extends Model
 		DB::beginTransaction();
 		$raw = DB::statement("update branch_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
-		where branch_id = ".$branchId);
+		where branch_id = '".$branchId."'");
 		DB::commit();
 		
 		if($raw==1)
 		{
+			
 			return "200: Data Updated Successfully";
 		}
 		else
 		{
+			
 			return "500: Internal Server Error";
 		}
 	}

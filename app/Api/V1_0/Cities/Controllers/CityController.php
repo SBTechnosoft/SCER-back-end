@@ -53,7 +53,7 @@ class CityController extends BaseController implements ContainerInterface
 			$cityPersistable = new CityPersistable();		
 			$cityService= new CityService();			
 			$cityPersistable = $Processor->createPersistable($this->request);
-			if(is_array($cityPersistable))
+			if($cityPersistable[0][0]=='[')
 			{
 				return $cityPersistable;
 			}

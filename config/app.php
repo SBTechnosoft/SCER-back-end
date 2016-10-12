@@ -1,5 +1,6 @@
 <?php
 
+
 return [
 
     /*
@@ -12,9 +13,9 @@ return [
     | services your application utilizes. Set this in your ".env" file.
     |
     */
-
+	
     'env' => env('APP_ENV', 'local'),
-
+	
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode
@@ -244,6 +245,7 @@ return [
 	'secret_license' => env('SECRET_LICENSE')
 
 ];
+
 if (env('APP_DEBUG', false)){
 	$config['providers'][] =  ERP\Debug\Support\RouteServiceProvider::class;
 }

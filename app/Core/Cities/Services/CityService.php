@@ -40,16 +40,25 @@ class CityService extends AbstractService
 	
 	 /**
      * get the data from persistable object and call the model for database insertion opertation
-     * @param CityPersistable $persistable
+     * @param array
      * @return status
      */
-	public function insert(CityPersistable $persistable)
+	public function insert()
 	{
-		$cityName = $persistable->getName();
-		$isDisplay = $persistable->getIsDisplay();
-		$stateAbb = $persistable->getStateAbb();
+		$cityArray = array();
+		$getData = array();
+		$keyName = array();
+		$funcName = array();
+		$cityArray = func_get_arg(0);
+		for($data=0;$data<count($cityArray);$data++)
+		{
+			$funcName[$data] = $cityArray[$data][0]->getName();
+			$getData[$data] = $cityArray[$data][0]->$funcName[$data]();
+			$keyName[$data] = $cityArray[$data][0]->getkey();
+		}
+		//data pass to the model object for insert
 		$cityModel = new CityModel();
-		$status = $cityModel->insertData($cityName,$isDisplay,$stateAbb);
+		$status = $cityModel->insertData($getData,$keyName);
 		return $status;
 	}
 	

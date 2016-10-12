@@ -27,6 +27,12 @@ class StateProcessor extends BaseProcessor
     public function createPersistable(Request $request)
 	{	
 		$this->request = $request;
+		$stateArray = array();
+		$stateValue = array();
+		$keyName = array();
+		$value = array();
+		$data=0;
+		
 		//trim an input 
 		$stateTransformer = new StateTransformer();
 		$tRequest = $stateTransformer->trimInsertData($this->request);
@@ -43,11 +49,44 @@ class StateProcessor extends BaseProcessor
 		//if form-data is valid then return status 'Success' otherwise return with error message
 		if($status=="Success")
 		{
-			$statePersistable = new StatePersistable();		
-			$statePersistable->setName($tStateName);		 
-			$statePersistable->setStateAbb($tStateAbb);		 
-			$statePersistable->setIsDisplay($tIsDisplay);
-			return $statePersistable;	
+			foreach ($tRequest as $key => $value)
+			{
+				if(!is_numeric($value))
+				{
+					if (strpos($value, '\'') !== FALSE)
+					{
+						$stateValue[$data]= str_replace("'","\'",$value);
+						$keyName[$data] = $key;
+					}
+					else
+					{
+						$stateValue[$data] = $value;
+						$keyName[$data] = $key;
+					}
+				}
+				else
+				{
+					$stateValue[$data]= $value;
+					$keyName[$data] = $key;
+				}
+				$data++;
+			}
+			
+			// set data to the persistable object
+			for($data=0;$data<count($stateValue);$data++)
+			{
+				//set the data in persistable object
+				$statePersistable = new StatePersistable();	
+				$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
+				//make function name dynamically
+				$setFuncName = 'set'.$str;
+				$getFuncName[$data] = 'get'.$str;
+				$statePersistable->$setFuncName($stateValue[$data]);
+				$statePersistable->setName($getFuncName[$data]);
+				$statePersistable->setKey($keyName[$data]);
+				$stateArray[$data] = array($statePersistable);
+			}
+			return $stateArray;
 		}		
 		else
 		{
@@ -99,7 +138,7 @@ class StateProcessor extends BaseProcessor
 					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
 					
 					//validation
-					$status = $stateValidate->validateUpdateData($key[$data],$value[$data],$tRequest);
+					$status = $stateValidate->validateUpdateData($key[$data],$value[$data],$tRequest[0]);
 					
 					//enter data is valid(one data validate status return)
 					if($status=="Success")

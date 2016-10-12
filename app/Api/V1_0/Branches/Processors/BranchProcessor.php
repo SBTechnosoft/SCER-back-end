@@ -28,8 +28,8 @@ class BranchProcessor extends BaseProcessor
     public function createPersistable(Request $request)
 	{	
 		$this->request = $request;	
+		$branchArray = array();
 		$branchValue = array();
-		$tKeyValue = array();
 		$keyName = array();
 		$value = array();
 		$data=0;
@@ -125,7 +125,7 @@ class BranchProcessor extends BaseProcessor
 					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
 					
 					//validation
-					$status = $branchValidate->validateUpdateData($key[$data],$value[$data],$tRequest);
+					$status = $branchValidate->validateUpdateData($key[$data],$value[$data],$tRequest[0]);
 					//enter data is valid(one data validate status return)
 					if($status=="Success")
 					{

@@ -12,15 +12,33 @@ class CityModel extends Model
 	protected $table = 'city_mst';
 	/**
 	 * insert data 
-	 * @param  city_name,is_display,state_abb
+	 * @param  array
 	 * returns the status
 	*/
-	public function insertData($cityName,$isDisplay,$stateAbb)
+	public function insertData()
 	{
+		$getCityData = array();
+		$getCityKey = array();
+		$getCityData = func_get_arg(0);
+		$getCityKey = func_get_arg(1);
+		$cityData="";
+		$keyName = "";
+		for($data=0;$data<count($getCityData);$data++)
+		{
+			if($data == (count($getCityData)-1))
+			{
+				$cityData = $cityData."'".$getCityData[$data]."'";
+				$keyName =$keyName.$getCityKey[$data];
+			}
+			else
+			{
+				$cityData = $cityData."'".$getCityData[$data]."',";
+				$keyName =$keyName.$getCityKey[$data].",";
+			}
+		}
 		DB::beginTransaction();
-		$raw = DB::statement("insert 
-		into city_mst(city_name,is_display,state_abb)
-		values('".$cityName."','".$isDisplay."','".$stateAbb."')");
+		$raw = DB::statement("insert into city_mst(".$keyName.") 
+		values(".$cityData.")");
 		DB::commit();
 		
 		if($raw==1)

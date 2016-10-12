@@ -131,7 +131,7 @@ class ProductGroupProcessor extends BaseProcessor
 					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
 					
 					//validation
-					$status = $productGroupValidate->validateUpdateData($key[$data],$value[$data],$tRequest);
+					$status = $productGroupValidate->validateUpdateData($key[$data],$value[$data],$tRequest[0]);
 					//enter data is valid(one data validate status return)
 					if($status=="Success")
 					{

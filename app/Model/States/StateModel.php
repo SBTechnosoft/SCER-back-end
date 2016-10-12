@@ -13,15 +13,33 @@ class StateModel extends Model
 	
 	/**
 	 * insert data 
-	 * @param  state_name,is_display and state_abb
+	 * @param  array
 	 * returns the status
 	*/
-	public function insertData($stateName,$isDisplay,$stateAbb)
+	public function insertData()
 	{
+		$getStateData = array();
+		$getStateKey = array();
+		$getStateData = func_get_arg(0);
+		$getStateKey = func_get_arg(1);
+		$stateData="";
+		$keyName = "";
+		for($data=0;$data<count($getStateData);$data++)
+		{
+			if($data == (count($getStateData)-1))
+			{
+				$stateData = $stateData."'".$getStateData[$data]."'";
+				$keyName =$keyName.$getStateKey[$data];
+			}
+			else
+			{
+				$stateData = $stateData."'".$getStateData[$data]."',";
+				$keyName =$keyName.$getStateKey[$data].",";
+			}
+		}
 		DB::beginTransaction();
-		$raw = DB::statement("insert 
-		into state_mst(state_abb,state_name,is_display)
-		values('".$stateAbb."', '".$stateName."','".$isDisplay."')");
+		$raw = DB::statement("insert into state_mst(".$keyName.") 
+		values(".$stateData.")");
 		DB::commit();
 		
 		if($raw==1)

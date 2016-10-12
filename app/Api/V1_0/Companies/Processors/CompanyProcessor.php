@@ -175,7 +175,7 @@ class CompanyProcessor extends BaseProcessor
 					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
 					
 					//validation
-					$status = $companyValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest);
+					$status = $companyValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
 					
 					//enter data is valid(one data validate status return)
 					if($status=="Success")
@@ -208,6 +208,7 @@ class CompanyProcessor extends BaseProcessor
 							$companyPersistable->setKey($key[$data]);
 							$companyPersistable->setCompanyId($companyId);
 							$companyArray[$data] = array($companyPersistable);
+							
 							if($data==(count($_POST)-1))
 							{
 								if($docFlag==1)
