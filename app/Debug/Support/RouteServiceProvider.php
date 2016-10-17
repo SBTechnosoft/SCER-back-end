@@ -8,7 +8,7 @@ use ERP\Debug\Controllers\PushController;
 use ERP\Debug\Controllers\ResetController;
 
 /**
- * @author Igor Vorobiov <igor.vorobioff@gmail.com>
+ * @author Reema Patel<reema.p@siliconbrain.in>
  */
 class RouteServiceProvider extends ServiceProvider
 {

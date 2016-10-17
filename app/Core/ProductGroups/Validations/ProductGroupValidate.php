@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Route;
 /**
   * @author Reema Patel<reema.p@siliconbrain.in>
   */
-  //regex:/^[a-zA-Z0-9 ,-_`&(\.]+$/
 class ProductGroupValidate
 {
 	public function validate($request)

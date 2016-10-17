@@ -1,10 +1,12 @@
 <?php
-
 namespace ERP\Http\Controllers\Auth;
 
 use ERP\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
-
+/**
+ *
+ * @author Reema Patel<reema.p@siliconbrain.in>
+ */
 class PasswordController extends Controller
 {
     /*

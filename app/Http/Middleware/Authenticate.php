@@ -1,10 +1,12 @@
 <?php
-
 namespace ERP\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;
-
+/**
+ *
+ * @author Reema Patel<reema.p@siliconbrain.in>
+ */
 class Authenticate
 {
     /**

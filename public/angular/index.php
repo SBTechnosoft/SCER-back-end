@@ -157,9 +157,9 @@ include ('connection.php');
 				//company
 				// $scope.formAdata.company_name = "reema2232323222222222222222222222222222222222222";
 				// $scope.formAdata.company_name = " 1sh1l lbaaaaa-&_().\'aadks "; //0-9 not allow(error:allow)
-				$scope.formAdata.company_name = " a Wf&assf-a";
+				// $scope.formAdata.company_name = " a Wf&assf-a";
 				// $scope.formAdata.company_display_name = " '`rc a-zA-Z -#&)\'`.a ";
-				$scope.formAdata.address1 =" sdx cz *,-\/_`#\[\]().\'fs.'0a";
+				// $scope.formAdata.address1 =" sdx cz *,-\/_`#\[\]().\'fs.'0a";
 				// $scope.formAdata.address2 = " aEbc abc*dfghjd/ih'b1 ";
 				// $scope.formAdata.pincode = 311411;
 				// $scope.formAdata.pan= ' qqqas1122a ';
@@ -167,7 +167,7 @@ include ('connection.php');
 				// $scope.formAdata.vat_no= ' aadgg78w1a0 ';
 				// $scope.formAdata.service_tax_no = ' 71j0rg778a22b01 ';
 				// $scope.formAdata.basic_currency_symbol= " ALR ";
-				$scope.formAdata.formal_name = " qgfrd-&_().\'frtgfrta ";
+				// $scope.formAdata.formal_name = " qgfrd-&_().\'frtgfrta ";
 				// $scope.formAdata.no_of_decimal_points = 4;
 				// $scope.formAdata.currency_symbol = ' prefix ';
 				// $scope.formAdata.is_display = ' no ';
@@ -175,9 +175,9 @@ include ('connection.php');
 				// $scope.formAdata.state_abb= ' IN-MP ';
 				// $scope.formAdata.city_id= 3;
 				
-				formdata.append('company_name',$scope.formAdata.company_name);
+				// formdata.append('company_name',$scope.formAdata.company_name);
 				// formdata.append('company_display_name',$scope.formAdata.company_display_name);
-				formdata.append('address1',$scope.formAdata.address1);
+				// formdata.append('address1',$scope.formAdata.address1);
 				// formdata.append('address2',$scope.formAdata.address2);
 				// formdata.append('pincode',$scope.formAdata.pincode);
 				// formdata.append('pan',$scope.formAdata.pan);
@@ -185,7 +185,7 @@ include ('connection.php');
 				// formdata.append('vat_no',$scope.formAdata.vat_no);
 				// formdata.append('service_tax_no',$scope.formAdata.service_tax_no);
 				// formdata.append('basic_currency_symbol',$scope.formAdata.basic_currency_symbol);
-				formdata.append('formal_name',$scope.formAdata.formal_name);
+				// formdata.append('formal_name',$scope.formAdata.formal_name);
 				// formdata.append('no_of_decimal_points',$scope.formAdata.no_of_decimal_points);
 				// formdata.append('currency_symbol',$scope.formAdata.currency_symbol);
 				// formdata.append('is_display',$scope.formAdata.is_display);
@@ -232,20 +232,68 @@ include ('connection.php');
 				// formdata.append('company_id',$scope.formAdata.company_id);
 				// formdata.append('branch_id',$scope.formAdata.branch_id);
 				
+				//template
+				// $scope.formAdata.template_name = " abc ";
+				// $scope.formAdata.template_type = ' general ';
+				// $scope.formAdata.template_body=' <b> hi</b> ';
+				
+				// formdata.append('template_name',$scope.formAdata.template_name);
+				// formdata.append('template_type',$scope.formAdata.template_type);
+				// formdata.append('template_body',$scope.formAdata.template_body);
+				
+				//invoice
+				// $scope.formAdata.invoice_label = " abcd ";
+				// $scope.formAdata.invoice_type = ' prefix ';
+				// $scope.formAdata.start_at=' 1 ';
+				// $scope.formAdata.end_at=' 10 ';
+				// $scope.formAdata.company_id='1 ';
+				
+				// formdata.append('invoice_label',$scope.formAdata.invoice_label);
+				// formdata.append('invoice_type',$scope.formAdata.invoice_type);
+				// formdata.append('start_at',$scope.formAdata.start_at);
+				// formdata.append('end_at',$scope.formAdata.end_at);
+				// formdata.append('company_id',$scope.formAdata.company_id);
+				
+				//quotation
+				// $scope.formAdata.quotation_label = " abcd ";
+				// $scope.formAdata.quotation_type = ' prefix ';
+				// $scope.formAdata.start_at=' 1 ';
+				// $scope.formAdata.end_at=' 10 ';
+				// $scope.formAdata.company_id='1 ';
+				
+				// formdata.append('quotation_label',$scope.formAdata.quotation_label);
+				// formdata.append('quotation_type',$scope.formAdata.quotation_type);
+				// formdata.append('start_at',$scope.formAdata.start_at);
+				// formdata.append('end_at',$scope.formAdata.end_at);
+				// formdata.append('company_id',$scope.formAdata.company_id);
+				
 				// var productId = 2;
 				// var productGrpId = 2;
 				// var productCatId = 13;
-				var companyId=67
+				// var companyId=1;
 				// var cityId = 16;
 				 // var stateAbb = "IN-GS";
 				 // var branchId = 2;
 				// var id = 42;
+				// var templateId=1;
+				// var bankId=1;
+				// var invoiceId=2;
+				// var quotationId=1;
 				
-				var url="http://www.scerp.com/companies/company/"+companyId;
-				// var url="http://www.scerp.com/companies/company";
+				
+				// var url="http://www.scerp.com/quotations/quotation/"+companyId;
+				// var url="http://www.scerp.com/quotations/quotation";
+				// var url="http://www.scerp.com/invoices/invoice/"+companyId;
+				// var url="http://www.scerp.com/invoices/invoice";
+				// var url="http://www.scerp.com/banks/bank/"+bankId;
+				// var url="http://www.scerp.com/banks/bank";
+				// var url="http://www.scerp.com/templates/template/"+templateId;
+				// var url="http://www.scerp.com/templates/template";
+				// var url="http://www.scerp.com/companies/"+companyId;
+				// var url="http://www.scerp.com/companies";
 				// var url="http://www.scerp.com/branches/branch";
 				 // var url="http://www.scerp.com/branches/branch/"+branchId;
-				// var url="http://www.scerp.com/branches/branch/company/"+companyId;
+				var url="http://www.scerp.com/branches/company/"+companyId;
 				 // var url="http://www.scerp.com/states/state/"+stateAbb;
 				//var url="http://www.scerp.com/states/state";
 				// var url="http://www.scerp.com/cities/city/state/"+stateAbb;
@@ -257,7 +305,7 @@ include ('connection.php');
 				// var url="http://www.scerp.com/product-groups/product-group/"+productGrpId;
 				// var url="http://www.scerp.com/products/product/"+productId;
 				// var url="http://www.scerp.com/products/product";
-				// var url="http://www.scerp.com/products/product/company/"+companyId+"/branch/"+branchId;
+				var url="http://www.scerp.com/products/company/"+companyId+"/branch/"+branchId;
 				$http({
                         url: url,
                         // type:'patch',

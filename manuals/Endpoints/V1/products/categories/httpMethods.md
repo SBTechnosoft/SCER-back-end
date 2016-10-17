@@ -45,7 +45,7 @@
 
 ##### Updates a Products Category  
        
-##### `PATCH /product-category/{productCategoryId}`
+##### `PATCH /product-categories/{productCategoryId}`
 + Header
 	- Authentication Token
 

@@ -226,7 +226,11 @@ return [
 		'Branches',
 		'ProductCategories',
 		'ProductGroups',
-		'Products'
+		'Products',
+		'Templates',
+		'Banks',
+		'Invoices',
+		'Quotations'
 	],
 
     /*

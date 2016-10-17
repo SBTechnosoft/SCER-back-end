@@ -8,7 +8,7 @@ use ValuePad\Core\Customer\Entities\Customer;
 use ValuePad\Debug\Processors\LinkProcessor;
 
 /**
- * @author Igor Vorobiov <igor.vorobioff@gmail.com>
+ * @author Reema Patel<reema.p@siliconbrain.in>
  */
 class LinkController extends BaseController
 {

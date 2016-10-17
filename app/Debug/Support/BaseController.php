@@ -5,7 +5,7 @@ use Ascope\Libraries\Permissions\PermissionsIgnorantInterface;
 use Illuminate\Routing\Controller;
 
 /**
- * @author Igor Vorobiov <igor.vorobioff@gmail.com>
+ * @author Reema Patel<reema.p@siliconbrain.in>
  */
 class BaseController extends Controller implements PermissionsIgnorantInterface
 {

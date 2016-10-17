@@ -47,7 +47,7 @@ class EncodeData extends StateService
 		$branch->setCreated_at($convertedCreatedDate);
 		$getCreatedDate = $branch->getCreated_at();
 		$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
-		$branch->setCreated_at($convertedUpdatedDate);
+		$branch->setUpdated_at($convertedUpdatedDate);
 		$getUpdatedDate = $branch->getUpdated_at();
 		
 		//set all data into json array

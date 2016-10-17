@@ -1,10 +1,13 @@
 ##### Branch Validation Rules
 
-- branchName
-	- `required`,`AlphaNumeric`
-- company 
-	- `required`,`AlphaNumeric`
-- state
-	- `required`,`Alaphabetic`
+- branch_name
+	`between:1,35|regex:/^[a-zA-Z &_`#().\'-]*$/`
+ 
+- address1
+	`between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/`
+			
+- address2 
+	`between:1,35|regex:/^[a-zA-Z0-9 *-\/_`#\[\]().\']+$/`
+
 - pincode
-	- `max length 6 character`,`Numbers`
+	`between:6,10|regex:/^[0-9]+$/`

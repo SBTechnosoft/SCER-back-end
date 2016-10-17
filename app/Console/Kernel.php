@@ -1,10 +1,12 @@
 <?php
-
 namespace ERP\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-
+/**
+ *
+ * @author Reema Patel<reema.p@siliconbrain.in>
+ */
 class Kernel extends ConsoleKernel
 {
     /**

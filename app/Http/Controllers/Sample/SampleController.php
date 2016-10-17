@@ -1,12 +1,13 @@
 <?php
-
 namespace ERP\Http\Controllers\Sample;
 
 use Illuminate\Http\Request;
-
 use ERP\Http\Requests;
 use ERP\Http\Controllers\Controller;
-
+/**
+ *
+ * @author Reema Patel<reema.p@siliconbrain.in>
+ */
 class SampleController extends Controller
 {
     /**

@@ -57,7 +57,7 @@ class EncodeAllData extends StateService
 		}
 		$branch->setCreated_at($convertedCreatedDate);
 		$getCreatedDate = $branch->getCreated_at();
-		$branch->setCreated_at($convertedUpdatedDate);
+		$branch->setUpdated_at($convertedUpdatedDate);
 		$getUpdatedDate = $branch->getUpdated_at();
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)

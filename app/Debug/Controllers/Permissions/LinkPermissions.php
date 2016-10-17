@@ -2,9 +2,8 @@
 namespace ValuePad\Debug\Controllers\Permissions;
 
 use Ascope\Libraries\Permissions\AbstractActionsPermissions;
-
 /**
- * @author Igor Vorobiov <igor.vorobioff@gmail.com>
+ * @author Reema Patel<reema.p@siliconbrain.in>
  */
 class LinkPermissions extends AbstractActionsPermissions
 {

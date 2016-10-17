@@ -8,7 +8,7 @@ use ValuePad\Debug\Support\BaseController;
 /**
  * The controller is used to trigger artisan command for resetting the project
  *
- * @author Igor Vorobiov <igor.vorobioff@gmail.com>
+ * @author Reema Patel<reema.p@siliconbrain.in>
  */
 class ResetController extends BaseController
 {

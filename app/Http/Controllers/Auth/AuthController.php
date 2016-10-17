@@ -1,5 +1,4 @@
 <?php
-
 namespace ERP\Http\Controllers\Auth;
 
 use ERP\User;
@@ -7,7 +6,10 @@ use Validator;
 use ERP\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
-
+/**
+ *
+ * @author Reema Patel<reema.p@siliconbrain.in>
+ */
 class AuthController extends Controller
 {
     /*

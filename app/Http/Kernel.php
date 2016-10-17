@@ -1,9 +1,11 @@
 <?php
-
 namespace ERP\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
-
+/**
+ *
+ * @author Reema Patel<reema.p@siliconbrain.in>
+ */
 class Kernel extends HttpKernel
 {
     /**

@@ -7,7 +7,7 @@ use ValuePad\Debug\Support\BaseController;
 /**
  * The controller is used to catch notifications and log 'em into the file for later verification in tests and etc.
  *
- * @author Igor Vorobiov <igor.vorobioff@gmail.com>
+ * @author Reema Patel<reema.p@siliconbrain.in>
  */
 class PushController extends BaseController
 {

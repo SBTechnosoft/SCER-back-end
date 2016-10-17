@@ -1,5 +1,4 @@
 <?php
-
 namespace ERP\Exceptions;
 
 use Exception;
@@ -8,7 +7,10 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-
+/**
+ *
+ * @author Reema Patel<reema.p@siliconbrain.in>
+ */
 class Handler extends ExceptionHandler
 {
     /**

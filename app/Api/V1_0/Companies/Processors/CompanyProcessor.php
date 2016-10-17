@@ -22,14 +22,14 @@ class CompanyProcessor extends BaseProcessor
      */
 	private $companyPersistable;
 	private $request;    
-	
-    /**
+	/**
      * get the form-data and set into the persistable object
      * $param Request object [Request $request]
      * @return Branch Persistable object
      */	
-    public function createPersistable(Request $request)
+	public function createPersistable(Request $request)
 	{	
+		date_default_timezone_set("Asia/Calcutta");
 		$this->request = $request;	
 		$companyValue = array();
 		$tKeyValue = array();
@@ -41,16 +41,24 @@ class CompanyProcessor extends BaseProcessor
 		$documentUrl="";
 		$documentFormat="";
 		$documentSize="";
+		
 		$file = $request->file();
+		//change the name of document-name
+		$dateTime = date("d-m-Y h-i-s");
+		$convertedDateTime = str_replace(" ","-",$dateTime);
+		$splitDateTime = explode("-",$convertedDateTime);
+		$combineDateTime = $splitDateTime[0].$splitDateTime[1].$splitDateTime[2].$splitDateTime[3].$splitDateTime[4].$splitDateTime[5];
+			
 		if(in_array(true,$file))
 		{
 			$documentUrl = 'Storage/Document/';
-			$documentName = $file['file'][0]->getClientOriginalName();
+			$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".".$file['file'][0]->getClientOriginalExtension();
 			$documentFormat = $file['file'][0]->getClientOriginalExtension();
 			$documentSize = $file['file'][0]->getClientSize();
 			$file['file'][0]->move($documentUrl,$documentName);	
 			$docFlag=1;
 		}
+		
 		//trim an input 
 		$companyTransformer = new CompanyTransformer();
 		$tRequest = $companyTransformer->trimInsertData($this->request);
@@ -100,11 +108,25 @@ class CompanyProcessor extends BaseProcessor
 				{
 					if($docFlag==1)
 					{
-						$companyPersistable->setDocumentName($documentName);
-						$companyPersistable->setDocumentUrl($documentUrl);
-						$companyPersistable->setDocumentSize($documentSize);
-						$companyPersistable->setDocumentFormat($documentFormat);
-						$companyArray[$data] = array($companyPersistable);
+						if($documentFormat=='jpg' || $documentFormat=='jpeg' || $documentFormat=='gif' || $documentFormat=='png' || $documentFormat=='pdf')
+						{	
+							if(($documentSize/1048576)<=5)
+							{
+								$companyPersistable->setDocumentName($documentName);
+								$companyPersistable->setDocumentUrl($documentUrl);
+								$companyPersistable->setDocumentSize($documentSize);
+								$companyPersistable->setDocumentFormat($documentFormat);
+								$companyArray[$data] = array($companyPersistable);
+							}
+							else
+							{
+								return "FileNotFoundException: The file is too long";
+							}
+						}
+						else
+						{
+							return "FileNotFoundException: The file formate is not valid";
+						}
 					}
 				}
 			}
@@ -124,6 +146,7 @@ class CompanyProcessor extends BaseProcessor
      */	
 	public function createPersistableChange(Request $request,$companyId)
 	{
+		date_default_timezone_set("Asia/Calcutta");
 		$errorCount=0;
 		$flag=0;
 		$errorStatus=array();
@@ -138,113 +161,135 @@ class CompanyProcessor extends BaseProcessor
 			$companyValue = array();
 			$companyValidate = new CompanyValidate();
 			$status;
+			
+			//change the name of document-name
+			$dateTime = date("d-m-Y h-i-s");
+			$convertedDateTime = str_replace(" ","-",$dateTime);
+			$splitDateTime = explode("-",$convertedDateTime);
+			$combineDateTime = $splitDateTime[0].$splitDateTime[1].$splitDateTime[2].$splitDateTime[3].$splitDateTime[4].$splitDateTime[5];
+			
 			//file uploading
 			$file = $request->file();
 			if(in_array(true,$file))
 			{
-				$documentName = $file['file'][0]->getClientOriginalName();
+				//get document detail
+				$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".".$file['file'][0]->getClientOriginalExtension();
 				$documentFormat = $file['file'][0]->getClientOriginalExtension();
 				$documentSize = $file['file'][0]->getClientSize();
 				$path = 'Storage/Document/';
 				$file['file'][0]->move($path,$documentName);
 				$docFlag=1;
+				
 			}
-			
-			//if data is not available in update request
-			if(count($_POST)==0)
-			{
-				$status = "204: No Content Found For Update";
-				return $status;
-			}
-			//data is avalilable for update
-			else
-			{
-				for($data=0;$data<count($_POST);$data++)
+			if($documentFormat=='jpg' || $documentFormat=='jpeg' || $documentFormat=='gif' || $documentFormat=='png' || $documentFormat=='pdf')
+			{	
+				if(($documentSize/1048576)<=5)
 				{
-					//set the data in persistable object
-					$companyPersistable = new CompanyPersistable();	
-					$value[$data] = $_POST[array_keys($_POST)[$data]];
-					$key[$data] = array_keys($_POST)[$data];
-					
-					//trim an input 
-					$companyTransformer = new CompanyTransformer();
-					$tRequest = $companyTransformer->trimUpdateData($key[$data],$value[$data]);
-					//get data from trim array
-					
-					$tKeyValue[$data] = array_keys($tRequest[0])[0];
-					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
-					
-					//validation
-					$status = $companyValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
-					
-					//enter data is valid(one data validate status return)
-					if($status=="Success")
+					//if data is not available in update request
+					if(count($_POST)==0)
 					{
-						// check data is string or not
-						if(!is_numeric($tValue[$data]))
+						$status = "204: No Content Found For Update";
+						return $status;
+					}
+					//data is avalilable for update
+					else
+					{
+						for($data=0;$data<count($_POST);$data++)
 						{
-							if (strpos($tValue[$data], '\'') !== FALSE)
+							//set the data in persistable object
+							$companyPersistable = new CompanyPersistable();	
+							$value[$data] = $_POST[array_keys($_POST)[$data]];
+							$key[$data] = array_keys($_POST)[$data];
+							
+							//trim an input 
+							$companyTransformer = new CompanyTransformer();
+							$tRequest = $companyTransformer->trimUpdateData($key[$data],$value[$data]);
+							//get data from trim array
+							
+							$tKeyValue[$data] = array_keys($tRequest[0])[0];
+							$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
+							
+							//validation
+							$status = $companyValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
+							
+							//enter data is valid(one data validate status return)
+							if($status=="Success")
 							{
-								$companyValue[$data] = str_replace("'","\'",$tValue[$data]);
+								// check data is string or not
+								if(!is_numeric($tValue[$data]))
+								{
+									if (strpos($tValue[$data], '\'') !== FALSE)
+									{
+										$companyValue[$data] = str_replace("'","\'",$tValue[$data]);
+									}
+									else
+									{
+										$companyValue[$data] = $tValue[$data];
+									}
+								}
+								else
+								{
+									$companyValue[$data] = $tValue[$data];
+								}
+								// flag=0...then data is valid(consider one data at a time)
+								if($flag==0)
+								{
+									$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
+									// make function name dynamically
+									$setFuncName = 'set'.$str;
+									$getFuncName[$data] = 'get'.$str;
+									$companyPersistable->$setFuncName($companyValue[$data]);
+									$companyPersistable->setName($getFuncName[$data]);
+									$companyPersistable->setKey($key[$data]);
+									$companyPersistable->setCompanyId($companyId);
+									$companyArray[$data] = array($companyPersistable);
+									
+									if($data==(count($_POST)-1))
+									{
+										if($docFlag==1)
+										{
+											$companyPersistable->setDocumentName($documentName);
+											$companyPersistable->setDocumentUrl($path);
+											$companyPersistable->setDocumentSize($documentSize);
+											$companyPersistable->setDocumentFormat($documentFormat);
+											$companyArray[$data] = array($companyPersistable);
+										}
+									}
+								}
 							}
+							// enter data is not valid
 							else
 							{
-								$companyValue[$data] = $tValue[$data];
+								// if flag==1 then enter data is not valid ..so error is stored in an array.
+								$flag=1;
+								if(!empty($status[0]))
+								{
+									$errorStatus[$errorCount]=$status[0];
+									$errorCount++;
+								}
 							}
-						}
-						else
-						{
-							$companyValue[$data] = $tValue[$data];
-						}
-						// flag=0...then data is valid(consider one data at a time)
-						if($flag==0)
-						{
-							$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
-							// make function name dynamically
-							$setFuncName = 'set'.$str;
-							$getFuncName[$data] = 'get'.$str;
-							$companyPersistable->$setFuncName($companyValue[$data]);
-							$companyPersistable->setName($getFuncName[$data]);
-							$companyPersistable->setKey($key[$data]);
-							$companyPersistable->setCompanyId($companyId);
-							$companyArray[$data] = array($companyPersistable);
-							
 							if($data==(count($_POST)-1))
 							{
-								if($docFlag==1)
+								if($flag==1)
 								{
-									$companyPersistable->setDocumentName($documentName);
-									$companyPersistable->setDocumentUrl($path);
-									$companyPersistable->setDocumentSize($documentSize);
-									$companyPersistable->setDocumentFormat($documentFormat);
-									$companyArray[$data] = array($companyPersistable);
+									return json_encode($errorStatus);
+								}
+								else
+								{
+									return $companyArray;
 								}
 							}
 						}
 					}
-					// enter data is not valid
-					else
-					{
-						// if flag==1 then enter data is not valid ..so error is stored in an array.
-						$flag=1;
-						if(!empty($status[0]))
-						{
-							$errorStatus[$errorCount]=$status[0];
-							$errorCount++;
-						}
-					}
-					if($data==(count($_POST)-1))
-					{
-						if($flag==1)
-						{
-							return json_encode($errorStatus);
-						}
-						else
-						{
-							return $companyArray;
-						}
-					}
 				}
+				else
+				{
+					return "FileNotFoundException: The file is too long";
+				}
+			}
+			else
+			{
+				return "FileNotFoundException: The file formate is not valid";
 			}
 		}
 		//delete

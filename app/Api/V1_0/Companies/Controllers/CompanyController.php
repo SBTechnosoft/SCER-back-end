@@ -59,16 +59,20 @@ class CompanyController extends BaseController implements ContainerInterface
 			{
 				return $companyPersistable;
 			}
+			else if($companyPersistable=="FileNotFoundException: The file is too long")
+			{
+				return $companyPersistable;
+			}
+			else if($companyPersistable=="FileNotFoundException: The file formate is not valid")
+			{
+				return $companyPersistable;
+			}
 			else
 			{
 				$status = $companyService->insert($companyPersistable);
 				return $status;
 			}
 		}
-		// else
-		// {
-			// return $status;
-		// }
 	}
 	
 	/**
@@ -101,14 +105,22 @@ class CompanyController extends BaseController implements ContainerInterface
 		$this->request = $request;
 		$Processor = new CompanyProcessor();
 		$companyPersistable = new CompanyPersistable();		
-		$companyService= new CompanyService();			
 		$companyPersistable = $Processor->createPersistableChange($this->request,$companyId);
 		if($companyPersistable=="204: No Content Found For Update")
 		{
 			return $companyPersistable;
 		}
+		else if($companyPersistable=="FileNotFoundException: The file is too long")
+		{
+			return $companyPersistable;
+		}
+		else if($companyPersistable=="FileNotFoundException: The file formate is not valid")
+		{
+			return $companyPersistable;
+		}
 		else if(is_array($companyPersistable))
 		{
+			$companyService= new CompanyService();
 			$status = $companyService->update($companyPersistable);
 			return $status;
 		}

@@ -1,9 +1,11 @@
 <?php
-
 namespace ERP;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+/**
+ *
+ * @author Reema Patel<reema.p@siliconbrain.in>
+ */
 class User extends Authenticatable
 {
     /**

@@ -20,7 +20,7 @@
 
 ##### Gets Branch           
             
-##### `GET /companies/{CompanyId}/branches`
+##### `GET branches/company/{CompanyId}/`
 + Header 
 	- Authentication Token
 
@@ -60,7 +60,7 @@
 
 ##### Updates Branch    
        
-##### `PATCH /companies/{CompanyId}/branches/{branchId}`
+##### `PATCH branches/{branchId}`
 + Header
 	- Authentication Token
 
@@ -73,7 +73,7 @@
             
 ##### Deletes Branch    
        
-##### `DELETE /companies/{CompanyId}/branches/{branchId}`
+##### `DELETE branches/{branchId}`
 + Response
 
 			{

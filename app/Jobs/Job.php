@@ -1,9 +1,11 @@
 <?php
-
 namespace ERP\Jobs;
 
 use Illuminate\Bus\Queueable;
-
+/**
+ *
+ * @author Reema Patel<reema.p@siliconbrain.in>
+ */
 abstract class Job
 {
     /*

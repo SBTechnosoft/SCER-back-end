@@ -20,7 +20,7 @@
 
 ##### Gets Products           
             
-##### `GET /company/{CompanyId}/branch/{branchId}/products/`
+##### `GET products/company/{CompanyId}/branch/{branchId}`
 + Header 
 	- Authentication Token
 

@@ -5,7 +5,7 @@
                 "documentName": string,
                 "documentUrl": string
                 "documentSize": int,
-                "documentFormat": Standard Document Format Enum
+                "documentFormat": `jpeg | jpg | gif | png `
 				
 				
             }
