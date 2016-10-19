@@ -1,4 +1,4 @@
-##### Standard Invoice Object
+##### Standard InvoiceNumber Object
 			{
                 "invocieId": int,
                 "companyId":  {
@@ -9,7 +9,7 @@
                 "createdAt" timestamp,
 			}
             
-##### Standard Invoice Persistable Object
+##### Standard InvoiceNumber Persistable Object
 			{
             	"companyId":int, 
                 "invoiceLabel": string,

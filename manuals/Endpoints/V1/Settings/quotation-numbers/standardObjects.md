@@ -1,4 +1,4 @@
-##### Standard Quotation Object
+##### Standard QuotationNumber Object
 			{
                 "QuotationId": int,
                 "companyId":  {
@@ -9,7 +9,7 @@
                 "createdAt" timestamp,
 			}
             
-##### Standard Quotation Persistable Object
+##### Standard QuotationNumber Persistable Object
 			{
             	"companyId":int, 
                 "QuotationLabel": string,

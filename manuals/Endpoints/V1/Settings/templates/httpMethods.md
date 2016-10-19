@@ -1,6 +1,6 @@
 ##### Gets Template           
             
-##### `GET /templates/{templateId}`
+##### `GET /settings/templates/{templateId}`
 + Header 
 	- Authentication Token
 
@@ -12,7 +12,7 @@
 
 **NOTES:** List all the template as per given template_id 
 
-##### `GET /templates`
+##### `GET /settings/templates`
 + Header 
 	- Authentication Token
 
@@ -27,7 +27,7 @@
 
 ##### Updates Template    
        
-##### `PATCH /templates/{templateId}`
+##### `PATCH /settings/templates/{templateId}`
 + Header
 	- Authentication Token
 
