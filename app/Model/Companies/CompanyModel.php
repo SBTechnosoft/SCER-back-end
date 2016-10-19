@@ -66,12 +66,10 @@ class CompanyModel extends Model
 		{
 			$keyValueString=$keyValueString.$key[$data]."='".$companyData[$data]."',";
 		}
-		DB::beginTransaction();
-		$raw = DB::statement("update company_mst 
-		set ".$keyValueString."updated_at='".$mytime."'
-		where company_id = '".$companyId."'");
-		DB::commit();
 		
+		$raw  = DB::statement("update company_mst 
+		set ".$keyValueString."updated_at='".$mytime."' 
+		where company_id = '".$companyId."'");
 		if($raw==1)
 		{
 			return "200: Data Updated Successfully";

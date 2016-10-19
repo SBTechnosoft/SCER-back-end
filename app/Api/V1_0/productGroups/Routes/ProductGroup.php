@@ -22,17 +22,17 @@ class ProductGroup implements RouteRegistrarInterface
         // all the possible get request 
 		Route::group(['as' => 'get'], function ()
 		{
-			Route::get('ProductGroups/ProductGroup/{productGroupId?}', 'ProductGroupController@getData');
+			Route::get('ProductGroups/ProductGroup/{productGroupId?}', 'ProductGroups\Controllers\ProductGroupController@getData');
 		});
 		
 		// insert data post request
-		Route::post('ProductGroups/ProductGroup', 'ProductGroupController@store');
+		Route::post('ProductGroups/ProductGroup', 'ProductGroups\Controllers\ProductGroupController@store');
 		
 		// update data post request
-		Route::post('ProductGroups/ProductGroup/{productGroupId}', 'ProductGroupController@update');
+		Route::post('ProductGroups/ProductGroup/{productGroupId}', 'ProductGroups\Controllers\ProductGroupController@update');
 		
 		//delete data delete request
-		Route::delete('ProductGroups/ProductGroup/{productGroupId}', 'ProductGroupController@Destroy');
+		Route::delete('ProductGroups/ProductGroup/{productGroupId}', 'ProductGroups\Controllers\ProductGroupController@Destroy');
 			
     }
 }

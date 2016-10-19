@@ -20,17 +20,17 @@ class Company implements RouteRegistrarInterface
 		// all the possible get request 
 		Route::group(['as' => 'get'], function ()
 		{
-			Route::get('Companies/Company/{companyId?}', 'CompanyController@getData');
+			Route::get('Companies/Company/{companyId?}', 'Companies\Controllers\CompanyController@getData');
 		});
 		
 		// insert data post request
-		Route::post('Companies/Company', 'CompanyController@store');
+		Route::post('Companies/Company', 'Companies\Controllers\CompanyController@store');
 		
 		// update data post request
-		Route::post('Companies/Company/{companyId}', 'CompanyController@update');
+		Route::post('Companies/Company/{companyId}', 'Companies\Controllers\CompanyController@update');
 		
 		//delete data delete request
-		Route::delete('Companies/Company/{companyId}', 'CompanyController@destroy');
+		Route::delete('Companies/Company/{companyId}', 'Companies\Controllers\CompanyController@destroy');
 			
     }
 }

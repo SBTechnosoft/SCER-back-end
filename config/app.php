@@ -229,8 +229,8 @@ return [
 		'Products',
 		'Templates',
 		'Banks',
-		'Invoices',
-		'Quotations'
+		'InvoiceNumbers',
+		'QuotationNumbers'
 	],
 
     /*

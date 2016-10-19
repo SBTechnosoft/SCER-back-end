@@ -157,7 +157,7 @@ include ('connection.php');
 				//company
 				// $scope.formAdata.company_name = "reema2232323222222222222222222222222222222222222";
 				// $scope.formAdata.company_name = " 1sh1l lbaaaaa-&_().\'aadks "; //0-9 not allow(error:allow)
-				// $scope.formAdata.company_name = " a Wf&assf-a";
+				// $scope.formAdata.company_name = " abc";
 				// $scope.formAdata.company_display_name = " '`rc a-zA-Z -#&)\'`.a ";
 				// $scope.formAdata.address1 =" sdx cz *,-\/_`#\[\]().\'fs.'0a";
 				// $scope.formAdata.address2 = " aEbc abc*dfghjd/ih'b1 ";
@@ -233,11 +233,11 @@ include ('connection.php');
 				// formdata.append('branch_id',$scope.formAdata.branch_id);
 				
 				//template
-				// $scope.formAdata.template_name = " abc ";
+				$scope.formAdata.template_name = " abcff ";
 				// $scope.formAdata.template_type = ' general ';
 				// $scope.formAdata.template_body=' <b> hi</b> ';
 				
-				// formdata.append('template_name',$scope.formAdata.template_name);
+				formdata.append('template_name',$scope.formAdata.template_name);
 				// formdata.append('template_type',$scope.formAdata.template_type);
 				// formdata.append('template_body',$scope.formAdata.template_body);
 				
@@ -246,7 +246,7 @@ include ('connection.php');
 				// $scope.formAdata.invoice_type = ' prefix ';
 				// $scope.formAdata.start_at=' 1 ';
 				// $scope.formAdata.end_at=' 10 ';
-				// $scope.formAdata.company_id='1 ';
+				// $scope.formAdata.company_id='2 ';
 				
 				// formdata.append('invoice_label',$scope.formAdata.invoice_label);
 				// formdata.append('invoice_type',$scope.formAdata.invoice_type);
@@ -270,42 +270,44 @@ include ('connection.php');
 				// var productId = 2;
 				// var productGrpId = 2;
 				// var productCatId = 13;
-				// var companyId=1;
+				// var companyId=2;
 				// var cityId = 16;
 				 // var stateAbb = "IN-GS";
 				 // var branchId = 2;
 				// var id = 42;
-				// var templateId=1;
+				var templateId=1;
 				// var bankId=1;
 				// var invoiceId=2;
 				// var quotationId=1;
 				
-				
-				// var url="http://www.scerp.com/quotations/quotation/"+companyId;
-				// var url="http://www.scerp.com/quotations/quotation";
-				// var url="http://www.scerp.com/invoices/invoice/"+companyId;
-				// var url="http://www.scerp.com/invoices/invoice";
-				// var url="http://www.scerp.com/banks/bank/"+bankId;
-				// var url="http://www.scerp.com/banks/bank";
-				// var url="http://www.scerp.com/templates/template/"+templateId;
-				// var url="http://www.scerp.com/templates/template";
+				//SELECT max(invoice_id) invoice_id,invoice_label FROM `invoice_dtl` where company_id=1
+				// var url="http://www.scerp.com/settings/quotation-numbers/company/"+companyId+"/latest";
+				// var url="http://www.scerp.com/settings/quotation-numbers";
+				// var url="http://www.scerp.com/settings/quotation-numbers/company/"+companyId;
+				// var url="http://www.scerp.com/settings/invoice-numbers/company/"+companyId+"/latest";
+				// var url="http://www.scerp.com/settings/invoice-numbers";
+				// var url="http://www.scerp.com/settings/invoice-numbers/company/"+companyId;
+				// var url="http://www.scerp.com/banks/"+bankId;
+				// var url="http://www.scerp.com/banks";
+				var url="http://www.scerp.com/settings/templates/"+templateId;
+				// var url="http://www.scerp.com/settings/templates";
 				// var url="http://www.scerp.com/companies/"+companyId;
-				// var url="http://www.scerp.com/companies";
-				// var url="http://www.scerp.com/branches/branch";
-				 // var url="http://www.scerp.com/branches/branch/"+branchId;
-				var url="http://www.scerp.com/branches/company/"+companyId;
-				 // var url="http://www.scerp.com/states/state/"+stateAbb;
-				//var url="http://www.scerp.com/states/state";
-				// var url="http://www.scerp.com/cities/city/state/"+stateAbb;
-				 // var url="http://www.scerp.com/cities/city";
-				 // var url="http://www.scerp.com/cities/city/"+cityId;
-				// var url="http://www.scerp.com/product-categories/product-category/"+productCatId;
-				// var url="http://www.scerp.com/product-categories/product-category";
-				// var url="http://www.scerp.com/product-groups/product-group";
-				// var url="http://www.scerp.com/product-groups/product-group/"+productGrpId;
-				// var url="http://www.scerp.com/products/product/"+productId;
-				// var url="http://www.scerp.com/products/product";
-				var url="http://www.scerp.com/products/company/"+companyId+"/branch/"+branchId;
+				// var url="http://www.scerp.com/companies";	
+				// var url="http://www.scerp.com/branches";
+				 // var url="http://www.scerp.com/branches/"+branchId;
+				// var url="http://www.scerp.com/branches/company/"+companyId;
+				 // var url="http://www.scerp.com/states/"+stateAbb;
+				//var url="http://www.scerp.com/states";
+				// var url="http://www.scerp.com/cities/state/"+stateAbb;
+				 // var url="http://www.scerp.com/cities";
+				 // var url="http://www.scerp.com/cities/"+cityId;
+				// var url="http://www.scerp.com/product-categories/"+productCatId;
+				// var url="http://www.scerp.com/product-categories/";
+				// var url="http://www.scerp.com/product-groups/";
+				// var url="http://www.scerp.com/product-groups/"+productGrpId;
+				// var url="http://www.scerp.com/products/"+productId;
+				// var url="http://www.scerp.com/products/";
+				// var url="http://www.scerp.com/products/company/"+companyId+"/branch/"+branchId;
 				$http({
                         url: url,
                         // type:'patch',

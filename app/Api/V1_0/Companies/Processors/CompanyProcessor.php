@@ -181,72 +181,72 @@ class CompanyProcessor extends BaseProcessor
 				$docFlag=1;
 				
 			}
-			if($documentFormat=='jpg' || $documentFormat=='jpeg' || $documentFormat=='gif' || $documentFormat=='png' || $documentFormat=='pdf')
-			{	
-				if(($documentSize/1048576)<=5)
+			//if data is not available in update request
+			if(count($_POST)==0)
+			{
+				$status = "204: No Content Found For Update";
+				return $status;
+			}
+			//data is avalilable for update
+			else
+			{
+				for($data=0;$data<count($_POST);$data++)
 				{
-					//if data is not available in update request
-					if(count($_POST)==0)
+					//set the data in persistable object
+					$companyPersistable = new CompanyPersistable();	
+					$value[$data] = $_POST[array_keys($_POST)[$data]];
+					$key[$data] = array_keys($_POST)[$data];
+					
+					//trim an input 
+					$companyTransformer = new CompanyTransformer();
+					$tRequest = $companyTransformer->trimUpdateData($key[$data],$value[$data]);
+					//get data from trim array
+					
+					$tKeyValue[$data] = array_keys($tRequest[0])[0];
+					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
+					
+					//validation
+					$status = $companyValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
+					
+					//enter data is valid(one data validate status return)
+					if($status=="Success")
 					{
-						$status = "204: No Content Found For Update";
-						return $status;
-					}
-					//data is avalilable for update
-					else
-					{
-						for($data=0;$data<count($_POST);$data++)
+						// check data is string or not
+						if(!is_numeric($tValue[$data]))
 						{
-							//set the data in persistable object
-							$companyPersistable = new CompanyPersistable();	
-							$value[$data] = $_POST[array_keys($_POST)[$data]];
-							$key[$data] = array_keys($_POST)[$data];
-							
-							//trim an input 
-							$companyTransformer = new CompanyTransformer();
-							$tRequest = $companyTransformer->trimUpdateData($key[$data],$value[$data]);
-							//get data from trim array
-							
-							$tKeyValue[$data] = array_keys($tRequest[0])[0];
-							$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
-							
-							//validation
-							$status = $companyValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
-							
-							//enter data is valid(one data validate status return)
-							if($status=="Success")
+							if (strpos($tValue[$data], '\'') !== FALSE)
 							{
-								// check data is string or not
-								if(!is_numeric($tValue[$data]))
+								$companyValue[$data] = str_replace("'","\'",$tValue[$data]);
+							}
+							else
+							{
+								$companyValue[$data] = $tValue[$data];
+							}
+						}
+						else
+						{
+							$companyValue[$data] = $tValue[$data];
+						}
+						// flag=0...then data is valid(consider one data at a time)
+						if($flag==0)
+						{
+							$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
+							// make function name dynamically
+							$setFuncName = 'set'.$str;
+							$getFuncName[$data] = 'get'.$str;
+							$companyPersistable->$setFuncName($companyValue[$data]);
+							$companyPersistable->setName($getFuncName[$data]);
+							$companyPersistable->setKey($key[$data]);
+							$companyPersistable->setCompanyId($companyId);
+							$companyArray[$data] = array($companyPersistable);
+							
+							if($data==(count($_POST)-1))
+							{
+								if($docFlag==1)
 								{
-									if (strpos($tValue[$data], '\'') !== FALSE)
-									{
-										$companyValue[$data] = str_replace("'","\'",$tValue[$data]);
-									}
-									else
-									{
-										$companyValue[$data] = $tValue[$data];
-									}
-								}
-								else
-								{
-									$companyValue[$data] = $tValue[$data];
-								}
-								// flag=0...then data is valid(consider one data at a time)
-								if($flag==0)
-								{
-									$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
-									// make function name dynamically
-									$setFuncName = 'set'.$str;
-									$getFuncName[$data] = 'get'.$str;
-									$companyPersistable->$setFuncName($companyValue[$data]);
-									$companyPersistable->setName($getFuncName[$data]);
-									$companyPersistable->setKey($key[$data]);
-									$companyPersistable->setCompanyId($companyId);
-									$companyArray[$data] = array($companyPersistable);
-									
-									if($data==(count($_POST)-1))
-									{
-										if($docFlag==1)
+									if($documentFormat=='jpg' || $documentFormat=='jpeg' || $documentFormat=='gif' || $documentFormat=='png' || $documentFormat=='pdf')
+									{	
+										if(($documentSize/1048576)<=5)
 										{
 											$companyPersistable->setDocumentName($documentName);
 											$companyPersistable->setDocumentUrl($path);
@@ -254,42 +254,42 @@ class CompanyProcessor extends BaseProcessor
 											$companyPersistable->setDocumentFormat($documentFormat);
 											$companyArray[$data] = array($companyPersistable);
 										}
+										else
+										{
+											return "FileNotFoundException: The file is too long";
+										}
 									}
-								}
-							}
-							// enter data is not valid
-							else
-							{
-								// if flag==1 then enter data is not valid ..so error is stored in an array.
-								$flag=1;
-								if(!empty($status[0]))
-								{
-									$errorStatus[$errorCount]=$status[0];
-									$errorCount++;
-								}
-							}
-							if($data==(count($_POST)-1))
-							{
-								if($flag==1)
-								{
-									return json_encode($errorStatus);
-								}
-								else
-								{
-									return $companyArray;
+									else
+									{
+										return "FileNotFoundException: The file formate is not valid";
+									}
 								}
 							}
 						}
 					}
+					// enter data is not valid
+					else
+					{
+						// if flag==1 then enter data is not valid ..so error is stored in an array.
+						$flag=1;
+						if(!empty($status[0]))
+						{
+							$errorStatus[$errorCount]=$status[0];
+							$errorCount++;
+						}
+					}
+					if($data==(count($_POST)-1))
+					{
+						if($flag==1)
+						{
+							return json_encode($errorStatus);
+						}
+						else
+						{
+							return $companyArray;
+						}
+					}
 				}
-				else
-				{
-					return "FileNotFoundException: The file is too long";
-				}
-			}
-			else
-			{
-				return "FileNotFoundException: The file formate is not valid";
 			}
 		}
 		//delete

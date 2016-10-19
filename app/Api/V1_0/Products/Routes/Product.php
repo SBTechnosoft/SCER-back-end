@@ -19,18 +19,18 @@ class Product implements RouteRegistrarInterface
         // all the possible get request 
 		Route::group(['as' => 'get'], function ()
 		{
-			Route::get('Products/Product/{productId?}', 'ProductController@getData');
-			Route::get('Products/Product/company/{companyId?}/branch/{branchId?}', 'ProductController@getAllProductData');
+			Route::get('Products/Product/{productId?}', 'Products\Controllers\ProductController@getData');
+			Route::get('Products/Product/company/{companyId?}/branch/{branchId?}', 'Products\Controllers\ProductController@getAllProductData');
 		});
 		
 		// insert data post request
-		Route::post('Products/Product', 'ProductController@store');
+		Route::post('Products/Product', 'Products\Controllers\ProductController@store');
 		
 		// update data post request
-		Route::post('Products/Product/{productId}', 'ProductController@update');
+		Route::post('Products/Product/{productId}', 'Products\Controllers\ProductController@update');
 		
 		//delete data delete request
-		Route::delete('Products/Product/{productId}', 'ProductController@Destroy');
+		Route::delete('Products/Product/{productId}', 'Products\Controllers\ProductController@Destroy');
 			
     }
 }

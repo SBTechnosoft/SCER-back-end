@@ -19,7 +19,7 @@ class Bank implements RouteRegistrarInterface
 		// all the possible get request 
 		Route::group(['as' => 'get'], function ()
 		{
-			Route::get('Banks/Bank/{bankId?}', 'BankController@getData');
+			Route::get('Banks/Bank/{bankId?}', 'Bank\Controllers\BankController@getData');
 			
 		});
 	}

@@ -19,16 +19,16 @@ class State implements RouteRegistrarInterface
         // all the possible get request 
 		Route::group(['as' => 'get'], function ()
 		{
-			Route::get('States/State/{stateId?}', 'StateController@getData');
+			Route::get('States/State/{stateId?}', 'States\Controllers\StateController@getData');
 		});
 		// insert data post request
-		Route::post('States/State', 'StateController@store');
+		Route::post('States/State', 'States\Controllers\StateController@store');
 		
 		// update data post request
-		Route::post('States/State/{stateAbb}', 'StateController@update');
+		Route::post('States/State/{stateAbb}', 'States\Controllers\StateController@update');
 		
 		//delete data delete request
-		Route::delete('States/State/{stateAbb}', 'StateController@Destroy');
+		Route::delete('States/State/{stateAbb}', 'States\Controllers\StateController@Destroy');
 			
     }
 }
