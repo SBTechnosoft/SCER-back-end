@@ -1,5 +1,5 @@
 <?php
-namespace ERP\Model\Branches;
+namespace ERP\Model\Accounting\Ledgers;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
@@ -7,9 +7,9 @@ use Carbon;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class BranchModel extends Model
+class LedgerModel extends Model
 {
-	protected $table = 'branch_mst';
+	protected $table = 'ledger_mst';
 	
 	/**
 	 * insert data 
@@ -18,28 +18,28 @@ class BranchModel extends Model
 	*/
 	public function insertData()
 	{
-		$getBranchData = array();
-		$getBranchKey = array();
-		$getBranchData = func_get_arg(0);
-		$getBranchKey = func_get_arg(1);
-		$branchData="";
+		$getLedgerData = array();
+		$getLedgerKey = array();
+		$getLedgerData = func_get_arg(0);
+		$getLedgerKey = func_get_arg(1);
+		$ledgerData="";
 		$keyName = "";
-		for($data=0;$data<count($getBranchData);$data++)
+		for($data=0;$data<count($getLedgerData);$data++)
 		{
-			if($data == (count($getBranchData)-1))
+			if($data == (count($getLedgerData)-1))
 			{
-				$branchData = $branchData."'".$getBranchData[$data]."'";
-				$keyName =$keyName.$getBranchKey[$data];
+				$ledgerData = $ledgerData."'".$getLedgerData[$data]."'";
+				$keyName =$keyName.$getLedgerKey[$data];
 			}
 			else
 			{
-				$branchData = $branchData."'".$getBranchData[$data]."',";
-				$keyName =$keyName.$getBranchKey[$data].",";
+				$ledgerData = $ledgerData."'".$getLedgerData[$data]."',";
+				$keyName =$keyName.$getLedgerKey[$data].",";
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::statement("insert into branch_mst(".$keyName.") 
-		values(".$branchData.")");
+		$raw = DB::statement("insert into ledger_mst(".$keyName.") 
+		values(".$ledgerData.")");
 		DB::commit();
 		
 		if($raw==1)
@@ -53,21 +53,21 @@ class BranchModel extends Model
 	}
 	/**
 	 * update data 
-	 * @param  branch-data,key of branch-data,branch-id
+	 * @param  ledger-data,key of ledger-data,ledger-id
 	 * returns the status
 	*/
-	public function updateData($branchData,$key,$branchId)
+	public function updateData($ledgerData,$key,$ledgerId)
 	{
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
-		for($data=0;$data<count($branchData);$data++)
+		for($data=0;$data<count($ledgerData);$data++)
 		{
-			$keyValueString=$keyValueString.$key[$data]."='".$branchData[$data]."',";
+			$keyValueString=$keyValueString.$key[$data]."='".$ledgerData[$data]."',";
 		}
 		DB::beginTransaction();
-		$raw = DB::statement("update branch_mst 
+		$raw = DB::statement("update ledger_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
-		where branch_id = '".$branchId."'");
+		where ledger_id = '".$ledgerId."'");
 		DB::commit();
 		
 		if($raw==1)
@@ -88,20 +88,22 @@ class BranchModel extends Model
 	{	
 		DB::beginTransaction();		
 		$raw = DB::select("select 
-		branch_id,
-		branch_name,
+		ledger_id,
+		ledger_name,
+		alias,
+		inventory_affected,
 		address1,
 		address2,
-		pincode,
-		is_display,
-		is_default,
+		pan,
+		tin,
+		service_tax_no,
 		created_at,
 		updated_at,
 		deleted_at,
 		state_abb,
 		city_id,
-		company_id			
-		from branch_mst where deleted_at='0000-00-00 00:00:00'");
+		ledger_grp_id			
+		from ledger_mst where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		if(count($raw)==0)
@@ -116,28 +118,30 @@ class BranchModel extends Model
 	}
 	
 	/**
-	 * get data as per given Branch Id
-	 * @param $branchId
+	 * get data as per given Ledger Id
+	 * @param $ledgerId
 	 * returns the status
 	*/
-	public function getData($branchId)
+	public function getData($ledgerId)
 	{		
 		DB::beginTransaction();
 		$raw = DB::select("select 
-		branch_id,
-		branch_name,
+		ledger_id,
+		ledger_name,
+		alias,
+		inventory_affected,
 		address1,
 		address2,
-		pincode,
-		is_display,
-		is_default,
+		pan,
+		tin,
+		service_tax_no,
 		created_at,
 		updated_at,
 		deleted_at,
 		state_abb,
 		city_id,
-		company_id	
-		from branch_mst where branch_id = ".$branchId." and deleted_at='0000-00-00 00:00:00'");
+		ledger_grp_id
+		from ledger_mst where ledger_id = ".$ledgerId." and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		if(count($raw)==0)
@@ -154,24 +158,26 @@ class BranchModel extends Model
 	 * get All data 
 	 * returns the status
 	*/
-	public function getAllBranchData($companyId)
+	public function getAllLedgerData($ledgerGrpId)
 	{	
 		DB::beginTransaction();		
 		$raw = DB::select("select 
-		branch_id,
-		branch_name,
+		ledger_id,
+		ledger_name,
+		alias,
+		inventory_affected,
 		address1,
 		address2,
-		pincode,
-		is_display,
-		is_default,
+		pan,
+		tin,
+		service_tax_no,
 		created_at,
 		updated_at,
 		deleted_at,
 		state_abb,
 		city_id,
-		company_id
-		from branch_mst where company_id ='".$companyId."' and  deleted_at='0000-00-00 00:00:00'");
+		ledger_grp_id
+		from ledger_mst where ledger_grp_id ='".$ledgerGrpId."' and  deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		if(count($raw)==0)
@@ -186,28 +192,17 @@ class BranchModel extends Model
 	}
 	
 	//delete
-	public function deleteData($branchId)
+	public function deleteData($ledgerId)
 	{
-		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
-		$raw = DB::statement("update product_mst 
+		DB::beginTransaction();
+		$raw = DB::statement("update ledger_mst 
 		set deleted_at='".$mytime."' 
-		where branch_id=".$branchId);
+		where ledger_id=".$ledgerId);
 		DB::commit();
-		
 		if($raw==1)
 		{
-			$product = DB::statement("update branch_mst 
-			set deleted_at='".$mytime."' 
-			where branch_id=".$branchId);
-			if($product==1)
-			{
-				return "200 :Data Deleted Successfully";
-			}
-			else
-			{
-				return "500 : Internal Server Error";
-			}
+			return "200 :Data Deleted Successfully";
 		}
 		else
 		{

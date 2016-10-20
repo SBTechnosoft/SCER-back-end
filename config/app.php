@@ -230,7 +230,9 @@ return [
 		'Templates',
 		'Banks',
 		'InvoiceNumbers',
-		'QuotationNumbers'
+		'QuotationNumbers',
+		'LedgerGrps',
+		'Ledgers'
 	],
 
     /*

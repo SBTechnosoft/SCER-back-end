@@ -233,11 +233,11 @@ include ('connection.php');
 				// formdata.append('branch_id',$scope.formAdata.branch_id);
 				
 				//template
-				$scope.formAdata.template_name = " abcff ";
+				// $scope.formAdata.template_name = " abcff ";
 				// $scope.formAdata.template_type = ' general ';
 				// $scope.formAdata.template_body=' <b> hi</b> ';
 				
-				formdata.append('template_name',$scope.formAdata.template_name);
+				// formdata.append('template_name',$scope.formAdata.template_name);
 				// formdata.append('template_type',$scope.formAdata.template_type);
 				// formdata.append('template_body',$scope.formAdata.template_body);
 				
@@ -267,6 +267,32 @@ include ('connection.php');
 				// formdata.append('end_at',$scope.formAdata.end_at);
 				// formdata.append('company_id',$scope.formAdata.company_id);
 				
+				//ledger
+				// $scope.formAdata.ledger_name = " abc ";
+				// $scope.formAdata.alias = ' d ';
+				// $scope.formAdata.inventory_affected=' no ';
+				// $scope.formAdata.address1 =" sdx cz ";
+				// $scope.formAdata.address2 = " aEb ";
+				// $scope.formAdata.pan= ' qqqas1122b ';
+				// $scope.formAdata.tin= ' 42aa3dgg772 ';
+				// $scope.formAdata.service_tax_no = ' 71j0rg778a22b02 ';
+				// $scope.formAdata.state_abb= ' IN-GJ ';
+				// $scope.formAdata.city_id= 2;
+				// $scope.formAdata.ledger_grp_id='2 ';
+				
+				// formdata.append('ledger_name',$scope.formAdata.ledger_name);
+				// formdata.append('alias',$scope.formAdata.alias);
+				// formdata.append('inventory_affected',$scope.formAdata.inventory_affected);
+				// formdata.append('address1',$scope.formAdata.address1);
+				// formdata.append('address2',$scope.formAdata.address2);
+				// formdata.append('pan',$scope.formAdata.pan);
+				// formdata.append('tin',$scope.formAdata.tin);
+				// formdata.append('service_tax_no',$scope.formAdata.service_tax_no);
+				// formdata.append('state_abb',$scope.formAdata.state_abb);
+				// formdata.append('city_id',$scope.formAdata.city_id);
+				// formdata.append('ledger_grp_id',$scope.formAdata.ledger_grp_id);
+				
+				
 				// var productId = 2;
 				// var productGrpId = 2;
 				// var productCatId = 13;
@@ -275,12 +301,19 @@ include ('connection.php');
 				 // var stateAbb = "IN-GS";
 				 // var branchId = 2;
 				// var id = 42;
-				var templateId=1;
+				// var templateId=1;
 				// var bankId=1;
 				// var invoiceId=2;
 				// var quotationId=1;
+				// var ledgerGrpId=1;
+				var ledgerId=1;
 				
-				//SELECT max(invoice_id) invoice_id,invoice_label FROM `invoice_dtl` where company_id=1
+				var url="http://www.scerp.com/accounting/ledgers/"+ledgerId;
+				// var url="http://www.scerp.com/accounting/ledgers";
+				
+				// var url="http://www.scerp.com/accounting/ledger-grps/"+ledgerGrpId;
+				// var url="http://www.scerp.com/accounting/ledger-grps";
+				// SELECT max(invoice_id) invoice_id,invoice_label FROM `invoice_dtl` where company_id=1
 				// var url="http://www.scerp.com/settings/quotation-numbers/company/"+companyId+"/latest";
 				// var url="http://www.scerp.com/settings/quotation-numbers";
 				// var url="http://www.scerp.com/settings/quotation-numbers/company/"+companyId;
@@ -289,7 +322,7 @@ include ('connection.php');
 				// var url="http://www.scerp.com/settings/invoice-numbers/company/"+companyId;
 				// var url="http://www.scerp.com/banks/"+bankId;
 				// var url="http://www.scerp.com/banks";
-				var url="http://www.scerp.com/settings/templates/"+templateId;
+				// var url="http://www.scerp.com/settings/templates/"+templateId;
 				// var url="http://www.scerp.com/settings/templates";
 				// var url="http://www.scerp.com/companies/"+companyId;
 				// var url="http://www.scerp.com/companies";	
@@ -311,10 +344,10 @@ include ('connection.php');
 				$http({
                         url: url,
                         // type:'patch',
-						 method: 'post',
+						 // method: 'post',
 						// method: 'get',
 						// method: "PATCH",
-						// method:'delete',
+						method:'delete',
 						processData: false,
                         headers: {'Content-Type': undefined},
                         data:formdata						

@@ -1,18 +1,12 @@
-##### Standard Template Object
+##### Standard Bank Object
 
             {
-                "templateId": int,
-                "templateName":String,
-                "templateBody":longtext,
-                "templateType":enum,
-				"updatedAt":datetime
+                "bankId": int,
+                "bankName":String
             }
             
-##### Standard Template Persistable Object
+##### Standard Bank Persistable Object
 			{
-            	"templateName":String,
-                "templateBody":longtext,
-                "templateType":enum,
-				"updatedAt":datetime
+            	 "bankName":String
             }
 

@@ -47,9 +47,12 @@ class RouteServiceProvider extends ServiceProvider
 			$routeArray['products'] = "Product";
 			$routeArray['quotation-numbers'] = "Quotation";
 			$routeArray['templates'] = "Template";
+			$routeArray['ledger-grps'] = "LedgerGrp";
+			$routeArray['ledgers'] = "Ledger";
 			
 			foreach($routeArray as $key => $value)
 			{
+				
 				if($key==$splitUriRoute[1])
 				{
 					$routeName = $value;
@@ -57,6 +60,7 @@ class RouteServiceProvider extends ServiceProvider
 				}
 				else if($key==$splitUriRoute[2])
 				{
+					
 					$urlFlag=1;
 					$routeName = $value;
 					break;
@@ -81,19 +85,42 @@ class RouteServiceProvider extends ServiceProvider
 			}
 			else
 			{
-				$convertedString1 = str_replace(' ', '', ucwords(str_replace('-', ' ', $splitUriRoute[2])));
-				foreach ($packages as $package) {			
-					//condition for going to particular route file as per url	
-					if(!strcmp($package,$convertedString1)) 
-					{
-						$path = app_path('Api\V1_0\\' . str_replace('\\', '/', $package) .'\\Routes');		
-						$namespace = 'ERP\Api\V1_0\\Settings\\' . $package ;		
-						//go to the register method from particular Route class 
-						$this->app->make($namespace .'\\Routes\\' . $routeName)
-						->register($router);	
-						break;
-					}							
+				if($splitUriRoute[1]=="settings")
+				{
+					$convertedString1 = str_replace(' ', '', ucwords(str_replace('-', ' ', $splitUriRoute[2])));
+					foreach ($packages as $package) 
+					{			
+						//condition for going to particular route file as per url	
+						if(!strcmp($package,$convertedString1)) 
+						{
+							$path = app_path('Api\V1_0\\' . str_replace('\\', '/', $package) .'\\Routes');		
+							$namespace = 'ERP\Api\V1_0\\Settings\\' . $package ;		
+							//go to the register method from particular Route class 
+							$this->app->make($namespace .'\\Routes\\' . $routeName)
+							->register($router);	
+							break;
+						}							
+					}
 				}
+				else
+				{
+					$convertedString1 = str_replace(' ', '', ucwords(str_replace('-', ' ', $splitUriRoute[2])));
+					foreach ($packages as $package) 
+					{			
+						//condition for going to particular route file as per url	
+						if(!strcmp($package,$convertedString1)) 
+						{
+							$path = app_path('Api\V1_0\\' . str_replace('\\', '/', $package) .'\\Routes');		
+							$namespace = 'ERP\Api\V1_0\\Accounting\\' . $package ;
+							
+							//go to the register method from particular Route class 
+							$this->app->make($namespace .'\\Routes\\' . $routeName)
+							->register($router);	
+							break;
+						}							
+					}
+				}
+				
 			}	
 				
         });
