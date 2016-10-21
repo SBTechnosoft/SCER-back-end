@@ -31,7 +31,7 @@
 				... Standard Ledger Object
 			}
 
-**NOTES:** List the Ledger as per given ledger id 
+**NOTES:** Provide details of the Ledger based on the Ledger Number
 
 ##### `GET /accounting/ledgers/`
 + Header 
@@ -44,6 +44,18 @@
 			}
 
 **NOTES:** List all the ledger
+
+##### `GET /accounting/ledgers/{ledgerId}/transactions`
++ Header 
+	- Authentication Token
+
++ Response
+
+			{
+				... //TO DO
+			}
+
+
 
 ##### `GET /accounting/ledgers/ledgerGrp/{ledgerGrpId}`
 + Header 
@@ -68,8 +80,16 @@
             {
                 ... Standard Ledger Persistable Object
             }
-            
-            
+
++ Error Message
+
+			{
+				... Error message
+			}
++  Status
+			{
+				... HTTP_Status:200
+			}
 ##### Deletes Ledger    
        
 ##### `DELETE /accounting/ledgers/{ledgerId}`

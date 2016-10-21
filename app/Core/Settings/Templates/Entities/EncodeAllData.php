@@ -18,6 +18,7 @@ class EncodeAllData
 		for($decodedData=0;$decodedData<count($decodedJson);$decodedData++)
 		{
 			$updatedAt[$decodedData] = $decodedJson[$decodedData]['updated_at'];
+			$createdAt[$decodedData] = $decodedJson[$decodedData]['created_at'];
 			$templateId[$decodedData] = $decodedJson[$decodedData]['template_id'];
 			$templateName[$decodedData] = $decodedJson[$decodedData]['template_name'];
 			$templateType[$decodedData] = $decodedJson[$decodedData]['template_type'];
@@ -25,9 +26,13 @@ class EncodeAllData
 			
 			//date format conversion
 			$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
+			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
 		}
+		$template->setCreated_at($convertedCreatedDate);
+		$getCreatedDate = $template->getCreated_at();
 		$template->setUpdated_at($convertedUpdatedDate);
 		$getUpdatedDate = $template->getUpdated_at();
+		
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
 		{
@@ -36,6 +41,7 @@ class EncodeAllData
 				'template_name' => $templateName[$jsonData],
 				'template_type' => $templateType[$jsonData],
 				'template_body' => $templateBody[$jsonData],
+				'created_at' => $getCreatedDate[$jsonData],
 				'updated_at' => $getUpdatedDate[$jsonData]
 			);
 		}

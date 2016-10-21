@@ -1,12 +1,12 @@
 <?php
-namespace ERP\Model\Accounting\LedgerGrps;
+namespace ERP\Model\Accounting\LedgerGroups;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class LedgerGrpModel extends Model
+class LedgerGroupModel extends Model
 {
 	protected $table = 'ledger_grp_mst';
 	

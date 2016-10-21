@@ -1,17 +1,17 @@
 <?php
-namespace ERP\Api\V1_0\Accounting\LedgerGrps\Controllers;
+namespace ERP\Api\V1_0\Accounting\LedgerGroups\Controllers;
 
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
-use ERP\Core\Accounting\LedgerGrps\Services\LedgerGrpService;
+use ERP\Core\Accounting\LedgerGroups\Services\LedgerGroupService;
 use ERP\Http\Requests;
 use ERP\Api\V1_0\Support\BaseController;
-use ERP\Core\Accounting\LedgerGrps\Persistables\LedgerGrpPersistable;
+use ERP\Core\Accounting\LedgerGroups\Persistables\LedgerGroupPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class LedgerGrpController extends BaseController implements ContainerInterface
+class LedgerGroupController extends BaseController implements ContainerInterface
 {
 	/**
      * @var ledgerGrpService

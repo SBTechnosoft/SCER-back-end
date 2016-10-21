@@ -1,16 +1,16 @@
 <?php
-namespace ERP\Core\Accounting\LedgerGrps\Services;
+namespace ERP\Core\Accounting\LedgerGroups\Services;
 
-use ERP\Core\Accounting\LedgerGrps\Persistables\LedgerGrpPersistable;
-use ERP\Core\Accounting\LedgerGrps\Entities\LedgerGrp;
-use ERP\Model\Accounting\LedgerGrps\LedgerGrpModel;
+use ERP\Core\Accounting\LedgerGroups\Persistables\LedgerGroupPersistable;
+use ERP\Core\Accounting\LedgerGroups\Entities\LedgerGroup;
+use ERP\Model\Accounting\LedgerGroups\LedgerGroupModel;
 use ERP\Core\Shared\Options\UpdateOptions;
 use ERP\Core\Support\Service\AbstractService;
 use ERP\Core\User\Entities\User;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class LedgerGrpService extends AbstractService
+class LedgerGroupService extends AbstractService
 {
     /**
      * @var ledgerGrpService

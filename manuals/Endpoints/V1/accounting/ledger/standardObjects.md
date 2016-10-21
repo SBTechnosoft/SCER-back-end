@@ -2,13 +2,37 @@
 
             {
                 "ledger_id": int,
-                "ledger_grp_name":String,
-                "under_what":int
+                "ledger_name":String,
+                "alias":String,
+                "inventory_affected":Enum,
+                "address1":String,
+                "address2":String,
+                "pan":char,
+                "tin":char,
+                "service_tax_no":char,
+                "state_abb":char,
+                "city_id":int,
+                "created_at":TimeStamp,
+                "updated_at":DateTime,
+                "deleted_at":DateTime,
+                "ledger_grp_id":int
             }
             
 ##### Standard LedgerGrp Persistable Object
 			{
-            	"ledger_grp_name":String,
-                "under_what":int
+            	"ledger_name":String,
+                "alias":String,
+                "inventory_affected":Enum,
+                "address1":String,
+                "address2":String,
+                "pan":char,
+                "tin":char,
+                "service_tax_no":char,
+                "state_abb":char,
+                "city_id":int,
+                "created_at":TimeStamp,
+                "updated_at":DateTime,
+                "deleted_at":DateTime,
+                "ledger_grp_id":int
             }
 

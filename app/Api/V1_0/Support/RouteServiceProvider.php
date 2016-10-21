@@ -47,7 +47,7 @@ class RouteServiceProvider extends ServiceProvider
 			$routeArray['products'] = "Product";
 			$routeArray['quotation-numbers'] = "Quotation";
 			$routeArray['templates'] = "Template";
-			$routeArray['ledger-grps'] = "LedgerGrp";
+			$routeArray['ledger-groups'] = "LedgerGroup";
 			$routeArray['ledgers'] = "Ledger";
 			
 			foreach($routeArray as $key => $value)

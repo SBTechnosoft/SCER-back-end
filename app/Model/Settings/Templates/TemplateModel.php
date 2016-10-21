@@ -55,8 +55,9 @@ class TemplateModel extends Model
 		template_name,
 		template_body,
 		template_type,
-		updated_at
-		from template_mst");
+		updated_at,
+		created_at
+		from template_mst where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		if(count($raw)==0)
@@ -83,8 +84,9 @@ class TemplateModel extends Model
 		template_name,
 		template_body,
 		template_type,
-		updated_at
-		from template_mst where template_id = ".$templateId);
+		updated_at,
+		created_at
+		from template_mst where template_id = ".$templateId." where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		if(count($raw)==0)
