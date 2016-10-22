@@ -3,7 +3,7 @@ namespace ERP\Core\Accounting\Ledgers\Entities;
 
 use ERP\Core\Accounting\Ledgers\Entities\Ledger;
 use ERP\Core\States\Services\StateService;
-use ERP\Core\Entities\LedgerGrpDetail;
+use ERP\Core\Entities\LedgerGroupDetail;
 use ERP\Core\Entities\CityDetail;
 use Carbon;
 /**
@@ -40,7 +40,7 @@ class EncodeData extends StateService
 		$getCityDetail = $cityDetail->getCityDetail($cityId);
 		
 		//get the company details from database
-		$ledgerGrpDetail = new LedgerGrpDetail();
+		$ledgerGrpDetail = new LedgerGroupDetail();
 		$getLedgerGrpDetail = $ledgerGrpDetail->getLedgerGrpDetails($ledgerGrpId);
 		
 		//date format conversion

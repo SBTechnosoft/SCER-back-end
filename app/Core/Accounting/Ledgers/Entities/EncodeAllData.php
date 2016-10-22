@@ -4,7 +4,7 @@ namespace ERP\Core\Accounting\Ledgers\Entities;
 use ERP\Core\Accounting\Ledgers\Entities\Ledger;
 use ERP\Core\States\Services\StateService;
 use ERP\Core\Entities\CityDetail;
-use ERP\Core\Entities\LedgerGrpDetail;
+use ERP\Core\Entities\LedgerGroupDetail;
 use Carbon;
 /**
  *
@@ -19,6 +19,7 @@ class EncodeAllData extends StateService
 		$encodeAllData =  array();
 		$decodedJson = json_decode($status,true);
 		$ledger = new Ledger();
+		
 		for($decodedData=0;$decodedData<count($decodedJson);$decodedData++)
 		{
 			$createdAt[$decodedData] = $decodedJson[$decodedData]['created_at'];
@@ -44,24 +45,27 @@ class EncodeAllData extends StateService
 			$stateIsDisplay[$decodedData]= $stateDecodedJson[$decodedData]['is_display'];
 			$stateCreatedAt[$decodedData]= $stateDecodedJson[$decodedData]['created_at'];
 			$stateUpdatedAt[$decodedData]= $stateDecodedJson[$decodedData]['updated_at'];
+			// print_r($stateUpdatedAt[$decodedData]);
 			
 			//get the city details from database
 			$cityDetail = new CityDetail();
 			$getCityDetail[$decodedData] = $cityDetail->getCityDetail($cityId[$decodedData]);
-			 
+			
 			//get the company details from database
-			$ledgerGrpDetail = new LedgerGrpDetail();
+			$ledgerGrpDetail = new LedgerGroupDetail();
 			$getLedgerGrpDetails[$decodedData] = $ledgerGrpDetail->getLedgerGrpDetails($ledgerGrpId[$decodedData]);
 			
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
 			$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
+		
 		}
 		$ledger->setCreated_at($convertedCreatedDate);
 		$getCreatedDate = $ledger->getCreated_at();
 		$ledger->setUpdated_at($convertedUpdatedDate);
 		$getUpdatedDate = $ledger->getUpdated_at();
 		$data = array();
+		
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
 		{
 			$data[$jsonData]= array(
@@ -90,11 +94,12 @@ class EncodeAllData extends StateService
 				'cityUpdated_at' => $getCityDetail[$jsonData]['updated_at'],
 				'cityState_abb' => $getCityDetail[$jsonData]['state_abb'],
 				
-				'ledger_grp_id' => $getLedgerGrpDetails[$jsonData]['ledger_grp_id'],	
-				'ledger_grp_name' => $getLedgerGrpDetails[$jsonData]['ledger_grp_name'],	
-				'under_what' => $getLedgerGrpDetails[$jsonData]['under_what'],	
+				'ledger_grp_id' => $getLedgerGrpDetails[$jsonData][0]['ledger_grp_id'],	
+				'ledger_grp_name' => $getLedgerGrpDetails[$jsonData][0]['ledger_grp_name'],	
+				'under_what' => $getLedgerGrpDetails[$jsonData][0]['under_what']
 			);
 		}
-		return json_encode($data);
+		$jsonEncodedData = json_encode($data);
+		return $jsonEncodedData;
 	}
 }

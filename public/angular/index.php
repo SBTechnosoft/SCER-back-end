@@ -268,29 +268,29 @@ include ('connection.php');
 				// formdata.append('company_id',$scope.formAdata.company_id);
 				
 				//ledger
-				$scope.formAdata.ledger_name = " abc ";
-				$scope.formAdata.alias = ' d ';
-				$scope.formAdata.inventory_affected=' no ';
-				$scope.formAdata.address1 =" sdx cz ";
-				$scope.formAdata.address2 = " aEb ";
-				$scope.formAdata.pan= ' qqqas1122b ';
-				$scope.formAdata.tin= ' 42aa3dgg772 ';
-				$scope.formAdata.service_tax_no = ' 71j0rg778a22b02 ';
-				$scope.formAdata.state_abb= ' IN-GJ ';
-				$scope.formAdata.city_id= 2;
-				$scope.formAdata.ledger_grp_id='2 ';
+				// $scope.formAdata.ledger_name = " abc ";
+				// $scope.formAdata.alias = ' d ';
+				// $scope.formAdata.inventory_affected=' no ';
+				// $scope.formAdata.address1 =" sdx cz ";
+				// $scope.formAdata.address2 = " aEb ";
+				// $scope.formAdata.pan= ' qqqas1122b ';
+				// $scope.formAdata.tin= ' 42aa3dgg772 ';
+				// $scope.formAdata.service_tax_no = ' 71j0rg778a22b02 ';
+				// $scope.formAdata.state_abb= ' IN-GJ ';
+				// $scope.formAdata.city_id= 2;
+				// $scope.formAdata.ledger_grp_id='2 ';
 				
-				formdata.append('ledger_name',$scope.formAdata.ledger_name);
-				formdata.append('alias',$scope.formAdata.alias);
-				formdata.append('inventory_affected',$scope.formAdata.inventory_affected);
-				formdata.append('address1',$scope.formAdata.address1);
-				formdata.append('address2',$scope.formAdata.address2);
-				formdata.append('pan',$scope.formAdata.pan);
-				formdata.append('tin',$scope.formAdata.tin);
-				formdata.append('service_tax_no',$scope.formAdata.service_tax_no);
-				formdata.append('state_abb',$scope.formAdata.state_abb);
-				formdata.append('city_id',$scope.formAdata.city_id);
-				formdata.append('ledger_grp_id',$scope.formAdata.ledger_grp_id);
+				// formdata.append('ledger_name',$scope.formAdata.ledger_name);
+				// formdata.append('alias',$scope.formAdata.alias);
+				// formdata.append('inventory_affected',$scope.formAdata.inventory_affected);
+				// formdata.append('address1',$scope.formAdata.address1);
+				// formdata.append('address2',$scope.formAdata.address2);
+				// formdata.append('pan',$scope.formAdata.pan);
+				// formdata.append('tin',$scope.formAdata.tin);
+				// formdata.append('service_tax_no',$scope.formAdata.service_tax_no);
+				// formdata.append('state_abb',$scope.formAdata.state_abb);
+				// formdata.append('city_id',$scope.formAdata.city_id);
+				// formdata.append('ledger_grp_id',$scope.formAdata.ledger_grp_id);
 				
 				
 				// var productId = 2;
@@ -306,11 +306,12 @@ include ('connection.php');
 				// var invoiceId=2;
 				// var quotationId=1;
 				// var ledgerGrpId=1;
-				// var ledgerId=1;
+				// var ledgerId=2;
+				
+				// var url="http://www.scerp.com/accos";
 				
 				// var url="http://www.scerp.com/accounting/ledgers/"+ledgerId;
 				// var url="http://www.scerp.com/accounting/ledgers";
-				
 				// var url="http://www.scerp.com/accounting/ledger-groups/"+ledgerGrpId;
 				// var url="http://www.scerp.com/accounting/ledger-groups";
 				// SELECT max(invoice_id) invoice_id,invoice_label FROM `invoice_dtl` where company_id=1
@@ -330,7 +331,7 @@ include ('connection.php');
 				 // var url="http://www.scerp.com/branches/"+branchId;
 				// var url="http://www.scerp.com/branches/company/"+companyId;
 				 // var url="http://www.scerp.com/states/"+stateAbb;
-				//var url="http://www.scerp.com/states";
+				// var url="http://www.scerp.com/states";
 				// var url="http://www.scerp.com/cities/state/"+stateAbb;
 				 // var url="http://www.scerp.com/cities";
 				 // var url="http://www.scerp.com/cities/"+cityId;
@@ -344,8 +345,8 @@ include ('connection.php');
 				$http({
                         url: url,
                         // type:'patch',
-						 method: 'post',
-						// method: 'get',
+						 // method: 'post',
+						method: 'get',
 						// method: "PATCH",
 						// method:'delete',
 						processData: false,

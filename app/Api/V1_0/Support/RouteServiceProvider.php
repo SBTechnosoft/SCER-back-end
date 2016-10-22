@@ -34,6 +34,7 @@ class RouteServiceProvider extends ServiceProvider
         ],function (Router $router) {
             $packages = $this->app->make('config')->get('app.packages');
 			$splitUriRoute = explode("/", $_SERVER['REQUEST_URI']); 
+			
 			$urlFlag=0;
 			$routeArray = array();
 			$routeArray['companies'] = "Company";
@@ -49,21 +50,21 @@ class RouteServiceProvider extends ServiceProvider
 			$routeArray['templates'] = "Template";
 			$routeArray['ledger-groups'] = "LedgerGroup";
 			$routeArray['ledgers'] = "Ledger";
-			
 			foreach($routeArray as $key => $value)
 			{
-				
 				if($key==$splitUriRoute[1])
 				{
 					$routeName = $value;
 					break;
 				}
-				else if($key==$splitUriRoute[2])
+				else if($splitUriRoute[1]=="settings" || $splitUriRoute[1]=="accounting")
 				{
-					
-					$urlFlag=1;
-					$routeName = $value;
-					break;
+					if($key==$splitUriRoute[2])
+					{
+						$urlFlag=1;
+						$routeName = $value;
+						break;
+					}
 				}
 			}
 			if($urlFlag==0)

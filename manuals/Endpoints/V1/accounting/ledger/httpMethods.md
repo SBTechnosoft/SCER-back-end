@@ -84,7 +84,7 @@
 + Error Message
 
 			{
-				... Error message
+				... Error Message
 			}
 +  Status
 			{

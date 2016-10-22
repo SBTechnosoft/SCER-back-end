@@ -13,26 +13,26 @@ use ERP\Core\User\Entities\User;
 class LedgerGroupService extends AbstractService
 {
     /**
-     * @var ledgerGrpService
-	 * $var ledgerGrpModel
+     * @var ledgerGroupService
+	 * $var ledgerGroupModel
      */
-    private $ledgerGrpService;
-    private $ledgerGrpModel;
+    private $ledgerGroupService;
+    private $ledgerGroupModel;
 	
     /**
      * @param LedgerGrpService $ledgerGrpService
      */
-    public function initialize(LedgerGrpService $ledgerGrpService)
+    public function initialize(LedgerGroupService $ledgerGrpService)
     {		
 		echo "init";
     }
 	
     /**
-     * @param BranchPersistable $persistable
+     * @param LedgerGroupPersistable $persistable
      */
-    public function create(LedgerGrpPersistable $persistable)
+    public function create(LedgerGroupPersistable $persistable)
     {
-		return "create method of LedgerGrpService";
+		return "create method of LedgerGroupService";
 		
     }
 	
@@ -42,7 +42,7 @@ class LedgerGroupService extends AbstractService
      */
 	public function getAllLedgerGrpData()
 	{
-		$ledgerGrpModel = new LedgerGrpModel();
+		$ledgerGrpModel = new LedgerGroupModel();
 		$status = $ledgerGrpModel->getAllData();
 		return $status;
 	}
@@ -54,7 +54,7 @@ class LedgerGroupService extends AbstractService
      */
 	public function getLedgerGrpData($ledgerGrpId)
 	{
-		$ledgerGrpModel = new LedgerGrpModel();
+		$ledgerGrpModel = new LedgerGroupModel();
 		$status = $ledgerGrpModel->getData($ledgerGrpId);
 		return $status;
 	}

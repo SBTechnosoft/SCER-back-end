@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use ERP\Core\Sample\Persistables\DocumentPersistable;
 use ERP\Core\Companies\Validations\CompanyValidate;
 use ERP\Api\V1_0\Companies\Transformers\CompanyTransformer;
+use ERP\Api\V1_0\Entities\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -120,12 +121,15 @@ class CompanyProcessor extends BaseProcessor
 							}
 							else
 							{
+									
 								return "FileNotFoundException: The file is too long";
 							}
 						}
 						else
 						{
-							return "FileNotFoundException: The file formate is not valid";
+							$exception = new ExceptionMessage();
+							$fileSizeArray = $exception->errorMessage();
+							return $fileSizeArray['fileFormat'];
 						}
 					}
 				}

@@ -55,6 +55,7 @@ class CompanyController extends BaseController implements ContainerInterface
 			$companyPersistable = new CompanyPersistable();		
 			$companyService= new CompanyService();			
 			$companyPersistable = $Processor->createPersistable($this->request);
+			
 			if($companyPersistable[0][0]=='[')
 			{
 				return $companyPersistable;

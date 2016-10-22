@@ -231,7 +231,7 @@ return [
 		'Banks',
 		'InvoiceNumbers',
 		'QuotationNumbers',
-		'LedgerGrps',
+		'LedgerGroups',
 		'Ledgers'
 	],
 

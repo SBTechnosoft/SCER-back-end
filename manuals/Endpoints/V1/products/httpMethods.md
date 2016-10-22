@@ -20,7 +20,7 @@
 
 ##### Gets Products           
             
-##### `GET products/company/{CompanyId}/branch/{branchId}`
+##### `GET products/company/{CompanyId}
 + Header 
 	- Authentication Token
 
@@ -30,7 +30,19 @@
 				... Standard Product Object
 			}
 
-**NOTES:** List all the product in particular company and branch
+**NOTES:** List all the product in particular company
+
+##### `GET products/branch/{branchId}`
++ Header 
+	- Authentication Token
+
++ Response
+
+			{
+				... Standard Product Object
+			}
+
+**NOTES:** List all the product in particular branch
 
 ##### `GET /products/{productId}`
 + Header

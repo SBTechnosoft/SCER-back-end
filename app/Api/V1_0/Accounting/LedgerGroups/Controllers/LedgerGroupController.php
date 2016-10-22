@@ -14,13 +14,13 @@ use ERP\Core\Support\Service\ContainerInterface;
 class LedgerGroupController extends BaseController implements ContainerInterface
 {
 	/**
-     * @var ledgerGrpService
+     * @var ledgerGroupService
      * @var request
-     * @var ledgerGrpPersistable
+     * @var ledgerGroupPersistable
      */
-	private $ledgerGrpService;
+	private $ledgerGroupService;
 	private $request;
-	private $ledgerGrpPersistable;	
+	private $ledgerGroupPersistable;	
 	
 	/**
 	 * get and invoke method is of ContainerInterface method
@@ -40,7 +40,7 @@ class LedgerGroupController extends BaseController implements ContainerInterface
      */
     public function getData($ledgerGrpId=null)
     {
-		$ledgerGrpService= new LedgerGrpService();
+		$ledgerGrpService= new LedgerGroupService();
 		if($ledgerGrpId==null)
 		{	
 			$status = $ledgerGrpService->getAllLedgerGrpData();
