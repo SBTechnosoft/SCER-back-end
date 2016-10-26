@@ -244,7 +244,7 @@ class CompanyProcessor extends BaseProcessor
 							$getFuncName[$data] = 'get'.$str;
 							$companyPersistable->$setFuncName($companyValue[$data]);
 							$companyPersistable->setName($getFuncName[$data]);
-							$companyPersistable->setKey($key[$data]);
+							$companyPersistable->setKey($tKeyValue[$data]);
 							$companyPersistable->setCompanyId($companyId);
 							$companyArray[$data] = array($companyPersistable);
 							

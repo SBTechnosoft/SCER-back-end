@@ -56,48 +56,48 @@ class EncodeData extends StateService
 		$getCreatedDate = $company->getCreated_at();
 			
 		$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
-		$company->setCreated_at($convertedUpdatedDate);
+		$company->setUpdated_at($convertedUpdatedDate);
 		$getUpdatedDate = $company->getUpdated_at();
 		
 		//set all data into json array
 		$data = array();
-		$data['company_id'] = $companyId;
-		$data['company_name'] = $companyName;
-		$data['company_display_name'] = $companyDisplayName;
+		$data['companyId'] = $companyId;
+		$data['companyName'] = $companyName;
+		$data['companyDisplayName'] = $companyDisplayName;
 		$data['address1'] = $address1;
 		$data['address2'] = $address2;
 		$data['pincode'] = $pincode;
 		$data['pan'] = $pan;
 		$data['tin'] = $tin;
-		$data['vat_no'] = $vat_no;
-		$data['service_tax_no'] = $serviceTaxNo;
-		$data['basic_currency_symbol'] = $basicCurrencySymbol;
-		$data['formal_name'] = $formalName;
-		$data['no_of_decimal_points'] = $noOfDecimalPoints;
-		$data['currency_symbol'] = $currencySymbol;
-		$data['document_name'] = $documentName;
-		$data['document_url'] = $documentUrl;
-		$data['document_size'] = $documentSize;
-		$data['document_format'] = $documentFormat;
-		$data['is_display'] = $isDisplay;
-		$data['is_default'] = $isDefault;
-		$data['created_at'] = $getCreatedDate;
-		$data['updated_at'] = $getUpdatedDate;	
-		$data['state_abb'] = $stateAbb;
-		$data['city_id'] = $cityId;
+		$data['vatNo'] = $vat_no;
+		$data['serviceTaxNo'] = $serviceTaxNo;
+		$data['basicCurrencySymbol'] = $basicCurrencySymbol;
+		$data['formalName'] = $formalName;
+		$data['noOfDecimalPoints'] = $noOfDecimalPoints;
+		$data['currencySymbol'] = $currencySymbol;
+		$data['documentName'] = $documentName;
+		$data['documentUrl'] = $documentUrl;
+		$data['documentSize'] = $documentSize;
+		$data['documentFormat'] = $documentFormat;
+		$data['isDisplay'] = $isDisplay;
+		$data['isDefault'] = $isDefault;
+		$data['createdAt'] = $getCreatedDate;
+		$data['updatedAt'] = $getUpdatedDate;	
+		$data['stateAbb'] = $stateAbb;
+		$data['cityId'] = $cityId;
 		
 		$data['state'] = array(
-			'state_name' => $stateDecodedJson['stateName'],	
-			'is_display' => $stateDecodedJson['isDisplay'],	
-			'created_at' => $stateDecodedJson['createdAt'],	
-			'updated_at' => $stateDecodedJson['updatedAt']
+			'stateName' => $stateDecodedJson['stateName'],	
+			'isDisplay' => $stateDecodedJson['isDisplay'],	
+			'createdAt' => $stateDecodedJson['createdAt'],	
+			'updatedAt' => $stateDecodedJson['updatedAt']
 		);
 		$data['city'] = array(
-			'city_name' => $getCityDetail['city_name'],
-			'is_display' => $getCityDetail['is_display'],	
-			'created_at' => $getCityDetail['created_at'],	
-			'updated_at' => $getCityDetail['updated_at'],	
-			'state_abb' => $getCityDetail['state_abb']
+			'cityName' => $getCityDetail['cityName'],
+			'isDisplay' => $getCityDetail['isDisplay'],	
+			'createdAt' => $getCityDetail['createdAt'],	
+			'updatedAt' => $getCityDetail['updatedAt'],	
+			'stateAbb' => $getCityDetail['stateAbb']
 		);
 		$encodeData = json_encode($data);
 		return $encodeData;

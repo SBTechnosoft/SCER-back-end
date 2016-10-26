@@ -50,10 +50,10 @@ class EncodeAllData extends StateService
 			$encodeDataClass = new EncodeAllData();
 			$stateStatus[$decodedData] = $encodeDataClass->getStateData($stateAbb[$decodedData]);
 			$stateDecodedJson[$decodedData] = json_decode($stateStatus[$decodedData],true);
-			$stateName[$decodedData]= $stateDecodedJson[$decodedData]['state_name'];
-			$stateIsDisplay[$decodedData]= $stateDecodedJson[$decodedData]['is_display'];
-			$stateCreatedAt[$decodedData]= $stateDecodedJson[$decodedData]['created_at'];
-			$stateUpdatedAt[$decodedData]= $stateDecodedJson[$decodedData]['updated_at'];
+			$stateName[$decodedData]= $stateDecodedJson[$decodedData]['stateName'];
+			$stateIsDisplay[$decodedData]= $stateDecodedJson[$decodedData]['isDisplay'];
+			$stateCreatedAt[$decodedData]= $stateDecodedJson[$decodedData]['createdAt'];
+			$stateUpdatedAt[$decodedData]= $stateDecodedJson[$decodedData]['updatedAt'];
 			
 			//get the city details from database
 			$cityDetail = new CityDetail();
@@ -66,51 +66,51 @@ class EncodeAllData extends StateService
 		}
 		$company->setCreated_at($convertedCreatedDate);
 		$getCreatedDate = $company->getCreated_at();
-		$company->setCreated_at($convertedUpdatedDate);
+		$company->setUpdated_at($convertedUpdatedDate);
 		$getUpdatedDate = $company->getUpdated_at();
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
 		{
 			$data[$jsonData]= array(
-				'company_id'=>$companyId[$jsonData],
-				'company_name' => $companyName[$jsonData],
-				'company_display_name' => $companyDisplayName[$jsonData],
+				'companyId'=>$companyId[$jsonData],
+				'companyName' => $companyName[$jsonData],
+				'companyDisplayName' => $companyDisplayName[$jsonData],
 				'address1' => $address1[$jsonData],
 				'address2' => $address2[$jsonData],
 				'pincode'=> $pincode[$jsonData],
 				'pan' => $pan[$jsonData],
 				'tin' => $tin[$jsonData],
-				'vat_no' =>$vat_no[$jsonData],
-				'service_tax_no' => $serviceTaxNo[$jsonData],
-				'basic_currency_symbol' => $basicCurrencySymbol[$jsonData],
-				'formal_name' => $formalName[$jsonData],
-				'no_of_decimal_points' => $noOfDecimalPoints[$jsonData],
-				'currency_symbol' => $currencySymbol[$jsonData],
-				'document_name'=> $documentName[$jsonData],
-				'document_url' => $documentUrl[$jsonData],
-				'document_size' => $documentSize[$jsonData],
-				'document_format' => $documentFormat[$jsonData],
-				'is_display' => $isDisplay[$jsonData],
-				'is_default' => $isDefault[$jsonData],
-				'created_at' => $getCreatedDate[$jsonData],
-				'updated_at' => $getUpdatedDate[$jsonData],
-				'state_abb' => $stateAbb[$jsonData],
-				'city_id' => $cityId[$jsonData],
+				'vatNo' =>$vat_no[$jsonData],
+				'serviceTaxNo' => $serviceTaxNo[$jsonData],
+				'basicCurrencySymbol' => $basicCurrencySymbol[$jsonData],
+				'formalName' => $formalName[$jsonData],
+				'noOfDecimalPoints' => $noOfDecimalPoints[$jsonData],
+				'currencySymbol' => $currencySymbol[$jsonData],
+				'documentName'=> $documentName[$jsonData],
+				'documentUrl' => $documentUrl[$jsonData],
+				'documentSize' => $documentSize[$jsonData],
+				'documentFormat' => $documentFormat[$jsonData],
+				'isDisplay' => $isDisplay[$jsonData],
+				'isDefault' => $isDefault[$jsonData],
+				'createdAt' => $getCreatedDate[$jsonData],
+				'updatedAt' => $getUpdatedDate[$jsonData],
+				'stateAbb' => $stateAbb[$jsonData],
+				'cityId' => $cityId[$jsonData],
 				
 				'state' => array(
-					'state_abb' => $stateAbb[$jsonData],
-					'state_name' => $stateName[$jsonData],
-					'is_display' => $stateIsDisplay[$jsonData],
-					'created_at' => $stateCreatedAt[$jsonData],
-					'updated_at' => $stateUpdatedAt[$jsonData]
+					'stateAbb' => $stateAbb[$jsonData],
+					'stateName' => $stateName[$jsonData],
+					'isDisplay' => $stateIsDisplay[$jsonData],
+					'createdAt' => $stateCreatedAt[$jsonData],
+					'updatedAt' => $stateUpdatedAt[$jsonData]
 				),
 				'city'=> array(
-					'city_id' => $cityId[$jsonData],
-					'city_name' => $getCityDetail[$jsonData]['city_name'],
-					'is_display' => $getCityDetail[$jsonData]['is_display'],
-					'created_at' => $getCityDetail[$jsonData]['created_at'],
-					'updated_at' => $getCityDetail[$jsonData]['updated_at'],
-					'state_abb' => $getCityDetail[$jsonData]['state_abb']
+					'cityId' => $cityId[$jsonData],
+					'cityName' => $getCityDetail[$jsonData]['cityName'],
+					'isDisplay' => $getCityDetail[$jsonData]['isDisplay'],
+					'createdAt' => $getCityDetail[$jsonData]['createdAt'],
+					'updatedAt' => $getCityDetail[$jsonData]['updatedAt'],
+					'stateAbb' => $getCityDetail[$jsonData]['stateAbb']
 				)
 			);
 		}

@@ -15,23 +15,23 @@ class CompanyTransformer
     public function trimInsertData(Request $request)
     {
 		//data get from body
-		$companyName = $request->input('company_name'); 
-		$companyDispName = $request->input('company_display_name'); 
+		$companyName = $request->input('companyName'); 
+		$companyDispName = $request->input('companyDisplayName'); 
 		$address1 = $request->input('address1'); 
 		$address2 = $request->input('address2'); 
 		$pincode = $request->input('pincode'); 
 		$pan = $request->input('pan'); 
 		$tin = $request->input('tin'); 
-		$vatNo = $request->input('vat_no'); 
-		$serviceTaxNo = $request->input('service_tax_no'); 
-		$basicCurrencySymbol = $request->input('basic_currency_symbol'); 			
-		$formalName = $request->input('formal_name'); 			
-		$noOfDecimalPoints = $request->input('no_of_decimal_points'); 			
-		$currencySymbol = $request->input('currency_symbol'); 			
-		$isDisplay = $request->input('is_display'); 			
-		$isDefault = $request->input('is_default'); 			
-		$stateAbb = $request->input('state_abb'); 			
-		$cityId = $request->input('city_id');  
+		$vatNo = $request->input('vatNo'); 
+		$serviceTaxNo = $request->input('serviceTaxNo'); 
+		$basicCurrencySymbol = $request->input('basicCurrencySymbol'); 			
+		$formalName = $request->input('formalName'); 			
+		$noOfDecimalPoints = $request->input('noOfDecimalPoints'); 			
+		$currencySymbol = $request->input('currencySymbol'); 			
+		$isDisplay = $request->input('isDisplay'); 			
+		$isDefault = $request->input('isDefault'); 			
+		$stateAbb = $request->input('stateAbb'); 			
+		$cityId = $request->input('cityId');  
 		
 		//trim an input
 		$tCompanyName = trim($companyName);
@@ -78,10 +78,23 @@ class CompanyTransformer
 		$tCompanyArray = array();
 		$companyValue;
 		$keyValue = func_get_arg(0);
+		$convertedValue="";
+		for($asciiChar=0;$asciiChar<strlen($keyValue);$asciiChar++)
+		{
+			if(ord($keyValue[$asciiChar])<=90 && ord($keyValue[$asciiChar])>=65) 
+			{
+				$convertedValue1 = "_".chr(ord($keyValue[$asciiChar])+32);
+				$convertedValue=$convertedValue.$convertedValue1;
+			}
+			else
+			{
+				$convertedValue=$convertedValue.$keyValue[$asciiChar];
+			}
+		}
 		$companyValue = func_get_arg(1);
 		for($data=0;$data<count($companyValue);$data++)
 		{
-			$tCompanyArray[$data]= array($keyValue=> trim($companyValue));
+			$tCompanyArray[$data]= array($convertedValue=> trim($companyValue));
 			
 		}
 		return $tCompanyArray;

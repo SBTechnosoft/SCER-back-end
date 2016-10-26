@@ -47,7 +47,7 @@
 			"serviceTaxNo": string,
 			"basicCurrencySymbol":varchar,
 			"formalName":varchar,
-			"noOfDecimalItems":int,
+			"noOfDecimalPoints":int,
 			"currencySymbol":int,
 			"isDefault": bool,
 			"isDisplay": bool,
