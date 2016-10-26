@@ -9,6 +9,8 @@ use ERP\Api\V1_0\Support\BaseController;
 use ERP\Api\V1_0\Branches\Processors\BranchProcessor;
 use ERP\Core\Branches\Persistables\BranchPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
+use ERP\Exceptions\ExceptionMessage;
+use ERP\Model\Branches\BranchModel;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -16,12 +18,12 @@ class BranchController extends BaseController implements ContainerInterface
 {
 	/**
      * @var branchService
-     * @var Processor
+     * @var processor
      * @var request
      * @var branchPersistable
      */
 	private $branchService;
-	private $Processor;
+	private $processor;
 	private $request;
 	private $branchPersistable;	
 	
@@ -50,10 +52,10 @@ class BranchController extends BaseController implements ContainerInterface
 		// insert
 		if($requestMethod == 'POST')
 		{
-			$Processor = new BranchProcessor();
+			$processor = new BranchProcessor();
 			$branchPersistable = new BranchPersistable();		
 			$branchService= new BranchService();			
-			$branchPersistable = $Processor->createPersistable($this->request);
+			$branchPersistable = $processor->createPersistable($this->request);
 			if($branchPersistable[0][0]=='[')
 			{
 				return $branchPersistable;
@@ -114,24 +116,34 @@ class BranchController extends BaseController implements ContainerInterface
 	public function update(Request $request,$branchId)
     {    
 		$this->request = $request;
-		$Processor = new BranchProcessor();
+		$processor = new BranchProcessor();
 		$branchPersistable = new BranchPersistable();		
-		$branchService= new BranchService();			
-		$branchPersistable = $Processor->createPersistableChange($this->request,$branchId);
-		//here two array and string is return at a time
-		if($branchPersistable=="204: No Content Found For Update")
+		$branchService= new BranchService();	
+		$branchModel = new BranchModel();	
+		$result = $branchModel->getData($branchId);
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($result,$fileSizeArray['404'])==0)
 		{
-			return $branchPersistable;
-		}
-		else if(is_array($branchPersistable))
-		{
-			$status = $branchService->update($branchPersistable);
-			return $status;
+			return $result;
 		}
 		else
 		{
-			return $branchPersistable;
+			$branchPersistable = $processor->createPersistableChange($this->request,$branchId);
+			//here two array and string is return at a time
+			if(is_array($branchPersistable))
+			{
+				$status = $branchService->update($branchPersistable);
+				return $status;
+			}
+			else
+			{
+				return $branchPersistable;
+			}
 		}
+		
 	}
 	
     /**
@@ -142,12 +154,25 @@ class BranchController extends BaseController implements ContainerInterface
     public function Destroy(Request $request,$branchId)
     {
         $this->request = $request;
-		$Processor = new BranchProcessor();
+		$processor = new BranchProcessor();
 		$branchPersistable = new BranchPersistable();		
-		$branchService= new BranchService();			
-		$branchPersistable = $Processor->createPersistableChange($this->request,$branchId);
-		$branchService->create($branchPersistable);
-		$status = $branchService->delete($branchPersistable);
-		return $status;
+		$branchService= new BranchService();	
+		$branchModel = new BranchModel();	
+		$result = $branchModel->getData($branchId);
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($result,$fileSizeArray['404'])==0)
+		{
+			return $result;
+		}
+		else
+		{		
+			$branchPersistable = $processor->createPersistableChange($this->request,$branchId);
+			$branchService->create($branchPersistable);
+			$status = $branchService->delete($branchPersistable);
+			return $status;
+		}
     }
 }

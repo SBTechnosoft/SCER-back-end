@@ -125,7 +125,7 @@ class BranchProcessor extends BaseProcessor
 					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
 					
 					//validation
-					$status = $branchValidate->validateUpdateData($key[$data],$value[$data],$tRequest[0]);
+					$status = $branchValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
 					//enter data is valid(one data validate status return)
 					if($status=="Success")
 					{
@@ -154,7 +154,7 @@ class BranchProcessor extends BaseProcessor
 							$getFuncName[$data] = 'get'.$str;
 							$branchPersistable->$setFuncName($branchValue[$data]);
 							$branchPersistable->setName($getFuncName[$data]);
-							$branchPersistable->setKey($key[$data]);
+							$branchPersistable->setKey($tKeyValue[$data]);
 							$branchPersistable->setBranchId($branchId);
 							$branchArray[$data] = array($branchPersistable);
 						}

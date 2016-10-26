@@ -15,15 +15,15 @@ class BranchTransformer
     public function trimInsertData(Request $request)
     {
 		//data get from body
-		$branchName = $request->input('branch_name'); 
+		$branchName = $request->input('branchName'); 
 		$address1 = $request->input('address1'); 
 		$address2 = $request->input('address2'); 
 		$pincode = $request->input('pincode'); 
-		$isDisplay = $request->input('is_display'); 			
-		$isDefault = $request->input('is_default'); 			
-		$stateAbb = $request->input('state_abb'); 			
-		$cityId = $request->input('city_id'); 			
-		$companyId = $request->input('company_id');  
+		$isDisplay = $request->input('isDisplay'); 			
+		$isDefault = $request->input('isDefault'); 			
+		$stateAbb = $request->input('stateAbb'); 			
+		$cityId = $request->input('cityId'); 			
+		$companyId = $request->input('companyId');  
 		
 		//trim an input
 		$tBranchName = trim($branchName);
@@ -51,15 +51,27 @@ class BranchTransformer
 	}
 	public function trimUpdateData()
 	{
-		$tCompanyArray = array();
-		$companyValue;
+		$tBranchArray = array();
+		$branchValue;
 		$keyValue = func_get_arg(0);
-		$companyValue = func_get_arg(1);
-		for($data=0;$data<count($companyValue);$data++)
+		$convertedValue="";
+		for($asciiChar=0;$asciiChar<strlen($keyValue);$asciiChar++)
 		{
-			$tCompanyArray[$data]= array($keyValue=> trim($companyValue));
-			
+			if(ord($keyValue[$asciiChar])<=90 && ord($keyValue[$asciiChar])>=65) 
+			{
+				$convertedValue1 = "_".chr(ord($keyValue[$asciiChar])+32);
+				$convertedValue=$convertedValue.$convertedValue1;
+			}
+			else
+			{
+				$convertedValue=$convertedValue.$keyValue[$asciiChar];
+			}
 		}
-		return $tCompanyArray;
+		$branchValue = func_get_arg(1);
+		for($data=0;$data<count($branchValue);$data++)
+		{
+			$tBranchArray[$data]= array($convertedValue=> trim($branchValue));
+		}
+		return $tBranchArray;
 	}
 }

@@ -70,7 +70,6 @@ class CompanyModel extends Model
 		{
 			$keyValueString=$keyValueString.$key[$data]."='".$companyData[$data]."',";
 		}
-		
 		$raw  = DB::statement("update company_mst 
 		set ".$keyValueString."updated_at='".$mytime."' 
 		where company_id = '".$companyId."'");
