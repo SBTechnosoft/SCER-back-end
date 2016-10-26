@@ -14,9 +14,9 @@ class StateTransformer
      */
     public function trimInsertData(Request $request)
     {
-		$stateName = $request->input('state_name'); 
-		$stateAbb = $request->input('state_abb'); 
-		$isDisplay = $request->input('is_display'); 
+		$stateName = $request->input('stateName'); 
+		$stateAbb = $request->input('stateAbb'); 
+		$isDisplay = $request->input('isDisplay'); 
 		//trim an input
 		$tStateName = trim($stateName);
 		$tStateAbb = trim($stateAbb);
@@ -37,11 +37,24 @@ class StateTransformer
 	{
 		$tStateArray = array();
 		$stateValue;
+		$convertedValue="";
 		$keyValue = func_get_arg(0);
+		for($asciiChar=0;$asciiChar<strlen($keyValue);$asciiChar++)
+		{
+			if(ord($keyValue[$asciiChar])<=90 && ord($keyValue[$asciiChar])>=65) 
+			{
+				$convertedValue1 = "_".chr(ord($keyValue[$asciiChar])+32);
+				$convertedValue=$convertedValue.$convertedValue1;
+			}
+			else
+			{
+				$convertedValue=$convertedValue.$keyValue[$asciiChar];
+			}
+		}
 		$stateValue = func_get_arg(1);
 		for($data=0;$data<count($stateValue);$data++)
 		{
-			$tStateArray[$data]= array($keyValue=> trim($stateValue));
+			$tStateArray[$data]= array($convertedValue=> trim($stateValue));
 		}
 		return $tStateArray;
 	}

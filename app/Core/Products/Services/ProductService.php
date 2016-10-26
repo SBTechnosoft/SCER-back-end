@@ -89,6 +89,7 @@ class ProductService extends AbstractService
      */
 	public function getProductData($productId)
 	{
+		echo "product";
 		$productModel = new ProductModel();
 		$status = $productModel->getData($productId);
 		if($status=="404:Id Not Found")

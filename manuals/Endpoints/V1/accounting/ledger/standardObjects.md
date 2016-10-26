@@ -1,44 +1,48 @@
-##### Standard LedgerGrp Object
+##### Standard Ledger Object
 
             {
-                "ledger_id": int,
-                "ledger_name":String,
+                "ledgerId": int,
+                "ledgerName":String,
                 "alias":String,
-                "inventory_affected":Enum,
+                "inventoryAffected":Enum,
                 "address1":String,
                 "address2":String,
                 "pan":char,
                 "tin":char,
-                "gst_no":String,
-				"city_id":  {
+                "gstNo":String,
+				"city":  {
 					... Standard City Object
 				},
-                "state_abb": {
+                "state": {
                     ... Standard State Object
                 },
-				"created_at":TimeStamp,
-                "updated_at":DateTime,
-                "deleted_at":DateTime,
-                "ledger_grp_id":int,
-				"company_id":int
+				"createdAt":TimeStamp,
+                "updatedAt":DateTime,
+                "deletedAt":DateTime,
+                "ledgerGroup": {
+					... Standard Ledger Group Object
+				},
+				"company": {
+					... Standard Company Object
+				}
             }
             
-##### Standard LedgerGrp Persistable Object
+##### Standard Ledger Persistable Object
 			{
-            	"ledger_name":String,
+            	"ledgerName":String,
                 "alias":String,
-                "inventory_affected":Enum,
+                "inventoryAffected":Enum,
                 "address1":String,
                 "address2":String,
                 "pan":char,
                 "tin":char,
-                "gst_no":String,
-                "state_abb":char,
-                "city_id":int,
-                "created_at":TimeStamp,
-                "updated_at":DateTime,
-                "deleted_at":DateTime,
-                "ledger_grp_id":int,
-				"company_id":int
+                "gstNo":String,
+                "stateAbb":char,
+                "cityId":int,
+                "createdAt":TimeStamp,
+                "updatedAt":DateTime,
+                "deletedAt":DateTime,
+                "ledgerGroupId":int,
+				"companyId":int
             }
 

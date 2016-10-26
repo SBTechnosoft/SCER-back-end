@@ -8,6 +8,7 @@ use ERP\Http\Requests;
 use Illuminate\Http\Response;
 use ERP\Core\States\Validations\StateValidate;
 use ERP\Api\V1_0\States\Transformers\StateTransformer;
+use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -113,10 +114,15 @@ class StateProcessor extends BaseProcessor
 			$stateArray = array();
 			$stateValidate = new StateValidate();
 			$status;
+			
+			//get exception message
+			$exception = new ExceptionMessage();
+			$fileSizeArray = $exception->messageArrays();
+		
 			//if data is not available in update request
 			if(count($_POST)==0)
 			{
-				$status = "204: No Content Found For Update";
+				$status = $fileSizeArray['204'];
 				return $status;
 			}
 			//data is avalilable for update
@@ -138,7 +144,7 @@ class StateProcessor extends BaseProcessor
 					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
 					
 					//validation
-					$status = $stateValidate->validateUpdateData($key[$data],$value[$data],$tRequest[0]);
+					$status = $stateValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
 					
 					//enter data is valid(one data validate status return)
 					if($status=="Success")
@@ -152,7 +158,7 @@ class StateProcessor extends BaseProcessor
 							$getFuncName[$data] = 'get'.$str;
 							$statePersistable->$setFuncName($tValue[$data]);
 							$statePersistable->setName($getFuncName[$data]);
-							$statePersistable->setKey($key[$data]);
+							$statePersistable->setKey($tKeyValue[$data]);
 							$statePersistable->setStateAbb($stateAbb);
 							$stateArray[$data] = array($statePersistable);
 						}

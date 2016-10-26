@@ -77,7 +77,7 @@ class ProductController extends BaseController implements ContainerInterface
     public function getData($productId=null)
     {
 		if($productId==null)
-		{			
+		{	
 			$productService= new ProductService();
 			$status = $productService->getAllProductData();
 			return $status;

@@ -115,13 +115,13 @@ include ('connection.php');
 			$scope.submit_form = function()
 			{
 				//state
-				// $scope.formAdata.state_abb ="IN-AB";
-				// $scope.formAdata.state_name = " ss-d&fe& ";
-				// $scope.formAdata.is_display = ' yes ';
+				// $scope.formAdata.state_abb ="IN-LD";
+				$scope.formAdata.state_name = " ss-fghd ";
+				$scope.formAdata.is_display = ' yes ';
 				
-				// formdata.append('state_name',$scope.formAdata.state_name);
-				// formdata.append('state_abb',$scope.formAdata.state_abb);
-				// formdata.append('is_display',$scope.formAdata.is_display);
+				formdata.append('stateName',$scope.formAdata.state_name);
+				// formdata.append('stateAbb',$scope.formAdata.state_abb);
+				formdata.append('isDisplay',$scope.formAdata.is_display);
 				
 				//city
 				// $scope.formAdata.city_name = " Anandddqd ";
@@ -300,8 +300,8 @@ include ('connection.php');
 				// var productCatId = 13;
 				// var companyId=12;
 				// var cityId = 16;
-				 // var stateAbb = "IN-GS";
-				 var branchId = 1;
+				 var stateAbb = "IN-AC";
+				 // var branchId = 1;
 				// var id = 42;
 				// var templateId=1;
 				// var bankId=2;
@@ -331,9 +331,9 @@ include ('connection.php');
 				// var url="http://www.scerp.com/companies/"+companyId;
 				// var url="http://www.scerp.com/companies";	
 				// var url="http://www.scerp.com/branches";
-				 var url="http://www.scerp.com/branches/"+branchId;
+				 // var url="http://www.scerp.com/branches/"+branchId;
 				// var url="http://www.scerp.com/branches/company/"+companyId;
-				 // var url="http://www.scerp.com/states/"+stateAbb;
+				 var url="http://www.scerp.com/states/"+stateAbb;
 				// var url="http://www.scerp.com/states";
 				// var url="http://www.scerp.com/cities/state/"+stateAbb;
 				 // var url="http://www.scerp.com/cities";
@@ -349,9 +349,9 @@ include ('connection.php');
                         url: url,
                         // type:'patch',
 						 // method: 'post',
-						method: 'get',
+						// method: 'get',
 						// method: "PATCH",
-						// method:'delete',
+						method:'delete',
 						processData: false,
                         headers: {'Content-Type': undefined},
                         data:formdata						

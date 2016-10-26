@@ -15,4 +15,7 @@
                 "templateType":enum,
 				"updatedAt":datetime
             }
-
+##### Template type Enum
+			{
+				//TO DO
+			}

@@ -98,14 +98,9 @@ class BranchService extends AbstractService
 		}
 		else
 		{
-			echo "else..";
-			// print_r($status);
 			$encoded = new EncodeData();
-			print_r($status);
-			exit;
-			// $encodeData = $encoded->getEncodedData($status);
-			// print_r($encodeData);
-			// return $encodeData;
+			$encodeData = $encoded->getEncodedData($status);
+			return $encodeData;
 		}
 	}
 	

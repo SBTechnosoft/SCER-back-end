@@ -97,14 +97,14 @@ class EncodeAllData extends StateService
 				'state_abb' => $stateAbb[$jsonData],
 				'city_id' => $cityId[$jsonData],
 				
-				'state_abb' => array(
+				'state' => array(
 					'state_abb' => $stateAbb[$jsonData],
 					'state_name' => $stateName[$jsonData],
 					'is_display' => $stateIsDisplay[$jsonData],
 					'created_at' => $stateCreatedAt[$jsonData],
 					'updated_at' => $stateUpdatedAt[$jsonData]
 				),
-				'city_id'=> array(
+				'city'=> array(
 					'city_id' => $cityId[$jsonData],
 					'city_name' => $getCityDetail[$jsonData]['city_name'],
 					'is_display' => $getCityDetail[$jsonData]['is_display'],

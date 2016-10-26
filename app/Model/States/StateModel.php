@@ -4,6 +4,7 @@ namespace ERP\Model\States;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use Carbon;
+use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -37,18 +38,22 @@ class StateModel extends Model
 				$keyName =$keyName.$getStateKey[$data].",";
 			}
 		}
+		
 		DB::beginTransaction();
 		$raw = DB::statement("insert into state_mst(".$keyName.") 
 		values(".$stateData.")");
 		DB::commit();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return "200:Data Inserted Successfully";
+			return $fileSizeArray['200'];
 		}
 		else
 		{
-			return "500:Internal Server Error";
+			return $fileSizeArray['500'];
 		}
 	}
 	/**
@@ -64,19 +69,23 @@ class StateModel extends Model
 		{
 			$keyValueString=$keyValueString.$key[$data]."='".$stateData[$data]."',";
 		}
+		
 		DB::beginTransaction();
 		$raw = DB::statement("update state_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
 		where state_abb = '".$stateAbb."'");
 		DB::commit();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return "200: Data Updated Successfully";
+			return $fileSizeArray['200'];
 		}
 		else
 		{
-			return "500: Internal Server Error";
+			return $fileSizeArray['500'];
 		}
 	}
 	
@@ -97,9 +106,12 @@ class StateModel extends Model
 		from state_mst where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return "204: No Content";
+			return $fileSizeArray['204'];
 		}
 		else
 		{
@@ -126,13 +138,16 @@ class StateModel extends Model
 		from state_mst where state_abb = '".$stateAbb."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return "404:Id Not Found";
+			return $fileSizeArray['404'];
 		}
 		else
 		{
-			$enocodedData = json_encode($raw,true); 	
+			$enocodedData = json_encode($raw,true); 
 			return $enocodedData;
 		}
 	}
@@ -146,6 +161,10 @@ class StateModel extends Model
 		set deleted_at='".$mytime."'
 		where state_abb = '".$stateAbb."'");
 		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
 			$city = DB::statement("update city_mst 
@@ -160,16 +179,16 @@ class StateModel extends Model
 			
 			if($city==1 && $company==1 && $branch==1)
 			{
-				return "200 :Data Deleted Successfully";
+				return $fileSizeArray['200'];
 			}
 			else
 			{
-				return "500 : Internal Server Error";
+				return $fileSizeArray['500'];
 			}
 		}
 		else
 		{
-			return "500 : Internal Server Error";
+			return $fileSizeArray['500'];
 		}
 	}
 }

@@ -30,17 +30,17 @@ class EncodeAllData
 		}
 		$state->setCreated_at($convertedCreatedDate);
 		$getCreatedDate = $state->getCreated_at();
-		$state->setCreated_at($convertedUpdatedDate);
+		$state->setUpdated_at($convertedUpdatedDate);
 		$getUpdatedDate = $state->getUpdated_at();
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
 		{
 			$data[$jsonData]= array(
-				'state_name' => $stateName[$jsonData],
-				'state_abb' =>$stateAbb[$jsonData],
+				'stateName' => $stateName[$jsonData],
+				'stateAbb' =>$stateAbb[$jsonData],
 				'isDisplay' => $isDisplay[$jsonData],
-				'created_at' => $getCreatedDate[$jsonData],
-				'updated_at' =>$getUpdatedDate[$jsonData]
+				'createdAt' => $getCreatedDate[$jsonData],
+				'updatedAt' =>$getUpdatedDate[$jsonData]
 				
 			);	
 		}

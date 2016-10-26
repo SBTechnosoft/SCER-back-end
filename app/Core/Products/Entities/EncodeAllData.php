@@ -57,7 +57,7 @@ class EncodeAllData extends ProductCategoryService
 			//get the branch detail from database
 			$branchDetail  = new BranchDetail();
 			$getBranchDetails[$decodedData] = $branchDetail->getBranchDetails($branchId[$decodedData]);
-			echo "hi";
+			
 			//product date convertion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$createdAt[$decodedData])->format('d-m-Y');
 			$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$updatedAt[$decodedData])->format('d-m-Y');

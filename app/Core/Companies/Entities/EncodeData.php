@@ -86,13 +86,13 @@ class EncodeData extends StateService
 		$data['state_abb'] = $stateAbb;
 		$data['city_id'] = $cityId;
 		
-		$data['state_abb'] = array(
-			'state_name' => $stateDecodedJson['state_name'],	
-			'is_display' => $stateDecodedJson['is_display'],	
-			'created_at' => $stateDecodedJson['created_at'],	
-			'updated_at' => $stateDecodedJson['updated_at']
+		$data['state'] = array(
+			'state_name' => $stateDecodedJson['stateName'],	
+			'is_display' => $stateDecodedJson['isDisplay'],	
+			'created_at' => $stateDecodedJson['createdAt'],	
+			'updated_at' => $stateDecodedJson['updatedAt']
 		);
-		$data['city_id'] = array(
+		$data['city'] = array(
 			'city_name' => $getCityDetail['city_name'],
 			'is_display' => $getCityDetail['is_display'],	
 			'created_at' => $getCityDetail['created_at'],	

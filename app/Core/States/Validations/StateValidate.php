@@ -39,7 +39,7 @@ class StateValidate
 	}
 	public function validateUpdateData($keyName,$value,$request)
 	{
-		$validationArray = array("state_name"=>"between:1,35|regex:/^[a-zA-Z -&]+$/");
+		$validationArray = array('state_name'=>"between:1,35|regex:/^[a-zA-Z &-]+$/");
 		$rules = array();
 		foreach ($validationArray as $key => $value) 
 		{

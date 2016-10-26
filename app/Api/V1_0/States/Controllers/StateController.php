@@ -8,6 +8,8 @@ use ERP\Api\V1_0\Support\BaseController;
 use ERP\Api\V1_0\States\Processors\StateProcessor;
 use ERP\Core\States\Persistables\StatePersistable;
 use ERP\Core\Support\Service\ContainerInterface;
+use ERP\Model\States\StateModel;
+use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -15,12 +17,12 @@ class StateController extends BaseController implements ContainerInterface
 {
 	/**
      * @var stateService
-     * @var Processor
+     * @var processor
      * @var request
      * @var statePersistable
      */
 	private $stateService;
-	private $Processor;
+	private $processor;
 	private $request;
 	private $statePersistable;	
 	
@@ -49,10 +51,11 @@ class StateController extends BaseController implements ContainerInterface
 		// insert
 		if($requestMethod == 'POST')
 		{
-			$Processor = new StateProcessor();
+			$processor = new StateProcessor();
 			$statePersistable = new StatePersistable();		
 			$stateService= new StateService();			
-			$statePersistable = $Processor->createPersistable($this->request);
+			$statePersistable = $processor->createPersistable($this->request);
+			
 			if($statePersistable[0][0]=='[')
 			{
 				return $statePersistable;
@@ -97,22 +100,33 @@ class StateController extends BaseController implements ContainerInterface
 	public function update(Request $request,$stateAbb)
     {    
 		$this->request = $request;
-		$Processor = new StateProcessor();
+		$processor = new StateProcessor();
 		$statePersistable = new StatePersistable();		
-		$stateService= new StateService();			
-		$statePersistable = $Processor->createPersistableChange($this->request,$stateAbb);
-		if($statePersistable=="204: No Content Found For Update")
+		$stateService= new StateService();
+		$stateModel = new StateModel();	
+		$result = $stateModel->getData($stateAbb);
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		
+		if(strcmp($result,$fileSizeArray['404'])==0)
 		{
-			return $statePersistable;
-		}
-		else if(is_array($statePersistable))
-		{
-			$status = $stateService->update($statePersistable);
-			return $status;
+			return $fileSizeArray['404'];
 		}
 		else
 		{
-			return $statePersistable;
+			$statePersistable = $processor->createPersistableChange($this->request,$stateAbb);
+			
+			if(is_array($statePersistable))
+			{
+				$status = $stateService->update($statePersistable);
+				return $status;
+			}
+			else
+			{
+				return $statePersistable;
+			}
 		}
 	}
 	
@@ -124,11 +138,26 @@ class StateController extends BaseController implements ContainerInterface
     public function Destroy(Request $request,$stateAbb)
     {
         $this->request = $request;
-		$Processor = new StateProcessor();
+		$processor = new StateProcessor();
 		$statePersistable = new StatePersistable();		
-		$stateService= new StateService();			
-		$statePersistable = $Processor->createPersistableChange($this->request,$stateAbb);
-		$status = $stateService->delete($statePersistable);
-		return $status;
+		$stateService= new StateService();	
+		
+		$stateModel = new StateModel();	
+		$result = $stateModel->getData($stateAbb);
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		
+		if(strcmp($result,$fileSizeArray['404'])==0)
+		{
+			return $fileSizeArray['404'];
+		}
+		else
+		{		
+			$statePersistable = $processor->createPersistableChange($this->request,$stateAbb);
+			$status = $stateService->delete($statePersistable);
+			return $status;
+		}
     }
 }

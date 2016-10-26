@@ -25,16 +25,16 @@ class EncodeData
 		$state->setCreated_at($convertedCreatedDate);
 		$getCreatedDate = $state->getCreated_at();
 		$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
-		$state->setCreated_at($convertedUpdatedDate);
+		$state->setUpdated_at($convertedUpdatedDate);
 		$getUpdatedDate = $state->getUpdated_at();
 		
 		//set all data into json array
 		$data = array();
-		$data['state_name'] = $stateName;
-		$data['state_abb'] = $stateAbb;
-		$data['is_display'] = $isDisplay;
-		$data['created_at'] = $getCreatedDate;
-		$data['updated_at'] = $getUpdatedDate;	
+		$data['stateName'] = $stateName;
+		$data['stateAbb'] = $stateAbb;
+		$data['isDisplay'] = $isDisplay;
+		$data['createdAt'] = $getCreatedDate;
+		$data['updatedAt'] = $getUpdatedDate;	
 		
 		$encodeData = json_encode($data);
 		return $encodeData;
