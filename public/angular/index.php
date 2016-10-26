@@ -116,21 +116,21 @@ include ('connection.php');
 			{
 				//state
 				// $scope.formAdata.state_abb ="IN-LD";
-				$scope.formAdata.state_name = " ss-fghd ";
-				$scope.formAdata.is_display = ' yes ';
+				// $scope.formAdata.state_name = " ss-fghd ";
+				// $scope.formAdata.is_display = ' yes ';
 				
-				formdata.append('stateName',$scope.formAdata.state_name);
+				// formdata.append('stateName',$scope.formAdata.state_name);
 				// formdata.append('stateAbb',$scope.formAdata.state_abb);
-				formdata.append('isDisplay',$scope.formAdata.is_display);
+				// formdata.append('isDisplay',$scope.formAdata.is_display);
 				
 				//city
-				// $scope.formAdata.city_name = " Anandddqd ";
-				// $scope.formAdata.is_display = ' yes ';
-				// $scope.formAdata.state_abb = 'IN-MP';
+				// $scope.formAdata.city_name = " Ananddd ";
+				// $scope.formAdata.is_display = ' no ';
+				// $scope.formAdata.state_abb = 'IN-AG';
 				
-				// formdata.append('city_name',$scope.formAdata.city_name);
-				// formdata.append('state_abb',$scope.formAdata.state_abb);
-				// formdata.append('is_display',$scope.formAdata.is_display);
+				// formdata.append('cityName',$scope.formAdata.city_name);
+				// formdata.append('stateAbb',$scope.formAdata.state_abb);
+				// formdata.append('isDisplay',$scope.formAdata.is_display);
 				
 				//branch
 				// $scope.formAdata.branch_name = "abcc!cc&-_`#().\'11";
@@ -299,8 +299,8 @@ include ('connection.php');
 				// var productGrpId = 2;
 				// var productCatId = 13;
 				// var companyId=12;
-				// var cityId = 16;
-				 var stateAbb = "IN-AC";
+				var cityId = 16;
+				 // var stateAbb = "IN-GJ";
 				 // var branchId = 1;
 				// var id = 42;
 				// var templateId=1;
@@ -333,11 +333,11 @@ include ('connection.php');
 				// var url="http://www.scerp.com/branches";
 				 // var url="http://www.scerp.com/branches/"+branchId;
 				// var url="http://www.scerp.com/branches/company/"+companyId;
-				 var url="http://www.scerp.com/states/"+stateAbb;
+				 // var url="http://www.scerp.com/states/"+stateAbb;
 				// var url="http://www.scerp.com/states";
 				// var url="http://www.scerp.com/cities/state/"+stateAbb;
 				 // var url="http://www.scerp.com/cities";
-				 // var url="http://www.scerp.com/cities/"+cityId;
+				 var url="http://www.scerp.com/cities/"+cityId;
 				// var url="http://www.scerp.com/product-categories/"+productCatId;
 				// var url="http://www.scerp.com/product-categories/";
 				// var url="http://www.scerp.com/product-groups/";

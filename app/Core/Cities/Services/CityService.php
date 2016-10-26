@@ -9,6 +9,7 @@ use ERP\Core\Support\Service\AbstractService;
 use ERP\Core\User\Entities\User;
 use ERP\Core\Cities\Entities\EncodeData;
 use ERP\Core\Cities\Entities\EncodeAllData;
+use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -70,7 +71,11 @@ class CityService extends AbstractService
 	{
 		$cityModel = new CityModel();
 		$status = $cityModel->getAllData();
-		if($status=="204: No Content")
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($status,$fileSizeArray['204'])==0)
 		{
 			return $status;
 		}
@@ -92,7 +97,10 @@ class CityService extends AbstractService
 		$cityModel = new CityModel();
 		$status = $cityModel->getAllCityData($stateAbb);
 		
-		if($status=="204: No Content")
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($status,$fileSizeArray['404'])==0)
 		{
 			return $status;
 		}
@@ -113,7 +121,11 @@ class CityService extends AbstractService
 	{
 		$cityModel = new CityModel();
 		$status = $cityModel->getData($cityId);
-		if($status=="404:Id Not Found")
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($status,$fileSizeArray['404'])==0)
 		{
 			return $status;
 		}

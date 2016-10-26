@@ -32,23 +32,23 @@ class EncodeData extends StateService
 		$city->setCreated_at($convertedCreatedDate);
 		$getCreatedDate = $city->getCreated_at();
 		$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
-		$city->setCreated_at($convertedUpdatedDate);
+		$city->setUpdated_at($convertedUpdatedDate);
 		$getUpdatedDate = $city->getUpdated_at();
 		
 		//set all data into json array
 		$data = array();
-		$data['city_name'] = $cityName;
-		$data['is_display'] = $isDisplay;
-		$data['city_id'] = $cityId;
-		$data['created_at'] = $getCreatedDate;
-		$data['updated_at'] = $getUpdatedDate;
-		$data['state_abb'] = $stateAbb;
+		$data['cityName'] = $cityName;
+		$data['isDisplay'] = $isDisplay;
+		$data['cityId'] = $cityId;
+		$data['createdAt'] = $getCreatedDate;
+		$data['updatedAt'] = $getUpdatedDate;
+		$data['stateAbb'] = $stateAbb;
 		
-		$data['state_abb'] = array(
-			'state_name' => $stateDecodedJson['state_name'],	
-			'is_display' => $stateDecodedJson['is_display'],	
-			'created_at' => $stateDecodedJson['created_at'],	
-			'updated_at' => $stateDecodedJson['updated_at']
+		$data['state'] = array(
+			'stateName' => $stateDecodedJson['stateName'],	
+			'isDisplay' => $stateDecodedJson['isDisplay'],	
+			'createdAt' => $stateDecodedJson['createdAt'],	
+			'updatedAt' => $stateDecodedJson['updatedAt']
 		);
 		$encodeData = json_encode($data);
 		return $encodeData;

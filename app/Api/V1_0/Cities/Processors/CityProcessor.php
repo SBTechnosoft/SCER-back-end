@@ -8,6 +8,7 @@ use ERP\Http\Requests;
 use Illuminate\Http\Response;
 use ERP\Core\Cities\Validations\CityValidate;
 use ERP\Api\V1_0\Cities\Transformers\CityTransformer;
+use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -100,6 +101,11 @@ class CityProcessor extends BaseProcessor
 		$errorStatus=array();
 		$flag=0;
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		
 		// update
 		if($requestMethod == 'POST')
 		{
@@ -107,10 +113,11 @@ class CityProcessor extends BaseProcessor
 			$cityArray = array();
 			$cityValidate = new CityValidate();
 			$status;
+			
 			//if data is not available in update request
 			if(count($_POST)==0)
 			{
-				$status = "204: No Content Found For Update";
+				$status = $fileSizeArray['204'];
 				return $status;
 			}
 			//data is avalilable for update
@@ -132,7 +139,7 @@ class CityProcessor extends BaseProcessor
 					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
 					
 					//validation
-					$status = $cityValidate->validateUpdateData($key[$data],$value[$data],$tRequest[0]);
+					$status = $cityValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
 					//enter data is valid(one data validate status return)
 					if($status=="Success")
 					{
@@ -145,7 +152,7 @@ class CityProcessor extends BaseProcessor
 							$getFuncName[$data] = 'get'.$str;
 							$cityPersistable->$setFuncName($tValue[$data]);
 							$cityPersistable->setName($getFuncName[$data]);
-							$cityPersistable->setKey($key[$data]);
+							$cityPersistable->setKey($tKeyValue[$data]);
 							$cityPersistable->setCityId($cityId);
 							$cityArray[$data] = array($cityPersistable);
 						}

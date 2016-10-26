@@ -1,14 +1,14 @@
 <?php
-namespace ERP\Exceptions;
+namespace ERP\Entities\EnumClasses;
 /**
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class ExceptionMessage 
+class IsDisplayEnum 
 {
-    public function messageArrays()
+    public function enumArrays()
 	{
-		$msgArray = array();
+		$enumArray = array();
 		$msgArray['fileFormat'] = "FileNotFoundException: File format is not valid(ex.valid format:jpg,jpeg,gif,png,pdf)";
 		$msgArray['fileSize'] = "FileNotFoundException: The file is too long";
 		$msgArray['500'] = "500: Internal Server Error";
