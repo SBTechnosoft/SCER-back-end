@@ -91,15 +91,21 @@ class BranchService extends AbstractService
 	{
 		$branchModel = new BranchModel();
 		$status = $branchModel->getData($branchId);
+		
 		if($status=="404:Id Not Found")
 		{
 			return $status;
 		}
 		else
 		{
+			echo "else..";
+			// print_r($status);
 			$encoded = new EncodeData();
-			$encodeData = $encoded->getEncodedData($status);
-			return $encodeData;
+			print_r($status);
+			exit;
+			// $encodeData = $encoded->getEncodedData($status);
+			// print_r($encodeData);
+			// return $encodeData;
 		}
 	}
 	

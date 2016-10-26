@@ -12,7 +12,10 @@ class BranchDetail extends BranchService
 	{
 		//get the branch data from database
 		$encodeBranchDataClass = new BranchDetail();
+		echo "hhh";
 		$branchStatus = $encodeBranchDataClass->getBranchData($branchId);
+		echo "hell";
+		print_r($branchStatus);
 		$branchDecodedJson = json_decode($branchStatus,true);
 		return $branchDecodedJson;
 	}

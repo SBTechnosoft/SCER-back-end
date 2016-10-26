@@ -1,12 +1,12 @@
 ##### Standard Bank Object
 
             {
-                "bankId": int,
-                "bankName":String
+                "bank_id": int,
+                "bank_name":String
             }
             
 ##### Standard Bank Persistable Object
 			{
-            	 "bankName":String
+            	 "bank_name":String
             }
 

@@ -50,16 +50,16 @@ class LedgerController extends BaseController implements ContainerInterface
 		// insert
 		if($requestMethod == 'POST')
 		{
-			$Processor = new LedgerProcessor();
+			$processor = new LedgerProcessor();
 			$ledgerPersistable = new LedgerPersistable();		
-			$ledgerService= new LedgerService();			
-			$ledgerPersistable = $Processor->createPersistable($this->request);
+			$ledgerPersistable = $processor->createPersistable($this->request);
 			if($ledgerPersistable[0][0]=='[')
 			{
 				return $ledgerPersistable;
 			}
 			else
 			{
+				$ledgerService= new LedgerService();
 				$status = $ledgerService->insert($ledgerPersistable);
 				return $status;
 			}
@@ -91,20 +91,22 @@ class LedgerController extends BaseController implements ContainerInterface
      * get the specified resource.
      * @param  int  $ledgerGrpId
      */
-    public function getAllData($ledgerGrpId=null)
+    public function getAllData($ledgerGrpId)
     {
-		if($ledgerGrpId=="null")
-		{
-			$ledgerService= new LedgerService();
-			$status = $ledgerService->getAllLedgerData();
-			return $status;
-		}
-		else
-		{
-			$ledgerService= new LedgerService();
-			$status = $ledgerService->getAllData($ledgerGrpId);
-			return $status;
-		}
+		$ledgerService= new LedgerService();
+		$status = $ledgerService->getAllData($ledgerGrpId);
+		return $status;
+	}
+	
+	/**
+     * get the specified resource.
+     * @param  int  $companyId
+     */
+    public function getLedgerData($companyId)
+    {
+		$ledgerService= new LedgerService();
+		$status = $ledgerService->getLedgerDetail($companyId);
+		return $status;
 	}
 	
     /**

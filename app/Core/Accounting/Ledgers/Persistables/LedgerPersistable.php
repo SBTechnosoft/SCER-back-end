@@ -13,9 +13,10 @@ use ERP\Core\States\Properties\StateAbbPropertyTrait;
 use ERP\Core\Shared\Properties\IdPropertyTrait;
 use ERP\Core\Companies\Properties\PanPropertyTrait;
 use ERP\Core\Companies\Properties\TinPropertyTrait;
-use ERP\Core\Companies\Properties\ServiceTaxNoPropertyTrait;
+use ERP\Core\Accounting\Ledgers\Properties\GstPropertyTrait;
 use ERP\Core\Cities\Properties\CityIdPropertyTrait;
 use ERP\Core\Accounting\Ledgers\Properties\LedgerGrpIdPropertyTrait;
+use ERP\Core\Companies\Properties\CompanyIdPropertyTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -34,6 +35,7 @@ class LedgerPersistable
 	use CityIdPropertyTrait;
 	use PanPropertyTrait;
 	use TinPropertyTrait;
-	use ServiceTaxNoPropertyTrait;
 	use LedgerGrpIdPropertyTrait;
+	use CompanyIdPropertyTrait;
+	use GstPropertyTrait;
 }

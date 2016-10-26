@@ -4,6 +4,11 @@
 + Header 
 	- Authentication Token
 
++ Error Message
+
+			{
+				... Error Message
+			} 
 + Response
 
 			{
@@ -16,6 +21,11 @@
 + Header 
 	- Authentication Token
 
++ Error Message
+
+			{
+				... Error Message
+			} 
 + Response
 
 			{

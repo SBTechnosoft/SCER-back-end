@@ -10,11 +10,15 @@
             {
                 ... Standard Product Group Persistable Object
             }
-            
++ Error Message
+
+			{
+				... Error Message
+			}              
 + Response
 
             {
-                ... Standard Product Group Object
+                ... HTTP_Status:200
             }
     
 
@@ -23,7 +27,11 @@
 ##### `GET /product-groups/{productGroupId}/`
 + Header
 	- Authentication Token
++ Error Message
 
+			{
+				... Error Message
+			}  
 + Response
 
             {
@@ -33,7 +41,11 @@
 ##### `GET /product-groups`
 + Header
 	- Authentication Token
++ Error Message
 
+			{
+				... Error Message
+			}  
 + Response
 
             {
@@ -53,14 +65,28 @@
             {
                 ... Standard Product Group Persistable Object
             }
-            
-            
++ Error Message
+
+			{
+				... Error Message
+			}              
+ + Response
+
+			{
+				... HTTP_Status:200
+			}
+           
 ##### Deletes Products Group
        
 ##### `DELETE /product-groups/{productGroupId}`
++ Error Message
+
+			{
+				... Error Message
+			}  
 + Response
 
 			{
-				HTTP_Status:200
+				... HTTP_Status:200
 			}
 

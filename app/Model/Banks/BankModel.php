@@ -20,7 +20,7 @@ class BankModel extends Model
 		$raw = DB::select("select 
 		bank_id,
 		bank_name
-		from bank_mst");
+		from bank_mst where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		if(count($raw)==0)
@@ -44,7 +44,7 @@ class BankModel extends Model
 		$raw = DB::select("select 
 		bank_id,
 		bank_name
-		from bank_mst where bank_id = ".$bankId);
+		from bank_mst where bank_id = ".$bankId." and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		if(count($raw)==0)

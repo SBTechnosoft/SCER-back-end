@@ -1,58 +1,58 @@
 ##### Standard Company Object
 
             {
-                "companyId": int,
-                "companyName": string,
-				"companyDispName": string,
+                "company_id": int,
+                "company_name": string,
+				"company_display_name": string,
                 "address1": string,
                 "address2": string,
-                "cityId":  {
+                "city_id":  {
 					... Standard City Object
 				},
-                "stateAbb": {
+                "state_abb": {
                     ... Standard State Object
                 },
                 "pincode": char,
 				"pan": char,
 				"tin": char,
-				"vatNo": char,
-				"serviceTaxNo": char,
+				"vat_no": char,
+				"service_tax_no": char,
 				"logo": {
 					... Standard Document Object
 				},
-				"basicCurrencySymbol":char,
-				"formalName":varchar,
-				"noOfDecimalPoints":int,
-				"currencySymbol":int,
-				"isDefault": enum,
-				"isDisplay": enum,
-				"createdAt" timestamp,
-				"updatedAt": datetime
+				"basic_currency_symbol":char,
+				"formal_name":varchar,
+				"no_of_decimal_points":int,
+				"currency_symbol":int,
+				"is_default": enum,
+				"is_display": enum,
+				"created_at" timestamp,
+				"updated_at": datetime
             }
             
             
 ##### Standard Company Persistable Object
 
          {
-            "companyName": string,
-			"companyDispName": string,
+            "company_name": string,
+			"company_display_name": string,
 			"address1": string,
 			"address2": string,
-			"cityId": int,
-			"stateAbb": char,
+			"city_id": int,
+			"state_abb": char,
 			"pincode": char,
 			"pan": string,
 			"tin": string,
-			"vatNo": string,
-			"serviceTaxNo": string,
-			"basicCurrencySymbol":varchar,
-			"formalName":varchar,
-			"noOfDecimalItems":int,
-			"currencySymbol":int,
-			"isDefault": bool,
-			"isDisplay": bool,
-			"createdAt" timestamp,
-			"updatedAt": datetime,
-			"deletedAt":datetime			
+			"vat_no": string,
+			"service_tax_no": string,
+			"basic_currency_symbol":varchar,
+			"formal_name":varchar,
+			"no_of_decimal_items":int,
+			"currency_symbol":int,
+			"is_default": bool,
+			"is_display": bool,
+			"created_at" timestamp,
+			"updated_at": datetime,
+			"deleted_at":datetime			
          }
 

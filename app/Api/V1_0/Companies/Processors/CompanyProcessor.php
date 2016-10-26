@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use ERP\Core\Sample\Persistables\DocumentPersistable;
 use ERP\Core\Companies\Validations\CompanyValidate;
 use ERP\Api\V1_0\Companies\Transformers\CompanyTransformer;
-use ERP\Api\V1_0\Entities\ExceptionMessage;
+use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -59,6 +59,9 @@ class CompanyProcessor extends BaseProcessor
 			$file['file'][0]->move($documentUrl,$documentName);	
 			$docFlag=1;
 		}
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		
 		//trim an input 
 		$companyTransformer = new CompanyTransformer();
@@ -121,14 +124,11 @@ class CompanyProcessor extends BaseProcessor
 							}
 							else
 							{
-									
-								return "FileNotFoundException: The file is too long";
+								return $fileSizeArray['fileSize'];
 							}
 						}
 						else
 						{
-							$exception = new ExceptionMessage();
-							$fileSizeArray = $exception->errorMessage();
 							return $fileSizeArray['fileFormat'];
 						}
 					}
@@ -185,10 +185,14 @@ class CompanyProcessor extends BaseProcessor
 				$docFlag=1;
 				
 			}
+			//get exception message 
+			$exception = new ExceptionMessage();
+			$fileSizeArray = $exception->messageArrays();
+			
 			//if data is not available in update request
 			if(count($_POST)==0)
 			{
-				$status = "204: No Content Found For Update";
+				$status = $fileSizeArray['204'];
 				return $status;
 			}
 			//data is avalilable for update
@@ -260,12 +264,12 @@ class CompanyProcessor extends BaseProcessor
 										}
 										else
 										{
-											return "FileNotFoundException: The file is too long";
+											return $fileSizeArray['fileSize'];
 										}
 									}
 									else
 									{
-										return "FileNotFoundException: The file formate is not valid";
+										return $fileSizeArray['fileFormat'];
 									}
 								}
 							}

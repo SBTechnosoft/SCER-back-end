@@ -10,6 +10,7 @@ use ERP\Core\User\Entities\User;
 use ERP\Core\Companies\Entities\EncodeData;
 use ERP\Core\Companies\Entities\EncodeAllData;
 use ERP\Core\Documents\Services\DocumentService;
+use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -73,7 +74,11 @@ class CompanyService extends AbstractService
 		//data pass to the model object for insert
 		$companyModel = new CompanyModel();
 		$status = $companyModel->insertData($getData,$keyName);
-		if($status=="500: Internal Server Error")
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($status,$fileSizeArray['500'])==0)
 		{
 			return $status;
 		}
@@ -89,7 +94,7 @@ class CompanyService extends AbstractService
 			else
 			{
 				//if document is not inserted..
-				return "200: Data Inserted Successfully";
+				return $fileSizeArray['200'];
 			}
 		}
 	}
@@ -100,9 +105,13 @@ class CompanyService extends AbstractService
      */
 	public function getAllCompanyData()
 	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		
 		$companyModel = new CompanyModel();
 		$status = $companyModel->getAllData();
-		if($status=="204: No Content")
+		if(strcmp($status,$fileSizeArray['204'])==0)
 		{
 			return $status;
 		}
@@ -124,7 +133,11 @@ class CompanyService extends AbstractService
 	{
 		$companyModel = new CompanyModel();
 		$status = $companyModel->getData($companyId);
-		if($status=="404:Id Not Found")
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($status,$fileSizeArray['404'])==0)
 		{
 			return $status;
 		}
@@ -173,7 +186,12 @@ class CompanyService extends AbstractService
 		//data pass to the model object for update
 		$companyModel = new CompanyModel();
 		$status = $companyModel->updateData($getData,$keyName,$companyId);
-		if($status=="500: Internal Server Error")
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		
+		if(strcmp($status,$fileSizeArray['500'])==0)
 		{
 			return $status;
 		}
@@ -190,7 +208,7 @@ class CompanyService extends AbstractService
 			else
 			{
 				//if document is not changed..
-				return "200: Data Updated Successfully";
+				return $fileSizeArray['200'];
 			}
 		}
 	}

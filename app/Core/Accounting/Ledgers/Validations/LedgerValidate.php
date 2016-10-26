@@ -19,7 +19,7 @@ class LedgerValidate
 			'address2'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'pan'=>'max:10|min:10|regex:/^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/',
 			'tin'=>'max:11|min:11|regex:/^([a-zA-Z0-9])+$/',
-			'service_tax_no'=>'between:1,35|regex:/^([a-zA-Z0-9]{15})+$/'
+			'gst'=>'between:1,35|regex:/^([a-zA-Z0-9]{15})+$/'
 		);
 		$messages = [
 			'ledger_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
@@ -36,8 +36,8 @@ class LedgerValidate
 			'tin.max' => 'NumberFormatException :Enter the :attribute number of 11 character',
 			'tin.max' => 'NumberFormatException :Enter the :attribute number of 11 character',
 			'tin.regex' => 'tin number is wrong',
-			'service_tax_no.between' => 'NumberFormatException :Enter the:attribute less then 15 character',
-			'service_tax_no.regex' => 'service tax number is wrong'
+			'gst.between' => 'NumberFormatException :Enter the:attribute less then 15 character',
+			'gst.regex' => 'service tax number is wrong'
 		];
 		$validator = Validator::make($request,$rules,$messages);
 		if ($validator->fails()) {
@@ -64,7 +64,7 @@ class LedgerValidate
 			'address2'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'pan'=>'max:10|min:10|regex:/^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/',
 			'tin'=>'max:11|min:11|regex:/^([a-zA-Z0-9])+$/',
-			'service_tax_no'=>'between:1,35|regex:/^([a-zA-Z0-9]{15})+$/'
+			'gst'=>'between:1,35|regex:/^([a-zA-Z0-9]{15})+$/'
 		);
 		$rules =array();
 		foreach ($validationArray as $key => $value) 
@@ -95,8 +95,8 @@ class LedgerValidate
 				'tin.max' => 'NumberFormatException :Enter the :attribute number of 11 character',
 				'tin.max' => 'NumberFormatException :Enter the :attribute number of 11 character',
 				'tin.regex' => 'tin number is wrong',
-				'service_tax_no.between' => 'NumberFormatException :Enter the:attribute less then 15 character',
-				'service_tax_no.regex' => 'service tax number is wrong'
+				'gst.between' => 'NumberFormatException :Enter the:attribute less then 15 character',
+				'gst.regex' => 'service tax number is wrong'
 			];
 			$validator = Validator::make($request,$rules,$messages);
 			

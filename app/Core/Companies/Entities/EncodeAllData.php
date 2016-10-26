@@ -94,19 +94,24 @@ class EncodeAllData extends StateService
 				'is_default' => $isDefault[$jsonData],
 				'created_at' => $getCreatedDate[$jsonData],
 				'updated_at' => $getUpdatedDate[$jsonData],
-				
 				'state_abb' => $stateAbb[$jsonData],
-				'state_name' => $stateName[$jsonData],
-				'stateIs_display' => $stateIsDisplay[$jsonData],
-				'stateCreated_at' => $stateCreatedAt[$jsonData],
-				'stateUpdated_at' => $stateUpdatedAt[$jsonData],
-				
 				'city_id' => $cityId[$jsonData],
-				'city_name' => $getCityDetail[$jsonData]['city_name'],
-				'cityIs_display' => $getCityDetail[$jsonData]['is_display'],
-				'cityCreated_at' => $getCityDetail[$jsonData]['created_at'],
-				'cityUpdated_at' => $getCityDetail[$jsonData]['updated_at'],
-				'cityState_abb' => $getCityDetail[$jsonData]['state_abb']
+				
+				'state_abb' => array(
+					'state_abb' => $stateAbb[$jsonData],
+					'state_name' => $stateName[$jsonData],
+					'is_display' => $stateIsDisplay[$jsonData],
+					'created_at' => $stateCreatedAt[$jsonData],
+					'updated_at' => $stateUpdatedAt[$jsonData]
+				),
+				'city_id'=> array(
+					'city_id' => $cityId[$jsonData],
+					'city_name' => $getCityDetail[$jsonData]['city_name'],
+					'is_display' => $getCityDetail[$jsonData]['is_display'],
+					'created_at' => $getCityDetail[$jsonData]['created_at'],
+					'updated_at' => $getCityDetail[$jsonData]['updated_at'],
+					'state_abb' => $getCityDetail[$jsonData]['state_abb']
+				)
 			);
 		}
 		return json_encode($data);

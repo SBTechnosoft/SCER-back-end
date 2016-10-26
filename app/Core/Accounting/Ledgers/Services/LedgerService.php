@@ -123,6 +123,26 @@ class LedgerService extends AbstractService
 			return $encodeAllData;
 		}
 	}
+	
+	/**
+     * get all the data as per given id and call the model for database selection opertation
+     * @return status
+     */
+	public function getLedgerDetail($companyId)
+	{
+		$ledgerModel = new LedgerModel();
+		$status = $ledgerModel->getLedgerDetail($companyId);
+		if($status=="204: No Content")
+		{
+			return $status;
+		}
+		else
+		{
+			$encoded = new EncodeAllData();
+			$encodeAllData = $encoded->getEncodedAllData($status);
+			return $encodeAllData;
+		}
+	}
     /**
      * get the data from persistable object and call the model for database update opertation
      * @param LedgerPersistable $persistable

@@ -10,11 +10,15 @@
             {
                 ... Standard Products Persistable Object
             }
-            
++ Error Message
+
+			{
+				... Error Message
+			}            
 + Response
 
             {
-                ... Standard Products Object
+                ... HTTP_Status:200
             }
     
 
@@ -23,7 +27,12 @@
 ##### `GET products/company/{CompanyId}
 + Header 
 	- Authentication Token
+	
++ Error Message
 
+			{
+				... Error Message
+			}
 + Response
 
 			{
@@ -36,6 +45,11 @@
 + Header 
 	- Authentication Token
 
++ Error Message
+
+			{
+				... Error Message
+			}
 + Response
 
 			{
@@ -48,6 +62,11 @@
 + Header
 	- Authentication Token
 
++ Error Message
+
+			{
+				... Error Message
+			}
 + Response 
 
 			{
@@ -61,6 +80,11 @@
 + Header
 	- Authentication Token
 
++ Error Message
+
+			{
+				... Error Message
+			}
 + Response
 
             {
@@ -78,18 +102,33 @@
 + Header
 	- Authentication Token
 
+
 + Body
 
             {
                 ... Standard Products Persistable Object
             }
-            
-            
-##### Deletes Products    
-       
-##### `DELETE /products/{productId}`
++ Error Message
+
+			{
+				... Error Message
+			}            
 + Response
 
 			{
-				HTTP_Status:200
+				... HTTP_Status:200
+			}            
+##### Deletes Products    
+       
+##### `DELETE /products/{productId}`
+
++ Error Message
+
+			{
+				... Error Message
+			}
++ Response
+
+			{
+				... HTTP_Status:200
 			}

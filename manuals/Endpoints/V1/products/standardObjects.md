@@ -1,24 +1,24 @@
 ##### Standard Products Object
 
         {
-            "productId": int,
-            "productName": string,
-            "measurementUnit": string,
-            "productCatId": {
+            "product_id": int,
+            "product_name": string,
+            "measurement_unit": string,
+            "product_category_id": {
                 ... Standard Products Category Object
             },
-            "productGrpId": {
+            "product_group_id": {
                 ... Standard Products Group Object
             }
-            "companyId": {
+            "company_id": {
                 ... Standard Company Object
             },
-            "branchId": {
+            "branch_id": {
                 ... Standard Branch Object
             }
-			"isDisplay": enum,
-			"createdAt" timestamp,
-			"updatedAt": datetime
+			"is_display": enum,
+			"created_at" timestamp,
+			"updated_at": datetime
             
 
         }
@@ -26,60 +26,60 @@
 ##### Standard Products Persistable Object
 
         {
-            "productName": string,
-            "measurementUnit": string,
-            "productCatId": {
+            "product_name": string,
+            "measurement_unit": string,
+            "product_category_id": {
                 ... Standard Products Cateogory Persistable Object
             },
-            "productGrpId": {
+            "product_group_id": {
                 ... Standard Products Group Persistable Object
             },
-            "CompanyId": int,
-            "BranchId" : int,
-			"isDisplay": enum,
-			"createdAt" timestamp,
-			"updatedAt": datetime,
-			"deletedAt":datetime
+            "company_id": int,
+            "branch_id" : int,
+			"is_display": enum,
+			"created_at" timestamp,
+			"updated_at": datetime,
+			"deleted_at":datetime
         }
 
 ##### Standard Products Category Object
 
         {
-            "productCategoryId": int,
-            "productCategoryName": string,
-            "productCategoryDesc": string,
-            "productParentCategoryId": int,
-			"isDisplay": bool,
-			"createdAt" datetime,
-			"updatedAt": datetime
+            "product_category_id": int,
+            "product_category_name": string,
+            "product_category_desc": string,
+            "product_parent_category_id": int,
+			"is_display": bool,
+			"created_at" datetime,
+			"updated_at": datetime
         }
 
 ##### Standard Products Category Persistable Object
 
         {
-            "productCategoryName": string,
-            "productCategoryDesc": string,
-            "productParentCategoryId": int,
-			"isDisplay": bool,
+            "product_category_name": string,
+            "product_category_desc": string,
+            "product_parent_category_id": int,
+			"is_display": bool,
         }
 
 ##### Standard Products Group Object
 
         {
-			"productGroupId": int,
-            "productGroupName": string,
-            "productGroupDesc": string,
-            "productParentGroupId": int,
-			"isDisplay": bool,
-			"createdAt" datetime,
-			"updatedAt": datetime
+			"product_group_id": int,
+            "product_group_name": string,
+            "product_group_desc": string,
+            "product_parent_group_id": int,
+			"is_display": bool,
+			"created_at" datetime,
+			"updated_at": datetime
         }
 
 ##### Standard Products Group Persistable Object
 
         {
-            "productGroupName": string,
-            "productGroupDesc": string,
-            "productGroupParentCatId": int,
-			"isDisplay": bool
+            "product_group_name": string,
+            "product_group_desc": string,
+            "product_group_parent_cat_id": int,
+			"is_display": bool
         }

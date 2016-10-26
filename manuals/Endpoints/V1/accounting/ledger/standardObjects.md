@@ -9,13 +9,18 @@
                 "address2":String,
                 "pan":char,
                 "tin":char,
-                "service_tax_no":char,
-                "state_abb":char,
-                "city_id":int,
-                "created_at":TimeStamp,
+                "gst_no":String,
+				"city_id":  {
+					... Standard City Object
+				},
+                "state_abb": {
+                    ... Standard State Object
+                },
+				"created_at":TimeStamp,
                 "updated_at":DateTime,
                 "deleted_at":DateTime,
-                "ledger_grp_id":int
+                "ledger_grp_id":int,
+				"company_id":int
             }
             
 ##### Standard LedgerGrp Persistable Object
@@ -27,12 +32,13 @@
                 "address2":String,
                 "pan":char,
                 "tin":char,
-                "service_tax_no":char,
+                "gst_no":String,
                 "state_abb":char,
                 "city_id":int,
                 "created_at":TimeStamp,
                 "updated_at":DateTime,
                 "deleted_at":DateTime,
-                "ledger_grp_id":int
+                "ledger_grp_id":int,
+				"company_id":int
             }
 

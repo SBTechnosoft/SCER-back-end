@@ -1,14 +1,14 @@
 ##### Standard City Object
 
             {
-                "cityId": int,
-                "cityName": string,
-				"stateAbb": {
+                "city_id": int,
+                "city_name": string,
+				"state_abb": {
                     ... Standard State Object
 				},
-				"isDisplay": bool,
-				"createdAt" timestamp,
-				"updatedAt": datetime
+				"is_display": bool,
+				"created_at" timestamp,
+				"updated_at": datetime
                 
             }
             
@@ -16,11 +16,11 @@
 ##### Standard city Persistable Object
 
  			{
-            	"cityName": string,
-            	"stateAbb": char,
-				"isDisplay": bool,
-				"createdAt" timestamp,
-				"updatedAt": datetime,
-				"deletedAt":datetime	
+            	"city_name": string,
+            	"state_abb": char,
+				"is_display": bool,
+				"created_at" timestamp,
+				"updated_at": datetime,
+				"deleted_at":datetime	
             }
 

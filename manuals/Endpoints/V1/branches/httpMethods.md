@@ -10,11 +10,15 @@
             {
                 ... Standard Branch Persistable Object
             }
-            
++ Error Message
+
+			{
+				... Error Message
+			}             
 + Response
 
             {
-                ... Standard Branch Object
+                ... HTTP_Status:200
             }
     
 
@@ -24,6 +28,11 @@
 + Header 
 	- Authentication Token
 
++ Error Message
+
+			{
+				... Error Message
+			} 
 + Response
 
 			{
@@ -36,6 +45,11 @@
 + Header
 	- Authentication Token
 
++ Error Message
+
+			{
+				... Error Message
+			} 
 + Response 
 
 			{
@@ -49,6 +63,11 @@
 + Header
 	- Authentication Token
 
++ Error Message
+
+			{
+				... Error Message
+			} 
 + Response
 
             {
@@ -64,18 +83,33 @@
 + Header
 	- Authentication Token
 
+
 + Body
 
             {
                 ... Standard Branch Persistable Object
             }
++ Error Message
+
+			{
+				... Error Message
+			} 
             
-            
-##### Deletes Branch    
-       
-##### `DELETE branches/{branchId}`
 + Response
 
 			{
-				HTTP_Status:200
+				... HTTP_Status:200
+			}            
+##### Deletes Branch    
+       
+##### `DELETE branches/{branchId}`
++ Error Message
+
+			{
+				... Error Message
+			} 
++ Response
+
+			{
+				... HTTP_Status:200
 			}

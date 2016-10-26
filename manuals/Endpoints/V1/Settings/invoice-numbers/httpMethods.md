@@ -10,11 +10,15 @@
             {
                 ... Standard InvoiceNumber Persistable Object
             }
-            
++ Error Message
+
+			{
+				... Error Message
+			}             
 + Response
 
             {
-                ... Standard InvoiceNumber Object
+               ... HTTP_Status:200
             }
     
 
@@ -23,7 +27,11 @@
 ##### `GET /settings/invoice-numbers/{invoceId}/`
 + Header 
 	- Authentication Token
++ Error Message
 
+			{
+				... Error Message
+			} 
 + Response
 
 			{
@@ -35,7 +43,11 @@
 ##### `GET /settings/invoice-numbers/`
 + Header
 	- Authentication Token
++ Error Message
 
+			{
+				... Error Message
+			} 
 + Response 
 
 			{
@@ -48,7 +60,11 @@
 ##### `GET /settings/invoice-numbers/company/{companyId}`
 + Header
 	- Authentication Token
++ Error Message
 
+			{
+				... Error Message
+			} 
 + Response
 
             {
@@ -60,7 +76,11 @@
 ##### `GET /settings/invoice-numbers/company/{companyId}/latest/`
 + Header
 	- Authentication Token
++ Error Message
 
+			{
+				... Error Message
+			} 
 + Response
 
             {

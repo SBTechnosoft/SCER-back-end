@@ -10,11 +10,15 @@
             {
                 ... Standard City Persistable Object
             }
-            
++ Error Message
+
+			{
+				... Error Message
+			}              
 + Response
 
             {
-                ... Standard City Object
+                ... HTTP_Status:200
             }
     
 
@@ -24,6 +28,11 @@
 + Header 
 	- Authentication Token
 
++ Error Message
+
+			{
+				... Error Message
+			}  
 + Response
 
 			{
@@ -36,6 +45,11 @@
 + Header
 	- Authentication Token
 
++ Error Message
+
+			{
+				... Error Message
+			}  
 + Response 
 
 			{
@@ -49,6 +63,11 @@
 + Header
 	- Authentication Token
 
++ Error Message
+
+			{
+				... Error Message
+			}  
 + Response
 
             {
@@ -67,17 +86,31 @@
 	- Authentication Token
 
 + Body
+			{
+				... Standard City Persistable Object
+			}
++ Error Message
+
+			{
+				... Error Message
+			}  
++ Response
 
             {
-                ... Standard City Persistable Object
+                ... HTTP_Status:200
             }
             
             
 ##### Deletes City    
        
 ##### `DELETE /cities/{cityId}`
++ Error Message
+
+			{
+				... Error Message
+			}  
 + Response
 
 			{
-				HTTP_Status:200
+				... HTTP_Status:200
 			}

@@ -37,15 +37,14 @@ class LedgerModel extends Model
 				$keyName =$keyName.$getLedgerKey[$data].",";
 			}
 		}
+		
 		DB::beginTransaction();
 		$raw = DB::statement("insert into ledger_mst(".$keyName.") 
 		values(".$ledgerData.")");
 		DB::commit();
-		
 		if($raw==1)
 		{
 			$ledgerId = DB::select('SELECT  MAX(ledger_id) AS ledger_id from ledger_mst');
-			
 			$result = DB::statement("CREATE TABLE ".$ledgerId[0]->ledger_id."_ledger_dtl (
 			 `".$ledgerId[0]->ledger_id."_id` int(11) NOT NULL AUTO_INCREMENT,
 			 `amount` decimal(8,2) NOT NULL,
@@ -58,8 +57,6 @@ class LedgerModel extends Model
 			 `ledger_id` int(11) NOT NULL,
 			 PRIMARY KEY (`".$ledgerId[0]->ledger_id."_id`)
 			) ENGINE=InnoDB DEFAULT CHARSET=latin1");
-			print_r($result);
-			exit;
 			return "200:Data Inserted Successfully";
 		}
 		else
@@ -112,13 +109,14 @@ class LedgerModel extends Model
 		address2,
 		pan,
 		tin,
-		service_tax_no,
+		gst,
 		created_at,
 		updated_at,
 		deleted_at,
 		state_abb,
 		city_id,
-		ledger_grp_id			
+		ledger_grp_id,
+		company_id
 		from ledger_mst where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
@@ -150,13 +148,14 @@ class LedgerModel extends Model
 		address2,
 		pan,
 		tin,
-		service_tax_no,
+		gst,
 		created_at,
 		updated_at,
 		deleted_at,
 		state_abb,
 		city_id,
-		ledger_grp_id
+		ledger_grp_id,
+		company_id
 		from ledger_mst where ledger_id = ".$ledgerId." and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
@@ -186,14 +185,53 @@ class LedgerModel extends Model
 		address2,
 		pan,
 		tin,
-		service_tax_no,
+		gst,
 		created_at,
 		updated_at,
 		deleted_at,
 		state_abb,
 		city_id,
-		ledger_grp_id
+		ledger_grp_id,
+		company_id
 		from ledger_mst where ledger_grp_id ='".$ledgerGrpId."' and  deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		if(count($raw)==0)
+		{
+			return "204: No Content";
+		}
+		else
+		{
+			$enocodedData = json_encode($raw);
+			return $enocodedData;
+		}
+	}
+	
+	/**
+	 * get All data 
+	 * returns the status
+	*/
+	public function getLedgerDetail($companyId)
+	{	
+		DB::beginTransaction();		
+		$raw = DB::select("select 
+		ledger_id,
+		ledger_name,
+		alias,
+		inventory_affected,
+		address1,
+		address2,
+		pan,
+		tin,
+		gst,
+		created_at,
+		updated_at,
+		deleted_at,
+		state_abb,
+		city_id,
+		ledger_grp_id,
+		company_id
+		from ledger_mst where company_id ='".$companyId."' and  deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		if(count($raw)==0)

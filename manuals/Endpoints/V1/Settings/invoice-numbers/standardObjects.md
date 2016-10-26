@@ -1,19 +1,19 @@
 ##### Standard InvoiceNumber Object
 			{
-                "invocieId": int,
-                "companyId":  {
+                "invocie_id": int,
+                "company_id":  {
 					... Standard Company Object
 				},
-                "invoiceLabel": string,
-                "invoiceType": enum,
-                "createdAt" timestamp,
+                "invoice_label": string,
+                "invoice_type": enum,
+                "created_at" timestamp,
 			}
             
 ##### Standard InvoiceNumber Persistable Object
 			{
-            	"companyId":int, 
-                "invoiceLabel": string,
-                "invoiceType": enum,
-                "createdAt" timestamp,
+            	"company_id":int, 
+                "invoice_label": string,
+                "invoice_type": enum,
+                "created_at" timestamp,
 			}
 

@@ -10,11 +10,15 @@
             {
                 ... Standard Product Category Persistable Object
             }
-            
++ Error Message
+
+			{
+				... Error Message
+			}            
 + Response
 
             {
-                ... Standard ProductCategory Object
+                ... HTTP_Status:200
             }
     
 
@@ -23,7 +27,11 @@
 ##### `GET /product-categories/{productCategoryId}/`
 + Header
 	- Authentication Token
++ Error Message
 
+			{
+				... Error Message
+			}
 + Response
 
             {
@@ -34,7 +42,11 @@
 ##### `GET /product-categories`
 + Header
 	- Authentication Token
++ Error Message
 
+			{
+				... Error Message
+			}
 + Response
 
             {
@@ -55,13 +67,27 @@
                 ... Standard ProductCategory Persistable Object
             }
             
-            
-##### Deletes Products Category 
-       
-##### `DELETE /product-categories/{productCategoryId}`
++ Error Message
+
+			{
+				... Error Message
+			}     
 + Response
 
 			{
-				HTTP_Status:200
+				... HTTP_Status:200
 			}
+			
+##### Deletes Products Category 
+       
+##### `DELETE /product-categories/{productCategoryId}`
++ Error Message
 
+			{
+				... Error Message
+			}
++ Response
+
+			{
+				... HTTP_Status:200
+			}

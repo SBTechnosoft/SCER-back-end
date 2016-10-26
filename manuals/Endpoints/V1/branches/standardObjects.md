@@ -1,40 +1,40 @@
 ##### Standard Branch Object
 
             {
-                "branchId": int,
-                "companyId":  {
+                "branch_id": int,
+                "company_id":  {
 					... Standard Company Object
 				},
-                "branchName": string,
+                "branch_name": string,
                 "address1": string,
                 "address2": string,
-                "cityId":  {
+                "city_id":  {
 					... Standard City Object
 				},
-				"stateAbb": {
+				"state_abb": {
 					... Standard State Object
 				},
 				
 				"pincode": char,
-				"isDefault":enum,
-				"isDisplay": enum,
-				"createdAt" timestamp,
-				"updatedAt": datetime
+				"is_default":enum,
+				"is_display": enum,
+				"created_at" timestamp,
+				"updated_at": datetime
             }
             
 ##### Standard Branch Persistable Object
 			{
-            	"companyId":int, 
-                "branchName": string,
+            	"company_id":int, 
+                "branch_name": string,
                 "address1": string,
                 "address2": string,
-                "cityId": int,
-				"stateAbb": char,
+                "city_id": int,
+				"state_abb": char,
 				"pincode": char,
-				"isDefault":bool,
-				"isDisplay": bool,
-				"createdAt" timestamp,
-				"updatedAt": datetime,
-				"deletedAt" :datetime
+				"is_default":bool,
+				"is_display": bool,
+				"created_at" timestamp,
+				"updated_at": datetime,
+				"deleted_at" :datetime
             }
 

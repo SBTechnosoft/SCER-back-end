@@ -37,6 +37,7 @@ class ProductModel extends Model
 				$keyName =$keyName.$getProductKey[$data].",";
 			}
 		}
+		
 		DB::beginTransaction();
 		$raw = DB::statement("insert into product_mst(".$keyName.") 
 		values(".$productData.")");

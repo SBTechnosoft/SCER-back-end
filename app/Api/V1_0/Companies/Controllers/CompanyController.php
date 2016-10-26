@@ -10,6 +10,7 @@ use ERP\Api\V1_0\Companies\Processors\CompanyProcessor;
 use ERP\Core\Companies\Persistables\CompanyPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Core\Companies\Validations\CompanyValidate;
+use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -56,15 +57,15 @@ class CompanyController extends BaseController implements ContainerInterface
 			$companyService= new CompanyService();			
 			$companyPersistable = $Processor->createPersistable($this->request);
 			
+			//get exception message
+			$exception = new ExceptionMessage();
+			$fileSizeArray = $exception->messageArrays();
+			
 			if($companyPersistable[0][0]=='[')
 			{
 				return $companyPersistable;
 			}
-			else if($companyPersistable=="FileNotFoundException: The file is too long")
-			{
-				return $companyPersistable;
-			}
-			else if($companyPersistable=="FileNotFoundException: The file formate is not valid")
+			else if(strcmp($companyPersistable,$fileSizeArray['fileFormat'])==0 || strcmp($companyPersistable,$fileSizeArray['fileSize'])==0)
 			{
 				return $companyPersistable;
 			}
@@ -107,15 +108,11 @@ class CompanyController extends BaseController implements ContainerInterface
 		$Processor = new CompanyProcessor();
 		$companyPersistable = new CompanyPersistable();		
 		$companyPersistable = $Processor->createPersistableChange($this->request,$companyId);
-		if($companyPersistable=="204: No Content Found For Update")
-		{
-			return $companyPersistable;
-		}
-		else if($companyPersistable=="FileNotFoundException: The file is too long")
-		{
-			return $companyPersistable;
-		}
-		else if($companyPersistable=="FileNotFoundException: The file formate is not valid")
+		
+		//get exception message 
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($companyPersistable,$fileSizeArray['204'])==0 || strcmp($companyPersistable,$fileSizeArray['fileSize'])==0 || strcmp($companyPersistable,$fileSizeArray['fileFormat'])==0)
 		{
 			return $companyPersistable;
 		}

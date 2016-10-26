@@ -4,17 +4,21 @@
 + Header
 	- Authentication Token
 
-
 + Body
 
             {
                 ... Standard Ledger Persistable Object
             }
-            
+
++ Error Message
+
+			{
+				... Error Message
+			}            
 + Response
 
             {
-                ... Standard Ledger Object
+                ... HTTP_Status:200
             }
     
 
@@ -25,6 +29,11 @@
 + Header 
 	- Authentication Token
 
++ Error Message
+
+			{
+				... Error Message
+			}
 + Response
 
 			{
@@ -37,6 +46,11 @@
 + Header 
 	- Authentication Token
 
++ Error Message
+
+			{
+				... Error Message
+			}
 + Response
 
 			{
@@ -48,7 +62,12 @@
 ##### `GET /accounting/ledgers/{ledgerId}/transactions`
 + Header 
 	- Authentication Token
+	
++ Error Message
 
+			{
+				... Error Message
+			}
 + Response
 
 			{
@@ -60,7 +79,12 @@
 ##### `GET /accounting/ledgers/ledgerGrp/{ledgerGrpId}`
 + Header 
 	- Authentication Token
+	
++ Error Message
 
+			{
+				... Error Message
+			}
 + Response
 
 			{
@@ -69,6 +93,23 @@
 
 **NOTES:** List all the ledger as per the given ledger group id
 
+##### `GET /accounting/ledgers/company/{companyId}`
++ Header 
+	- Authentication Token
+	
++ Error Message
+
+			{
+				... Error Message
+			}
++ Response
+
+			{
+				... Standard Ledger Object
+			}
+
+**NOTES:** List all the ledger as per the given company id
+
 ##### Updates Ledgers    
        
 ##### `PATCH /accounting/ledgers/{ledgerId}`
@@ -76,8 +117,7 @@
 	- Authentication Token
 
 + Body
-
-            {
+			{
                 ... Standard Ledger Persistable Object
             }
 
@@ -86,14 +126,19 @@
 			{
 				... Error Message
 			}
-+  Status
++  Response
 			{
 				... HTTP_Status:200
 			}
 ##### Deletes Ledger    
        
 ##### `DELETE /accounting/ledgers/{ledgerId}`
-+ Response
++ Error Message
+
 			{
-				HTTP_Status:200
+				... Error Message
+			}
++  Response
+			{
+				... HTTP_Status:200
 			}

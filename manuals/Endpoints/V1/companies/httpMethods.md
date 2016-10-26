@@ -7,7 +7,11 @@
             {
                 ... Standard Company Persistable Object
             }
-            
++ Error Message
+
+			{
+				... Error Message
+			}             
 + Response
 
             {
@@ -18,6 +22,11 @@
             
 ##### `GET /companies/{companyId}`
 
++ Error Message
+
+			{
+				... Error Message
+			} 
 + Response
 
             {
@@ -27,6 +36,11 @@
 
 ##### `GET /companies`
 
++ Error Message
+
+			{
+				... Error Message
+			} 
 + Response
 
             {
@@ -41,18 +55,35 @@
 ##### `PATCH /companies/{companyId}`
 + Header
 	- Authentication Token
+
 + Body
 
             {
                 ... Standard Company Persistable Object
             }
-            
++ Error Message
+
+			{
+				... Error Message
+			} 
++ Response
+
+            {
+                ... HTTP_Status:200
+            }
+                
             
 ##### Deletes Company    
        
 ##### `DELETE /companies/{companyId}`
+
++ Error Message
+
+			{
+				... Error Message
+			}  
 + Response
 
 			{
-				HTTP_Status:200
+				... HTTP_Status:200
 			}
