@@ -1,14 +1,25 @@
-##### Standard LedgerGrp Object
+##### Standard Ledger Group Object
 
             {
-                "ledger_grp_id": int,
-                "ledger_grp_name":String,
-                "under_what":String
+                "ledgerGroupId": int,
+                "ledgerGroupName":String,
+				"alias":String,
+                "underWhat":String
+				"natureOfGroup":String
+				"affectedGroupProfit":Enum
             }
             
-##### Standard LedgerGrp Persistable Object
+##### Standard Ledger Group Persistable Object
 			{
-            	"ledger_grp_name":String,
-                "under_what":String
+            	"ledgerGroupName":String,
+				"alias":String,
+                "underWhat":String,
+				"natureOfGroup":String,
+				"affectedGroupProfit":Enum
             }
+
+##### Affected Group Profit Enum
+			{
+				//TO DO
+			}
 
