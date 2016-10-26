@@ -2,10 +2,10 @@
 
             {
                 
-                "document_name": string,
-                "document_url": string
-                "document_size": int,
-                "document_format": `jpeg | jpg | gif | png `
+                "documentName": string,
+                "documentUrl": string
+                "documentSize": int,
+                "documentFormat": Enum
 				
 				
             }
@@ -16,4 +16,9 @@
                 "document": file
 				
             }
+
+##### Document Format Enum
+			{
+				//TO DO `jpeg | jpg | gif | png `
+			}
             
