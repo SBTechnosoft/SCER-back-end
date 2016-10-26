@@ -1,7 +1,7 @@
 ##### Standard QuotationNumber Object
 			{
                 "QuotationId": int,
-                "companyId":  {
+                "company":  {
 					... Standard Company Object
 				},
                 "QuotationLabel": string,
@@ -15,5 +15,10 @@
                 "QuotationLabel": string,
                 "QuotationType": enum,
                 "createdAt" timestamp,
+			}
+
+##### Quotation Type Enum
+			{
+				//TO DO
 			}
 
