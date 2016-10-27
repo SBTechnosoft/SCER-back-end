@@ -32,13 +32,12 @@ class EncodeData
 		
 		//set all data into json array
 		$data = array();
-		$data['template_id'] = $templateId;
-		$data['template_name'] = $templateName;
-		$data['template_body'] = $templateBody;
-		$data['template_type'] = $templateType;
-		$data['created_at'] = $getCreatedDate;	
-		$data['updated_at'] = $getUpdatedDate;	
-		
+		$data['templateId'] = $templateId;
+		$data['templateName'] = $templateName;
+		$data['templateBody'] = $templateBody;
+		$data['templateType'] = $templateType;
+		$data['createdAt'] = $getCreatedDate;	
+		$data['updatedAt'] = $getUpdatedDate;	
 		$encodeData = json_encode($data);
 		return $encodeData;
 	}

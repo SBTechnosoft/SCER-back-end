@@ -9,6 +9,8 @@ use ERP\Api\V1_0\Support\BaseController;
 use ERP\Api\V1_0\Settings\Templates\Processors\TemplateProcessor;
 use ERP\Core\Settings\Templates\Persistables\TemplatePersistable;
 use ERP\Core\Support\Service\ContainerInterface;
+use ERP\Exceptions\ExceptionMessage;
+use ERP\Model\Settings\Templates\TemplateModel;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -16,12 +18,12 @@ class TemplateController extends BaseController implements ContainerInterface
 {
 	/**
      * @var templateService
-     * @var Processor
+     * @var processor
      * @var request
      * @var templatePersistable
      */
 	private $templateService;
-	private $Processor;
+	private $processor;
 	private $request;
 	private $templatePersistable;	
 	
@@ -67,23 +69,33 @@ class TemplateController extends BaseController implements ContainerInterface
 	public function update(Request $request,$templateId)
     {    
 		$this->request = $request;
-		$Processor = new TemplateProcessor();
-		$templatePersistable = new TemplatePersistable();		
-		$templatePersistable = $Processor->createPersistableChange($this->request,$templateId);
-		//here two array and string is return at a time
-		if($templatePersistable=="204: No Content Found For Update")
+		$processor = new TemplateProcessor();
+		$templatePersistable = new TemplatePersistable();
+		$templateModel = new TemplateModel();		
+		$result = $templateModel->getData($templateId);
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($result,$fileSizeArray['404'])==0)
 		{
-			return $templatePersistable;
-		}
-		else if(is_array($templatePersistable))
-		{
-			$templateService= new TemplateService();	
-			$status = $templateService->update($templatePersistable);
-			return $status;
+			return $result;
 		}
 		else
 		{
-			return $templatePersistable;
+			$templatePersistable = $processor->createPersistableChange($this->request,$templateId);
+			//here two array and string is return at a time
+			if(is_array($templatePersistable))
+			{
+				$templateService= new TemplateService();	
+				$status = $templateService->update($templatePersistable);
+				return $status;
+			}
+			else
+			{
+				return $templatePersistable;
+			}
 		}
+		
 	}
 }

@@ -8,6 +8,7 @@ use ERP\Http\Requests;
 use Illuminate\Http\Response;
 use ERP\Core\Settings\Templates\Validations\TemplateValidate;
 use ERP\Api\V1_0\Settings\Templates\Transformers\TemplateTransformer;
+use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -32,13 +33,17 @@ class TemplateProcessor extends BaseProcessor
 		$templateValidate = new TemplateValidate();
 		$status;
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		// update
 		if($requestMethod == 'POST')
 		{
 			//if data is not available in update request
 			if(count($_POST)==0)
 			{
-				$status = "204: No Content Found For Update";
+				$status = $fileSizeArray['204'];
 				return $status;
 			}
 			//data is avalilable for update
@@ -54,13 +59,14 @@ class TemplateProcessor extends BaseProcessor
 					//trim an input 
 					$templateTransformer = new TemplateTransformer();
 					$tRequest = $templateTransformer->trimUpdateData($key[$data],$value[$data]);
-					//get data from trim array
 					
+					//get data from trim array
 					$tKeyValue[$data] = array_keys($tRequest[0])[0];
 					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
 					
 					//validation
-					$status = $templateValidate->validateUpdateData($key[$data],$value[$data],$tRequest[0]);
+					$status = $templateValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
+					
 					//enter data is valid(one data validate status return)
 					if($status=="Success")
 					{
@@ -89,7 +95,7 @@ class TemplateProcessor extends BaseProcessor
 							$getFuncName[$data] = 'get'.$str;
 							$templatePersistable->$setFuncName($templateValue[$data]);
 							$templatePersistable->setName($getFuncName[$data]);
-							$templatePersistable->setKey($key[$data]);
+							$templatePersistable->setKey($tKeyValue[$data]);
 							$templatePersistable->setTemplateId($templateId);
 							$templateArray[$data] = array($templatePersistable);
 						}

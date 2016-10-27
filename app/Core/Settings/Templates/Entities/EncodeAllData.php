@@ -37,12 +37,12 @@ class EncodeAllData
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
 		{
 			$data[$jsonData]= array(
-				'template_id'=>$templateId[$jsonData],
-				'template_name' => $templateName[$jsonData],
-				'template_type' => $templateType[$jsonData],
-				'template_body' => $templateBody[$jsonData],
-				'created_at' => $getCreatedDate[$jsonData],
-				'updated_at' => $getUpdatedDate[$jsonData]
+				'templateId'=>$templateId[$jsonData],
+				'templateName' => $templateName[$jsonData],
+				'templateType' => $templateType[$jsonData],
+				'templateBody' => $templateBody[$jsonData],
+				'createdAt' => $getCreatedDate[$jsonData],
+				'updatedAt' => $getUpdatedDate[$jsonData]
 			);
 		}
 		return json_encode($data);

@@ -9,6 +9,7 @@ use ERP\Core\Support\Service\AbstractService;
 use ERP\Core\User\Entities\User;
 use ERP\Core\Settings\Templates\Entities\EncodeData;
 use ERP\Core\Settings\Templates\Entities\EncodeAllData;
+use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -70,7 +71,11 @@ class TemplateService extends AbstractService
 	{
 		$templateModel = new TemplateModel();
 		$status = $templateModel->getAllData();
-		if($status=="204: No Content")
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($status,$fileSizeArray['204'])==0)
 		{
 			return $status;
 		}
@@ -91,7 +96,11 @@ class TemplateService extends AbstractService
 	{
 		$templateModel = new TemplateModel();
 		$status = $templateModel->getData($templateId);
-		if($status=="404:Id Not Found")
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($status,$fileSizeArray['404'])==0)
 		{
 			return $status;
 		}
@@ -111,7 +120,11 @@ class TemplateService extends AbstractService
 	{
 		$branchModel = new BranchModel();
 		$status = $branchModel->getAllBranchData($companyId);
-		if($status=="204: No Content")
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($status,$fileSizeArray['204'])==0)
 		{
 			return $status;
 		}
