@@ -242,30 +242,30 @@ include ('connection.php');
 				// formdata.append('template_body',$scope.formAdata.template_body);
 				
 				//invoice
-				$scope.formAdata.invoice_label = " abcd ";
-				$scope.formAdata.invoice_type = ' prefix ';
+				// $scope.formAdata.invoice_label = " abcd ";
+				// $scope.formAdata.invoice_type = ' prefix ';
+				// $scope.formAdata.start_at=' 1 ';
+				// $scope.formAdata.end_at=' 10 ';
+				// $scope.formAdata.company_id='14 ';
+				
+				// formdata.append('invoiceLabel',$scope.formAdata.invoice_label);
+				// formdata.append('invoiceType',$scope.formAdata.invoice_type);
+				// formdata.append('startAt',$scope.formAdata.start_at);
+				// formdata.append('endAt',$scope.formAdata.end_at);
+				// formdata.append('companyId',$scope.formAdata.company_id);
+				
+				//quotation
+				$scope.formAdata.quotation_label = " abcd ";
+				$scope.formAdata.quotation_type = ' prefix ';
 				$scope.formAdata.start_at=' 1 ';
 				$scope.formAdata.end_at=' 10 ';
 				$scope.formAdata.company_id='14 ';
 				
-				formdata.append('invoiceLabel',$scope.formAdata.invoice_label);
-				formdata.append('invoiceType',$scope.formAdata.invoice_type);
+				formdata.append('quotationLabel',$scope.formAdata.quotation_label);
+				formdata.append('quotationType',$scope.formAdata.quotation_type);
 				formdata.append('startAt',$scope.formAdata.start_at);
 				formdata.append('endAt',$scope.formAdata.end_at);
 				formdata.append('companyId',$scope.formAdata.company_id);
-				
-				//quotation
-				// $scope.formAdata.quotation_label = " abcd ";
-				// $scope.formAdata.quotation_type = ' prefix ';
-				// $scope.formAdata.start_at=' 1 ';
-				// $scope.formAdata.end_at=' 10 ';
-				// $scope.formAdata.company_id='1 ';
-				
-				// formdata.append('quotation_label',$scope.formAdata.quotation_label);
-				// formdata.append('quotation_type',$scope.formAdata.quotation_type);
-				// formdata.append('start_at',$scope.formAdata.start_at);
-				// formdata.append('end_at',$scope.formAdata.end_at);
-				// formdata.append('company_id',$scope.formAdata.company_id);
 				
 				//ledger
 				// $scope.formAdata.ledger_name = " abc ";
@@ -295,7 +295,7 @@ include ('connection.php');
 				// formdata.append('company_id',$scope.formAdata.company_id);
 				
 				
-				var productId = 8;
+				// var productId = 8;
 				// var productGrpId = 1;
 				// var productCatId = 1;
 				// var companyId=14;
@@ -306,7 +306,7 @@ include ('connection.php');
 				// var templateId=1;
 				// var bankId=2;
 				// var invoiceId=2;
-				// var quotationId=1;
+				var quotationId=3;
 				// var ledgerGrpId=1;
 				// var ledgerId=42;
 				
@@ -319,10 +319,11 @@ include ('connection.php');
 				// var url="http://www.scerp.com/accounting/ledger-groups";
 				// SELECT max(invoice_id) invoice_id,invoice_label FROM `invoice_dtl` where company_id=1
 				// var url="http://www.scerp.com/settings/quotation-numbers/company/"+companyId+"/latest";
-				// var url="http://www.scerp.com/settings/quotation-numbers";
+				var url="http://www.scerp.com/settings/quotation-numbers";
+				// var url="http://www.scerp.com/settings/quotation-numbers/"+quotationId;
 				// var url="http://www.scerp.com/settings/quotation-numbers/company/"+companyId;
 				// var url="http://www.scerp.com/settings/invoice-numbers/company/"+companyId+"/latest";
-				var url="http://www.scerp.com/settings/invoice-numbers";
+				// var url="http://www.scerp.com/settings/invoice-numbers";
 				// var url="http://www.scerp.com/settings/invoice-numbers/company/"+companyId;
 				// var url="http://www.scerp.com/banks/"+bankId;
 				// var url="http://www.scerp.com/banks";
