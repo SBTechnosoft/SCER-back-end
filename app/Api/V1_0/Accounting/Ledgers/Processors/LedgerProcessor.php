@@ -8,6 +8,7 @@ use ERP\Http\Requests;
 use Illuminate\Http\Response;
 use ERP\Core\Accounting\Ledgers\Validations\LedgerValidate;
 use ERP\Api\V1_0\Accounting\Ledgers\Transformers\LedgerTransformer;
+use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -98,13 +99,17 @@ class LedgerProcessor extends BaseProcessor
 		$ledgerValidate = new LedgerValidate();
 		$status;
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		// update
 		if($requestMethod == 'POST')
 		{
 			//if data is not available in update request
 			if(count($_POST)==0)
 			{
-				$status = "204: No Content Found For Update";
+				$status = $fileSizeArray['204'];
 				return $status;
 			}
 			//data is avalilable for update

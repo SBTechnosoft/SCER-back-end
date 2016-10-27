@@ -7,6 +7,9 @@ use ERP\Model\Accounting\LedgerGroups\LedgerGroupModel;
 use ERP\Core\Shared\Options\UpdateOptions;
 use ERP\Core\Support\Service\AbstractService;
 use ERP\Core\User\Entities\User;
+use ERP\Exceptions\ExceptionMessage;
+use ERP\Core\Accounting\LedgerGroups\Entities\EncodeData;
+use ERP\Core\Accounting\LedgerGroups\Entities\EncodeAllData;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -44,6 +47,19 @@ class LedgerGroupService extends AbstractService
 	{
 		$ledgerGrpModel = new LedgerGroupModel();
 		$status = $ledgerGrpModel->getAllData();
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($status,$fileSizeArray['204'])==0)
+		{
+			return $status;
+		}
+		else
+		{
+			$encoded = new EncodeAllData();
+			$encodeAllData = $encoded->getEncodedAllData($status);
+			return $encodeAllData;
+		}
 		return $status;
 	}
 	
@@ -56,7 +72,19 @@ class LedgerGroupService extends AbstractService
 	{
 		$ledgerGrpModel = new LedgerGroupModel();
 		$status = $ledgerGrpModel->getData($ledgerGrpId);
-		return $status;
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($status,$fileSizeArray['404'])==0)
+		{
+			return $status;
+		}
+		else
+		{
+			$encoded = new EncodeData();
+			$encodeData = $encoded->getEncodedData($status);
+			return $encodeData;
+		}
 	}
 	
 	/**

@@ -4,7 +4,7 @@ namespace ERP\Core\Accounting\Ledgers\Properties;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-trait GstPropertyTrait
+trait GstNoPropertyTrait
 {
 	/**
      * @var gstNo

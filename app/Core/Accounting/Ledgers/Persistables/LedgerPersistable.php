@@ -13,7 +13,7 @@ use ERP\Core\States\Properties\StateAbbPropertyTrait;
 use ERP\Core\Shared\Properties\IdPropertyTrait;
 use ERP\Core\Companies\Properties\PanPropertyTrait;
 use ERP\Core\Companies\Properties\TinPropertyTrait;
-use ERP\Core\Accounting\Ledgers\Properties\GstPropertyTrait;
+use ERP\Core\Accounting\Ledgers\Properties\GstNoPropertyTrait;
 use ERP\Core\Cities\Properties\CityIdPropertyTrait;
 use ERP\Core\Accounting\Ledgers\Properties\LedgerGrpIdPropertyTrait;
 use ERP\Core\Companies\Properties\CompanyIdPropertyTrait;
@@ -22,7 +22,7 @@ use ERP\Core\Companies\Properties\CompanyIdPropertyTrait;
  */
 class LedgerPersistable
 {
-    use NamePropertyTrait;
+	use NamePropertyTrait;
     use LedgerNamePropertyTrait;
     use LedgerIdPropertyTrait;
     use InventoryAffectedPropertyTrait;
@@ -37,5 +37,5 @@ class LedgerPersistable
 	use TinPropertyTrait;
 	use LedgerGrpIdPropertyTrait;
 	use CompanyIdPropertyTrait;
-	use GstPropertyTrait;
+	use GstNoPropertyTrait;
 }

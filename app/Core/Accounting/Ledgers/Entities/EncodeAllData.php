@@ -37,7 +37,7 @@ class EncodeAllData extends StateService
 			$gstNo[$decodedData] = $decodedJson[$decodedData]['gst'];
 			$stateAbb[$decodedData] = $decodedJson[$decodedData]['state_abb'];
 			$cityId[$decodedData] = $decodedJson[$decodedData]['city_id'];
-			$ledgerGrpId[$decodedData] = $decodedJson[$decodedData]['ledger_grp_id'];
+			$ledgerGrpId[$decodedData] = $decodedJson[$decodedData]['ledger_group_id'];
 			$companyId[$decodedData] = $decodedJson[$decodedData]['company_id'];
 			
 			//get the state detail from database
@@ -87,10 +87,6 @@ class EncodeAllData extends StateService
 				'gstNo'=> $gstNo[$jsonData],
 				'createdAt' => $getCreatedDate[$jsonData],
 				'updatedAt' => $getUpdatedDate[$jsonData],
-				'stateAbb' => $stateAbb[$jsonData],
-				'cityId' => $cityId[$jsonData],
-				'ledgerGrpId' => $getLedgerGrpDetails[$jsonData][0]['ledgerGrpId'],	
-				'companyId' => $getCompanyDetails[$jsonData]['companyId'],
 				
 				'state' => array(
 					'stateAbb' => $stateAbb[$jsonData],
@@ -110,9 +106,12 @@ class EncodeAllData extends StateService
 				),
 				
 				'ledgergroup'=> array(
-					'ledgerGrpId' => $getLedgerGrpDetails[$jsonData][0]['ledgerGrpId'],	
-					'ledgerGrpName' => $getLedgerGrpDetails[$jsonData][0]['ledgerGrpName'],	
-					'underWhat' => $getLedgerGrpDetails[$jsonData][0]['underWhat']
+					'ledgerGroupId' => $getLedgerGrpDetails[$jsonData]['ledgerGroupId'],	
+					'ledgerGroupName' => $getLedgerGrpDetails[$jsonData]['ledgerGroupName'],	
+					'underWhat' => $getLedgerGrpDetails[$jsonData]['underWhat'],
+					'alias' => $getLedgerGrpDetails[$jsonData]['alias'],
+					'natureOfGroup' => $getLedgerGrpDetails[$jsonData]['natureOfGroup'],
+					'affectedGroupProfit' => $getLedgerGrpDetails[$jsonData]['affectedGroupProfit']
 				),
 				
 				'company' => array(	

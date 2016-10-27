@@ -25,7 +25,7 @@ class LedgerTransformer
 		$gstNo = $request->input('gst'); 		
 		$stateAbb = $request->input('stateAbb'); 			
 		$cityId = $request->input('cityId'); 			
-		$ledgerGrpId = $request->input('ledgerGrpId');  
+		$ledgerGrpId = $request->input('ledgerGroupId');  
 		$companyId = $request->input('companyId');  
 		
 		//trim an input
@@ -54,7 +54,7 @@ class LedgerTransformer
 		$data['gst'] = $tGstNo;
 		$data['state_abb'] = $tStateAbb;
 		$data['city_id'] = $tCityId;
-		$data['ledger_grp_id'] = $tLedgerGrpId;
+		$data['ledger_group_id'] = $tLedgerGrpId;
 		$data['company_id'] = $tcompanyId;
 		return $data;
 	}

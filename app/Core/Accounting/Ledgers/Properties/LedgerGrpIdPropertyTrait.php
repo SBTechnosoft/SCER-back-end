@@ -13,14 +13,14 @@ trait LedgerGrpIdPropertyTrait
 	/**
 	 * @param int $ledgerGrpId
 	 */
-	public function setLedgerGrpId($ledgerGrpId)
+	public function setLedgerGroupId($ledgerGrpId)
 	{
 		$this->ledgerGrpId = $ledgerGrpId;
 	}
 	/**
 	 * @return ledgerGrpId
 	 */
-	public function getLedgerGrpId()
+	public function getLedgerGroupId()
 	{
 		return $this->ledgerGrpId;
 	}

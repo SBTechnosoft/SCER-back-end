@@ -7,6 +7,9 @@ use ERP\Model\Banks\BankModel;
 use ERP\Core\Shared\Options\UpdateOptions;
 use ERP\Core\Support\Service\AbstractService;
 use ERP\Core\User\Entities\User;
+use ERP\Exceptions\ExceptionMessage;
+use ERP\Core\Banks\Entities\EncodeData;
+use ERP\Core\Banks\Entities\EncodeAllData;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -44,7 +47,20 @@ class BankService extends AbstractService
 	{
 		$bankModel = new BankModel();
 		$status = $bankModel->getAllData();
-		return $status;
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($status,$fileSizeArray['204'])==0)
+		{
+			return $status;
+		}
+		else
+		{
+			$encoded = new EncodeAllData();
+			$encodeAllData = $encoded->getEncodedAllData($status);
+			return $encodeAllData;
+		}
 	}
 	
 	/**
@@ -56,7 +72,20 @@ class BankService extends AbstractService
 	{
 		$bankModel = new BankModel();
 		$status = $bankModel->getData($bankId);
-		return $status;
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($status,$fileSizeArray['404'])==0)
+		{
+			return $status;
+		}
+		else
+		{
+			$encoded = new EncodeData();
+			$encodeData = $encoded->getEncodedData($status);
+			return $encodeData;
+		}
 	}
 	
 	/**

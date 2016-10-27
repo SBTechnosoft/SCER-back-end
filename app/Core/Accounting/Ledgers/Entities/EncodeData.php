@@ -29,7 +29,7 @@ class EncodeData extends StateService
 		$gstNo= $decodedJson[0]['gst'];
 		$stateAbb= $decodedJson[0]['state_abb'];
 		$cityId= $decodedJson[0]['city_id'];
-		$ledgerGrpId= $decodedJson[0]['ledger_grp_id'];
+		$ledgerGrpId= $decodedJson[0]['ledger_group_id'];
 		$companyId= $decodedJson[0]['company_id'];
 		
 		//get the state details from database
@@ -71,22 +71,26 @@ class EncodeData extends StateService
 		$data['gstNo'] = $gstNo;
 		$data['createdAt'] = $getCreatedDate;
 		$data['updatedAt'] = $getUpdatedDate;	
-		$data['stateAbb'] = $stateAbb;
-		$data['cityId'] = $cityId;
-		$data['ledgerGrpId'] = $ledgerGrpId;	
-		$data['companyId'] = $companyDetails['companyId'];
 		
 		$data['ledgerGroup']= array(
-			'ledgerGrpName' => $getLedgerGrpDetail[0]['ledgerGrpName'],
-			'underWhat' => $getLedgerGrpDetail[0]['underWhat']
+			'ledgerGroupId' => $ledgerGrpId,	
+			'ledgerGroupName' => $getLedgerGrpDetail['ledgerGroupName'],
+			'alias' => $getLedgerGrpDetail['alias'],
+			'underWhat' => $getLedgerGrpDetail['underWhat'],
+			'natureOfGroup' => $getLedgerGrpDetail['natureOfGroup'],
+			'affectedGroupProfit' => $getLedgerGrpDetail['affectedGroupProfit']
+			
 		);
+		
 		$data['state'] = array(
+			'stateAbb' => $stateAbb,
 			'stateName' => $stateDecodedJson['stateName'],
 			'isDisplay' => $stateDecodedJson['isDisplay'],	
 			'createdAt' => $stateDecodedJson['createdAt'],	
 			'updatedAt' => $stateDecodedJson['updatedAt']	
 		);
 		$data['city'] = array(
+			'cityId' => $cityId,
 			'cityName' => $getCityDetail['cityName'],	
 			'isDisplay'=> $getCityDetail['isDisplay'],	
 			'createdAt' => $getCityDetail['createdAt'],	
@@ -94,31 +98,29 @@ class EncodeData extends StateService
 			'stateAbb'=> $getCityDetail['stateAbb']
 		);
 		$data['company']= array(
-			'company_name' => $companyDetails['company_name'],	
-			'company_display_name' => $companyDetails['company_display_name'],	
+			'companyId' => $companyDetails['companyId'],
+			'companyName' => $companyDetails['companyName'],	
+			'companyDisplayName' => $companyDetails['companyDisplayName'],	
 			'address1' => $companyDetails['address1'],	
 			'address2' => $companyDetails['address2'],	
 			'pincode' => $companyDetails['pincode'],
 			'pan' => $companyDetails['pan'],	
 			'tin' => $companyDetails['tin'],
-			'vat_no' =>$companyDetails['vat_no'],
-			'service_tax_no' => $companyDetails['service_tax_no'],
-			'basic_currency_symbol' => $companyDetails['basic_currency_symbol'],
-			'formal_name' => $companyDetails['formal_name'],
-			'no_of_decimal_points' => $companyDetails['no_of_decimal_points'],
-			'currency_symbol' => $companyDetails['currency_symbol'],	
-			'document_name' => $companyDetails['document_name'],	
-			'document_url' => $companyDetails['document_url'],	
-			'document_size' => $companyDetails['document_size'],
-			'document_format' => $companyDetails['document_format'],	
-			'is_display' => $companyDetails['is_display'],	
-			'is_default' => $companyDetails['is_default'],	
-			'created_at' => $companyDetails['created_at'],	
-			'updated_at' => $companyDetails['updated_at'],	
-			'state_abb' => $companyDetails['state_abb'],	
-			'city_id' => $companyDetails['city_id'],
-			'state_name' => $companyDetails['state_name'],	
-			'city_name' => $companyDetails['city_name']
+			'vatNo' =>$companyDetails['vatNo'],
+			'serviceTaxNo' => $companyDetails['serviceTaxNo'],
+			'basicCurrencySymbol' => $companyDetails['basicCurrencySymbol'],
+			'formalName' => $companyDetails['formalName'],
+			'noOfDecimalPoints' => $companyDetails['currencySymbol'],	
+			'documentName' => $companyDetails['documentName'],	
+			'documentUrl' => $companyDetails['documentUrl'],	
+			'documentSize' => $companyDetails['documentSize'],
+			'documentFormat' => $companyDetails['documentFormat'],	
+			'isDisplay' => $companyDetails['isDisplay'],	
+			'isDefault' => $companyDetails['isDefault'],	
+			'createdAt' => $companyDetails['createdAt'],	
+			'updatedAt' => $companyDetails['updatedAt'],	
+			'stateAbb' => $companyDetails['stateAbb'],	
+			'cityId' => $companyDetails['cityId']
 		);
 		$encodeData = json_encode($data);
 		return $encodeData;
