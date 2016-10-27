@@ -21,10 +21,10 @@ class EncodeAllData
 		{
 			$createdAt[$decodedData] = $decodedJson[$decodedData]['created_at'];
 			$updatedAt[$decodedData] = $decodedJson[$decodedData]['updated_at'];
-			$productCatId[$decodedData] = $decodedJson[$decodedData]['product_cat_id'];
-			$productCatName[$decodedData] = $decodedJson[$decodedData]['product_cat_name'];
-			$productCatDesc[$decodedData] = $decodedJson[$decodedData]['product_cat_desc'];
-			$productParentCatId[$decodedData] = $decodedJson[$decodedData]['product_parent_cat_id'];
+			$productCatId[$decodedData] = $decodedJson[$decodedData]['product_category_id'];
+			$productCatName[$decodedData] = $decodedJson[$decodedData]['product_category_name'];
+			$productCatDesc[$decodedData] = $decodedJson[$decodedData]['product_category_description'];
+			$productParentCatId[$decodedData] = $decodedJson[$decodedData]['product_parent_category_id'];
 			$isDisplay[$decodedData] = $decodedJson[$decodedData]['is_display'];
 			
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
@@ -35,19 +35,19 @@ class EncodeAllData
 		$productCategory->setCreated_at($convertedCreatedDate);
 		$getCreatedDate = $productCategory->getCreated_at();
 			
-		$productCategory->setCreated_at($convertedUpdatedDate);
+		$productCategory->setUpdated_at($convertedUpdatedDate);
 		$getUpdatedDate = $productCategory->getUpdated_at();
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
 		{
 			$data[$jsonData]= array(
-				'product_cat_name' => $productCatName[$jsonData],
-				'product_cat_id' =>$productCatId[$jsonData],
-				'product_cat_desc' =>$productCatDesc[$jsonData],
+				'productCategoryName' => $productCatName[$jsonData],
+				'productCategoryId' =>$productCatId[$jsonData],
+				'productCategoryDescription' =>$productCatDesc[$jsonData],
 				'isDisplay' => $isDisplay[$jsonData],
-				'created_at' => $getCreatedDate[$jsonData],
-				'updated_at' =>$getUpdatedDate[$jsonData],
-				'product_parent_cat_id' =>$productParentCatId[$jsonData]
+				'createdAt' => $getCreatedDate[$jsonData],
+				'updatedAt' =>$getUpdatedDate[$jsonData],
+				'productParentCategoryId' =>$productParentCatId[$jsonData]
 			);	
 		}
 		return json_encode($data);

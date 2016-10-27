@@ -30,6 +30,7 @@ class EncodeAllData extends CompanyService
 			$encodeDataClass = new EncodeAllData();
 			$companyStatus[$decodedData] = $encodeDataClass->getCompanyData($companyId[$decodedData]);
 			$companyDecodedJson[$decodedData] = json_decode($companyStatus[$decodedData],true);
+			print_r($companyDecodedJson[$decodedData]);
 			$companyName[$decodedData]= $companyDecodedJson[$decodedData]['company_name'];
 			$companyIsDisplay[$decodedData]= $companyDecodedJson[$decodedData]['is_display'];
 			$companyCreatedAt[$decodedData]= $companyDecodedJson[$decodedData]['created_at'];

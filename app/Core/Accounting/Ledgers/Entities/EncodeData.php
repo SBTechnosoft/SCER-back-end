@@ -60,40 +60,40 @@ class EncodeData extends StateService
 		
 		//set all data into json array
 		$data = array();
-		$data['ledger_id'] = $ledgerId;
-		$data['ledger_name'] = $ledgerName;
+		$data['ledgerId'] = $ledgerId;
+		$data['ledgerName'] = $ledgerName;
 		$data['alias'] = $alias;
-		$data['inventory_affected'] = $inventoryAffected;
+		$data['inventoryAffected'] = $inventoryAffected;
 		$data['address1'] = $address1;
 		$data['address2'] = $address2;
 		$data['pan'] = $panNo;
 		$data['tin'] = $tinNo;
-		$data['gst_no'] = $gstNo;
-		$data['created_at'] = $getCreatedDate;
-		$data['updated_at'] = $getUpdatedDate;	
-		$data['state_abb'] = $stateAbb;
-		$data['city_id'] = $cityId;
-		$data['ledger_grp_id'] = $ledgerGrpId;	
-		$data['company_id'] = $companyDetails['company_id'];
+		$data['gstNo'] = $gstNo;
+		$data['createdAt'] = $getCreatedDate;
+		$data['updatedAt'] = $getUpdatedDate;	
+		$data['stateAbb'] = $stateAbb;
+		$data['cityId'] = $cityId;
+		$data['ledgerGrpId'] = $ledgerGrpId;	
+		$data['companyId'] = $companyDetails['companyId'];
 		
-		$data['ledger_grp_id']= array(
-			'ledger_grp_name' => $getLedgerGrpDetail[0]['ledger_grp_name'],
-			'under_what' => $getLedgerGrpDetail[0]['under_what']
+		$data['ledgerGroup']= array(
+			'ledgerGrpName' => $getLedgerGrpDetail[0]['ledgerGrpName'],
+			'underWhat' => $getLedgerGrpDetail[0]['underWhat']
 		);
-		$data['state_abb'] = array(
-			'state_name' => $stateDecodedJson['state_name'],
-			'is_display' => $stateDecodedJson['is_display'],	
-			'created_at' => $stateDecodedJson['created_at'],	
-			'updated_at' => $stateDecodedJson['updated_at']	
+		$data['state'] = array(
+			'stateName' => $stateDecodedJson['stateName'],
+			'isDisplay' => $stateDecodedJson['isDisplay'],	
+			'createdAt' => $stateDecodedJson['createdAt'],	
+			'updatedAt' => $stateDecodedJson['updatedAt']	
 		);
-		$data['city_id'] = array(
-			'city_name' => $getCityDetail['city_name'],	
-			'is_display'=> $getCityDetail['is_display'],	
-			'created_at' => $getCityDetail['created_at'],	
-			'updated_at' => $getCityDetail['updated_at'],	
-			'state_abb'=> $getCityDetail['state_abb']
+		$data['city'] = array(
+			'cityName' => $getCityDetail['cityName'],	
+			'isDisplay'=> $getCityDetail['isDisplay'],	
+			'createdAt' => $getCityDetail['createdAt'],	
+			'updatedAt' => $getCityDetail['updatedAt'],	
+			'stateAbb'=> $getCityDetail['stateAbb']
 		);
-		$data['company_id']= array(
+		$data['company']= array(
 			'company_name' => $companyDetails['company_name'],	
 			'company_display_name' => $companyDetails['company_display_name'],	
 			'address1' => $companyDetails['address1'],	

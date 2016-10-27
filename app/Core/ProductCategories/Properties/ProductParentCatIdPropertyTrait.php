@@ -13,14 +13,14 @@ trait ProductParentCatIdPropertyTrait
 	/**
 	 * @param int $productParentCatId
 	 */
-	public function setProductParentCatId($productParentCatId)
+	public function setProductParentCategoryId($productParentCatId)
 	{
 		$this->productParentCatId = $productParentCatId;
 	}
 	/**
 	 * @return productParentCatId
 	 */
-	public function getProductParentCatId()
+	public function getProductParentCategoryId()
 	{
 		return $this->productParentCatId;
 	}

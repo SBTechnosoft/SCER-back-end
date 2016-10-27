@@ -15,18 +15,18 @@ class LedgerTransformer
     public function trimInsertData(Request $request)
     {
 		//data get from body
-		$ledgerName = $request->input('ledger_name'); 
+		$ledgerName = $request->input('ledgerName'); 
 		$alias = $request->input('alias'); 
-		$inventoryAffected = $request->input('inventory_affected'); 
+		$inventoryAffected = $request->input('inventoryAffected'); 
 		$address1 = $request->input('address1'); 
 		$address2 = $request->input('address2'); 
 		$pan = $request->input('pan'); 
 		$tin = $request->input('tin'); 
 		$gstNo = $request->input('gst'); 		
-		$stateAbb = $request->input('state_abb'); 			
-		$cityId = $request->input('city_id'); 			
-		$ledgerGrpId = $request->input('ledger_grp_id');  
-		$companyId = $request->input('company_id');  
+		$stateAbb = $request->input('stateAbb'); 			
+		$cityId = $request->input('cityId'); 			
+		$ledgerGrpId = $request->input('ledgerGrpId');  
+		$companyId = $request->input('companyId');  
 		
 		//trim an input
 		$tLedgerName = trim($ledgerName);
@@ -63,10 +63,23 @@ class LedgerTransformer
 		$tLedgerArray = array();
 		$LedgerValue;
 		$keyValue = func_get_arg(0);
+		$convertedValue="";
+		for($asciiChar=0;$asciiChar<strlen($keyValue);$asciiChar++)
+		{
+			if(ord($keyValue[$asciiChar])<=90 && ord($keyValue[$asciiChar])>=65) 
+			{
+				$convertedValue1 = "_".chr(ord($keyValue[$asciiChar])+32);
+				$convertedValue=$convertedValue.$convertedValue1;
+			}
+			else
+			{
+				$convertedValue=$convertedValue.$keyValue[$asciiChar];
+			}
+		}
 		$LedgerValue = func_get_arg(1);
 		for($data=0;$data<count($LedgerValue);$data++)
 		{
-			$tLedgerArray[$data]= array($keyValue=> trim($LedgerValue));
+			$tLedgerArray[$data]= array($convertedValue=> trim($LedgerValue));
 			
 		}
 		return $tLedgerArray;

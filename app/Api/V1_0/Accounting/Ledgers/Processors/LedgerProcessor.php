@@ -126,7 +126,7 @@ class LedgerProcessor extends BaseProcessor
 					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
 					
 					//validation
-					$status = $ledgerValidate->validateUpdateData($key[$data],$value[$data],$tRequest[0]);
+					$status = $ledgerValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
 					//enter data is valid(one data validate status return)
 					if($status=="Success")
 					{
@@ -155,7 +155,7 @@ class LedgerProcessor extends BaseProcessor
 							$getFuncName[$data] = 'get'.$str;
 							$ledgerPersistable->$setFuncName($ledgerValue[$data]);
 							$ledgerPersistable->setName($getFuncName[$data]);
-							$ledgerPersistable->setKey($key[$data]);
+							$ledgerPersistable->setKey($tKeyValue[$data]);
 							$ledgerPersistable->setLedgerId($ledgerId);
 							$ledgerArray[$data] = array($ledgerPersistable);
 						}

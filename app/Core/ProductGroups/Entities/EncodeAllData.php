@@ -23,7 +23,7 @@ class EncodeAllData
 			$updatedAt[$decodedData] = $decodedJson[$decodedData]['updated_at'];
 			$productGrpId[$decodedData] = $decodedJson[$decodedData]['product_group_id'];
 			$productGrpName[$decodedData] = $decodedJson[$decodedData]['product_group_name'];
-			$productGrpDesc[$decodedData] = $decodedJson[$decodedData]['product_group_desc'];
+			$productGrpDesc[$decodedData] = $decodedJson[$decodedData]['product_group_description'];
 			$productGrpParentId[$decodedData] = $decodedJson[$decodedData]['product_group_parent_id'];
 			$isDisplay[$decodedData] = $decodedJson[$decodedData]['is_display'];
 			
@@ -35,19 +35,19 @@ class EncodeAllData
 		$productGroup->setCreated_at($convertedCreatedDate);
 		$getCreatedDate = $productGroup->getCreated_at();
 			
-		$productGroup->setCreated_at($convertedUpdatedDate);
+		$productGroup->setUpdated_at($convertedUpdatedDate);
 		$getUpdatedDate = $productGroup->getUpdated_at();
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
 		{
 			$data[$jsonData]= array(
-				'product_group_name' => $productGrpName[$jsonData],
-				'product_group_id' =>$productGrpId[$jsonData],
-				'product_group_desc' =>$productGrpDesc[$jsonData],
+				'productGroupName' => $productGrpName[$jsonData],
+				'productGroupId' =>$productGrpId[$jsonData],
+				'productGroupDescription' =>$productGrpDesc[$jsonData],
 				'isDisplay' => $isDisplay[$jsonData],
-				'created_at' => $getCreatedDate[$jsonData],
-				'updated_at' =>$getUpdatedDate[$jsonData],
-				'product_group_parent_id' =>$productGrpParentId[$jsonData]
+				'createdAt' => $getCreatedDate[$jsonData],
+				'updatedAt' =>$getUpdatedDate[$jsonData],
+				'productGroupParentId' =>$productGrpParentId[$jsonData]
 				
 			);	
 		}

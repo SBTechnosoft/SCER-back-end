@@ -13,14 +13,14 @@ trait ProductCatDescPropertyTrait
 	/**
 	 * @param int $productCatDesc
 	 */
-	public function setProductCatDesc($productCatDesc)
+	public function setProductCategoryDescription($productCatDesc)
 	{
 		$this->productCatDesc = $productCatDesc;
 	}
 	/**
 	 * @return productCatDesc
 	 */
-	public function getProductCatDesc()
+	public function getProductCategoryDescription()
 	{
 		return $this->productCatDesc;
 	}

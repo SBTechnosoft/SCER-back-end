@@ -9,6 +9,7 @@ use ERP\Core\Support\Service\AbstractService;
 use ERP\Core\User\Entities\User;
 use ERP\Core\ProductCategories\Entities\EncodeData;
 use ERP\Core\ProductCategories\Entities\EncodeAllData;
+use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -61,7 +62,11 @@ class ProductCategoryService extends AbstractService
 	{
 		$productCategoryModel = new ProductCategoryModel();
 		$status = $productCategoryModel->getAllData();
-		if($status=="204: No Content")
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($status,$fileSizeArray['204'])==0)
 		{
 			return $status;
 		}
@@ -82,7 +87,11 @@ class ProductCategoryService extends AbstractService
 	{
 		$productCategoryModel = new ProductCategoryModel();
 		$status = $productCategoryModel->getData($productCategoryId);
-		if($status=="404:Id Not Found")
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($status,$fileSizeArray['404'])==0)
 		{
 			return $status;
 		}
@@ -112,7 +121,7 @@ class ProductCategoryService extends AbstractService
 			$getData[$data] = $productCatArray[$data][0]->$funcName[$data]();
 			$keyName[$data] = $productCatArray[$data][0]->getkey();
 		}
-		$productCatId = $productCatArray[0][0]->getProductCatId();
+		$productCatId = $productCatArray[0][0]->getProductCategoryId();
 		//data pass to the model object for update
 		$productCategoryModel = new ProductCategoryModel();
 		$status = $productCategoryModel->updateData($getData,$keyName,$productCatId);

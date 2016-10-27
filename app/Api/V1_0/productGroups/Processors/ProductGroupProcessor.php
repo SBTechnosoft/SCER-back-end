@@ -8,6 +8,7 @@ use ERP\Http\Requests;
 use Illuminate\Http\Response;
 use ERP\Core\ProductGroups\Validations\ProductGroupValidate;
 use ERP\Api\V1_0\ProductGroups\Transformers\ProductGroupTransformer;
+use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -103,13 +104,17 @@ class ProductGroupProcessor extends BaseProcessor
 		$productGroupValidate = new ProductGroupValidate();
 		$status;
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		// update
 		if($requestMethod == 'POST')
 		{
 			//if data is not available in update request
 			if(count($_POST)==0)
 			{
-				$status = "204: No Content Found For Update";
+				$status = $fileSizeArray['204'];
 				return $status;
 			}
 			//data is avalilable for update
@@ -131,7 +136,7 @@ class ProductGroupProcessor extends BaseProcessor
 					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
 					
 					//validation
-					$status = $productGroupValidate->validateUpdateData($key[$data],$value[$data],$tRequest[0]);
+					$status = $productGroupValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
 					//enter data is valid(one data validate status return)
 					if($status=="Success")
 					{
@@ -160,7 +165,7 @@ class ProductGroupProcessor extends BaseProcessor
 							$getFuncName[$data] = 'get'.$str;
 							$productGroupPersistable->$setFuncName($productGrpValue[$data]);
 							$productGroupPersistable->setName($getFuncName[$data]);
-							$productGroupPersistable->setKey($key[$data]);
+							$productGroupPersistable->setKey($tKeyValue[$data]);
 							$productGroupPersistable->setProductGroupId($productGrpId);
 							$productGrpArray[$data] = array($productGroupPersistable);
 						}

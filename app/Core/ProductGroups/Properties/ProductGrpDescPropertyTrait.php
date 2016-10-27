@@ -13,14 +13,14 @@ trait ProductGrpDescPropertyTrait
 	/**
 	 * @param int $productGrpDesc
 	 */
-	public function setProductGroupDesc($productGrpDesc)
+	public function setProductGroupDescription($productGrpDesc)
 	{
 		$this->productGrpDesc = $productGrpDesc;
 	}
 	/**
 	 * @return productGrpDesc
 	 */
-	public function getProductGroupDesc()
+	public function getProductGroupDescription()
 	{
 		return $this->productGrpDesc;
 	}

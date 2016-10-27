@@ -194,43 +194,43 @@ include ('connection.php');
 				// formdata.append('cityId',$scope.formAdata.city_id);
 				
 				//productCategory
-				// $scope.formAdata.productCatName = "abc12$34";
-				// $scope.formAdata.product_cat_desc = "abcdddddcc ddd";
-				// $scope.formAdata.is_display = 'yes';
+				// $scope.formAdata.productCatName = "abc";
+				// $scope.formAdata.product_cat_desc = "abcdddddcc";
+				// $scope.formAdata.is_display = 'yes ';
 				// $scope.formAdata.product_parent_cat_id = 1;
 				
-				// formdata.append('product_cat_name',$scope.formAdata.productCatName);
-				// formdata.append('product_cat_desc',$scope.formAdata.product_cat_desc);
-				// formdata.append('is_display',$scope.formAdata.is_display);
-				// formdata.append('product_parent_cat_id',$scope.formAdata.product_parent_cat_id);
+				// formdata.append('productCategoryName',$scope.formAdata.productCatName);
+				// formdata.append('productCategoryDescription',$scope.formAdata.product_cat_desc);
+				// formdata.append('isDisplay',$scope.formAdata.is_display);
+				// formdata.append('productParentCategoryId',$scope.formAdata.product_parent_cat_id);
 				
 				//productGroup
-				// $scope.formAdata.product_group_name = "\a&b#c12  ,-_`#().\'34";
-				// $scope.formAdata.product_group_desc = "abcdddd'dd''dd";
-				// $scope.formAdata.is_display = 'no';
-				// $scope.formAdata.product_group_parent_id = 0;
+				$scope.formAdata.product_group_name = "\a&b#c4";
+				$scope.formAdata.product_group_desc = "abcdddd";
+				$scope.formAdata.is_display = 'yes ';
+				$scope.formAdata.product_group_parent_id = 0;
 				
-				// formdata.append('product_group_name',$scope.formAdata.product_group_name);
-				// formdata.append('product_group_desc',$scope.formAdata.product_group_desc);
-				// formdata.append('is_display',$scope.formAdata.is_display);
-				// formdata.append('product_group_parent_id',$scope.formAdata.product_group_parent_id);
+				formdata.append('productGroupName',$scope.formAdata.product_group_name);
+				formdata.append('productGroupDescription',$scope.formAdata.product_group_desc);
+				formdata.append('isDisplay',$scope.formAdata.is_display);
+				formdata.append('productGroupParentId',$scope.formAdata.product_group_parent_id);
 				
 				//product
-				// $scope.formAdata.product_name = "abc12";
-				// $scope.formAdata.is_display = 'yes';
-				// $scope.formAdata.measurement_unit='litre';
+				// $scope.formAdata.product_name = "abc";
+				// $scope.formAdata.is_display = 'no';
+				// $scope.formAdata.measurement_unit='lit';
 				// $scope.formAdata.product_cat_id='1';
-				// $scope.formAdata.product_group_id='2';
-				// $scope.formAdata.company_id='11';
-				// $scope.formAdata.branch_id='1';
+				// $scope.formAdata.product_group_id='4';
+				// $scope.formAdata.company_id='15';
+				// $scope.formAdata.branch_id='6';
 				
-				// formdata.append('product_name',$scope.formAdata.product_name);
-				// formdata.append('is_display',$scope.formAdata.is_display);
-				// formdata.append('measurement_unit',$scope.formAdata.measurement_unit);
-				// formdata.append('product_cat_id',$scope.formAdata.product_cat_id);
-				// formdata.append('product_group_id',$scope.formAdata.product_group_id);
-				// formdata.append('company_id',$scope.formAdata.company_id);
-				// formdata.append('branch_id',$scope.formAdata.branch_id);
+				// formdata.append('productName',$scope.formAdata.product_name);
+				// formdata.append('isDisplay',$scope.formAdata.is_display);
+				// formdata.append('measurementUnit',$scope.formAdata.measurement_unit);
+				// formdata.append('productCategoryId',$scope.formAdata.product_cat_id);
+				// formdata.append('productGroupId',$scope.formAdata.product_group_id);
+				// formdata.append('companyId',$scope.formAdata.company_id);
+				// formdata.append('branchId',$scope.formAdata.branch_id);
 				
 				//template
 				// $scope.formAdata.template_name = " abcff ";
@@ -242,17 +242,17 @@ include ('connection.php');
 				// formdata.append('template_body',$scope.formAdata.template_body);
 				
 				//invoice
-				// $scope.formAdata.invoice_label = " abcd ";
-				// $scope.formAdata.invoice_type = ' prefix ';
-				// $scope.formAdata.start_at=' 1 ';
-				// $scope.formAdata.end_at=' 10 ';
-				// $scope.formAdata.company_id='2 ';
+				$scope.formAdata.invoice_label = " abcd ";
+				$scope.formAdata.invoice_type = ' prefix ';
+				$scope.formAdata.start_at=' 1 ';
+				$scope.formAdata.end_at=' 10 ';
+				$scope.formAdata.company_id='2 ';
 				
-				// formdata.append('invoice_label',$scope.formAdata.invoice_label);
-				// formdata.append('invoice_type',$scope.formAdata.invoice_type);
-				// formdata.append('start_at',$scope.formAdata.start_at);
-				// formdata.append('end_at',$scope.formAdata.end_at);
-				// formdata.append('company_id',$scope.formAdata.company_id);
+				formdata.append('invoiceLabel',$scope.formAdata.invoice_label);
+				formdata.append('invoiceType',$scope.formAdata.invoice_type);
+				formdata.append('startAt',$scope.formAdata.start_at);
+				formdata.append('endAt',$scope.formAdata.end_at);
+				formdata.append('companyId',$scope.formAdata.company_id);
 				
 				//quotation
 				// $scope.formAdata.quotation_label = " abcd ";
@@ -295,13 +295,13 @@ include ('connection.php');
 				// formdata.append('company_id',$scope.formAdata.company_id);
 				
 				
-				// var productId = 2;
-				// var productGrpId = 2;
-				// var productCatId = 13;
+				var productId = 8;
+				// var productGrpId = 1;
+				// var productCatId = 1;
 				// var companyId=14;
 				// var cityId = 16;
 				 // var stateAbb = "IN-GJ";
-				 var branchId = 5;
+				 // var branchId = 5;
 				// var id = 42;
 				// var templateId=1;
 				// var bankId=2;
@@ -322,7 +322,7 @@ include ('connection.php');
 				// var url="http://www.scerp.com/settings/quotation-numbers";
 				// var url="http://www.scerp.com/settings/quotation-numbers/company/"+companyId;
 				// var url="http://www.scerp.com/settings/invoice-numbers/company/"+companyId+"/latest";
-				// var url="http://www.scerp.com/settings/invoice-numbers";
+				var url="http://www.scerp.com/settings/invoice-numbers";
 				// var url="http://www.scerp.com/settings/invoice-numbers/company/"+companyId;
 				// var url="http://www.scerp.com/banks/"+bankId;
 				// var url="http://www.scerp.com/banks";
@@ -331,7 +331,7 @@ include ('connection.php');
 				// var url="http://www.scerp.com/companies/"+companyId;
 				// var url="http://www.scerp.com/companies";	
 				// var url="http://www.scerp.com/branches";
-				 var url="http://www.scerp.com/branches/"+branchId;
+				 // var url="http://www.scerp.com/branches/"+branchId;
 				// var url="http://www.scerp.com/branches/company/"+companyId;
 				 // var url="http://www.scerp.com/states/"+stateAbb;
 				// var url="http://www.scerp.com/states";
@@ -339,8 +339,8 @@ include ('connection.php');
 				 // var url="http://www.scerp.com/cities";
 				 // var url="http://www.scerp.com/cities/"+cityId;
 				// var url="http://www.scerp.com/product-categories/"+productCatId;
-				// var url="http://www.scerp.com/product-categories/";
-				// var url="http://www.scerp.com/product-groups/";
+				// var url="http://www.scerp.com/product-categories";
+				// var url="http://www.scerp.com/product-groups";
 				// var url="http://www.scerp.com/product-groups/"+productGrpId;
 				// var url="http://www.scerp.com/products/"+productId;
 				// var url="http://www.scerp.com/products";
@@ -348,10 +348,10 @@ include ('connection.php');
 				$http({
                         url: url,
                         // type:'patch',
-						 // method: 'post',
+						 method: 'post',
 						// method: 'get',
 						// method: "PATCH",
-						method:'delete',
+						// method:'delete',
 						processData: false,
                         headers: {'Content-Type': undefined},
                         data:formdata						

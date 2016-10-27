@@ -19,7 +19,7 @@ class EncodeData
 		$isDisplay= $decodedJson[0]['is_display'];
 		$productGrpId= $decodedJson[0]['product_group_id'];
 		$productGrpName= $decodedJson[0]['product_group_name'];
-		$productGrpDesc= $decodedJson[0]['product_group_desc'];
+		$productGrpDesc= $decodedJson[0]['product_group_description'];
 		$productGrpParentId= $decodedJson[0]['product_group_parent_id'];
 		
 		//date format conversion['created_at','updated_at']
@@ -29,18 +29,18 @@ class EncodeData
 		$getCreatedDate = $productGroup->getCreated_at();
 			
 		$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
-		$productGroup->setCreated_at($convertedUpdatedDate);
+		$productGroup->setUpdated_at($convertedUpdatedDate);
 		$getUpdatedDate = $productGroup->getUpdated_at();
 		
 		//set all data into json array
 		$data = array();
-		$data['product_group_name'] = $productGrpName;
-		$data['product_group_id'] = $productGrpId;
-		$data['product_group_desc'] = $productGrpDesc;
-		$data['is_display'] = $isDisplay;
-		$data['created_at'] = $getCreatedDate;
-		$data['updated_at'] = $getUpdatedDate;	
-		$data['product_group_parent_id'] = $productGrpParentId;	
+		$data['productGroupName'] = $productGrpName;
+		$data['productGroupId'] = $productGrpId;
+		$data['productGroupDescription'] = $productGrpDesc;
+		$data['isDisplay'] = $isDisplay;
+		$data['createdAt'] = $getCreatedDate;
+		$data['updatedAt'] = $getUpdatedDate;	
+		$data['productGroupParentId'] = $productGrpParentId;	
 		
 		$encodeData = json_encode($data);
 		return $encodeData;

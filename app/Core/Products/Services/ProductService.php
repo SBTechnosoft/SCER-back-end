@@ -9,6 +9,7 @@ use ERP\Core\Support\Service\AbstractService;
 use ERP\Core\User\Entities\User;
 use ERP\Core\Products\Entities\EncodeData;
 use ERP\Core\Products\Entities\EncodeAllData;
+use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -70,7 +71,11 @@ class ProductService extends AbstractService
 	{
 		$productModel = new ProductModel();
 		$status = $productModel->getAllData();
-		if($status=="204: No Content")
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($status,$fileSizeArray['204'])==0)
 		{
 			return $status;
 		}
@@ -89,10 +94,13 @@ class ProductService extends AbstractService
      */
 	public function getProductData($productId)
 	{
-		echo "product";
 		$productModel = new ProductModel();
 		$status = $productModel->getData($productId);
-		if($status=="404:Id Not Found")
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($status,$fileSizeArray['404'])==0)
 		{
 			return $status;
 		}
@@ -112,7 +120,11 @@ class ProductService extends AbstractService
 	{
 		$productModel = new ProductModel();
 		$status = $productModel->getAllProductData($companyId);
-		if($status=="204: No Content")
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($status,$fileSizeArray['204'])==0)
 		{
 			return $status;
 		}
@@ -130,12 +142,15 @@ class ProductService extends AbstractService
      */
 	public function getCBProductData($branchId,$companyId)
 	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if($branchId=="null")
 		{
 			//getCompanyProductData(getCProductData)
 			$productModel = new ProductModel();
 			$status = $productModel->getCProductData($companyId);
-			if($status=="204: No Content")
+			if(strcmp($status,$fileSizeArray['204'])==0)
 			{
 				print_r("bId");
 				// return $status;
@@ -152,7 +167,7 @@ class ProductService extends AbstractService
 			//getBranchProductData(getBProductData)
 			$productModel = new ProductModel();
 			$status = $productModel->getBProductData($branchId);
-			if($status=="204: No Content")
+			if(strcmp($status,$fileSizeArray['204'])==0)
 			{
 				print_r("cId");
 				// return $status;
@@ -171,7 +186,7 @@ class ProductService extends AbstractService
 			//getBranchCompanyProductData(getBCProductData)
 			$productModel = new ProductModel();
 			$status = $productModel->getBCProductData($companyId,$branchId);
-			if($status=="204: No Content")
+			if(strcmp($status,$fileSizeArray['204'])==0)
 			{
 				return $status;
 			}
