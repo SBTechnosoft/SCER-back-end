@@ -246,7 +246,7 @@ include ('connection.php');
 				$scope.formAdata.invoice_type = ' prefix ';
 				$scope.formAdata.start_at=' 1 ';
 				$scope.formAdata.end_at=' 10 ';
-				$scope.formAdata.company_id='2 ';
+				$scope.formAdata.company_id='14 ';
 				
 				formdata.append('invoiceLabel',$scope.formAdata.invoice_label);
 				formdata.append('invoiceType',$scope.formAdata.invoice_type);
@@ -348,8 +348,8 @@ include ('connection.php');
 				$http({
                         url: url,
                         // type:'patch',
-						 method: 'post',
-						// method: 'get',
+						 // method: 'post',
+						method: 'get',
 						// method: "PATCH",
 						// method:'delete',
 						processData: false,

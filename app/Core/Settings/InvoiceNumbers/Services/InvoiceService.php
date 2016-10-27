@@ -9,6 +9,7 @@ use ERP\Core\Support\Service\AbstractService;
 use ERP\Core\User\Entities\User;
 use ERP\Core\Settings\InvoiceNumbers\Entities\EncodeData;
 use ERP\Core\Settings\InvoiceNumbers\Entities\EncodeAllData;
+use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -70,7 +71,11 @@ class InvoiceService extends AbstractService
 	{
 		$invoiceModel = new InvoiceModel();
 		$status = $invoiceModel->getAllData();
-		if($status=="204: No Content")
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($status,$fileSizeArray['204'])==0)
 		{
 			return $status;
 		}
@@ -91,7 +96,11 @@ class InvoiceService extends AbstractService
 	{
 		$invoiceModel = new InvoiceModel();
 		$status = $invoiceModel->getData($invoiceId);
-		if($status=="404:Id Not Found")
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($status,$fileSizeArray['404'])==0)
 		{
 			return $status;
 		}
@@ -111,7 +120,11 @@ class InvoiceService extends AbstractService
 	{
 		$invoiceModel = new InvoiceModel();
 		$status = $invoiceModel->getAllInvoiceData($companyId);
-		if($status=="204: No Content")
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($status,$fileSizeArray['204'])==0)
 		{
 			return $status;
 		}
@@ -131,7 +144,11 @@ class InvoiceService extends AbstractService
 	{
 		$invoiceModel = new InvoiceModel();
 		$status = $invoiceModel->getLatestInvoiceData($companyId);
-		if($status=="204: No Content")
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($status,$fileSizeArray['204'])==0)
 		{
 			return $status;
 		}
