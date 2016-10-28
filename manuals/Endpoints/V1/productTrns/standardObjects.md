@@ -12,7 +12,7 @@
 				"branch": {
 					... Standard Branch Object
 				}
-				"isDisplay": bool,
+				"isDisplay": Enum,
 				"createdAt" timestamp,
 				"updatedAt": datetime
                 
@@ -28,9 +28,12 @@
                 "price": string,
 				"companyId": int,
 				"branchId" : int,
-				"isDisplay": bool,
+				"isDisplay": Enum,
 				"createdAt" timestamp,
 				"updatedAt": datetime,
 				"deletedAt":datetime
             }
-
+#####  Is Display Enum
+			{
+				... Is Display Enum
+			}

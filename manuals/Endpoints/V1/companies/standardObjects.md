@@ -24,8 +24,8 @@
 				"formalName":varchar,
 				"noOfDecimalPoints":int,
 				"currencySymbol":int,
-				"isDefault": enum,
-				"isDisplay": enum,
+				"isDefault": Enum,
+				"isDisplay": Enum,
 				"createdAt" timestamp,
 				"updatedAt": datetime
             }
@@ -49,10 +49,19 @@
 			"formalName":varchar,
 			"noOfDecimalPoints":int,
 			"currencySymbol":int,
-			"isDefault": bool,
-			"isDisplay": bool,
+			"isDefault": Enum,
+			"isDisplay": Enum,
 			"createdAt" timestamp,
 			"updatedAt": datetime,
 			"deletedAt":datetime			
          }
 
+##### Is Display Enum
+		{
+			... Is Display Enum
+		}
+
+##### Is Default Enum
+		{
+			... Is Default Enum
+		}

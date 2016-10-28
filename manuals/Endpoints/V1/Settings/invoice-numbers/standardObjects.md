@@ -5,7 +5,7 @@
 					... Standard Company Object
 				},
                 "invoiceLabel": string,
-                "invoiceType": enum,
+                "invoiceType": Enum,
                 "createdAt" timestamp,
 			}
             
@@ -13,12 +13,13 @@
 			{
             	"companyId":int, 
                 "invoiceLabel": string,
-                "invoiceType": enum,
+                "invoiceType": Enum,
                 "createdAt" timestamp,
 			}
 
 ##### Invoice Type Enum
 			{
-				//TO DO
+				beforeInvoice:'prefix',
+				afterInvoice:'postfix' 
 			}
 

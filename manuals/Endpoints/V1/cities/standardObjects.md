@@ -25,6 +25,5 @@
             }
 ##### Is Display Enum
 			{
-				"isDisplay":"yes",
-				"isNotDisplay":"no"
+				... Is Display Enum
 			}
