@@ -4,13 +4,13 @@ namespace ERP\Entities\EnumClasses;
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class IsDisplayEnum 
+class IsDefaultEnum 
 {
     public function enumArrays()
 	{
 		$enumArray = array();
-		$enumArray['display'] = "yes";
-		$enumArray['notDisplay'] = "no";
+		$enumArray['default'] = "ok";
+		$enumArray['notDefault'] = "not";
 		return $enumArray;
 	}
 }

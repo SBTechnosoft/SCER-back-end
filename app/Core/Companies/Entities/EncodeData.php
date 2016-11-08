@@ -48,7 +48,7 @@ class EncodeData extends StateService
 		//get the city_name from database
 		$cityDetail = new CityDetail();
 		$getCityDetail = $cityDetail->getCityDetail($cityId);
-			
+		
 		//date format conversion
 		$company = new Company();
 		$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt)->format('d-m-Y');
@@ -83,21 +83,22 @@ class EncodeData extends StateService
 		$data['isDefault'] = $isDefault;
 		$data['createdAt'] = $getCreatedDate;
 		$data['updatedAt'] = $getUpdatedDate;	
-		$data['stateAbb'] = $stateAbb;
-		$data['cityId'] = $cityId;
 		
 		$data['state'] = array(
+			'stateAbb' => $stateDecodedJson['stateAbb'],
 			'stateName' => $stateDecodedJson['stateName'],	
 			'isDisplay' => $stateDecodedJson['isDisplay'],	
 			'createdAt' => $stateDecodedJson['createdAt'],	
 			'updatedAt' => $stateDecodedJson['updatedAt']
 		);
+		
 		$data['city'] = array(
+			'cityId' => $getCityDetail['cityId'],
 			'cityName' => $getCityDetail['cityName'],
 			'isDisplay' => $getCityDetail['isDisplay'],	
 			'createdAt' => $getCityDetail['createdAt'],	
 			'updatedAt' => $getCityDetail['updatedAt'],	
-			'stateAbb' => $getCityDetail['stateAbb']
+			'stateAbb' => $getCityDetail['state']['stateAbb']
 		);
 		$encodeData = json_encode($data);
 		return $encodeData;

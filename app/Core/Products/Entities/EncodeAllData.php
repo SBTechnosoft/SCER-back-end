@@ -79,9 +79,6 @@ class EncodeAllData extends ProductCategoryService
 				'measurementUnit' => $measurementUnit[$jsonData],
 				'createdAt' => $getCreatedDate[$jsonData],
 				'updatedAt' => $getUpdatedDate[$jsonData],
-				'productCategoryId' => $productCatId[$jsonData],
-				'productGroupId' => $getProductGrpDetails[$jsonData]['productGroupId'],	
-				'companyId' => $getCompanyDetails[$jsonData]['companyId'],
 				
 				'productCategory' => array(
 					'productCategoryId' => $productCatId[$jsonData],
@@ -125,8 +122,8 @@ class EncodeAllData extends ProductCategoryService
 					'isDefault' => $getCompanyDetails[$jsonData]['isDefault'],	
 					'createdAt' => $getCompanyDetails[$jsonData]['createdAt'],	
 					'updatedAt' => $getCompanyDetails[$jsonData]['updatedAt'],	
-					'stateAbb' => $getCompanyDetails[$jsonData]['stateAbb'],	
-					'cityId' => $getCompanyDetails[$jsonData]['cityId']	
+					'stateAbb' => $getCompanyDetails[$jsonData]['state']['stateAbb'],	
+					'cityId' => $getCompanyDetails[$jsonData]['city']['cityId']	
 				),
 				
 				'branch' => array(

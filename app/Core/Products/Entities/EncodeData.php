@@ -71,10 +71,6 @@ class EncodeData extends ProductCategoryService
 		$data['isDisplay'] = $isDisplay;
 		$data['createdAt'] = $getCreatedDate;
 		$data['updatedAt'] = $getUpdatedDate;	
-		$data['productCategoryId'] = $pCatId;	
-		$data['productGroupId'] = $getProductGrpDetails['productGroupId'];
-		$data['companyId'] = $getCompanyDetails['companyId'];	
-		$data['branchId'] = $getBranchDetails['branchId'];
 		
 		$data['productCategory'] = array(
 			'productCategoryName' => $pCatName,	
@@ -117,8 +113,8 @@ class EncodeData extends ProductCategoryService
 			'isDefault' => $getCompanyDetails['isDefault'],	
 			'createdAt' => $getCompanyDetails['createdAt'],	
 			'updatedAt' => $getCompanyDetails['updatedAt'],
-			'stateAbb' => $getCompanyDetails['stateAbb'],	
-			'cityId' => $getCompanyDetails['cityId']
+			'stateAbb' => $getCompanyDetails['state']['stateAbb'],	
+			'cityId' => $getCompanyDetails['city']['cityId']
 		);
 		$data['branch'] = array(
 			'branchId' => $getBranchDetails['branchId'],
@@ -134,7 +130,6 @@ class EncodeData extends ProductCategoryService
 			'cityId' => $getBranchDetails['city']['cityId'],	
 			'companyId' => $getBranchDetails['company']['companyId']
 		);	
-		
 		$encodeData = json_encode($data);
 		return $encodeData;
 	}

@@ -61,84 +61,91 @@ class CompanyProcessor extends BaseProcessor
 		}
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$msgArray = $exception->messageArrays();
 		
 		//trim an input 
 		$companyTransformer = new CompanyTransformer();
 		$tRequest = $companyTransformer->trimInsertData($this->request);
 		
-		//validation
-		$companyValidate = new CompanyValidate();
-		$status = $companyValidate->validate($tRequest);
-		if($status=="Success")
+		if($tRequest==1)
 		{
-			foreach ($tRequest as $key => $value)
+			return $msgArray['content'];
+		}	
+		else
+		{
+			//validation
+			$companyValidate = new CompanyValidate();
+			$status = $companyValidate->validate($tRequest);
+			if($status=="Success")
 			{
-				if(!is_numeric($value))
+				foreach ($tRequest as $key => $value)
 				{
-					if (strpos($value, '\'') !== FALSE)
+					if(!is_numeric($value))
 					{
-						$companyValue[$data]= str_replace("'","\'",$value);
-						$keyName[$data] = $key;
-					}
-					else
-					{
-						$companyValue[$data] = $value;
-						$keyName[$data] = $key;
-					}
-				}
-				else
-				{
-					$companyValue[$data]= $value;
-					$keyName[$data] = $key;
-				}
-				$data++;
-			}
-			// set data to the persistable object
-			for($data=0;$data<count($companyValue);$data++)
-			{
-				//set the data in persistable object
-				$companyPersistable = new CompanyPersistable();	
-				$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
-				
-				//make function name dynamically
-				$setFuncName = 'set'.$str;
-				$getFuncName[$data] = 'get'.$str;
-				$companyPersistable->$setFuncName($companyValue[$data]);
-				$companyPersistable->setName($getFuncName[$data]);
-				$companyPersistable->setKey($keyName[$data]);
-				$companyArray[$data] = array($companyPersistable);
-				if($data==(count($companyValue)-1))
-				{
-					if($docFlag==1)
-					{
-						if($documentFormat=='jpg' || $documentFormat=='jpeg' || $documentFormat=='gif' || $documentFormat=='png' || $documentFormat=='pdf')
-						{	
-							if(($documentSize/1048576)<=5)
-							{
-								$companyPersistable->setDocumentName($documentName);
-								$companyPersistable->setDocumentUrl($documentUrl);
-								$companyPersistable->setDocumentSize($documentSize);
-								$companyPersistable->setDocumentFormat($documentFormat);
-								$companyArray[$data] = array($companyPersistable);
-							}
-							else
-							{
-								return $fileSizeArray['fileSize'];
-							}
+						if (strpos($value, '\'') !== FALSE)
+						{
+							$companyValue[$data]= str_replace("'","\'",$value);
+							$keyName[$data] = $key;
 						}
 						else
 						{
-							return $fileSizeArray['fileFormat'];
+							$companyValue[$data] = $value;
+							$keyName[$data] = $key;
+						}
+					}
+					else
+					{
+						$companyValue[$data]= $value;
+						$keyName[$data] = $key;
+					}
+					$data++;
+				}
+				// set data to the persistable object
+				for($data=0;$data<count($companyValue);$data++)
+				{
+					//set the data in persistable object
+					$companyPersistable = new CompanyPersistable();	
+					$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
+					
+					//make function name dynamically
+					$setFuncName = 'set'.$str;
+					$getFuncName[$data] = 'get'.$str;
+					$companyPersistable->$setFuncName($companyValue[$data]);
+					$companyPersistable->setName($getFuncName[$data]);
+					$companyPersistable->setKey($keyName[$data]);
+					$companyArray[$data] = array($companyPersistable);
+					if($data==(count($companyValue)-1))
+					{
+						if($docFlag==1)
+						{
+							if($documentFormat=='jpg' || $documentFormat=='jpeg' || $documentFormat=='gif' || $documentFormat=='png' || $documentFormat=='pdf')
+							{	
+								if(($documentSize/1048576)<=5)
+								{
+									$companyPersistable->setDocumentName($documentName);
+									$companyPersistable->setDocumentUrl($documentUrl);
+									$companyPersistable->setDocumentSize($documentSize);
+									$companyPersistable->setDocumentFormat($documentFormat);
+									$companyArray[$data] = array($companyPersistable);
+								}
+								else
+								{
+									return $msgArray['fileSize'];
+								}
+							}
+							else
+							{
+								return $msgArray['415'];
+							}
 						}
 					}
 				}
+				return $companyArray;
 			}
-			return $companyArray;
-		}
-		else
-		{
-			return $status;
+			else
+			{
+				return $status;
+			}
 		}
 	}
 	
@@ -208,93 +215,101 @@ class CompanyProcessor extends BaseProcessor
 					//trim an input 
 					$companyTransformer = new CompanyTransformer();
 					$tRequest = $companyTransformer->trimUpdateData($key[$data],$value[$data]);
-					//get data from trim array
 					
-					$tKeyValue[$data] = array_keys($tRequest[0])[0];
-					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
-					
-					//validation
-					$status = $companyValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
-					
-					//enter data is valid(one data validate status return)
-					if($status=="Success")
+					if($tRequest==1)
 					{
-						// check data is string or not
-						if(!is_numeric($tValue[$data]))
+						echo "hi";
+						// exit;
+					}
+					else
+					{
+						//get data from trim array
+						$tKeyValue[$data] = array_keys($tRequest[0])[0];
+						$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
+						
+						//validation
+						$status = $companyValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
+						
+						//enter data is valid(one data validate status return)
+						if($status=="Success")
 						{
-							if (strpos($tValue[$data], '\'') !== FALSE)
+							// check data is string or not
+							if(!is_numeric($tValue[$data]))
 							{
-								$companyValue[$data] = str_replace("'","\'",$tValue[$data]);
+								if (strpos($tValue[$data], '\'') !== FALSE)
+								{
+									$companyValue[$data] = str_replace("'","\'",$tValue[$data]);
+								}
+								else
+								{
+									$companyValue[$data] = $tValue[$data];
+								}
 							}
 							else
 							{
 								$companyValue[$data] = $tValue[$data];
 							}
-						}
-						else
-						{
-							$companyValue[$data] = $tValue[$data];
-						}
-						// flag=0...then data is valid(consider one data at a time)
-						if($flag==0)
-						{
-							$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
-							// make function name dynamically
-							$setFuncName = 'set'.$str;
-							$getFuncName[$data] = 'get'.$str;
-							$companyPersistable->$setFuncName($companyValue[$data]);
-							$companyPersistable->setName($getFuncName[$data]);
-							$companyPersistable->setKey($tKeyValue[$data]);
-							$companyPersistable->setCompanyId($companyId);
-							$companyArray[$data] = array($companyPersistable);
-							
-							if($data==(count($_POST)-1))
+							// flag=0...then data is valid(consider one data at a time)
+							if($flag==0)
 							{
-								if($docFlag==1)
+								$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
+								// make function name dynamically
+								$setFuncName = 'set'.$str;
+								$getFuncName[$data] = 'get'.$str;
+								$companyPersistable->$setFuncName($companyValue[$data]);
+								$companyPersistable->setName($getFuncName[$data]);
+								$companyPersistable->setKey($tKeyValue[$data]);
+								$companyPersistable->setCompanyId($companyId);
+								$companyArray[$data] = array($companyPersistable);
+								
+								if($data==(count($_POST)-1))
 								{
-									if($documentFormat=='jpg' || $documentFormat=='jpeg' || $documentFormat=='gif' || $documentFormat=='png' || $documentFormat=='pdf')
-									{	
-										if(($documentSize/1048576)<=5)
-										{
-											$companyPersistable->setDocumentName($documentName);
-											$companyPersistable->setDocumentUrl($path);
-											$companyPersistable->setDocumentSize($documentSize);
-											$companyPersistable->setDocumentFormat($documentFormat);
-											$companyArray[$data] = array($companyPersistable);
+									if($docFlag==1)
+									{
+										if($documentFormat=='jpg' || $documentFormat=='jpeg' || $documentFormat=='gif' || $documentFormat=='png' || $documentFormat=='pdf')
+										{	
+											if(($documentSize/1048576)<=5)
+											{
+												$companyPersistable->setDocumentName($documentName);
+												$companyPersistable->setDocumentUrl($path);
+												$companyPersistable->setDocumentSize($documentSize);
+												$companyPersistable->setDocumentFormat($documentFormat);
+												$companyArray[$data] = array($companyPersistable);
+											}
+											else
+											{
+												return $fileSizeArray['fileSize'];
+											}
 										}
 										else
 										{
-											return $fileSizeArray['fileSize'];
+											return $fileSizeArray['415'];
 										}
-									}
-									else
-									{
-										return $fileSizeArray['fileFormat'];
 									}
 								}
 							}
 						}
-					}
-					// enter data is not valid
-					else
-					{
-						// if flag==1 then enter data is not valid ..so error is stored in an array.
-						$flag=1;
-						if(!empty($status[0]))
-						{
-							$errorStatus[$errorCount]=$status[0];
-							$errorCount++;
-						}
-					}
-					if($data==(count($_POST)-1))
-					{
-						if($flag==1)
-						{
-							return json_encode($errorStatus);
-						}
+						// enter data is not valid
 						else
 						{
-							return $companyArray;
+							// if flag==1 then enter data is not valid ..so error is stored in an array.
+							$flag=1;
+							if(!empty($status[0]))
+							{
+								$errorStatus[$errorCount]=$status[0];
+								$errorCount++;
+							}
+						}
+						if($data==(count($_POST)-1))
+						{
+							if($flag==1)
+							{
+								return json_encode($errorStatus);
+							}
+							else
+							{
+								return $companyArray;
+							}
 						}
 					}
 				}

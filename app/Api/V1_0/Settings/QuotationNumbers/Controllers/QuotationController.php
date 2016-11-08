@@ -3,7 +3,7 @@ namespace ERP\Api\V1_0\settings\QuotationNumbers\Controllers;
 
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
-use ERP\Core\settings\QuotationNumbers\Services\QuotationService;
+use ERP\Core\Settings\QuotationNumbers\Services\QuotationService;
 use ERP\Http\Requests;
 use ERP\Api\V1_0\Support\BaseController;
 use ERP\Api\V1_0\settings\QuotationNumbers\Processors\QuotationProcessor;

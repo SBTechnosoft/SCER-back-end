@@ -108,12 +108,14 @@ include ('connection.php');
              $scope.getTheFiles = function ($files) {
 				 
 				angular.forEach($files, function (value,key) {
+					console.log(value);
 					formdata.append('file[]',value);
 				});
 				
             }
 			$scope.submit_form = function()
 			{
+				// var formdata = new FormData();
 				//state
 				// $scope.formAdata.state_abb ="IN-LD";
 				// $scope.formAdata.state_name = " ss-fghd ";
@@ -170,7 +172,7 @@ include ('connection.php');
 				// $scope.formAdata.formal_name = " qgfrd-&_().\'frtgfrta ";
 				// $scope.formAdata.no_of_decimal_points = 4;
 				// $scope.formAdata.currency_symbol = ' prefix ';
-				// $scope.formAdata.is_display = ' no ';
+				// $scope.formAdata.is_display = ' no1 ';
 				// $scope.formAdata.is_default = ' ok ';
 				// $scope.formAdata.state_abb= ' IN-MP ';
 				// $scope.formAdata.city_id= 1;
@@ -294,14 +296,47 @@ include ('connection.php');
 				// formdata.append('ledgerGroupId',$scope.formAdata.ledger_grp_id);
 				// formdata.append('companyId',$scope.formAdata.company_id);
 				
+				// journal
+				// $scope.formAdata.jounalData=[];
+				// var jounalData=[];
+				// $scope.formAdata.jounalData = 'fdsa';
+				// $scope.formAdata.jounalData = [{"DropCr":"dr","name":"Speial","Dbt":"2000"}];
+				// $scope.formAdata.jounalData = [{"DropCr":"dr","name":"Speial","Dbt":"2000"}];
+				// jounalData.name = "abc";
+				// jounalData.dbt = "2000";
+				// formdata.append('journalData[]',$scope.formAdata.jounalData);
+				// console.log(journalData);
+				// var journalData = [];
+				// journalData = [{"DropCr":"dr","name":"abc","Dbt":"2000"},{"DropCr":"dr","name":"abc1","Dbt":"2000"}];
+				///////////////////
+				// $scope.formAdata.jounalData=[];
+				// $scope.formAdata.jounalData = 
+					// [{"DropCr":"dr","name":"abc","Dbt":"2000"},{"DropCr":"dr","name":"abc1","Dbt":"2000"}];
 				
-				// var productId = 8;
+				// formdata.append('journalData1[]',$scope.formAdata.jounalData);
+				// var abc=[];
+				// var i=0;
+				// angular.forEach(journalData, function (value,key) {
+					// console.log(value);
+					// abc[i] = value;
+					// formdata.append('journalData1[]',abc[i]);
+					// i++;
+				// });
+				// console.log(abc);
+				// console.log(JSON.stringify(abc));
+				//////////////////////////////////
+				$scope.user = [{"jf_id":2,"data":[{},{}],}];
+				// $scope.user={
+					// 'array':[{"key":"value"},{"key1":"value1"}]
+				// };
+				// formdata.append('journalData1[]',$scope.user);
+				// var productId = 7;
 				// var productGrpId = 1;
 				// var productCatId = 1;
 				// var companyId=14;
-				// var cityId = 16;
+				// var cityId = 1;
 				 // var stateAbb = "IN-GJ";
-				 // var branchId = 5;
+				 // var branchId = 6;
 				// var id = 42;
 				// var templateId=1;
 				// var bankId=164;
@@ -309,8 +344,11 @@ include ('connection.php');
 				// var quotationId=3;
 				// var ledgerGrpId=1;
 				// var ledgerId=7;
+				var journal_id=1;
 				
 				// var url="http://www.scerp.com/accos";
+				// var url="http://www.scerp.com/accounting/journals";
+				var url="http://www.scerp.com/accounting/journals/"+journal_id;
 				
 				// var url="http://www.scerp.com/accounting/ledgers/company/"+companyId;
 				// var url="http://www.scerp.com/accounting/ledgers/"+ledgerId;
@@ -349,13 +387,17 @@ include ('connection.php');
 				$http({
                         url: url,
                         // type:'patch',
-						 // method: 'post',
-						method: 'get',
+						 method: 'post',
+						// method: 'get',
 						// method: "PATCH",
 						// method:'delete',
 						processData: false,
+						// dataType: "json",
+						// encode : true,
+						// async: false,
                         headers: {'Content-Type': undefined},
-                        data:formdata						
+                        // headers: {'Content-Type': 'application/json'},
+                        // data:$scope.user					
                         
                     }).success(function(data, status, headers, config) {
 						console.log(data);	//post	//get	//update //delete

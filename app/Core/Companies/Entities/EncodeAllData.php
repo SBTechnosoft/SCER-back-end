@@ -94,8 +94,6 @@ class EncodeAllData extends StateService
 				'isDefault' => $isDefault[$jsonData],
 				'createdAt' => $getCreatedDate[$jsonData],
 				'updatedAt' => $getUpdatedDate[$jsonData],
-				'stateAbb' => $stateAbb[$jsonData],
-				'cityId' => $cityId[$jsonData],
 				
 				'state' => array(
 					'stateAbb' => $stateAbb[$jsonData],
@@ -110,7 +108,7 @@ class EncodeAllData extends StateService
 					'isDisplay' => $getCityDetail[$jsonData]['isDisplay'],
 					'createdAt' => $getCityDetail[$jsonData]['createdAt'],
 					'updatedAt' => $getCityDetail[$jsonData]['updatedAt'],
-					'stateAbb' => $getCityDetail[$jsonData]['stateAbb']
+					'stateAbb' => $getCityDetail[$jsonData]['state']['stateAbb']
 				)
 			);
 		}

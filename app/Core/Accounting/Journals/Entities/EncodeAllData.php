@@ -1,9 +1,10 @@
 <?php
-namespace ERP\Core\Branches\Entities;
+namespace ERP\Core\Accounting\Ledgers\Entities;
 
-use ERP\Core\Branches\Entities\Branch;
+use ERP\Core\Accounting\Ledgers\Entities\Ledger;
 use ERP\Core\States\Services\StateService;
 use ERP\Core\Entities\CityDetail;
+use ERP\Core\Entities\LedgerGroupDetail;
 use ERP\Core\Entities\CompanyDetail;
 use Carbon;
 /**
@@ -14,24 +15,29 @@ class EncodeAllData extends StateService
 {
 	public function getEncodedAllData($status)
 	{
+		
 		$convertedCreatedDate =  array();
 		$convertedUpdatedDate =  array();
 		$encodeAllData =  array();
 		$decodedJson = json_decode($status,true);
-		$branch = new Branch();
+		$ledger = new Ledger();
+		
 		for($decodedData=0;$decodedData<count($decodedJson);$decodedData++)
 		{
 			$createdAt[$decodedData] = $decodedJson[$decodedData]['created_at'];
 			$updatedAt[$decodedData] = $decodedJson[$decodedData]['updated_at'];
-			$branchId[$decodedData] = $decodedJson[$decodedData]['branch_id'];
-			$branchName[$decodedData] = $decodedJson[$decodedData]['branch_name'];
+			$ledgerId[$decodedData] = $decodedJson[$decodedData]['ledger_id'];
+			$ledgerName[$decodedData] = $decodedJson[$decodedData]['ledger_name'];
+			$alias[$decodedData] = $decodedJson[$decodedData]['alias'];
+			$inventoryAffected[$decodedData] = $decodedJson[$decodedData]['inventory_affected'];
 			$address1[$decodedData] = $decodedJson[$decodedData]['address1'];
 			$address2[$decodedData] = $decodedJson[$decodedData]['address2'];
-			$pincode[$decodedData] = $decodedJson[$decodedData]['pincode'];
-			$isDisplay[$decodedData] = $decodedJson[$decodedData]['is_display'];
-			$isDefault[$decodedData] = $decodedJson[$decodedData]['is_default'];
+			$panNo[$decodedData] = $decodedJson[$decodedData]['pan'];
+			$tinNo[$decodedData] = $decodedJson[$decodedData]['tin'];
+			$gstNo[$decodedData] = $decodedJson[$decodedData]['gst'];
 			$stateAbb[$decodedData] = $decodedJson[$decodedData]['state_abb'];
 			$cityId[$decodedData] = $decodedJson[$decodedData]['city_id'];
+			$ledgerGrpId[$decodedData] = $decodedJson[$decodedData]['ledger_group_id'];
 			$companyId[$decodedData] = $decodedJson[$decodedData]['company_id'];
 			
 			//get the state detail from database
@@ -42,11 +48,16 @@ class EncodeAllData extends StateService
 			$stateIsDisplay[$decodedData]= $stateDecodedJson[$decodedData]['isDisplay'];
 			$stateCreatedAt[$decodedData]= $stateDecodedJson[$decodedData]['createdAt'];
 			$stateUpdatedAt[$decodedData]= $stateDecodedJson[$decodedData]['updatedAt'];
+			// print_r($stateUpdatedAt[$decodedData]);
 			
 			//get the city details from database
 			$cityDetail = new CityDetail();
 			$getCityDetail[$decodedData] = $cityDetail->getCityDetail($cityId[$decodedData]);
-			 
+			
+			//get the ledger-group details from database
+			$ledgerGrpDetail = new LedgerGroupDetail();
+			$getLedgerGrpDetails[$decodedData] = $ledgerGrpDetail->getLedgerGrpDetails($ledgerGrpId[$decodedData]);
+			
 			//get the company details from database
 			$companyDetail = new CompanyDetail();
 			$getCompanyDetails[$decodedData] = $companyDetail->getCompanyDetails($companyId[$decodedData]);
@@ -54,22 +65,26 @@ class EncodeAllData extends StateService
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
 			$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
+		
 		}
-		$branch->setCreated_at($convertedCreatedDate);
-		$getCreatedDate = $branch->getCreated_at();
-		$branch->setUpdated_at($convertedUpdatedDate);
-		$getUpdatedDate = $branch->getUpdated_at();
+		$ledger->setCreated_at($convertedCreatedDate);
+		$getCreatedDate = $ledger->getCreated_at();
+		$ledger->setUpdated_at($convertedUpdatedDate);
+		$getUpdatedDate = $ledger->getUpdated_at();
 		$data = array();
+		
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
 		{
 			$data[$jsonData]= array(
-				'branchId'=>$branchId[$jsonData],
-				'branchName' => $branchName[$jsonData],
+				'ledgerId'=>$ledgerId[$jsonData],
+				'ledgerName' => $ledgerName[$jsonData],
+				'alias' => $alias[$jsonData],
+				'inventoryAffected' => $inventoryAffected[$jsonData],
 				'address1' => $address1[$jsonData],
 				'address2' => $address2[$jsonData],
-				'pincode'=> $pincode[$jsonData],
-				'isDisplay' => $isDisplay[$jsonData],
-				'isDefault' => $isDefault[$jsonData],
+				'pan'=> $panNo[$jsonData],
+				'tin'=> $tinNo[$jsonData],
+				'gstNo'=> $gstNo[$jsonData],
 				'createdAt' => $getCreatedDate[$jsonData],
 				'updatedAt' => $getUpdatedDate[$jsonData],
 				
@@ -81,13 +96,22 @@ class EncodeAllData extends StateService
 					'updatedAt' => $stateUpdatedAt[$jsonData]
 				),
 				
-				'city' => array(
+				'city'=> array(
 					'cityId' => $cityId[$jsonData],
 					'cityName' => $getCityDetail[$jsonData]['cityName'],
 					'isDisplay' => $getCityDetail[$jsonData]['isDisplay'],
 					'createdAt' => $getCityDetail[$jsonData]['createdAt'],
 					'updatedAt' => $getCityDetail[$jsonData]['updatedAt'],
-					'stateAbb' => $getCityDetail[$jsonData]['state']['stateAbb']
+					'stateAbb' => $getCityDetail[$jsonData]['stateAbb']
+				),
+				
+				'ledgergroup'=> array(
+					'ledgerGroupId' => $getLedgerGrpDetails[$jsonData]['ledgerGroupId'],	
+					'ledgerGroupName' => $getLedgerGrpDetails[$jsonData]['ledgerGroupName'],	
+					'underWhat' => $getLedgerGrpDetails[$jsonData]['underWhat'],
+					'alias' => $getLedgerGrpDetails[$jsonData]['alias'],
+					'natureOfGroup' => $getLedgerGrpDetails[$jsonData]['natureOfGroup'],
+					'affectedGroupProfit' => $getLedgerGrpDetails[$jsonData]['affectedGroupProfit']
 				),
 				
 				'company' => array(	
@@ -113,11 +137,12 @@ class EncodeAllData extends StateService
 					'isDefault' => $getCompanyDetails[$jsonData]['isDefault'],	
 					'createdAt' => $getCompanyDetails[$jsonData]['createdAt'],	
 					'updatedAt' => $getCompanyDetails[$jsonData]['updatedAt'],	
-					'stateAbb' => $getCompanyDetails[$jsonData]['state']['stateAbb'],	
-					'cityId' => $getCompanyDetails[$jsonData]['city']['cityId']	
+					'stateAbb' => $getCompanyDetails[$jsonData]['stateAbb'],	
+					'cityId' => $getCompanyDetails[$jsonData]['cityId']	
 				)		
 			);
 		}
-		return json_encode($data);
+		$jsonEncodedData = json_encode($data);
+		return $jsonEncodedData;
 	}
 }

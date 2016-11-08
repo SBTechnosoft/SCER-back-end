@@ -85,25 +85,21 @@ class EncodeData extends StateService
 			'isDefault' => $companyDetails['isDefault'],	
 			'createdAt' => $companyDetails['createdAt'],	
 			'updatedAt' => $companyDetails['updatedAt'],	
-			'stateAbb' => $companyDetails['stateAbb'],	
-			'cityId' => $companyDetails['cityId'],
-			'stateName' => $companyDetails['state']['stateName'],	
-			'cityName' => $companyDetails['city']['cityName']
 		);
 		$data['state']= array(
-			'stateAbb' => $stateAbb,
+			'stateAbb' => $stateDecodedJson['stateAbb'],
 			'stateName' => $stateDecodedJson['stateName'],
 			'isDisplay' => $stateDecodedJson['isDisplay'],	
 			'createdAt' => $stateDecodedJson['createdAt'],	
 			'updatedAt' => $stateDecodedJson['updatedAt']	
 		);
 		$data['city']= array(
-			'cityId' => $cityId,
+			'cityId' => $getCityDetail['cityId'],
 			'cityName' => $getCityDetail['cityName'],	
 			'isDisplay' => $getCityDetail['isDisplay'],	
 			'createdAt' => $getCityDetail['createdAt'],	
 			'updatedAt' => $getCityDetail['updatedAt'],	
-			'stateAbb'=> $getCityDetail['stateAbb']
+			'stateAbb'=> $getCityDetail['state']['stateAbb']
 		);
 		$encodeData = json_encode($data);
 		return $encodeData;
