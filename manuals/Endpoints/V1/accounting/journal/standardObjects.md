@@ -1,22 +1,22 @@
 ##### Standard Journal Object
 			{
-            	"jf_id":int,
+            	"jfId":int,
             }
 			
 
 ##### Standard Journals Persistable Object
 			{
-            	"jf_id":int,
+            	"jfId":int,
 				"data":
 				[
 					{
 						"amount":decimal,
-						"amount_type":Enum,
-						"ledger_id":int,	
+						"amountType":Enum,
+						"ledgerId":int,	
 					},
 					...
 				]
-				"entry_date":DateTime,
+				"entryDate":DateTime,
                 "createdAt":TimeStamp,
                 "updatedAt":DateTime,
                 "companyId":int

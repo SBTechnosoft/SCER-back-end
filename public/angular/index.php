@@ -325,7 +325,7 @@ include ('connection.php');
 				// console.log(abc);
 				// console.log(JSON.stringify(abc));
 				//////////////////////////////////
-				$scope.user = [{"jf_id":2,"data":[{},{}],}];
+				$scope.user = [{"jfId":2,"data":[{"amount":22,"amount_type":"credit","ledger_id":1},{"amount":22,"amount_type":"credit","ledger_id":1}],"entry_date":"22-10-2015","companyId":10}];
 				// $scope.user={
 					// 'array':[{"key":"value"},{"key1":"value1"}]
 				// };
@@ -344,11 +344,11 @@ include ('connection.php');
 				// var quotationId=3;
 				// var ledgerGrpId=1;
 				// var ledgerId=7;
-				var journal_id=1;
+				// var journal_id=1;
 				
 				// var url="http://www.scerp.com/accos";
-				// var url="http://www.scerp.com/accounting/journals";
-				var url="http://www.scerp.com/accounting/journals/"+journal_id;
+				var url="http://www.scerp.com/accounting/journals";
+				// var url="http://www.scerp.com/accounting/journals/"+journal_id;
 				
 				// var url="http://www.scerp.com/accounting/ledgers/company/"+companyId;
 				// var url="http://www.scerp.com/accounting/ledgers/"+ledgerId;
@@ -395,9 +395,9 @@ include ('connection.php');
 						// dataType: "json",
 						// encode : true,
 						// async: false,
-                        headers: {'Content-Type': undefined},
-                        // headers: {'Content-Type': 'application/json'},
-                        // data:$scope.user					
+                        // headers: {'Content-Type': undefined},
+                        headers: {'Content-Type': 'application/json'},
+                        data:$scope.user					
                         
                     }).success(function(data, status, headers, config) {
 						console.log(data);	//post	//get	//update //delete

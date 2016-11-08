@@ -14,17 +14,14 @@ class JournalTransformer
      */
     public function trimInsertData(Request $request)
     {
-		echo "trim";
+		print_r($request->input()[0]);
 		$requestArray = array();
-		$requestArray = $request->all();
-		//$data = $request->input();
-		// print_r($data);
-		// $jsonData = $request->input('journalData');
-		print_r(json_decode($response->content(), true));
-		// dd(json_decode($request->input(), true));
+		
+		
+		
 		exit;
 		//data get from body
-		$amount = $request->input('amount'); 
+		$amount = $request->input()[0]['']; 
 		$amount_type = $request->input('amountType'); 
 		$entry_date = $request->input('entryDate'); 
 		$ledger_id = $request->input('ledgerId'); 
