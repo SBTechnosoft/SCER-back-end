@@ -161,58 +161,78 @@ class CompanyService extends AbstractService
      */
     public function update()
     {
-		$companyArray = array();
-		$getData = array();
-		$funcName = array();
-		$companyArray = func_get_arg(0);
-		for($data=0;$data<count($companyArray);$data++)
+		if(count($_POST)==0)
 		{
-			$funcName[$data] = $companyArray[$data][0]->getName();
-			$getData[$data] = $companyArray[$data][0]->$funcName[$data]();
-			$keyName[$data] = $companyArray[$data][0]->getkey();
-			
-			// document data is set into the last object..so
-			if($data==(count($companyArray)-1))
-			{
-				//get document data
-				$documentName = $companyArray[$data][0]->getDocumentName();
-				$documentUrl = $companyArray[$data][0]->getDocumentUrl();
-				$documentSize = $companyArray[$data][0]->getDocumentSize();
-				$documentFormat = $companyArray[$data][0]->getDocumentFormat();
-			}
+			echo "success";
 		}
-		
-		$companyId = $companyArray[0][0]->getCompanyId();
-		//data pass to the model object for update
-		$companyModel = new CompanyModel();
-		$status = $companyModel->updateData($getData,$keyName,$companyId);
-		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		
-		if(strcmp($status,$fileSizeArray['500'])==0)
-		{
-			return $status;
-		}
-		//data updated successfully
 		else
 		{
+			echo "more success";
 			
-			if($documentName!='')
+			$companyArray = array();
+			$getData = array();
+			$funcName = array();
+			$companyArray = func_get_arg(0);
+			for($data=0;$data<count($companyArray);$data++)
 			{
-				//insert document data(update in company_mst table)
-				$documentStatus = DocumentService::updateDocumentData($documentName,$documentUrl,$documentSize,$documentFormat,$companyId);
-				return $documentStatus;	
+				$funcName[$data] = $companyArray[$data][0]->getName();
+				$getData[$data] = $companyArray[$data][0]->$funcName[$data]();
+				$keyName[$data] = $companyArray[$data][0]->getkey();
+				
+				// document data is set into the last object..so
+				if($data==(count($companyArray)-1))
+				{
+					//get document data
+					$documentName = $companyArray[$data][0]->getDocumentName();
+					$documentUrl = $companyArray[$data][0]->getDocumentUrl();
+					$documentSize = $companyArray[$data][0]->getDocumentSize();
+					$documentFormat = $companyArray[$data][0]->getDocumentFormat();
+				}
 			}
+			
+			$companyId = $companyArray[0][0]->getCompanyId();
+			//data pass to the model object for update
+			$companyModel = new CompanyModel();
+			$status = $companyModel->updateData($getData,$keyName,$companyId);
+			
+			//get exception message
+			$exception = new ExceptionMessage();
+			$fileSizeArray = $exception->messageArrays();
+			
+			if(strcmp($status,$fileSizeArray['500'])==0)
+			{
+				return $status;
+			}
+			//data updated successfully
 			else
 			{
-				//if document is not changed..
-				return $fileSizeArray['200'];
+				
+				if($documentName!='')
+				{
+					//insert document data(update in company_mst table)
+					$documentStatus = DocumentService::updateDocumentData($documentName,$documentUrl,$documentSize,$documentFormat,$companyId);
+					return $documentStatus;	
+				}
+				else
+				{
+					//if document is not changed..
+					return $fileSizeArray['200'];
+				}
 			}
 		}
 	}
-
+	public function updateDocument(CompanyPersistable $companyPersistable)
+	{
+		$companyId = $companyPersistable->getCompanyId();
+		$documentName = $companyPersistable->getDocumentName();
+		$documentUrl = $companyPersistable->getDocumentUrl();
+		$documentSize = $companyPersistable->getDocumentSize();
+		$documentFormat = $companyPersistable->getDocumentFormat();
+		
+		//insert document data(update in company_mst table)
+		$documentStatus = DocumentService::updateDocumentData($documentName,$documentUrl,$documentSize,$documentFormat,$companyId);
+		return $documentStatus;
+	}
     /**
      * get and invoke method is of Container Interface method
      * @param int $id,$name

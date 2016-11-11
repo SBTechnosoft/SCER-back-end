@@ -10,6 +10,7 @@ use ERP\Core\Cities\Persistables\CityPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Model\Cities\CityModel;
+use ERP\Api\V1_0\Cities\Controllers\PdfDemo;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -81,7 +82,11 @@ class CityController extends BaseController implements ContainerInterface
 		{			
 			$cityService= new CityService();
 			$status = $cityService->getAllCityData();
-			return $status;
+			$pdf = new PdfDemo();
+			$pdf->demo();
+			echo "stop";
+			exit;
+			// return $status;
 		}
 		else
 		{	

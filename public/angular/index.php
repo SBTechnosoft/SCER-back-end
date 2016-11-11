@@ -117,7 +117,7 @@ include ('connection.php');
 			{
 				// var formdata = new FormData();
 				//state
-				// $scope.formAdata.state_abb ="IN-LD";
+				// $scope.formAdata.state_abb ="IN-LJ";
 				// $scope.formAdata.state_name = " ss-fghd ";
 				// $scope.formAdata.is_display = ' yes ';
 				
@@ -136,12 +136,12 @@ include ('connection.php');
 				
 				//branch
 				// $scope.formAdata.branch_name = "abcc!cc&-_`#().\'11";
-				// $scope.formAdata.branch_name = "abc";
+				// $scope.formAdata.branch_name = "abcd";
 				// $scope.formAdata.address1 ="35,abc2";
 				// $scope.formAdata.address2 = "sdgd2";
 				// $scope.formAdata.pincode = 324692;
 				// $scope.formAdata.is_display = 'yes';
-				// $scope.formAdata.is_default = 'ok';
+				// $scope.formAdata.is_default = 'ok1';
 				// $scope.formAdata.state_abb= 'IN-MP';
 				// $scope.formAdata.city_id= 1;
 				// $scope.formAdata.company_id= 15;
@@ -172,8 +172,8 @@ include ('connection.php');
 				// $scope.formAdata.formal_name = " qgfrd-&_().\'frtgfrta ";
 				// $scope.formAdata.no_of_decimal_points = 4;
 				// $scope.formAdata.currency_symbol = ' prefix ';
-				// $scope.formAdata.is_display = ' no1 ';
-				// $scope.formAdata.is_default = ' ok ';
+				// $scope.formAdata.is_display = ' no ';
+				// $scope.formAdata.is_default = ' ok1 ';
 				// $scope.formAdata.state_abb= ' IN-MP ';
 				// $scope.formAdata.city_id= 1;
 				
@@ -325,7 +325,13 @@ include ('connection.php');
 				// console.log(abc);
 				// console.log(JSON.stringify(abc));
 				//////////////////////////////////
-				$scope.user = [{"jfId":2,"data":[{"amount":22,"amount_type":"credit","ledger_id":1},{"amount":22,"amount_type":"credit","ledger_id":1}],"entry_date":"22-10-2015","companyId":10}];
+				
+				
+				
+				// $scope.user = [{"jfId":2,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":1},{"amount":2,"amountType":"credit","ledgerId":1},{"amount":12,"amountType":"debit","ledgerId":1}],"entryDate":"22-10-2015","companyId":13}];
+				
+				
+				
 				// $scope.user={
 					// 'array':[{"key":"value"},{"key1":"value1"}]
 				// };
@@ -333,9 +339,9 @@ include ('connection.php');
 				// var productId = 7;
 				// var productGrpId = 1;
 				// var productCatId = 1;
-				// var companyId=14;
+				var companyId=14;
 				// var cityId = 1;
-				 // var stateAbb = "IN-GJ";
+				 // var stateAbb = "IN-DF";
 				 // var branchId = 6;
 				// var id = 42;
 				// var templateId=1;
@@ -347,8 +353,8 @@ include ('connection.php');
 				// var journal_id=1;
 				
 				// var url="http://www.scerp.com/accos";
-				var url="http://www.scerp.com/accounting/journals";
-				// var url="http://www.scerp.com/accounting/journals/"+journal_id;
+				// var url="http://www.scerp.com/accounting/journals";
+				// var url="http://www.scerp.com/accounting/journals/next";
 				
 				// var url="http://www.scerp.com/accounting/ledgers/company/"+companyId;
 				// var url="http://www.scerp.com/accounting/ledgers/"+ledgerId;
@@ -373,7 +379,7 @@ include ('connection.php');
 				 // var url="http://www.scerp.com/branches/"+branchId;
 				// var url="http://www.scerp.com/branches/company/"+companyId;
 				 // var url="http://www.scerp.com/states/"+stateAbb;
-				// var url="http://www.scerp.com/states";
+				var url="http://www.scerp.com/states";
 				// var url="http://www.scerp.com/cities/state/"+stateAbb;
 				 // var url="http://www.scerp.com/cities";
 				 // var url="http://www.scerp.com/cities/"+cityId;
@@ -387,17 +393,18 @@ include ('connection.php');
 				$http({
                         url: url,
                         // type:'patch',
-						 method: 'post',
-						// method: 'get',
+						 // method: 'post',
+						method: 'get',
 						// method: "PATCH",
 						// method:'delete',
 						processData: false,
 						// dataType: "json",
 						// encode : true,
 						// async: false,
-                        // headers: {'Content-Type': undefined},
-                        headers: {'Content-Type': 'application/json'},
-                        data:$scope.user					
+                        headers: {'Content-Type': undefined},
+                        // headers: {'Content-Type': 'application/json'},
+                        // data:$scope.user					
+                        data:formdata					
                         
                     }).success(function(data, status, headers, config) {
 						console.log(data);	//post	//get	//update //delete

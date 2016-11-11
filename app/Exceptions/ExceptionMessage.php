@@ -15,7 +15,8 @@ class ExceptionMessage
 		$msgArray['200'] = "200: OK";
 		$msgArray['204'] = "204: No Content";
 		$msgArray['404'] = "404: Not Found";
-		$msgArray['content'] = "content: not proper content";
+		$msgArray['content'] = "content: not proper content"; //company-insert-isDisp&isDef-not proper
+		$msgArray['equal'] = "equal: credit-debit amount is not an equal";
 		return $msgArray;
 	}
 }

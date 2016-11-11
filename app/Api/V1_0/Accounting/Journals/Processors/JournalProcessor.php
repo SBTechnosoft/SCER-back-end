@@ -38,51 +38,26 @@ class JournalProcessor extends BaseProcessor
 		
 		$journalTransformer = new JournalTransformer();
 		$tRequest = $journalTransformer->trimInsertData($this->request);
-		exit;
+		
 		//validation
 		$journalValidate = new JournalValidate();
 		$status = $journalValidate->validate($tRequest);
 		
 		if($status=="Success")
 		{
-			foreach ($tRequest as $key => $value)
+			$journalPersistable=array();
+			for($data=0;$data<count($tRequest[0]);$data++)
 			{
-				if(!is_numeric($value))
-				{
-					if (strpos($value, '\'') !== FALSE)
-					{
-						$journalValue[$data]= str_replace("'","\'",$value);
-						$keyName[$data] = $key;
-					}
-					else
-					{
-						$journalValue[$data] = $value;
-						$keyName[$data] = $key;
-					}
-				}
-				else
-				{
-					$journalValue[$data]= $value;
-					$keyName[$data] = $key;
-				}
-				$data++;
+				$journalPersistable[$data] = new JournalPersistable();
+				$journalPersistable[$data]->setJfId($tRequest['jfId']);
+				$journalPersistable[$data]->setEntryDate($tRequest['entryDate']);
+				$journalPersistable[$data]->setCompanyId($tRequest['companyId']);
+				
+				$journalPersistable[$data]->setAmount($tRequest[0][$data]['amount']);
+				$journalPersistable[$data]->setAmountType($tRequest[0][$data]['amountType']);
+				$journalPersistable[$data]->setLedgerId($tRequest[0][$data]['ledgerId']);
 			}
-			
-			// set data to the persistable object
-			for($data=0;$data<count($journalValue);$data++)
-			{
-				//set the data in persistable object
-				$journalPersistable = new JournalPersistable();	
-				$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
-				//make function name dynamically
-				$setFuncName = 'set'.$str;
-				$getFuncName[$data] = 'get'.$str;
-				$journalPersistable->$setFuncName($journalValue[$data]);
-				$journalPersistable->setName($getFuncName[$data]);
-				$journalPersistable->setKey($keyName[$data]);
-				$journalArray[$data] = array($journalPersistable);
-			}
-			return $journalArray;
+			return $journalPersistable;
 		}
 		else
 		{

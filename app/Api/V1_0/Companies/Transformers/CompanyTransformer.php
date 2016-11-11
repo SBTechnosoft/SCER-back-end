@@ -59,10 +59,6 @@ class CompanyTransformer
 		$enumIsDispArray = array();
 		$isDispEnum = new IsDisplayEnum();
 		$enumIsDispArray = $isDispEnum->enumArrays();
-		
-		$enumIsDefArray = array();
-		$isDefEnum = new IsDefaultEnum();
-		$enumIsDefArray = $isDefEnum->enumArrays();
 		foreach ($enumIsDispArray as $key => $value)
 		{
 			if(strcmp($value,$tIsDisplay)==0)
@@ -72,6 +68,9 @@ class CompanyTransformer
 			}
 		}
 		
+		$enumIsDefArray = array();
+		$isDefEnum = new IsDefaultEnum();
+		$enumIsDefArray = $isDefEnum->enumArrays();
 		foreach ($enumIsDefArray as $key => $value)
 		{
 			if(strcmp($value,$tIsDefault)==0)
@@ -148,6 +147,10 @@ class CompanyTransformer
 					$isDefaultFlag=1;
 					break;
 				}
+				else
+				{
+					$isDefaultFlag=2;
+				}
 			}
 		}
 		
@@ -163,61 +166,19 @@ class CompanyTransformer
 					$isDisplayFlag=1;
 					break;
 				}
+				else
+				{
+					$isDisplayFlag=2;
+				}
 			}
 		}
-		// echo "hi";
-		// print_r($isDisplayFlag);
-		// print_r($isDefaultFlag);
-		
-		// if($isDisplayFlag)
-		// foreach ($enumIsDefArray as $key => $value)
-		// {
-			// print_r($tCompanyArray);
-			// print_r($tCompanyArray[array_keys($tCompanyArray[0][0])]);
-			// if($tCompanyArray[0]['is_default']=="")
-			// {
-				// echo "if";
-				// break;
-			// }
-			// if(strcmp($tCompanyArray[0]['is_default'],$value)==0)
-			// {
-				// echo "if in def";
-				// $isDefaultFlag=1;
-				// break;
-			// }
-			// if(strcmp($tCompanyArray[0]['is_display'],$value)==0)
-			// {
-				// echo "if in disp";
-				// $isDisplayFlag=1;
-				// break;
-			// }
-		// }
-		// exit;
-		// $enumIsDispArray = array();
-		// $isDispEnum = new IsDisplayEnum();
-		// $enumIsDispArray = $isDispEnum->enumArrays();
-		// foreach ($enumIsDispArray as $key => $value)
-		// {
-			// if(strcmp($tCompanyArray[0]['is_display'],$value)==0)
-			// {
-				// echo "if in disp";
-				// $isDisplayFlag=1;
-				// break;
-			// }
-		// }
-		// echo "ff";
-		// echo $isDefaultFlag;
-		if($isDisplayFlag==1 || $isDefaultFlag==1)
+		if($isDisplayFlag==2 || $isDefaultFlag==2)
 		{
-			echo "if";
-			
-			// return "1";
+			return "1";
 		}
-		// else
-		// {
-			// echo "else";
-			// exit;
+		else
+		{
 			return $tCompanyArray;
-		// }
+		}
 	}
 }

@@ -57,7 +57,7 @@ class CompanyController extends BaseController implements ContainerInterface
 			$companyPersistable = new CompanyPersistable();		
 			$companyService= new CompanyService();			
 			$companyPersistable = $processor->createPersistable($this->request);
-		
+			
 			//get exception message
 			$exception = new ExceptionMessage();
 			$fileSizeArray = $exception->messageArrays();
@@ -122,10 +122,15 @@ class CompanyController extends BaseController implements ContainerInterface
 		else
 		{
 			$companyPersistable = $processor->createPersistableChange($this->request,$companyId);
+			$companyService= new CompanyService();
 			if(is_array($companyPersistable))
 			{
-				$companyService= new CompanyService();
 				$status = $companyService->update($companyPersistable);
+				return $status;
+			}
+			else if(is_object($companyPersistable))
+			{
+				$status = $companyService->updateDocument($companyPersistable);
 				return $status;
 			}
 			else

@@ -56,14 +56,19 @@ class BranchController extends BaseController implements ContainerInterface
 			$branchPersistable = new BranchPersistable();		
 			$branchService= new BranchService();			
 			$branchPersistable = $processor->createPersistable($this->request);
+			
 			if($branchPersistable[0][0]=='[')
 			{
 				return $branchPersistable;
 			}
-			else
+			else if(is_array($branchPersistable))
 			{
 				$status = $branchService->insert($branchPersistable);
 				return $status;
+			}
+			else
+			{
+				return $branchPersistable;
 			}
 		}
 	}

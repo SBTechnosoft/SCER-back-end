@@ -10,7 +10,6 @@ use ERP\Api\V1_0\Accounting\Journals\Processors\JournalProcessor;
 use ERP\Core\Accounting\Journals\Persistables\JournalPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Exceptions\ExceptionMessage;
-use ERP\Model\Accounting\Journals\JournalModel;
 use Illuminate\Support\Collection;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -24,9 +23,9 @@ class JournalController extends BaseController implements ContainerInterface
      * @var journalPersistable
      */
 	private $journalService;
-	private $processor;
-	private $request;
-	private $journalPersistable;	
+	// private $processor;
+	// private $request;
+	// private $journalPersistable;	
 	
 	/**
 	 * get and invoke method is of ContainerInterface method
@@ -54,7 +53,7 @@ class JournalController extends BaseController implements ContainerInterface
 		if($requestMethod == 'POST')
 		{
 			$processor = new JournalProcessor();
-			// $journalPersistable = new JournalPersistable();
+			$journalPersistable = new JournalPersistable();
 			
 			$journalPersistable = $processor->createPersistable($this->request);
 			// if($journalPersistable[0][0]=='[')
@@ -63,31 +62,20 @@ class JournalController extends BaseController implements ContainerInterface
 			// }
 			// else
 			// {
-				// $jornalService= new JournalService();
-				// $status = $journalService->insert($journalPersistable);
-				// return $status;
+				$journalService= new JournalService();
+				$status = $journalService->insert($journalPersistable);
+				return $status;
 			// }
 		}
 	}
-	/**
-     * get the specified resource.
-     * @param  int  $ledgerId
-     */
-    // public function getData($ledgerId=null)
-    // {
-		// if($ledgerId==null)
-		// {	
-			// $ledgerService= new LedgerService();
-			// $status = $ledgerService->getAllLedgerData();
-			
-			// return $status;
-		// }
-		// else
-		// {	
-			// $ledgerService= new LedgerService();
-			// $status = $ledgerService->getLedgerData($ledgerId);
-			// return $status;
-		// }        
-    // }
 	
+	/**
+     * get the next journal folio id
+     */
+    public function getData()
+    {
+		$journalService = new JournalService();
+		$status = $journalService->getJournalData();
+		return $status;
+	}
 }

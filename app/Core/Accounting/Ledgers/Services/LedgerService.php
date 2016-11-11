@@ -83,7 +83,6 @@ class LedgerService extends AbstractService
 		{
 			$encoded = new EncodeAllData();
 			$encodeAllData = $encoded->getEncodedAllData($status);
-			// print_r($encodeAllData);
 			return $encodeAllData;
 		}
 	}

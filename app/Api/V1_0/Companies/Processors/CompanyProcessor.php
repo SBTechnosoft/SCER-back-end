@@ -194,13 +194,38 @@ class CompanyProcessor extends BaseProcessor
 			}
 			//get exception message 
 			$exception = new ExceptionMessage();
-			$fileSizeArray = $exception->messageArrays();
+			$exceptionArray = $exception->messageArrays();
 			
 			//if data is not available in update request
-			if(count($_POST)==0)
+			if(count($_POST)==0 && $docFlag!=1)
 			{
-				$status = $fileSizeArray['204'];
+				$status = $exceptionArray['204'];
 				return $status;
+			}
+			else if($docFlag==1)
+			{
+				if($documentFormat=='jpg' || $documentFormat=='jpeg' || $documentFormat=='gif' || $documentFormat=='png' || $documentFormat=='pdf')
+				{	
+					if(($documentSize/1048576)<=5)
+					{
+						//set the data in persistable object
+						$companyPersistable = new CompanyPersistable();	
+						$companyPersistable->setDocumentName($documentName);
+						$companyPersistable->setDocumentUrl($path);
+						$companyPersistable->setDocumentSize($documentSize);
+						$companyPersistable->setDocumentFormat($documentFormat);
+						$companyPersistable->setCompanyId($companyId);
+						return $companyPersistable;
+					}
+					else
+					{
+						return $exceptionArray['fileSize'];
+					}
+				}
+				else
+				{
+					return $exceptionArray['415'];
+				}
 			}
 			//data is avalilable for update
 			else
@@ -218,8 +243,7 @@ class CompanyProcessor extends BaseProcessor
 					
 					if($tRequest==1)
 					{
-						echo "hi";
-						// exit;
+						return $exceptionArray['content'];
 					}
 					else
 					{
@@ -278,12 +302,12 @@ class CompanyProcessor extends BaseProcessor
 											}
 											else
 											{
-												return $fileSizeArray['fileSize'];
+												return $exceptionArray['fileSize'];
 											}
 										}
 										else
 										{
-											return $fileSizeArray['415'];
+											return $exceptionArray['415'];
 										}
 									}
 								}

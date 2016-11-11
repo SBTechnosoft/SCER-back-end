@@ -18,32 +18,30 @@ class JournalModel extends Model
 	*/
 	public function insertData()
 	{
-		$getJournalData = array();
-		$getJournalKey = array();
-		$getJournalData = func_get_arg(0);
-		$getJournalKey = func_get_arg(1);
-		$journalData="";
-		$keyName = "";
-		for($data=0;$data<count($getJournalData);$data++)
-		{
-			if($data == (count($getJournalData)-1))
-			{
-				$journalData = $journalData."'".$getJournalData[$data]."'";
-				$keyName =$keyName.$getJournalKey[$data];
-			}
-			else
-			{
-				$journalData = $journalData."'".$getJournalData[$data]."',";
-				$keyName =$keyName.$getJournalKey[$data].",";
-			}
-		}
+		$amountArray = array();
+		$amountTypeArray = array();
+		$ledgerIdArray = array();
+		$jfIdArray = array();
+		$entryDateArray = array();
+		$companyIdArray = array();
+		
+		$amountArray = func_get_arg(0);
+		$amountTypeArray = func_get_arg(1);
+		$jfIdArray = func_get_arg(2);
+		$ledgerIdArray = func_get_arg(3);
+		$entryDateArray = func_get_arg(4);
+		$companyIdArray = func_get_arg(5);
 		
 		DB::beginTransaction();
-		$raw = DB::statement("insert into journal_dtl(".$keyName.") 
-		values(journalData)");
+		for($data=0;$data<count($jfIdArray);$data++)
+		{
+			$raw = DB::statement("insert into 
+			journal_dtl(jf_id,amount,amount_type,entry_date,ledger_id,company_id) 
+			values('".$jfIdArray[$data]."','".$amountArray[$data]."','".$amountTypeArray[$data]."','".$entryDateArray[$data]."','".$ledgerIdArray[$data]."','".$companyIdArray[$data]."')");
+		}
 		DB::commit();
 		
-		//get exception message
+		// get exception message
 		$exception = new ExceptionMessage();
 		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
@@ -53,6 +51,30 @@ class JournalModel extends Model
 		else
 		{
 			return $fileSizeArray['500'];
+		}
+	}
+	
+	public function getJournalData()
+	{
+		DB::beginTransaction();
+		$raw = DB::select('SELECT  MAX(journal_id) AS journal_id from journal_dtl');
+		DB::commit();
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(count($raw)==0)
+		{
+			return $fileSizeArray['404'];
+		}
+		else
+		{
+			$enocodedData = json_encode($raw);
+			$decodedJson = json_decode($enocodedData,true);
+			$nextValue = $decodedJson[0]['journal_id']+1;
+			$data = array();
+			$data['nextValue']=$nextValue;
+			return json_encode($data);
 		}
 	}
 }

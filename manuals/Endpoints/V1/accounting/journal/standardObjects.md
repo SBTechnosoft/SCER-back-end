@@ -16,7 +16,7 @@
 					},
 					...
 				]
-				"entryDate":DateTime,
+				"entryDate":Date,
                 "createdAt":TimeStamp,
                 "updatedAt":DateTime,
                 "companyId":int
