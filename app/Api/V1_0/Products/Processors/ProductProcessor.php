@@ -8,7 +8,6 @@ use ERP\Http\Requests;
 use Illuminate\Http\Response;
 use ERP\Core\Products\Validations\ProductValidate;
 use ERP\Api\V1_0\Products\Transformers\ProductTransformer;
-use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -93,10 +92,6 @@ class ProductProcessor extends BaseProcessor
 		$errorStatus=array();
 		$flag=0;
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
-		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		// update
 		if($requestMethod == 'POST')
 		{
@@ -108,7 +103,7 @@ class ProductProcessor extends BaseProcessor
 			//if data is not available in update request
 			if(count($_POST)==0)
 			{
-				$status = $fileSizeArray['204'];
+				$status = "204: No Content Found For Update";
 				return $status;
 			}
 			//data is avalilable for update
@@ -130,7 +125,7 @@ class ProductProcessor extends BaseProcessor
 					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
 					
 					//validation
-					$status = $productValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
+					$status = $productValidate->validateUpdateData($key[$data],$value[$data],$tRequest[0]);
 					//enter data is valid(one data validate status return)
 					if($status=="Success")
 					{
@@ -150,7 +145,6 @@ class ProductProcessor extends BaseProcessor
 						{
 							$productValue[$data] = $tValue[$data];
 						}
-						
 						//flag=0...then data is valid(consider one data at a time)
 						if($flag==0)
 						{
@@ -158,15 +152,11 @@ class ProductProcessor extends BaseProcessor
 							//make function name dynamically
 							$setFuncName = 'set'.$str;
 							$getFuncName[$data] = 'get'.$str;
-							$productPersistable->$setFuncName($productValue[$data]);
-							
+							$productPersistable->$setFuncName($tValue[$data]);
 							$productPersistable->setName($getFuncName[$data]);
-							
-							$productPersistable->setKey($tKeyValue[$data]);
+							$productPersistable->setKey($key[$data]);
 							$productPersistable->setProductId($productId);
-							
 							$productArray[$data] = array($productPersistable);
-							
 						}
 					}
 					//enter data is not valid
@@ -180,7 +170,6 @@ class ProductProcessor extends BaseProcessor
 							$errorCount++;
 						}
 					}
-					
 					if($data==(count($_POST)-1))
 					{
 						if($flag==1)

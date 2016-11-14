@@ -24,8 +24,8 @@
 				"formalName":varchar,
 				"noOfDecimalPoints":int,
 				"currencySymbol":int,
-				"isDefault": Enum,
-				"isDisplay": Enum,
+				"isDefault": enum,
+				"isDisplay": enum,
 				"createdAt" timestamp,
 				"updatedAt": datetime
             }
@@ -47,21 +47,12 @@
 			"serviceTaxNo": string,
 			"basicCurrencySymbol":varchar,
 			"formalName":varchar,
-			"noOfDecimalPoints":int,
+			"noOfDecimalItems":int,
 			"currencySymbol":int,
-			"isDefault": Enum,
-			"isDisplay": Enum,
+			"isDefault": bool,
+			"isDisplay": bool,
 			"createdAt" timestamp,
 			"updatedAt": datetime,
 			"deletedAt":datetime			
          }
 
-##### Is Display Enum
-		{
-			... Is Display Enum
-		}
-
-##### Is Default Enum
-		{
-			... Is Default Enum
-		}

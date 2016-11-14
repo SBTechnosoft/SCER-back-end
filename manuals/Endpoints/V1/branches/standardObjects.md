@@ -16,9 +16,9 @@
 				},
 				
 				"pincode": char,
-				"isDefault":Enum,
-				"isDisplay": Enum,
-				"createdAt": timestamp,
+				"isDefault":enum,
+				"isDisplay": enum,
+				"createdAt" timestamp,
 				"updatedAt": datetime
             }
             
@@ -31,19 +31,10 @@
                 "cityId": int,
 				"stateAbb": char,
 				"pincode": char,
-				"isDefault":Enum,
-				"isDisplay": Enum,
-				"createdAt": timestamp,
+				"isDefault":bool,
+				"isDisplay": bool,
+				"createdAt" timestamp,
 				"updatedAt": datetime,
 				"deletedAt" :datetime
             }
 
-#####  Is Display Enum
-			{
-				... Is Display Enum
-			}
-			
-#####  Is Default Enum
-			{
-				... Is Default Enum
-			}

@@ -4,7 +4,6 @@ namespace ERP\Model\Cities;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use Carbon;
-use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -42,16 +41,13 @@ class CityModel extends Model
 		values(".$cityData.")");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $fileSizeArray['200'];
+			return "200:Data Inserted Successfully";
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return "500:Internal Server Error";
 		}
 	}
 	
@@ -74,16 +70,13 @@ class CityModel extends Model
 		where city_id = '".$cityId."'");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $fileSizeArray['200'];
+			return "200: Data Updated Successfully";
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return "500: Internal Server Error";
 		}
 	}
 	
@@ -105,12 +98,9 @@ class CityModel extends Model
 		from city_mst where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['204'];
+			return "204: No Content";
 		}
 		else
 		{
@@ -138,12 +128,9 @@ class CityModel extends Model
 		from city_mst where city_id='".$cityId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['404'];
+			return "404:Id Not Found";
 		}
 		else
 		{
@@ -171,12 +158,9 @@ class CityModel extends Model
 		from city_mst where state_abb='".$stateAbb."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['404'];
+			return "404:Id Not Found";
 		}
 		else
 		{
@@ -195,9 +179,6 @@ class CityModel extends Model
 		where city_id = '".$cityId."'");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
 			$branch = DB::statement("update branch_mst 
@@ -208,17 +189,17 @@ class CityModel extends Model
 			where city_id = '".$cityId."'");
 			if($branch==1 && $company==1)
 			{
-				return $fileSizeArray['200'];
+				return "200 :Data Deleted Successfully";
 			}
 			else
 			{
-				return $fileSizeArray['500'];
+				return "500 : Internal Server Error";
 			}
 			
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return "500 : Internal Server Error";
 		}
 	}
 }

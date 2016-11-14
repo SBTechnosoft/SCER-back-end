@@ -34,76 +34,65 @@ class StateProcessor extends BaseProcessor
 		$value = array();
 		$data=0;
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$msgArray = $exception->messageArrays();
-		
 		//trim an input 
 		$stateTransformer = new StateTransformer();
 		$tRequest = $stateTransformer->trimInsertData($this->request);
 		
-		if($tRequest==1)
+		//get data from trim array
+		$tStateAbb = $tRequest['state_abb'];
+		$tStateName = $tRequest['state_name'];
+		$tIsDisplay = $tRequest['is_display'];
+		
+		//validation
+		$stateValidate = new StateValidate();
+		$status = $stateValidate->validate($tRequest);
+		
+		//if form-data is valid then return status 'Success' otherwise return with error message
+		if($status=="Success")
 		{
-			return $msgArray['content'];
-		}	
-		else
-		{
-			//get data from trim array
-			$tStateAbb = $tRequest['state_abb'];
-			$tStateName = $tRequest['state_name'];
-			$tIsDisplay = $tRequest['is_display'];
-			
-			//validation
-			$stateValidate = new StateValidate();
-			$status = $stateValidate->validate($tRequest);
-			
-			//if form-data is valid then return status 'Success' otherwise return with error message
-			if($status=="Success")
+			foreach ($tRequest as $key => $value)
 			{
-				foreach ($tRequest as $key => $value)
+				if(!is_numeric($value))
 				{
-					if(!is_numeric($value))
+					if (strpos($value, '\'') !== FALSE)
 					{
-						if (strpos($value, '\'') !== FALSE)
-						{
-							$stateValue[$data]= str_replace("'","\'",$value);
-							$keyName[$data] = $key;
-						}
-						else
-						{
-							$stateValue[$data] = $value;
-							$keyName[$data] = $key;
-						}
+						$stateValue[$data]= str_replace("'","\'",$value);
+						$keyName[$data] = $key;
 					}
 					else
 					{
-						$stateValue[$data]= $value;
+						$stateValue[$data] = $value;
 						$keyName[$data] = $key;
 					}
-					$data++;
 				}
-				
-				// set data to the persistable object
-				for($data=0;$data<count($stateValue);$data++)
+				else
 				{
-					//set the data in persistable object
-					$statePersistable = new StatePersistable();	
-					$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
-					//make function name dynamically
-					$setFuncName = 'set'.$str;
-					$getFuncName[$data] = 'get'.$str;
-					$statePersistable->$setFuncName($stateValue[$data]);
-					$statePersistable->setName($getFuncName[$data]);
-					$statePersistable->setKey($keyName[$data]);
-					$stateArray[$data] = array($statePersistable);
+					$stateValue[$data]= $value;
+					$keyName[$data] = $key;
 				}
-				return $stateArray;
-			}		
-			else
+				$data++;
+			}
+			
+			// set data to the persistable object
+			for($data=0;$data<count($stateValue);$data++)
 			{
-				return $status;
-			}	
-		}			
+				//set the data in persistable object
+				$statePersistable = new StatePersistable();	
+				$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
+				//make function name dynamically
+				$setFuncName = 'set'.$str;
+				$getFuncName[$data] = 'get'.$str;
+				$statePersistable->$setFuncName($stateValue[$data]);
+				$statePersistable->setName($getFuncName[$data]);
+				$statePersistable->setKey($keyName[$data]);
+				$stateArray[$data] = array($statePersistable);
+			}
+			return $stateArray;
+		}		
+		else
+		{
+			return $status;
+		}		
     }
 	
 	/**
@@ -128,12 +117,12 @@ class StateProcessor extends BaseProcessor
 			
 			//get exception message
 			$exception = new ExceptionMessage();
-			$exceptionArray = $exception->messageArrays();
+			$fileSizeArray = $exception->messageArrays();
 		
 			//if data is not available in update request
 			if(count($_POST)==0)
 			{
-				$status = $exceptionArray['204'];
+				$status = $fileSizeArray['204'];
 				return $status;
 			}
 			//data is avalilable for update
@@ -150,57 +139,50 @@ class StateProcessor extends BaseProcessor
 					$stateTransformer = new StateTransformer();
 					$tRequest = $stateTransformer->trimUpdateData($key[$data],$value[$data]);
 					
-					if($tRequest==1)
+					//get key value from trim array
+					$tKeyValue[$data] = array_keys($tRequest[0])[0];
+					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
+					
+					//validation
+					$status = $stateValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
+					
+					//enter data is valid(one data validate status return)
+					if($status=="Success")
 					{
-						return $exceptionArray['content'];
+						//flag=0...then data is valid(consider one data at a time)
+						if($flag==0)
+						{
+							$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
+							//make function name dynamically
+							$setFuncName = 'set'.$str;
+							$getFuncName[$data] = 'get'.$str;
+							$statePersistable->$setFuncName($tValue[$data]);
+							$statePersistable->setName($getFuncName[$data]);
+							$statePersistable->setKey($tKeyValue[$data]);
+							$statePersistable->setStateAbb($stateAbb);
+							$stateArray[$data] = array($statePersistable);
+						}
 					}
+					//enter data is not valid
 					else
 					{
-						//get key value from trim array
-						$tKeyValue[$data] = array_keys($tRequest[0])[0];
-						$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
-						
-						//validation
-						$status = $stateValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
-						
-						//enter data is valid(one data validate status return)
-						if($status=="Success")
+						//if flag==1 then enter data is not valid ..so error return(consider one data at a time)
+						$flag=1;
+						if(!empty($status[0]))
 						{
-							//flag=0...then data is valid(consider one data at a time)
-							if($flag==0)
-							{
-								$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
-								//make function name dynamically
-								$setFuncName = 'set'.$str;
-								$getFuncName[$data] = 'get'.$str;
-								$statePersistable->$setFuncName($tValue[$data]);
-								$statePersistable->setName($getFuncName[$data]);
-								$statePersistable->setKey($tKeyValue[$data]);
-								$statePersistable->setStateAbb($stateAbb);
-								$stateArray[$data] = array($statePersistable);
-							}
+							$errorStatus[$errorCount]=$status[0];
+							$errorCount++;
 						}
-						//enter data is not valid
+					}
+					if($data==(count($_POST)-1))
+					{
+						if($flag==1)
+						{
+							return json_encode($errorStatus);
+						}
 						else
 						{
-							//if flag==1 then enter data is not valid ..so error return(consider one data at a time)
-							$flag=1;
-							if(!empty($status[0]))
-							{
-								$errorStatus[$errorCount]=$status[0];
-								$errorCount++;
-							}
-						}
-						if($data==(count($_POST)-1))
-						{
-							if($flag==1)
-							{
-								return json_encode($errorStatus);
-							}
-							else
-							{
-								return $stateArray;
-							}
+							return $stateArray;
 						}
 					}
 				}

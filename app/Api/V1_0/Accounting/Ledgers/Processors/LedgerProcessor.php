@@ -8,7 +8,6 @@ use ERP\Http\Requests;
 use Illuminate\Http\Response;
 use ERP\Core\Accounting\Ledgers\Validations\LedgerValidate;
 use ERP\Api\V1_0\Accounting\Ledgers\Transformers\LedgerTransformer;
-use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -99,17 +98,13 @@ class LedgerProcessor extends BaseProcessor
 		$ledgerValidate = new LedgerValidate();
 		$status;
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
-		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		// update
 		if($requestMethod == 'POST')
 		{
 			//if data is not available in update request
 			if(count($_POST)==0)
 			{
-				$status = $fileSizeArray['204'];
+				$status = "204: No Content Found For Update";
 				return $status;
 			}
 			//data is avalilable for update
@@ -131,7 +126,7 @@ class LedgerProcessor extends BaseProcessor
 					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
 					
 					//validation
-					$status = $ledgerValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
+					$status = $ledgerValidate->validateUpdateData($key[$data],$value[$data],$tRequest[0]);
 					//enter data is valid(one data validate status return)
 					if($status=="Success")
 					{
@@ -160,7 +155,7 @@ class LedgerProcessor extends BaseProcessor
 							$getFuncName[$data] = 'get'.$str;
 							$ledgerPersistable->$setFuncName($ledgerValue[$data]);
 							$ledgerPersistable->setName($getFuncName[$data]);
-							$ledgerPersistable->setKey($tKeyValue[$data]);
+							$ledgerPersistable->setKey($key[$data]);
 							$ledgerPersistable->setLedgerId($ledgerId);
 							$ledgerArray[$data] = array($ledgerPersistable);
 						}

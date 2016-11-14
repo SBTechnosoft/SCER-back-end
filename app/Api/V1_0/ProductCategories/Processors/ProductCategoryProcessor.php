@@ -8,7 +8,6 @@ use ERP\Http\Requests;
 use Illuminate\Http\Response;
 use ERP\Core\ProductCategories\Validations\ProductCategoryValidate;
 use ERP\Api\V1_0\ProductCategories\Transformers\ProductCategoryTransformer;
-use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -72,6 +71,7 @@ class ProductCategoryProcessor extends BaseProcessor
 				}
 				$data++;
 			}
+			
 			// set data to the persistable object
 			for($data=0;$data<count($productCatValue);$data++)
 			{
@@ -99,10 +99,6 @@ class ProductCategoryProcessor extends BaseProcessor
 		$errorStatus=array();
 		$flag=0;
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
-		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		// update
 		if($requestMethod == 'POST')
 		{
@@ -114,13 +110,12 @@ class ProductCategoryProcessor extends BaseProcessor
 			//if data is not available in update request
 			if(count($_POST)==0)
 			{
-				$status = $fileSizeArray['204'];
+				$status = "204: No Content Found For Update";
 				return $status;
 			}
 			//data is avalilable for update
 			else
 			{
-				
 				for($data=0;$data<count($_POST);$data++)
 				{
 					//data get from body
@@ -137,7 +132,7 @@ class ProductCategoryProcessor extends BaseProcessor
 					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
 					
 					//validation
-					$status = $productCategoryValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
+					$status = $productCategoryValidate->validateUpdateData($key[$data],$value[$data],$tRequest[0]);
 					
 					//enter data is valid(one data validate status return)
 					if($status=="Success")
@@ -165,10 +160,10 @@ class ProductCategoryProcessor extends BaseProcessor
 							//make function name dynamically
 							$setFuncName = 'set'.$str;
 							$getFuncName[$data] = 'get'.$str;
-							$productCatPersistable->$setFuncName($productValue[$data]);
+							$productCatPersistable->$setFuncName($tValue[$data]);
 							$productCatPersistable->setName($getFuncName[$data]);
-							$productCatPersistable->setKey($tKeyValue[$data]);
-							$productCatPersistable->setProductCategoryId($productCatId);
+							$productCatPersistable->setKey($key[$data]);
+							$productCatPersistable->setProductCatId($productCatId);
 							$productCatArray[$data] = array($productCatPersistable);
 						}
 					}

@@ -8,8 +8,6 @@ use ERP\Api\V1_0\Support\BaseController;
 use ERP\Api\V1_0\ProductCategories\Processors\ProductCategoryProcessor;
 use ERP\Core\ProductCategories\Persistables\ProductCategoryPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
-use ERP\Exceptions\ExceptionMessage;
-use ERP\Model\ProductCategories\ProductCategoryModel;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -17,7 +15,7 @@ class ProductCategoryController extends BaseController implements ContainerInter
 {
 	/**
      * @var ProductCategoryService
-     * @var processor
+     * @var Processor
      * @var name
      * @var request
      * @var ProductCategoryPersistable
@@ -53,10 +51,10 @@ class ProductCategoryController extends BaseController implements ContainerInter
 		// insert
 		if($requestMethod == 'POST')
 		{
-			$processor = new ProductCategoryProcessor();
+			$Processor = new ProductCategoryProcessor();
 			$productCategoryPersistable = new ProductCategoryPersistable();		
 			$productCategoryService= new ProductCategoryService();			
-			$productCategoryPersistable = $processor->createPersistable($this->request);
+			$productCategoryPersistable = $Processor->createPersistable($this->request);
 			if($productCategoryPersistable[0][0]=='[')
 			{
 				return $productCategoryPersistable;
@@ -75,7 +73,7 @@ class ProductCategoryController extends BaseController implements ContainerInter
 	
 	/**
      * get the specified resource.
-     * @param  int  $productCategoryId
+     * @param  int  $companyId
      */
     public function getData($productCategoryId=null)
     {
@@ -100,33 +98,23 @@ class ProductCategoryController extends BaseController implements ContainerInter
 	public function update(Request $request,$productCategoryId)
     {    
 		$this->request = $request;
-		$processor = new ProductCategoryProcessor();
+		$Processor = new ProductCategoryProcessor();
 		$productCategoryPersistable = new ProductCategoryPersistable();		
-		$productCategoryService= new ProductCategoryService();	
-		$productCategoryModel = new ProductCategoryModel();		
-		$result = $productCategoryModel->getData($productCategoryId);
-		
-		// get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		if(strcmp($result,$fileSizeArray['404'])==0)
+		$productCategoryService= new ProductCategoryService();			
+		$productCategoryPersistable = $Processor->createPersistableChange($this->request,$productCategoryId);
+		if($productCategoryPersistable=="204: No Content Found For Update")
 		{
-			return $result;
+			return $productCategoryPersistable;
+		}
+		else if(is_array($productCategoryPersistable))
+		{
+			$status = $productCategoryService->update($productCategoryPersistable);
+			return $status;
 		}
 		else
 		{
-			$productCategoryPersistable = $processor->createPersistableChange($this->request,$productCategoryId);
-			if(is_array($productCategoryPersistable))
-			{
-				$status = $productCategoryService->update($productCategoryPersistable);
-				return $status;
-			}
-			else
-			{
-				return $productCategoryPersistable;
-			}
+			return $productCategoryPersistable;
 		}
-		
 	}
 	
     /**
@@ -136,24 +124,11 @@ class ProductCategoryController extends BaseController implements ContainerInter
     public function Destroy(Request $request,$productCategoryId)
     {
         $this->request = $request;
-		$processor = new ProductCategoryProcessor();
+		$Processor = new ProductCategoryProcessor();
 		$productCategoryPersistable = new ProductCategoryPersistable();		
 		$productCategoryService= new ProductCategoryService();			
-		$productCategoryModel = new ProductCategoryModel();		
-		$result = $productCategoryModel->getData($productCategoryId);
-		
-		// get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		if(strcmp($result,$fileSizeArray['404'])==0)
-		{
-			return $result;
-		}
-		else
-		{
-			$productCategoryPersistable = $processor->createPersistableChange($this->request,$productCategoryId);
-			$status = $productCategoryService->delete($productCategoryPersistable);
-			return $status;
-		}
+		$productCategoryPersistable = $Processor->createPersistableChange($this->request,$productCategoryId);
+		$status = $productCategoryService->delete($productCategoryPersistable);
+		return $status;
     }
 }

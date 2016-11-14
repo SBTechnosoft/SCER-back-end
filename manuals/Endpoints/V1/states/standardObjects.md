@@ -3,7 +3,7 @@
             {
                 "stateAbb": char,
                 "stateName": string,
-				"isDisplay": Enum,
+				"isDisplay": bool,
 				"createdAt" timestamp,
 				"updatedAt": datetime
                 
@@ -13,13 +13,9 @@
 
  			{
             	"stateName": string,
-				"isDisplay": Enum,
+				"isDisplay": bool,
 				"createdAt" timestamp,
 				"updatedAt": datetime,
 				"deletedAt":datetime	
             }
-			
-#####  Is Display Enum
-			{
-				... Is Display Enum
-			}
+

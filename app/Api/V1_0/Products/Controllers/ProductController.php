@@ -8,8 +8,6 @@ use ERP\Api\V1_0\Support\BaseController;
 use ERP\Api\V1_0\Products\Processors\ProductProcessor;
 use ERP\Core\Products\Persistables\ProductPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
-use ERP\Exceptions\ExceptionMessage;
-use ERP\Model\Products\ProductModel;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -17,13 +15,13 @@ class ProductController extends BaseController implements ContainerInterface
 {
 	/**
      * @var productService
-     * @var processor
+     * @var Processor
      * @var name
      * @var request
      * @var productPersistable
      */
 	private $productService;
-	private $processor;
+	private $Processor;
 	private $request;
 	private $productPersistable;	
 	
@@ -52,10 +50,10 @@ class ProductController extends BaseController implements ContainerInterface
 		// insert
 		if($requestMethod == 'POST')
 		{
-			$processor = new ProductProcessor();
+			$Processor = new ProductProcessor();
 			$productPersistable = new ProductPersistable();		
 			$productService= new ProductService();			
-			$productPersistable = $processor->createPersistable($this->request);
+			$productPersistable = $Processor->createPersistable($this->request);
 			if($productPersistable[0][0]=='[')
 			{
 				return $productPersistable;
@@ -134,31 +132,22 @@ class ProductController extends BaseController implements ContainerInterface
 	public function update(Request $request,$productId)
     {    
 		$this->request = $request;
-		$processor = new ProductProcessor();
+		$Processor = new ProductProcessor();
 		$productPersistable = new ProductPersistable();		
 		$productService= new ProductService();			
-		$productModel = new ProductModel();
-		$result = $productModel->getData($productId);
-		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		if(strcmp($result,$fileSizeArray['404'])==0)
+		$productPersistable = $Processor->createPersistableChange($this->request,$productId);
+		if($productPersistable=="204: No Content Found For Update")
 		{
-			return $result;
+			return $productPersistable;
+		}
+		else if(is_array($productPersistable))
+		{
+			$status = $productService->update($productPersistable);
+			return $status;
 		}
 		else
 		{
-			$productPersistable = $processor->createPersistableChange($this->request,$productId);
-			if(is_array($productPersistable))
-			{
-				$status = $productService->update($productPersistable);
-				return $status;
-			}
-			else
-			{
-				return $productPersistable;
-			}
+			return $productPersistable;
 		}
 	}
 	
@@ -169,25 +158,12 @@ class ProductController extends BaseController implements ContainerInterface
     public function Destroy(Request $request,$productId)
     {
         $this->request = $request;
-		$processor = new ProductProcessor();
+		$Processor = new ProductProcessor();
 		$productPersistable = new ProductPersistable();		
-		$productService= new ProductService();		
-		$productModel = new ProductModel();
-		$result = $productModel->getData($productId);
-		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		if(strcmp($result,$fileSizeArray['404'])==0)
-		{
-			return $result;
-		}
-		else
-		{		
-			$productPersistable = $processor->createPersistableChange($this->request,$productId);
-			$productService->create($productPersistable);
-			$status = $productService->delete($productPersistable);
-			return $status;
-		}
+		$productService= new ProductService();			
+		$productPersistable = $Processor->createPersistableChange($this->request,$productId);
+		$productService->create($productPersistable);
+		$status = $productService->delete($productPersistable);
+		return $status;
     }
 }

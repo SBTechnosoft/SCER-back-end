@@ -16,12 +16,12 @@ class InvoiceController extends BaseController implements ContainerInterface
 {
 	/**
      * @var invoiceService
-     * @var processor
+     * @var Processor
      * @var request
      * @var invoicePersistable
      */
 	private $invoiceService;
-	private $processor;
+	private $Processor;
 	private $request;
 	private $invoicePersistable;	
 	
@@ -50,10 +50,10 @@ class InvoiceController extends BaseController implements ContainerInterface
 		// insert
 		if($requestMethod == 'POST')
 		{
-			$processor = new InvoiceProcessor();
+			$Processor = new InvoiceProcessor();
 			$invoicePersistable = new InvoicePersistable();		
 			$invoiceService= new InvoiceService();			
-			$invoicePersistable = $processor->createPersistable($this->request);
+			$invoicePersistable = $Processor->createPersistable($this->request);
 			if($invoicePersistable[0][0]=='[')
 			{
 				return $invoicePersistable;

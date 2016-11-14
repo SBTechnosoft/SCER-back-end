@@ -4,7 +4,6 @@ namespace ERP\Model\Branches;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use Carbon;
-use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -43,16 +42,13 @@ class BranchModel extends Model
 		values(".$branchData.")");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $fileSizeArray['200'];
+			return "200:Data Inserted Successfully";
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return "500:Internal Server Error";
 		}
 	}
 	/**
@@ -74,16 +70,13 @@ class BranchModel extends Model
 		where branch_id = '".$branchId."'");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $fileSizeArray['200'];
+			return "200: Data Updated Successfully";
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return "500: Internal Server Error";
 		}
 	}
 	
@@ -111,12 +104,9 @@ class BranchModel extends Model
 		from branch_mst where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['204'];
+			return "204: No Content";
 		}
 		else
 		{
@@ -150,12 +140,9 @@ class BranchModel extends Model
 		from branch_mst where branch_id = ".$branchId." and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['404'];
+			return "404:Id Not Found";
 		}
 		else
 		{
@@ -187,12 +174,9 @@ class BranchModel extends Model
 		from branch_mst where company_id ='".$companyId."' and  deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['204'];
+			return "204: No Content";
 		}
 		else
 		{
@@ -211,9 +195,6 @@ class BranchModel extends Model
 		where branch_id=".$branchId);
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
 			$product = DB::statement("update branch_mst 
@@ -221,16 +202,16 @@ class BranchModel extends Model
 			where branch_id=".$branchId);
 			if($product==1)
 			{
-				return $fileSizeArray['200'];
+				return "200 :Data Deleted Successfully";
 			}
 			else
 			{
-				return $fileSizeArray['500'];
+				return "500 : Internal Server Error";
 			}
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return "500 : Internal Server Error";
 		}
 	}
 }

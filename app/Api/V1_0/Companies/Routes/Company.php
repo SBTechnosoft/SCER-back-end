@@ -16,7 +16,6 @@ class Company implements RouteRegistrarInterface
      */
     public function register(RegistrarInterface $Registrar)
     {
-		
 		// all the possible get request 
 		Route::group(['as' => 'get'], function ()
 		{

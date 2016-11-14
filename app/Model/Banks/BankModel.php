@@ -3,7 +3,6 @@ namespace ERP\Model\Banks;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
-use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -24,12 +23,9 @@ class BankModel extends Model
 		from bank_mst where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['204'];
+			return "204: No Content";
 		}
 		else
 		{
@@ -51,12 +47,9 @@ class BankModel extends Model
 		from bank_mst where bank_id = ".$bankId." and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['404'];
+			return "404:Id Not Found";
 		}
 		else
 		{

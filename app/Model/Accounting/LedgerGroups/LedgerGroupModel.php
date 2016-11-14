@@ -3,7 +3,6 @@ namespace ERP\Model\Accounting\LedgerGroups;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
-use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -19,21 +18,15 @@ class LedgerGroupModel extends Model
 	{	
 		DB::beginTransaction();		
 		$raw = DB::select("select 
-		ledger_group_id,
-		ledger_group_name,
-		alias,
-		under_what,
-		nature_of_group,
-		affected_group_profit
+		ledger_grp_id,
+		ledger_grp_name,
+		under_what
 		from ledger_grp_mst");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['204'];
+			return "204: No Content";
 		}
 		else
 		{
@@ -50,21 +43,15 @@ class LedgerGroupModel extends Model
 	{		
 		DB::beginTransaction();
 		$raw = DB::select("select 
-		ledger_group_id,
-		ledger_group_name,
-		alias,
-		under_what,
-		nature_of_group,
-		affected_group_profit
-		from ledger_grp_mst where ledger_group_id = ".$ledgerGrpId);
+		ledger_grp_id,
+		ledger_grp_name,
+		under_what
+		from ledger_grp_mst where ledger_grp_id = ".$ledgerGrpId);
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['404'];
+			return "404:Id Not Found";
 		}
 		else
 		{

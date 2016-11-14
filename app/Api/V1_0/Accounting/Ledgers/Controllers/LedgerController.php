@@ -9,8 +9,6 @@ use ERP\Api\V1_0\Support\BaseController;
 use ERP\Api\V1_0\Accounting\Ledgers\Processors\LedgerProcessor;
 use ERP\Core\Accounting\Ledgers\Persistables\LedgerPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
-use ERP\Exceptions\ExceptionMessage;
-use ERP\Model\Accounting\Ledgers\LedgerModel;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -18,12 +16,12 @@ class LedgerController extends BaseController implements ContainerInterface
 {
 	/**
      * @var ledgerService
-     * @var processor
+     * @var Processor
      * @var request
      * @var ledgerPersistable
      */
 	private $ledgerService;
-	private $processor;
+	private $Processor;
 	private $request;
 	private $ledgerPersistable;	
 	
@@ -53,7 +51,7 @@ class LedgerController extends BaseController implements ContainerInterface
 		if($requestMethod == 'POST')
 		{
 			$processor = new LedgerProcessor();
-			$ledgerPersistable = new LedgerPersistable();
+			$ledgerPersistable = new LedgerPersistable();		
 			$ledgerPersistable = $processor->createPersistable($this->request);
 			if($ledgerPersistable[0][0]=='[')
 			{
@@ -119,32 +117,23 @@ class LedgerController extends BaseController implements ContainerInterface
 	public function update(Request $request,$ledgerId)
     {    
 		$this->request = $request;
-		$processor = new LedgerProcessor();
+		$Processor = new LedgerProcessor();
 		$ledgerPersistable = new LedgerPersistable();		
-		$ledgerService= new LedgerService();		
-		$ledgerModel = new LedgerModel();
-		$result = $ledgerModel->getData($ledgerId);
-		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		if(strcmp($result,$fileSizeArray['404'])==0)
+		$ledgerService= new LedgerService();			
+		$ledgerPersistable = $Processor->createPersistableChange($this->request,$ledgerId);
+		//here two array and string is return at a time
+		if($ledgerPersistable=="204: No Content Found For Update")
 		{
-			return $result;
+			return $ledgerPersistable;
+		}
+		else if(is_array($ledgerPersistable))
+		{
+			$status = $ledgerService->update($ledgerPersistable);
+			return $status;
 		}
 		else
 		{
-			$ledgerPersistable = $processor->createPersistableChange($this->request,$ledgerId);
-			//here two array and string is return at a time
-			if(is_array($ledgerPersistable))
-			{
-				$status = $ledgerService->update($ledgerPersistable);
-				return $status;
-			}
-			else
-			{
-				return $ledgerPersistable;
-			}
+			return $ledgerPersistable;
 		}
 	}
 	
@@ -158,23 +147,10 @@ class LedgerController extends BaseController implements ContainerInterface
         $this->request = $request;
 		$Processor = new LedgerProcessor();
 		$ledgerPersistable = new LedgerPersistable();		
-		$ledgerService= new LedgerService();	
-		$ledgerModel = new LedgerModel();
-		$result = $ledgerModel->getData($ledgerId);
-		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		if(strcmp($result,$fileSizeArray['404'])==0)
-		{
-			return $result;
-		}
-		else
-		{		
-			$ledgerPersistable = $Processor->createPersistableChange($this->request,$ledgerId);
-			$ledgerService->create($ledgerPersistable);
-			$status = $ledgerService->delete($ledgerPersistable);
-			return $status;
-		}
+		$ledgerService= new LedgerService();			
+		$ledgerPersistable = $Processor->createPersistableChange($this->request,$ledgerId);
+		$ledgerService->create($ledgerPersistable);
+		$status = $ledgerService->delete($ledgerPersistable);
+		return $status;
     }
 }

@@ -4,7 +4,6 @@ namespace ERP\Model\ProductGroups;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use Carbon;
-use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -43,16 +42,13 @@ class ProductGroupModel extends Model
 		values(".$productGrpData.")");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $fileSizeArray['200'];
+			return "200:Data Inserted Successfully";
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return "500:Internal Server Error";
 		}
 	}
 	/**
@@ -74,16 +70,13 @@ class ProductGroupModel extends Model
 		where product_group_id = '".$productGrpId."'");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $fileSizeArray['200'];
+			return "200: Data Updated Successfully";
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return "500: Internal Server Error";
 		}
 	}
 	
@@ -97,7 +90,7 @@ class ProductGroupModel extends Model
 		$raw = DB::select("select 
 		product_group_id,
 		product_group_name,
-		product_group_description,
+		product_group_desc,
 		is_display,
 		product_group_parent_id,
 		created_at,
@@ -105,12 +98,9 @@ class ProductGroupModel extends Model
 		from product_group_mst where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['204'];
+			return "204: No Content";
 		}
 		else
 		{
@@ -130,7 +120,7 @@ class ProductGroupModel extends Model
 		$raw = DB::select("select 
 		product_group_id,
 		product_group_name,
-		product_group_description,
+		product_group_desc,
 		is_display,
 		product_group_parent_id,
 		created_at,
@@ -138,12 +128,9 @@ class ProductGroupModel extends Model
 		from product_group_mst where product_group_id = '".$productGrpId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['404'];
+			return "404:Id Not Found";
 		}
 		else
 		{
@@ -161,10 +148,6 @@ class ProductGroupModel extends Model
 		set deleted_at='".$mytime."'
 		where product_group_id = '".$productGrpId."'");
 		DB::commit();
-		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
 			$productGrp = DB::statement("update product_mst 
@@ -172,17 +155,17 @@ class ProductGroupModel extends Model
 			where product_group_id = '".$productGrpId."'");
 			if($productGrp==1)
 			{
-				return $fileSizeArray['200'];
+				return "200 :Data Deleted Successfully";
 			}
 			else
 			{
-				return $fileSizeArray['500'];
+				return "500 : Internal Server Error";
 			}
 			
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return "500 : Internal Server Error";
 		}
 	}
 }

@@ -1,6 +1,6 @@
 ##### Creates QuotationNumebrs
 
-##### `POST /settings/quotation-numebrs/`
+##### `POST /settings/QuotationNumebrs/`
 + Header
 	- Authentication Token
 
@@ -20,7 +20,7 @@
 
 ##### Gets QuotationNumber           
             
-##### `GET /settings/quotation-numbers/{quotationId}/`
+##### `GET /settings/QuotationNumebrs/{QuotationId}/`
 + Header 
 	- Authentication Token
 
@@ -32,7 +32,7 @@
 
 **NOTES:** List the Quotation Number as per particular Quotation id 
 
-##### `GET /settings/quotation-numbers/`
+##### `GET /settings/QuotationNumebrs/`
 + Header
 	- Authentication Token
 
@@ -45,7 +45,7 @@
 **NOTES:** List all the QuotationNumber available in the system
 
 
-##### `GET /settings/quotation-numbers/company/{companyId}`
+##### `GET /settings/QuotationNumebrs/company/{companyId}`
 + Header
 	- Authentication Token
 

@@ -4,7 +4,6 @@ namespace ERP\Model\Settings\Templates;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use Carbon;
-use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -32,16 +31,15 @@ class TemplateModel extends Model
 		where template_id = '".$templateId."'");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $fileSizeArray['200'];
+			
+			return "200: Data Updated Successfully";
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			
+			return "500: Internal Server Error";
 		}
 	}
 	
@@ -62,12 +60,9 @@ class TemplateModel extends Model
 		from template_mst where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['204'];
+			return "204: No Content";
 		}
 		else
 		{
@@ -91,15 +86,12 @@ class TemplateModel extends Model
 		template_type,
 		updated_at,
 		created_at
-		from template_mst where template_id ='".$templateId."' and deleted_at='0000-00-00 00:00:00'");
+		from template_mst where template_id = ".$templateId." where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['404'];
+			return "404:Id Not Found";
 		}
 		else
 		{

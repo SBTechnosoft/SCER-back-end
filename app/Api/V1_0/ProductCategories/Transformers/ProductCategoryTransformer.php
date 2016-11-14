@@ -14,10 +14,10 @@ class ProductCategoryTransformer
      */
     public function trimInsertData(Request $request)
     {
-		$productCatName = $request->input('productCategoryName'); 
-		$productCatDesc = $request->input('productCategoryDescription'); 
-		$isDisplay = $request->input('isDisplay'); 
-		$productParentCatId = $request->input('productParentCategoryId');  
+		$productCatName = $request->input('product_cat_name'); 
+		$productCatDesc = $request->input('product_cat_desc'); 
+		$isDisplay = $request->input('is_display'); 
+		$productParentCatId = $request->input('product_parent_cat_id');  
 		//trim an input
 		$tProductCatName = trim($productCatName);
 		$tProductCatDesc = trim($productCatDesc);
@@ -25,10 +25,10 @@ class ProductCategoryTransformer
 		$tProductParentCatId= trim($productParentCatId);
 		//make an array
 		$data = array();
-		$data['product_category_name'] = $tProductCatName;
-		$data['product_category_description'] = $tProductCatDesc;
+		$data['product_cat_name'] = $tProductCatName;
+		$data['product_cat_desc'] = $tProductCatDesc;
 		$data['is_display'] = $tIsDisplay;
-		$data['product_parent_category_id'] = $tProductParentCatId;
+		$data['product_parent_cat_id'] = $tProductParentCatId;
 		return $data;
 	}
 	
@@ -41,23 +41,10 @@ class ProductCategoryTransformer
 		$tProductCatArray = array();
 		$productCatValue;
 		$keyValue = func_get_arg(0);
-		$convertedValue="";
-		for($asciiChar=0;$asciiChar<strlen($keyValue);$asciiChar++)
-		{
-			if(ord($keyValue[$asciiChar])<=90 && ord($keyValue[$asciiChar])>=65) 
-			{
-				$convertedValue1 = "_".chr(ord($keyValue[$asciiChar])+32);
-				$convertedValue=$convertedValue.$convertedValue1;
-			}
-			else
-			{
-				$convertedValue=$convertedValue.$keyValue[$asciiChar];
-			}
-		}
 		$productCatValue = func_get_arg(1);
 		for($data=0;$data<count($productCatValue);$data++)
 		{
-			$tProductCatArray[$data]= array($convertedValue=> trim($productCatValue));
+			$tProductCatArray[$data]= array($keyValue=> trim($productCatValue));
 		}
 		return $tProductCatArray;
 	}

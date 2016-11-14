@@ -4,7 +4,6 @@ namespace ERP\Model\ProductCategories;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use Carbon;
-use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -43,16 +42,13 @@ class ProductCategoryModel extends Model
 		values(".$productCatData.")");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $fileSizeArray['200'];
+			return "200:Data Inserted Successfully";
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return "500:Internal Server Error";
 		}
 	}
 	/**
@@ -71,20 +67,17 @@ class ProductCategoryModel extends Model
 		DB::beginTransaction();
 		$raw = DB::statement("update product_category_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
-		where product_category_id ='".$productCatId."'");
+		where product_cat_id ='".$productCatId."'");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
 			
-			return $fileSizeArray['200'];
+			return "200: Data Updated Successfully";
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return "500: Internal Server Error";
 		}
 	}
 	
@@ -96,22 +89,19 @@ class ProductCategoryModel extends Model
 	{	
 		DB::beginTransaction();		
 		$raw = DB::select("select 
-		product_category_id,
-		product_category_name,
-		product_category_description,
+		product_cat_id,
+		product_cat_name,
+		product_cat_desc,
 		is_display,
-		product_parent_category_id,
+		product_parent_cat_id,
 		created_at,
 		updated_at
 		from product_category_mst where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['204'];
+			return "204: No Content";
 		}
 		else
 		{
@@ -129,22 +119,19 @@ class ProductCategoryModel extends Model
 	{		
 		DB::beginTransaction();
 		$raw = DB::select("select 
-		product_category_id,
-		product_category_name,
-		product_category_description,
+		product_cat_id,
+		product_cat_name,
+		product_cat_desc,
 		is_display,
-		product_parent_category_id,
+		product_parent_cat_id,
 		created_at,
 		updated_at
-		from product_category_mst where product_category_id = '".$productCategoryId."' and deleted_at='0000-00-00 00:00:00'");
+		from product_category_mst where product_cat_id = '".$productCategoryId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['404'];
+			return "404:Id Not Found";
 		}
 		else
 		{
@@ -160,30 +147,26 @@ class ProductCategoryModel extends Model
 		$mytime = Carbon\Carbon::now();
 		$raw = DB::statement("update product_category_mst 
 		set deleted_at='".$mytime."'
-		where product_category_id = '".$productCatId."'");
+		where product_cat_id = '".$productCatId."'");
 		DB::commit();
-		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
 			$product = DB::statement("update product_mst 
 			set deleted_at='".$mytime."'
-			where product_category_id = '".$productCatId."'");
+			where product_cat_id = '".$productCatId."'");
 			if($product==1)
 			{
-				return $fileSizeArray['200'];
+				return "200 :Data Deleted Successfully";
 			}
 			else
 			{
-				return $fileSizeArray['500'];
+				return "500 : Internal Server Error";
 			}
 			
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return "500 : Internal Server Error";
 		}
 	}
 }

@@ -8,7 +8,6 @@ use ERP\Http\Requests;
 use Illuminate\Http\Response;
 use ERP\Core\Branches\Validations\BranchValidate;
 use ERP\Api\V1_0\Branches\Transformers\BranchTransformer;
-use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -34,69 +33,57 @@ class BranchProcessor extends BaseProcessor
 		$keyName = array();
 		$value = array();
 		$data=0;
-		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$msgArray = $exception->messageArrays();
-		
 		//trim an input 
 		$branchTransformer = new BranchTransformer();
 		$tRequest = $branchTransformer->trimInsertData($this->request);
 		
-		if($tRequest==1)
+		//validation
+		$branchValidate = new BranchValidate();
+		$status = $branchValidate->validate($tRequest);
+		if($status=="Success")
 		{
-			return $msgArray['content'];
-		}	
-		else
-		{
-			//validation
-			$branchValidate = new BranchValidate();
-			$status = $branchValidate->validate($tRequest);
-			if($status=="Success")
+			foreach ($tRequest as $key => $value)
 			{
-				foreach ($tRequest as $key => $value)
+				if(!is_numeric($value))
 				{
-					if(!is_numeric($value))
+					if (strpos($value, '\'') !== FALSE)
 					{
-						if (strpos($value, '\'') !== FALSE)
-						{
-							$branchValue[$data]= str_replace("'","\'",$value);
-							$keyName[$data] = $key;
-						}
-						else
-						{
-							$branchValue[$data] = $value;
-							$keyName[$data] = $key;
-						}
+						$branchValue[$data]= str_replace("'","\'",$value);
+						$keyName[$data] = $key;
 					}
 					else
 					{
-						$branchValue[$data]= $value;
+						$branchValue[$data] = $value;
 						$keyName[$data] = $key;
 					}
-					$data++;
 				}
-				
-				// set data to the persistable object
-				for($data=0;$data<count($branchValue);$data++)
+				else
 				{
-					//set the data in persistable object
-					$branchPersistable = new BranchPersistable();	
-					$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
-					//make function name dynamically
-					$setFuncName = 'set'.$str;
-					$getFuncName[$data] = 'get'.$str;
-					$branchPersistable->$setFuncName($branchValue[$data]);
-					$branchPersistable->setName($getFuncName[$data]);
-					$branchPersistable->setKey($keyName[$data]);
-					$branchArray[$data] = array($branchPersistable);
+					$branchValue[$data]= $value;
+					$keyName[$data] = $key;
 				}
-				return $branchArray;
+				$data++;
 			}
-			else
+			
+			// set data to the persistable object
+			for($data=0;$data<count($branchValue);$data++)
 			{
-				return $status;
+				//set the data in persistable object
+				$branchPersistable = new BranchPersistable();	
+				$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
+				//make function name dynamically
+				$setFuncName = 'set'.$str;
+				$getFuncName[$data] = 'get'.$str;
+				$branchPersistable->$setFuncName($branchValue[$data]);
+				$branchPersistable->setName($getFuncName[$data]);
+				$branchPersistable->setKey($keyName[$data]);
+				$branchArray[$data] = array($branchPersistable);
 			}
+			return $branchArray;
+		}
+		else
+		{
+			return $status;
 		}
 	}
 	public function createPersistableChange(Request $request,$branchId)
@@ -110,11 +97,6 @@ class BranchProcessor extends BaseProcessor
 		$branchValidate = new BranchValidate();
 		$status;
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
-		
-		//get exception message 
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
-			
 		// update
 		if($requestMethod == 'POST')
 		{
@@ -139,71 +121,64 @@ class BranchProcessor extends BaseProcessor
 					$tRequest = $branchTransformer->trimUpdateData($key[$data],$value[$data]);
 					//get data from trim array
 					
-					if($tRequest==1)
+					$tKeyValue[$data] = array_keys($tRequest[0])[0];
+					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
+					
+					//validation
+					$status = $branchValidate->validateUpdateData($key[$data],$value[$data],$tRequest[0]);
+					//enter data is valid(one data validate status return)
+					if($status=="Success")
 					{
-						return $exceptionArray['content'];
-					}
-					else
-					{
-						$tKeyValue[$data] = array_keys($tRequest[0])[0];
-						$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
-						
-						//validation
-						$status = $branchValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
-						//enter data is valid(one data validate status return)
-						if($status=="Success")
+						// check data is string or not
+						if(!is_numeric($tValue[$data]))
 						{
-							// check data is string or not
-							if(!is_numeric($tValue[$data]))
+							if (strpos($tValue[$data], '\'') !== FALSE)
 							{
-								if (strpos($tValue[$data], '\'') !== FALSE)
-								{
-									$branchValue[$data] = str_replace("'","\'",$tValue[$data]);
-								}
-								else
-								{
-									$branchValue[$data] = $tValue[$data];
-								}
+								$branchValue[$data] = str_replace("'","\'",$tValue[$data]);
 							}
 							else
 							{
 								$branchValue[$data] = $tValue[$data];
 							}
-							//flag=0...then data is valid(consider one data at a time)
-							if($flag==0)
-							{
-								$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
-								//make function name dynamically
-								$setFuncName = 'set'.$str;
-								$getFuncName[$data] = 'get'.$str;
-								$branchPersistable->$setFuncName($branchValue[$data]);
-								$branchPersistable->setName($getFuncName[$data]);
-								$branchPersistable->setKey($tKeyValue[$data]);
-								$branchPersistable->setBranchId($branchId);
-								$branchArray[$data] = array($branchPersistable);
-							}
 						}
-						//enter data is not valid
 						else
 						{
-							//if flag==1 then enter data is not valid ..so error return(consider one data at a time)
-							$flag=1;
-							if(!empty($status[0]))
-							{
-								$errorStatus[$errorCount]=$status[0];
-								$errorCount++;
-							}
+							$branchValue[$data] = $tValue[$data];
 						}
-						if($data==(count($_POST)-1))
+						//flag=0...then data is valid(consider one data at a time)
+						if($flag==0)
 						{
-							if($flag==1)
-							{
-								return json_encode($errorStatus);
-							}
-							else
-							{
-								return $branchArray;
-							}
+							$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
+							//make function name dynamically
+							$setFuncName = 'set'.$str;
+							$getFuncName[$data] = 'get'.$str;
+							$branchPersistable->$setFuncName($branchValue[$data]);
+							$branchPersistable->setName($getFuncName[$data]);
+							$branchPersistable->setKey($key[$data]);
+							$branchPersistable->setBranchId($branchId);
+							$branchArray[$data] = array($branchPersistable);
+						}
+					}
+					//enter data is not valid
+					else
+					{
+						//if flag==1 then enter data is not valid ..so error return(consider one data at a time)
+						$flag=1;
+						if(!empty($status[0]))
+						{
+							$errorStatus[$errorCount]=$status[0];
+							$errorCount++;
+						}
+					}
+					if($data==(count($_POST)-1))
+					{
+						if($flag==1)
+						{
+							return json_encode($errorStatus);
+						}
+						else
+						{
+							return $branchArray;
 						}
 					}
 				}

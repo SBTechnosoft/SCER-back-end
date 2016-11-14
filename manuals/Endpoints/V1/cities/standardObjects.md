@@ -6,7 +6,7 @@
 				"state": {
                     ... Standard State Object
 				},
-				"isDisplay": Enum,
+				"isDisplay": enum,
 				"createdAt" timestamp,
 				"updatedAt": datetime
                 
@@ -18,12 +18,9 @@
  			{
             	"cityName": string,
             	"stateAbb": char,
-				"isDisplay": Enum,
+				"isDisplay": bool,
 				"createdAt" timestamp,
 				"updatedAt": datetime,
 				"deletedAt":datetime	
             }
-##### Is Display Enum
-			{
-				... Is Display Enum
-			}
+

@@ -15,11 +15,11 @@ class QuotationTransformer
     public function trimInsertData(Request $request)
     {
 		//data get from body
-		$quotationLabel = $request->input('quotationLabel'); 
-		$quotationType = $request->input('quotationType'); 
-		$startAt = $request->input('startAt'); 
-		$endAt = $request->input('endAt'); 
-		$companyId = $request->input('companyId');  
+		$quotationLabel = $request->input('quotation_label'); 
+		$quotationType = $request->input('quotation_type'); 
+		$startAt = $request->input('start_at'); 
+		$endAt = $request->input('end_at'); 
+		$companyId = $request->input('company_id');  
 		
 		//trim an input
 		$tQuotationLabel = trim($quotationLabel);

@@ -1,13 +1,13 @@
 <?php
-namespace ERP\Api\V1_0\Settings\QuotationNumbers\Processors;
+namespace ERP\Api\V1_0\settings\QuotationNumbers\Processors;
 
 use ERP\Api\V1_0\Support\BaseProcessor;
-use ERP\Core\Settings\QuotationNumbers\Persistables\QuotationPersistable;
+use ERP\Core\settings\QuotationNumbers\Persistables\QuotationPersistable;
 use Illuminate\Http\Request;
 use ERP\Http\Requests;
 use Illuminate\Http\Response;
-use ERP\Core\Settings\QuotationNumbers\Validations\QuotationValidate;
-use ERP\Api\V1_0\Settings\QuotationNumbers\Transformers\QuotationTransformer;
+use ERP\Core\settings\QuotationNumbers\Validations\QuotationValidate;
+use ERP\Api\V1_0\settings\QuotationNumbers\Transformers\QuotationTransformer;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */

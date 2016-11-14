@@ -14,13 +14,13 @@ class ProductTransformer
      */
     public function trimInsertData(Request $request)
     {
-		$productName = $request->input('productName'); 
-		$measurementUnit = $request->input('measurementUnit'); 
-		$isDisplay = $request->input('isDisplay'); 			
-		$companyId = $request->input('companyId'); 			
-		$productCatId = $request->input('productCategoryId'); 			
-		$productGrpId = $request->input('productGroupId'); 			
-		$branchId = $request->input('branchId'); 	 
+		$productName = $request->input('product_name'); 
+		$measurementUnit = $request->input('measurement_unit'); 
+		$isDisplay = $request->input('is_display'); 			
+		$companyId = $request->input('company_id'); 			
+		$productCatId = $request->input('product_cat_id'); 			
+		$productGrpId = $request->input('product_group_id'); 			
+		$branchId = $request->input('branch_id'); 	 
 		//trim an input
 		$tProductName = trim($productName);
 		$tMeasUnit = trim($measurementUnit);
@@ -35,7 +35,7 @@ class ProductTransformer
 		$data['measurement_unit'] = $tMeasUnit;
 		$data['is_display'] = $tIsDisplay;
 		$data['company_id'] = $tCompanyId;
-		$data['product_category_id'] = $tProductCatId;
+		$data['product_cat_id'] = $tProductCatId;
 		$data['product_group_id'] = $tProductGrpId;
 		$data['branch_id'] = $tBranchId;
 		return $data;
@@ -50,23 +50,10 @@ class ProductTransformer
 		$tProductArray = array();
 		$productValue;
 		$keyValue = func_get_arg(0);
-		$convertedValue="";
-		for($asciiChar=0;$asciiChar<strlen($keyValue);$asciiChar++)
-		{
-			if(ord($keyValue[$asciiChar])<=90 && ord($keyValue[$asciiChar])>=65) 
-			{
-				$convertedValue1 = "_".chr(ord($keyValue[$asciiChar])+32);
-				$convertedValue=$convertedValue.$convertedValue1;
-			}
-			else
-			{
-				$convertedValue=$convertedValue.$keyValue[$asciiChar];
-			}
-		}
 		$productValue = func_get_arg(1);
 		for($data=0;$data<count($productValue);$data++)
 		{
-			$tProductArray[$data]= array($convertedValue=> trim($productValue));
+			$tProductArray[$data]= array($keyValue=> trim($productValue));
 		}
 		return $tProductArray;
 	}

@@ -5,7 +5,7 @@
                 "documentName": string,
                 "documentUrl": string
                 "documentSize": int,
-                "documentFormat": Enum
+                "documentFormat": Standard Document Format Enum
 				
 				
             }
@@ -16,9 +16,4 @@
                 "document": file
 				
             }
-
-##### Document Format Enum
-			{
-				//TO DO `jpeg | jpg | gif | png `
-			}
             

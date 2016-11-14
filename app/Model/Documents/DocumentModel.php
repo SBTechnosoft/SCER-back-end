@@ -4,7 +4,6 @@ namespace ERP\Model\Documents;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use Carbon;
-use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -27,16 +26,13 @@ class DocumentModel extends Model
 		updated_at='".$mytime."' where company_id=".$status);
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $fileSizeArray['200'];
+			return "200:Data Inserted Successfully";
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return "500:Internal Server Error";
 		}
 	}
 	/**
@@ -54,18 +50,16 @@ class DocumentModel extends Model
 		document_size='".$documentSize."',
 		document_format='".$documentFormat."',
 		updated_at='".$mytime."' where company_id=".$companyId);
+		
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $fileSizeArray['200'];
+			return "200: Data Updated Successfully";
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return "500: Internal Server Error";
 		}
 	}
 	
@@ -84,12 +78,9 @@ class DocumentModel extends Model
 		from company_mst where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['204'];
+			return "204: No Content";
 		}
 		else
 		{
@@ -114,12 +105,9 @@ class DocumentModel extends Model
 		from company_mst where company_id = '".$companyId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['404'];
+			return "404:Id Not Found";
 		}
 		else
 		{
@@ -137,10 +125,6 @@ class DocumentModel extends Model
 		set deleted_at='".$mytime."'
 		where state_abb = '".$stateAbb."'");
 		DB::commit();
-		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
 			$city = DB::statement("update city_mst 
@@ -148,16 +132,16 @@ class DocumentModel extends Model
 			where state_abb = '".$stateAbb."'");
 			if($city==1)
 			{
-				return $fileSizeArray['200'];
+				return "200 :Data Deleted Successfully";
 			}
 			else
 			{
-				return $fileSizeArray['500'];
+				return "500 : Internal Server Error";
 			}
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return "500 : Internal Server Error";
 		}
 	}
 }
