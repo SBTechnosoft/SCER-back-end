@@ -17,10 +17,23 @@ class TemplateTransformer
 		$tTemplateArray = array();
 		$templateValue;
 		$keyValue = func_get_arg(0);
+		$convertedValue="";
+		for($asciiChar=0;$asciiChar<strlen($keyValue);$asciiChar++)
+		{
+			if(ord($keyValue[$asciiChar])<=90 && ord($keyValue[$asciiChar])>=65) 
+			{
+				$convertedValue1 = "_".chr(ord($keyValue[$asciiChar])+32);
+				$convertedValue=$convertedValue.$convertedValue1;
+			}
+			else
+			{
+				$convertedValue=$convertedValue.$keyValue[$asciiChar];
+			}
+		}
 		$templateValue = func_get_arg(1);
 		for($data=0;$data<count($templateValue);$data++)
 		{
-			$tTemplateArray[$data]= array($keyValue=> trim($templateValue));
+			$tTemplateArray[$data]= array($convertedValue=> trim($templateValue));
 			
 		}
 		return $tTemplateArray;

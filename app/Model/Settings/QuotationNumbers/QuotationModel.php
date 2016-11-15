@@ -4,6 +4,7 @@ namespace ERP\Model\Settings\QuotationNumbers;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use Carbon;
+use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -42,13 +43,16 @@ class QuotationModel extends Model
 		values(".$quotationData.")");
 		DB::commit();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return "200:Data Inserted Successfully";
+			return $fileSizeArray['200'];
 		}
 		else
 		{
-			return "500:Internal Server Error";
+			return $fileSizeArray['500'];
 		}
 	}
 	
@@ -70,9 +74,12 @@ class QuotationModel extends Model
 		from quotation_dtl");
 		DB::commit();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return "204: No Content";
+			return $fileSizeArray['204'];
 		}
 		else
 		{
@@ -100,9 +107,12 @@ class QuotationModel extends Model
 		from quotation_dtl where quotation_id = ".$quotationId);
 		DB::commit();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return "404:Id Not Found";
+			return $fileSizeArray['404'];
 		}
 		else
 		{
@@ -128,9 +138,12 @@ class QuotationModel extends Model
 		from quotation_dtl where company_id =".$companyId);
 		DB::commit();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return "204: No Content";
+			return $fileSizeArray['204'];
 		}
 		else
 		{
@@ -157,9 +170,12 @@ class QuotationModel extends Model
 		FROM quotation_dtl where company_id=".$companyId);
 		DB::commit();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return "204: No Content";
+			return $fileSizeArray['204'];
 		}
 		else
 		{

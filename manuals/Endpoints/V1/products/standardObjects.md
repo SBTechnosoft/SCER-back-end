@@ -16,7 +16,7 @@
             "branch": {
                 ... Standard Branch Object
             }
-			"isDisplay": enum,
+			"isDisplay": Enum,
 			"createdAt" timestamp,
 			"updatedAt": datetime
             
@@ -32,7 +32,7 @@
             "productGroupId": int,
             "companyId": int,
             "branchId" : int,
-			"isDisplay": enum,
+			"isDisplay": Enum,
 			"createdAt" timestamp,
 			"updatedAt": datetime,
 			"deletedAt":datetime
@@ -45,7 +45,7 @@
             "productCategoryName": string,
             "productCategoryDescription": string,
             "productParentCategoryId": int,
-			"isDisplay": bool,
+			"isDisplay": Enum,
 			"createdAt" datetime,
 			"updatedAt": datetime
         }
@@ -56,7 +56,7 @@
             "productCategoryName": string,
             "productCategoryDescription": string,
             "productParentCategoryId": int,
-			"isDisplay": bool,
+			"isDisplay": Enum,
         }
 
 ##### Standard Products Group Object
@@ -66,7 +66,7 @@
             "productGroupName": string,
             "productGroupDescription": string,
             "productParentGroupId": int,
-			"isDisplay": bool,
+			"isDisplay":Enum,
 			"createdAt" datetime,
 			"updatedAt": datetime
         }
@@ -77,5 +77,10 @@
             "productGroupName": string,
             "productGroupDesciption": string,
             "productGroupParentGroupId": int,
-			"isDisplay": bool
+			"isDisplay": Enum
         }
+		
+#####  Is Display Enum
+			{
+				... Is Display Enum
+			}

@@ -15,11 +15,11 @@ class InvoiceTransformer
     public function trimInsertData(Request $request)
     {
 		//data get from body
-		$invoiceLabel = $request->input('invoice_label'); 
-		$invoiceType = $request->input('invoice_type'); 
-		$startAt = $request->input('start_at'); 
-		$endAt = $request->input('end_at'); 
-		$companyId = $request->input('company_id');  
+		$invoiceLabel = $request->input('invoiceLabel'); 
+		$invoiceType = $request->input('invoiceType'); 
+		$startAt = $request->input('startAt'); 
+		$endAt = $request->input('endAt'); 
+		$companyId = $request->input('companyId');  
 		
 		//trim an input
 		$tInvoiceLabel = trim($invoiceLabel);

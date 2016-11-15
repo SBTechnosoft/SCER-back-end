@@ -4,6 +4,7 @@ namespace ERP\Model\Products;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use Carbon;
+use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -43,13 +44,16 @@ class ProductModel extends Model
 		values(".$productData.")");
 		DB::commit();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return "200:Data Inserted Successfully";
+			return $fileSizeArray['200'];
 		}
 		else
 		{
-			return "500:Internal Server Error";
+			return $fileSizeArray['500'];
 		}
 	}
 	/**
@@ -65,19 +69,23 @@ class ProductModel extends Model
 		{
 			$keyValueString=$keyValueString.$key[$data]."='".$productData[$data]."',";
 		}
+		
 		DB::beginTransaction();
 		$raw = DB::statement("update product_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
 		where product_id = '".$productId."'");
 		DB::commit();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return "200: Data Updated Successfully";
+			return $fileSizeArray['200'];
 		}
 		else
 		{
-			return "500: Internal Server Error";
+			return $fileSizeArray['500'];
 		}
 	}
 	
@@ -96,16 +104,19 @@ class ProductModel extends Model
 		created_at,
 		updated_at,
 		deleted_at,
-		product_cat_id,
+		product_category_id,
 		product_group_id,
 		branch_id,
 		company_id			
 		from product_mst where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return "204: No Content";
+			return $fileSizeArray['204'];
 		}
 		else
 		{
@@ -130,16 +141,19 @@ class ProductModel extends Model
 		created_at,
 		updated_at,
 		deleted_at,
-		product_cat_id,
+		product_category_id,
 		product_group_id,
 		branch_id,
 		company_id	
 		from product_mst where product_id = ".$productId." and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return "404:Id Not Found";
+			return $fileSizeArray['404'];
 		}
 		else
 		{
@@ -162,16 +176,19 @@ class ProductModel extends Model
 		created_at,
 		updated_at,
 		deleted_at,
-		product_cat_id,
+		product_category_id,
 		product_group_id,
 		branch_id,
 		company_id	
 		from product_mst where company_id ='".$companyId."' and branch_id='".$branchId."' and  deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return "204: No Content";
+			return $fileSizeArray['204'];
 		}
 		else
 		{
@@ -195,16 +212,19 @@ class ProductModel extends Model
 		created_at,
 		updated_at,
 		deleted_at,
-		product_cat_id,
+		product_category_id,
 		product_group_id,
 		branch_id,
 		company_id	
 		from product_mst where company_id ='".$companyId."'and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return "204: No Content";
+			return $fileSizeArray['204'];
 		}
 		else
 		{
@@ -228,16 +248,19 @@ class ProductModel extends Model
 		created_at,
 		updated_at,
 		deleted_at,
-		product_cat_id,
+		product_category_id,
 		product_group_id,
 		branch_id,
 		company_id	
 		from product_mst where branch_id='".$branchId."' and  deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return "204: No Content";
+			return $fileSizeArray['204'];
 		}
 		else
 		{
@@ -256,13 +279,16 @@ class ProductModel extends Model
 		where product_id=".$productId);
 		DB::commit();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return "200 :Data Deleted Successfully";
+			return $fileSizeArray['200'];
 		}
 		else
 		{
-			return "500 : Internal Server Error";
+			return $fileSizeArray['500'];
 		}
 	}
 }

@@ -8,6 +8,7 @@ use ERP\Http\Requests;
 use Illuminate\Http\Response;
 use ERP\Core\Cities\Validations\CityValidate;
 use ERP\Api\V1_0\Cities\Transformers\CityTransformer;
+use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -34,64 +35,70 @@ class CityProcessor extends BaseProcessor
 		$value = array();
 		$data=0;
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$msgArray = $exception->messageArrays();
+
 		//trim an input 
 		$cityTransformer = new CityTransformer();
 		$tRequest = $cityTransformer->trimInsertData($this->request);
-		
-		//get data from trim array
-		$tStateAbb = $tRequest['state_abb'];
-		$tCityName = $tRequest['city_name'];
-		$tIsDisplay = $tRequest['is_display'];
-		
-		//validation
-		$cityValidate = new CityValidate();
-		$status = $cityValidate->validate($tRequest);
-		
-		//if form-data is valid then return status 'Success' otherwise return with error message
-		if($status=="Success")
+		if($tRequest==1)
 		{
-			foreach ($tRequest as $key => $value)
+			return $msgArray['content'];
+		}	
+		else
+		{
+		
+			//validation
+			$cityValidate = new CityValidate();
+			$status = $cityValidate->validate($tRequest);
+			
+			//if form-data is valid then return status 'Success' otherwise return with error message
+			if($status=="Success")
 			{
-				if(!is_numeric($value))
+				foreach ($tRequest as $key => $value)
 				{
-					if (strpos($value, '\'') !== FALSE)
+					if(!is_numeric($value))
 					{
-						$cityValue[$data]= str_replace("'","\'",$value);
-						$keyName[$data] = $key;
+						if (strpos($value, '\'') !== FALSE)
+						{
+							$cityValue[$data]= str_replace("'","\'",$value);
+							$keyName[$data] = $key;
+						}
+						else
+						{
+							$cityValue[$data] = $value;
+							$keyName[$data] = $key;
+						}
 					}
 					else
 					{
-						$cityValue[$data] = $value;
+						$cityValue[$data]= $value;
 						$keyName[$data] = $key;
 					}
+					$data++;
 				}
-				else
+				
+				// set data to the persistable object
+				for($data=0;$data<count($cityValue);$data++)
 				{
-					$cityValue[$data]= $value;
-					$keyName[$data] = $key;
+					//set the data in persistable object
+					$cityPersistable = new CityPersistable();	
+					$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
+					//make function name dynamically
+					$setFuncName = 'set'.$str;
+					$getFuncName[$data] = 'get'.$str;
+					$cityPersistable->$setFuncName($cityValue[$data]);
+					$cityPersistable->setName($getFuncName[$data]);
+					$cityPersistable->setKey($keyName[$data]);
+					$cityArray[$data] = array($cityPersistable);
 				}
-				$data++;
-			}
-			
-			// set data to the persistable object
-			for($data=0;$data<count($cityValue);$data++)
+				return $cityArray;
+			}		
+			else
 			{
-				//set the data in persistable object
-				$cityPersistable = new CityPersistable();	
-				$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
-				//make function name dynamically
-				$setFuncName = 'set'.$str;
-				$getFuncName[$data] = 'get'.$str;
-				$cityPersistable->$setFuncName($cityValue[$data]);
-				$cityPersistable->setName($getFuncName[$data]);
-				$cityPersistable->setKey($keyName[$data]);
-				$cityArray[$data] = array($cityPersistable);
+				return $status;
 			}
-			return $cityArray;
-		}		
-		else
-		{
-			return $status;
 		}
 	}
 	public function createPersistableChange(Request $request,$cityId)
@@ -100,6 +107,11 @@ class CityProcessor extends BaseProcessor
 		$errorStatus=array();
 		$flag=0;
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
 		// update
 		if($requestMethod == 'POST')
 		{
@@ -107,10 +119,11 @@ class CityProcessor extends BaseProcessor
 			$cityArray = array();
 			$cityValidate = new CityValidate();
 			$status;
+			
 			//if data is not available in update request
 			if(count($_POST)==0)
 			{
-				$status = "204: No Content Found For Update";
+				$status = $exceptionArray['204'];
 				return $status;
 			}
 			//data is avalilable for update
@@ -126,50 +139,56 @@ class CityProcessor extends BaseProcessor
 					//trim an input 
 					$cityTransformer = new CityTransformer();
 					$tRequest = $cityTransformer->trimUpdateData($key[$data],$value[$data]);
-					
-					//get key value from trim array
-					$tKeyValue[$data] = array_keys($tRequest[0])[0];
-					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
-					
-					//validation
-					$status = $cityValidate->validateUpdateData($key[$data],$value[$data],$tRequest[0]);
-					//enter data is valid(one data validate status return)
-					if($status=="Success")
+					if($tRequest==1)
 					{
-						//flag=0...then data is valid(consider one data at a time)
-						if($flag==0)
-						{
-							$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
-							//make function name dynamically
-							$setFuncName = 'set'.$str;
-							$getFuncName[$data] = 'get'.$str;
-							$cityPersistable->$setFuncName($tValue[$data]);
-							$cityPersistable->setName($getFuncName[$data]);
-							$cityPersistable->setKey($key[$data]);
-							$cityPersistable->setCityId($cityId);
-							$cityArray[$data] = array($cityPersistable);
-						}
+						return $exceptionArray['content'];
 					}
-					//enter data is not valid
 					else
 					{
-						//if flag==1 then enter data is not valid ..so error return(consider one data at a time)
-						$flag=1;
-						if(!empty($status[0]))
+						//get key value from trim array
+						$tKeyValue[$data] = array_keys($tRequest[0])[0];
+						$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
+						
+						//validation
+						$status = $cityValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
+						//enter data is valid(one data validate status return)
+						if($status=="Success")
 						{
-							$errorStatus[$errorCount]=$status[0];
-							$errorCount++;
+							//flag=0...then data is valid(consider one data at a time)
+							if($flag==0)
+							{
+								$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
+								//make function name dynamically
+								$setFuncName = 'set'.$str;
+								$getFuncName[$data] = 'get'.$str;
+								$cityPersistable->$setFuncName($tValue[$data]);
+								$cityPersistable->setName($getFuncName[$data]);
+								$cityPersistable->setKey($tKeyValue[$data]);
+								$cityPersistable->setCityId($cityId);
+								$cityArray[$data] = array($cityPersistable);
+							}
 						}
-					}
-					if($data==(count($_POST)-1))
-					{
-						if($flag==1)
-						{
-							return json_encode($errorStatus);
-						}
+						//enter data is not valid
 						else
 						{
-							return $cityArray;
+							//if flag==1 then enter data is not valid ..so error return(consider one data at a time)
+							$flag=1;
+							if(!empty($status[0]))
+							{
+								$errorStatus[$errorCount]=$status[0];
+								$errorCount++;
+							}
+						}
+						if($data==(count($_POST)-1))
+						{
+							if($flag==1)
+							{
+								return json_encode($errorStatus);
+							}
+							else
+							{
+								return $cityArray;
+							}
 						}
 					}
 				}

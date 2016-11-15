@@ -4,6 +4,7 @@ namespace ERP\Model\Accounting\Ledgers;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use Carbon;
+use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -42,6 +43,10 @@ class LedgerModel extends Model
 		$raw = DB::statement("insert into ledger_mst(".$keyName.") 
 		values(".$ledgerData.")");
 		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
 			$ledgerId = DB::select('SELECT  MAX(ledger_id) AS ledger_id from ledger_mst');
@@ -57,11 +62,11 @@ class LedgerModel extends Model
 			 `ledger_id` int(11) NOT NULL,
 			 PRIMARY KEY (`".$ledgerId[0]->ledger_id."_id`)
 			) ENGINE=InnoDB DEFAULT CHARSET=latin1");
-			return "200:Data Inserted Successfully";
+			return $fileSizeArray['200'];
 		}
 		else
 		{
-			return "500:Internal Server Error";
+			return $fileSizeArray['500'];
 		}
 	}
 	/**
@@ -83,13 +88,16 @@ class LedgerModel extends Model
 		where ledger_id = '".$ledgerId."'");
 		DB::commit();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return "200: Data Updated Successfully";
+			return $fileSizeArray['200'];
 		}
 		else
 		{
-			return "500: Internal Server Error";
+			return $fileSizeArray['500'];
 		}
 	}
 	
@@ -115,14 +123,17 @@ class LedgerModel extends Model
 		deleted_at,
 		state_abb,
 		city_id,
-		ledger_grp_id,
+		ledger_group_id,
 		company_id
 		from ledger_mst where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return "204: No Content";
+			return $fileSizeArray['204'];
 		}
 		else
 		{
@@ -154,14 +165,17 @@ class LedgerModel extends Model
 		deleted_at,
 		state_abb,
 		city_id,
-		ledger_grp_id,
+		ledger_group_id,
 		company_id
 		from ledger_mst where ledger_id = ".$ledgerId." and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return "404:Id Not Found";
+			return $fileSizeArray['404'];
 		}
 		else
 		{
@@ -191,14 +205,17 @@ class LedgerModel extends Model
 		deleted_at,
 		state_abb,
 		city_id,
-		ledger_grp_id,
+		ledger_group_id,
 		company_id
 		from ledger_mst where ledger_grp_id ='".$ledgerGrpId."' and  deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return "204: No Content";
+			return $fileSizeArray['204'];
 		}
 		else
 		{
@@ -229,14 +246,17 @@ class LedgerModel extends Model
 		deleted_at,
 		state_abb,
 		city_id,
-		ledger_grp_id,
+		ledger_group_id,
 		company_id
 		from ledger_mst where company_id ='".$companyId."' and  deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return "204: No Content";
+			return $fileSizeArray['204'];
 		}
 		else
 		{
@@ -254,13 +274,17 @@ class LedgerModel extends Model
 		set deleted_at='".$mytime."' 
 		where ledger_id=".$ledgerId);
 		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return "200 :Data Deleted Successfully";
+			return $fileSizeArray['200'];
 		}
 		else
 		{
-			return "500 : Internal Server Error";
+			return $fileSizeArray['500'];
 		}
 	}
 }

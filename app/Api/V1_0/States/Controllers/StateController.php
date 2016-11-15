@@ -60,10 +60,14 @@ class StateController extends BaseController implements ContainerInterface
 			{
 				return $statePersistable;
 			}
-			else
+			else if(is_array($statePersistable))
 			{
 				$status = $stateService->insert($statePersistable);
 				return $status;
+			}
+			else
+			{
+				return $statePersistable;
 			}
 		}
 		else

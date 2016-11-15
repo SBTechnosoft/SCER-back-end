@@ -3,16 +3,16 @@
             {
                 "productTrnId": int,
                 "transactionDate": datetime,
-                "transactionType": string,
-                "quantity": string,
-                "price": string,
+                "transactionType": Enum,
+                "quantity": decimal,
+                "price": decimal,
 				"company": {
 					... Standard Company Object
 				},
 				"branch": {
 					... Standard Branch Object
 				}
-				"isDisplay": bool,
+				"isDisplay": Enum,
 				"createdAt" timestamp,
 				"updatedAt": datetime
                 
@@ -23,14 +23,21 @@
 
  			{
             	"transactionDate": datetime,
-                "transactionType": string,
-                "quantity": string,
-                "price": string,
+                "transactionType": Enum,
+                "quantity": decimal,
+                "price": decimal,
 				"companyId": int,
 				"branchId" : int,
-				"isDisplay": bool,
+				"isDisplay": Enum,
 				"createdAt" timestamp,
 				"updatedAt": datetime,
 				"deletedAt":datetime
             }
-
+#####  Is Display Enum
+			{
+				... Is Display Enum
+			}
+#####  Transaction Type Enum
+			{
+				... Transaction Type Enum (sale/purchase)
+			}

@@ -39,6 +39,10 @@ class CompanyModel extends Model
 		$raw = DB::statement("insert into company_mst(".$keyName.") 
 		values(".$companyData.")");
 		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
 			$companyId = DB::select('SELECT  MAX(company_id) AS company_id from company_mst');
@@ -49,8 +53,6 @@ class CompanyModel extends Model
 		}
 		else
 		{
-			$exception = new ExceptionMessage();
-			$fileSizeArray = $exception->messageArrays();
 			return $fileSizeArray['500'];
 		}
 	}
@@ -68,7 +70,6 @@ class CompanyModel extends Model
 		{
 			$keyValueString=$keyValueString.$key[$data]."='".$companyData[$data]."',";
 		}
-		
 		$raw  = DB::statement("update company_mst 
 		set ".$keyValueString."updated_at='".$mytime."' 
 		where company_id = '".$companyId."'");

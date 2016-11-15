@@ -19,6 +19,7 @@
 
 ##### Quotation Type Enum
 			{
-				//TO DO
+				beforeQuotation:'prefix',
+				afterQuotation:'postfix'
 			}
 

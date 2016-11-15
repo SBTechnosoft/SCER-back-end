@@ -36,15 +36,16 @@ class EncodeAllData extends ProductCategoryService
 			
 			//get the categoryData from database
 			$encodeDataClass = new EncodeAllData();
-			$productStatus[$decodedData] = $encodeDataClass->getProductCatData($productId[$decodedData]);
+			$productStatus[$decodedData] = $encodeDataClass->getProductCatData($productCatId[$decodedData]);
+			
 			$productDecodedJson[$decodedData] = json_decode($productStatus[$decodedData],true);
-			$productCatId[$decodedData]= $productDecodedJson[$decodedData]['product_category_id'];
-			$productCatName[$decodedData]= $productDecodedJson[$decodedData]['product_category_name'];
-			$productCatDesc[$decodedData]= $productDecodedJson[$decodedData]['product_category_description'];
-			$productParentCatId[$decodedData]= $productDecodedJson[$decodedData]['product_parent_category_id'];
-			$productCatIsDisplay[$decodedData]= $productDecodedJson[$decodedData]['is_display'];
-			$pCatCreatedAt[$decodedData]= $productDecodedJson[$decodedData]['created_at'];
-			$pCatUpdatedAt[$decodedData]= $productDecodedJson[$decodedData]['updated_at'];
+			$productCatId[$decodedData]= $productDecodedJson[$decodedData]['productCategoryId'];
+			$productCatName[$decodedData]= $productDecodedJson[$decodedData]['productCategoryName'];
+			$productCatDesc[$decodedData]= $productDecodedJson[$decodedData]['productCategoryDescription'];
+			$productParentCatId[$decodedData]= $productDecodedJson[$decodedData]['productParentCategoryId'];
+			$productCatIsDisplay[$decodedData]= $productDecodedJson[$decodedData]['isDisplay'];
+			$pCatCreatedAt[$decodedData]= $productDecodedJson[$decodedData]['createdAt'];
+			$pCatUpdatedAt[$decodedData]= $productDecodedJson[$decodedData]['updatedAt'];
 			
 			//product group details from database
 			$productGroupDetail = new ProductGroupDetail();
@@ -53,7 +54,6 @@ class EncodeAllData extends ProductCategoryService
 			//get the company detail from database
 			$companyDetail  = new CompanyDetail();
 			$getCompanyDetails[$decodedData] = $companyDetail->getCompanyDetails($companyId[$decodedData]);
-			
 			//get the branch detail from database
 			$branchDetail  = new BranchDetail();
 			$getBranchDetails[$decodedData] = $branchDetail->getBranchDetails($branchId[$decodedData]);
@@ -63,6 +63,7 @@ class EncodeAllData extends ProductCategoryService
 			$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$updatedAt[$decodedData])->format('d-m-Y');
 			
 		}
+		
 		$product->setCreated_at($convertedCreatedDate);
 		$getCreatedDate = $product->getCreated_at();
 			

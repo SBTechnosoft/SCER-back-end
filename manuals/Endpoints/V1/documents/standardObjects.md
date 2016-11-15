@@ -19,6 +19,6 @@
 
 ##### Document Format Enum
 			{
-				//TO DO `jpeg | jpg | gif | png `
+				documentFormat: `jpeg | jpg | gif | png `
 			}
             

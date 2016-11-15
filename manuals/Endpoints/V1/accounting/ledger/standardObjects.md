@@ -46,3 +46,8 @@
 				"companyId":int
             }
 
+##### Inventory Affected Enum
+			{
+				inventoryAffected:'yes',
+				inventoryNotAffected:'no'
+			}

@@ -8,6 +8,8 @@ use ERP\Api\V1_0\Support\BaseController;
 use ERP\Api\V1_0\ProductGroups\Processors\ProductGroupProcessor;
 use ERP\Core\ProductGroups\Persistables\ProductGroupPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
+use ERP\Exceptions\ExceptionMessage;
+use ERP\Model\ProductGroups\ProductGroupModel;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -99,21 +101,30 @@ class ProductGroupController extends BaseController implements ContainerInterfac
 		$this->request = $request;
 		$productGroupProcessor = new ProductGroupProcessor();
 		$productGroupPersistable = new ProductGroupPersistable();		
-		$productGroupService= new ProductGroupService();			
-		$productGroupPersistable = $productGroupProcessor->createPersistableChange($this->request,$productGroupId);
-		//here two array and string is return at a time
-		if($productGroupPersistable=="204: No Content Found For Update")
+		$productGroupService= new ProductGroupService();		
+		$productGroupModel = new ProductGroupModel();	
+		$result = $productGroupModel->getData($productGroupId);
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($result,$fileSizeArray['404'])==0)
 		{
-			return $productGroupPersistable;
-		}
-		else if(is_array($productGroupPersistable))
-		{
-			$status = $productGroupService->update($productGroupPersistable);
-			return $status;
+			return $result; 
 		}
 		else
 		{
-			return $productGroupPersistable;
+			$productGroupPersistable = $productGroupProcessor->createPersistableChange($this->request,$productGroupId);
+			//here two array and string is return at a time
+			if(is_array($productGroupPersistable))
+			{
+				$status = $productGroupService->update($productGroupPersistable);
+				return $status;
+			}
+			else
+			{
+				return $productGroupPersistable;
+			}
 		}
 	}
 	
@@ -124,11 +135,24 @@ class ProductGroupController extends BaseController implements ContainerInterfac
     public function Destroy(Request $request,$productGroupId)
     {
         $this->request = $request;
-		$Processor = new ProductGroupProcessor();
+		$processor = new ProductGroupProcessor();
 		$productGroupPersistable = new ProductGroupPersistable();		
-		$productGroupService= new ProductGroupService();			
-		$productGroupPersistable = $Processor->createPersistableChange($this->request,$productGroupId);
-		$status = $productGroupService->delete($productGroupPersistable);
-		return $status;
+		$productGroupService= new ProductGroupService();		
+		$productGroupModel = new ProductGroupModel();	
+		$result = $productGroupModel->getData($productGroupId);
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(strcmp($result,$fileSizeArray['404'])==0)
+		{
+			return $result; 
+		}
+		else
+		{		
+			$productGroupPersistable = $processor->createPersistableChange($this->request,$productGroupId);
+			$status = $productGroupService->delete($productGroupPersistable);
+			return $status;
+		}
     }
 }

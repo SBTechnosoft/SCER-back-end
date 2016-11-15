@@ -11,8 +11,7 @@ use ERP\Core\Companies\Persistables\CompanyPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Core\Companies\Validations\CompanyValidate;
 use ERP\Exceptions\ExceptionMessage;
-use ERP\Api\V1_0\MPDFTest;
-use ERP\Api\V1_0\MailTest;
+use ERP\Model\Companies\CompanyModel;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -20,7 +19,7 @@ class CompanyController extends BaseController implements ContainerInterface
 {
 	/**
      * @var companyService
-     * @var Processor
+     * @var processor
      * @var request
      * @var companyPersistable
      */
@@ -54,10 +53,10 @@ class CompanyController extends BaseController implements ContainerInterface
 		// insert
 		if($requestMethod == 'POST')
 		{
-			$Processor = new CompanyProcessor();
+			$processor = new CompanyProcessor();
 			$companyPersistable = new CompanyPersistable();		
 			$companyService= new CompanyService();			
-			$companyPersistable = $Processor->createPersistable($this->request);
+			$companyPersistable = $processor->createPersistable($this->request);
 			
 			//get exception message
 			$exception = new ExceptionMessage();
@@ -67,14 +66,14 @@ class CompanyController extends BaseController implements ContainerInterface
 			{
 				return $companyPersistable;
 			}
-			else if(strcmp($companyPersistable,$fileSizeArray['fileFormat'])==0 || strcmp($companyPersistable,$fileSizeArray['fileSize'])==0)
-			{
-				return $companyPersistable;
-			}
-			else
+			else if(is_array($companyPersistable))
 			{
 				$status = $companyService->insert($companyPersistable);
 				return $status;
+			}
+			else
+			{
+				return $companyPersistable;
 			}
 		}
 	}
@@ -89,11 +88,6 @@ class CompanyController extends BaseController implements ContainerInterface
 		{			
 			$companyService= new CompanyService();
 			$status = $companyService->getAllCompanyData();
-			// $mpdfTest = new MPDFTest();
-			// $abc = $mpdfTest->test();
-			// $mailTest = new MailTest();
-			// $abc1 = $mailTest->test();
-			// exit;
 			return $status;
 		}
 		else
@@ -112,26 +106,37 @@ class CompanyController extends BaseController implements ContainerInterface
 	public function update(Request $request,$companyId)
     {    
 		$this->request = $request;
-		$Processor = new CompanyProcessor();
-		$companyPersistable = new CompanyPersistable();		
-		$companyPersistable = $Processor->createPersistableChange($this->request,$companyId);
+		$processor = new CompanyProcessor();
+		$companyPersistable = new CompanyPersistable();	
 		
-		//get exception message 
+		//get exception message
 		$exception = new ExceptionMessage();
 		$fileSizeArray = $exception->messageArrays();
-		if(strcmp($companyPersistable,$fileSizeArray['204'])==0 || strcmp($companyPersistable,$fileSizeArray['fileSize'])==0 || strcmp($companyPersistable,$fileSizeArray['fileFormat'])==0)
-		{
-			return $companyPersistable;
-		}
-		else if(is_array($companyPersistable))
-		{
-			$companyService= new CompanyService();
-			$status = $companyService->update($companyPersistable);
-			return $status;
+		
+		$companyModel = new CompanyModel();
+		$result = $companyModel->getData($companyId);
+		if(strcmp($result,$fileSizeArray['404'])==0)
+		{	
+			return $result;
 		}
 		else
 		{
-			return $companyPersistable;
+			$companyPersistable = $processor->createPersistableChange($this->request,$companyId);
+			$companyService= new CompanyService();
+			if(is_array($companyPersistable))
+			{
+				$status = $companyService->update($companyPersistable);
+				return $status;
+			}
+			else if(is_object($companyPersistable))
+			{
+				$status = $companyService->updateDocument($companyPersistable);
+				return $status;
+			}
+			else
+			{
+				return $companyPersistable;
+			}
 		}
 	}
 	
@@ -143,11 +148,25 @@ class CompanyController extends BaseController implements ContainerInterface
     public function destroy(Request $request,$companyId)
     {
         $this->request = $request;
-		$Processor = new CompanyProcessor();
+		$processor = new CompanyProcessor();
 		$companyPersistable = new CompanyPersistable();		
-		$companyService= new CompanyService();			
-		$companyPersistable = $Processor->createPersistableChange($this->request,$companyId);
-		$status = $companyService->delete($companyPersistable);
-		return $status;
+		$companyService= new CompanyService();	
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		
+		$companyModel = new CompanyModel();
+		$result = $companyModel->getData($companyId);
+		if(strcmp($result,$fileSizeArray['404'])==0)
+		{	
+			return $result;
+		}
+		else
+		{
+			$companyPersistable = $processor->createPersistableChange($this->request,$companyId);
+			$status = $companyService->delete($companyPersistable);
+			return $status;
+		}
     }
 }

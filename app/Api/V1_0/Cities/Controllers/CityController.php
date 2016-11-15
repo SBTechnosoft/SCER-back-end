@@ -8,6 +8,8 @@ use ERP\Api\V1_0\Support\BaseController;
 use ERP\Api\V1_0\Cities\Processors\CityProcessor;
 use ERP\Core\Cities\Persistables\CityPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
+use ERP\Exceptions\ExceptionMessage;
+use ERP\Model\Cities\CityModel;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -15,12 +17,12 @@ class CityController extends BaseController implements ContainerInterface
 {
 	/**
      * @var cityService
-     * @var Processor
+     * @var processor
      * @var request
      * @var cityPersistable
      */
 	private $cityService;
-	private $Processor;
+	private $processor;
 	private $request;
 	private $cityPersistable;	
 	
@@ -49,18 +51,22 @@ class CityController extends BaseController implements ContainerInterface
 		// insert
 		if($requestMethod == 'POST')
 		{
-			$Processor = new CityProcessor();
+			$processor = new Cityprocessor();
 			$cityPersistable = new CityPersistable();		
 			$cityService= new CityService();			
-			$cityPersistable = $Processor->createPersistable($this->request);
+			$cityPersistable = $processor->createPersistable($this->request);
 			if($cityPersistable[0][0]=='[')
 			{
 				return $cityPersistable;
 			}
-			else
+			else if(is_array($cityPersistable))
 			{
 				$status = $cityService->insert($cityPersistable);
 				return $status;
+			}
+			else
+			{
+				return $cityPersistable;
 			}
 		}
 		else
@@ -98,7 +104,6 @@ class CityController extends BaseController implements ContainerInterface
 		$cityService= new CityService();
 		$status = $cityService->getAllData($stateAbb);
 		return $status;
-		
 	}
 	
     /**
@@ -110,22 +115,32 @@ class CityController extends BaseController implements ContainerInterface
 	public function update(Request $request,$cityId)
     {    
 		$this->request = $request;
-		$Processor = new CityProcessor();
+		$processor = new CityProcessor();
 		$cityPersistable = new CityPersistable();		
 		$cityService= new CityService();			
-		$cityPersistable = $Processor->createPersistableChange($this->request,$cityId);
-		if($cityPersistable=="204: No Content Found For Update")
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		$cityModel = new CityModel();
+		$result = $cityModel->getData($cityId);
+		if(strcmp($result,$exceptionArray['404'])==0)
 		{
-			return $cityPersistable;
-		}
-		else if(is_array($cityPersistable))
-		{
-			$status = $cityService->update($cityPersistable);
-			return $status;
+			return $result;
 		}
 		else
 		{
-			return $cityPersistable;
+			$cityPersistable = $processor->createPersistableChange($this->request,$cityId);
+			if(is_array($cityPersistable))
+			{
+				$status = $cityService->update($cityPersistable);
+				return $status;
+			}
+			else
+			{
+				return $cityPersistable;
+			}
 		}
 	}
 	
@@ -137,12 +152,25 @@ class CityController extends BaseController implements ContainerInterface
      */
     public function Destroy(Request $request,$cityId)
     {
-        $this->request = $request;
-		$Processor = new CityProcessor();
+		$this->request = $request;
+		$processor = new CityProcessor();
 		$cityPersistable = new CityPersistable();		
 		$cityService= new CityService();			
-		$cityPersistable = $Processor->createPersistableChange($this->request,$cityId);
-		$status = $cityService->delete($cityPersistable);
-		return $status;
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		
+		$cityModel = new CityModel();
+		$result = $cityModel->getData($cityId);
+		if(strcmp($result,$fileSizeArray['404'])==0)
+		{
+			return $result;
+		}
+		else
+		{
+			$cityPersistable = $processor->createPersistableChange($this->request,$cityId);
+			$status = $cityService->delete($cityPersistable);
+			return $status;
+		}
     }
 }

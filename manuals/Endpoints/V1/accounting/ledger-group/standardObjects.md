@@ -20,6 +20,7 @@
 
 ##### Affected Group Profit Enum
 			{
-				//TO DO
+				groupProfitAffected:'yes',
+				groupProfitNotAffected:'no'	
 			}
 

@@ -15,10 +15,10 @@ class ProductGroupTransformer
     public function trimInsertData(Request $request)
     {
 		//data get from body
-		$productGroupName = $request->input('product_group_name'); 
-		$productGroupDesc = $request->input('product_group_desc'); 
-		$productGroupParentId = $request->input('product_group_parent_id'); 
-		$isDisplay = $request->input('is_display'); 			
+		$productGroupName = $request->input('productGroupName'); 
+		$productGroupDesc = $request->input('productGroupDescription'); 
+		$productGroupParentId = $request->input('productGroupParentId'); 
+		$isDisplay = $request->input('isDisplay'); 			
 		
 		//trim an input
 		$tProductGroupName = trim($productGroupName);
@@ -29,7 +29,7 @@ class ProductGroupTransformer
 		//make an array
 		$data = array();
 		$data['product_group_name'] = $tProductGroupName;
-		$data['product_group_desc'] = $tProductGroupDesc;
+		$data['product_group_description'] = $tProductGroupDesc;
 		$data['product_group_parent_id'] = $tProductGroupParentId;
 		$data['is_display'] = $tIsDisplay;
 		return $data;
@@ -39,10 +39,23 @@ class ProductGroupTransformer
 		$tProductGroupArray = array();
 		$productGroupValue;
 		$keyValue = func_get_arg(0);
+		$convertedValue="";
+		for($asciiChar=0;$asciiChar<strlen($keyValue);$asciiChar++)
+		{
+			if(ord($keyValue[$asciiChar])<=90 && ord($keyValue[$asciiChar])>=65) 
+			{
+				$convertedValue1 = "_".chr(ord($keyValue[$asciiChar])+32);
+				$convertedValue=$convertedValue.$convertedValue1;
+			}
+			else
+			{
+				$convertedValue=$convertedValue.$keyValue[$asciiChar];
+			}
+		}
 		$productGroupValue = func_get_arg(1);
 		for($data=0;$data<count($productGroupValue);$data++)
 		{
-			$tproductGroupArray[$data]= array($keyValue=> trim($productGroupValue));
+			$tproductGroupArray[$data]= array($convertedValue=> trim($productGroupValue));
 			
 		}
 		return $tproductGroupArray;

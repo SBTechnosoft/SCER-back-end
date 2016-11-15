@@ -4,7 +4,7 @@
                 "templateId": int,
                 "templateName":String,
                 "templateBody":longtext,
-                "templateType":enum,
+                "templateType":Enum,
 				"updatedAt":datetime
             }
             
@@ -12,10 +12,13 @@
 			{
             	"templateName":String,
                 "templateBody":longtext,
-                "templateType":enum,
+                "templateType":Enum,
 				"updatedAt":datetime
             }
 ##### Template type Enum
 			{
-				//TO DO
+				generalTemplate:'general', 
+				quotationTemplate:'quotation',
+				emailTemplate :'email', 
+				smsTemplate:'sms'
 			}
