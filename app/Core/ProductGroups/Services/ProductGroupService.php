@@ -96,6 +96,7 @@ class ProductGroupService extends AbstractService
 	{
 		$productGroupModel = new ProductGroupModel();
 		$status = $productGroupModel->getData($productGroupId);
+		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$fileSizeArray = $exception->messageArrays();

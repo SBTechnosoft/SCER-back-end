@@ -35,7 +35,7 @@ class EncodeData
 		//set all data into json array
 		$data = array();
 		$data['productCategoryName'] = $productCatName;
-		$data['productCategoryId'] = $productCatId;
+		$data['productCateoryId'] = $productCatId;
 		$data['productCategoryDescription'] = $productCatDesc;
 		$data['isDisplay'] = $isDisplay;
 		$data['createdAt'] = $getCreatedDate;

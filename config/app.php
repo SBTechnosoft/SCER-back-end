@@ -232,7 +232,8 @@ return [
 		'InvoiceNumbers',
 		'QuotationNumbers',
 		'LedgerGroups',
-		'Ledgers'
+		'Ledgers',
+		'Journals'
 	],
 
     /*

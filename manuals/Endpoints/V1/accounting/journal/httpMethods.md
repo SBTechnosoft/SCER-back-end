@@ -9,15 +9,12 @@
             {
 				[
 					{
-						... Standard Journals Persistable Object
-					}
-				]
-				[
-					{
+						... Standard Journals Persistable Object,
 						... Standard Inventory Persistable Object
+						
 					}
 				]
-            }
+			}
 
 + Error Message
 

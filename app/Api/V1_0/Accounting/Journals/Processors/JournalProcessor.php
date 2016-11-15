@@ -34,8 +34,8 @@ class JournalProcessor extends BaseProcessor
 		$keyName = array();
 		$value = array();
 		$data=0;
-		//trim an input 
 		
+		//trim an input 
 		$journalTransformer = new JournalTransformer();
 		$tRequest = $journalTransformer->trimInsertData($this->request);
 		

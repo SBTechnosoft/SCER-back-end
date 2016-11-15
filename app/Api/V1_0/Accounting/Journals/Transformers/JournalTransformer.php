@@ -21,8 +21,9 @@ class JournalTransformer extends LedgerModel
 		$debitAmountArray = 0;
 		$requestArray = array();
 		$exceptionArray = array();
-		$numberOfArray = count($request->input()[0]['data']);
-		
+		// $numberOfArray = count($request->input()[0]['data']);
+		print_r($request->input()[0]['journal'][0]);
+		exit;
 		//data get from body and trim an input
 		$jfId = trim($request->input()[0]['jfId']); 
 		$entryDate = trim($request->input()[0]['entryDate']); 

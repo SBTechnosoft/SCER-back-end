@@ -39,16 +39,18 @@
 			}
 ##### Standard Inventory Persistable Object
 			{
-				"productId":int,
-				"discount":int,
-				"discountType":Enum,
-				"price":decimal,
-				"qty":decimal,
-				"transactionDate":date,
-				"companyId":int,
-				"invoiceNumber":String,
-				"ledgerId":int,
-				"ledgerGroupId":int
+				"Inventory":
+				[
+					{
+						"productId":int,
+						"discount":decimal,
+						"discountType":Enum,
+						"price":decimal,
+						"qty":decimal,
+					},
+					...
+				]
+				"invoiceNumber":String
 			}
 ##### Amount Type Enum
 			{

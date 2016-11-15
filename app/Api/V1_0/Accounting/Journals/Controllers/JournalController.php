@@ -54,18 +54,14 @@ class JournalController extends BaseController implements ContainerInterface
 		{
 			$processor = new JournalProcessor();
 			$journalPersistable = new JournalPersistable();
-			
 			$journalPersistable = $processor->createPersistable($this->request);
-			// if($journalPersistable[0][0]=='[')
-			// {
-				// return $journalPersistable;
-			// }
-			// else
-			// {
+			
+			if(is_array($journalPersistable))
+			{
 				$journalService= new JournalService();
 				$status = $journalService->insert($journalPersistable);
 				return $status;
-			// }
+			}
 		}
 	}
 	

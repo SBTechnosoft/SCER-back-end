@@ -39,5 +39,6 @@
 			}
 #####  Transaction Type Enum
 			{
-				... Transaction Type Enum (sale/purchase)
+				"creditType":"Inward",
+				"debitType":"Outward"
 			}

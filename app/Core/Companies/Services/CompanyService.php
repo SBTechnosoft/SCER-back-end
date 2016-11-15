@@ -56,13 +56,11 @@ class CompanyService extends AbstractService
 		$keyName = array();
 		$funcName = array();
 		$companyArray = func_get_arg(0);
-		
 		for($data=0;$data<count($companyArray);$data++)
 		{
 			$funcName[$data] = $companyArray[$data][0]->getName();
 			$getData[$data] = $companyArray[$data][0]->$funcName[$data]();
 			$keyName[$data] = $companyArray[$data][0]->getkey();
-			
 			// document data is set into the last object..so
 			if($data==(count($companyArray)-1))
 			{
@@ -76,6 +74,7 @@ class CompanyService extends AbstractService
 		//data pass to the model object for insert
 		$companyModel = new CompanyModel();
 		$status = $companyModel->insertData($getData,$keyName);
+		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$fileSizeArray = $exception->messageArrays();
@@ -168,6 +167,8 @@ class CompanyService extends AbstractService
 		}
 		else
 		{
+			echo "more success";
+			
 			$companyArray = array();
 			$getData = array();
 			$funcName = array();
@@ -205,6 +206,7 @@ class CompanyService extends AbstractService
 			//data updated successfully
 			else
 			{
+				
 				if($documentName!='')
 				{
 					//insert document data(update in company_mst table)
