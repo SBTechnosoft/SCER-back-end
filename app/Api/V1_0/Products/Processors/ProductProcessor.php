@@ -87,6 +87,59 @@ class ProductProcessor extends BaseProcessor
 			return $status;
 		}
 	}
+	
+	/**
+     * get the form-data and set into the persistable object
+     * $param Request object [Request $request]
+     * @return product Persistable object
+     */	
+    public function createPersistableInOutWard(Request $request,$inOutWard)
+	{	
+		$this->request = $request;	
+		$data=0;
+		
+		//trim an input 
+		$productTransformer = new ProductTransformer();
+		$tRequest = $productTransformer->trimInsertInOutwardData($this->request,$inOutWard);
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		if($tRequest==1)
+		{
+			return $exceptionArray['content'];
+		}	
+		else
+		{
+			//validation
+			$productValidate = new ProductValidate();
+			$status = $productValidate->validateInOutward($tRequest);
+			
+			if($status=="Success")
+			{
+				$productPersistable=array();
+				for($data=0;$data<count($tRequest[0]);$data++)
+				{
+					$productPersistable[$data] = new ProductPersistable();
+					$productPersistable[$data]->setTransactionDate($tRequest['transactionDate']);
+					$productPersistable[$data]->setCompanyId($tRequest['companyId']);
+					$productPersistable[$data]->setTransactionType($tRequest['transactionType']);
+					
+					$productPersistable[$data]->setProductId($tRequest[0][$data]['productId']);
+					$productPersistable[$data]->setDiscount($tRequest[0][$data]['discount']);
+					$productPersistable[$data]->setDiscountType($tRequest[0][$data]['discountType']);
+					$productPersistable[$data]->setPrice($tRequest[0][$data]['price']);
+					$productPersistable[$data]->setQty($tRequest[0][$data]['qty']);
+				}
+				return $productPersistable;
+			}
+			else
+			{
+				return $status;
+			}
+		}
+	}
 	public function createPersistableChange(Request $request,$productId)
 	{
 		$errorCount=0;

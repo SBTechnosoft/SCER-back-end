@@ -39,17 +39,7 @@
 			}
 ##### Standard Inventory Persistable Object
 			{
-				"Inventory":
-				[
-					{
-						"productId":int,
-						"discount":decimal,
-						"discountType":Enum,
-						"price":decimal,
-						"qty":decimal,
-					},
-					...
-				]
+				... Standard Product Transaction Persistable Object,
 				"invoiceNumber":String
 			}
 ##### Amount Type Enum

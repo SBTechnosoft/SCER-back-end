@@ -56,6 +56,55 @@ class ProductModel extends Model
 			return $fileSizeArray['500'];
 		}
 	}
+	
+	/**
+	 * insert data 
+	 * @param  array
+	 * returns the status
+	*/
+	public function insertInOutwardData()
+	{
+		$discountArray = array();
+		$discountTypeArray = array();
+		$qtyArray = array();
+		$priceArray = array();
+		$transactionDateArray = array();
+		$companyIdArray = array();
+		$productIdArray = array();
+		$transactionTypeArray = array();
+		
+		$discountArray = func_get_arg(0);
+		$discountTypeArray = func_get_arg(1);
+		$productIdArray = func_get_arg(2);
+		$qtyArray = func_get_arg(3);
+		$priceArray = func_get_arg(4);
+		$transactionDateArray = func_get_arg(5);
+		$companyIdArray = func_get_arg(6);
+		$transactionTypeArray = func_get_arg(7);
+		
+		DB::beginTransaction();
+		for($data=0;$data<count($productIdArray);$data++)
+		{
+			$raw = DB::statement("insert into 
+			product_trn(transaction_date,transaction_type,qty,price,discount,
+			discount_type,product_id,company_id,branch_id) 
+			values('".$transactionDateArray[$data]."','".$transactionTypeArray[$data]."','".$qtyArray[$data]."','".$priceArray[$data]."','".$discountArray[$data]."','".$discountTypeArray[$data]."','".$productIdArray[$data]."','".$companyIdArray[$data]."',6)");
+		}
+		DB::commit();
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if($raw==1)
+		{
+			return $exceptionArray['200'];
+		}
+		else
+		{
+			return $exceptionArray['500'];
+		}
+	}
+	
 	/**
 	 * update data 
 	 * @param  name,age and id

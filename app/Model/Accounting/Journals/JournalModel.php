@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Core\Accounting\Journals\Entities\EncodeAllData;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -62,10 +63,10 @@ class JournalModel extends Model
 		
 		// get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['404'];
+			return $exceptionArray['404'];
 		}
 		else
 		{
@@ -75,6 +76,65 @@ class JournalModel extends Model
 			$data = array();
 			$data['nextValue']=$nextValue;
 			return json_encode($data);
+		}
+	}
+	public function getData($fromDate,$toDate)
+	{
+		DB::beginTransaction();
+		$raw = DB::select("SELECT 
+		journal_id,
+		jf_id,
+		amount,
+		amount_type,
+		entry_date,
+		created_at,
+		updated_at,
+		ledger_id,
+		company_id
+		FROM journal_dtl
+		WHERE (entry_date BETWEEN '".$fromDate."' AND '".$toDate."') and deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		if(count($raw)==0)
+		{
+			return $exceptionArray['404'];
+		}
+		else
+		{
+			$enocodedData = json_encode($raw);
+			return $enocodedData;
+		}
+	}
+	public function getCurrentYearData()
+	{
+		DB::beginTransaction();
+		$raw = DB::select("SELECT 
+		journal_id,
+		jf_id,
+		amount,
+		amount_type,
+		entry_date,
+		created_at,
+		updated_at,
+		ledger_id,
+		company_id
+		FROM journal_dtl  
+		WHERE YEAR(entry_date)= YEAR(CURDATE()) and deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		if(count($raw)==0)
+		{
+			return $exceptionArray['404'];
+		}
+		else
+		{
+			$enocodedData = json_encode($raw);
+			$encoded = new EncodeAllData();
+			$encodeAllData = $encoded->getEncodedAllData($enocodedData);
+			return $encodeAllData;
 		}
 	}
 }

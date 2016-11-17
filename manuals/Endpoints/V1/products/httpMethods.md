@@ -20,8 +20,49 @@
             {
                 ... HTTP_Status:200
             }
-    
 
+##### `POST /products/inward`
++ Header
+	- Authentication Token
+
+
++ Body
+			[
+				{
+					... Standard Products Transaction Persistable Object
+				}
+			]
++ Error Message
+
+			{
+				... Error Message
+			}            
++ Response
+
+            {
+                ... HTTP_Status:200
+            }			
+
+##### `POST /products/outward`
++ Header
+	- Authentication Token
+
+
++ Body
+
+            {
+                ... Standard Products Transaction Persistable Object
+            }
++ Error Message
+
+			{
+				... Error Message
+			}            
++ Response
+
+            {
+                ... HTTP_Status:200
+            }
 ##### Gets Products           
             
 ##### `GET products/company/{CompanyId}

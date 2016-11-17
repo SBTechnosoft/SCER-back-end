@@ -29,10 +29,6 @@ class JournalProcessor extends BaseProcessor
     public function createPersistable(Request $request)
 	{	
 		$this->request = $request;	
-		$journalArray = array();
-		$journalValue = array();
-		$keyName = array();
-		$value = array();
 		$data=0;
 		
 		//trim an input 
@@ -63,5 +59,19 @@ class JournalProcessor extends BaseProcessor
 		{
 			return $status;
 		}
+	}
+	public function createPersistableData(Request $request)
+	{
+		$this->request = $request;	
+		
+		//trim an input 
+		$journalTransformer = new JournalTransformer();
+		$tRequest = $journalTransformer->trimDateData($this->request);
+		
+		$journalPersistable = new JournalPersistable();
+		$journalPersistable->setFromdate($tRequest['fromDate']);
+		$journalPersistable->setTodate($tRequest['toDate']);
+		
+		return $journalPersistable;
 	}
 }

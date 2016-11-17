@@ -95,10 +95,10 @@ class EncodeData extends StateService
 			'isDisplay'=> $getCityDetail['isDisplay'],	
 			'createdAt' => $getCityDetail['createdAt'],	
 			'updatedAt' => $getCityDetail['updatedAt'],	
-			'stateAbb'=> $getCityDetail['stateAbb']
+			'stateAbb'=> $getCityDetail['state']['stateAbb']
 		);
 		$data['company']= array(
-			'companyId' => $companyDetails['companyId'],
+			'companyId' => $companyId,
 			'companyName' => $companyDetails['companyName'],	
 			'companyDisplayName' => $companyDetails['companyDisplayName'],	
 			'address1' => $companyDetails['address1'],	
@@ -119,8 +119,8 @@ class EncodeData extends StateService
 			'isDefault' => $companyDetails['isDefault'],	
 			'createdAt' => $companyDetails['createdAt'],	
 			'updatedAt' => $companyDetails['updatedAt'],	
-			'stateAbb' => $companyDetails['stateAbb'],	
-			'cityId' => $companyDetails['cityId']
+			'stateAbb' => $companyDetails['state']['stateAbb'],	
+			'cityId' => $companyDetails['city']['cityId']
 		);
 		$encodeData = json_encode($data);
 		return $encodeData;

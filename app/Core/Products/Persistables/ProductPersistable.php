@@ -12,6 +12,12 @@ use ERP\Core\Products\Properties\ProductGrpIdPropertyTrait;
 use ERP\Core\Branches\Properties\BranchIdPropertyTrait;
 use ERP\Core\Shared\Properties\KeyPropertyTrait;
 use ERP\Core\ProductCategories\Properties\ProductCatIdPropertyTrait;
+use ERP\Core\Products\Properties\TransactionDatePropertyTrait;	
+use ERP\Core\Products\Properties\DiscountPropertyTrait;
+use ERP\Core\Products\Properties\DiscountTypePropertyTrait;
+use ERP\Core\Products\Properties\PricePropertyTrait;
+use ERP\Core\Products\Properties\QtyPropertyTrait;
+use ERP\Core\Products\Properties\TransactionTypePropertyTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -28,4 +34,10 @@ class productPersistable
 	use MeasureUnitPropertyTrait;
 	use KeyPropertyTrait;
 	use ProductCatIdPropertyTrait;
+	use TransactionDatePropertyTrait;
+	use DiscountPropertyTrait;
+	use DiscountTypePropertyTrait;
+	use PricePropertyTrait;
+	use QtyPropertyTrait;
+	use TransactionTypePropertyTrait;
 }

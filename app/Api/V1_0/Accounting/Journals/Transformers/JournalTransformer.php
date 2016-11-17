@@ -21,9 +21,8 @@ class JournalTransformer extends LedgerModel
 		$debitAmountArray = 0;
 		$requestArray = array();
 		$exceptionArray = array();
-		// $numberOfArray = count($request->input()[0]['data']);
-		print_r($request->input()[0]['journal'][0]);
-		exit;
+		$numberOfArray = count($request->input()[0]['data']);
+		
 		//data get from body and trim an input
 		$jfId = trim($request->input()[0]['jfId']); 
 		$entryDate = trim($request->input()[0]['entryDate']); 
@@ -87,5 +86,25 @@ class JournalTransformer extends LedgerModel
 		{
 			return $exceptionArray['equal'];
 		}
+	}
+	public function trimDateData(Request $request)
+	{
+		//get data from header
+		$fromDate =$request->header('fromDate');
+		$toDate =$request->header('toDate');
+		
+		//trim the data
+		$tFromDate =  trim($fromDate);
+		$tToDate = trim($toDate);
+		
+		//date format conversion
+		$transformFromDate = Carbon\Carbon::createFromFormat('d-m-Y', $tFromDate)->format('Y-m-d');
+		$transformToDate = Carbon\Carbon::createFromFormat('d-m-Y', $tToDate)->format('Y-m-d');
+		
+		//put date into an array
+		$trimArray = array();
+		$trimArray['fromDate'] = $transformFromDate;
+		$trimArray['toDate'] = $transformToDate;
+		return $trimArray;
 	}
 }

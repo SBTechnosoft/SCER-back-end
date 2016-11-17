@@ -64,6 +64,42 @@ class ProductService extends AbstractService
 	}
 	
 	/**
+     * get the data from persistable object and call the model for database insertion opertation
+     * @param JournalPersistable $persistable
+     * @return status
+     */
+	public function insertInOutward()
+	{
+		$productArray = array();
+		$discountArray = array();
+		$discountTypeArray = array();
+		$qtyArray = array();
+		$priceArray = array();
+		$transactionDateArray = array();
+		$transactionTypeArray = array();
+		$companyIdArray = array();
+		$productIdArray = array();
+		$productArray = func_get_arg(0);
+		
+		for($data=0;$data<count($productArray);$data++)
+		{
+			$discountArray[$data] = $productArray[$data]->getDiscount();
+			$discountTypeArray[$data] = $productArray[$data]->getDiscountType();
+			$productIdArray[$data] = $productArray[$data]->getProductId();
+			$qtyArray[$data] = $productArray[$data]->getQty();
+			$priceArray[$data] = $productArray[$data]->getPrice();
+			
+			$transactionDateArray[$data] = $productArray[$data]->getTransactionDate();
+			$companyIdArray[$data] = $productArray[$data]->getCompanyId();
+			$transactionTypeArray[$data] = $productArray[$data]->getTransactionType();
+		}
+		// data pass to the model object for insert
+		$productModel = new ProductModel();
+		$status = $productModel->insertInOutwardData($discountArray,$discountTypeArray,$productIdArray,$qtyArray,$priceArray,$transactionDateArray,$companyIdArray,$transactionTypeArray);
+		return $status;
+	}
+	
+	/**
      * get all the data as per given id and call the model for database selection opertation
      * @return status
      */

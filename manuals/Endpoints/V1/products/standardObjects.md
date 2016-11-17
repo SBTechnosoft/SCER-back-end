@@ -3,7 +3,7 @@
         {
             "productId": int,
             "productName": string,
-            "measurementUnit": string,
+            "measurementUnit": Enum,
             "productCategory": {
                 ... Standard Products Category Object
             },
@@ -27,7 +27,7 @@
 
         {
             "productName": string,
-            "measurementUnit": string,
+            "measurementUnit": Enum,
             "productCategoryId": int,
             "productGroupId": int,
             "companyId": int,
@@ -37,7 +37,35 @@
 			"updatedAt": datetime,
 			"deletedAt":datetime
         }
-
+		
+##### Standard Product Transaction Persistable Object
+			{
+            	"inventory":
+				[
+					{
+						"qty": decimal,
+						"price": decimal,
+						"discount":decimal,
+						"discountType":Enum,
+						"productId":int,
+					},
+					...
+				],
+				"transactionDate": date,
+				"companyId": int,
+				"createdAt":TimeStamp,
+				"updatedAt":DateTime
+			 }
+#####  Is Display Enum
+			{
+				... Is Display Enum
+			}
+#####  Discount Type Enum
+			{
+				"flatType":"flat",
+				"perCentageType":"percentage"
+			}
+			
 ##### Standard Products Category Object
 
         {
@@ -83,4 +111,9 @@
 #####  Is Display Enum
 			{
 				... Is Display Enum
+			}
+#####  Measurement Unit Enum
+			{
+				"type1":"kilo",
+				"type2":"litre"
 			}

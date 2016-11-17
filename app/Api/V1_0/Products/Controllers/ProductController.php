@@ -73,6 +73,76 @@ class ProductController extends BaseController implements ContainerInterface
 	}
 	
 	/**
+	 * insert the specified resource 
+	 * @param  Request object[Request $request]
+	 * method calls the processor for creating persistable object & setting the data
+	*/
+    public function inwardStore(Request $request)
+    {
+		$this->request = $request;
+		// check the requested Http method
+		$requestMethod = $_SERVER['REQUEST_METHOD'];
+		// insert
+		if($requestMethod == 'POST')
+		{
+			$processor = new ProductProcessor();
+			$productPersistable = new ProductPersistable();		
+			$productService= new ProductService();			
+			$inward = "Inward";
+			$productPersistable = $processor->createPersistableInOutWard($this->request,$inward);
+			
+			if(is_array($productPersistable))
+			{
+				$status = $productService->insertInOutward($productPersistable);
+				return $status;
+			}
+			else
+			{
+				return $productPersistable;
+			}
+			
+		}
+		else
+		{
+			return $status;
+		}
+	}
+	
+	/**
+	 * insert the specified resource 
+	 * @param  Request object[Request $request]
+	 * method calls the processor for creating persistable object & setting the data
+	*/
+    public function outwardStore(Request $request)
+    {
+		$this->request = $request;
+		// check the requested Http method
+		$requestMethod = $_SERVER['REQUEST_METHOD'];
+		// insert
+		if($requestMethod == 'POST')
+		{
+			$processor = new ProductProcessor();
+			$productPersistable = new ProductPersistable();		
+			$productService= new ProductService();			
+			$outward = "Outward";
+			$productPersistable = $processor->createPersistableInOutWard($this->request,$outward);
+			if(is_array($productPersistable))
+			{
+				$status = $productService->insertInOutward($productPersistable);
+				return $status;
+			}
+			else
+			{
+				return $productPersistable;
+			}
+		}
+		else
+		{
+			return $status;
+		}
+	}
+	
+	/**
      * get the specified resource.
      * @param  int  $productId
      */

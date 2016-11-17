@@ -312,7 +312,7 @@ include ('connection.php');
 				// $scope.formAdata.jounalData = 
 					// [{"DropCr":"dr","name":"abc","Dbt":"2000"},{"DropCr":"dr","name":"abc1","Dbt":"2000"}];
 				
-				// formdata.append('journalData1[]',$scope.formAdata.jounalData);
+				// formdata.append('file[]',$scope.formAdata.jounalData);
 				// var abc=[];
 				// var i=0;
 				// angular.forEach(journalData, function (value,key) {
@@ -325,16 +325,25 @@ include ('connection.php');
 				// console.log(JSON.stringify(abc));
 				//////////////////////////////////
 				
-				$scope.user = [{"journal":[{"jfId":4,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":1},{"amount":2,"amountType":"credit","ledgerId":1},{"amount":12,"amountType":"debit","ledgerId":1}],"entryDate":"22-10-2015","companyId":14}]}];
-				
+				// special journal
 				// $scope.user = [{"jfId":4,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":1},{"amount":2,"amountType":"credit","ledgerId":1},{"amount":12,"amountType":"debit","ledgerId":1}],"entryDate":"22-10-2015","companyId":14}];
 				
-				// $scope.user = [{"ledger":[{"ledgerId":1,"amount":2},{"ledgerId":2,"amount":2}],"inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"entryDate":"22-10-2015","companyId":13,"invoiceNumber":23}];
 				
-				[{"jfId":4,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":1},{"amount":2,"amountType":"credit","ledgerId":1},{"amount":12,"amountType":"debit","ledgerId":1}],"entryDate":"22-10-2015","companyId":14,
-				"inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"invoiceNumber":23}]
+				// sale/purchase
+				// $scope.user = [{"jfId":4,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":1},{"amount":2,"amountType":"credit","ledgerId":1},{"amount":12,"amountType":"debit","ledgerId":1}],"entryDate":"22-10-2015","companyId":14,
+				// "inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"companyId":14,"transactionDate":"22-10-2015","billNumber":23}];
 				
+				//transaction
+				// $scope.user = [{"inventory":[{"productId":7 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 7 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"companyId":14,"transactionDate":"22-10-2015"}];
 				
+				// "transactionDate": date,
+                // "transactionType": Enum,
+                // "qty": decimal,
+                // "price": decimal,
+				// "discount":decimal,
+				// "discountType":Enum,
+				// "companyId": int,
+				// "productId":int,
 				// ,
 				// "inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}]}]
 				// ,"invoiceNumber":23
@@ -359,7 +368,11 @@ include ('connection.php');
 				// var ledgerGrpId=1;
 				// var ledgerId=42;
 				
+				// var url="http://www.scerp1.com/products/inward"; 
+				// var url="http://www.scerp1.com/products/outward";
+				
 				// var url="http://www.scerp1.com/accos";
+				// var url="http://www.scerp1.com/accounting/journals";
 				var url="http://www.scerp1.com/accounting/journals";
 				// var url="http://www.scerp1.com/accounting/journals/next";
 				
@@ -390,8 +403,8 @@ include ('connection.php');
 				 // var url="http://www.scerp1.com/cities";
 				 // var url="http://www.scerp1.com/cities/"+cityId;
 				// var url="http://www.scerp1.com/product-categories/"+productCatId;
-				// var url="http://www.scerp1.com/product-categories/";
-				// var url="http://www.scerp1.com/product-groups/";
+				// var url="http://www.scerp1.com/product-categories";
+				// var url="http://www.scerp1.com/product-groups";
 				// var url="http://www.scerp1.com/product-groups/"+productGrpId;
 				// var url="http://www.scerp1.com/products/"+productId;
 				// var url="http://www.scerp1.com/products";
@@ -399,15 +412,16 @@ include ('connection.php');
 				$http({
                         url: url,
                         // type:'patch',
-						 method: 'post',
-						// method: 'get',
+						 // method: 'post',
+						method: 'get',
 						// method: "PATCH",
 						// method:'delete',
 						processData: false,
-                        // headers: {'Content-Type': undefined},
-						headers: {'Content-Type': 'application/json'},
-                        // data:formdata
-						data:$scope.user						
+                        // headers: {'Content-Type': undefined,'fromDate':'1-10-2016','toDate':'1-12-2016'},
+                        headers: {'Content-Type': undefined},
+						// headers: {'Content-Type': 'application/json'},
+                        data:formdata
+						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {
 						console.log(data);	//post	//get	//update //delete
