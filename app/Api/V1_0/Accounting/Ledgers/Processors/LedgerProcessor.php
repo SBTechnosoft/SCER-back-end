@@ -34,58 +34,70 @@ class LedgerProcessor extends BaseProcessor
 		$keyName = array();
 		$value = array();
 		$data=0;
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$msgArray = $exception->messageArrays();
+		
 		//trim an input 
 		$ledgerTransformer = new LedgerTransformer();
 		$tRequest = $ledgerTransformer->trimInsertData($this->request);
 		
-		//validation
-		$ledgerValidate = new LedgerValidate();
-		$status = $ledgerValidate->validate($tRequest);
-		
-		if($status=="Success")
+		if($tRequest==1)
 		{
-			foreach ($tRequest as $key => $value)
+			return $msgArray['content'];
+		}	
+		else
+		{
+			//validation
+			$ledgerValidate = new LedgerValidate();
+			$status = $ledgerValidate->validate($tRequest);
+			
+			if($status=="Success")
 			{
-				if(!is_numeric($value))
+				foreach ($tRequest as $key => $value)
 				{
-					if (strpos($value, '\'') !== FALSE)
+					if(!is_numeric($value))
 					{
-						$ledgerValue[$data]= str_replace("'","\'",$value);
-						$keyName[$data] = $key;
+						if (strpos($value, '\'') !== FALSE)
+						{
+							$ledgerValue[$data]= str_replace("'","\'",$value);
+							$keyName[$data] = $key;
+						}
+						else
+						{
+							$ledgerValue[$data] = $value;
+							$keyName[$data] = $key;
+						}
 					}
 					else
 					{
-						$ledgerValue[$data] = $value;
+						$ledgerValue[$data]= $value;
 						$keyName[$data] = $key;
 					}
+					$data++;
 				}
-				else
+				
+				// set data to the persistable object
+				for($data=0;$data<count($ledgerValue);$data++)
 				{
-					$ledgerValue[$data]= $value;
-					$keyName[$data] = $key;
+					//set the data in persistable object
+					$ledgerPersistable = new LedgerPersistable();	
+					$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
+					//make function name dynamically
+					$setFuncName = 'set'.$str;
+					$getFuncName[$data] = 'get'.$str;
+					$ledgerPersistable->$setFuncName($ledgerValue[$data]);
+					$ledgerPersistable->setName($getFuncName[$data]);
+					$ledgerPersistable->setKey($keyName[$data]);
+					$ledgerArray[$data] = array($ledgerPersistable);
 				}
-				$data++;
+				return $ledgerArray;
 			}
-			
-			// set data to the persistable object
-			for($data=0;$data<count($ledgerValue);$data++)
+			else
 			{
-				//set the data in persistable object
-				$ledgerPersistable = new LedgerPersistable();	
-				$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
-				//make function name dynamically
-				$setFuncName = 'set'.$str;
-				$getFuncName[$data] = 'get'.$str;
-				$ledgerPersistable->$setFuncName($ledgerValue[$data]);
-				$ledgerPersistable->setName($getFuncName[$data]);
-				$ledgerPersistable->setKey($keyName[$data]);
-				$ledgerArray[$data] = array($ledgerPersistable);
+				return $status;
 			}
-			return $ledgerArray;
-		}
-		else
-		{
-			return $status;
 		}
 	}
 	public function createPersistableChange(Request $request,$ledgerId)
@@ -102,14 +114,14 @@ class LedgerProcessor extends BaseProcessor
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		// update
 		if($requestMethod == 'POST')
 		{
 			//if data is not available in update request
 			if(count($_POST)==0)
 			{
-				$status = $fileSizeArray['204'];
+				$status = $exceptionArray['204'];
 				return $status;
 			}
 			//data is avalilable for update
@@ -126,65 +138,71 @@ class LedgerProcessor extends BaseProcessor
 					$ledgerTransformer = new LedgerTransformer();
 					$tRequest = $ledgerTransformer->trimUpdateData($key[$data],$value[$data]);
 					//get data from trim array
-					
-					$tKeyValue[$data] = array_keys($tRequest[0])[0];
-					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
-					
-					//validation
-					$status = $ledgerValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
-					//enter data is valid(one data validate status return)
-					if($status=="Success")
+					if($tRequest==1)
 					{
-						// check data is string or not
-						if(!is_numeric($tValue[$data]))
+						return $exceptionArray['content'];
+					}
+					else
+					{
+						$tKeyValue[$data] = array_keys($tRequest[0])[0];
+						$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
+						
+						//validation
+						$status = $ledgerValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
+						//enter data is valid(one data validate status return)
+						if($status=="Success")
 						{
-							if (strpos($tValue[$data], '\'') !== FALSE)
+							// check data is string or not
+							if(!is_numeric($tValue[$data]))
 							{
-								$ledgerValue[$data] = str_replace("'","\'",$tValue[$data]);
+								if (strpos($tValue[$data], '\'') !== FALSE)
+								{
+									$ledgerValue[$data] = str_replace("'","\'",$tValue[$data]);
+								}
+								else
+								{
+									$ledgerValue[$data] = $tValue[$data];
+								}
 							}
 							else
 							{
 								$ledgerValue[$data] = $tValue[$data];
 							}
+							//flag=0...then data is valid(consider one data at a time)
+							if($flag==0)
+							{
+								$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
+								//make function name dynamically
+								$setFuncName = 'set'.$str;
+								$getFuncName[$data] = 'get'.$str;
+								$ledgerPersistable->$setFuncName($ledgerValue[$data]);
+								$ledgerPersistable->setName($getFuncName[$data]);
+								$ledgerPersistable->setKey($tKeyValue[$data]);
+								$ledgerPersistable->setLedgerId($ledgerId);
+								$ledgerArray[$data] = array($ledgerPersistable);
+							}
 						}
+						//enter data is not valid
 						else
 						{
-							$ledgerValue[$data] = $tValue[$data];
+							//if flag==1 then enter data is not valid ..so error return(consider one data at a time)
+							$flag=1;
+							if(!empty($status[0]))
+							{
+								$errorStatus[$errorCount]=$status[0];
+								$errorCount++;
+							}
 						}
-						//flag=0...then data is valid(consider one data at a time)
-						if($flag==0)
+						if($data==(count($_POST)-1))
 						{
-							$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
-							//make function name dynamically
-							$setFuncName = 'set'.$str;
-							$getFuncName[$data] = 'get'.$str;
-							$ledgerPersistable->$setFuncName($ledgerValue[$data]);
-							$ledgerPersistable->setName($getFuncName[$data]);
-							$ledgerPersistable->setKey($tKeyValue[$data]);
-							$ledgerPersistable->setLedgerId($ledgerId);
-							$ledgerArray[$data] = array($ledgerPersistable);
-						}
-					}
-					//enter data is not valid
-					else
-					{
-						//if flag==1 then enter data is not valid ..so error return(consider one data at a time)
-						$flag=1;
-						if(!empty($status[0]))
-						{
-							$errorStatus[$errorCount]=$status[0];
-							$errorCount++;
-						}
-					}
-					if($data==(count($_POST)-1))
-					{
-						if($flag==1)
-						{
-							return json_encode($errorStatus);
-						}
-						else
-						{
-							return $ledgerArray;
+							if($flag==1)
+							{
+								return json_encode($errorStatus);
+							}
+							else
+							{
+								return $ledgerArray;
+							}
 						}
 					}
 				}

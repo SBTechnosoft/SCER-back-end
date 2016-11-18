@@ -48,7 +48,6 @@ class CompanyService extends AbstractService
 	public function insert()
 	{
 		$documentName="";
-		$documentUrl="";
 		$documentSize="";
 		$documentFormat="";
 		$companyArray = array();
@@ -66,7 +65,6 @@ class CompanyService extends AbstractService
 			{
 				//get document data
 				$documentName = $companyArray[$data][0]->getDocumentName();
-				$documentUrl = $companyArray[$data][0]->getDocumentUrl();
 				$documentSize = $companyArray[$data][0]->getDocumentSize();
 				$documentFormat = $companyArray[$data][0]->getDocumentFormat();
 			}
@@ -88,7 +86,7 @@ class CompanyService extends AbstractService
 			if($documentName!="")
 			{
 				//insert document data(update in company_mst table)
-				$documentStatus = DocumentService::insertDocumentData($documentName,$documentUrl,$documentSize,$documentFormat,$status);
+				$documentStatus = DocumentService::insertDocumentData($documentName,$documentSize,$documentFormat,$status);
 				return $documentStatus;	
 			}
 			else
@@ -184,7 +182,6 @@ class CompanyService extends AbstractService
 				{
 					//get document data
 					$documentName = $companyArray[$data][0]->getDocumentName();
-					$documentUrl = $companyArray[$data][0]->getDocumentUrl();
 					$documentSize = $companyArray[$data][0]->getDocumentSize();
 					$documentFormat = $companyArray[$data][0]->getDocumentFormat();
 				}
@@ -210,7 +207,7 @@ class CompanyService extends AbstractService
 				if($documentName!='')
 				{
 					//insert document data(update in company_mst table)
-					$documentStatus = DocumentService::updateDocumentData($documentName,$documentUrl,$documentSize,$documentFormat,$companyId);
+					$documentStatus = DocumentService::updateDocumentData($documentName,$documentSize,$documentFormat,$companyId);
 					return $documentStatus;	
 				}
 				else
@@ -225,12 +222,11 @@ class CompanyService extends AbstractService
 	{
 		$companyId = $companyPersistable->getCompanyId();
 		$documentName = $companyPersistable->getDocumentName();
-		$documentUrl = $companyPersistable->getDocumentUrl();
 		$documentSize = $companyPersistable->getDocumentSize();
 		$documentFormat = $companyPersistable->getDocumentFormat();
 		
 		//insert document data(update in company_mst table)
-		$documentStatus = DocumentService::updateDocumentData($documentName,$documentUrl,$documentSize,$documentFormat,$companyId);
+		$documentStatus = DocumentService::updateDocumentData($documentName,$documentSize,$documentFormat,$companyId);
 		return $documentStatus;
 	}
     /**

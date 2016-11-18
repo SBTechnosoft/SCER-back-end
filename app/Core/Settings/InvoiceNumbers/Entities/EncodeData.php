@@ -40,7 +40,6 @@ class EncodeData extends CompanyService
 		$data['startAt'] = $startAt;
 		$data['endAt'] = $endAt;
 		$data['createdAt'] = $getCreatedDate;
-		$data['companyId'] = $companyDecodedJson['companyId'];
 		
 		$data['company']= array(
 			'companyId' => $companyDecodedJson['companyId'],	
@@ -65,8 +64,8 @@ class EncodeData extends CompanyService
 			'isDefault' => $companyDecodedJson['isDefault'],	
 			'createdAt' => $companyDecodedJson['createdAt'],	
 			'updatedAt' => $companyDecodedJson['updatedAt'],	
-			'stateAbb' => $companyDecodedJson['stateAbb'],
-			'cityId' => $companyDecodedJson['cityId'],
+			'stateAbb' => $companyDecodedJson['state']['stateAbb'],
+			'cityId' => $companyDecodedJson['city']['cityId'],
 		);
 		$encodeData = json_encode($data);
 		return $encodeData;

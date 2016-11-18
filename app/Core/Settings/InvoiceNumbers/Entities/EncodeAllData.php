@@ -51,8 +51,8 @@ class EncodeAllData extends CompanyService
 			$companyDocumentSize[$decodedData]= $companyDecodedJson[$decodedData]['documentSize'];
 			$companyDocumentFormat[$decodedData]= $companyDecodedJson[$decodedData]['documentFormat'];
 			$companyIsDefault[$decodedData]= $companyDecodedJson[$decodedData]['isDefault'];
-			$companyStateAbb[$decodedData]= $companyDecodedJson[$decodedData]['stateAbb'];
-			$companyCityId[$decodedData]= $companyDecodedJson[$decodedData]['cityId'];
+			$companyStateAbb[$decodedData]= $companyDecodedJson[$decodedData]['state']['stateAbb'];
+			$companyCityId[$decodedData]= $companyDecodedJson[$decodedData]['city']['cityId'];
 			
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');

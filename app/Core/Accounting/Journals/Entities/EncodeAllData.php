@@ -40,6 +40,8 @@ class EncodeAllData extends LedgerService
 			$inventoryAffected[$decodedData]= $ledgerDecodedJson[$decodedData]['inventoryAffected'];
 			$address1[$decodedData]= $ledgerDecodedJson[$decodedData]['address1'];
 			$address2[$decodedData]= $ledgerDecodedJson[$decodedData]['address2'];
+			$contactNo[$decodedData]= $ledgerDecodedJson[$decodedData]['contactNo'];
+			$emailId[$decodedData]= $ledgerDecodedJson[$decodedData]['emailId'];
 			$panNo[$decodedData]= $ledgerDecodedJson[$decodedData]['pan'];
 			$tinNo[$decodedData]= $ledgerDecodedJson[$decodedData]['tin'];
 			$gstNo[$decodedData]= $ledgerDecodedJson[$decodedData]['gstNo'];
@@ -86,6 +88,8 @@ class EncodeAllData extends LedgerService
 					'inventoryAffected' => $inventoryAffected[$jsonData],
 					'address1' => $address1[$jsonData],
 					'address2' => $address2[$jsonData],
+					'contactNo' => $contactNo[$jsonData],
+					'emailId' => $emailId[$jsonData],
 					'pan'=> $panNo[$jsonData],
 					'tin'=> $tinNo[$jsonData],
 					'gstNo'=> $gstNo[$jsonData],
@@ -111,10 +115,12 @@ class EncodeAllData extends LedgerService
 					'formalName' => $getCompanyDetails[$jsonData]['formalName'],	
 					'noOfDecimalPoints' => $getCompanyDetails[$jsonData]['noOfDecimalPoints'],	
 					'currencySymbol' => $getCompanyDetails[$jsonData]['currencySymbol'],	
-					'documentName' => $getCompanyDetails[$jsonData]['documentName'],	
-					'documentUrl' => $getCompanyDetails[$jsonData]['documentUrl'],	
-					'documentSize' =>$getCompanyDetails[$jsonData]['documentSize'],	
-					'documentFormat' => $getCompanyDetails[$jsonData]['documentFormat'],	
+					'logo'=> array(
+						'documentName' => $getCompanyDetails[$jsonData]['logo']['documentName'],	
+						'documentUrl' => $getCompanyDetails[$jsonData]['logo']['documentUrl'],	
+						'documentSize' =>$getCompanyDetails[$jsonData]['logo']['documentSize'],	
+						'documentFormat' => $getCompanyDetails[$jsonData]['logo']['documentFormat']
+					),
 					'isDisplay' => $getCompanyDetails[$jsonData]['isDisplay'],	
 					'isDefault' => $getCompanyDetails[$jsonData]['isDefault'],	
 					'createdAt' => $getCompanyDetails[$jsonData]['createdAt'],	

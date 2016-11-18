@@ -59,11 +59,15 @@ class LedgerController extends BaseController implements ContainerInterface
 			{
 				return $ledgerPersistable;
 			}
-			else
+			else if(is_array($ledgerPersistable))
 			{
 				$ledgerService= new LedgerService();
 				$status = $ledgerService->insert($ledgerPersistable);
 				return $status;
+			}
+			else
+			{
+				return $ledgerPersistable;
 			}
 		}
 	}

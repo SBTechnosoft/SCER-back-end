@@ -60,10 +60,14 @@ class ProductController extends BaseController implements ContainerInterface
 			{
 				return $productPersistable;
 			}
-			else
+			else if(is_array($productPersistable))
 			{
 				$status = $productService->insert($productPersistable);
 				return $status;
+			}
+			else
+			{
+				return $productPersistable;
 			}
 		}
 		else

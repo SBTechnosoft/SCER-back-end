@@ -5,6 +5,7 @@ use ERP\Core\Companies\Entities\Company;
 use ERP\Core\States\Services\StateService;
 use ERP\Core\Entities\CityDetail;
 use Carbon;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -18,6 +19,12 @@ class EncodeAllData extends StateService
 		$encodeAllData =  array();
 		$decodedJson = json_decode($status,true);
 		$decodedJsonDoc = json_decode($documentStatus,true);
+		$documentArray = array();
+		
+		//get constant document-url from document
+		$documentUrl =  new ConstantClass();
+		$documentArray = $documentUrl->constantVariable();
+		
 		$company = new Company();
 		for($decodedData=0;$decodedData<count($decodedJson);$decodedData++)
 		{
@@ -38,7 +45,7 @@ class EncodeAllData extends StateService
 			$noOfDecimalPoints[$decodedData] = $decodedJson[$decodedData]['no_of_decimal_points'];
 			$currencySymbol[$decodedData] = $decodedJson[$decodedData]['currency_symbol'];
 			$documentName[$decodedData] = $decodedJsonDoc[$decodedData]['document_name'];
-			$documentUrl[$decodedData] = $decodedJsonDoc[$decodedData]['document_url'];
+			$documentUrl = $documentArray['documentUrl'];
 			$documentSize[$decodedData] = $decodedJsonDoc[$decodedData]['document_size'];
 			$documentFormat[$decodedData] = $decodedJsonDoc[$decodedData]['document_format'];
 			$isDisplay[$decodedData] = $decodedJson[$decodedData]['is_display'];
@@ -86,10 +93,12 @@ class EncodeAllData extends StateService
 				'formalName' => $formalName[$jsonData],
 				'noOfDecimalPoints' => $noOfDecimalPoints[$jsonData],
 				'currencySymbol' => $currencySymbol[$jsonData],
-				'documentName'=> $documentName[$jsonData],
-				'documentUrl' => $documentUrl[$jsonData],
-				'documentSize' => $documentSize[$jsonData],
-				'documentFormat' => $documentFormat[$jsonData],
+				'logo' => array(
+					'documentName'=> $documentName[$jsonData],
+					'documentUrl' => $documentUrl,
+					'documentSize' => $documentSize[$jsonData],
+					'documentFormat' => $documentFormat[$jsonData]
+				),
 				'isDisplay' => $isDisplay[$jsonData],
 				'isDefault' => $isDefault[$jsonData],
 				'createdAt' => $getCreatedDate[$jsonData],

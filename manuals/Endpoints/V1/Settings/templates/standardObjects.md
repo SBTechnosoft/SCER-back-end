@@ -5,7 +5,12 @@
                 "templateName":String,
                 "templateBody":longtext,
                 "templateType":Enum,
-				"updatedAt":datetime
+				"createdAt":TimeStamp,
+				"updatedAt":datetime,
+				"company":
+				{
+					... Standard Company Object
+				}
             }
             
 ##### Standard Template Persistable Object
@@ -13,7 +18,9 @@
             	"templateName":String,
                 "templateBody":longtext,
                 "templateType":Enum,
-				"updatedAt":datetime
+				"createdAt":TimeStamp,
+				"updatedAt":datetime,
+				"companyId":int
             }
 ##### Template type Enum
 			{

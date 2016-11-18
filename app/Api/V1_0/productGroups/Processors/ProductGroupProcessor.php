@@ -40,57 +40,68 @@ class ProductGroupProcessor extends BaseProcessor
 		$keyName = array();
 		$value = array();
 		$data=0;
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$msgArray = $exception->messageArrays();
+		
 		//trim an input 
 		$productGroupTransformer = new ProductGroupTransformer();
 		$tRequest = $productGroupTransformer->trimInsertData($this->request);
-		
-		//validation
-		$productGroupValidate = new ProductGroupValidate();
-		$status = $productGroupValidate->validate($tRequest);
-		if($status=="Success")
+		if($tRequest==1)
 		{
-			foreach ($tRequest as $key => $value)
+			return $msgArray['content'];
+		}	
+		else
+		{
+			//validation
+			$productGroupValidate = new ProductGroupValidate();
+			$status = $productGroupValidate->validate($tRequest);
+			if($status=="Success")
 			{
-				if(!is_numeric($value))
+				foreach ($tRequest as $key => $value)
 				{
-					if (strpos($value, '\'') !== FALSE)
+					if(!is_numeric($value))
 					{
-						$productGroupValue[$data]= str_replace("'","\'",$value);
-						$keyName[$data] = $key;
+						if (strpos($value, '\'') !== FALSE)
+						{
+							$productGroupValue[$data]= str_replace("'","\'",$value);
+							$keyName[$data] = $key;
+						}
+						else
+						{
+							$productGroupValue[$data] = $value;
+							$keyName[$data] = $key;
+						}
 					}
 					else
 					{
-						$productGroupValue[$data] = $value;
+						$productGroupValue[$data]= $value;
 						$keyName[$data] = $key;
 					}
+					$data++;
 				}
-				else
+				
+				// set data to the persistable object
+				for($data=0;$data<count($productGroupValue);$data++)
 				{
-					$productGroupValue[$data]= $value;
-					$keyName[$data] = $key;
+					//set the data in persistable object
+					$productGroupPersistable = new ProductGroupPersistable();	
+					$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
+					//make function name dynamically
+					$setFuncName = 'set'.$str;
+					$getFuncName[$data] = 'get'.$str;
+					$productGroupPersistable->$setFuncName($productGroupValue[$data]);
+					$productGroupPersistable->setName($getFuncName[$data]);
+					$productGroupPersistable->setKey($keyName[$data]);
+					$productGroupArray[$data] = array($productGroupPersistable);
 				}
-				$data++;
+				return $productGroupArray;
 			}
-			
-			// set data to the persistable object
-			for($data=0;$data<count($productGroupValue);$data++)
+			else
 			{
-				//set the data in persistable object
-				$productGroupPersistable = new ProductGroupPersistable();	
-				$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
-				//make function name dynamically
-				$setFuncName = 'set'.$str;
-				$getFuncName[$data] = 'get'.$str;
-				$productGroupPersistable->$setFuncName($productGroupValue[$data]);
-				$productGroupPersistable->setName($getFuncName[$data]);
-				$productGroupPersistable->setKey($keyName[$data]);
-				$productGroupArray[$data] = array($productGroupPersistable);
+				return $status;
 			}
-			return $productGroupArray;
-		}
-		else
-		{
-			return $status;
 		}
 	}
 	public function createPersistableChange(Request $request,$productGrpId)
@@ -107,14 +118,14 @@ class ProductGroupProcessor extends BaseProcessor
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		// update
 		if($requestMethod == 'POST')
 		{
 			//if data is not available in update request
 			if(count($_POST)==0)
 			{
-				$status = $fileSizeArray['204'];
+				$status = $exceptionArray['204'];
 				return $status;
 			}
 			//data is avalilable for update
@@ -130,66 +141,73 @@ class ProductGroupProcessor extends BaseProcessor
 					//trim an input 
 					$productGroupTransformer = new ProductGroupTransformer();
 					$tRequest = $productGroupTransformer->trimUpdateData($key[$data],$value[$data]);
-					//get data from trim array
 					
-					$tKeyValue[$data] = array_keys($tRequest[0])[0];
-					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
-					
-					//validation
-					$status = $productGroupValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
-					//enter data is valid(one data validate status return)
-					if($status=="Success")
+					if($tRequest==1)
 					{
-						// check data is string or not
-						if(!is_numeric($tValue[$data]))
+						return $exceptionArray['content'];
+					}
+					else
+					{
+						//get data from trim array
+						$tKeyValue[$data] = array_keys($tRequest[0])[0];
+						$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
+						
+						//validation
+						$status = $productGroupValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
+						//enter data is valid(one data validate status return)
+						if($status=="Success")
 						{
-							if (strpos($tValue[$data], '\'') !== FALSE)
+							// check data is string or not
+							if(!is_numeric($tValue[$data]))
 							{
-								$productGrpValue[$data] = str_replace("'","\'",$tValue[$data]);
+								if (strpos($tValue[$data], '\'') !== FALSE)
+								{
+									$productGrpValue[$data] = str_replace("'","\'",$tValue[$data]);
+								}
+								else
+								{
+									$productGrpValue[$data] = $tValue[$data];
+								}
 							}
 							else
 							{
 								$productGrpValue[$data] = $tValue[$data];
 							}
+							//flag=0...then data is valid(consider one data at a time)
+							if($flag==0)
+							{
+								$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
+								//make function name dynamically
+								$setFuncName = 'set'.$str;
+								$getFuncName[$data] = 'get'.$str;
+								$productGroupPersistable->$setFuncName($productGrpValue[$data]);
+								$productGroupPersistable->setName($getFuncName[$data]);
+								$productGroupPersistable->setKey($tKeyValue[$data]);
+								$productGroupPersistable->setProductGroupId($productGrpId);
+								$productGrpArray[$data] = array($productGroupPersistable);
+							}
 						}
+						//enter data is not valid
 						else
 						{
-							$productGrpValue[$data] = $tValue[$data];
+							//if flag==1 then enter data is not valid ..so error return(consider one data at a time)
+							$flag=1;
+							if(!empty($status[0]))
+							{
+								$errorStatus[$errorCount]=$status[0];
+								$errorCount++;
+							}
 						}
-						//flag=0...then data is valid(consider one data at a time)
-						if($flag==0)
+						if($data==(count($_POST)-1))
 						{
-							$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
-							//make function name dynamically
-							$setFuncName = 'set'.$str;
-							$getFuncName[$data] = 'get'.$str;
-							$productGroupPersistable->$setFuncName($productGrpValue[$data]);
-							$productGroupPersistable->setName($getFuncName[$data]);
-							$productGroupPersistable->setKey($tKeyValue[$data]);
-							$productGroupPersistable->setProductGroupId($productGrpId);
-							$productGrpArray[$data] = array($productGroupPersistable);
-						}
-					}
-					//enter data is not valid
-					else
-					{
-						//if flag==1 then enter data is not valid ..so error return(consider one data at a time)
-						$flag=1;
-						if(!empty($status[0]))
-						{
-							$errorStatus[$errorCount]=$status[0];
-							$errorCount++;
-						}
-					}
-					if($data==(count($_POST)-1))
-					{
-						if($flag==1)
-						{
-							return json_encode($errorStatus);
-						}
-						else
-						{
-							return $productGrpArray;
+							if($flag==1)
+							{
+								return json_encode($errorStatus);
+							}
+							else
+							{
+								return $productGrpArray;
+							}
 						}
 					}
 				}

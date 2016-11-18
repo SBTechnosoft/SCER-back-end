@@ -32,6 +32,8 @@ class EncodeAllData extends StateService
 			$inventoryAffected[$decodedData] = $decodedJson[$decodedData]['inventory_affected'];
 			$address1[$decodedData] = $decodedJson[$decodedData]['address1'];
 			$address2[$decodedData] = $decodedJson[$decodedData]['address2'];
+			$contactNo[$decodedData] = $decodedJson[$decodedData]['contact_no'];
+			$emailId[$decodedData] = $decodedJson[$decodedData]['email_id'];
 			$panNo[$decodedData] = $decodedJson[$decodedData]['pan'];
 			$tinNo[$decodedData] = $decodedJson[$decodedData]['tin'];
 			$gstNo[$decodedData] = $decodedJson[$decodedData]['gst'];
@@ -82,6 +84,8 @@ class EncodeAllData extends StateService
 				'inventoryAffected' => $inventoryAffected[$jsonData],
 				'address1' => $address1[$jsonData],
 				'address2' => $address2[$jsonData],
+				'contactNo' => $contactNo[$jsonData],
+				'emailId' => $emailId[$jsonData],
 				'pan'=> $panNo[$jsonData],
 				'tin'=> $tinNo[$jsonData],
 				'gstNo'=> $gstNo[$jsonData],
@@ -102,7 +106,7 @@ class EncodeAllData extends StateService
 					'isDisplay' => $getCityDetail[$jsonData]['isDisplay'],
 					'createdAt' => $getCityDetail[$jsonData]['createdAt'],
 					'updatedAt' => $getCityDetail[$jsonData]['updatedAt'],
-					'stateAbb' => $getCityDetail[$jsonData]['stateAbb']
+					'stateAbb' => $getCityDetail[$jsonData]['state']['stateAbb']
 				),
 				
 				'ledgergroup'=> array(
@@ -129,19 +133,22 @@ class EncodeAllData extends StateService
 					'formalName' => $getCompanyDetails[$jsonData]['formalName'],	
 					'noOfDecimalPoints' => $getCompanyDetails[$jsonData]['noOfDecimalPoints'],	
 					'currencySymbol' => $getCompanyDetails[$jsonData]['currencySymbol'],	
-					'documentName' => $getCompanyDetails[$jsonData]['documentName'],	
-					'documentUrl' => $getCompanyDetails[$jsonData]['documentUrl'],	
-					'documentSize' =>$getCompanyDetails[$jsonData]['documentSize'],	
-					'documentFormat' => $getCompanyDetails[$jsonData]['documentFormat'],	
+					'logo'=> array(
+						'documentName' => $getCompanyDetails[$jsonData]['logo']['documentName'],	
+						'documentUrl' => $getCompanyDetails[$jsonData]['logo']['documentUrl'],	
+						'documentSize' =>$getCompanyDetails[$jsonData]['logo']['documentSize'],	
+						'documentFormat' => $getCompanyDetails[$jsonData]['logo']['documentFormat']
+					),
 					'isDisplay' => $getCompanyDetails[$jsonData]['isDisplay'],	
 					'isDefault' => $getCompanyDetails[$jsonData]['isDefault'],	
 					'createdAt' => $getCompanyDetails[$jsonData]['createdAt'],	
 					'updatedAt' => $getCompanyDetails[$jsonData]['updatedAt'],	
-					'stateAbb' => $getCompanyDetails[$jsonData]['stateAbb'],	
-					'cityId' => $getCompanyDetails[$jsonData]['cityId']	
+					'stateAbb' => $getCompanyDetails[$jsonData]['state']['stateAbb'],	
+					'cityId' => $getCompanyDetails[$jsonData]['city']['cityId']	
 				)		
 			);
 		}
+		// echo "hio";
 		$jsonEncodedData = json_encode($data);
 		return $jsonEncodedData;
 	}

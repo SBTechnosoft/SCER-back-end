@@ -58,7 +58,8 @@ class TemplateModel extends Model
 		template_body,
 		template_type,
 		updated_at,
-		created_at
+		created_at,
+		company_id
 		from template_mst where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
@@ -90,7 +91,8 @@ class TemplateModel extends Model
 		template_body,
 		template_type,
 		updated_at,
-		created_at
+		created_at,
+		company_id
 		from template_mst where template_id ='".$templateId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		

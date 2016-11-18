@@ -61,10 +61,14 @@ class ProductCategoryController extends BaseController implements ContainerInter
 			{
 				return $productCategoryPersistable;
 			}
-			else
+			else if(is_array($productCategoryPersistable))
 			{
 				$status = $productCategoryService->insert($productCategoryPersistable);
 				return $status;
+			}
+			else
+			{
+				return $productCategoryPersistable;
 			}
 		}
 		else

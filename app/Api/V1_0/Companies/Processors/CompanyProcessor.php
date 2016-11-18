@@ -12,6 +12,7 @@ use ERP\Core\Sample\Persistables\DocumentPersistable;
 use ERP\Core\Companies\Validations\CompanyValidate;
 use ERP\Api\V1_0\Companies\Transformers\CompanyTransformer;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -32,6 +33,7 @@ class CompanyProcessor extends BaseProcessor
 	{	
 		date_default_timezone_set("Asia/Calcutta");
 		$this->request = $request;	
+		$documentArray = array();
 		$companyValue = array();
 		$tKeyValue = array();
 		$keyName = array();
@@ -49,10 +51,13 @@ class CompanyProcessor extends BaseProcessor
 		$convertedDateTime = str_replace(" ","-",$dateTime);
 		$splitDateTime = explode("-",$convertedDateTime);
 		$combineDateTime = $splitDateTime[0].$splitDateTime[1].$splitDateTime[2].$splitDateTime[3].$splitDateTime[4].$splitDateTime[5];
-			
+		
+		//get constant document-url from document
+		$documentUrl =  new ConstantClass();
+		$documentArray = $documentUrl->constantVariable();	
 		if(in_array(true,$file))
 		{
-			$documentUrl = 'Storage/Document/';
+			$documentUrl = $documentArray['documentUrl'];
 			$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".".$file['file'][0]->getClientOriginalExtension();
 			$documentFormat = $file['file'][0]->getClientOriginalExtension();
 			$documentSize = $file['file'][0]->getClientSize();
@@ -123,7 +128,6 @@ class CompanyProcessor extends BaseProcessor
 								if(($documentSize/1048576)<=5)
 								{
 									$companyPersistable->setDocumentName($documentName);
-									$companyPersistable->setDocumentUrl($documentUrl);
 									$companyPersistable->setDocumentSize($documentSize);
 									$companyPersistable->setDocumentFormat($documentFormat);
 									$companyArray[$data] = array($companyPersistable);
@@ -163,6 +167,7 @@ class CompanyProcessor extends BaseProcessor
 		$errorStatus=array();
 		$docFlag=0;
 		$documentName="";
+		$documentArray = array();
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
 		// update
 		if($requestMethod == 'POST')
@@ -179,6 +184,10 @@ class CompanyProcessor extends BaseProcessor
 			$splitDateTime = explode("-",$convertedDateTime);
 			$combineDateTime = $splitDateTime[0].$splitDateTime[1].$splitDateTime[2].$splitDateTime[3].$splitDateTime[4].$splitDateTime[5];
 			
+			//get constant document-url from document
+			$documentUrl =  new ConstantClass();
+			$documentArray = $documentUrl->constantVariable();
+			
 			//file uploading
 			$file = $request->file();
 			if(in_array(true,$file))
@@ -187,7 +196,7 @@ class CompanyProcessor extends BaseProcessor
 				$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".".$file['file'][0]->getClientOriginalExtension();
 				$documentFormat = $file['file'][0]->getClientOriginalExtension();
 				$documentSize = $file['file'][0]->getClientSize();
-				$path = 'Storage/Document/';
+				$path = $documentArray['documentUrl'];
 				$file['file'][0]->move($path,$documentName);
 				$docFlag=1;
 				
@@ -211,7 +220,6 @@ class CompanyProcessor extends BaseProcessor
 						//set the data in persistable object
 						$companyPersistable = new CompanyPersistable();	
 						$companyPersistable->setDocumentName($documentName);
-						$companyPersistable->setDocumentUrl($path);
 						$companyPersistable->setDocumentSize($documentSize);
 						$companyPersistable->setDocumentFormat($documentFormat);
 						$companyPersistable->setCompanyId($companyId);
@@ -295,7 +303,6 @@ class CompanyProcessor extends BaseProcessor
 											if(($documentSize/1048576)<=5)
 											{
 												$companyPersistable->setDocumentName($documentName);
-												$companyPersistable->setDocumentUrl($path);
 												$companyPersistable->setDocumentSize($documentSize);
 												$companyPersistable->setDocumentFormat($documentFormat);
 												$companyArray[$data] = array($companyPersistable);

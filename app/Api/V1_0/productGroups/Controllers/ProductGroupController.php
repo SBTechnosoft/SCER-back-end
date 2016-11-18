@@ -61,10 +61,14 @@ class ProductGroupController extends BaseController implements ContainerInterfac
 			{
 				return $productGroupPersistable;
 			}
-			else
+			else if(is_array($productGroupPersistable))
 			{
 				$status = $productGroupService->insert($productGroupPersistable);
 				return $status;
+			}
+			else
+			{
+				return $productGroupPersistable;
 			}
 		}
 		else{

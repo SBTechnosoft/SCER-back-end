@@ -54,7 +54,11 @@ class JournalModel extends Model
 			return $fileSizeArray['500'];
 		}
 	}
-	
+	/**
+	 * get data 
+	 * get next journal id
+	 * returns the error-message/data
+	*/
 	public function getJournalData()
 	{
 		DB::beginTransaction();
@@ -78,6 +82,13 @@ class JournalModel extends Model
 			return json_encode($data);
 		}
 	}
+	
+	/**
+	 * get data 
+	 * @param  from-date and to-date
+	 * get data between given date
+	 * returns the error-message/data
+	*/
 	public function getData($fromDate,$toDate)
 	{
 		DB::beginTransaction();
@@ -109,6 +120,11 @@ class JournalModel extends Model
 			return $enocodedData;
 		}
 	}
+	/**
+	 * get data 
+	 * get current year data
+	 * returns the error-message/data
+	*/
 	public function getCurrentYearData()
 	{
 		DB::beginTransaction();

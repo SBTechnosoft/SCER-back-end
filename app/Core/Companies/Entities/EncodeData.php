@@ -5,6 +5,7 @@ use ERP\Core\Companies\Entities\Company;
 use ERP\Core\States\Services\StateService;
 use ERP\Core\Entities\CityDetail;
 use Carbon;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -13,6 +14,12 @@ class EncodeData extends StateService
 	//date conversion and merge with json data and returns json array
     public function getEncodedData($status,$documentStatus)
 	{
+		$documentArray = array();
+		
+		//get constant document-url from document
+		$documentUrl =  new ConstantClass();
+		$documentArray = $documentUrl->constantVariable();
+		
 		$decodedJson = json_decode($status,true);
 		$decodedJsonDoc = json_decode($documentStatus,true);
 		$createdAt = $decodedJson[0]['created_at'];
@@ -32,7 +39,7 @@ class EncodeData extends StateService
 		$noOfDecimalPoints= $decodedJson[0]['no_of_decimal_points'];
 		$currencySymbol= $decodedJson[0]['currency_symbol'];
 		$documentName= $decodedJsonDoc[0]['document_name'];
-		$documentUrl= $decodedJsonDoc[0]['document_url'];
+		$documentUrl= $documentArray['documentUrl'];
 		$documentSize= $decodedJsonDoc[0]['document_size'];
 		$documentFormat= $decodedJsonDoc[0]['document_format'];
 		$isDisplay= $decodedJson[0]['is_display'];
@@ -75,10 +82,12 @@ class EncodeData extends StateService
 		$data['formalName'] = $formalName;
 		$data['noOfDecimalPoints'] = $noOfDecimalPoints;
 		$data['currencySymbol'] = $currencySymbol;
-		$data['documentName'] = $documentName;
-		$data['documentUrl'] = $documentUrl;
-		$data['documentSize'] = $documentSize;
-		$data['documentFormat'] = $documentFormat;
+		$data['logo'] = array(
+			'documentName' => $documentName,
+			'documentUrl' => $documentUrl,
+			'documentSize' => $documentSize,
+			'documentFormat' => $documentFormat
+		);
 		$data['isDisplay'] = $isDisplay;
 		$data['isDefault'] = $isDefault;
 		$data['createdAt'] = $getCreatedDate;

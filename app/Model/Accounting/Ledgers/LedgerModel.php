@@ -38,7 +38,6 @@ class LedgerModel extends Model
 				$keyName =$keyName.$getLedgerKey[$data].",";
 			}
 		}
-		
 		DB::beginTransaction();
 		$raw = DB::statement("insert into ledger_mst(".$keyName.") 
 		values(".$ledgerData.")");
@@ -49,6 +48,7 @@ class LedgerModel extends Model
 		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
+			
 			$ledgerId = DB::select('SELECT  MAX(ledger_id) AS ledger_id from ledger_mst');
 			$result = DB::statement("CREATE TABLE ".$ledgerId[0]->ledger_id."_ledger_dtl (
 			 `".$ledgerId[0]->ledger_id."_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -115,6 +115,8 @@ class LedgerModel extends Model
 		inventory_affected,
 		address1,
 		address2,
+		contact_no,
+		email_id,
 		pan,
 		tin,
 		gst,
@@ -157,6 +159,8 @@ class LedgerModel extends Model
 		inventory_affected,
 		address1,
 		address2,
+		contact_no,
+		email_id,
 		pan,
 		tin,
 		gst,
@@ -197,6 +201,8 @@ class LedgerModel extends Model
 		inventory_affected,
 		address1,
 		address2,
+		contact_no,
+		email_id,
 		pan,
 		tin,
 		gst,
@@ -238,6 +244,8 @@ class LedgerModel extends Model
 		inventory_affected,
 		address1,
 		address2,
+		contact_no,
+		email_id,
 		pan,
 		tin,
 		gst,

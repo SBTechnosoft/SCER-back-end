@@ -24,6 +24,8 @@ class EncodeData extends StateService
 		$inventoryAffected= $decodedJson[0]['inventory_affected'];
 		$address1= $decodedJson[0]['address1'];
 		$address2= $decodedJson[0]['address2'];
+		$contactNo= $decodedJson[0]['contact_no'];
+		$emailId= $decodedJson[0]['email_id'];
 		$panNo = $decodedJson[0]['pan'];
 		$tinNo = $decodedJson[0]['tin'];
 		$gstNo= $decodedJson[0]['gst'];
@@ -66,12 +68,13 @@ class EncodeData extends StateService
 		$data['inventoryAffected'] = $inventoryAffected;
 		$data['address1'] = $address1;
 		$data['address2'] = $address2;
+		$data['contactNo'] = $contactNo;
+		$data['emailId'] = $emailId;
 		$data['pan'] = $panNo;
 		$data['tin'] = $tinNo;
 		$data['gstNo'] = $gstNo;
 		$data['createdAt'] = $getCreatedDate;
 		$data['updatedAt'] = $getUpdatedDate;	
-		
 		$data['ledgerGroup']= array(
 			'ledgerGroupId' => $ledgerGrpId,	
 			'ledgerGroupName' => $getLedgerGrpDetail['ledgerGroupName'],
@@ -79,9 +82,7 @@ class EncodeData extends StateService
 			'underWhat' => $getLedgerGrpDetail['underWhat'],
 			'natureOfGroup' => $getLedgerGrpDetail['natureOfGroup'],
 			'affectedGroupProfit' => $getLedgerGrpDetail['affectedGroupProfit']
-			
 		);
-		
 		$data['state'] = array(
 			'stateAbb' => $stateAbb,
 			'stateName' => $stateDecodedJson['stateName'],
@@ -111,10 +112,12 @@ class EncodeData extends StateService
 			'basicCurrencySymbol' => $companyDetails['basicCurrencySymbol'],
 			'formalName' => $companyDetails['formalName'],
 			'noOfDecimalPoints' => $companyDetails['currencySymbol'],	
-			'documentName' => $companyDetails['documentName'],	
-			'documentUrl' => $companyDetails['documentUrl'],	
-			'documentSize' => $companyDetails['documentSize'],
-			'documentFormat' => $companyDetails['documentFormat'],	
+			'logo'=> array(
+				'documentName' => $companyDetails['logo']['documentName'],	
+				'documentUrl' => $companyDetails['logo']['documentUrl'],	
+				'documentSize' => $companyDetails['logo']['documentSize'],
+				'documentFormat' => $companyDetails['logo']['documentFormat']
+			),
 			'isDisplay' => $companyDetails['isDisplay'],	
 			'isDefault' => $companyDetails['isDefault'],	
 			'createdAt' => $companyDetails['createdAt'],	

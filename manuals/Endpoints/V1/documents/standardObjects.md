@@ -17,6 +17,13 @@
 				
             }
 
+##### Standard Bill Document Persistable Object
+
+            {
+                "document": file
+				
+            }
+
 ##### Document Format Enum
 			{
 				documentFormat: `jpeg | jpg | gif | png `

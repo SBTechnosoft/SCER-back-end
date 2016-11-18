@@ -15,13 +15,12 @@ class DocumentModel extends Model
 	 * @param  state_name,is_display and state_abb
 	 * returns the status
 	*/
-	public function insertData($documentName,$documentUrl,$documentSize,$documentFormat,$status)
+	public function insertData($documentName,$documentSize,$documentFormat,$status)
 	{
 		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
 		$raw = DB::statement("update company_mst
 		set document_name='".$documentName."',
-		document_url='".$documentUrl."',
 		document_size='".$documentSize."',
 		document_format='".$documentFormat."',
 		updated_at='".$mytime."' where company_id=".$status);
@@ -44,13 +43,12 @@ class DocumentModel extends Model
 	 * @param state_abb,state_nameand is_display
 	 * returns the status
 	*/
-	public function updateData($documentName,$documentUrl,$documentSize,$documentFormat,$companyId)
+	public function updateData($documentName,$documentSize,$documentFormat,$companyId)
 	{
 		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
 		$raw = DB::statement("update company_mst 
 		set document_name='".$documentName."',
-		document_url='".$documentUrl."',
 		document_size='".$documentSize."',
 		document_format='".$documentFormat."',
 		updated_at='".$mytime."' where company_id=".$companyId);
@@ -78,7 +76,6 @@ class DocumentModel extends Model
 		DB::beginTransaction();		
 		$raw = DB::select("select 
 		document_name,
-		document_url,
 		document_size,
 		document_format
 		from company_mst where deleted_at='0000-00-00 00:00:00'");
@@ -108,7 +105,6 @@ class DocumentModel extends Model
 		DB::beginTransaction();
 		$raw = DB::select("select 
 		document_name,
-		document_url,
 		document_size,
 		document_format
 		from company_mst where company_id = '".$companyId."' and deleted_at='0000-00-00 00:00:00'");

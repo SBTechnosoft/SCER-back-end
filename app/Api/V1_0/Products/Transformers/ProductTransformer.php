@@ -6,6 +6,8 @@ use ERP\Http\Requests;
 use ERP\Exceptions\ExceptionMessage;
 use Carbon;
 use ERP\Core\Products\Entities\EnumClasses\DiscountTypeEnum;
+use ERP\Entities\EnumClasses\IsDisplayEnum;
+use ERP\Core\Products\Entities\EnumClasses\measurementUnitEnum;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -17,6 +19,9 @@ class ProductTransformer
      */
     public function trimInsertData(Request $request)
     {
+		$isDisplayFlag=0;
+		$measurementUnitFlag=0;
+		//data get from body
 		$productName = $request->input('productName'); 
 		$measurementUnit = $request->input('measurementUnit'); 
 		$isDisplay = $request->input('isDisplay'); 			
@@ -32,16 +37,48 @@ class ProductTransformer
 		$tProductCatId = trim($productCatId);
 		$tProductGrpId = trim($productGrpId);
 		$tBranchId = trim($branchId);
-		//make an array
-		$data = array();
-		$data['product_name'] = $tProductName;
-		$data['measurement_unit'] = $tMeasUnit;
-		$data['is_display'] = $tIsDisplay;
-		$data['company_id'] = $tCompanyId;
-		$data['product_category_id'] = $tProductCatId;
-		$data['product_group_id'] = $tProductGrpId;
-		$data['branch_id'] = $tBranchId;
-		return $data;
+		
+		$enumIsDispArray = array();
+		$isDispEnum = new IsDisplayEnum();
+		$enumIsDispArray = $isDispEnum->enumArrays();
+		foreach ($enumIsDispArray as $key => $value)
+		{
+			if(strcmp($value,$tIsDisplay)==0)
+			{
+				$isDisplayFlag=1;
+				break;
+			}
+		}
+		
+		$enumMeasurementUnitArray = array();
+		$measurementUnitEnum = new measurementUnitEnum();
+		$enumMeasurementUnitArray = $measurementUnitEnum->enumArrays();
+		foreach ($enumMeasurementUnitArray as $key => $value)
+		{
+			if(strcmp($value,$tMeasUnit)==0)
+			{
+				$measurementUnitFlag=1;
+				break;
+			}
+		}
+		
+		if($isDisplayFlag==0 || $measurementUnitFlag==0)
+		{
+			return "1";
+		}
+		else
+		{
+			//make an array
+			$data = array();
+			$data['product_name'] = $tProductName;
+			$data['measurement_unit'] = $tMeasUnit;
+			$data['is_display'] = $tIsDisplay;
+			$data['company_id'] = $tCompanyId;
+			$data['product_category_id'] = $tProductCatId;
+			$data['product_group_id'] = $tProductGrpId;
+			$data['branch_id'] = $tBranchId;
+			return $data;
+		}
 	}
 	
 	/**
@@ -132,6 +169,9 @@ class ProductTransformer
      */
 	public function trimUpdateData()
 	{
+		$productEnumArray = array();
+		$isDisplayFlag=0;
+		$measurementUnitFlag=0;
 		$tProductArray = array();
 		$productValue;
 		$keyValue = func_get_arg(0);
@@ -152,7 +192,53 @@ class ProductTransformer
 		for($data=0;$data<count($productValue);$data++)
 		{
 			$tProductArray[$data]= array($convertedValue=> trim($productValue));
+			$productEnumArray = array_keys($tProductArray[$data])[0];
 		}
-		return $tProductArray;
+		//check enum data
+		$enumMeasurementUnitArray = array();
+		$measurementUnitEnum = new measurementUnitEnum();
+		$enumMeasurementUnitArray = $measurementUnitEnum->enumArrays();
+		
+		if(strcmp($productEnumArray,'measurement_unit')==0)
+		{
+			foreach ($enumMeasurementUnitArray as $key => $value)
+			{
+				if(strcmp($tProductArray[0]['measurement_unit'],$value)==0)
+				{
+					$measurementUnitFlag=1;
+					break;
+				}
+				else
+				{
+					$measurementUnitFlag=2;
+				}
+			}
+		}
+		$enumIsDispArray = array();
+		$isDispEnum = new IsDisplayEnum();
+		$enumIsDispArray = $isDispEnum->enumArrays();
+		if(strcmp($productEnumArray,'is_display')==0)
+		{
+			foreach ($enumIsDispArray as $key => $value)
+			{
+				if(strcmp($tProductArray[0]['is_display'],$value)==0)
+				{
+					$isDisplayFlag=1;
+					break;
+				}
+				else
+				{
+					$isDisplayFlag=2;
+				}
+			}
+		}
+		if($isDisplayFlag==2 || $measurementUnitFlag==2)
+		{
+			return "1";
+		}
+		else
+		{
+			return $tProductArray;
+		}
 	}
 }

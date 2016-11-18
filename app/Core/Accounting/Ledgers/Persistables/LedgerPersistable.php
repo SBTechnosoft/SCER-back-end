@@ -17,6 +17,8 @@ use ERP\Core\Accounting\Ledgers\Properties\GstNoPropertyTrait;
 use ERP\Core\Cities\Properties\CityIdPropertyTrait;
 use ERP\Core\Accounting\Ledgers\Properties\LedgerGrpIdPropertyTrait;
 use ERP\Core\Companies\Properties\CompanyIdPropertyTrait;
+use ERP\Core\Accounting\Ledgers\Properties\ContactNoPropertyTrait;
+use ERP\Core\Accounting\Ledgers\Properties\EmailIdPropertyTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -38,4 +40,6 @@ class LedgerPersistable
 	use LedgerGrpIdPropertyTrait;
 	use CompanyIdPropertyTrait;
 	use GstNoPropertyTrait;
+	use ContactNoPropertyTrait;
+	use EmailIdPropertyTrait;
 }

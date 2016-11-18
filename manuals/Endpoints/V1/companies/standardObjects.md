@@ -45,6 +45,10 @@
 			"tin": string,
 			"vatNo": string,
 			"serviceTaxNo": string,
+			"file[]":
+			{
+				...Standard Document Persistable Object
+			}
 			"basicCurrencySymbol":varchar,
 			"formalName":varchar,
 			"noOfDecimalPoints":int,

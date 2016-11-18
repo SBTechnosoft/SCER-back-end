@@ -31,7 +31,6 @@ class EncodeData extends ProductCategoryService
 		//get the product_cat_details from database
 		$encodeProductCatDataClass = new EncodeData();
 		$productCatStatus = $encodeProductCatDataClass->getProductCatData($productCatId);
-		
 		$productCatDecodedJson = json_decode($productCatStatus,true);
 		$pCatId= $productCatDecodedJson['productCategoryId'];
 		$pCatName= $productCatDecodedJson['productCategoryName'];
@@ -40,7 +39,6 @@ class EncodeData extends ProductCategoryService
 		$pParentCatId= $productCatDecodedJson['productParentCategoryId'];
 		$pCatCreatedAt= $productCatDecodedJson['createdAt'];
 		$pCatUpdatedAt= $productCatDecodedJson['updatedAt'];
-		
 		//get the product group detail from database
 		$productGroupDetail  = new ProductGroupDetail();
 		$getProductGrpDetails = $productGroupDetail->getProductGrpDetails($productGrpId);

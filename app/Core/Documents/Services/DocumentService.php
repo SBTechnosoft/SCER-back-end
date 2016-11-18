@@ -23,16 +23,16 @@ class DocumentService extends DocumentModel
 		$status = $documentModel->getData($companyId);
 		return $status;
 	}
-	public static function insertDocumentData($documentName,$documentUrl,$documentSize,$documentFormat,$status)
+	public static function insertDocumentData($documentName,$documentSize,$documentFormat,$status)
 	{
 		$documentModel = new DocumentModel();
-		$status = $documentModel->insertData($documentName,$documentUrl,$documentSize,$documentFormat,$status);
+		$status = $documentModel->insertData($documentName,$documentSize,$documentFormat,$status);
 		return $status;
 	}
-	public static function updateDocumentData($documentName,$documentUrl,$documentSize,$documentFormat,$companyId)
+	public static function updateDocumentData($documentName,$documentSize,$documentFormat,$companyId)
 	{
 		$documentModel = new DocumentModel();
-		$status = $documentModel->updateData($documentName,$documentUrl,$documentSize,$documentFormat,$companyId);
+		$status = $documentModel->updateData($documentName,$documentSize,$documentFormat,$companyId);
 		return $status;
 	}
 }

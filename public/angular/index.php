@@ -195,7 +195,7 @@ include ('connection.php');
 				// formdata.append('cityId',$scope.formAdata.city_id);
 				
 				//productCategory
-				// $scope.formAdata.productCatName = "abc";
+				// $scope.formAdata.productCatName = "abcd";
 				// $scope.formAdata.product_cat_desc = "abcdddddcc";
 				// $scope.formAdata.is_display = 'yes ';
 				// $scope.formAdata.product_parent_cat_id = 1;
@@ -206,7 +206,7 @@ include ('connection.php');
 				// formdata.append('productParentCategoryId',$scope.formAdata.product_parent_cat_id);
 				
 				//productGroup
-				// $scope.formAdata.product_group_name = "\a&b#c4";
+				// $scope.formAdata.product_group_name = "a&b";
 				// $scope.formAdata.product_group_desc = "abcdddd";
 				// $scope.formAdata.is_display = 'yes ';
 				// $scope.formAdata.product_group_parent_id = 0;
@@ -219,10 +219,10 @@ include ('connection.php');
 				//product
 				// $scope.formAdata.product_name = "abc";
 				// $scope.formAdata.is_display = 'no';
-				// $scope.formAdata.measurement_unit='lit';
-				// $scope.formAdata.product_cat_id='1';
-				// $scope.formAdata.product_group_id='4';
-				// $scope.formAdata.company_id='15';
+				// $scope.formAdata.measurement_unit='litre';
+				// $scope.formAdata.product_cat_id='14';
+				// $scope.formAdata.product_group_id='5';
+				// $scope.formAdata.company_id='14';
 				// $scope.formAdata.branch_id='6';
 				
 				// formdata.append('productName',$scope.formAdata.product_name);
@@ -234,13 +234,15 @@ include ('connection.php');
 				// formdata.append('branchId',$scope.formAdata.branch_id);
 				
 				//template
-				// $scope.formAdata.template_name = " abcffee ";
+				// $scope.formAdata.template_name = " abcffd ";
 				// $scope.formAdata.template_type = ' general ';
 				// $scope.formAdata.template_body=' <b> hiee</b> ';
+				// $scope.formAdata.company_id=' 14 ';
 				
 				// formdata.append('templateName',$scope.formAdata.template_name);
 				// formdata.append('templateType',$scope.formAdata.template_type);
 				// formdata.append('templateBody',$scope.formAdata.template_body);
+				// formdata.append('companyId',$scope.formAdata.company_id);
 				
 				//invoice
 				// $scope.formAdata.invoice_label = " abcd ";
@@ -269,17 +271,19 @@ include ('connection.php');
 				// formdata.append('companyId',$scope.formAdata.company_id);
 				
 				//ledger
-				// $scope.formAdata.ledger_name = " abcc ";
-				// $scope.formAdata.alias = ' dc ';
-				// $scope.formAdata.inventory_affected=' yes ';
-				// $scope.formAdata.address1 =" sdx czc ";
-				// $scope.formAdata.address2 = " aEbc ";
-				// $scope.formAdata.pan= ' qqqas1122c ';
-				// $scope.formAdata.tin= ' 42aa3dgg773 ';
-				// $scope.formAdata.gst = ' 71j0rg778a22b03 ';
+				// $scope.formAdata.ledger_name = " abc ";
+				// $scope.formAdata.alias = ' d ';
+				// $scope.formAdata.inventory_affected=' no ';
+				// $scope.formAdata.address1 =" sdx cz ";
+				// $scope.formAdata.address2 = " aEb ";
+				// $scope.formAdata.contact_no = " 8765456752 ";
+				// $scope.formAdata.email_id = " reemapatel25@gmail.co.in ";
+				// $scope.formAdata.pan= ' qqqas1122d ';
+				// $scope.formAdata.tin= ' 42aa3dgg774 ';
+				// $scope.formAdata.gst = ' 71j0rg778a22b04 ';
 				// $scope.formAdata.state_abb= ' IN-AG ';
 				// $scope.formAdata.city_id= '1';
-				// $scope.formAdata.ledger_grp_id='2 ';
+				// $scope.formAdata.ledger_grp_id='9 ';
 				// $scope.formAdata.company_id='14 ';
 				
 				// formdata.append('ledgerName',$scope.formAdata.ledger_name);
@@ -287,6 +291,8 @@ include ('connection.php');
 				// formdata.append('inventoryAffected',$scope.formAdata.inventory_affected);
 				// formdata.append('address1',$scope.formAdata.address1);
 				// formdata.append('address2',$scope.formAdata.address2);
+				// formdata.append('contactNo',$scope.formAdata.contact_no);
+				// formdata.append('emailId',$scope.formAdata.email_id);
 				// formdata.append('pan',$scope.formAdata.pan);
 				// formdata.append('tin',$scope.formAdata.tin);
 				// formdata.append('gst',$scope.formAdata.gst);
@@ -336,26 +342,14 @@ include ('connection.php');
 				//transaction
 				// $scope.user = [{"inventory":[{"productId":7 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 7 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"companyId":14,"transactionDate":"22-10-2015"}];
 				
-				// "transactionDate": date,
-                // "transactionType": Enum,
-                // "qty": decimal,
-                // "price": decimal,
-				// "discount":decimal,
-				// "discountType":Enum,
-				// "companyId": int,
-				// "productId":int,
-				// ,
-				// "inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}]}]
-				// ,"invoiceNumber":23
-				// $scope.user={
-					// 'array':[{"key":"value"},{"key1":"value1"}]
-				// };
-				// formdata.append('journalData1[]',$scope.user);
-				
+				//Bill PDF generate
+				// $scope.user = [{"billData":[{"companyId":14,"date":"22-10-2015","contact":"987654565678","name":"abc","invoice-number":"INV/2016-12/54","address1":"sfja,sa","address2":"dfsd,ds","stateAbb":"IN-GJ","cityId":2,"inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}]
+					
+				// }]}];
 				
 				// var productId = 7;
-				// var productGrpId = 2;
-				// var productCatId = 13;
+				// var productGrpId = 11;
+				// var productCatId = 16;
 				// var companyId=14;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AC";
@@ -366,14 +360,14 @@ include ('connection.php');
 				// var invoiceId=2;
 				// var quotationId=1;
 				// var ledgerGrpId=1;
-				// var ledgerId=42;
-				
+				// var ledgerId=1;
+				// var url = "http://www.scerp1.com/documents/bill";
 				// var url="http://www.scerp1.com/products/inward"; 
 				// var url="http://www.scerp1.com/products/outward";
 				
 				// var url="http://www.scerp1.com/accos";
-				// var url="http://www.scerp1.com/accounting/journals";
 				var url="http://www.scerp1.com/accounting/journals";
+				// var url="http://www.scerp1.com/accounting/journals";
 				// var url="http://www.scerp1.com/accounting/journals/next";
 				
 				// var url="http://www.scerp1.com/accounting/ledgers/company/"+companyId;
@@ -412,8 +406,8 @@ include ('connection.php');
 				$http({
                         url: url,
                         // type:'patch',
-						 // method: 'post',
-						method: 'get',
+						 method: 'post',
+						// method: 'get',
 						// method: "PATCH",
 						// method:'delete',
 						processData: false,

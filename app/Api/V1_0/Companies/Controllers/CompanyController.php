@@ -85,7 +85,7 @@ class CompanyController extends BaseController implements ContainerInterface
     public function getData($companyId=null)
     {
 		if($companyId==null)
-		{			
+		{	
 			$companyService= new CompanyService();
 			$status = $companyService->getAllCompanyData();
 			return $status;

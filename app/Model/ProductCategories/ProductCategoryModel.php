@@ -45,14 +45,14 @@ class ProductCategoryModel extends Model
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $fileSizeArray['200'];
+			return $exceptionArray['200'];
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return $exceptionArray['500'];
 		}
 	}
 	/**
@@ -76,15 +76,15 @@ class ProductCategoryModel extends Model
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
 			
-			return $fileSizeArray['200'];
+			return $exceptionArray['200'];
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return $exceptionArray['500'];
 		}
 	}
 	
@@ -108,10 +108,10 @@ class ProductCategoryModel extends Model
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['204'];
+			return $exceptionArray['204'];
 		}
 		else
 		{
@@ -141,10 +141,10 @@ class ProductCategoryModel extends Model
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['404'];
+			return $exceptionArray['404'];
 		}
 		else
 		{
@@ -165,7 +165,7 @@ class ProductCategoryModel extends Model
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
 			$product = DB::statement("update product_mst 
@@ -173,17 +173,30 @@ class ProductCategoryModel extends Model
 			where product_category_id = '".$productCatId."'");
 			if($product==1)
 			{
-				return $fileSizeArray['200'];
+				DB::beginTransaction();
+				$mytime = Carbon\Carbon::now();
+				$productCatRaw = DB::statement("update product_category_mst 
+				set deleted_at='".$mytime."'
+				where product_parent_category_id='".$productCatId."'");
+				DB::commit();
+				if($productCatRaw==1)
+				{
+					return $exceptionArray['200'];
+				}
+				else
+				{
+					return $exceptionArray['500'];
+				}
 			}
 			else
 			{
-				return $fileSizeArray['500'];
+				return $exceptionArray['500'];
 			}
 			
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return $exceptionArray['500'];
 		}
 	}
 }
