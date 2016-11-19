@@ -107,6 +107,10 @@ class JournalController extends BaseController implements ContainerInterface
 				}
 				
 			}
+			else
+			{
+				return $journalPersistable;
+			}
 		}
 	}
 	

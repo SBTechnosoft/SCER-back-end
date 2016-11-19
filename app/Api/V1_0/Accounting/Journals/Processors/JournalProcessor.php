@@ -31,33 +31,43 @@ class JournalProcessor extends BaseProcessor
 		$this->request = $request;	
 		$data=0;
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$msgArray = $exception->messageArrays();
+		
 		//trim an input 
 		$journalTransformer = new JournalTransformer();
 		$tRequest = $journalTransformer->trimInsertData($this->request);
-		
-		//validation
-		$journalValidate = new JournalValidate();
-		$status = $journalValidate->validate($tRequest);
-		
-		if($status=="Success")
+		if($tRequest==1)
 		{
-			$journalPersistable=array();
-			for($data=0;$data<count($tRequest[0]);$data++)
-			{
-				$journalPersistable[$data] = new JournalPersistable();
-				$journalPersistable[$data]->setJfId($tRequest['jfId']);
-				$journalPersistable[$data]->setEntryDate($tRequest['entryDate']);
-				$journalPersistable[$data]->setCompanyId($tRequest['companyId']);
-				
-				$journalPersistable[$data]->setAmount($tRequest[0][$data]['amount']);
-				$journalPersistable[$data]->setAmountType($tRequest[0][$data]['amountType']);
-				$journalPersistable[$data]->setLedgerId($tRequest[0][$data]['ledgerId']);
-			}
-			return $journalPersistable;
-		}
+			return $msgArray['content'];
+		}	
 		else
 		{
-			return $status;
+			//validation
+			$journalValidate = new JournalValidate();
+			$status = $journalValidate->validate($tRequest);
+			
+			if($status=="Success")
+			{
+				$journalPersistable=array();
+				for($data=0;$data<count($tRequest[0]);$data++)
+				{
+					$journalPersistable[$data] = new JournalPersistable();
+					$journalPersistable[$data]->setJfId($tRequest['jfId']);
+					$journalPersistable[$data]->setEntryDate($tRequest['entryDate']);
+					$journalPersistable[$data]->setCompanyId($tRequest['companyId']);
+					
+					$journalPersistable[$data]->setAmount($tRequest[0][$data]['amount']);
+					$journalPersistable[$data]->setAmountType($tRequest[0][$data]['amountType']);
+					$journalPersistable[$data]->setLedgerId($tRequest[0][$data]['ledgerId']);
+				}
+				return $journalPersistable;
+			}
+			else
+			{
+				return $status;
+			}
 		}
 	}
 	public function createPersistableData(Request $request)

@@ -58,10 +58,14 @@ class InvoiceController extends BaseController implements ContainerInterface
 			{
 				return $invoicePersistable;
 			}
-			else
+			else if(is_array($invoicePersistable))
 			{
 				$status = $invoiceService->insert($invoicePersistable);
 				return $status;
+			}
+			else
+			{
+				return $invoicePersistable;
 			}
 		}
 	}

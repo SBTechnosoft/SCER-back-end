@@ -46,20 +46,21 @@ class EncodeAllData extends CompanyService
 			$companyFormalName[$decodedData]= $companyDecodedJson[$decodedData]['formalName'];
 			$companyNoOfDecimalPoints[$decodedData]= $companyDecodedJson[$decodedData]['noOfDecimalPoints'];
 			$companyCurrencySymbol[$decodedData]= $companyDecodedJson[$decodedData]['currencySymbol'];
-			$companyDocumentName[$decodedData]= $companyDecodedJson[$decodedData]['documentName'];
-			$companyDocumentUrl[$decodedData]= $companyDecodedJson[$decodedData]['documentUrl'];
-			$companyDocumentSize[$decodedData]= $companyDecodedJson[$decodedData]['documentSize'];
-			$companyDocumentFormat[$decodedData]= $companyDecodedJson[$decodedData]['documentFormat'];
+			$companyDocumentName[$decodedData]= $companyDecodedJson[$decodedData]['logo']['documentName'];
+			$companyDocumentUrl[$decodedData]= $companyDecodedJson[$decodedData]['logo']['documentUrl'];
+			$companyDocumentSize[$decodedData]= $companyDecodedJson[$decodedData]['logo']['documentSize'];
+			$companyDocumentFormat[$decodedData]= $companyDecodedJson[$decodedData]['logo']['documentFormat'];
 			$companyIsDefault[$decodedData]= $companyDecodedJson[$decodedData]['isDefault'];
-			$companyStateAbb[$decodedData]= $companyDecodedJson[$decodedData]['stateAbb'];
-			$companyCityId[$decodedData]= $companyDecodedJson[$decodedData]['cityId'];
-			
+			$companyStateAbb[$decodedData]= $companyDecodedJson[$decodedData]['state']['stateAbb'];
+			$companyCityId[$decodedData]= $companyDecodedJson[$decodedData]['city']['cityId'];
+		
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
 		}
 		$quotation->setCreated_at($convertedCreatedDate);
 		$getCreatedDate = $quotation->getCreated_at();
 		$data = array();
+		
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
 		{
 			$data[$jsonData]= array(
@@ -71,6 +72,7 @@ class EncodeAllData extends CompanyService
 				'createdAt' => $getCreatedDate[$jsonData],
 				
 				'company' => array(
+					'companyId' => $companyId[$jsonData],
 					'companyName' => $companyName[$jsonData],
 					'isDisplay' => $companyIsDisplay[$jsonData],
 					'createdAt' => $companyCreatedAt[$jsonData],
@@ -87,10 +89,12 @@ class EncodeAllData extends CompanyService
 					'formalName' => $companyFormalName[$jsonData],
 					'noOfDecimalPoints' => $companyNoOfDecimalPoints[$jsonData],
 					'currencySymbol' => $companyCurrencySymbol[$jsonData],
-					'documentName' => $companyDocumentName[$jsonData],
-					'documentUrl' => $companyDocumentUrl[$jsonData],
-					'documentSize' => $companyDocumentSize[$jsonData],
-					'documentFormat' => $companyDocumentFormat[$jsonData],
+					'logo' => array(
+						'documentName' => $companyDocumentName[$jsonData],
+						'documentUrl' => $companyDocumentUrl[$jsonData],
+						'documentSize' => $companyDocumentSize[$jsonData],
+						'documentFormat' => $companyDocumentFormat[$jsonData]
+					),
 					'isDefault' => $companyIsDefault[$jsonData],
 					'stateAbb' => $companyStateAbb[$jsonData],
 					'cityId' => $companyCityId[$jsonData]

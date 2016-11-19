@@ -6,6 +6,7 @@ use ERP\Http\Requests;
 use ERP\Model\Accounting\Ledgers\LedgerModel;
 use ERP\Exceptions\ExceptionMessage;
 use Carbon;
+use ERP\Core\Accounting\Journals\Entities\AmountTypeEnum;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -17,6 +18,7 @@ class JournalTransformer extends LedgerModel
      */
     public function trimInsertData(Request $request)
     {
+		$amountTypeFlag=0;
 		$creditAmountArray = 0;
 		$debitAmountArray = 0;
 		$requestArray = array();
@@ -41,23 +43,46 @@ class JournalTransformer extends LedgerModel
 			$tempArray[$arrayData][1] = trim($request->input()[0]['data'][$arrayData]['amountType']);
 			$tempArray[$arrayData][2] = trim($request->input()[0]['data'][$arrayData]['ledgerId']);
 			
-			//check ledger exists
-			$journalObject = new JournalTransformer();
-			$ledgerIdResult = $journalObject->getData($tempArray[$arrayData][2]);
-			if(strcmp($ledgerIdResult,$exceptionArray['404'])==0)
+			//check enum type[amount-type]
+			$enumAmountTypeArray = array();
+			$amountTypeEnum = new AmountTypeEnum();
+			$enumAmountTypeArray = $amountTypeEnum->enumArrays();
+			foreach ($enumAmountTypeArray as $key => $value)
 			{
-				return $exceptionArray['404'];
-			}
-			else
-			{
-				//check credit-debit amount
-				if(strcmp($tempArray[$arrayData][1],"credit")==0)
+				if(strcmp($value,$tempArray[$arrayData][1])==0)
 				{
-					$creditAmountArray = $creditAmountArray+$tempArray[$arrayData][0];
+					$amountTypeFlag=1;
+					break;
 				}
 				else
 				{
-					$debitAmountArray = $debitAmountArray+$tempArray[$arrayData][0];
+					$amountTypeFlag=0;
+				}
+			}
+			if($amountTypeFlag==0)
+			{
+				return "1";
+			}
+			else
+			{
+				//check ledger exists
+				$journalObject = new JournalTransformer();
+				$ledgerIdResult = $journalObject->getData($tempArray[$arrayData][2]);
+				if(strcmp($ledgerIdResult,$exceptionArray['404'])==0)
+				{
+					return $exceptionArray['404'];
+				}
+				else
+				{
+					//check credit-debit amount
+					if(strcmp($tempArray[$arrayData][1],"credit")==0)
+					{
+						$creditAmountArray = $creditAmountArray+$tempArray[$arrayData][0];
+					}
+					else
+					{
+						$debitAmountArray = $debitAmountArray+$tempArray[$arrayData][0];
+					}
 				}
 			}
 		}

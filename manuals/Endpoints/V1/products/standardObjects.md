@@ -65,7 +65,6 @@
 				"flatType":"flat",
 				"perCentageType":"percentage"
 			}
-			
 ##### Standard Products Category Object
 
         {

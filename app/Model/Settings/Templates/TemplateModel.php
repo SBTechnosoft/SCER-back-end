@@ -13,6 +13,50 @@ class TemplateModel extends Model
 	protected $table = 'template_mst';
 	
 	/**
+	 * insert data 
+	 * @param  array
+	 * returns the status
+	*/
+	public function insertData()
+	{
+		$getTemplateData = array();
+		$getTemplateKey = array();
+		$getTemplateData = func_get_arg(0);
+		$getTemplateKey = func_get_arg(1);
+		$templateData="";
+		$keyName = "";
+		for($data=0;$data<count($getTemplateData);$data++)
+		{
+			if($data == (count($getTemplateData)-1))
+			{
+				$templateData = $templateData."'".$getTemplateData[$data]."'";
+				$keyName =$keyName.$getTemplateKey[$data];
+			}
+			else
+			{
+				$templateData = $templateData."'".$getTemplateData[$data]."',";
+				$keyName =$keyName.$getTemplateKey[$data].",";
+			}
+		}
+		DB::beginTransaction();
+		$raw = DB::statement("insert into template_mst(".$keyName.") 
+		values(".$templateData.")");
+		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if($raw==1)
+		{
+			return $exceptionArray['200'];
+		}
+		else
+		{
+			return $exceptionArray['500'];
+		}
+	}
+	
+	/**
 	 * update data 
 	 * @param  template-data,key of template-data,template-id
 	 * returns the status

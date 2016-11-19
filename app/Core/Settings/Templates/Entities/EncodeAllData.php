@@ -47,10 +47,10 @@ class EncodeAllData extends CompanyService
 			$companyFormalName[$decodedData]= $companyDecodedJson[$decodedData]['formalName'];
 			$companyNoOfDecimalPoints[$decodedData]= $companyDecodedJson[$decodedData]['noOfDecimalPoints'];
 			$companyCurrencySymbol[$decodedData]= $companyDecodedJson[$decodedData]['currencySymbol'];
-			$companyDocumentName[$decodedData]= $companyDecodedJson[$decodedData]['documentName'];
-			$companyDocumentUrl[$decodedData]= $companyDecodedJson[$decodedData]['documentUrl'];
-			$companyDocumentSize[$decodedData]= $companyDecodedJson[$decodedData]['documentSize'];
-			$companyDocumentFormat[$decodedData]= $companyDecodedJson[$decodedData]['documentFormat'];
+			$companyDocumentName[$decodedData]= $companyDecodedJson[$decodedData]['logo']['documentName'];
+			$companyDocumentUrl[$decodedData]= $companyDecodedJson[$decodedData]['logo']['documentUrl'];
+			$companyDocumentSize[$decodedData]= $companyDecodedJson[$decodedData]['logo']['documentSize'];
+			$companyDocumentFormat[$decodedData]= $companyDecodedJson[$decodedData]['logo']['documentFormat'];
 			$companyIsDefault[$decodedData]= $companyDecodedJson[$decodedData]['isDefault'];
 			$companyStateAbb[$decodedData]= $companyDecodedJson[$decodedData]['state']['stateAbb'];
 			$companyCityId[$decodedData]= $companyDecodedJson[$decodedData]['city']['cityId'];
@@ -92,10 +92,12 @@ class EncodeAllData extends CompanyService
 					'formalName' => $companyFormalName[$jsonData],
 					'noOfDecimalPoints' => $companyNoOfDecimalPoints[$jsonData],
 					'currencySymbol' => $companyCurrencySymbol[$jsonData],
-					'documentName' => $companyDocumentName[$jsonData],
-					'documentUrl' => $companyDocumentUrl[$jsonData],
-					'documentSize' => $companyDocumentSize[$jsonData],
-					'documentFormat' => $companyDocumentFormat[$jsonData],
+					'logo'=> array(
+						'documentName' => $companyDocumentName[$jsonData],
+						'documentUrl' => $companyDocumentUrl[$jsonData],
+						'documentSize' => $companyDocumentSize[$jsonData],
+						'documentFormat' => $companyDocumentFormat[$jsonData]
+					),
 					'isDefault' => $companyIsDefault[$jsonData],
 					'stateAbb' => $companyStateAbb[$jsonData],
 					'cityId' => $companyCityId[$jsonData]

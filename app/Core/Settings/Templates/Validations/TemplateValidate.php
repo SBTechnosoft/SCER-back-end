@@ -10,6 +10,31 @@ use Illuminate\Support\Facades\Route;
   */
 class TemplateValidate
 {
+	public function validate($request)
+	{
+		$rules = array(
+			'template_name'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]+$/'
+		);
+		$messages = [
+			'template_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
+		];
+		$validator = Validator::make($request,$rules,$messages);
+		if ($validator->fails()) {
+			$errors = $validator->errors()->toArray();
+			$validate = array();
+			for($data=0;$data<count($errors);$data++)
+			{
+				$detail[$data] = $errors[array_keys($errors)[$data]];
+				$key[$data] = array_keys($errors)[$data];
+				$validate[$data]= array($key[$data]=>$detail[$data][0]);
+			}
+			return json_encode($validate);
+		}
+		else {
+			return "Success";
+		}
+	}
+	
 	public function validateUpdateData($keyName,$value,$request)
 	{
 		$validationArray = array('template_name'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]+$/');

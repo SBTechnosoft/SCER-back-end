@@ -39,7 +39,39 @@ class TemplateController extends BaseController implements ContainerInterface
 		// echo "invoke";
 	}
 	
-	
+	/**
+	 * insert the specified resource 
+	 * @param  Request object[Request $request]
+	 * method calls the processor for creating persistable object & setting the data
+	*/
+	public function store(Request $request)
+    {
+		$this->request = $request;
+		// check the requested Http method
+		$requestMethod = $_SERVER['REQUEST_METHOD'];
+		// insert
+		if($requestMethod == 'POST')
+		{
+			$processor = new TemplateProcessor();
+			$templatePersistable = new TemplatePersistable();		
+			$templateService= new TemplateService();			
+			$templatePersistable = $processor->createPersistable($this->request);
+			
+			if($templatePersistable[0][0]=='[')
+			{
+				return $templatePersistable;
+			}
+			else if(is_array($templatePersistable))
+			{
+				$status = $templateService->insert($templatePersistable);
+				return $status;
+			}
+			else
+			{
+				return $templatePersistable;
+			}
+		}
+	}
 	
 	/**
      * get the specified resource.

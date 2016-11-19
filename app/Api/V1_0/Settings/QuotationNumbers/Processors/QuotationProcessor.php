@@ -8,6 +8,7 @@ use ERP\Http\Requests;
 use Illuminate\Http\Response;
 use ERP\Core\Settings\QuotationNumbers\Validations\QuotationValidate;
 use ERP\Api\V1_0\Settings\QuotationNumbers\Transformers\QuotationTransformer;
+use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -33,57 +34,68 @@ class QuotationProcessor extends BaseProcessor
 		$keyName = array();
 		$value = array();
 		$data=0;
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$msgArray = $exception->messageArrays();
+		
 		//trim an input 
 		$quotationTransformer = new QuotationTransformer();
 		$tRequest = $quotationTransformer->trimInsertData($this->request);
-		
-		//validation
-		$quotationValidate = new QuotationValidate();
-		$status = $quotationValidate->validate($tRequest);
-		if($status=="Success")
+		if($tRequest==1)
 		{
-			foreach ($tRequest as $key => $value)
+			return $msgArray['content'];
+		}	
+		else
+		{
+			//validation
+			$quotationValidate = new QuotationValidate();
+			$status = $quotationValidate->validate($tRequest);
+			if($status=="Success")
 			{
-				if(!is_numeric($value))
+				foreach ($tRequest as $key => $value)
 				{
-					if (strpos($value, '\'') !== FALSE)
+					if(!is_numeric($value))
 					{
-						$quotationValue[$data]= str_replace("'","\'",$value);
-						$keyName[$data] = $key;
+						if (strpos($value, '\'') !== FALSE)
+						{
+							$quotationValue[$data]= str_replace("'","\'",$value);
+							$keyName[$data] = $key;
+						}
+						else
+						{
+							$quotationValue[$data] = $value;
+							$keyName[$data] = $key;
+						}
 					}
 					else
 					{
-						$quotationValue[$data] = $value;
+						$quotationValue[$data]= $value;
 						$keyName[$data] = $key;
 					}
+					$data++;
 				}
-				else
+				
+				// set data to the persistable object
+				for($data=0;$data<count($quotationValue);$data++)
 				{
-					$quotationValue[$data]= $value;
-					$keyName[$data] = $key;
+					//set the data in persistable object
+					$quotationPersistable = new QuotationPersistable();	
+					$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
+					//make function name dynamically
+					$setFuncName = 'set'.$str;
+					$getFuncName[$data] = 'get'.$str;
+					$quotationPersistable->$setFuncName($quotationValue[$data]);
+					$quotationPersistable->setName($getFuncName[$data]);
+					$quotationPersistable->setKey($keyName[$data]);
+					$quotationArray[$data] = array($quotationPersistable);
 				}
-				$data++;
+				return $quotationArray;
 			}
-			
-			// set data to the persistable object
-			for($data=0;$data<count($quotationValue);$data++)
+			else
 			{
-				//set the data in persistable object
-				$quotationPersistable = new QuotationPersistable();	
-				$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
-				//make function name dynamically
-				$setFuncName = 'set'.$str;
-				$getFuncName[$data] = 'get'.$str;
-				$quotationPersistable->$setFuncName($quotationValue[$data]);
-				$quotationPersistable->setName($getFuncName[$data]);
-				$quotationPersistable->setKey($keyName[$data]);
-				$quotationArray[$data] = array($quotationPersistable);
+				return $status;
 			}
-			return $quotationArray;
-		}
-		else
-		{
-			return $status;
 		}
 	}
 }

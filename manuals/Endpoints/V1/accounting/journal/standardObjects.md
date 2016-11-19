@@ -47,8 +47,3 @@
 				creditType:'credit',
 				debitType:'debit'
 			}
-##### Discount Type Enum
-			{
-				flatType:'flat',
-				percentageType:'percentage'
-			}

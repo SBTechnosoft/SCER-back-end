@@ -77,10 +77,12 @@ class EncodeData extends StateService
 			'formalName' => $companyDetails['formalName'],
 			'noOfDecimalPoints' => $companyDetails['noOfDecimalPoints'],
 			'currencySymbol' => $companyDetails['currencySymbol'],	
-			'documentName' => $companyDetails['documentName'],	
-			'documentUrl' => $companyDetails['documentUrl'],	
-			'documentSize' => $companyDetails['documentSize'],
-			'documentFormat' => $companyDetails['documentFormat'],	
+			'logo' => array(
+				'documentName' => $companyDetails['logo']['documentName'],	
+				'documentUrl' => $companyDetails['logo']['documentUrl'],	
+				'documentSize' => $companyDetails['logo']['documentSize'],
+				'documentFormat' => $companyDetails['logo']['documentFormat']	
+			),
 			'isDisplay' => $companyDetails['isDisplay'],	
 			'isDefault' => $companyDetails['isDefault'],	
 			'createdAt' => $companyDetails['createdAt'],	

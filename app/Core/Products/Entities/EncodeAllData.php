@@ -113,11 +113,13 @@ class EncodeAllData extends ProductCategoryService
 					'basicCurrencySymbol' => $getCompanyDetails[$jsonData]['basicCurrencySymbol'],	
 					'formalName' => $getCompanyDetails[$jsonData]['formalName'],	
 					'noOfDecimalPoints' => $getCompanyDetails[$jsonData]['noOfDecimalPoints'],	
-					'currencySymbol' => $getCompanyDetails[$jsonData]['currencySymbol'],	
-					'documentName' => $getCompanyDetails[$jsonData]['documentName'],	
-					'documentUrl' => $getCompanyDetails[$jsonData]['documentUrl'],	
-					'documentSize' =>$getCompanyDetails[$jsonData]['documentSize'],	
-					'documentFormat' => $getCompanyDetails[$jsonData]['documentFormat'],	
+					'currencySymbol' => $getCompanyDetails[$jsonData]['currencySymbol'],
+					'logo' => array(
+						'documentName' => $getCompanyDetails[$jsonData]['logo']['documentName'],	
+						'documentUrl' => $getCompanyDetails[$jsonData]['logo']['documentUrl'],	
+						'documentSize' =>$getCompanyDetails[$jsonData]['logo']['documentSize'],	
+						'documentFormat' => $getCompanyDetails[$jsonData]['logo']['documentFormat']
+					),
 					'isDisplay' => $getCompanyDetails[$jsonData]['isDisplay'],	
 					'isDefault' => $getCompanyDetails[$jsonData]['isDefault'],	
 					'createdAt' => $getCompanyDetails[$jsonData]['createdAt'],	

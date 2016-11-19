@@ -22,6 +22,9 @@ class Template implements RouteRegistrarInterface
 			Route::get('Settings/Templates/Template/{templateId?}', 'Settings\Templates\Controllers\TemplateController@getData');
 		});
 		
+		// insert data post request
+		Route::post('Settings/Templates/Template', 'Settings\Templates\Controllers\TemplateController@store');
+		
 		// update data post request
 		Route::post('Settings/Templates/Template/{templateId}', 'Settings\Templates\Controllers\TemplateController@update');
 	}

@@ -116,9 +116,9 @@ include ('connection.php');
 			{
 				// var formdata = new FormData();
 				//state
-				// $scope.formAdata.state_abb ="IN-LJ";
+				// $scope.formAdata.state_abb ="IN-LC";
 				// $scope.formAdata.state_name = " ss-fghd ";
-				// $scope.formAdata.is_display = ' yes ';
+				// $scope.formAdata.is_display = ' no ';
 				
 				// formdata.append('stateName',$scope.formAdata.state_name);
 				// formdata.append('stateAbb',$scope.formAdata.state_abb);
@@ -301,38 +301,32 @@ include ('connection.php');
 				// formdata.append('ledgerGroupId',$scope.formAdata.ledger_grp_id);
 				// formdata.append('companyId',$scope.formAdata.company_id);
 				
-				// journal
-				// $scope.formAdata.jounalData=[];
-				// var jounalData=[];
-				// $scope.formAdata.jounalData = 'fdsa';
-				// $scope.formAdata.jounalData = [{"DropCr":"dr","name":"Speial","Dbt":"2000"}];
-				// $scope.formAdata.jounalData = [{"DropCr":"dr","name":"Speial","Dbt":"2000"}];
-				// jounalData.name = "abc";
-				// jounalData.dbt = "2000";
-				// formdata.append('journalData[]',$scope.formAdata.jounalData);
-				// console.log(journalData);
-				// var journalData = [];
-				// journalData = [{"DropCr":"dr","name":"abc","Dbt":"2000"},{"DropCr":"dr","name":"abc1","Dbt":"2000"}];
-				///////////////////
-				// $scope.formAdata.jounalData=[];
-				// $scope.formAdata.jounalData = 
-					// [{"DropCr":"dr","name":"abc","Dbt":"2000"},{"DropCr":"dr","name":"abc1","Dbt":"2000"}];
+				//client
+				$scope.formAdata.client_name = "abcc";
+				$scope.formAdata.company_name = "abcd";
+				$scope.formAdata.contact_no = "87654534546";
+				$scope.formAdata.work_no = "87654534546";
+				$scope.formAdata.email_id = "abcd";
+				$scope.formAdata.address1 ="35,abc2";
+				$scope.formAdata.address2 = "sdgd2";
+				// $scope.formAdata.is_display = 'yes';
+				$scope.formAdata.state_abb= 'IN-AG';
+				$scope.formAdata.city_id= 1;
 				
-				// formdata.append('file[]',$scope.formAdata.jounalData);
-				// var abc=[];
-				// var i=0;
-				// angular.forEach(journalData, function (value,key) {
-					// console.log(value);
-					// abc[i] = value;
-					// formdata.append('journalData1[]',abc[i]);
-					// i++;
-				// });
-				// console.log(abc);
-				// console.log(JSON.stringify(abc));
-				//////////////////////////////////
+				formdata.append('clientName',$scope.formAdata.client_name);
+				formdata.append('companyName',$scope.formAdata.company_name);
+				formdata.append('contactNo',$scope.formAdata.contact_no);
+				formdata.append('workNo',$scope.formAdata.work_no);
+				formdata.append('emailId',$scope.formAdata.email_id);
+				formdata.append('address1',$scope.formAdata.address1);
+				formdata.append('address2',$scope.formAdata.address2);
+				// formdata.append('isDisplay',$scope.formAdata.is_display);
+				formdata.append('stateAbb',$scope.formAdata.state_abb);
+				formdata.append('cityId',$scope.formAdata.city_id);
+				
 				
 				// special journal
-				// $scope.user = [{"jfId":4,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":1},{"amount":2,"amountType":"credit","ledgerId":1},{"amount":12,"amountType":"debit","ledgerId":1}],"entryDate":"22-10-2015","companyId":14}];
+				// $scope.user = [{"jfId":4,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":1},{"amount":2,"amountType":"credit","ledgerId":1},{"amount":12,"amountType":"debit1","ledgerId":1}],"entryDate":"22-10-2015","companyId":14}];
 				
 				
 				// sale/purchase
@@ -345,28 +339,30 @@ include ('connection.php');
 				//Bill PDF generate
 				// $scope.user = [{"billData":[{"companyId":14,"date":"22-10-2015","contact":"987654565678","name":"abc","invoice-number":"INV/2016-12/54","address1":"sfja,sa","address2":"dfsd,ds","stateAbb":"IN-GJ","cityId":2,"inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}]
 					
-				// }]}];
 				
-				// var productId = 7;
+				// var clientId=2;
+				// var productId = 8;
 				// var productGrpId = 11;
 				// var productCatId = 16;
 				// var companyId=14;
 				// var cityId = 1;
-				 // var stateAbb = "IN-AC";
+				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
 				// var id = 42;
 				// var templateId=1;
 				// var bankId=2;
-				// var invoiceId=2;
+				// var invoiceId=7;
 				// var quotationId=1;
 				// var ledgerGrpId=1;
 				// var ledgerId=1;
+				// var url = "http://www.scerp1.com/clients/"+clientId;
+				var url = "http://www.scerp1.com/clients";
+				
 				// var url = "http://www.scerp1.com/documents/bill";
 				// var url="http://www.scerp1.com/products/inward"; 
 				// var url="http://www.scerp1.com/products/outward";
 				
 				// var url="http://www.scerp1.com/accos";
-				var url="http://www.scerp1.com/accounting/journals";
 				// var url="http://www.scerp1.com/accounting/journals";
 				// var url="http://www.scerp1.com/accounting/journals/next";
 				
@@ -381,6 +377,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/settings/quotation-numbers/company/"+companyId;
 				// var url="http://www.scerp1.com/settings/invoice-numbers/company/"+companyId+"/latest";
 				// var url="http://www.scerp1.com/settings/invoice-numbers";
+				// var url="http://www.scerp1.com/settings/invoice-numbers/"+invoiceId;
 				// var url="http://www.scerp1.com/settings/invoice-numbers/company/"+companyId;
 				// var url="http://www.scerp1.com/banks/"+bankId;
 				// var url="http://www.scerp1.com/banks";
@@ -388,7 +385,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/settings/templates";
 				// var url="http://www.scerp1.com/companies/"+companyId;
 				// var url="http://www.scerp1.com/companies";	
-				// var url="http://www.scerp1.com/branches";
+				// var url="http://www.scerp1.com/branches";	
 				 // var url="http://www.scerp1.com/branches/"+branchId;
 				// var url="http://www.scerp1.com/branches/company/"+companyId;
 				 // var url="http://www.scerp1.com/states/"+stateAbb;

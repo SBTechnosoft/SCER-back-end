@@ -58,10 +58,14 @@ class QuotationController extends BaseController implements ContainerInterface
 			{
 				return $quotationPersistable;
 			}
-			else
+			else if(is_array($quotationPersistable))
 			{
 				$status = $quotationService->insert($quotationPersistable);
 				return $status;
+			}
+			else
+			{
+				return $quotationPersistable;
 			}
 		}
 	}

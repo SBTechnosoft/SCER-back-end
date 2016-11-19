@@ -11,7 +11,7 @@ use ERP\Entities\EnumClasses\IsDefaultEnum;
 class BranchTransformer
 {
     /**
-     * @param 
+     * @param Request $request
      * @return array
      */
     public function trimInsertData(Request $request)
@@ -84,6 +84,11 @@ class BranchTransformer
 			return $data;
 		}
 	}
+	
+	/**
+     * @param array
+     * @return array
+     */
 	public function trimUpdateData()
 	{
 		$tBranchArray = array();

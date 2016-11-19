@@ -60,10 +60,12 @@ class EncodeData extends CompanyService
 			'formalName'=> $companyDecodedJson['formalName'],
 			'noOfDecimalPoints' => $companyDecodedJson['noOfDecimalPoints'],	
 			'currencySymbol' => $companyDecodedJson['currencySymbol'],
-			'documentName'=> $companyDecodedJson['documentName'],
-			'documentUrl' => $companyDecodedJson['documentUrl'],
-			'documentSize' => $companyDecodedJson['documentSize'],	
-			'documentFormat' => $companyDecodedJson['documentFormat'],	
+			'logo'=> array(
+				'documentName'=> $companyDecodedJson['logo']['documentName'],
+				'documentUrl' => $companyDecodedJson['logo']['documentUrl'],
+				'documentSize' => $companyDecodedJson['logo']['documentSize'],	
+				'documentFormat' => $companyDecodedJson['logo']['documentFormat']
+			),
 			'isDisplay' => $companyDecodedJson['isDisplay'],	
 			'isDefault' => $companyDecodedJson['isDefault'],	
 			'createdAt' => $companyDecodedJson['createdAt'],	

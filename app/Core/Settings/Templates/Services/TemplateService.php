@@ -46,20 +46,20 @@ class TemplateService extends AbstractService
      */
 	public function insert()
 	{
-		$branchArray = array();
+		$templateArray = array();
 		$getData = array();
 		$keyName = array();
 		$funcName = array();
-		$branchArray = func_get_arg(0);
-		for($data=0;$data<count($branchArray);$data++)
+		$templateArray = func_get_arg(0);
+		for($data=0;$data<count($templateArray);$data++)
 		{
-			$funcName[$data] = $branchArray[$data][0]->getName();
-			$getData[$data] = $branchArray[$data][0]->$funcName[$data]();
-			$keyName[$data] = $branchArray[$data][0]->getkey();
+			$funcName[$data] = $templateArray[$data][0]->getName();
+			$getData[$data] = $templateArray[$data][0]->$funcName[$data]();
+			$keyName[$data] = $templateArray[$data][0]->getkey();
 		}
 		//data pass to the model object for insert
-		$branchModel = new BranchModel();
-		$status = $branchModel->insertData($getData,$keyName);
+		$templateModel = new TemplateModel();
+		$status = $templateModel->insertData($getData,$keyName);
 		return $status;
 	}
 	

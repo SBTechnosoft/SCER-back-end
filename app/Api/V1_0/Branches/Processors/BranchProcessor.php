@@ -99,6 +99,12 @@ class BranchProcessor extends BaseProcessor
 			}
 		}
 	}
+	
+	 /**
+     * update data
+     * $param Request object [Request $request] and Branch Id
+     * @return Branch Array / Error Message Array / Exception Message
+     */
 	public function createPersistableChange(Request $request,$branchId)
 	{
 		$branchValue = array();
