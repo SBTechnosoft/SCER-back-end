@@ -336,9 +336,8 @@ include ('connection.php');
 				//transaction
 				// $scope.user = [{"inventory":[{"productId":7 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 7 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"companyId":14,"transactionDate":"22-10-2015"}];
 				
-				//Bill PDF generate
-				// $scope.user = [{"billData":[{"companyId":14,"date":"22-10-2015","contact":"987654565678","name":"abc","invoice-number":"INV/2016-12/54","address1":"sfja,sa","address2":"dfsd,ds","stateAbb":"IN-GJ","cityId":2,"inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}]
-					
+				//Bill PDF generate & insert bill data
+				// $scope.user = [{"billData":[{"companyId":14,"entryDate":"22-10-2015","contactNo":"987654565678","emailId":"rr1@gmail.com","companyName":"siliconbrain","clientName":"abc","invoiceNumber":"INV/2016-12/54","address1":"sfja,sa","address2":"dfsd,ds","stateAbb":"IN-GJ","cityId":2,"inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"paymentMode":"cash","bankName":"abc","checkNumber":"abbb34eQ1G","remark":"adsfsf afasf"}]}]
 				
 				// var clientId=2;
 				// var productId = 8;
@@ -347,7 +346,7 @@ include ('connection.php');
 				// var companyId=14;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
-				 var branchId = 6;
+				 // var branchId = 6;
 				// var id = 42;
 				// var templateId=1;
 				// var bankId=2;
@@ -355,8 +354,11 @@ include ('connection.php');
 				// var quotationId=1;
 				// var ledgerGrpId=1;
 				// var ledgerId=1;
+				
+				// var url = "http://www.scerp1.com/accounting/bill";
+				
 				// var url = "http://www.scerp1.com/clients/"+clientId;
-				// var url = "http://www.scerp1.com/clients";
+				var url = "http://www.scerp1.com/clients";
 				
 				// var url = "http://www.scerp1.com/documents/bill";
 				// var url="http://www.scerp1.com/products/inward"; 
@@ -386,7 +388,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/companies/"+companyId;
 				// var url="http://www.scerp1.com/companies";	
 				// var url="http://www.scerp1.com/branches";	
-				 var url="http://www.scerp1.com/branches/"+branchId;
+				 // var url="http://www.scerp1.com/branches/"+branchId;
 				// var url="http://www.scerp1.com/branches/company/"+companyId;
 				 // var url="http://www.scerp1.com/states/"+stateAbb;
 				// var url="http://www.scerp1.com/states";
@@ -403,15 +405,15 @@ include ('connection.php');
 				$http({
                         url: url,
                         // type:'patch',
-						 method: 'post',
-						// method: 'get',
+						 // method: 'post',
+						method: 'get',
 						// method: "PATCH",
 						// method:'delete',
 						processData: false,
                         // headers: {'Content-Type': undefined,'fromDate':'1-10-2016','toDate':'1-12-2016'},
                         headers: {'Content-Type': undefined},
 						// headers: {'Content-Type': 'application/json'},
-                        data:formdata
+                        // data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

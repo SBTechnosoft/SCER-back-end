@@ -75,10 +75,19 @@ class ClientController extends BaseController implements ContainerInterface
      * get the specified resource.
      * @param  int  $branchId
      */
-    public function getData($clientId)
+    public function getData($clientId=null)
     {
-		$clientService= new ClientService();
-		$status = $clientService->getClientData($clientId);
-		return $status;
+		if($clientId==null)
+		{	
+			$clientService= new ClientService();
+			$status = $clientService->getAllClientData();
+			return $status;
+		}
+		else
+		{	
+			$clientService= new ClientService();
+			$status = $clientService->getClientData($clientId);
+			return $status;
+		}
 	}
 }

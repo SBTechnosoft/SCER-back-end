@@ -105,4 +105,44 @@ class ClientModel extends Model
 			return $enocodedData;
 		}
 	}
+	
+	/**
+	 * get All data 
+	 * returns the status
+	*/
+	public function getAllData()
+	{	
+		DB::beginTransaction();		
+		$raw = DB::select("select 
+		client_id,
+		client_name,
+		company_name,
+		contact_no,
+		work_no,
+		email_id,
+		address1,
+		address2,
+		is_display,
+		created_at,
+		updated_at,
+		deleted_at,
+		state_abb,
+		city_id			
+		from client_mst where deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(count($raw)==0)
+		{
+			return $exceptionArray['204'];
+		}
+		else
+		{
+			$enocodedData = json_encode($raw);
+			return $enocodedData;
+		}
+	}
+	
 }

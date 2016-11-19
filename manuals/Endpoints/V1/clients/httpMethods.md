@@ -31,3 +31,17 @@
 			}
 
 **NOTES:** List all the client in particular client-id
+
+##### Get Client
+            
+##### `GET /clients`
++ Header 
+	- Authentication Token
+
++ Response
+
+			{
+				... Standard Client Object
+			}
+
+**NOTES:** List all the client

@@ -8,6 +8,7 @@ use ERP\Core\Shared\Options\UpdateOptions;
 // use ERP\Core\Support\Service\AbstractService;
 use ERP\Core\User\Entities\User;
 use ERP\Core\Clients\Entities\EncodeData;
+use ERP\Core\Clients\Entities\EncodeAllData;
 use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -84,6 +85,30 @@ class ClientService
 			$encoded = new EncodeData();
 			$encodeData = $encoded->getEncodedData($status);
 			return $encodeData;
+		}
+	}
+	
+	/**
+     * get all the data and call the model for database selection opertation
+     * @return status
+     */
+	public function getAllClientData()
+	{
+		$clientModel = new ClientModel();
+		$status = $clientModel->getAllData();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($status,$exceptionArray['204'])==0)
+		{
+			return $status;
+		}
+		else
+		{
+			$encoded = new EncodeAllData();
+			$encodeAllData = $encoded->getEncodedAllData($status);
+			return $encodeAllData;
 		}
 	}
 }

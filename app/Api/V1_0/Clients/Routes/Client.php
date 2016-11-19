@@ -19,7 +19,7 @@ class Client implements RouteRegistrarInterface
 		// all the possible get request 
 		Route::group(['as' => 'get'], function ()
 		{
-			Route::get('Clients/Client/{clientId}', 'Clients\Controllers\ClientController@getData');
+			Route::get('Clients/Client/{clientId?}', 'Clients\Controllers\ClientController@getData');
 		});
 		// insert data post request
 		Route::post('Clients/Client', 'Clients\Controllers\ClientController@store');
