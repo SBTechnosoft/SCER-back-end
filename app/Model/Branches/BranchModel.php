@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Entities\EnumClasses\IsDefaultEnum;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -64,6 +65,32 @@ class BranchModel extends Model
 	{
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		//only one branch is checked by default
+		$enumIsDefArray = array();
+		$isDefEnum = new IsDefaultEnum();
+		$enumIsDefArray = $isDefEnum->enumArrays();
+		for($keyData=0;$keyData<count($key);$keyData++)
+		{
+		    if(strcmp($key[array_keys($key)[$keyData]],"is_default")==0)
+			{
+				if(strcmp($branchData[$keyData],$enumIsDefArray['default'])==0)
+				{
+					$raw  = DB::statement("update branch_mst 
+					set is_default='".$enumIsDefArray['notDefault']."',updated_at='".$mytime."' 
+					where deleted_at = '0000-00-00 00:00:00'");
+					if($raw==0)
+					{
+						return $exceptionArray['500'];
+					}
+				}
+			}	
+		}
+		
 		for($data=0;$data<count($branchData);$data++)
 		{
 			$keyValueString=$keyValueString.$key[$data]."='".$branchData[$data]."',";
@@ -74,9 +101,6 @@ class BranchModel extends Model
 		where branch_id = '".$branchId."'");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
 			return $exceptionArray['200'];

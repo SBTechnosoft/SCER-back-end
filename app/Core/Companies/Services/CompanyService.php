@@ -165,8 +165,6 @@ class CompanyService extends AbstractService
 		}
 		else
 		{
-			echo "more success";
-			
 			$companyArray = array();
 			$getData = array();
 			$funcName = array();
