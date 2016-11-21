@@ -16,7 +16,7 @@ class BaseController extends Controller
      */
     protected $container;
 	protected $resource;
-    /**
+	/**
      * BaseController constructor.
      * @param Container $container
      */
@@ -29,7 +29,7 @@ class BaseController extends Controller
                 'initialize'
             ]);
         }
-    }
+	}
     /**
      * @param string $class
      * @return AbstractTransformer
@@ -37,7 +37,7 @@ class BaseController extends Controller
      */
     protected function transformer($class)
     {
-        $transformer = $this->container->make($class);
+		$transformer = $this->container->make($class);
 
         if (! $transformer instanceof AbstractTransformer) {
             throw new RuntimeException('The transformer should be instance of AbstractTransformer');

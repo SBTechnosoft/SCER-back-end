@@ -337,7 +337,7 @@ include ('connection.php');
 				// $scope.user = [{"inventory":[{"productId":7 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 7 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"companyId":14,"transactionDate":"22-10-2015"}];
 				
 				//Bill PDF generate & insert bill data
-				// $scope.user = [{"billData":[{"companyId":14,"entryDate":"22-10-2015","contactNo":"987654565678","emailId":"rr1@gmail.com","companyName":"siliconbrain","clientName":"abc","invoiceNumber":"INV/2016-12/54","address1":"sfja,sa","address2":"dfsd,ds","stateAbb":"IN-GJ","cityId":2,"inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"paymentMode":"cash","bankName":"abc","checkNumber":"abbb34eQ1G","remark":"adsfsf afasf"}]}]
+				$scope.user = [{"billData":[{"companyId":14,"entryDate":"22-10-2015","contactNo":"  	87654534545","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbrain","clientName":"abc","invoiceNumber":"INV/2016-12/54","address1":"sfja,sa","address2":"dfsd,ds","stateAbb":"IN-GJ","cityId":2,"inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"total":232,"tax":232,"grandTotal":232,"advance":232,"balance":232,"paymentMode":"cash","bankName":"abc","checkNumber":"abbb34eQ1G","remark":"adsfsf afasf"}]}];
 				
 				// var clientId=2;
 				// var productId = 8;
@@ -355,10 +355,10 @@ include ('connection.php');
 				// var ledgerGrpId=1;
 				// var ledgerId=1;
 				
-				// var url = "http://www.scerp1.com/accounting/bill";
+				var url = "http://www.scerp1.com/accounting/bills";
 				
 				// var url = "http://www.scerp1.com/clients/"+clientId;
-				var url = "http://www.scerp1.com/clients";
+				// var url = "http://www.scerp1.com/clients";
 				
 				// var url = "http://www.scerp1.com/documents/bill";
 				// var url="http://www.scerp1.com/products/inward"; 
@@ -405,16 +405,16 @@ include ('connection.php');
 				$http({
                         url: url,
                         // type:'patch',
-						 // method: 'post',
-						method: 'get',
+						 method: 'post',
+						// method: 'get',
 						// method: "PATCH",
 						// method:'delete',
 						processData: false,
                         // headers: {'Content-Type': undefined,'fromDate':'1-10-2016','toDate':'1-12-2016'},
-                        headers: {'Content-Type': undefined},
-						// headers: {'Content-Type': 'application/json'},
+                        // headers: {'Content-Type': undefined},
+						headers: {'Content-Type': 'application/json'},
                         // data:formdata
-						// data:$scope.user						
+						data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {
 						console.log(data);	//post	//get	//update //delete

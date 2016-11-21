@@ -234,7 +234,8 @@ return [
 		'LedgerGroups',
 		'Ledgers',
 		'Journals',
-		'Clients'
+		'Clients',
+		'Bills'
 	],
 
     /*

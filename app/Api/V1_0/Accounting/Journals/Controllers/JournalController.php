@@ -50,6 +50,9 @@ class JournalController extends BaseController implements ContainerInterface
 	*/
     public function store(Request $request)
     {
+		echo "r";
+		print_r($request->input());
+		exit;
 		//special journal entry and inventory entry
 		$this->request = $request;
 		// check the requested Http method
