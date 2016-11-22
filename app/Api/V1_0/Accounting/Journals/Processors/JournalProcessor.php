@@ -47,7 +47,6 @@ class JournalProcessor extends BaseProcessor
 			//validation
 			$journalValidate = new JournalValidate();
 			$status = $journalValidate->validate($tRequest);
-			
 			if($status=="Success")
 			{
 				$journalPersistable=array();

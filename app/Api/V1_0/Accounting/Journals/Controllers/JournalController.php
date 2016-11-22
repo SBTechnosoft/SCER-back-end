@@ -50,9 +50,6 @@ class JournalController extends BaseController implements ContainerInterface
 	*/
     public function store(Request $request)
     {
-		echo "r";
-		print_r($request->input());
-		exit;
 		//special journal entry and inventory entry
 		$this->request = $request;
 		// check the requested Http method
@@ -63,7 +60,6 @@ class JournalController extends BaseController implements ContainerInterface
 			$processor = new JournalProcessor();
 			$journalPersistable = new JournalPersistable();
 			$journalPersistable = $processor->createPersistable($this->request);
-			
 			if(is_array($journalPersistable))
 			{
 				$journalService= new JournalService();
@@ -75,9 +71,9 @@ class JournalController extends BaseController implements ContainerInterface
 					$productPersistable = new ProductPersistable();
 					if(strcmp(array_keys($request->input()[0])[6],"invoiceNumber")==0)
 					{
-						$inward = "Inward";
+						$outward = "Outward";
 						$productProcessor = new ProductProcessor();
-						$productPersistable = $productProcessor->createPersistableInOutWard($this->request,$inward);
+						$productPersistable = $productProcessor->createPersistableInOutWard($this->request,$outward);
 						if(is_array($productPersistable))
 						{
 							$status = $productService->insertInOutward($productPersistable);
@@ -90,9 +86,9 @@ class JournalController extends BaseController implements ContainerInterface
 					}
 					else
 					{
-						$outward = "Outward";
+						$inward = "Inward";
 						$productProcessor = new ProductProcessor();
-						$productPersistable = $productProcessor->createPersistableInOutWard($this->request,$outward);
+						$productPersistable = $productProcessor->createPersistableInOutWard($this->request,$inward);
 						if(is_array($productPersistable))
 						{
 							$status = $productService->insertInOutward($productPersistable);

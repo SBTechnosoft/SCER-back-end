@@ -113,6 +113,7 @@ class CompanyController extends BaseController implements ContainerInterface
 		$exception = new ExceptionMessage();
 		$fileSizeArray = $exception->messageArrays();
 		
+		//check for company is available in database...
 		$companyModel = new CompanyModel();
 		$result = $companyModel->getData($companyId);
 		if(strcmp($result,$fileSizeArray['404'])==0)
@@ -125,12 +126,7 @@ class CompanyController extends BaseController implements ContainerInterface
 			$companyService= new CompanyService();
 			if(is_array($companyPersistable))
 			{
-				$status = $companyService->update($companyPersistable);
-				return $status;
-			}
-			else if(is_object($companyPersistable))
-			{
-				$status = $companyService->updateDocument($companyPersistable);
+				$status = $companyService->update($companyPersistable,$companyId);
 				return $status;
 			}
 			else

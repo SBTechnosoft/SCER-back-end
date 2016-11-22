@@ -158,8 +158,8 @@ include ('connection.php');
 				//company
 				// $scope.formAdata.company_name = "reema2232323222222222222222222222222222222222222";
 				// $scope.formAdata.company_name = " 1sh1l lbaaaaa-&_().\'aadks "; //0-9 not allow(error:allow)
-				// $scope.formAdata.company_name = " abc";
-				// $scope.formAdata.company_display_name = " fff ";
+				// $scope.formAdata.company_name = " abcdefdd";
+				// $scope.formAdata.company_display_name = " aaa ";
 				// $scope.formAdata.address1 =" sdx cz *,-\/_`#\[\]().\'fs.'0a";
 				// $scope.formAdata.address2 = " aEbc abc*dfghjd/ih'b1 ";
 				// $scope.formAdata.pincode = 311411;
@@ -173,7 +173,7 @@ include ('connection.php');
 				// $scope.formAdata.currency_symbol = ' prefix ';
 				// $scope.formAdata.is_display = ' no ';
 				// $scope.formAdata.is_default = ' ok ';
-				// $scope.formAdata.state_abb= ' IN-MP ';
+				// $scope.formAdata.state_abb= ' IN-AG ';
 				// $scope.formAdata.city_id= 1;
 				
 				// formdata.append('companyName',$scope.formAdata.company_name);
@@ -271,7 +271,7 @@ include ('connection.php');
 				// formdata.append('companyId',$scope.formAdata.company_id);
 				
 				//ledger
-				// $scope.formAdata.ledger_name = " abc ";
+				// $scope.formAdata.ledger_name = " abdfj ";
 				// $scope.formAdata.alias = ' d ';
 				// $scope.formAdata.inventory_affected=' no ';
 				// $scope.formAdata.address1 =" sdx cz ";
@@ -335,15 +335,15 @@ include ('connection.php');
 				
 				//transaction
 				// $scope.user = [{"inventory":[{"productId":7 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 7 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"companyId":14,"transactionDate":"22-10-2015"}];
-				
-				//Bill PDF generate & insert bill data
-				$scope.user = [{"billData":[{"companyId":14,"entryDate":"22-10-2015","contactNo":"  	87654534545","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbrain","clientName":"abc","invoiceNumber":"INV/2016-12/54","address1":"sfja,sa","address2":"dfsd,ds","stateAbb":"IN-GJ","cityId":2,"inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"total":232,"tax":232,"grandTotal":232,"advance":232,"balance":232,"paymentMode":"cash","bankName":"abc","checkNumber":"abbb34eQ1G","remark":"adsfsf afasf"}]}];
+				//,"contactNo":"  	87654534544"
+				// Bill PDF generate & insert bill data
+				// $scope.user = [{"billData":[{"companyId":14,"entryDate":"22-10-2015","contactNo":"  	8765453427","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbraine","clientName":"abce","invoiceNumber":"INV/2016-12/54","address1":"sfja,sa","address2":"dfsd,ds","stateAbb":"IN-AG","cityId":1,"inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"total":232,"tax":43,"grandTotal":232,"advance":232,"balance":232,"paymentMode":"cash","bankName":"abc","checkNumber":"abbb34eQ1G","remark":"adsfsf afasf"}]}];
 				
 				// var clientId=2;
 				// var productId = 8;
 				// var productGrpId = 11;
 				// var productCatId = 16;
-				// var companyId=14;
+				var companyId=14;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -355,7 +355,7 @@ include ('connection.php');
 				// var ledgerGrpId=1;
 				// var ledgerId=1;
 				
-				var url = "http://www.scerp1.com/accounting/bills";
+				// var url = "http://www.scerp1.com/accounting/bills";
 				
 				// var url = "http://www.scerp1.com/clients/"+clientId;
 				// var url = "http://www.scerp1.com/clients";
@@ -385,7 +385,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/banks";
 				// var url="http://www.scerp1.com/settings/templates/"+templateId;
 				// var url="http://www.scerp1.com/settings/templates";
-				// var url="http://www.scerp1.com/companies/"+companyId;
+				var url="http://www.scerp1.com/companies/"+companyId;
 				// var url="http://www.scerp1.com/companies";	
 				// var url="http://www.scerp1.com/branches";	
 				 // var url="http://www.scerp1.com/branches/"+branchId;
@@ -411,10 +411,10 @@ include ('connection.php');
 						// method:'delete',
 						processData: false,
                         // headers: {'Content-Type': undefined,'fromDate':'1-10-2016','toDate':'1-12-2016'},
-                        // headers: {'Content-Type': undefined},
-						headers: {'Content-Type': 'application/json'},
-                        // data:formdata
-						data:$scope.user						
+                        headers: {'Content-Type': undefined},
+						// headers: {'Content-Type': 'application/json'},
+                        data:formdata
+						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {
 						console.log(data);	//post	//get	//update //delete

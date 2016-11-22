@@ -82,7 +82,6 @@ class LedgerController extends BaseController implements ContainerInterface
 		{	
 			$ledgerService= new LedgerService();
 			$status = $ledgerService->getAllLedgerData();
-			
 			return $status;
 		}
 		else

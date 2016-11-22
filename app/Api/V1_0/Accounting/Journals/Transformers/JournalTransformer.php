@@ -87,8 +87,8 @@ class JournalTransformer extends LedgerModel
 			}
 		}
 		
-		if($creditAmountArray==$debitAmountArray)
-		{
+		// if($creditAmountArray==$debitAmountArray)
+		// {
 			// make an array
 			$simpleArray = array();
 			$simpleArray['jfId'] = $jfId;
@@ -106,11 +106,11 @@ class JournalTransformer extends LedgerModel
 			}
 			array_push($simpleArray,$trimArray);
 			return $simpleArray;
-		}
-		else
-		{
-			return $exceptionArray['equal'];
-		}
+		// }
+		// else
+		// {
+			// return $exceptionArray['equal'];
+		// }
 	}
 	public function trimDateData(Request $request)
 	{

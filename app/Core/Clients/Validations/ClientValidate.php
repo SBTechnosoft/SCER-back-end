@@ -17,7 +17,7 @@ class ClientValidate
 			'company_name'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]*$/', 
 			'contact_no'=> 'between:10,12|regex:/^[0-9]*$/', 
 			'work_no'=> 'between:10,12|regex:/^[0-9]*$/', 
-			'email_id'=> 'regex:/^[a-zA-Z]*$/', 
+			// 'email_id'=> 'regex:/^[a-zA-Z]*$/', 
 			'address1'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'address2'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 		);
@@ -29,7 +29,7 @@ class ClientValidate
 			'contact_no.regex' => 'contact-no contains character from "0-9" only',
 			'work_no.between' => 'StringLengthException :Enter the :attribute between 10-12 number',
 			'work_no.regex' => 'work-no contains character from "0-9" only',
-			'email_id.regex' => 'entered email id is not correct',
+			// 'email_id.regex' => 'entered email id is not correct',
 			'address1.between' => 'StringLengthException :Enter the :attribute less then 35 character',
 			'address1.regex' => 'address1 contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
 			'address2.between' => 'StringLengthException :Enter the :attribute less then 35 character',

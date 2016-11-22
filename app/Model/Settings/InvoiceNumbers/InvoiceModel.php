@@ -169,7 +169,7 @@ class InvoiceModel extends Model
 		end_at,
 		created_at,
 		company_id		
-		FROM invoice_dtl where company_id=".$companyId);
+		FROM invoice_dtl where company_id='".$companyId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message

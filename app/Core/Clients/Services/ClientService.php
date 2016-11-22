@@ -96,7 +96,6 @@ class ClientService
 	{
 		$clientModel = new ClientModel();
 		$status = $clientModel->getAllData();
-		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();

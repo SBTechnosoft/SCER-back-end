@@ -8,10 +8,11 @@ use ERP\Http\Requests;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Input;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use ERP\Core\Sample\Persistables\DocumentPersistable;
 use ERP\Core\Companies\Validations\CompanyValidate;
 use ERP\Api\V1_0\Companies\Transformers\CompanyTransformer;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Api\V1_0\Documents\Controllers\DocumentController;
+use Illuminate\Container\Container;
 use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -45,29 +46,34 @@ class CompanyProcessor extends BaseProcessor
 		$documentFormat="";
 		$documentSize="";
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$msgArray = $exception->messageArrays();
+		
 		$file = $request->file();
+		if(count($_POST)==0 && count($file)==0)
+		{
+			return $msgArray['204'];
+		}
 		//change the name of document-name
 		$dateTime = date("d-m-Y h-i-s");
 		$convertedDateTime = str_replace(" ","-",$dateTime);
 		$splitDateTime = explode("-",$convertedDateTime);
 		$combineDateTime = $splitDateTime[0].$splitDateTime[1].$splitDateTime[2].$splitDateTime[3].$splitDateTime[4].$splitDateTime[5];
 		
-		//get constant document-url from document
-		$documentUrl =  new ConstantClass();
-		$documentArray = $documentUrl->constantVariable();	
 		if(in_array(true,$file))
 		{
-			$documentUrl = $documentArray['documentUrl'];
-			$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".".$file['file'][0]->getClientOriginalExtension();
-			$documentFormat = $file['file'][0]->getClientOriginalExtension();
-			$documentSize = $file['file'][0]->getClientSize();
-			$file['file'][0]->move($documentUrl,$documentName);	
-			$docFlag=1;
+			$documentController =new DocumentController(new Container());
+			$processedData = $documentController->insertUpdate($request);
+			if(is_array($processedData))
+			{
+				$docFlag=1;
+			}
+			else
+			{
+				return $processedData;
+			}
 		}
-		//get exception message
-		$exception = new ExceptionMessage();
-		$msgArray = $exception->messageArrays();
-		
 		//trim an input 
 		$companyTransformer = new CompanyTransformer();
 		$tRequest = $companyTransformer->trimInsertData($this->request);
@@ -123,24 +129,7 @@ class CompanyProcessor extends BaseProcessor
 					{
 						if($docFlag==1)
 						{
-							if($documentFormat=='jpg' || $documentFormat=='jpeg' || $documentFormat=='gif' || $documentFormat=='png' || $documentFormat=='pdf')
-							{	
-								if(($documentSize/1048576)<=5)
-								{
-									$companyPersistable->setDocumentName($documentName);
-									$companyPersistable->setDocumentSize($documentSize);
-									$companyPersistable->setDocumentFormat($documentFormat);
-									$companyArray[$data] = array($companyPersistable);
-								}
-								else
-								{
-									return $msgArray['fileSize'];
-								}
-							}
-							else
-							{
-								return $msgArray['415'];
-							}
+							$companyArray[$data+1]=$processedData;
 						}
 					}
 				}
@@ -178,74 +167,46 @@ class CompanyProcessor extends BaseProcessor
 			$companyValidate = new CompanyValidate();
 			$status;
 			
-			//change the name of document-name
-			$dateTime = date("d-m-Y h-i-s");
-			$convertedDateTime = str_replace(" ","-",$dateTime);
-			$splitDateTime = explode("-",$convertedDateTime);
-			$combineDateTime = $splitDateTime[0].$splitDateTime[1].$splitDateTime[2].$splitDateTime[3].$splitDateTime[4].$splitDateTime[5];
+			//get exception message 
+			$exception = new ExceptionMessage();
+			$exceptionArray = $exception->messageArrays();
 			
+			$file = $request->file();
+			//if data is not available in update request
+			if(count($_POST)==0 && count($file)==0)
+			{
+				
+				$status = $exceptionArray['204'];
+				return $status;
+			}
 			//get constant document-url from document
 			$documentUrl =  new ConstantClass();
 			$documentArray = $documentUrl->constantVariable();
 			
 			//file uploading
-			$file = $request->file();
 			if(in_array(true,$file))
 			{
-				//get document detail
-				$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".".$file['file'][0]->getClientOriginalExtension();
-				$documentFormat = $file['file'][0]->getClientOriginalExtension();
-				$documentSize = $file['file'][0]->getClientSize();
-				$path = $documentArray['documentUrl'];
-				$file['file'][0]->move($path,$documentName);
-				$docFlag=1;
-				
-			}
-			//get exception message 
-			$exception = new ExceptionMessage();
-			$exceptionArray = $exception->messageArrays();
-			
-			//if data is not available in update request
-			if(count($_POST)==0 && $docFlag!=1)
-			{
-				$status = $exceptionArray['204'];
-				return $status;
-			}
-			else if($docFlag==1)
-			{
-				if($documentFormat=='jpg' || $documentFormat=='jpeg' || $documentFormat=='gif' || $documentFormat=='png' || $documentFormat=='pdf')
-				{	
-					if(($documentSize/1048576)<=5)
-					{
-						//set the data in persistable object
-						$companyPersistable = new CompanyPersistable();	
-						$companyPersistable->setDocumentName($documentName);
-						$companyPersistable->setDocumentSize($documentSize);
-						$companyPersistable->setDocumentFormat($documentFormat);
-						$companyPersistable->setCompanyId($companyId);
-						return $companyPersistable;
-					}
-					else
-					{
-						return $exceptionArray['fileSize'];
-					}
+				$documentController =new DocumentController(new Container());
+				$processedData = $documentController->insertUpdate($request,$documentArray['documentUrl']);
+				if(is_array($processedData))
+				{
+					$docFlag=1;
 				}
 				else
 				{
-					return $exceptionArray['415'];
+					return $processedData;
 				}
 			}
-			//data is avalilable for update
-			else
+			if(count($_POST)!=0)
 			{
 				for($data=0;$data<count($_POST);$data++)
 				{
-					//set the data in persistable object
+					// set the data in persistable object
 					$companyPersistable = new CompanyPersistable();	
 					$value[$data] = $_POST[array_keys($_POST)[$data]];
 					$key[$data] = array_keys($_POST)[$data];
 					
-					//trim an input 
+					// trim an input 
 					$companyTransformer = new CompanyTransformer();
 					$tRequest = $companyTransformer->trimUpdateData($key[$data],$value[$data]);
 					
@@ -255,14 +216,14 @@ class CompanyProcessor extends BaseProcessor
 					}
 					else
 					{
-						//get data from trim array
+						// get data from trim array
 						$tKeyValue[$data] = array_keys($tRequest[0])[0];
 						$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
 						
-						//validation
+						// validation
 						$status = $companyValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
 						
-						//enter data is valid(one data validate status return)
+						// enter data is valid(one data validate status return)
 						if($status=="Success")
 						{
 							// check data is string or not
@@ -298,24 +259,7 @@ class CompanyProcessor extends BaseProcessor
 								{
 									if($docFlag==1)
 									{
-										if($documentFormat=='jpg' || $documentFormat=='jpeg' || $documentFormat=='gif' || $documentFormat=='png' || $documentFormat=='pdf')
-										{	
-											if(($documentSize/1048576)<=5)
-											{
-												$companyPersistable->setDocumentName($documentName);
-												$companyPersistable->setDocumentSize($documentSize);
-												$companyPersistable->setDocumentFormat($documentFormat);
-												$companyArray[$data] = array($companyPersistable);
-											}
-											else
-											{
-												return $exceptionArray['fileSize'];
-											}
-										}
-										else
-										{
-											return $exceptionArray['415'];
-										}
+										$companyArray[$data+1]=$processedData;
 									}
 								}
 							}
@@ -343,6 +287,14 @@ class CompanyProcessor extends BaseProcessor
 							}
 						}
 					}
+				}
+			}
+			else
+			{
+				if($docFlag==1)
+				{
+					$companyArray[0]=$processedData;
+					return $companyArray;
 				}
 			}
 		}

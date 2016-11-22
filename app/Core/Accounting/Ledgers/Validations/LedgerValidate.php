@@ -26,15 +26,14 @@ class LedgerValidate
 		);
 		$messages = [
 			'ledger_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
-			'ledger_name.regex' => 'branch-name contains character from "a-zA-Z &_`#().\'-" only',
-			'alias.regex' => 'alias contains character from "a-zA-Z &_`#().\'-" only',
+			'ledger_name.regex' => 'ledger-name contains character from "a-zA-Z &_`#().\'-" only',
 			'alias.regex' => 'alias contains character from "a-zA-Z &_`#().\'-" only',
 			'address1.between' => 'StringLengthException :Enter the :attribute less then 35 character',
 			'address1.regex' => 'address1 contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
 			'address2.between' => 'StringLengthException :Enter the :attribute less then 35 character',
 			'address2.regex' => 'address2 contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
 			'contact_no.between' => 'StringLengthException :Enter the :attribute between 10-12 character',
-			'contact_no.regex' => 'address2 contains character from "0-9" only',
+			'contact_no.regex' => 'contact-number contains character from "0-9" only',
 			// 'email_id.regex' => 'email address is not correct',
 			'pan.max' => 'NumberFormatException :Enter the :attribute number of 10 character',
 			'pan.min' => 'NumberFormatException :Enter the :attribute number of 10 character',

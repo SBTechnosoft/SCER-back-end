@@ -29,6 +29,6 @@
 
 ##### Payment Mode Enum
 			{
-				"mode1":'cash',
-				"mode2":'credit'
+				"cashPayment":'cash',
+				"creditPayment":'credit'
 			}

@@ -18,8 +18,10 @@ class CityTransformer
 		$isDisplayFlag=0;
 		//data get from body
 		$cityName = $request->input('cityName'); 
-		$stateAbb = $request->input('stateAbb'); 
-		$isDisplay = $request->input('isDisplay'); 
+		echo $stateAbb = $request->input('stateAbb'); 
+		echo $isDisplay = $request->input('isDisplay');
+		echo "hi";
+		exit;
 		//trim an input
 		$tCityName = trim($cityName);
 		$tStateAbb = trim($stateAbb);

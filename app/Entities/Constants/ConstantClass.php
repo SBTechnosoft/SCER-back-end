@@ -10,6 +10,7 @@ class ConstantClass
 	{
 		$constantArray = array();
 		$constantArray['documentUrl'] = "Storage/Document/";
+		$constantArray['billDocumentUrl'] = "Storage/Bill/";
 		// $constantArray['notDefault'] = "not";
 		return $constantArray;
 	}

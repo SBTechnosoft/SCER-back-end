@@ -47,54 +47,45 @@ class CompanyService extends AbstractService
      */
 	public function insert()
 	{
-		$documentName="";
-		$documentSize="";
-		$documentFormat="";
 		$companyArray = array();
 		$getData = array();
 		$keyName = array();
 		$funcName = array();
 		$companyArray = func_get_arg(0);
+		$documentFlag=0;
+		//check document is available
+		if(is_array($companyArray[count($companyArray)-1][0]))
+		{
+			$documentCount = count($companyArray[count($companyArray)-1]);
+			//get document data
+			for($documentArray=0;$documentArray<$documentCount;$documentArray++)
+			{
+				$document[$documentArray] = array();
+				$document[$documentArray][0] = $companyArray[count($companyArray)-1][$documentArray][0];
+				$document[$documentArray][1] = $companyArray[count($companyArray)-1][$documentArray][1];
+				$document[$documentArray][2] = $companyArray[count($companyArray)-1][$documentArray][2];
+				$document[$documentArray][3] = $companyArray[count($companyArray)-1][$documentArray][3];
+			}
+			$documentFlag=1;
+		}
+		
 		for($data=0;$data<count($companyArray);$data++)
 		{
-			$funcName[$data] = $companyArray[$data][0]->getName();
-			$getData[$data] = $companyArray[$data][0]->$funcName[$data]();
-			$keyName[$data] = $companyArray[$data][0]->getkey();
-			// document data is set into the last object..so
-			if($data==(count($companyArray)-1))
+			if($documentFlag==1 && $data==(count($companyArray)-1))
 			{
-				//get document data
-				$documentName = $companyArray[$data][0]->getDocumentName();
-				$documentSize = $companyArray[$data][0]->getDocumentSize();
-				$documentFormat = $companyArray[$data][0]->getDocumentFormat();
+				break;
+			}
+			else
+			{
+				$funcName[$data] = $companyArray[$data][0]->getName();
+				$getData[$data] = $companyArray[$data][0]->$funcName[$data]();
+				$keyName[$data] = $companyArray[$data][0]->getkey();
 			}
 		}
 		//data pass to the model object for insert
 		$companyModel = new CompanyModel();
-		$status = $companyModel->insertData($getData,$keyName);
-		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		if(strcmp($status,$fileSizeArray['500'])==0)
-		{
-			return $status;
-		}
-		//data inserted successfully
-		else
-		{
-			if($documentName!="")
-			{
-				//insert document data(update in company_mst table)
-				$documentStatus = DocumentService::insertDocumentData($documentName,$documentSize,$documentFormat,$status);
-				return $documentStatus;	
-			}
-			else
-			{
-				//if document is not inserted..
-				return $fileSizeArray['200'];
-			}
-		}
+		$status = $companyModel->insertData($getData,$keyName,$document);
+		return $status;
 	}
 	
 	/**
@@ -159,75 +150,64 @@ class CompanyService extends AbstractService
      */
     public function update()
     {
-		if(count($_POST)==0)
+		$companyArray = array();
+		$getData = array();
+		$funcName = array();
+		$documentFlag=0;
+		$dataFlag=0;
+		$companyArray = func_get_arg(0);
+		$companyId = func_get_arg(1);
+		
+		if(is_array($companyArray[count($companyArray)-1][0]))
 		{
-			echo "success";
-		}
-		else
-		{
-			$companyArray = array();
-			$getData = array();
-			$funcName = array();
-			$companyArray = func_get_arg(0);
-			for($data=0;$data<count($companyArray);$data++)
+			$documentCount = count($companyArray[count($companyArray)-1]);
+			//get document data
+			for($documentArray=0;$documentArray<$documentCount;$documentArray++)
 			{
+				$document[$documentArray] = array();
+				$document[$documentArray][0] = $companyArray[count($companyArray)-1][$documentArray][0];
+				$document[$documentArray][1] = $companyArray[count($companyArray)-1][$documentArray][1];
+				$document[$documentArray][2] = $companyArray[count($companyArray)-1][$documentArray][2];
+				$document[$documentArray][3] = $companyArray[count($companyArray)-1][$documentArray][3];
+			}
+			$documentFlag=1;
+		}
+		for($data=0;$data<count($companyArray);$data++)
+		{
+			if($documentFlag==1 && $data==(count($companyArray)-1))
+			{
+				break;
+			}
+			else
+			{
+				$dataFlag=1;
 				$funcName[$data] = $companyArray[$data][0]->getName();
 				$getData[$data] = $companyArray[$data][0]->$funcName[$data]();
 				$keyName[$data] = $companyArray[$data][0]->getkey();
-				
-				// document data is set into the last object..so
-				if($data==(count($companyArray)-1))
-				{
-					//get document data
-					$documentName = $companyArray[$data][0]->getDocumentName();
-					$documentSize = $companyArray[$data][0]->getDocumentSize();
-					$documentFormat = $companyArray[$data][0]->getDocumentFormat();
-				}
 			}
-			
-			$companyId = $companyArray[0][0]->getCompanyId();
-			//data pass to the model object for update
-			$companyModel = new CompanyModel();
-			$status = $companyModel->updateData($getData,$keyName,$companyId);
-			
-			//get exception message
-			$exception = new ExceptionMessage();
-			$fileSizeArray = $exception->messageArrays();
-			
-			if(strcmp($status,$fileSizeArray['500'])==0)
+		}
+		//data pass to the model object for update
+		$companyModel = new CompanyModel();
+		if($documentFlag==1 && $dataFlag==1)
+		{
+			$status = $companyModel->updateData($getData,$keyName,$companyId,$document);
+			return $status;
+		}
+		else
+		{
+			if($documentFlag==1)
 			{
+				$status = $companyModel->updateDocumentData($companyId,$document);
 				return $status;
 			}
-			//data updated successfully
 			else
 			{
-				
-				if($documentName!='')
-				{
-					//insert document data(update in company_mst table)
-					$documentStatus = DocumentService::updateDocumentData($documentName,$documentSize,$documentFormat,$companyId);
-					return $documentStatus;	
-				}
-				else
-				{
-					//if document is not changed..
-					return $fileSizeArray['200'];
-				}
+				$status = $companyModel->updateCompanyData($getData,$keyName,$companyId);
+				return $status;
 			}
 		}
 	}
-	public function updateDocument(CompanyPersistable $companyPersistable)
-	{
-		$companyId = $companyPersistable->getCompanyId();
-		$documentName = $companyPersistable->getDocumentName();
-		$documentSize = $companyPersistable->getDocumentSize();
-		$documentFormat = $companyPersistable->getDocumentFormat();
-		
-		//insert document data(update in company_mst table)
-		$documentStatus = DocumentService::updateDocumentData($documentName,$documentSize,$documentFormat,$companyId);
-		return $documentStatus;
-	}
-    /**
+	/**
      * get and invoke method is of Container Interface method
      * @param int $id,$name
      */

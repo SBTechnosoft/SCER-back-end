@@ -47,19 +47,25 @@ class LedgerTransformer
 		$tCityId = trim($cityId);
 		$tLedgerGrpId = trim($ledgerGrpId);
 		$tcompanyId = trim($companyId);
-		
-		$enumInventoryAffectedArray = array();
-		$inventoryAffectedEnum = new InventoryAffectedEnum();
-		$enumInventoryAffectedArray = $inventoryAffectedEnum->enumArrays();
-		foreach ($enumInventoryAffectedArray as $key => $value)
+		if($tInventoryAffected!="")
 		{
-			if(strcmp($value,$tInventoryAffected)==0)
+			$enumInventoryAffectedArray = array();
+			$inventoryAffectedEnum = new InventoryAffectedEnum();
+			$enumInventoryAffectedArray = $inventoryAffectedEnum->enumArrays();
+			foreach ($enumInventoryAffectedArray as $key => $value)
 			{
-				$inventoryAffectedFlag=1;
-				break;
+				if(strcmp($value,$tInventoryAffected)==0)
+				{
+					$inventoryAffectedFlag=1;
+					break;
+				}
+				else
+				{
+					$inventoryAffectedFlag=2;
+				}
 			}
 		}
-		if($inventoryAffectedFlag==0)
+		if($inventoryAffectedFlag==2)
 		{
 			return "1";
 		}

@@ -55,6 +55,7 @@ class BillController extends BaseController implements ContainerInterface
 			$processor = new BillProcessor();
 			$billPersistable = new BillPersistable();
 			$billPersistable = $processor->createPersistable($this->request);
+			print_r($billPersistable);
 			// if($billPersistable[0][0]=='[')
 			// {
 				// return $billPersistable;

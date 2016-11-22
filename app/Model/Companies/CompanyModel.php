@@ -21,6 +21,7 @@ class CompanyModel extends Model
 		$getCompanyKey = array();
 		$getCompanyData = func_get_arg(0);
 		$getCompanyKey = func_get_arg(1);
+		$getDocumentData = func_get_arg(2);
 		$companyData="";
 		$keyName = "";
 		for($data=0;$data<count($getCompanyData);$data++)
@@ -37,33 +38,29 @@ class CompanyModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::statement("insert into company_mst(".$keyName.") 
-		values(".$companyData.")");
+		$raw = DB::statement("insert into company_mst(".$keyName.",document_name,document_size,document_format) 
+		values(".$companyData.",'".$getDocumentData[0][0]."','".$getDocumentData[0][1]."','".$getDocumentData[0][2]."')");
 		DB::commit();
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			$companyId = DB::select('SELECT  MAX(company_id) AS company_id from company_mst');
-			$enocodedData = json_encode($companyId);
-			$decodedJson = json_decode($enocodedData,true);
-			$createdAt = $decodedJson[0]['company_id'];
-			return $createdAt;
+			return $exceptionArray['200'];
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return $exceptionArray['500'];
 		}
 	}
 	
 	/**
 	 * update data 
-	 * @param company_id,company-data and key of company-data
+	 * @param company_id,company-data,key of company-data and document-data
 	 * returns the status
 	*/
-	public function updateData($companyData,$key,$companyId)
+	public function updateData($companyData,$key,$companyId,$documentData)
 	{
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
@@ -98,10 +95,8 @@ class CompanyModel extends Model
 			$keyValueString=$keyValueString.$key[$data]."='".$companyData[$data]."',";
 		}
 		$raw  = DB::statement("update company_mst 
-		set ".$keyValueString."updated_at='".$mytime."' 
+		set ".$keyValueString."updated_at='".$mytime."',document_name='".$documentData[0][0]."',document_size='".$documentData[0][1]."',document_format='".$documentData[0][2]."' 
 		where company_id = '".$companyId."'");
-		
-		
 		if($raw==1)
 		{
 			return $exceptionArray['200'];
@@ -112,6 +107,83 @@ class CompanyModel extends Model
 		}
 	}
 	
+	/**
+	 * update data 
+	 * @param company_id,company-data,key of company-data
+	 * returns the status
+	*/
+	public function updateCompanyData($companyData,$key,$companyId)
+	{
+		$mytime = Carbon\Carbon::now();
+		$keyValueString="";
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		//only one company is checked by default
+		$enumIsDefArray = array();
+		$isDefEnum = new IsDefaultEnum();
+		$enumIsDefArray = $isDefEnum->enumArrays();
+		for($keyData=0;$keyData<count($key);$keyData++)
+		{
+		    if(strcmp($key[array_keys($key)[$keyData]],"is_default")==0)
+			{
+				if(strcmp($companyData[$keyData],$enumIsDefArray['default'])==0)
+				{
+					$raw  = DB::statement("update company_mst 
+					set is_default='".$enumIsDefArray['notDefault']."',updated_at='".$mytime."' 
+					where deleted_at = '0000-00-00 00:00:00'");
+					if($raw==0)
+					{
+						return $exceptionArray['500'];
+					}
+				}
+			}	
+		}
+		
+		for($data=0;$data<count($companyData);$data++)
+		{
+			$keyValueString=$keyValueString.$key[$data]."='".$companyData[$data]."',";
+		}
+		$raw  = DB::statement("update company_mst 
+		set ".$keyValueString."updated_at='".$mytime."'
+		where company_id = '".$companyId."'");
+		if($raw==1)
+		{
+			return $exceptionArray['200'];
+		}
+		else
+		{
+			return $exceptionArray['500'];
+		}
+	}
+	
+	/**
+	 * update data 
+	 * @param company_id,company-data,key of company-data
+	 * returns the status
+	*/
+	public function updateDocumentData($companyId,$documentData)
+	{
+		$mytime = Carbon\Carbon::now();
+		$keyValueString="";
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		$raw  = DB::statement("update company_mst 
+		set document_name='".$documentData[0][0]."',document_size='".$documentData[0][1]."',document_format='".$documentData[0][2]."',updated_at='".$mytime."'
+		where company_id = '".$companyId."'");
+		if($raw==1)
+		{
+			return $exceptionArray['200'];
+		}
+		else
+		{
+			return $exceptionArray['500'];
+		}
+	}
 	/**
 	 * get All data 
 	 * returns the status

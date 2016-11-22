@@ -48,7 +48,6 @@ class LedgerModel extends Model
 		$fileSizeArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			
 			$ledgerId = DB::select('SELECT  MAX(ledger_id) AS ledger_id from ledger_mst');
 			$result = DB::statement("CREATE TABLE ".$ledgerId[0]->ledger_id."_ledger_dtl (
 			 `".$ledgerId[0]->ledger_id."_id` int(11) NOT NULL AUTO_INCREMENT,

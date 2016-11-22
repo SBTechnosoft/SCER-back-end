@@ -34,6 +34,7 @@ class ClientModel extends Model
 		{
 			$getClientData[7]=$enumIsDispArray['display'];
 		}
+		
 		for($data=0;$data<count($getClientData);$data++)
 		{
 			if($data == (count($getClientData)-1))
@@ -58,7 +59,25 @@ class ClientModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $exceptionArray['200'];
+			DB::beginTransaction();
+			$clientData = DB::select("select 
+			client_id,
+			client_name,
+			company_name,
+			contact_no,
+			work_no,
+			email_id,
+			address1,
+			address2,
+			is_display,
+			created_at,
+			updated_at,
+			deleted_at,
+			state_abb,
+			city_id
+			from client_mst where client_id = (select max(client_id) from client_mst) and deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+			return json_encode($clientData);
 		}
 		else
 		{
