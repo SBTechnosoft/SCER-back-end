@@ -69,7 +69,7 @@ class JournalController extends BaseController implements ContainerInterface
 				{
 					$productService= new ProductService();	
 					$productPersistable = new ProductPersistable();
-					if(strcmp(array_keys($request->input()[0])[6],"invoiceNumber")==0)
+					if(strcmp($request->header()['type'][0],"sales")==0)
 					{
 						$outward = "Outward";
 						$productProcessor = new ProductProcessor();
@@ -84,7 +84,7 @@ class JournalController extends BaseController implements ContainerInterface
 							return $productPersistable;
 						}
 					}
-					else
+					else if(strcmp($request->header()['type'][0],"purchase")==0)
 					{
 						$inward = "Inward";
 						$productProcessor = new ProductProcessor();

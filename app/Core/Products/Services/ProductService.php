@@ -79,6 +79,8 @@ class ProductService extends AbstractService
 		$transactionTypeArray = array();
 		$companyIdArray = array();
 		$productIdArray = array();
+		$billNumberArray = array();
+		$invoiceNumberArray = array();
 		$productArray = func_get_arg(0);
 		
 		for($data=0;$data<count($productArray);$data++)
@@ -92,10 +94,12 @@ class ProductService extends AbstractService
 			$transactionDateArray[$data] = $productArray[$data]->getTransactionDate();
 			$companyIdArray[$data] = $productArray[$data]->getCompanyId();
 			$transactionTypeArray[$data] = $productArray[$data]->getTransactionType();
+			$billNumberArray[$data] = $productArray[$data]->getBillNumber();
+			$invoiceNumberArray[$data] = $productArray[$data]->getInvoiceNumber();
 		}
 		// data pass to the model object for insert
 		$productModel = new ProductModel();
-		$status = $productModel->insertInOutwardData($discountArray,$discountTypeArray,$productIdArray,$qtyArray,$priceArray,$transactionDateArray,$companyIdArray,$transactionTypeArray);
+		$status = $productModel->insertInOutwardData($discountArray,$discountTypeArray,$productIdArray,$qtyArray,$priceArray,$transactionDateArray,$companyIdArray,$transactionTypeArray,$billNumberArray,$invoiceNumberArray);
 		return $status;
 	}
 	

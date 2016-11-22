@@ -18,6 +18,8 @@ use ERP\Core\Products\Properties\DiscountTypePropertyTrait;
 use ERP\Core\Products\Properties\PricePropertyTrait;
 use ERP\Core\Products\Properties\QtyPropertyTrait;
 use ERP\Core\Products\Properties\TransactionTypePropertyTrait;
+use ERP\Core\Products\Properties\InvoiceNumberPropertyTrait;
+use ERP\Core\Products\Properties\BillNumberPropertyTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -40,4 +42,6 @@ class productPersistable
 	use PricePropertyTrait;
 	use QtyPropertyTrait;
 	use TransactionTypePropertyTrait;
+	use InvoiceNumberPropertyTrait;
+	use BillNumberPropertyTrait;
 }

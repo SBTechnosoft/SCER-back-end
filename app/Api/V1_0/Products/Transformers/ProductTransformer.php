@@ -95,6 +95,8 @@ class ProductTransformer
 		//data get from body and trim an input
 		$companyId = trim($request->input()[0]['companyId']); 
 		$transactionDate = trim($request->input()[0]['transactionDate']); 
+		$invoiceNumber = trim($request->input()[0]['invoiceNumber']); 
+		$billNumber = trim($request->input()[0]['billNumber']); 
 		
 		
 		//transaction date conversion
@@ -146,6 +148,8 @@ class ProductTransformer
 			$simpleArray['transactionDate'] = $transformEntryDate;
 			$simpleArray['companyId'] = $companyId;
 			$simpleArray['transactionType'] = $inOutWard;
+			$simpleArray['invoiceNumber'] = $invoiceNumber;
+			$simpleArray['billNumber'] = $billNumber;
 			
 			$trimArray = array();
 			for($data=0;$data<$numberOfArray;$data++)

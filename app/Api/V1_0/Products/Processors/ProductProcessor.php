@@ -135,6 +135,8 @@ class ProductProcessor extends BaseProcessor
 					$productPersistable[$data]->setTransactionDate($tRequest['transactionDate']);
 					$productPersistable[$data]->setCompanyId($tRequest['companyId']);
 					$productPersistable[$data]->setTransactionType($tRequest['transactionType']);
+					$productPersistable[$data]->setInvoiceNumber($tRequest['invoiceNumber']);
+					$productPersistable[$data]->setBillNumber($tRequest['billNumber']);
 					
 					$productPersistable[$data]->setProductId($tRequest[0][$data]['productId']);
 					$productPersistable[$data]->setDiscount($tRequest[0][$data]['discount']);
