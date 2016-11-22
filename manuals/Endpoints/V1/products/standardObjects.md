@@ -53,9 +53,9 @@
 				],
 				"transactionDate": date,
 				"companyId": int,
-				"createdAt":TimeStamp,
-				"updatedAt":DateTime
-			 }
+				"invoiceNumber":string,
+				"billNumber":string,
+			}
 #####  Is Display Enum
 			{
 				... Is Display Enum

@@ -111,7 +111,10 @@ class BillProcessor extends BaseProcessor
 			}
 		}
 		$paymentMode = $request->input()[0]['billData'][0]['paymentMode'];
-		
+		if($paymentMode=="")
+		{
+			$paymentMode="cash";
+		}
 		//get ledger data for checking client is exist in ledger or not by contact-number
 		$ledgerService = new LedgerService();
 		$ledgerAllData = $ledgerService->getAllLedgerData();
@@ -163,6 +166,7 @@ class BillProcessor extends BaseProcessor
 		$journalController = new JournalController(new Container());
 		$jfId = $journalController->getData();
 		$ledgerTaxAcId = "14";
+		$ledgerCashAcId = "12";
 		//make data array for journal entry
 		if($paymentModeFlag==1)
 		{
@@ -185,6 +189,11 @@ class BillProcessor extends BaseProcessor
 						"amountType"=>"debit",
 						"ledgerId"=>$ledgerTaxAcId,
 					);
+					$dataArray[3]=array(
+						"amount"=>$request->input()[0]['billData'][0]['grandTotal'],
+						"amountType"=>"credit",
+						"ledgerId"=>$ledgerCashAcId,
+					);
 				}
 				else
 				{
@@ -193,10 +202,15 @@ class BillProcessor extends BaseProcessor
 						"amountType"=>"debit",
 						"ledgerId"=>$paymentLedgerId,
 					);
-					$dataArray[0]=array(
+					$dataArray[1]=array(
 						"amount"=>$request->input()[0]['billData'][0]['tax'],
 						"amountType"=>"debit",
 						"ledgerId"=>$ledgerTaxAcId,
+					);
+					$dataArray[2]=array(
+						"amount"=>$request->input()[0]['billData'][0]['grandTotal'],
+						"amountType"=>"credit",
+						"ledgerId"=>$ledgerCashAcId,
 					);
 				}
 			}
@@ -214,6 +228,11 @@ class BillProcessor extends BaseProcessor
 						"amountType"=>"debit",
 						"ledgerId"=>$ledgerId,
 					);
+					$dataArray[2]=array(
+						"amount"=>$request->input()[0]['billData'][0]['grandTotal'],
+						"amountType"=>"credit",
+						"ledgerId"=>$ledgerCashAcId,
+					);
 				}
 				else
 				{
@@ -221,6 +240,11 @@ class BillProcessor extends BaseProcessor
 						"amount"=>$request->input()[0]['billData'][0]['total'],
 						"amountType"=>"debit",
 						"ledgerId"=>$paymentLedgerId,
+					);
+					$dataArray[1]=array(
+						"amount"=>$request->input()[0]['billData'][0]['grandTotal'],
+						"amountType"=>"credit",
+						"ledgerId"=>$ledgerCashAcId,
 					);
 				}
 			}
