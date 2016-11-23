@@ -37,15 +37,33 @@ class JournalModel extends Model
 		for($data=0;$data<count($jfIdArray);$data++)
 		{
 			$raw = DB::statement("insert into 
-			journal_dtl(jf_id,amount,amount_type,entry_date,ledger_id,company_id) 
+			journal_dtl(
+			jf_id,
+			amount,
+			amount_type,
+			entry_date,
+			ledger_id,
+			company_id) 
 			values('".$jfIdArray[$data]."','".$amountArray[$data]."','".$amountTypeArray[$data]."','".$entryDateArray[$data]."','".$ledgerIdArray[$data]."','".$companyIdArray[$data]."')");
+			
+			if($raw==1)
+			{
+				$ledgerEntryResult = DB::statement("insert into 
+				".$ledgerIdArray[$data]."_ledger_dtl(
+				jf_id,
+				amount,
+				amount_type,
+				entry_date,
+				ledger_id) 
+				values('".$jfIdArray[$data]."','".$amountArray[$data]."','".$amountTypeArray[$data]."','".$entryDateArray[$data]."','".$ledgerIdArray[$data]."')");
+			}
 		}
 		DB::commit();
 		
 		// get exception message
 		$exception = new ExceptionMessage();
 		$fileSizeArray = $exception->messageArrays();
-		if($raw==1)
+		if($ledgerEntryResult==1)
 		{
 			return $fileSizeArray['200'];
 		}

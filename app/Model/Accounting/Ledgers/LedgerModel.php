@@ -53,7 +53,7 @@ class LedgerModel extends Model
 			 `".$ledgerId[0]->ledger_id."_id` int(11) NOT NULL AUTO_INCREMENT,
 			 `amount` decimal(8,2) NOT NULL,
 			 `amount_type` enum('credit','debit') NOT NULL,
-			 `entry date` datetime NOT NULL,
+			 `entry_date` date NOT NULL,
 			 `jf_id` int(11) NOT NULL,
 			 `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			 `updated_at` datetime NOT NULL,
@@ -61,6 +61,7 @@ class LedgerModel extends Model
 			 `ledger_id` int(11) NOT NULL,
 			 PRIMARY KEY (`".$ledgerId[0]->ledger_id."_id`)
 			) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+			
 			if($result==1)
 			{
 				DB::beginTransaction();
@@ -300,6 +301,53 @@ class LedgerModel extends Model
 			$enocodedData = json_encode($raw);
 			return $enocodedData;
 		}
+	}
+	
+	/**
+	 * get All data 
+	 * returns the status
+	*/
+	public function getLedgerTransactionDetail($ledgerId)
+	{	
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		DB::beginTransaction();		
+		$ledgerData = DB::select("select 
+		ledger_id
+		from ledger_mst where ledger_id='".$ledgerId."' and deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		if(count($ledgerData)==0)
+		{
+			return $exceptionArray['204'];
+		}
+		else
+		{
+			DB::beginTransaction();		
+			$raw = DB::select("select 
+			".$ledgerId."_id,
+			amount,
+			amount_type,
+			entry_date,
+			jf_id,
+			created_at,
+			updated_at,
+			ledger_id
+			from ".$ledgerId."_ledger_dtl where deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+			
+			if(count($raw)==0)
+			{
+				return $exceptionArray['204'];
+			}
+			else
+			{
+				$enocodedData = json_encode($raw);
+				return $enocodedData;
+			}
+		}	
 	}
 	
 	//delete

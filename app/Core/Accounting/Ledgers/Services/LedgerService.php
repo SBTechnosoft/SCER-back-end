@@ -9,6 +9,7 @@ use ERP\Core\Support\Service\AbstractService;
 use ERP\Core\User\Entities\User;
 use ERP\Core\Accounting\Ledgers\Entities\EncodeData;
 use ERP\Core\Accounting\Ledgers\Entities\EncodeAllData;
+use ERP\Core\Accounting\Ledgers\Entities\EncodeTrnAllData;
 use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -159,6 +160,31 @@ class LedgerService extends AbstractService
 			return $encodeAllData;
 		}
 	}
+	
+	/**
+     * get transaction data as per given id and call the model for database selection opertation
+     * @return status
+     */
+	public function getLedgerTransactionDetail($ledgerId)
+	{
+		$ledgerModel = new LedgerModel();
+		$status = $ledgerModel->getLedgerTransactionDetail($ledgerId);
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($status,$exceptionArray['204'])==0)
+		{
+			return $status;
+		}
+		else
+		{
+			$encoded = new EncodeTrnAllData();
+			$encodeAllData = $encoded->getEncodedAllData($status,$ledgerId);
+			return $encodeAllData;
+		}
+	}
+	
     /**
      * get the data from persistable object and call the model for database update opertation
      * @param LedgerPersistable $persistable

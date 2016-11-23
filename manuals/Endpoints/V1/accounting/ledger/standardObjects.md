@@ -59,7 +59,10 @@
 				"jf_id":int,
 				"createdAt":timestamp,
 				"updatedAt":datetime,
-				"ledgerId":int
+				"ledger":
+				{
+					... Standard Ledger Object
+				}
 			}
 ##### Inventory Affected Enum
 			{

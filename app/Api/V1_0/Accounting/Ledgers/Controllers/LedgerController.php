@@ -114,6 +114,17 @@ class LedgerController extends BaseController implements ContainerInterface
 		return $status;
 	}
 	
+	/**
+     * get the transaction resource.
+     * @param  int  $ledgerId
+     */
+    public function getLedgerTransactionData($ledgerId)
+    {
+		$ledgerService= new LedgerService();
+		$status = $ledgerService->getLedgerTransactionDetail($ledgerId);
+		return $status;
+	}
+	
     /**
      * Update the specified resource in storage.
      * @param  Request object[Request $request]
