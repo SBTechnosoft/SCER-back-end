@@ -9,7 +9,6 @@ use ERP\Core\Support\Service\AbstractService;
 use ERP\Core\User\Entities\User;
 use ERP\Core\Companies\Entities\EncodeData;
 use ERP\Core\Companies\Entities\EncodeAllData;
-use ERP\Core\Documents\Services\DocumentService;
 use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -106,9 +105,8 @@ class CompanyService extends AbstractService
 		}
 		else
 		{
-			$documentStatus = DocumentService::getAllDocumentData();
 			$encoded = new EncodeAllData();
-			$encodeAllData = $encoded->getEncodedAllData($status,$documentStatus);
+			$encodeAllData = $encoded->getEncodedAllData($status);
 			return $encodeAllData;
 		}
 	}
@@ -133,10 +131,8 @@ class CompanyService extends AbstractService
 		else
 		{
 			$decodedJsonDoc = json_decode($status,true);
-			$companyId= $decodedJsonDoc[0]['company_id'];
-			$documentStatus = DocumentService::getDocumentData($companyId);
 			$encoded = new EncodeData();
-			$encodeData = $encoded->getEncodedData($status,$documentStatus);
+			$encodeData = $encoded->getEncodedData($status);
 			return $encodeData;
 		}
 	}

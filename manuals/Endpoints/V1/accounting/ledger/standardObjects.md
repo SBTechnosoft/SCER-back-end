@@ -50,8 +50,23 @@
 				"companyId":int
             }
 
+##### Standard Ledger Transaction Object
+			{
+				"id":int,
+				"amount":decimal,
+				"amountType":Enum,
+				"entryDate":Date,
+				"jf_id":int,
+				"createdAt":timestamp,
+				"updatedAt":datetime,
+				"ledgerId":int
+			}
 ##### Inventory Affected Enum
 			{
 				inventoryAffected:'yes',
 				inventoryNotAffected:'no'
+			}
+##### Amount Type Enum
+			{
+				... Amount Type Enum(journal)
 			}

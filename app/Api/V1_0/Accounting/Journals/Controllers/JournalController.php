@@ -64,7 +64,6 @@ class JournalController extends BaseController implements ContainerInterface
 			{
 				$journalService= new JournalService();
 				$status = $journalService->insert($journalPersistable);
-				
 				if(count($request->input()[0])>4)
 				{
 					$productService= new ProductService();	

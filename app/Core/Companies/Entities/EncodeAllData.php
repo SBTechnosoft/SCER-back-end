@@ -12,13 +12,12 @@ use ERP\Entities\Constants\ConstantClass;
 class EncodeAllData extends StateService
 {
 	//date conversion and merge with json data and returns json array
-	public function getEncodedAllData($status,$documentStatus)
+	public function getEncodedAllData($status)
 	{
 		$convertedCreatedDate = array();
 		$convertedUpdatedDate = array();
 		$encodeAllData =  array();
 		$decodedJson = json_decode($status,true);
-		$decodedJsonDoc = json_decode($documentStatus,true);
 		$documentArray = array();
 		
 		//get constant document-url from document
@@ -44,10 +43,10 @@ class EncodeAllData extends StateService
 			$formalName[$decodedData] = $decodedJson[$decodedData]['formal_name'];
 			$noOfDecimalPoints[$decodedData] = $decodedJson[$decodedData]['no_of_decimal_points'];
 			$currencySymbol[$decodedData] = $decodedJson[$decodedData]['currency_symbol'];
-			$documentName[$decodedData] = $decodedJsonDoc[$decodedData]['document_name'];
+			$documentName[$decodedData] = $decodedJson[$decodedData]['document_name'];
 			$documentUrl = $documentArray['documentUrl'];
-			$documentSize[$decodedData] = $decodedJsonDoc[$decodedData]['document_size'];
-			$documentFormat[$decodedData] = $decodedJsonDoc[$decodedData]['document_format'];
+			$documentSize[$decodedData] = $decodedJson[$decodedData]['document_size'];
+			$documentFormat[$decodedData] = $decodedJson[$decodedData]['document_format'];
 			$isDisplay[$decodedData] = $decodedJson[$decodedData]['is_display'];
 			$isDefault[$decodedData] = $decodedJson[$decodedData]['is_default'];
 			$stateAbb[$decodedData] = $decodedJson[$decodedData]['state_abb'];

@@ -18,7 +18,7 @@
 + Response
 
             {
-                ... HTTP_Status:200
+                ... Standard Ledger Object
             }
     
 
@@ -71,7 +71,7 @@
 + Response
 
 			{
-				... //TO DO
+				... Standard Ledger Transaction Object
 			}
 
 

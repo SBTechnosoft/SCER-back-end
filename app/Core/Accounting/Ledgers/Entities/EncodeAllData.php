@@ -15,7 +15,6 @@ class EncodeAllData extends StateService
 {
 	public function getEncodedAllData($status)
 	{
-		
 		$convertedCreatedDate =  array();
 		$convertedUpdatedDate =  array();
 		$encodeAllData =  array();
@@ -148,7 +147,6 @@ class EncodeAllData extends StateService
 				)		
 			);
 		}
-		// echo "hio";
 		$jsonEncodedData = json_encode($data);
 		return $jsonEncodedData;
 	}

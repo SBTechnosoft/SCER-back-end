@@ -12,7 +12,7 @@ use ERP\Entities\Constants\ConstantClass;
 class EncodeData extends StateService 
 {
 	//date conversion and merge with json data and returns json array
-    public function getEncodedData($status,$documentStatus)
+    public function getEncodedData($status)
 	{
 		$documentArray = array();
 		
@@ -21,7 +21,6 @@ class EncodeData extends StateService
 		$documentArray = $documentUrl->constantVariable();
 		
 		$decodedJson = json_decode($status,true);
-		$decodedJsonDoc = json_decode($documentStatus,true);
 		$createdAt = $decodedJson[0]['created_at'];
 		$updatedAt= $decodedJson[0]['updated_at'];
 		$companyId= $decodedJson[0]['company_id'];
@@ -38,15 +37,15 @@ class EncodeData extends StateService
 		$formalName= $decodedJson[0]['formal_name'];
 		$noOfDecimalPoints= $decodedJson[0]['no_of_decimal_points'];
 		$currencySymbol= $decodedJson[0]['currency_symbol'];
-		$documentName= $decodedJsonDoc[0]['document_name'];
+		$documentName= $decodedJson[0]['document_name'];
 		$documentUrl= $documentArray['documentUrl'];
-		$documentSize= $decodedJsonDoc[0]['document_size'];
-		$documentFormat= $decodedJsonDoc[0]['document_format'];
+		$documentSize= $decodedJson[0]['document_size'];
+		$documentFormat= $decodedJson[0]['document_format'];
 		$isDisplay= $decodedJson[0]['is_display'];
 		$isDefault= $decodedJson[0]['is_default'];
 		$stateAbb= $decodedJson[0]['state_abb'];
 		$cityId= $decodedJson[0]['city_id'];
-		
+	
 		//get the state_name from database
 		$encodeStateDataClass = new EncodeData();
 		$stateStatus = $encodeStateDataClass->getStateData($stateAbb);

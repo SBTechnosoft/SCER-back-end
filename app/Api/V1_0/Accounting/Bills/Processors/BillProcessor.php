@@ -2,7 +2,7 @@
 namespace ERP\Api\V1_0\Accounting\Bills\Processors;
 
 use ERP\Api\V1_0\Support\BaseProcessor;
-// use ERP\Core\Accounting\Bills\Persistables\BillPersistable;
+use ERP\Core\Accounting\Bills\Persistables\BillPersistable;
 use Illuminate\Http\Request;
 use ERP\Http\Requests;
 use Illuminate\Http\Response;
@@ -57,7 +57,6 @@ class BillProcessor extends BaseProcessor
 			//validation
 			$billValidate = new BillValidate();
 			$status = $billValidate->validate($tRequest);
-			
 			if($status=="Success")
 			{
 				//get contact-number from input data
@@ -99,10 +98,6 @@ class BillProcessor extends BaseProcessor
 					$processedData = $clientController->store($clientRequest);
 					$clientId = json_decode($processedData)[0]->client_id;
 				}
-				else
-				{
-					//client is already exist
-				}
 			}
 			else
 			{
@@ -119,7 +114,6 @@ class BillProcessor extends BaseProcessor
 		$ledgerService = new LedgerService();
 		$ledgerAllData = $ledgerService->getAllLedgerData();
 		$encodedLedgerData = json_decode($ledgerAllData);
-		
 		//check contact-number of client with ledger contacts
 		for($contactData=0;$contactData<count($encodedLedgerData);$contactData++)
 		{
@@ -134,7 +128,6 @@ class BillProcessor extends BaseProcessor
 				$paymentLedgerId = $encodedLedgerData[$contactData]->ledgerId;
 			}
 		}
-		
 		if($contactFlag==0)
 		{
 			$ledgerArray=array();
@@ -152,21 +145,19 @@ class BillProcessor extends BaseProcessor
 			$path="http://www.scerp1.com/accounting/ledgers";
 			$ledgerRequest = Request::create($path,$method,$ledgerArray);
 			$processedData = $ledgerController->store($ledgerRequest);
-			if(strcmp($msgArray['200'],$processedData)!=0)
+			$ledgerId = json_decode($processedData)[0]->ledger_id;
+			if(strcmp($msgArray['500'],$processedData)!=0)
 			{
 				return $processedData;
 			}
-			else
-			{
-				$ledgerId=25;
-			}
 		}
-		
 		//get jf_id
 		$journalController = new JournalController(new Container());
 		$jfId = $journalController->getData();
 		$ledgerTaxAcId = "14";
-		$ledgerCashAcId = "12";
+		$ledgerSaleAcId = "13";
+		
+		$ledgerAmount = $request->input()[0]['billData'][0]['total']-$request->input()[0]['billData'][0]['advance'];
 		//make data array for journal entry
 		if($paymentModeFlag==1)
 		{
@@ -180,7 +171,7 @@ class BillProcessor extends BaseProcessor
 						"ledgerId"=>$paymentLedgerId,
 					);
 					$dataArray[1]=array(
-						"amount"=>$request->input()[0]['billData'][0]['balance'],
+						"amount"=>$ledgerAmount,
 						"amountType"=>"debit",
 						"ledgerId"=>$ledgerId,
 					);
@@ -192,7 +183,7 @@ class BillProcessor extends BaseProcessor
 					$dataArray[3]=array(
 						"amount"=>$request->input()[0]['billData'][0]['grandTotal'],
 						"amountType"=>"credit",
-						"ledgerId"=>$ledgerCashAcId,
+						"ledgerId"=>$ledgerSaleAcId,
 					);
 				}
 				else
@@ -210,7 +201,7 @@ class BillProcessor extends BaseProcessor
 					$dataArray[2]=array(
 						"amount"=>$request->input()[0]['billData'][0]['grandTotal'],
 						"amountType"=>"credit",
-						"ledgerId"=>$ledgerCashAcId,
+						"ledgerId"=>$ledgerSaleAcId,
 					);
 				}
 			}
@@ -224,14 +215,14 @@ class BillProcessor extends BaseProcessor
 						"ledgerId"=>$paymentLedgerId,
 					);
 					$dataArray[1]=array(
-						"amount"=>$request->input()[0]['billData'][0]['balance'],
+						"amount"=>$ledgerAmount,
 						"amountType"=>"debit",
 						"ledgerId"=>$ledgerId,
 					);
 					$dataArray[2]=array(
 						"amount"=>$request->input()[0]['billData'][0]['grandTotal'],
 						"amountType"=>"credit",
-						"ledgerId"=>$ledgerCashAcId,
+						"ledgerId"=>$ledgerSaleAcId,
 					);
 				}
 				else
@@ -244,7 +235,7 @@ class BillProcessor extends BaseProcessor
 					$dataArray[1]=array(
 						"amount"=>$request->input()[0]['billData'][0]['grandTotal'],
 						"amountType"=>"credit",
-						"ledgerId"=>$ledgerCashAcId,
+						"ledgerId"=>$ledgerSaleAcId,
 					);
 				}
 			}
@@ -260,16 +251,51 @@ class BillProcessor extends BaseProcessor
 			'inventory' => array(
 			),
 			'transactionDate'=> $request->input()[0]['billData'][0]['entryDate'],
-			'billNumber'=> "dsf12"
+			'billNumber'=> $request->input()[0]['billData'][0]['billNumber'],
+			'invoiceNumber'=>$request->input()[0]['billData'][0]['invoiceNumber']
 		);
 		$journalArray[0]['data']=$dataArray;
 		$journalArray[0]['inventory']=$request->input()[0]['billData'][0]['inventory'];
 		$method="post";
-		$path="http://www.scerp1.com/accounting/bills";
+		$path="http://www.scerp1.com/accounting/journals";
 		$journalRequest = Request::create($path,$method,$journalArray);
-		$processedData = $journalController->store($journalRequest);
+		$journalRequest->headers->set('type','sales');
+		// $processedData = $journalController->store($journalRequest);
+		// print_r($processedData); //simple error msg
+
+		$billProductArray = array();
+		$billProductArray=array(
+			'transactionDate'=> $request->input()[0]['billData'][0]['entryDate'],
+			'billNumber'=> $request->input()[0]['billData'][0]['billNumber'],
+			'invoiceNumber'=>$request->input()[0]['billData'][0]['invoiceNumber'],
+			'inventory' => array(
+			),
+			'transactionType'=>'inward',
+			'companyId' => $request->input()[0]['billData'][0]['companyId']
+		);
+		$billProductArray['inventory']=$request->input()[0]['billData'][0]['inventory'];
+		// $productArray = "[{}]";
+		
+		ill
 		
 		//make an array for bill insert data in retail sales
-		
+		$billArray = array();
+		$billArray = array(
+			// 'product_array'=>$billProductArray;
+			'payment_mode'=>$request->input()[0]['billData'][0]['paymentMode'],
+			'bank_name'=>$request->input()[0]['billData'][0]['bankName'],
+			'invoice_number'=>$request->input()[0]['billData'][0]['invoiceNumber'],
+			'check_number'=>$request->input()[0]['billData'][0]['checkNumber'],
+			'total'=>$request->input()[0]['billData'][0]['total'],
+			'tax'=>$request->input()[0]['billData'][0]['tax'],
+			'grand_total'=>$request->input()[0]['billData'][0]['grandTotal'],
+			'advance'=>$request->input()[0]['billData'][0]['advance'],
+			'balance'=>$request->input()[0]['billData'][0]['balance'],
+			'remark'=>$request->input()[0]['billData'][0]['remark'],
+			'entry_date'=>$request->input()[0]['billData'][0]['entryDate'],
+			'client_id'=>$clientId,
+			'company_id'=>$request->input()[0]['billData'][0]['companyId']
+		);
+		print_r($billArray);
 	}
 }

@@ -45,7 +45,7 @@ class LedgerModel extends Model
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
 			$ledgerId = DB::select('SELECT  MAX(ledger_id) AS ledger_id from ledger_mst');
@@ -61,11 +61,41 @@ class LedgerModel extends Model
 			 `ledger_id` int(11) NOT NULL,
 			 PRIMARY KEY (`".$ledgerId[0]->ledger_id."_id`)
 			) ENGINE=InnoDB DEFAULT CHARSET=latin1");
-			return $fileSizeArray['200'];
+			if($result==1)
+			{
+				DB::beginTransaction();
+				$ledgerData = DB::select("select 
+				ledger_id,
+				ledger_name,
+				alias,
+				inventory_affected,
+				address1,
+				address2,
+				contact_no,
+				email_id,
+				pan,
+				tin,
+				gst,
+				created_at,
+				updated_at,
+				deleted_at,
+				state_abb,
+				city_id,
+				ledger_group_id,
+				company_id
+				from ledger_mst 
+				where ledger_id = (select max(ledger_id) from ledger_mst) and deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+				return json_encode($ledgerData);
+			}
+			else
+			{
+				return $exceptionArray['500'];
+			}
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return $exceptionArray['500'];
 		}
 	}
 	/**

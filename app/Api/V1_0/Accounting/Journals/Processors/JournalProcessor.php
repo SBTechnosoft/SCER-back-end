@@ -38,15 +38,18 @@ class JournalProcessor extends BaseProcessor
 		//trim an input 
 		$journalTransformer = new JournalTransformer();
 		$tRequest = $journalTransformer->trimInsertData($this->request);
+		
 		if($tRequest==1)
 		{
 			return $msgArray['content'];
 		}	
-		else
+		else if(is_array($tRequest))
 		{
 			//validation
 			$journalValidate = new JournalValidate();
 			$status = $journalValidate->validate($tRequest);
+			// echo "else";
+			// print_r($status);
 			if($status=="Success")
 			{
 				$journalPersistable=array();
@@ -67,6 +70,10 @@ class JournalProcessor extends BaseProcessor
 			{
 				return $status;
 			}
+		}
+		else
+		{
+			return $tRequest;
 		}
 	}
 	public function createPersistableData(Request $request)
