@@ -19,10 +19,7 @@
             	"cityName": string,
             	"stateAbb": char,
 				"isDisplay": Enum,
-				"createdAt" timestamp,
-				"updatedAt": datetime,
-				"deletedAt":datetime	
-            }
+			}
 ##### Is Display Enum
 			{
 				... Is Display Enum

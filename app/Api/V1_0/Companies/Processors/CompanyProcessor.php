@@ -55,16 +55,12 @@ class CompanyProcessor extends BaseProcessor
 		{
 			return $msgArray['204'];
 		}
-		//change the name of document-name
-		$dateTime = date("d-m-Y h-i-s");
-		$convertedDateTime = str_replace(" ","-",$dateTime);
-		$splitDateTime = explode("-",$convertedDateTime);
-		$combineDateTime = $splitDateTime[0].$splitDateTime[1].$splitDateTime[2].$splitDateTime[3].$splitDateTime[4].$splitDateTime[5];
-		
 		if(in_array(true,$file))
 		{
+			$constantClass = new ConstantClass();
+			$constantArray = $constantClass->constantVariable();
 			$documentController =new DocumentController(new Container());
-			$processedData = $documentController->insertUpdate($request);
+			$processedData = $documentController->insertUpdate($request,$constantArray['documentUrl']);
 			if(is_array($processedData))
 			{
 				$docFlag=1;

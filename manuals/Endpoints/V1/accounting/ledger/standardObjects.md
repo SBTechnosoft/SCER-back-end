@@ -43,9 +43,6 @@
                 "gstNo":String,
                 "stateAbb":char,
                 "cityId":int,
-                "createdAt":TimeStamp,
-                "updatedAt":DateTime,
-                "deletedAt":DateTime,
                 "ledgerGroupId":int,
 				"companyId":int
             }
@@ -57,8 +54,6 @@
 				"amountType":Enum,
 				"entryDate":Date,
 				"jf_id":int,
-				"createdAt":timestamp,
-				"updatedAt":datetime,
 				"ledger":
 				{
 					... Standard Ledger Object

@@ -33,10 +33,7 @@
 				"pincode": char,
 				"isDefault":Enum,
 				"isDisplay": Enum,
-				"createdAt": timestamp,
-				"updatedAt": datetime,
-				"deletedAt" :datetime
-            }
+			}
 
 #####  Is Display Enum
 			{

@@ -13,6 +13,7 @@ use ERP\Core\Accounting\Bills\Properties\AdvancePropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\BalancePropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\RemarkPropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\EntryDatePropertyTrait;
+use ERP\Core\Accounting\Bills\Properties\ClientIdPropertyTrait;
 use ERP\Core\Companies\Properties\CompanyIdPropertyTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -32,4 +33,5 @@ class BillPersistable
 	use RemarkPropertyTrait;
 	use EntryDatePropertyTrait;
 	use CompanyIdPropertyTrait;
+	use ClientIdPropertyTrait;
 }

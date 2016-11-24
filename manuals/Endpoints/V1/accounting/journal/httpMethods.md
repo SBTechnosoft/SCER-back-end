@@ -3,7 +3,8 @@
 ##### `POST /accounting/journals/`
 + Header
 	- Authentication Token
-
+	- 'type':'sales'
+	- 'type':'purchase'
 + Body
 
             {

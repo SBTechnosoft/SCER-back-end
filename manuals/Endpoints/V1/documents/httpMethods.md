@@ -1,4 +1,4 @@
-##### Creates Documents
+##### Creates Documents (generate pdf)
 
 ##### `POST /documents/bill`
 + Header
@@ -8,7 +8,7 @@
 + Body
 
             {
-                ... Standard Bill Document Persistable Object
+                ... To Do
             }
 + Error Message
 

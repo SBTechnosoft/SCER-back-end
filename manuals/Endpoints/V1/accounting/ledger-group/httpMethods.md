@@ -12,7 +12,7 @@
 + Response
 
 			{
-				... Standard LedgerGrp Object
+				... Standard Ledger Group Object
 			}
 
 **NOTES:** Provide Ledger Group details based on provided Ledger Number
@@ -29,7 +29,7 @@
 + Response
 
 			{
-				... Standard LedgerGrp Object
+				... Standard Ledger Group Object
 			}
 
 **NOTES:** List all the ledger groups 

@@ -1,4 +1,4 @@
-##### Standard Invoice Number Configuration Object
+##### Standard Invoice Number Object
 			{
                 "invocieId": int,
                 "company":  {
@@ -6,16 +6,16 @@
 				},
                 "invoiceLabel": string,
                 "invoiceType": Enum,
-                "createdAt" timestamp,
+                "createdAt" : timestamp,
+				"updatedAt": datetime
 			}
             
-##### Standard Invoice Number Configuration Persistable Object
+##### Standard Invoice Number Persistable Object
 			{
             	"companyId":int, 
                 "invoiceLabel": string,
                 "invoiceType": Enum,
-                "createdAt" timestamp,
-			}
+            }
 
 ##### Invoice Type Enum
 			{

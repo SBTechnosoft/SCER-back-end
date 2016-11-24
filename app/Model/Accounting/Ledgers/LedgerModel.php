@@ -51,7 +51,7 @@ class LedgerModel extends Model
 			$ledgerId = DB::select('SELECT  MAX(ledger_id) AS ledger_id from ledger_mst');
 			$result = DB::statement("CREATE TABLE ".$ledgerId[0]->ledger_id."_ledger_dtl (
 			 `".$ledgerId[0]->ledger_id."_id` int(11) NOT NULL AUTO_INCREMENT,
-			 `amount` decimal(8,2) NOT NULL,
+			 `amount` decimal(10,2) NOT NULL,
 			 `amount_type` enum('credit','debit') NOT NULL,
 			 `entry_date` date NOT NULL,
 			 `jf_id` int(11) NOT NULL,

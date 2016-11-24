@@ -33,8 +33,6 @@
 					...
 				]
 				"entryDate":Date,
-                "createdAt":TimeStamp,
-                "updatedAt":DateTime,
                 "companyId":int
 			}
 ##### Standard Inventory Persistable Object

@@ -3,7 +3,7 @@ namespace ERP\Api\V1_0\Accounting\Bills\Controllers;
 
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
-// use ERP\Core\Accounting\Bills\Services\BillService;
+use ERP\Core\Accounting\Bills\Services\BillService;
 use ERP\Http\Requests;
 use ERP\Api\V1_0\Support\BaseController;
 use ERP\Api\V1_0\Accounting\Bills\Processors\BillProcessor;
@@ -47,6 +47,7 @@ class BillController extends BaseController implements ContainerInterface
     public function store(Request $request)
     {
 		$this->request = $request;
+		
 		// check the requested Http method
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
 		// insert
@@ -55,21 +56,17 @@ class BillController extends BaseController implements ContainerInterface
 			$processor = new BillProcessor();
 			$billPersistable = new BillPersistable();
 			$billPersistable = $processor->createPersistable($this->request);
-			print_r($billPersistable);
-			// if($billPersistable[0][0]=='[')
-			// {
-				// return $billPersistable;
-			// }
-			// else if(is_array($billPersistable))
-			// {
-				// $billService= new BillService();
-				// $status = $billService->insert($billPersistable);
-				// return $status;
-			// }
-			// else
-			// {
-				// return $billPersistable;
-			// }
+			
+			if(is_array($billPersistable) || is_object($billPersistable))
+			{
+				$billService= new BillService();
+				$status = $billService->insert($billPersistable);
+				return $status;
+			}
+			else
+			{
+				return $billPersistable;
+			}
 		}
 	}
 }

@@ -18,12 +18,13 @@ class BillTransformer
 		$paymentModeFlag=0;
 		$billArrayData=array();
 		//data get from body
-		$billArrayData = $request->input()[0]['billData'][0]; 
+		$billArrayData = $request->input(); 
 		
 		//trim an input
 		$tCompanyId = trim($billArrayData['companyId']);
 		$tEntryDate = trim($billArrayData['entryDate']);
 		$tContactNo = trim($billArrayData['contactNo']);
+		$tWorkNo = trim($billArrayData['workNo']);
 		$tEmailId = trim($billArrayData['emailId']);
 		$tCompanyName = trim($billArrayData['companyName']);
 		$tClientName = trim($billArrayData['clientName']);
@@ -40,7 +41,6 @@ class BillTransformer
 		$tPaymentMode = trim($billArrayData['paymentMode']);
 		$tCheckNumber = trim($billArrayData['checkNumber']);
 		$tRemark = trim($billArrayData['remark']);
-		
 		for($trimInventory=0;$trimInventory<count($billArrayData['inventory']);$trimInventory++)
 		{
 			$tInventoryArray[$trimInventory] = array();
@@ -67,31 +67,12 @@ class BillTransformer
 		}
 		else
 		{
-			$tCompanyId = trim($billArrayData['companyId']);
-			$tEntryDate = trim($billArrayData['entryDate']);
-			$tContactNo = trim($billArrayData['contactNo']);
-			$tEmailId = trim($billArrayData['emailId']);
-			$tCompanyName = trim($billArrayData['companyName']);
-			$tClientName = trim($billArrayData['clientName']);
-			$tInvoiceNumber = trim($billArrayData['invoiceNumber']);
-			$tAddress1 = trim($billArrayData['address1']);
-			$tAddress2 = trim($billArrayData['address2']);
-			$tStateAbb = trim($billArrayData['stateAbb']);
-			$tCityId = trim($billArrayData['cityId']);
-			$tTotal = trim($billArrayData['total']);
-			$tTax = trim($billArrayData['tax']);
-			$tGrandTotal = trim($billArrayData['grandTotal']);
-			$tAdvance = trim($billArrayData['advance']);
-			$tBalance = trim($billArrayData['balance']);
-			$tPaymentMode = trim($billArrayData['paymentMode']);
-			$tCheckNumber = trim($billArrayData['checkNumber']);
-			$tRemark = trim($billArrayData['remark']);
-			
 			// make an array
 			$data = array();
 			$data['company_id'] = $tCompanyId;
 			$data['entry_date'] = $tEntryDate;
 			$data['contact_no'] = $tContactNo;
+			$data['work_no'] = $tWorkNo;
 			$data['email_id'] = $tEmailId;
 			$data['company_name'] = $tCompanyName;
 			$data['client_name'] = $tClientName;
@@ -107,7 +88,6 @@ class BillTransformer
 			$data['balance'] = $tBalance;
 			$data['payment_mode'] = $tPaymentMode;
 			$data['check_number'] = $tCheckNumber;
-			
 			$trimArray=array();
 			for($inventoryArray=0;$inventoryArray<count($billArrayData['inventory']);$inventoryArray++)
 			{

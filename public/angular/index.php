@@ -108,12 +108,15 @@ include ('connection.php');
              $scope.getTheFiles = function ($files) {
 				 
 				angular.forEach($files, function (value,key) {
+					console.log(value);
 					formdata.append('file[]',value);
+					 // $scope.file = value;
 				});
-				
+				// console.log($scope.file);
             }
 			$scope.submit_form = function()
 			{
+				
 				// var formdata = new FormData();
 				//state
 				// $scope.formAdata.state_abb ="IN-LC";
@@ -158,41 +161,41 @@ include ('connection.php');
 				//company
 				// $scope.formAdata.company_name = "reema2232323222222222222222222222222222222222222";
 				// $scope.formAdata.company_name = " 1sh1l lbaaaaa-&_().\'aadks "; //0-9 not allow(error:allow)
-				// $scope.formAdata.company_name = " abcdefdd";
-				// $scope.formAdata.company_display_name = " aaa ";
-				// $scope.formAdata.address1 =" sdx cz *,-\/_`#\[\]().\'fs.'0a";
-				// $scope.formAdata.address2 = " aEbc abc*dfghjd/ih'b1 ";
-				// $scope.formAdata.pincode = 311411;
-				// $scope.formAdata.pan= ' qqqas1122a ';
-				// $scope.formAdata.tin= ' 42aa3dgg778 ';
-				// $scope.formAdata.vat_no= ' aadgg78w1a0 ';
-				// $scope.formAdata.service_tax_no = ' 71j0rg778a22b01 ';
-				// $scope.formAdata.basic_currency_symbol= " ALR ";
-				// $scope.formAdata.formal_name = " qgfrd-&_().\'frtgfrta ";
-				// $scope.formAdata.no_of_decimal_points = 4;
-				// $scope.formAdata.currency_symbol = ' prefix ';
-				// $scope.formAdata.is_display = ' no ';
-				// $scope.formAdata.is_default = ' ok ';
-				// $scope.formAdata.state_abb= ' IN-AG ';
-				// $scope.formAdata.city_id= 1;
+				$scope.formAdata.company_name = " abcdefdd";
+				$scope.formAdata.company_display_name = " aaa ";
+				$scope.formAdata.address1 =" sdx cz *,-\/_`#\[\]().\'fs.'0a";
+				$scope.formAdata.address2 = " aEbc abc*dfghjd/ih'b1 ";
+				$scope.formAdata.pincode = 311411;
+				$scope.formAdata.pan= ' qqqas1122a ';
+				$scope.formAdata.tin= ' 42aa3dgg778 ';
+				$scope.formAdata.vat_no= ' aadgg78w1a0 ';
+				$scope.formAdata.service_tax_no = ' 71j0rg778a22b01 ';
+				$scope.formAdata.basic_currency_symbol= " ALR ";
+				$scope.formAdata.formal_name = " qgfrd-&_().\'frtgfrta ";
+				$scope.formAdata.no_of_decimal_points = 4;
+				$scope.formAdata.currency_symbol = ' prefix ';
+				$scope.formAdata.is_display = ' no ';
+				$scope.formAdata.is_default = ' ok ';
+				$scope.formAdata.state_abb= ' IN-AG ';
+				$scope.formAdata.city_id= 1;
 				
-				// formdata.append('companyName',$scope.formAdata.company_name);
-				// formdata.append('companyDisplayName',$scope.formAdata.company_display_name);
-				// formdata.append('address1',$scope.formAdata.address1);
-				// formdata.append('address2',$scope.formAdata.address2);
-				// formdata.append('pincode',$scope.formAdata.pincode);
-				// formdata.append('pan',$scope.formAdata.pan);
-				// formdata.append('tin',$scope.formAdata.tin);
-				// formdata.append('vatNo',$scope.formAdata.vat_no);
-				// formdata.append('serviceTaxNo',$scope.formAdata.service_tax_no);
-				// formdata.append('basicCurrencySymbol',$scope.formAdata.basic_currency_symbol);
-				// formdata.append('formalName',$scope.formAdata.formal_name);
-				// formdata.append('noOfDecimalPoints',$scope.formAdata.no_of_decimal_points);
-				// formdata.append('currencySymbol',$scope.formAdata.currency_symbol);
-				// formdata.append('isDisplay',$scope.formAdata.is_display);
-				// formdata.append('isDefault',$scope.formAdata.is_default);
-				// formdata.append('stateAbb',$scope.formAdata.state_abb);
-				// formdata.append('cityId',$scope.formAdata.city_id);
+				formdata.append('companyName',$scope.formAdata.company_name);
+				formdata.append('companyDisplayName',$scope.formAdata.company_display_name);
+				formdata.append('address1',$scope.formAdata.address1);
+				formdata.append('address2',$scope.formAdata.address2);
+				formdata.append('pincode',$scope.formAdata.pincode);
+				formdata.append('pan',$scope.formAdata.pan);
+				formdata.append('tin',$scope.formAdata.tin);
+				formdata.append('vatNo',$scope.formAdata.vat_no);
+				formdata.append('serviceTaxNo',$scope.formAdata.service_tax_no);
+				formdata.append('basicCurrencySymbol',$scope.formAdata.basic_currency_symbol);
+				formdata.append('formalName',$scope.formAdata.formal_name);
+				formdata.append('noOfDecimalPoints',$scope.formAdata.no_of_decimal_points);
+				formdata.append('currencySymbol',$scope.formAdata.currency_symbol);
+				formdata.append('isDisplay',$scope.formAdata.is_display);
+				formdata.append('isDefault',$scope.formAdata.is_default);
+				formdata.append('stateAbb',$scope.formAdata.state_abb);
+				formdata.append('cityId',$scope.formAdata.city_id);
 				
 				//productCategory
 				// $scope.formAdata.productCatName = "abcd";
@@ -271,7 +274,7 @@ include ('connection.php');
 				// formdata.append('companyId',$scope.formAdata.company_id);
 				
 				//ledger
-				// $scope.formAdata.ledger_name = " abdfj ";
+				// $scope.formAdata.ledger_name = " tax ";
 				// $scope.formAdata.alias = ' d ';
 				// $scope.formAdata.inventory_affected=' no ';
 				// $scope.formAdata.address1 =" sdx cz ";
@@ -339,7 +342,22 @@ include ('connection.php');
 				// Bill PDF generate & insert bill data
 				// $scope.user = [{"billData":[{"companyId":14,"entryDate":"22-10-2015","contactNo":"  	8765463456","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbraine","clientName":"abce","invoiceNumber":"INV/2016-12/54","billNumber":2,"address1":"sfja,sa","address2":"dfsd,ds","stateAbb":"IN-AG","cityId":1,"inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"total":100,"tax":10,"grandTotal":232,"advance":100,"balance":232,"paymentMode":"cash","bankName":"abc","checkNumber":"abbb34eQ1G","remark":"adsfsf afasf"}]}];
 				
-				// $scope.user = [{"billData":[{"companyId":14,"entryDate":"22-10-2015","contactNo":"  	8765463456","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbraine","clientName":"abce","invoiceNumber":"INV/2016-12/54","billNumber":2,"address1":"sfja,sa","address2":"dfsd,ds","stateAbb":"IN-AG","cityId":1,"inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"total":100,"tax":10,"grandTotal":110,"advance":100,"balance":10,"paymentMode":"cash","bankName":"abc","checkNumber":"abbb34eQ1G","remark":"adsfsf afasf"}]}];
+				// $scope.user = [{"billData":[{"companyId":14,"entryDate":"22-10-2015","contactNo":"  	8765463456","workNo":"8765456567","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbraine","clientName":"abce","invoiceNumber":"INV/2016-12/54","billNumber":2,"address1":"sfja,sa","address2":"dfsd,ds","stateAbb":"IN-AG","cityId":1,"total":100,"tax":10,"grandTotal":110,"advance":100,"balance":10,"paymentMode":"cash","bankName":"abc","checkNumber":"abbb34eQ1G","remark":"adsfsf afasf"}]}];
+				
+				// $scope.inventory=[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}];
+				
+				// angular.forEach($scope.user[0]['billData'][0], function (input,key) {
+					
+					// formdata.append(key,input);
+				// });
+				// for(var i=0;i<$scope.inventory.length;i++)
+				// {
+					// angular.forEach($scope.inventory[i], function (input,key) {
+						
+						// formdata.append('inventory['+i+']['+key+']',input);
+					// });
+				// }
+				
 				// var clientId=2;
 				// var productId = 8;
 				// var productGrpId = 11;
@@ -354,7 +372,7 @@ include ('connection.php');
 				// var invoiceId=7;
 				// var quotationId=1;
 				// var ledgerGrpId=1;
-				var ledgerId=34;
+				// var ledgerId=34;
 				
 				// var url = "http://www.scerp1.com/accounting/bills";
 				
@@ -369,7 +387,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/accounting/journals";
 				// var url="http://www.scerp1.com/accounting/journals/next";
 				
-				var url="http://www.scerp1.com/accounting/ledgers/"+ledgerId+"/transactions";
+				// var url="http://www.scerp1.com/accounting/ledgers/"+ledgerId+"/transactions";
 				// var url="http://www.scerp1.com/accounting/ledgers/company/"+companyId;
 				// var url="http://www.scerp1.com/accounting/ledgers/"+ledgerId;
 				// var url="http://www.scerp1.com/accounting/ledgers";
@@ -389,7 +407,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/settings/templates/"+templateId;
 				// var url="http://www.scerp1.com/settings/templates";
 				// var url="http://www.scerp1.com/companies/"+companyId;
-				// var url="http://www.scerp1.com/companies";	
+				var url="http://www.scerp1.com/companies";	
 				// var url="http://www.scerp1.com/branches";	
 				 // var url="http://www.scerp1.com/branches/"+branchId;
 				// var url="http://www.scerp1.com/branches/company/"+companyId;
@@ -408,13 +426,14 @@ include ('connection.php');
 				$http({
                         url: url,
                         // type:'patch',
-						 // method: 'post',
-						method: 'get',
+						 method: 'post',
+						// method: 'get',
 						// method: "PATCH",
 						// method:'delete',
 						processData: false,
                         // headers: {'Content-Type': undefined,'fromDate':'1-10-2016','toDate':'1-12-2016'},
                         headers: {'Content-Type': undefined},
+                        // headers: {'Content-Type': undefined,'type':'sales'},
 						// headers: {'Content-Type': 'application/json','type':'sales'},
                         data:formdata
 						// data:$scope.user						

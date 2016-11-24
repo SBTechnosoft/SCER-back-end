@@ -18,7 +18,8 @@ class BillValidate
 			// 'invoice_number'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]*$/', 
 			'address1'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'address2'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
-			'contact_no'=>'required|between:10,12|regex:/^[0-9]+$/'
+			'contact_no'=>'required|between:10,12|regex:/^[0-9]+$/',
+			'work_no'=>'between:10,12|regex:/^[0-9]+$/'
 			// 'email_id'=>'regex:/^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                 // + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})*$/',
 			// 'total'=>'max:10|min:10|regex:/^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/',
@@ -41,7 +42,8 @@ class BillValidate
 			'address2.regex' => 'address2 contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
 			'contact_no.between' => 'StringLengthException :Enter the :attribute between 10-12 character',
 			'contact_no.regex' => 'contact-number contains character from "0-9" only',
-			'contact_no.required' => 'contact-number is required'
+			'contact_no.required' => 'contact-number is required',
+			'work_no.regex' => 'work-number contains character from "0-9" only'
 			// 'email_id.regex' => 'email address is not correct',
 			
 		];

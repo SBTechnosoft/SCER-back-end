@@ -10,11 +10,15 @@
             {
                 ... Standard State Persistable Object
             }
-            
++ Error Message
+
+			{
+				... Error Message
+			}               
 + Response
 
             {
-                ... Standard State Object
+                ... HTTP_Status:200
             }
     
 
@@ -23,7 +27,12 @@
 ##### `GET /states/{stateAbb}`
 + Header 
 	- Authentication Token
+	
++ Error Message
 
+			{
+				... Error Message
+			}   
 + Response
 
 			{
@@ -36,6 +45,11 @@
 + Header
 	- Authentication Token
 
++ Error Message
+
+			{
+				... Error Message
+			}   
 + Response 
 
 			{
@@ -51,17 +65,31 @@
 ##### `PATCH /states/{stateAbb}`
 + Header
 	- Authentication Token
+	
++ Error Message
 
+			{
+				... Error Message
+			}   
 + Body
 
             {
                 ... Standard State Persistable Object
             }
-            
++ Response
+
+			{
+				HTTP_Status:200
+			}            
             
 ##### Deletes State    
        
 ##### `DELETE /states/{stateAbb}`
++ Error Message
+
+			{
+				... Error Message
+			}   
 + Response
 
 			{

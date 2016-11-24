@@ -18,8 +18,6 @@
             	"templateName":String,
                 "templateBody":longtext,
                 "templateType":Enum,
-				"createdAt":TimeStamp,
-				"updatedAt":datetime,
 				"companyId":int
             }
 ##### Template type Enum

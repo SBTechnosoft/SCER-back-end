@@ -6,7 +6,8 @@
 				},
                 "QuotationLabel": string,
                 "QuotationType": enum,
-                "createdAt" timestamp,
+                "createdAt": timestamp,
+				"updatedAt":datetime
 			}
             
 ##### Standard QuotationNumber Persistable Object
@@ -14,8 +15,7 @@
             	"companyId":int, 
                 "QuotationLabel": string,
                 "QuotationType": enum,
-                "createdAt" timestamp,
-			}
+            }
 
 ##### Quotation Type Enum
 			{

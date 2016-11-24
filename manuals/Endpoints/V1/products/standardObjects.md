@@ -33,10 +33,7 @@
             "companyId": int,
             "branchId" : int,
 			"isDisplay": Enum,
-			"createdAt" timestamp,
-			"updatedAt": datetime,
-			"deletedAt":datetime
-        }
+		}
 		
 ##### Standard Product Transaction Persistable Object
 			{

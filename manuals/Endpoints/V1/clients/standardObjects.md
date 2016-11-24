@@ -32,8 +32,6 @@
 				"address1": string,
 				"address2": string,
 				"isDisplay": Enum,
-				"createdAt": timestamp,
-				"updatedAt": datetime,
 				"cityId":int, 
 				"stateAbb":char
 			}

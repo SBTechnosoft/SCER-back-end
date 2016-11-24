@@ -22,13 +22,16 @@
 				"bankName":string,
 				"checkNumber":string,
 				"remark":string,
-				"createdAt":TimeStamp,
-                "updatedAt":DateTime,
-                "deletedAt":DateTime,
+				"file":
+				{
+					... Standard Document Persistable Object
+				}
             }
 
 ##### Payment Mode Enum
 			{
 				"cashPayment":'cash',
-				"creditPayment":'credit'
+				"creditPayment":'credit',
+				"bankPayment":'bank',
+				"cardPayment":'card'
 			}

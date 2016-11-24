@@ -3,7 +3,7 @@
 ##### `POST /accounting/bill/`
 + Header
 	- Authentication Token
-
+	- 'type':'sales'
 + Body
 
             {
