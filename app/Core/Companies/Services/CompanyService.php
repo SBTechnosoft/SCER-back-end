@@ -52,6 +52,7 @@ class CompanyService extends AbstractService
 		$funcName = array();
 		$companyArray = func_get_arg(0);
 		$documentFlag=0;
+		
 		//check document is available
 		if(is_array($companyArray[count($companyArray)-1][0]))
 		{
@@ -67,7 +68,6 @@ class CompanyService extends AbstractService
 			}
 			$documentFlag=1;
 		}
-		
 		for($data=0;$data<count($companyArray);$data++)
 		{
 			if($documentFlag==1 && $data==(count($companyArray)-1))
@@ -81,10 +81,20 @@ class CompanyService extends AbstractService
 				$keyName[$data] = $companyArray[$data][0]->getkey();
 			}
 		}
-		//data pass to the model object for insert
-		$companyModel = new CompanyModel();
-		$status = $companyModel->insertData($getData,$keyName,$document);
-		return $status;
+		if(is_array($document))
+		{
+			//data pass to the model object for insert
+			$companyModel = new CompanyModel();
+			$status = $companyModel->insertAllData($getData,$keyName,$document);
+			return $status;
+		}
+		else
+		{
+			//data pass to the model object for insert
+			$companyModel = new CompanyModel();
+			$status = $companyModel->insertData($getData,$keyName);
+			return $status;
+		}
 	}
 	
 	/**

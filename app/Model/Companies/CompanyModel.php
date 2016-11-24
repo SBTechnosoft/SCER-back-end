@@ -12,10 +12,10 @@ use ERP\Entities\EnumClasses\IsDefaultEnum;
 class CompanyModel extends Model
 {
 	/**
-	 * insert data 
+	 * insert data with document
 	 * returns the status
 	*/
-	public function insertData()
+	public function insertAllData()
 	{
 		$getCompanyData = array();
 		$getCompanyKey = array();
@@ -55,6 +55,48 @@ class CompanyModel extends Model
 		}
 	}
 	
+	/**
+	 * insert only data 
+	 * returns the status
+	*/
+	public function insertAllData()
+	{
+		$getCompanyData = array();
+		$getCompanyKey = array();
+		$getCompanyData = func_get_arg(0);
+		$getCompanyKey = func_get_arg(1);
+		$companyData="";
+		$keyName = "";
+		for($data=0;$data<count($getCompanyData);$data++)
+		{
+			if($data == (count($getCompanyData)-1))
+			{
+				$companyData = $companyData."'".$getCompanyData[$data]."'";
+				$keyName =$keyName.$getCompanyKey[$data];
+			}
+			else
+			{
+				$companyData = $companyData."'".$getCompanyData[$data]."',";
+				$keyName =$keyName.$getCompanyKey[$data].",";
+			}
+		}
+		DB::beginTransaction();
+		$raw = DB::statement("insert into company_mst(".$keyName.") 
+		values(".$companyData.")");
+		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if($raw==1)
+		{
+			return $exceptionArray['200'];
+		}
+		else
+		{
+			return $exceptionArray['500'];
+		}
+	}
 	/**
 	 * update data 
 	 * @param company_id,company-data,key of company-data and document-data

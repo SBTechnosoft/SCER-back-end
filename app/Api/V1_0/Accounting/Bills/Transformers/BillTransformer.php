@@ -4,6 +4,7 @@ namespace ERP\Api\V1_0\Accounting\Bills\Transformers;
 use Illuminate\Http\Request;
 use ERP\Http\Requests;
 use ERP\Core\Accounting\Bills\Entities\PaymentModeEnum;
+use  ERP\Entities\EnumClasses\IsDisplayEnum;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -41,6 +42,21 @@ class BillTransformer
 		$tPaymentMode = trim($billArrayData['paymentMode']);
 		$tCheckNumber = trim($billArrayData['checkNumber']);
 		$tRemark = trim($billArrayData['remark']);
+		$tIsDisplay = trim($billArrayData['isDisplay']);
+		if($tIsDisplay=="")
+		{
+			$isDisplayEnum = new IsDisplayEnum();
+			$isDisplayArray = $isDisplayEnum->enumArrays();
+			$tIsDisplay=$isDisplayArray['display'];
+			
+		}
+		$paymentModeArray = array();
+		$paymentModeEnum = new PaymentModeEnum();
+		$paymentModeArray = $paymentModeEnum->enumArrays();
+		if($tPaymentMode=="")
+		{
+			$tPaymentMode=$paymentModeArray['cashPayment'];
+		}
 		for($trimInventory=0;$trimInventory<count($billArrayData['inventory']);$trimInventory++)
 		{
 			$tInventoryArray[$trimInventory] = array();
@@ -50,9 +66,7 @@ class BillTransformer
 			$tInventoryArray[$trimInventory][3] = trim($billArrayData['inventory'][$trimInventory]['price']);
 			$tInventoryArray[$trimInventory][4] = trim($billArrayData['inventory'][$trimInventory]['qty']);
 		}
-		$paymentModeArray = array();
-		$paymentModeEnum = new PaymentModeEnum();
-		$paymentModeArray = $paymentModeEnum->enumArrays();
+		//check paymentmode enum type
 		foreach ($paymentModeArray as $key => $value)
 		{
 			if(strcmp($value,$tPaymentMode)==0)
@@ -74,6 +88,7 @@ class BillTransformer
 			$data['contact_no'] = $tContactNo;
 			$data['work_no'] = $tWorkNo;
 			$data['email_id'] = $tEmailId;
+			$data['is_display'] = $tIsDisplay;
 			$data['company_name'] = $tCompanyName;
 			$data['client_name'] = $tClientName;
 			$data['invocie_number'] = $tInvoiceNumber;

@@ -15,7 +15,9 @@ use Illuminate\Container\Container;
 use ERP\Api\V1_0\Clients\Controllers\ClientController;
 use ERP\Api\V1_0\Accounting\Ledgers\Controllers\LedgerController;
 use ERP\Api\V1_0\Documents\Controllers\DocumentController;
+use ERP\Core\Accounting\Journals\Entities\AmountTypeEnum;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -44,6 +46,10 @@ class BillProcessor extends BaseProcessor
 		//get exception message
 		$exception = new ExceptionMessage();
 		$msgArray = $exception->messageArrays();
+		
+		//get constant variables array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
 		
 		//trim an input 
 		$billTransformer = new BillTransformer();
@@ -77,6 +83,7 @@ class BillProcessor extends BaseProcessor
 						break;
 					}
 				}
+				
 				if($clientContactFlag==0)
 				{
 					$clientArray = array();
@@ -87,13 +94,12 @@ class BillProcessor extends BaseProcessor
 					$clientArray['emailId']=$tRequest['email_id'];
 					$clientArray['address1']=$tRequest['address1'];
 					$clientArray['address2']=$tRequest['address2'];
-					$clientArray['isDisplay']="yes";
+					$clientArray['isDisplay']=$tRequest['is_display'];
 					$clientArray['stateAbb']=$tRequest['state_abb'];
 					$clientArray['cityId']=$tRequest['city_id'];
-					
 					$clientController = new ClientController(new Container());
-					$method="post";
-					$path="http://www.scerp1.com/clients";
+					$method=$constantArray['postMethod'];
+					$path=$constantArray['clientUrl'];
 					$clientRequest = Request::create($path,$method,$clientArray);
 					$processedData = $clientController->store($clientRequest);
 					$clientId = json_decode($processedData)[0]->client_id;
@@ -106,10 +112,7 @@ class BillProcessor extends BaseProcessor
 			}
 		}
 		$paymentMode = $request->input()['paymentMode'];
-		if($paymentMode=="")
-		{
-			$paymentMode="cash";
-		}
+		
 		//get ledger data for checking client is exist in ledger or not by contact-number
 		$ledgerService = new LedgerService();
 		$ledgerAllData = $ledgerService->getAllLedgerData();
@@ -141,8 +144,8 @@ class BillProcessor extends BaseProcessor
 			$ledgerArray['companyId']=$request->input()['companyId'];
 			$ledgerArray['ledgerGroupId']=9;
 			$ledgerController = new LedgerController(new Container());
-			$method="post";
-			$path="http://www.scerp1.com/accounting/ledgers";
+			$method=$constantArray['postMethod'];
+			$path=$constantArray['ledgerUrl'];
 			$ledgerRequest = Request::create($path,$method,$ledgerArray);
 			$processedData = $ledgerController->store($ledgerRequest);
 			$ledgerId = json_decode($processedData)[0]->ledger_id;
@@ -158,6 +161,9 @@ class BillProcessor extends BaseProcessor
 		$ledgerTaxAcId = "39";
 		$ledgerSaleAcId = "38";
 		
+		$amountTypeEnum = new AmountTypeEnum();
+		$amountTypeArray = $amountTypeEnum->enumArrays();
+		
 		$ledgerAmount = $request->input()['total']-$request->input()['advance'];
 		//make data array for journal entry
 		if($paymentModeFlag==1)
@@ -168,22 +174,22 @@ class BillProcessor extends BaseProcessor
 				{
 					$dataArray[0]=array(
 						"amount"=>$request->input()['advance'],
-						"amountType"=>"debit",
+						"amountType"=>$amountTypeArray['debitType'],
 						"ledgerId"=>$paymentLedgerId,
 					);
 					$dataArray[1]=array(
 						"amount"=>$ledgerAmount,
-						"amountType"=>"debit",
+						"amountType"=>$amountTypeArray['debitType'],
 						"ledgerId"=>$ledgerId,
 					);
 					$dataArray[2]=array(
 						"amount"=>$request->input()['tax'],
-						"amountType"=>"debit",
+						"amountType"=>$amountTypeArray['debitType'],
 						"ledgerId"=>$ledgerTaxAcId,
 					);
 					$dataArray[3]=array(
 						"amount"=>$request->input()['grandTotal'],
-						"amountType"=>"credit",
+						"amountType"=>$amountTypeArray['creditType'],
 						"ledgerId"=>$ledgerSaleAcId,
 					);
 				}
@@ -191,17 +197,17 @@ class BillProcessor extends BaseProcessor
 				{
 					$dataArray[0]=array(
 						"amount"=>$request->input()['total'],
-						"amountType"=>"debit",
+						"amountType"=>$amountTypeArray['debitType'],
 						"ledgerId"=>$paymentLedgerId,
 					);
 					$dataArray[1]=array(
 						"amount"=>$request->input()['tax'],
-						"amountType"=>"debit",
+						"amountType"=>$amountTypeArray['debitType'],
 						"ledgerId"=>$ledgerTaxAcId,
 					);
 					$dataArray[2]=array(
 						"amount"=>$request->input()['grandTotal'],
-						"amountType"=>"credit",
+						"amountType"=>$amountTypeArray['creditType'],
 						"ledgerId"=>$ledgerSaleAcId,
 					);
 				}
@@ -212,17 +218,17 @@ class BillProcessor extends BaseProcessor
 				{
 					$dataArray[0]=array(
 						"amount"=>$request->input()['advance'],
-						"amountType"=>"debit",
+						"amountType"=>$amountTypeArray['debitType'],
 						"ledgerId"=>$paymentLedgerId,
 					);
 					$dataArray[1]=array(
 						"amount"=>$ledgerAmount,
-						"amountType"=>"debit",
+						"amountType"=>$amountTypeArray['debitType'],
 						"ledgerId"=>$ledgerId,
 					);
 					$dataArray[2]=array(
 						"amount"=>$request->input()['grandTotal'],
-						"amountType"=>"credit",
+						"amountType"=>$amountTypeArray['creditType'],
 						"ledgerId"=>$ledgerSaleAcId,
 					);
 				}
@@ -230,12 +236,12 @@ class BillProcessor extends BaseProcessor
 				{
 					$dataArray[0]=array(
 						"amount"=>$request->input()['total'],
-						"amountType"=>"debit",
+						"amountType"=>$amountTypeArray['debitType'],
 						"ledgerId"=>$paymentLedgerId,
 					);
 					$dataArray[1]=array(
 						"amount"=>$request->input()['grandTotal'],
-						"amountType"=>"credit",
+						"amountType"=>$amountTypeArray['creditType'],
 						"ledgerId"=>$ledgerSaleAcId,
 					);
 				}
@@ -257,27 +263,20 @@ class BillProcessor extends BaseProcessor
 		);
 		$journalArray[0]['data']=$dataArray;
 		$journalArray[0]['inventory']=$request->input()['inventory'];
-		$method="post";
-		$path="http://www.scerp1.com/accounting/journals";
+		$method=$constantArray['postMethod'];
+		$path=$constantArray['journalUrl'];
 		$journalRequest = Request::create($path,$method,$journalArray);
-		$journalRequest->headers->set('type','sales');
+		$journalRequest->headers->set('type',$request->header()['type'][0]);
 		
 		$processedData = $journalController->store($journalRequest);
 		
 		// print_r($processedData); //simple error msg
 		if(strcmp($processedData,$msgArray['200'])==0)
 		{
-			$billProductArray = array();
-			$billProductArray=array(
-				'transactionDate'=> $request->input()['entryDate'],
-				'billNumber'=> $request->input()['billNumber'],
-				'invoiceNumber'=>$request->input()['invoiceNumber'],
-				'inventory' => array(
-				),
-				'transactionType'=>'inward',
-				'companyId' => $request->input()['companyId']
-			);
-			$billProductArray['inventory']=$request->input()['inventory'];
+			if(strcmp($request->header()['type'][0],"sales")==0)
+			{
+				$inwardTrnType = $constantArray['journalOutward'];
+			}
 			$productId = array();
 			$discount = array();
 			$discountType = array();
@@ -303,7 +302,7 @@ class BillProcessor extends BaseProcessor
 			billNumber:".$request->input()['billNumber'].",
 			invoiceNumber:".$request->input()['invoiceNumber'].",
 			inventory:[".$array."],
-			transactionType:inward,
+			transactionType:".$inwardTrnType.",
 			companyId:".$request->input()['companyId']."}]";
 			
 			$constantClass = new ConstantClass();
