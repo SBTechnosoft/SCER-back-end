@@ -153,4 +153,32 @@ class TemplateModel extends Model
 			return $enocodedData;
 		}
 	}
+	
+	/**
+	 * get data as per given Company Id
+	 * @param $companyId
+	 * returns the status
+	*/
+	public function getAllTemplateData($companyId,$templateType)
+	{		
+		DB::beginTransaction();
+		$raw = DB::select("select 
+		template_id,
+		template_body
+		from template_mst where template_type ='".$templateType."' and company_id='".$companyId."' and deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		if(count($raw)==0)
+		{
+			return $fileSizeArray['404'];
+		}
+		else
+		{
+			$enocodedData = json_encode($raw,true); 	
+			return $enocodedData;
+		}
+	}
 }

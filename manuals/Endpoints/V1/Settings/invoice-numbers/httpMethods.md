@@ -88,3 +88,25 @@
             }
             
 **NOTES:** list the latest invoice numbers for particular company id
+
+##### Updates invoice-number    
+       
+##### `PATCH /settings/invoice-numbers/{invoiceId}`
++ Header
+	- Authentication Token
+
++ Body
+
+            {
+                ... Standard Template Persistable Object
+            }       
++ Error Message
+
+			{
+				... Error Message
+			}             
++ Response
+
+            {
+               ... HTTP_Status:200
+            }

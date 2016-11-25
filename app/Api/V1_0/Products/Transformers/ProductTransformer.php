@@ -90,13 +90,13 @@ class ProductTransformer
 		$discountTypeFlag=0;
 		$requestArray = array();
 		$exceptionArray = array();
-		$numberOfArray = count($request->input()[0]['inventory']);
+		$numberOfArray = count($request->input()['inventory']);
 		
 		//data get from body and trim an input
-		$companyId = trim($request->input()[0]['companyId']); 
-		$transactionDate = trim($request->input()[0]['transactionDate']); 
-		$invoiceNumber = trim($request->input()[0]['invoiceNumber']); 
-		$billNumber = trim($request->input()[0]['billNumber']); 
+		$companyId = trim($request->input()['companyId']); 
+		$transactionDate = trim($request->input()['transactionDate']); 
+		$invoiceNumber = trim($request->input()['invoiceNumber']); 
+		$billNumber = trim($request->input()['billNumber']); 
 		
 		
 		//transaction date conversion
@@ -113,11 +113,11 @@ class ProductTransformer
 		for($arrayData=0;$arrayData<$numberOfArray;$arrayData++)
 		{
 			$tempArray[$arrayData] = array();
-			$tempArray[$arrayData][0] = trim($request->input()[0]['inventory'][$arrayData]['productId']);
-			$tempArray[$arrayData][1] = trim($request->input()[0]['inventory'][$arrayData]['discount']);
-			$tempArray[$arrayData][2] = trim($request->input()[0]['inventory'][$arrayData]['discountType']);
-			$tempArray[$arrayData][3] = trim($request->input()[0]['inventory'][$arrayData]['price']);
-			$tempArray[$arrayData][4] = trim($request->input()[0]['inventory'][$arrayData]['qty']);
+			$tempArray[$arrayData][0] = trim($request->input()['inventory'][$arrayData]['productId']);
+			$tempArray[$arrayData][1] = trim($request->input()['inventory'][$arrayData]['discount']);
+			$tempArray[$arrayData][2] = trim($request->input()['inventory'][$arrayData]['discountType']);
+			$tempArray[$arrayData][3] = trim($request->input()['inventory'][$arrayData]['price']);
+			$tempArray[$arrayData][4] = trim($request->input()['inventory'][$arrayData]['qty']);
 			
 			foreach ($enumDiscountTypeArray as $key => $value)
 			{

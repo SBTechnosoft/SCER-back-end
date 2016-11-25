@@ -10,7 +10,8 @@ use ERP\Api\V1_0\Accounting\Bills\Processors\BillProcessor;
 use ERP\Core\Accounting\Bills\Persistables\BillPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Exceptions\ExceptionMessage;
-// use ERP\Model\Accounting\Bills\BillModel;
+use ERP\Core\Settings\Templates\Services\TemplateService;
+use ERP\Core\Accounting\Bills\Entities\BillMpdf;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -47,7 +48,6 @@ class BillController extends BaseController implements ContainerInterface
     public function store(Request $request)
     {
 		$this->request = $request;
-		
 		// check the requested Http method
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
 		// insert
@@ -61,7 +61,29 @@ class BillController extends BaseController implements ContainerInterface
 			{
 				$billService= new BillService();
 				$status = $billService->insert($billPersistable);
-				return $status;
+				if(strcmp($status,$msgArray['500'])==0)
+				{
+					return $status;
+				}
+				else
+				{
+					$templateType="general";
+					$templateService = new TemplateService();
+					$templateData = $templateService->getSpecificData($request->input()['companyId'],$templateType);
+					
+					//get exception message
+					$exception = new ExceptionMessage();
+					$msgArray = $exception->messageArrays();
+					if(strcmp($templateData,$msgArray['404'])==0)
+					{
+						return $templateData;
+					}
+					else
+					{
+						$billMpdf = new BillMpdf();
+						$billPdf = $billMpdf->mpdfGenerate(json_decode($templateData),$status);
+					}
+				}
 			}
 			else
 			{

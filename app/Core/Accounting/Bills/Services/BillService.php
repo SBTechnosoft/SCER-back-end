@@ -7,7 +7,7 @@ use ERP\Model\Accounting\Bills\BillModel;
 use ERP\Core\Shared\Options\UpdateOptions;
 // use ERP\Core\Support\Service\AbstractService;
 use ERP\Core\User\Entities\User;
-// use ERP\Core\Accounting\Bills\Entities\EncodeData;
+use ERP\Core\Accounting\Bills\Entities\EncodeData;
 // use ERP\Core\Accounting\Bills\Entities\EncodeAllData;
 use ERP\Exceptions\ExceptionMessage;
 /**
@@ -100,7 +100,20 @@ class BillService
 			//data pass to the model object for insert
 			$billModel = new BillModel();
 			$status = $billModel->insertAllData($productArray,$paymentMode,$invoiceNumber,$bankName,$checkNumber,$total,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$documentArray);
-			return $status;
+			
+			//get exception message
+			$exception = new ExceptionMessage();
+			$fileSizeArray = $exception->messageArrays();
+			if(strcmp($status,$fileSizeArray['500'])==0)
+			{
+				return $status;
+			}
+			else
+			{
+				$encoded = new EncodeData();
+				$encodeData = $encoded->getEncodedData($status);
+				return $encodeData;
+			}
 		}
 	}
 }

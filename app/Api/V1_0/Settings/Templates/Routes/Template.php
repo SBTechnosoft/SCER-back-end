@@ -20,6 +20,7 @@ class Template implements RouteRegistrarInterface
 		Route::group(['as' => 'get'], function ()
 		{
 			Route::get('Settings/Templates/Template/{templateId?}', 'Settings\Templates\Controllers\TemplateController@getData');
+			Route::get('Settings/Templates/Template/{companyId?}', 'Settings\Templates\Controllers\TemplateController@getTemplateData');
 		});
 		
 		// insert data post request

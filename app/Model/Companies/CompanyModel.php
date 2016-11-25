@@ -42,7 +42,7 @@ class CompanyModel extends Model
 		values(".$companyData.",'".$getDocumentData[0][0]."','".$getDocumentData[0][1]."','".$getDocumentData[0][2]."')");
 		DB::commit();
 		
-		//get exception message
+		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
@@ -59,7 +59,7 @@ class CompanyModel extends Model
 	 * insert only data 
 	 * returns the status
 	*/
-	public function insertAllData()
+	public function insertData()
 	{
 		$getCompanyData = array();
 		$getCompanyKey = array();
@@ -85,7 +85,7 @@ class CompanyModel extends Model
 		values(".$companyData.")");
 		DB::commit();
 		
-		//get exception message
+		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
@@ -107,11 +107,11 @@ class CompanyModel extends Model
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
 		
-		//get exception message
+		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
-		//only one company is checked by default
+		// only one company is checked by default
 		$enumIsDefArray = array();
 		$isDefEnum = new IsDefaultEnum();
 		$enumIsDefArray = $isDefEnum->enumArrays();
@@ -159,11 +159,11 @@ class CompanyModel extends Model
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
 		
-		//get exception message
+		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
-		//only one company is checked by default
+		// only one company is checked by default
 		$enumIsDefArray = array();
 		$isDefEnum = new IsDefaultEnum();
 		$enumIsDefArray = $isDefEnum->enumArrays();
@@ -211,7 +211,7 @@ class CompanyModel extends Model
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
 		
-		//get exception message
+		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		$raw  = DB::statement("update company_mst 
@@ -282,7 +282,7 @@ class CompanyModel extends Model
 	 * returns the status
 	*/
 	public function getData($companyId)
-	{		
+	{	
 		DB::beginTransaction();
 		$raw = DB::select("select 
 		company_id,
@@ -309,7 +309,7 @@ class CompanyModel extends Model
 		deleted_at,
 		state_abb,
 		city_id 
-		from company_mst where company_id = ".$companyId." and deleted_at='0000-00-00 00:00:00'");
+		from company_mst where company_id = '".$companyId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message

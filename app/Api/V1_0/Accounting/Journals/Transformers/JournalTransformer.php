@@ -23,12 +23,12 @@ class JournalTransformer extends LedgerModel
 		$debitAmountArray = 0;
 		$requestArray = array();
 		$exceptionArray = array();
-		$numberOfArray = count($request->input()[0]['data']);
+		$numberOfArray = count($request->input()['data']);
 		
 		//data get from body and trim an input
-		$jfId = trim($request->input()[0]['jfId']); 
-		$entryDate = trim($request->input()[0]['entryDate']); 
-		$companyId = trim($request->input()[0]['companyId']); 
+		$jfId = trim($request->input()['jfId']); 
+		$entryDate = trim($request->input()['entryDate']); 
+		$companyId = trim($request->input()['companyId']); 
 		
 		//entry date conversion
 		$transformEntryDate = Carbon\Carbon::createFromFormat('d-m-Y', $entryDate)->format('Y-m-d');
@@ -39,9 +39,9 @@ class JournalTransformer extends LedgerModel
 		for($arrayData=0;$arrayData<$numberOfArray;$arrayData++)
 		{
 			$tempArray[$arrayData] = array();
-			$tempArray[$arrayData][0] = trim($request->input()[0]['data'][$arrayData]['amount']);
-			$tempArray[$arrayData][1] = trim($request->input()[0]['data'][$arrayData]['amountType']);
-			$tempArray[$arrayData][2] = trim($request->input()[0]['data'][$arrayData]['ledgerId']);
+			$tempArray[$arrayData][0] = trim($request->input()['data'][$arrayData]['amount']);
+			$tempArray[$arrayData][1] = trim($request->input()['data'][$arrayData]['amountType']);
+			$tempArray[$arrayData][2] = trim($request->input()['data'][$arrayData]['ledgerId']);
 			
 			//check enum type[amount-type]
 			$enumAmountTypeArray = array();

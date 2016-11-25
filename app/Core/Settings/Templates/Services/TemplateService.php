@@ -116,10 +116,10 @@ class TemplateService extends AbstractService
      * get all the data as per given id and call the model for database selection opertation
      * @return status
      */
-	public function getAllData($companyId)
+	public function getSpecificData($companyId,$templateType)
 	{
-		$branchModel = new BranchModel();
-		$status = $branchModel->getAllBranchData($companyId);
+		$templateModel = new TemplateModel();
+		$status = $templateModel->getAllTemplateData($companyId,$templateType);
 		
 		//get exception message
 		$exception = new ExceptionMessage();
@@ -130,9 +130,7 @@ class TemplateService extends AbstractService
 		}
 		else
 		{
-			$encoded = new EncodeAllData();
-			$encodeAllData = $encoded->getEncodedAllData($status);
-			return $encodeAllData;
+			return $status;
 		}
 	}
     /**

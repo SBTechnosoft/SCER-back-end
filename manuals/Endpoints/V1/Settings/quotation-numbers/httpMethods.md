@@ -92,3 +92,25 @@
             }
             
 **NOTES:** list the latest Quotation Numbers for particular company id
+
+##### Updates invoice-number    
+       
+##### `PATCH /settings/quotation-numbers/{quotationId}`
++ Header
+	- Authentication Token
+
++ Body
+
+            {
+                ... Standard QuotationNumber Persistable Object
+            }       
++ Error Message
+
+			{
+				... Error Message
+			}             
++ Response
+
+            {
+               ... HTTP_Status:200
+            }

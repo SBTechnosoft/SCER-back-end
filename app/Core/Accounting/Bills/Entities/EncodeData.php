@@ -1,102 +1,91 @@
 <?php
-namespace ERP\Core\Accounting\Ledgers\Entities;
+namespace ERP\Core\Accounting\Bills\Entities;
 
-use ERP\Core\Accounting\Ledgers\Entities\Ledger;
-use ERP\Core\States\Services\StateService;
-use ERP\Core\Entities\LedgerGroupDetail;
-use ERP\Core\Entities\CityDetail;
+use ERP\Core\Accounting\Bills\Entities\Bill;
+use ERP\Core\Clients\Services\ClientService;
 use ERP\Core\Entities\CompanyDetail;
 use Carbon;
 /**
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class EncodeData extends StateService 
+class EncodeData extends ClientService 
 {
 	public function getEncodedData($status)
 	{
 		$decodedJson = json_decode($status,true);
 		$createdAt = $decodedJson[0]['created_at'];
 		$updatedAt= $decodedJson[0]['updated_at'];
-		$ledgerId= $decodedJson[0]['ledger_id'];
-		$ledgerName= $decodedJson[0]['ledger_name'];
-		$alias= $decodedJson[0]['alias'];
-		$inventoryAffected= $decodedJson[0]['inventory_affected'];
-		$address1= $decodedJson[0]['address1'];
-		$address2= $decodedJson[0]['address2'];
-		$contactNo= $decodedJson[0]['contact_no'];
-		$emailId= $decodedJson[0]['email_id'];
-		$panNo = $decodedJson[0]['pan'];
-		$tinNo = $decodedJson[0]['tin'];
-		$gstNo= $decodedJson[0]['gst'];
-		$stateAbb= $decodedJson[0]['state_abb'];
-		$cityId= $decodedJson[0]['city_id'];
-		$ledgerGrpId= $decodedJson[0]['ledger_group_id'];
+		$saleId= $decodedJson[0]['sale_id'];
+		$productArray= $decodedJson[0]['product_array'];
+		$paymentMode= $decodedJson[0]['payment_mode'];
+		$bankName= $decodedJson[0]['bank_name'];
+		$invoiceNumber= $decodedJson[0]['invoice_number'];
+		$checkNumber= $decodedJson[0]['check_number'];
+		$total= $decodedJson[0]['total'];
+		$tax= $decodedJson[0]['tax'];
+		$grandTotal= $decodedJson[0]['grand_total'];
+		$advance = $decodedJson[0]['advance'];
+		$balance = $decodedJson[0]['balance'];
+		$remark= $decodedJson[0]['remark'];
+		$entryDate= $decodedJson[0]['entry_date'];
+		$clientId= $decodedJson[0]['client_id'];
 		$companyId= $decodedJson[0]['company_id'];
 		
-		//get the state details from database
+		//get the client details from database
 		$encodeStateDataClass = new EncodeData();
-		$stateStatus = $encodeStateDataClass->getStateData($stateAbb);
-		$stateDecodedJson = json_decode($stateStatus,true);
-		
-		//get the city details from database
-		$cityDetail = new CityDetail();
-		$getCityDetail = $cityDetail->getCityDetail($cityId);
-		
-		//get the ledger-group details from database
-		$ledgerGrpDetail = new LedgerGroupDetail();
-		$getLedgerGrpDetail = $ledgerGrpDetail->getLedgerGrpDetails($ledgerGrpId);
+		$clientStatus = $encodeStateDataClass->getClientData($clientId);
+		$clientDecodedJson = json_decode($clientStatus,true);
 		
 		//get the company details from database
 		$companyDetail = new CompanyDetail();
 		$companyDetails = $companyDetail->getCompanyDetails($companyId);
 		
 		//date format conversion
-		$ledger = new Ledger();
+		$bill = new Bill();
 		$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt)->format('d-m-Y');
-		$ledger->setCreated_at($convertedCreatedDate);
-		$getCreatedDate = $ledger->getCreated_at();
+		$bill->setCreated_at($convertedCreatedDate);
+		$getCreatedDate = $bill->getCreated_at();
 		$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
-		$ledger->setUpdated_at($convertedUpdatedDate);
-		$getUpdatedDate = $ledger->getUpdated_at();
+		$bill->setUpdated_at($convertedUpdatedDate);
+		$getUpdatedDate = $bill->getUpdated_at();
+		$convertedEntryDate = Carbon\Carbon::createFromFormat('Y-m-d', $entryDate)->format('d-m-Y');
+		$bill->setEntryDate($convertedEntryDate);
+		$getEntryDate = $bill->getEntryDate();
 		
 		//set all data into json array
 		$data = array();
-		$data['ledgerId'] = $ledgerId;
-		$data['ledgerName'] = $ledgerName;
-		$data['alias'] = $alias;
-		$data['inventoryAffected'] = $inventoryAffected;
-		$data['address1'] = $address1;
-		$data['address2'] = $address2;
-		$data['contactNo'] = $contactNo;
-		$data['emailId'] = $emailId;
-		$data['pan'] = $panNo;
-		$data['tin'] = $tinNo;
-		$data['gstNo'] = $gstNo;
+		$data['saleId'] = $saleId;
+		$data['productArray'] = $productArray;
+		$data['paymentMode'] = $paymentMode;
+		$data['bankName'] = $bankName;
+		$data['invoiceNumber'] = $invoiceNumber;
+		$data['checkNumber'] = $checkNumber;
+		$data['total'] = $total;
+		$data['tax'] = $tax;
+		$data['grandTotal'] = $grandTotal;
+		$data['advance'] = $advance;
+		$data['balance'] = $balance;
 		$data['createdAt'] = $getCreatedDate;
+		$data['remark'] = $remark;
+		$data['entryDate'] = $getEntryDate;
+		$data['clientId'] = $clientId;
+		$data['companyId'] = $companyId;
 		$data['updatedAt'] = $getUpdatedDate;	
-		$data['ledgerGroup']= array(
-			'ledgerGroupId' => $ledgerGrpId,	
-			'ledgerGroupName' => $getLedgerGrpDetail['ledgerGroupName'],
-			'alias' => $getLedgerGrpDetail['alias'],
-			'underWhat' => $getLedgerGrpDetail['underWhat'],
-			'natureOfGroup' => $getLedgerGrpDetail['natureOfGroup'],
-			'affectedGroupProfit' => $getLedgerGrpDetail['affectedGroupProfit']
-		);
-		$data['state'] = array(
-			'stateAbb' => $stateAbb,
-			'stateName' => $stateDecodedJson['stateName'],
-			'isDisplay' => $stateDecodedJson['isDisplay'],	
-			'createdAt' => $stateDecodedJson['createdAt'],	
-			'updatedAt' => $stateDecodedJson['updatedAt']	
-		);
-		$data['city'] = array(
-			'cityId' => $cityId,
-			'cityName' => $getCityDetail['cityName'],	
-			'isDisplay'=> $getCityDetail['isDisplay'],	
-			'createdAt' => $getCityDetail['createdAt'],	
-			'updatedAt' => $getCityDetail['updatedAt'],	
-			'stateAbb'=> $getCityDetail['state']['stateAbb']
+		$data['client']= array(
+			'clientId' => $clientDecodedJson['clientId'],	
+			'clientName' => $clientDecodedJson['clientName'],	
+			'companyName' => $clientDecodedJson['companyName'],	
+			'contactNo' => $clientDecodedJson['contactNo'],	
+			'workNo' => $clientDecodedJson['workNo'],	
+			'emailId' => $clientDecodedJson['emailId'],	
+			'address1' => $clientDecodedJson['address1'],	
+			'address1' => $clientDecodedJson['address2'],	
+			'isDisplay' => $clientDecodedJson['isDisplay'],	
+			'createdAt' => $clientDecodedJson['createdAt'],	
+			'updatedAt' => $clientDecodedJson['updatedAt'],	
+			'stateAbb' => $clientDecodedJson['state']['stateAbb'],	
+			'cityId' => $clientDecodedJson['city']['cityId']
 		);
 		$data['company']= array(
 			'companyId' => $companyId,

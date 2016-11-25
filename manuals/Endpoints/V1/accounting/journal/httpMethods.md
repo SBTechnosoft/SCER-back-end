@@ -28,7 +28,7 @@
                 ... HTTP_Status:200
             }
 
-##### `POST /accounting/journals/`
+##### `GET /accounting/journals/`
 + Header
 	- Authentication Token
 	- "fromDate"

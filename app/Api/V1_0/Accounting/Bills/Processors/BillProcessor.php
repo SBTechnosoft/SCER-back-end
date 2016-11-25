@@ -112,11 +112,11 @@ class BillProcessor extends BaseProcessor
 			}
 		}
 		$paymentMode = $request->input()['paymentMode'];
-		
 		//get ledger data for checking client is exist in ledger or not by contact-number
 		$ledgerService = new LedgerService();
 		$ledgerAllData = $ledgerService->getAllLedgerData();
 		$encodedLedgerData = json_decode($ledgerAllData);
+		
 		//check contact-number of client with ledger contacts
 		for($contactData=0;$contactData<count($encodedLedgerData);$contactData++)
 		{
@@ -249,7 +249,7 @@ class BillProcessor extends BaseProcessor
 		}
 		//make data array for journal sale entry
 		$journalArray = array();
-		$journalArray[0]= array(
+		$journalArray= array(
 			'jfId' => $jfId,
 			'data' => array(
 			),
@@ -261,8 +261,8 @@ class BillProcessor extends BaseProcessor
 			'billNumber'=> $request->input()['billNumber'],
 			'invoiceNumber'=>$request->input()['invoiceNumber']
 		);
-		$journalArray[0]['data']=$dataArray;
-		$journalArray[0]['inventory']=$request->input()['inventory'];
+		$journalArray['data']=$dataArray;
+		$journalArray['inventory']=$request->input()['inventory'];
 		$method=$constantArray['postMethod'];
 		$path=$constantArray['journalUrl'];
 		$journalRequest = Request::create($path,$method,$journalArray);
@@ -277,33 +277,12 @@ class BillProcessor extends BaseProcessor
 			{
 				$inwardTrnType = $constantArray['journalOutward'];
 			}
-			$productId = array();
-			$discount = array();
-			$discountType = array();
-			$price = array();
-			$qty = array();
-			$inventoryCount = count($request->input()['inventory']);
-			$array="";
-			for($data=0;$data<$inventoryCount;$data++)
-			{
-				$productId[$data] = $request->input()['inventory'][$data]['productId'];
-				$discount[$data] = $request->input()['inventory'][$data]['discount'];
-				$discountType[$data] = $request->input()['inventory'][$data]['discountType'];
-				$price[$data] = $request->input()['inventory'][$data]['price'];
-				$qty[$data] = $request->input()['inventory'][$data]['qty'];
-				
-				$array =$array."{productId:".$productId[$data].$discount[$data].",
-				discount:".$discount[$data].",
-				discountType:".$discountType[$data].",
-				price:".$price[$data].",
-				qty:".$qty[$data]."}";
-			}
-			$productArray = "[{transactionDate:".$request->input()['entryDate'].",
-			billNumber:".$request->input()['billNumber'].",
-			invoiceNumber:".$request->input()['invoiceNumber'].",
-			inventory:[".$array."],
-			transactionType:".$inwardTrnType.",
-			companyId:".$request->input()['companyId']."}]";
+			$productArray = array();
+			$productArray['billNumber']=$request->input()['billNumber'];
+			$productArray['invoiceNumber']=$request->input()['invoiceNumber'];
+			$productArray['transactionType']=$inwardTrnType;
+			$productArray['companyId']=$request->input()['companyId'];
+			$productArray['inventory'] = $request->input()['inventory'];
 			
 			$constantClass = new ConstantClass();
 			$constantArray = $constantClass->constantVariable();
@@ -322,7 +301,7 @@ class BillProcessor extends BaseProcessor
 				}
 			}
 			$billPersistable = new BillPersistable();
-			$billPersistable->setProductArray($productArray);
+			$billPersistable->setProductArray(json_encode($productArray));
 			$billPersistable->setPaymentMode($request->input()['paymentMode']);
 			$billPersistable->setBankName($request->input()['bankName']);
 			$billPersistable->setInvoiceNumber($request->input()['invoiceNumber']);

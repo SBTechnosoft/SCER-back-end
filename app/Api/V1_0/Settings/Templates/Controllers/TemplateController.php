@@ -94,6 +94,17 @@ class TemplateController extends BaseController implements ContainerInterface
     }
 	
 	/**
+     * get the specified resource.
+     * @param  int  $companyId
+     */
+    public function getTemplateData($companyId)
+    {
+		$templateService= new TemplateService();
+		$status = $templateService->getSpecificData($companyId);
+		return $status;
+	}
+	
+	/**
      * Update the specified resource in storage.
      * @param  Request object[Request $request]
      * @param  branch_id

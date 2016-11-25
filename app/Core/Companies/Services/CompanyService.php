@@ -130,7 +130,6 @@ class CompanyService extends AbstractService
 	{
 		$companyModel = new CompanyModel();
 		$status = $companyModel->getData($companyId);
-		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$fileSizeArray = $exception->messageArrays();

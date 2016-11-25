@@ -20,7 +20,6 @@ class EncodeAllData extends StateService
 		$encodeAllData =  array();
 		$decodedJson = json_decode($status,true);
 		$ledger = new Ledger();
-		
 		for($decodedData=0;$decodedData<count($decodedJson);$decodedData++)
 		{
 			$createdAt[$decodedData] = $decodedJson[$decodedData]['created_at'];
@@ -66,7 +65,6 @@ class EncodeAllData extends StateService
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
 			$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
-		
 		}
 		$ledger->setCreated_at($convertedCreatedDate);
 		$getCreatedDate = $ledger->getCreated_at();

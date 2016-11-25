@@ -57,6 +57,22 @@
 
 **NOTES:** List all the templates 
 
+##### `GET /settings/templates/{companyId}`
++ Header 
+	- Authentication Token
+	
++ Error Message
+
+			{
+				... Error Message
+			} 
++ Response
+
+			{
+				... Standard Template Object
+			}
+
+**NOTES:** List all the templates as per given company-id
 
 ##### Updates Template    
        

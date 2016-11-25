@@ -15,6 +15,7 @@ use ERP\Api\V1_0\Products\Processors\ProductProcessor;
 use ERP\Core\Products\Services\ProductService;
 use ERP\Core\Products\Persistables\ProductPersistable;
 use ERP\Model\Accounting\Journals\JournalModel;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -54,6 +55,8 @@ class JournalController extends BaseController implements ContainerInterface
 		$this->request = $request;
 		// check the requested Http method
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
 		// insert
 		if($requestMethod == 'POST')
 		{
@@ -64,13 +67,13 @@ class JournalController extends BaseController implements ContainerInterface
 			{
 				$journalService= new JournalService();
 				$status = $journalService->insert($journalPersistable);
-				if(count($request->input()[0])>4)
+				if(count($request->input())>4)
 				{
 					$productService= new ProductService();	
 					$productPersistable = new ProductPersistable();
 					if(strcmp($request->header()['type'][0],"sales")==0)
 					{
-						$outward = "Outward";
+						$outward = $constantArray['journalOutward'];
 						$productProcessor = new ProductProcessor();
 						$productPersistable = $productProcessor->createPersistableInOutWard($this->request,$outward);
 						if(is_array($productPersistable))
@@ -83,9 +86,9 @@ class JournalController extends BaseController implements ContainerInterface
 							return $productPersistable;
 						}
 					}
-					else if(strcmp($request->header()['type'][0],"purchase")==0)
+					else if(strcmp($request->header()['type'],"purchase")==0)
 					{
-						$inward = "Inward";
+						$inward = $constantArray['journalInward'];
 						$productProcessor = new ProductProcessor();
 						$productPersistable = $productProcessor->createPersistableInOutWard($this->request,$inward);
 						if(is_array($productPersistable))
