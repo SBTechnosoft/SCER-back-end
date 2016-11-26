@@ -9,6 +9,8 @@ use ERP\Api\V1_0\Support\BaseController;
 use ERP\Api\V1_0\Settings\QuotationNumbers\Processors\QuotationProcessor;
 use ERP\Core\Settings\QuotationNumbers\Persistables\QuotationPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
+use ERP\Model\Settings\QuotationNumbers\QuotationModel;
+use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -50,10 +52,10 @@ class QuotationController extends BaseController implements ContainerInterface
 		// insert
 		if($requestMethod == 'POST')
 		{
-			$Processor = new QuotationProcessor();
+			$processor = new QuotationProcessor();
 			$quotationPersistable = new QuotationPersistable();		
 			$quotationService= new QuotationService();			
-			$quotationPersistable = $Processor->createPersistable($this->request);
+			$quotationPersistable = $processor->createPersistable($this->request);
 			if($quotationPersistable[0][0]=='[')
 			{
 				return $quotationPersistable;
@@ -61,6 +63,45 @@ class QuotationController extends BaseController implements ContainerInterface
 			else if(is_array($quotationPersistable))
 			{
 				$status = $quotationService->insert($quotationPersistable);
+				return $status;
+			}
+			else
+			{
+				return $quotationPersistable;
+			}
+		}
+	}
+	
+	/**
+     * Update the specified resource in storage.
+     * @param  Request object[Request $request]
+     * @param  ledger_id
+     */
+	public function update(Request $request,$quotationId)
+    {    
+		$this->request = $request;
+		$processor = new QuotationProcessor();
+		$quotationPersistable = new QuotationPersistable();		
+		$quotationService= new QuotationService();		
+		$quotationModel = new QuotationModel();
+		$result = $quotationModel->getData($quotationId);
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+	
+		if(strcmp($result,$exceptionArray['404'])==0)
+		{
+			return $result;
+		}
+		else
+		{
+			$quotationPersistable = $processor->createPersistableChange($this->request,$quotationId);
+			
+			//here two array and string is return at a time
+			if(is_array($quotationPersistable))
+			{
+				$status = $quotationService->update($quotationPersistable);
 				return $status;
 			}
 			else

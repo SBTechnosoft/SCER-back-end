@@ -248,23 +248,23 @@ include ('connection.php');
 				// formdata.append('companyId',$scope.formAdata.company_id);
 				
 				//invoice
-				$scope.formAdata.invoice_label = " abcd ";
-				$scope.formAdata.invoice_type = ' prefix ';
-				$scope.formAdata.start_at=' 12 ';
-				$scope.formAdata.end_at=' 17 ';
-				$scope.formAdata.company_id='14 ';
+				// $scope.formAdata.invoice_label = " abcd ";
+				// $scope.formAdata.invoice_type = ' prefix ';
+				// $scope.formAdata.start_at=' 12 ';
+				// $scope.formAdata.end_at=' 17 ';
+				// $scope.formAdata.company_id='14 ';
 				
-				formdata.append('invoiceLabel',$scope.formAdata.invoice_label);
-				formdata.append('invoiceType',$scope.formAdata.invoice_type);
-				formdata.append('startAt',$scope.formAdata.start_at);
-				formdata.append('endAt',$scope.formAdata.end_at);
-				formdata.append('companyId',$scope.formAdata.company_id);
+				// formdata.append('invoiceLabel',$scope.formAdata.invoice_label);
+				// formdata.append('invoiceType',$scope.formAdata.invoice_type);
+				// formdata.append('startAt',$scope.formAdata.start_at);
+				// formdata.append('endAt',$scope.formAdata.end_at);
+				// formdata.append('companyId',$scope.formAdata.company_id);
 				
 				//quotation
 				// $scope.formAdata.quotation_label = " abcd ";
 				// $scope.formAdata.quotation_type = ' prefix ';
-				// $scope.formAdata.start_at=' 1 ';
-				// $scope.formAdata.end_at=' 10 ';
+				// $scope.formAdata.start_at=' 10 ';
+				// $scope.formAdata.end_at=' 12 ';
 				// $scope.formAdata.company_id='14 ';
 				
 				// formdata.append('quotationLabel',$scope.formAdata.quotation_label);
@@ -413,8 +413,8 @@ include ('connection.php');
 				// var id = 42;
 				// var templateId=1;
 				// var bankId=2;
-				var invoiceId=7;
-				// var quotationId=1;
+				// var invoiceId=7;
+				var quotationId=3;
 				// var ledgerGrpId=1;
 				// var ledgerId=34;
 				
@@ -440,11 +440,12 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/accounting/ledger-groups";
 				// SELECT max(invoice_id) invoice_id,invoice_label FROM `invoice_dtl` where company_id=1
 				// var url="http://www.scerp1.com/settings/quotation-numbers/company/"+companyId+"/latest";
+				var url="http://www.scerp1.com/settings/quotation-numbers/"+quotationId;
 				// var url="http://www.scerp1.com/settings/quotation-numbers";
 				// var url="http://www.scerp1.com/settings/quotation-numbers/company/"+companyId;
 				// var url="http://www.scerp1.com/settings/invoice-numbers/company/"+companyId+"/latest";
 				// var url="http://www.scerp1.com/settings/invoice-numbers";
-				var url="http://www.scerp1.com/settings/invoice-numbers/"+invoiceId;
+				// var url="http://www.scerp1.com/settings/invoice-numbers/"+invoiceId;
 				// var url="http://www.scerp1.com/settings/invoice-numbers/company/"+companyId;
 				// var url="http://www.scerp1.com/banks/"+bankId;
 				// var url="http://www.scerp1.com/banks";

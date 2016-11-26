@@ -57,6 +57,38 @@ class QuotationModel extends Model
 	}
 	
 	/**
+	 * update data 
+	 * @param  quotation-data,key of quotation-data,quotation-id
+	 * returns the status
+	*/
+	public function updateData($quotationData,$key,$quotationId)
+	{
+		$mytime = Carbon\Carbon::now();
+		$keyValueString="";
+		for($data=0;$data<count($quotationData);$data++)
+		{
+			$keyValueString=$keyValueString.$key[$data]."='".$quotationData[$data]."',";
+		}
+		DB::beginTransaction();
+		$raw = DB::statement("update quotation_dtl 
+		set ".$keyValueString."updated_at='".$mytime."'
+		where quotation_id = '".$quotationId."'");
+		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$quotationArray = $exception->messageArrays();
+		if($raw==1)
+		{
+			return $quotationArray['200'];
+		}
+		else
+		{
+			return $quotationArray['500'];
+		}
+	}
+	
+	/**
 	 * get All data 
 	 * returns the status
 	*/

@@ -172,4 +172,30 @@ class QuotationService extends AbstractService
 	{
 		echo "invoke";
 	}
+	
+	/**
+     * get the data from persistable object and call the model for database update opertation
+     * @param QuotationPersistable $persistable
+     * @param updateOptions $options [optional]
+	 * parameter is in array form.
+     * @return status
+     */
+    public function update()
+    {
+		$quotationArray = array();
+		$getData = array();
+		$funcName = array();
+		$quotationArray = func_get_arg(0);
+		for($data=0;$data<count($quotationArray);$data++)
+		{
+			$funcName[$data] = $quotationArray[$data][0]->getName();
+			$getData[$data] = $quotationArray[$data][0]->$funcName[$data]();
+			$keyName[$data] = $quotationArray[$data][0]->getkey();
+		}
+		$quotationId = $quotationArray[0][0]->getQuotationId();
+		// data pass to the model object for update
+		$quotationModel = new QuotationModel();
+		$status = $quotationModel->updateData($getData,$keyName,$quotationId);
+		return $status;	
+	}
 }

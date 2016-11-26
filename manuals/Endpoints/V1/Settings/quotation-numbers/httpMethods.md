@@ -93,7 +93,7 @@
             
 **NOTES:** list the latest Quotation Numbers for particular company id
 
-##### Updates invoice-number    
+##### Updates quotation-number    
        
 ##### `PATCH /settings/quotation-numbers/{quotationId}`
 + Header
