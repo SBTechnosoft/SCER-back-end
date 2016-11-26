@@ -9,6 +9,8 @@ use ERP\Api\V1_0\Support\BaseController;
 use ERP\Api\V1_0\Settings\InvoiceNumbers\Processors\InvoiceProcessor;
 use ERP\Core\Settings\InvoiceNumbers\Persistables\InvoicePersistable;
 use ERP\Core\Support\Service\ContainerInterface;
+use ERP\Model\Settings\InvoiceNumbers\InvoiceModel;
+use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -119,5 +121,43 @@ class InvoiceController extends BaseController implements ContainerInterface
 		$invoiceService= new InvoiceService();
 		$status = $invoiceService->getLatestInvoiceData($companyId);
 		return $status;
+	}
+	
+	/**
+     * Update the specified resource in storage.
+     * @param  Request object[Request $request]
+     * @param  ledger_id
+     */
+	public function update(Request $request,$invoiceId)
+    {    
+		$this->request = $request;
+		$processor = new InvoiceProcessor();
+		$invoicePersistable = new InvoicePersistable();		
+		$invoiceService= new InvoiceService();		
+		$invoiceModel = new InvoiceModel();
+		$result = $invoiceModel->getData($invoiceId);
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($result,$exceptionArray['404'])==0)
+		{
+			return $result;
+		}
+		else
+		{
+			$invoicePersistable = $processor->createPersistableChange($this->request,$invoiceId);
+			
+			//here two array and string is return at a time
+			if(is_array($invoicePersistable))
+			{
+				$status = $invoiceService->update($invoicePersistable);
+				return $status;
+			}
+			else
+			{
+				return $invoicePersistable;
+			}
+		}
 	}
 }

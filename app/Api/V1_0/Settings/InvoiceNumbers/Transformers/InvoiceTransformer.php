@@ -57,4 +57,58 @@ class InvoiceTransformer
 			return $data;
 		}
 	}
+	
+	public function trimUpdateData()
+	{
+		$tInvoiceArray = array();
+		$invoiceValue;
+		$keyValue = func_get_arg(0);
+		$convertedValue="";
+		$invoiceTypeEnumArray = array();
+		$invoiceTypeFlag=0;
+		for($asciiChar=0;$asciiChar<strlen($keyValue);$asciiChar++)
+		{
+			if(ord($keyValue[$asciiChar])<=90 && ord($keyValue[$asciiChar])>=65) 
+			{
+				$convertedValue1 = "_".chr(ord($keyValue[$asciiChar])+32);
+				$convertedValue=$convertedValue.$convertedValue1;
+			}
+			else
+			{
+				$convertedValue=$convertedValue.$keyValue[$asciiChar];
+			}
+		}
+		$invoiceValue = func_get_arg(1);
+		for($data=0;$data<count($invoiceValue);$data++)
+		{
+			$tInvoiceArray[$data]= array($convertedValue=> trim($invoiceValue));
+			$invoiceTypeEnumArray = array_keys($tInvoiceArray[$data])[0];
+		}
+		$enumInvoiceTypeArray = array();
+		$invoiceTypeEnum = new InvoiceTypeEnum();
+		$enumInvoiceTypeArray = $invoiceTypeEnum->enumArrays();
+		if(strcmp($invoiceTypeEnumArray,'invoice_type')==0)
+		{
+			foreach ($enumInvoiceTypeArray as $key => $value)
+			{
+				if(strcmp($tInvoiceArray[0]['invoice_type'],$value)==0)
+				{
+					$invoiceTypeFlag=1;
+					break;
+				}
+				else
+				{
+					$invoiceTypeFlag=2;
+				}
+			}
+		}
+		if($invoiceTypeFlag==2)
+		{
+			return "1";
+		}
+		else
+		{
+			return $tInvoiceArray;
+		}
+	}
 }

@@ -172,4 +172,30 @@ class InvoiceService extends AbstractService
 	{
 		echo "invoke";
 	}
+	
+	/**
+     * get the data from persistable object and call the model for database update opertation
+     * @param InvoicePersistable $persistable
+     * @param updateOptions $options [optional]
+	 * parameter is in array form.
+     * @return status
+     */
+    public function update()
+    {
+		$invoiceArray = array();
+		$getData = array();
+		$funcName = array();
+		$invoiceArray = func_get_arg(0);
+		for($data=0;$data<count($invoiceArray);$data++)
+		{
+			$funcName[$data] = $invoiceArray[$data][0]->getName();
+			$getData[$data] = $invoiceArray[$data][0]->$funcName[$data]();
+			$keyName[$data] = $invoiceArray[$data][0]->getkey();
+		}
+		$invoiceId = $invoiceArray[0][0]->getInvoiceId();
+		// data pass to the model object for update
+		$invoiceModel = new InvoiceModel();
+		$status = $invoiceModel->updateData($getData,$keyName,$invoiceId);
+		return $status;	
+	}
 }

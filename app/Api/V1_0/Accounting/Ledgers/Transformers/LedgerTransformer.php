@@ -93,7 +93,7 @@ class LedgerTransformer
 	public function trimUpdateData()
 	{
 		$tLedgerArray = array();
-		$LedgerValue;
+		$ledgerValue;
 		$keyValue = func_get_arg(0);
 		$convertedValue="";
 		$inventoryAffectedEnumArray = array();
@@ -110,10 +110,10 @@ class LedgerTransformer
 				$convertedValue=$convertedValue.$keyValue[$asciiChar];
 			}
 		}
-		$LedgerValue = func_get_arg(1);
-		for($data=0;$data<count($LedgerValue);$data++)
+		$ledgerValue = func_get_arg(1);
+		for($data=0;$data<count($ledgerValue);$data++)
 		{
-			$tLedgerArray[$data]= array($convertedValue=> trim($LedgerValue));
+			$tLedgerArray[$data]= array($convertedValue=> trim($ledgerValue));
 			$inventoryAffectedEnumArray = array_keys($tLedgerArray[$data])[0];
 		}
 		$enumInventoryAffectedArray = array();

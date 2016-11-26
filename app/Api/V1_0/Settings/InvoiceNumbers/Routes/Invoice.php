@@ -26,6 +26,9 @@ class Invoice implements RouteRegistrarInterface
 		
 		// insert data post request
 		Route::post('Settings/InvoiceNumbers/Invoice', 'Settings\InvoiceNumbers\Controllers\InvoiceController@store');
+		
+		// update data request
+		Route::post('Settings/InvoiceNumbers/Invoice/{invoiceId}', 'Settings\InvoiceNumbers\Controllers\InvoiceController@update');
 	}
 }
 

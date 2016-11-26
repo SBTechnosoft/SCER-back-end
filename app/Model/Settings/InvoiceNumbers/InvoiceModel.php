@@ -58,6 +58,38 @@ class InvoiceModel extends Model
 	}
 	
 	/**
+	 * update data 
+	 * @param  ledger-data,key of ledger-data,ledger-id
+	 * returns the status
+	*/
+	public function updateData($invoiceData,$key,$invoiceId)
+	{
+		$mytime = Carbon\Carbon::now();
+		$keyValueString="";
+		for($data=0;$data<count($invoiceData);$data++)
+		{
+			$keyValueString=$keyValueString.$key[$data]."='".$invoiceData[$data]."',";
+		}
+		DB::beginTransaction();
+		$raw = DB::statement("update invoice_dtl 
+		set ".$keyValueString."updated_at='".$mytime."'
+		where invoice_id = '".$invoiceId."'");
+		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if($raw==1)
+		{
+			return $exceptionArray['200'];
+		}
+		else
+		{
+			return $exceptionArray['500'];
+		}
+	}
+	
+	/**
 	 * get All data 
 	 * returns the status
 	*/
