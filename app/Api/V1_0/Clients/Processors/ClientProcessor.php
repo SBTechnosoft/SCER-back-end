@@ -38,63 +38,69 @@ class ClientProcessor extends BaseProcessor
 		//get exception message
 		$exception = new ExceptionMessage();
 		$msgArray = $exception->messageArrays();
-		
-		//trim an input 
-		$clientTransformer = new ClientTransformer();
-		$tRequest = $clientTransformer->trimInsertData($this->request);
-		
-		if($tRequest==1)
+		if(count($_POST)==0)
 		{
-			return $msgArray['content'];
-		}	
+			return $msgArray['204'];
+		}
 		else
 		{
-			//validation
-			$clientValidate = new ClientValidate();
-			$status = $clientValidate->validate($tRequest);
-			if($status=="Success")
+			//trim an input 
+			$clientTransformer = new ClientTransformer();
+			$tRequest = $clientTransformer->trimInsertData($this->request);
+			
+			if($tRequest==1)
 			{
-				foreach ($tRequest as $key => $value)
+				return $msgArray['content'];
+			}	
+			else
+			{
+				//validation
+				$clientValidate = new ClientValidate();
+				$status = $clientValidate->validate($tRequest);
+				if($status=="Success")
 				{
-					if(!is_numeric($value))
+					foreach ($tRequest as $key => $value)
 					{
-						if (strpos($value, '\'') !== FALSE)
+						if(!is_numeric($value))
 						{
-							$clientValue[$data]= str_replace("'","\'",$value);
-							$keyName[$data] = $key;
+							if (strpos($value, '\'') !== FALSE)
+							{
+								$clientValue[$data]= str_replace("'","\'",$value);
+								$keyName[$data] = $key;
+							}
+							else
+							{
+								$clientValue[$data] = $value;
+								$keyName[$data] = $key;
+							}
 						}
 						else
 						{
-							$clientValue[$data] = $value;
+							$clientValue[$data]= $value;
 							$keyName[$data] = $key;
 						}
+						$data++;
 					}
-					else
+					// set data to the persistable object
+					for($data=0;$data<count($clientValue);$data++)
 					{
-						$clientValue[$data]= $value;
-						$keyName[$data] = $key;
+						//set the data in persistable object
+						$clientPersistable = new ClientPersistable();	
+						$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
+						//make function name dynamically
+						$setFuncName = 'set'.$str;
+						$getFuncName[$data] = 'get'.$str;
+						$clientPersistable->$setFuncName($clientValue[$data]);
+						$clientPersistable->setName($getFuncName[$data]);
+						$clientPersistable->setKey($keyName[$data]);
+						$clientArray[$data] = array($clientPersistable);
 					}
-					$data++;
+					return $clientArray;
 				}
-				// set data to the persistable object
-				for($data=0;$data<count($clientValue);$data++)
+				else
 				{
-					//set the data in persistable object
-					$clientPersistable = new ClientPersistable();	
-					$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
-					//make function name dynamically
-					$setFuncName = 'set'.$str;
-					$getFuncName[$data] = 'get'.$str;
-					$clientPersistable->$setFuncName($clientValue[$data]);
-					$clientPersistable->setName($getFuncName[$data]);
-					$clientPersistable->setKey($keyName[$data]);
-					$clientArray[$data] = array($clientPersistable);
+					return $status;
 				}
-				return $clientArray;
-			}
-			else
-			{
-				return $status;
 			}
 		}
 	}

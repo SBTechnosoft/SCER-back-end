@@ -29,19 +29,25 @@ class QuotationTransformer
 		$tStartAt = trim($startAt);
 		$tEndAt = trim($endAt);
 		$tCompanyId = trim($companyId);
-		
-		$enumQuotationTypeArray = array();
-		$quotationTypeEnum = new QuotationTypeEnum();
-		$enumQuotationTypeArray = $quotationTypeEnum->enumArrays();
-		foreach ($enumQuotationTypeArray as $key => $value)
+		if($tQuotationType!="")
 		{
-			if(strcmp($value,$tQuotationType)==0)
+			$enumQuotationTypeArray = array();
+			$quotationTypeEnum = new QuotationTypeEnum();
+			$enumQuotationTypeArray = $quotationTypeEnum->enumArrays();
+			foreach ($enumQuotationTypeArray as $key => $value)
 			{
-				$quotationTypeFlag=1;
-				break;
+				if(strcmp($value,$tQuotationType)==0)
+				{
+					$quotationTypeFlag=1;
+					break;
+				}
+				else
+				{
+					$quotationTypeFlag=2;
+				}
 			}
 		}
-		if($quotationTypeFlag==0)
+		if($quotationTypeFlag==2)
 		{
 			return "1";
 		}

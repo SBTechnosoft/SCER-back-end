@@ -38,65 +38,71 @@ class LedgerProcessor extends BaseProcessor
 		//get exception message
 		$exception = new ExceptionMessage();
 		$msgArray = $exception->messageArrays();
-		
-		//trim an input 
-		$ledgerTransformer = new LedgerTransformer();
-		$tRequest = $ledgerTransformer->trimInsertData($this->request);
-		
-		if($tRequest==1)
+		if(count($_POST)==0)
 		{
-			return $msgArray['content'];
-		}	
+			return $msgArray['204'];
+		}
 		else
 		{
-			//validation
-			$ledgerValidate = new LedgerValidate();
-			$status = $ledgerValidate->validate($tRequest);
+			//trim an input 
+			$ledgerTransformer = new LedgerTransformer();
+			$tRequest = $ledgerTransformer->trimInsertData($this->request);
 			
-			if($status=="Success")
+			if($tRequest==1)
 			{
-				foreach ($tRequest as $key => $value)
+				return $msgArray['content'];
+			}	
+			else
+			{
+				//validation
+				$ledgerValidate = new LedgerValidate();
+				$status = $ledgerValidate->validate($tRequest);
+				
+				if($status=="Success")
 				{
-					if(!is_numeric($value))
+					foreach ($tRequest as $key => $value)
 					{
-						if (strpos($value, '\'') !== FALSE)
+						if(!is_numeric($value))
 						{
-							$ledgerValue[$data]= str_replace("'","\'",$value);
-							$keyName[$data] = $key;
+							if (strpos($value, '\'') !== FALSE)
+							{
+								$ledgerValue[$data]= str_replace("'","\'",$value);
+								$keyName[$data] = $key;
+							}
+							else
+							{
+								$ledgerValue[$data] = $value;
+								$keyName[$data] = $key;
+							}
 						}
 						else
 						{
-							$ledgerValue[$data] = $value;
+							$ledgerValue[$data]= $value;
 							$keyName[$data] = $key;
 						}
+						$data++;
 					}
-					else
+					
+					// set data to the persistable object
+					for($data=0;$data<count($ledgerValue);$data++)
 					{
-						$ledgerValue[$data]= $value;
-						$keyName[$data] = $key;
+						//set the data in persistable object
+						$ledgerPersistable = new LedgerPersistable();	
+						$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
+						//make function name dynamically
+						$setFuncName = 'set'.$str;
+						$getFuncName[$data] = 'get'.$str;
+						$ledgerPersistable->$setFuncName($ledgerValue[$data]);
+						$ledgerPersistable->setName($getFuncName[$data]);
+						$ledgerPersistable->setKey($keyName[$data]);
+						$ledgerArray[$data] = array($ledgerPersistable);
 					}
-					$data++;
+					return $ledgerArray;
 				}
-				
-				// set data to the persistable object
-				for($data=0;$data<count($ledgerValue);$data++)
+				else
 				{
-					//set the data in persistable object
-					$ledgerPersistable = new LedgerPersistable();	
-					$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
-					//make function name dynamically
-					$setFuncName = 'set'.$str;
-					$getFuncName[$data] = 'get'.$str;
-					$ledgerPersistable->$setFuncName($ledgerValue[$data]);
-					$ledgerPersistable->setName($getFuncName[$data]);
-					$ledgerPersistable->setKey($keyName[$data]);
-					$ledgerArray[$data] = array($ledgerPersistable);
+					return $status;
 				}
-				return $ledgerArray;
-			}
-			else
-			{
-				return $status;
 			}
 		}
 	}

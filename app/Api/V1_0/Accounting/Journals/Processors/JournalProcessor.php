@@ -34,46 +34,52 @@ class JournalProcessor extends BaseProcessor
 		//get exception message
 		$exception = new ExceptionMessage();
 		$msgArray = $exception->messageArrays();
-		
-		//trim an input 
-		$journalTransformer = new JournalTransformer();
-		$tRequest = $journalTransformer->trimInsertData($this->request);
-		
-		if($tRequest==1)
+		if(count($_POST)==0)
 		{
-			return $msgArray['content'];
-		}	
-		else if(is_array($tRequest))
-		{
-			//validation
-			$journalValidate = new JournalValidate();
-			$status = $journalValidate->validate($tRequest);
-			// echo "else";
-			// print_r($status);
-			if($status=="Success")
-			{
-				$journalPersistable=array();
-				for($data=0;$data<count($tRequest[0]);$data++)
-				{
-					$journalPersistable[$data] = new JournalPersistable();
-					$journalPersistable[$data]->setJfId($tRequest['jfId']);
-					$journalPersistable[$data]->setEntryDate($tRequest['entryDate']);
-					$journalPersistable[$data]->setCompanyId($tRequest['companyId']);
-					
-					$journalPersistable[$data]->setAmount($tRequest[0][$data]['amount']);
-					$journalPersistable[$data]->setAmountType($tRequest[0][$data]['amountType']);
-					$journalPersistable[$data]->setLedgerId($tRequest[0][$data]['ledgerId']);
-				}
-				return $journalPersistable;
-			}
-			else
-			{
-				return $status;
-			}
+			return $msgArray['204'];
 		}
 		else
 		{
-			return $tRequest;
+			//trim an input 
+			$journalTransformer = new JournalTransformer();
+			$tRequest = $journalTransformer->trimInsertData($this->request);
+			
+			if($tRequest==1)
+			{
+				return $msgArray['content'];
+			}	
+			else if(is_array($tRequest))
+			{
+				//validation
+				$journalValidate = new JournalValidate();
+				$status = $journalValidate->validate($tRequest);
+				// echo "else";
+				// print_r($status);
+				if($status=="Success")
+				{
+					$journalPersistable=array();
+					for($data=0;$data<count($tRequest[0]);$data++)
+					{
+						$journalPersistable[$data] = new JournalPersistable();
+						$journalPersistable[$data]->setJfId($tRequest['jfId']);
+						$journalPersistable[$data]->setEntryDate($tRequest['entryDate']);
+						$journalPersistable[$data]->setCompanyId($tRequest['companyId']);
+						
+						$journalPersistable[$data]->setAmount($tRequest[0][$data]['amount']);
+						$journalPersistable[$data]->setAmountType($tRequest[0][$data]['amountType']);
+						$journalPersistable[$data]->setLedgerId($tRequest[0][$data]['ledgerId']);
+					}
+					return $journalPersistable;
+				}
+				else
+				{
+					return $status;
+				}
+			}
+			else
+			{
+				return $tRequest;
+			}
 		}
 	}
 	public function createPersistableData(Request $request)

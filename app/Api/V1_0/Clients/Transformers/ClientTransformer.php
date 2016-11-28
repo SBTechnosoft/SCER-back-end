@@ -16,7 +16,7 @@ class ClientTransformer
     public function trimInsertData(Request $request)
     {
 		$isDisplayFlag=0;
-		
+		$clientDataFlag=0;
 		//data get from body
 		$clientName = $request->input('clientName'); 
 		$companyName = $request->input('companyName'); 
@@ -40,23 +40,43 @@ class ClientTransformer
 		$tIsDisplay = trim($isDisplay);
 		$tStateAbb = trim($stateAbb);
 		$tCityId = trim($cityId);
-		if(strcmp(array_keys($request->input())[6],"isDisplay")==0)
+		//check is_display is exist or not
+		for($clientData=0;$clientData<count($request->input());$clientData++)
 		{
-			$enumIsDispArray = array();
-			$isDispEnum = new IsDisplayEnum();
-			$enumIsDispArray = $isDispEnum->enumArrays();
-			foreach ($enumIsDispArray as $key => $value)
+			if(strcmp(array_keys($request->input())[$clientData],"isDisplay")==0)
 			{
-				if(strcmp($value,$tIsDisplay)==0)
+				$clientDataFlag=1;
+				break;
+			}
+		}
+		$enumIsDispArray = array();
+		$isDispEnum = new IsDisplayEnum();
+		$enumIsDispArray = $isDispEnum->enumArrays();
+		if($clientDataFlag==1)
+		{
+			if($tIsDisplay=="")
+			{
+				$tIsDisplay=$enumIsDispArray['display'];
+			}
+			else
+			{
+				foreach ($enumIsDispArray as $key => $value)
 				{
-					$isDisplayFlag=1;
-					break;
-				}
-				else
-				{
-					$isDisplayFlag=2;
+					if(strcmp($value,$tIsDisplay)==0)
+					{
+						$isDisplayFlag=1;
+						break;
+					}
+					else
+					{
+						$isDisplayFlag=2;
+					}
 				}
 			}
+		}
+		else
+		{
+			$tIsDisplay=$enumIsDispArray['display'];
 		}
 		if($isDisplayFlag==2)
 		{

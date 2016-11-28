@@ -38,63 +38,69 @@ class InvoiceProcessor extends BaseProcessor
 		//get exception message
 		$exception = new ExceptionMessage();
 		$msgArray = $exception->messageArrays();
-		
-		//trim an input 
-		$invoiceTransformer = new InvoiceTransformer();
-		$tRequest = $invoiceTransformer->trimInsertData($this->request);
-		if($tRequest==1)
+		if(count($_POST)==0)
 		{
-			return $msgArray['content'];
-		}	
+			return $msgArray['204'];
+		}
 		else
 		{
-			//validation
-			$invoiceValidate = new InvoiceValidate();
-			$status = $invoiceValidate->validate($tRequest);
-			if($status=="Success")
+			//trim an input 
+			$invoiceTransformer = new InvoiceTransformer();
+			$tRequest = $invoiceTransformer->trimInsertData($this->request);
+			if($tRequest==1)
 			{
-				foreach ($tRequest as $key => $value)
+				return $msgArray['content'];
+			}	
+			else
+			{
+				//validation
+				$invoiceValidate = new InvoiceValidate();
+				$status = $invoiceValidate->validate($tRequest);
+				if($status=="Success")
 				{
-					if(!is_numeric($value))
+					foreach ($tRequest as $key => $value)
 					{
-						if (strpos($value, '\'') !== FALSE)
+						if(!is_numeric($value))
 						{
-							$invoiceValue[$data]= str_replace("'","\'",$value);
-							$keyName[$data] = $key;
+							if (strpos($value, '\'') !== FALSE)
+							{
+								$invoiceValue[$data]= str_replace("'","\'",$value);
+								$keyName[$data] = $key;
+							}
+							else
+							{
+								$invoiceValue[$data] = $value;
+								$keyName[$data] = $key;
+							}
 						}
 						else
 						{
-							$invoiceValue[$data] = $value;
+							$invoiceValue[$data]= $value;
 							$keyName[$data] = $key;
 						}
+						$data++;
 					}
-					else
+					
+					// set data to the persistable object
+					for($data=0;$data<count($invoiceValue);$data++)
 					{
-						$invoiceValue[$data]= $value;
-						$keyName[$data] = $key;
+						//set the data in persistable object
+						$invoicePersistable = new InvoicePersistable();	
+						$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
+						//make function name dynamically
+						$setFuncName = 'set'.$str;
+						$getFuncName[$data] = 'get'.$str;
+						$invoicePersistable->$setFuncName($invoiceValue[$data]);
+						$invoicePersistable->setName($getFuncName[$data]);
+						$invoicePersistable->setKey($keyName[$data]);
+						$invoiceArray[$data] = array($invoicePersistable);
 					}
-					$data++;
+					return $invoiceArray;
 				}
-				
-				// set data to the persistable object
-				for($data=0;$data<count($invoiceValue);$data++)
+				else
 				{
-					//set the data in persistable object
-					$invoicePersistable = new InvoicePersistable();	
-					$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
-					//make function name dynamically
-					$setFuncName = 'set'.$str;
-					$getFuncName[$data] = 'get'.$str;
-					$invoicePersistable->$setFuncName($invoiceValue[$data]);
-					$invoicePersistable->setName($getFuncName[$data]);
-					$invoicePersistable->setKey($keyName[$data]);
-					$invoiceArray[$data] = array($invoicePersistable);
+					return $status;
 				}
-				return $invoiceArray;
-			}
-			else
-			{
-				return $status;
 			}
 		}
 	}

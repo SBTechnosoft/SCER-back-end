@@ -209,12 +209,12 @@ include ('connection.php');
 				// formdata.append('productParentCategoryId',$scope.formAdata.product_parent_cat_id);
 				
 				//productGroup
-				$scope.formAdata.product_group_name = "a&b";
+				// $scope.formAdata.product_group_name = "a&b";
 				// $scope.formAdata.product_group_desc = "abcdddd";
 				// $scope.formAdata.is_display = 'yes ';
 				// $scope.formAdata.product_group_parent_id = 0;
 				
-				formdata.append('productGroupName',$scope.formAdata.product_group_name);
+				// formdata.append('productGroupName',$scope.formAdata.product_group_name);
 				// formdata.append('productGroupDescription',$scope.formAdata.product_group_desc);
 				// formdata.append('isDisplay',$scope.formAdata.is_display);
 				// formdata.append('productGroupParentId',$scope.formAdata.product_group_parent_id);
@@ -464,7 +464,7 @@ include ('connection.php');
 				 // var url="http://www.scerp1.com/cities/"+cityId;
 				// var url="http://www.scerp1.com/product-categories/"+productCatId;
 				// var url="http://www.scerp1.com/product-categories";
-				var url="http://www.scerp1.com/product-groups";
+				// var url="http://www.scerp1.com/product-groups";
 				// var url="http://www.scerp1.com/product-groups/"+productGrpId;
 				// var url="http://www.scerp1.com/products/"+productId;
 				// var url="http://www.scerp1.com/products";

@@ -29,19 +29,25 @@ class InvoiceTransformer
 		$tStartAt = trim($startAt);
 		$tEndAt = trim($endAt);
 		$tCompanyId = trim($companyId);
-		
-		$enumInvoiceTypeArray = array();
-		$invoiceTypeEnum = new InvoiceTypeEnum();
-		$enumInvoiceTypeArray = $invoiceTypeEnum->enumArrays();
-		foreach ($enumInvoiceTypeArray as $key => $value)
+		if($tInvoiceType!="")
 		{
-			if(strcmp($value,$tInvoiceType)==0)
+			$enumInvoiceTypeArray = array();
+			$invoiceTypeEnum = new InvoiceTypeEnum();
+			$enumInvoiceTypeArray = $invoiceTypeEnum->enumArrays();
+			foreach ($enumInvoiceTypeArray as $key => $value)
 			{
-				$invoiceTypeFlag=1;
-				break;
+				if(strcmp($value,$tInvoiceType)==0)
+				{
+					$invoiceTypeFlag=1;
+					break;
+				}
+				else
+				{
+					$invoiceTypeFlag=2;
+				}
 			}
 		}
-		if($invoiceTypeFlag==0)
+		if($invoiceTypeFlag==2)
 		{
 			return "1";
 		}

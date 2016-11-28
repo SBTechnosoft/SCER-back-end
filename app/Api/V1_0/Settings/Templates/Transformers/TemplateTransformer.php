@@ -28,20 +28,26 @@ class TemplateTransformer
 		$tTemplateType = trim($templateType);
 		$tTemplateBody = trim($templateBody);
 		$tCompanyId = trim($companyId);
-		
-		$enumTemplateTypeArray = array();
-		$templateTypeEnum = new TemplateTypeEnum();
-		$enumTemplateTypeArray = $templateTypeEnum->enumArrays();
-		foreach ($enumTemplateTypeArray as $key => $value)
+		if($tTemplateType!="")
 		{
-			if(strcmp($value,$tTemplateType)==0)
+			$enumTemplateTypeArray = array();
+			$templateTypeEnum = new TemplateTypeEnum();
+			$enumTemplateTypeArray = $templateTypeEnum->enumArrays();
+			foreach ($enumTemplateTypeArray as $key => $value)
 			{
-				$templayeTypeFlag=1;
-				break;
+				if(strcmp($value,$tTemplateType)==0)
+				{
+					$templayeTypeFlag=1;
+					break;
+				}
+				else
+				{
+					$templayeTypeFlag=2;
+				}
 			}
 		}
 		
-		if($templayeTypeFlag==0)
+		if($templayeTypeFlag==2)
 		{
 			return "1";
 		}

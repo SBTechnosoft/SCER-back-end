@@ -38,64 +38,70 @@ class TemplateProcessor extends BaseProcessor
 		//get exception message
 		$exception = new ExceptionMessage();
 		$msgArray = $exception->messageArrays();
-		
-		//trim an input 
-		$templateTransformer = new TemplateTransformer();
-		$tRequest = $templateTransformer->trimInsertData($this->request);
-		
-		if($tRequest==1)
+		if(count($_POST)==0)
 		{
-			return $msgArray['content'];
-		}	
+			return $msgArray['204'];
+		}
 		else
 		{
-			//validation
-			$templateValidate = new TemplateValidate();
-			$status = $templateValidate->validate($tRequest);
-			if($status=="Success")
+			//trim an input 
+			$templateTransformer = new TemplateTransformer();
+			$tRequest = $templateTransformer->trimInsertData($this->request);
+			
+			if($tRequest==1)
 			{
-				foreach ($tRequest as $key => $value)
+				return $msgArray['content'];
+			}	
+			else
+			{
+				//validation
+				$templateValidate = new TemplateValidate();
+				$status = $templateValidate->validate($tRequest);
+				if($status=="Success")
 				{
-					if(!is_numeric($value))
+					foreach ($tRequest as $key => $value)
 					{
-						if (strpos($value, '\'') !== FALSE)
+						if(!is_numeric($value))
 						{
-							$templateValue[$data]= str_replace("'","\'",$value);
-							$keyName[$data] = $key;
+							if (strpos($value, '\'') !== FALSE)
+							{
+								$templateValue[$data]= str_replace("'","\'",$value);
+								$keyName[$data] = $key;
+							}
+							else
+							{
+								$templateValue[$data] = $value;
+								$keyName[$data] = $key;
+							}
 						}
 						else
 						{
-							$templateValue[$data] = $value;
+							$templateValue[$data]= $value;
 							$keyName[$data] = $key;
 						}
+						$data++;
 					}
-					else
+					
+					// set data to the persistable object
+					for($data=0;$data<count($templateValue);$data++)
 					{
-						$templateValue[$data]= $value;
-						$keyName[$data] = $key;
+						//set the data in persistable object
+						$templatePersistable = new TemplatePersistable();	
+						$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
+						//make function name dynamically
+						$setFuncName = 'set'.$str;
+						$getFuncName[$data] = 'get'.$str;
+						$templatePersistable->$setFuncName($templateValue[$data]);
+						$templatePersistable->setName($getFuncName[$data]);
+						$templatePersistable->setKey($keyName[$data]);
+						$templateArray[$data] = array($templatePersistable);
 					}
-					$data++;
+					return $templateArray;
 				}
-				
-				// set data to the persistable object
-				for($data=0;$data<count($templateValue);$data++)
+				else
 				{
-					//set the data in persistable object
-					$templatePersistable = new TemplatePersistable();	
-					$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
-					//make function name dynamically
-					$setFuncName = 'set'.$str;
-					$getFuncName[$data] = 'get'.$str;
-					$templatePersistable->$setFuncName($templateValue[$data]);
-					$templatePersistable->setName($getFuncName[$data]);
-					$templatePersistable->setKey($keyName[$data]);
-					$templateArray[$data] = array($templatePersistable);
+					return $templateArray;
 				}
-				return $templateArray;
-			}
-			else
-			{
-				return $templateArray;
 			}
 		}
 	}
