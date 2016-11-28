@@ -49,19 +49,20 @@ class LedgerModel extends Model
 		if($raw==1)
 		{
 			$ledgerId = DB::select('SELECT  MAX(ledger_id) AS ledger_id from ledger_mst');
+			
 			$result = DB::statement("CREATE TABLE ".$ledgerId[0]->ledger_id."_ledger_dtl (
 			 `".$ledgerId[0]->ledger_id."_id` int(11) NOT NULL AUTO_INCREMENT,
 			 `amount` decimal(10,2) NOT NULL,
 			 `amount_type` enum('credit','debit') NOT NULL,
 			 `entry_date` date NOT NULL,
 			 `jf_id` int(11) NOT NULL,
+			 `balance_flag` enum('opening','closing') NOT NULL,
 			 `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			 `updated_at` datetime NOT NULL,
 			 `deleted_at` datetime NOT NULL,
 			 `ledger_id` int(11) NOT NULL,
 			 PRIMARY KEY (`".$ledgerId[0]->ledger_id."_id`)
-			) ENGINE=InnoDB DEFAULT CHARSET=latin1");
-			
+			) ENGINE=InnoDB DEFAULT CHARSET=utf16");
 			if($result==1)
 			{
 				DB::beginTransaction();

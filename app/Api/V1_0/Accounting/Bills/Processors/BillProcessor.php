@@ -154,7 +154,6 @@ class BillProcessor extends BaseProcessor
 				return $processedData;
 			}
 		}
-		
 		//get jf_id
 		$journalController = new JournalController(new Container());
 		$jfId = $journalController->getData();
@@ -269,7 +268,6 @@ class BillProcessor extends BaseProcessor
 		$journalRequest->headers->set('type',$request->header()['type'][0]);
 		
 		$processedData = $journalController->store($journalRequest);
-		
 		// print_r($processedData); //simple error msg
 		if(strcmp($processedData,$msgArray['200'])==0)
 		{
@@ -321,7 +319,10 @@ class BillProcessor extends BaseProcessor
 				array_push($processedData,$billPersistable);
 				return $processedData;
 			}
-			return $billPersistable;
+			else
+			{
+				return $billPersistable;
+			}
 		}
 		else
 		{

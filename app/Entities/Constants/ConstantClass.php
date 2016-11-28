@@ -10,7 +10,8 @@ class ConstantClass
 	{
 		$constantArray = array();
 		$constantArray['documentUrl'] = "Storage/Document/";
-		$constantArray['billDocumentUrl'] = "Storage/Bill/";
+		$constantArray['billDocumentUrl'] = "Storage/Bill/Document";
+		$constantArray['billUrl']="Storage/Bill/";
 		$constantArray['clientUrl']="http://www.scerp1.com/clients";
 		$constantArray['ledgerUrl']="http://www.scerp1.com/accounting/ledgers";
 		$constantArray['journalUrl']="http://www.scerp1.com/accounting/journals";

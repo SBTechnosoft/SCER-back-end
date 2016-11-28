@@ -2,7 +2,9 @@
 namespace ERP\Core\Accounting\Bills\Entities;
 
 use mPDF;
-
+use ERP\Entities\Constants\ConstantClass;
+use ERP\Model\Accounting\Bills\BillModel;
+use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -12,6 +14,7 @@ class BillMpdf
 	{
 		$templateArray = func_get_arg(0);
 		$htmlBody = $templateArray[0]->template_body;
+		$saleId = func_get_arg(2);
 		
 		$billArray = array();
 		$billArray['Company']="Siliconbrain";
@@ -30,10 +33,35 @@ class BillMpdf
 		{
 			$htmlBody = str_replace('['.$key.']', $value, $htmlBody);
 		}
-		// print_r($htmlBody);
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
 		$mpdf->WriteHTML($htmlBody);
-		$path = "F:\www\htdocs\SCER-back-end\public\Storage";
-		$mpdf->Output('filename1.pdf','F');
+		$path = $constantArray['billUrl'];
 		
+		//change the name of document-name
+		$dateTime = date("d-m-Y h-i-s");
+		$convertedDateTime = str_replace(" ","-",$dateTime);
+		$splitDateTime = explode("-",$convertedDateTime);
+		$combineDateTime = $splitDateTime[0].$splitDateTime[1].$splitDateTime[2].$splitDateTime[3].$splitDateTime[4].$splitDateTime[5];
+		$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".pdf";
+		$documentPathName = $path.$documentName;
+		$documentFormat="pdf";
+		$documentType ="bill";
+		//insertion bill document data into database
+		$billModel = new BillModel();
+		$billDocumentStatus = $billModel->billDocumentData($saleId,$documentName,$documentFormat,$documentType);
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($exceptionArray['500'],$billDocumentStatus)==0)
+		{
+			return $billDocumentStatus;
+		}
+		else
+		{
+			$mpdf->Output($documentPathName,'F');
+			return $exceptionArray['200'];
+		}	
 	}
 }

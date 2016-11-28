@@ -139,6 +139,57 @@ class BillModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
+			DB::beginTransaction();
+			$billResult = DB::select("select
+			sale_id,
+			product_array,
+			payment_mode,
+			bank_name,
+			invoice_number,
+			check_number,
+			total,
+			tax,
+			grand_total,
+			advance,
+			balance,
+			remark,
+			entry_date,
+			client_id,
+			company_id,
+			created_at,
+			updated_at 
+			from retail_sales_dtl where sale_id=(select MAX(sale_id) as sale_id from retail_sales_dtl) and deleted_at='0000-00-00 00:00:00'"); 
+			DB::commit();
+			if(count($billResult)==1)
+			{
+				return json_encode($billResult);
+			}
+			else
+			{
+				return $exceptionArray['500'];
+			}
+		}
+		else
+		{
+			return $exceptionArray['500'];
+		}
+	}
+	public function billDocumentData($saleId,$documentName,$documentFormat,$documentType)
+	{
+		DB::beginTransaction();
+		$raw = DB::statement("insert into retail_sales_doc_dtl(
+		sale_id,
+		document_name,
+		document_format,
+		document_type)
+		values('".$saleId."','".$documentName."','".$documentFormat."','".$documentType."')");
+		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if($raw==1)
+		{
 			return $exceptionArray['200'];
 		}
 		else

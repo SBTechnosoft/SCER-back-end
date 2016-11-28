@@ -41,6 +41,9 @@
                 "pan":char,
                 "tin":char,
                 "gstNo":String,
+				"balanceFlag":Enum,
+				"amount":decimal,
+				"amountType":Enum,
                 "stateAbb":char,
                 "cityId":int,
                 "ledgerGroupId":int,
@@ -67,4 +70,9 @@
 ##### Amount Type Enum
 			{
 				... Amount Type Enum(journal)
+			}
+##### Balance Flag Enum
+			{
+				openingBalance:'opening',
+				closingBalance:'closing'
 			}

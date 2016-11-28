@@ -50,44 +50,52 @@ class BillController extends BaseController implements ContainerInterface
 		$this->request = $request;
 		// check the requested Http method
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
+
+		// get exception message
+		$exception = new ExceptionMessage();
+		$msgArray = $exception->messageArrays();
 		// insert
 		if($requestMethod == 'POST')
 		{
-			$processor = new BillProcessor();
-			$billPersistable = new BillPersistable();
-			$billPersistable = $processor->createPersistable($this->request);
-			
-			if(is_array($billPersistable) || is_object($billPersistable))
+			if(count($_POST)==0)
 			{
-				$billService= new BillService();
-				$status = $billService->insert($billPersistable);
-				if(strcmp($status,$msgArray['500'])==0)
-				{
-					return $status;
-				}
-				else
-				{
-					$templateType="general";
-					$templateService = new TemplateService();
-					$templateData = $templateService->getSpecificData($request->input()['companyId'],$templateType);
-					
-					//get exception message
-					$exception = new ExceptionMessage();
-					$msgArray = $exception->messageArrays();
-					if(strcmp($templateData,$msgArray['404'])==0)
-					{
-						return $templateData;
-					}
-					else
-					{
-						$billMpdf = new BillMpdf();
-						$billPdf = $billMpdf->mpdfGenerate(json_decode($templateData),$status);
-					}
-				}
+				return $msgArray['204'];
 			}
 			else
 			{
-				return $billPersistable;
+				$processor = new BillProcessor();
+				$billPersistable = new BillPersistable();
+				$billPersistable = $processor->createPersistable($this->request);
+				if(is_array($billPersistable) || is_object($billPersistable))
+				{
+					$billService= new BillService();
+					$status = $billService->insert($billPersistable);
+					
+					if(strcmp($status,$msgArray['500'])==0)
+					{
+						return $status;
+					}
+					else
+					{
+						$templateType="general";
+						$templateService = new TemplateService();
+						$templateData = $templateService->getSpecificData($request->input()['companyId'],$templateType);
+						
+						if(strcmp($templateData,$msgArray['404'])==0)
+						{
+							return $templateData;
+						}
+						else
+						{
+							$billMpdf = new BillMpdf();
+							$billPdf = $billMpdf->mpdfGenerate(json_decode($templateData),$status,json_decode($status)[0]->sale_id);
+						}
+					}
+				}
+				else
+				{
+					return $billPersistable;
+				}
 			}
 		}
 	}
