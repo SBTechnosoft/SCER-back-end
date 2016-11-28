@@ -14,7 +14,7 @@ class StateValidate
 	{
 		$rules = array(
 			'state_name'=>"between:1,35|regex:/^[a-zA-Z &-]+$/",
-        );
+		);
 		$messages = [
 			'state_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
 			'state_name.regex' => 'state-name contains character from "a-zA-Z -&" only',

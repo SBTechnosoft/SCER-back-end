@@ -18,27 +18,38 @@ class CityTransformer
 		$isDisplayFlag=0;
 		//data get from body
 		$cityName = $request->input('cityName'); 
-		echo $stateAbb = $request->input('stateAbb'); 
-		echo $isDisplay = $request->input('isDisplay');
-		echo "hi";
-		exit;
+		$stateAbb = $request->input('stateAbb'); 
+		$isDisplay = $request->input('isDisplay');
+		
 		//trim an input
 		$tCityName = trim($cityName);
 		$tStateAbb = trim($stateAbb);
 		$tIsDisplay = trim($isDisplay);
+		
 		$enumIsDispArray = array();
 		$isDispEnum = new IsDisplayEnum();
 		$enumIsDispArray = $isDispEnum->enumArrays();
-		foreach ($enumIsDispArray as $key => $value)
+		if($tIsDisplay=="")
 		{
-			if(strcmp($value,$tIsDisplay)==0)
+			$tIsDisplay=$enumIsDispArray['display'];
+		}
+		else
+		{
+			foreach ($enumIsDispArray as $key => $value)
 			{
-				$isDisplayFlag=1;
-				break;
+				if(strcmp($value,$tIsDisplay)==0)
+				{
+					$isDisplayFlag=1;
+					break;
+				}
+				else
+				{
+					$isDisplayFlag=2;
+				}
 			}
 		}
 		
-		if($isDisplayFlag==0)
+		if($isDisplayFlag==2)
 		{
 			return "1";
 		}

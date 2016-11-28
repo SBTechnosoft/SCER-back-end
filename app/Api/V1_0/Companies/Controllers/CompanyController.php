@@ -56,7 +56,8 @@ class CompanyController extends BaseController implements ContainerInterface
 		{
 			$processor = new CompanyProcessor();
 			$companyPersistable = new CompanyPersistable();		
-			$companyService= new CompanyService();			
+			$companyService= new CompanyService();		
+					
 			$companyPersistable = $processor->createPersistable($this->request);
 			
 			//get exception message

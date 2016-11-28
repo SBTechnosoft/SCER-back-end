@@ -1,7 +1,7 @@
 <?php
 namespace ERP\Api\V1_0\States\Routes;
 
-use ERP\Api\V1_0\States\Controllers\CompanyController;
+use ERP\Api\V1_0\States\Controllers\StateController;
 use ERP\Support\Interfaces\RouteRegistrarInterface;
 use Illuminate\Contracts\Routing\Registrar as RegistrarInterface;
 use Illuminate\Support\Facades\Route;
@@ -16,7 +16,7 @@ class State implements RouteRegistrarInterface
      */
     public function register(RegistrarInterface $Registrar)
     {
-        // all the possible get request 
+		// all the possible get request 
 		Route::group(['as' => 'get'], function ()
 		{
 			Route::get('States/State/{stateId?}', 'States\Controllers\StateController@getData');

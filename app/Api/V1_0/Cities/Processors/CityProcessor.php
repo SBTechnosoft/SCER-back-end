@@ -38,66 +38,72 @@ class CityProcessor extends BaseProcessor
 		//get exception message
 		$exception = new ExceptionMessage();
 		$msgArray = $exception->messageArrays();
-
-		//trim an input 
-		$cityTransformer = new CityTransformer();
-		$tRequest = $cityTransformer->trimInsertData($this->request);
-		if($tRequest==1)
+		if(count($_POST)==0)
 		{
-			return $msgArray['content'];
-		}	
+			return $msgArray['204'];
+		}
 		else
 		{
-		
-			//validation
-			$cityValidate = new CityValidate();
-			$status = $cityValidate->validate($tRequest);
-			
-			//if form-data is valid then return status 'Success' otherwise return with error message
-			if($status=="Success")
+			//trim an input 
+			$cityTransformer = new CityTransformer();
+			$tRequest = $cityTransformer->trimInsertData($this->request);
+			if($tRequest==1)
 			{
-				foreach ($tRequest as $key => $value)
+				return $msgArray['content'];
+			}	
+			else
+			{
+			
+				//validation
+				$cityValidate = new CityValidate();
+				$status = $cityValidate->validate($tRequest);
+				
+				//if form-data is valid then return status 'Success' otherwise return with error message
+				if($status=="Success")
 				{
-					if(!is_numeric($value))
+					foreach ($tRequest as $key => $value)
 					{
-						if (strpos($value, '\'') !== FALSE)
+						if(!is_numeric($value))
 						{
-							$cityValue[$data]= str_replace("'","\'",$value);
-							$keyName[$data] = $key;
+							if (strpos($value, '\'') !== FALSE)
+							{
+								$cityValue[$data]= str_replace("'","\'",$value);
+								$keyName[$data] = $key;
+							}
+							else
+							{
+								$cityValue[$data] = $value;
+								$keyName[$data] = $key;
+							}
 						}
 						else
 						{
-							$cityValue[$data] = $value;
+							$cityValue[$data]= $value;
 							$keyName[$data] = $key;
 						}
+						$data++;
 					}
-					else
+					
+					// set data to the persistable object
+					for($data=0;$data<count($cityValue);$data++)
 					{
-						$cityValue[$data]= $value;
-						$keyName[$data] = $key;
+						//set the data in persistable object
+						$cityPersistable = new CityPersistable();	
+						$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
+						//make function name dynamically
+						$setFuncName = 'set'.$str;
+						$getFuncName[$data] = 'get'.$str;
+						$cityPersistable->$setFuncName($cityValue[$data]);
+						$cityPersistable->setName($getFuncName[$data]);
+						$cityPersistable->setKey($keyName[$data]);
+						$cityArray[$data] = array($cityPersistable);
 					}
-					$data++;
-				}
-				
-				// set data to the persistable object
-				for($data=0;$data<count($cityValue);$data++)
+					return $cityArray;
+				}		
+				else
 				{
-					//set the data in persistable object
-					$cityPersistable = new CityPersistable();	
-					$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
-					//make function name dynamically
-					$setFuncName = 'set'.$str;
-					$getFuncName[$data] = 'get'.$str;
-					$cityPersistable->$setFuncName($cityValue[$data]);
-					$cityPersistable->setName($getFuncName[$data]);
-					$cityPersistable->setKey($keyName[$data]);
-					$cityArray[$data] = array($cityPersistable);
+					return $status;
 				}
-				return $cityArray;
-			}		
-			else
-			{
-				return $status;
 			}
 		}
 	}

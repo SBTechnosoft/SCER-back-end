@@ -59,27 +59,48 @@ class CompanyTransformer
 		$enumIsDispArray = array();
 		$isDispEnum = new IsDisplayEnum();
 		$enumIsDispArray = $isDispEnum->enumArrays();
-		foreach ($enumIsDispArray as $key => $value)
+		if($tIsDisplay=="")
 		{
-			if(strcmp($value,$tIsDisplay)==0)
+			$tIsDisplay=$enumIsDispArray['display'];
+		}
+		else
+		{
+			foreach ($enumIsDispArray as $key => $value)
 			{
-				$isDisplayFlag=1;
-				break;
+				if(strcmp($value,$tIsDisplay)==0)
+				{
+					$isDisplayFlag=1;
+					break;
+				}
+				else
+				{
+					$isDisplayFlag=2;
+				}
 			}
 		}
-		
 		$enumIsDefArray = array();
 		$isDefEnum = new IsDefaultEnum();
 		$enumIsDefArray = $isDefEnum->enumArrays();
-		foreach ($enumIsDefArray as $key => $value)
+		if($tIsDefault=="")
 		{
-			if(strcmp($value,$tIsDefault)==0)
+			$tIsDefault=$enumIsDefArray['notDefault'];
+		}
+		else
+		{
+			foreach ($enumIsDefArray as $key => $value)
 			{
-				$isDefaultFlag=1;
-				break;
+				if(strcmp($value,$tIsDefault)==0)
+				{
+					$isDefaultFlag=1;
+					break;
+				}
+				else
+				{
+					$isDefaultFlag=2;
+				}
 			}
 		}
-		if($isDisplayFlag==0 || $isDefaultFlag==0)
+		if($isDisplayFlag==2 || $isDefaultFlag==2)
 		{
 			return "1";
 		}

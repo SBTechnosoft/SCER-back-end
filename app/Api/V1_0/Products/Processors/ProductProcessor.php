@@ -34,66 +34,73 @@ class ProductProcessor extends BaseProcessor
 		$keyName = array();
 		$value = array();
 		$data=0;
-		//trim an input 
-		$productTransformer = new ProductTransformer();
-		$tRequest = $productTransformer->trimInsertData($this->request);
 		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$msgArray = $exception->messageArrays();
-		if($tRequest==1)
+		if(count($_POST)==0)
 		{
-			return $msgArray['content'];
-		}	
+			return $msgArray['204'];
+		}
 		else
 		{
-			//validation
-			$productValidate = new ProductValidate();
-			$status = $productValidate->validate($tRequest);
-			if($status=="Success")
+			//trim an input 
+			$productTransformer = new ProductTransformer();
+			$tRequest = $productTransformer->trimInsertData($this->request);
+			if($tRequest==1)
 			{
-				foreach ($tRequest as $key => $value)
+				return $msgArray['content'];
+			}	
+			else
+			{
+				//validation
+				$productValidate = new ProductValidate();
+				$status = $productValidate->validate($tRequest);
+				if($status=="Success")
 				{
-					if(!is_numeric($value))
+					foreach ($tRequest as $key => $value)
 					{
-						if (strpos($value, '\'') !== FALSE)
+						if(!is_numeric($value))
 						{
-							$productValue[$data]= str_replace("'","\'",$value);
-							$keyName[$data] = $key;
+							if (strpos($value, '\'') !== FALSE)
+							{
+								$productValue[$data]= str_replace("'","\'",$value);
+								$keyName[$data] = $key;
+							}
+							else
+							{
+								$productValue[$data] = $value;
+								$keyName[$data] = $key;
+							}
 						}
 						else
 						{
-							$productValue[$data] = $value;
+							$productValue[$data]= $value;
 							$keyName[$data] = $key;
 						}
+						$data++;
 					}
-					else
+					
+					// set data to the persistable object
+					for($data=0;$data<count($productValue);$data++)
 					{
-						$productValue[$data]= $value;
-						$keyName[$data] = $key;
+						//set the data in persistable object
+						$productPersistable = new ProductPersistable();	
+						$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
+						//make function name dynamically
+						$setFuncName = 'set'.$str;
+						$getFuncName[$data] = 'get'.$str;
+						$productPersistable->$setFuncName($productValue[$data]);
+						$productPersistable->setName($getFuncName[$data]);
+						$productPersistable->setKey($keyName[$data]);
+						$productArray[$data] = array($productPersistable);
 					}
-					$data++;
+					return $productArray;
 				}
-				
-				// set data to the persistable object
-				for($data=0;$data<count($productValue);$data++)
+				else
 				{
-					//set the data in persistable object
-					$productPersistable = new ProductPersistable();	
-					$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
-					//make function name dynamically
-					$setFuncName = 'set'.$str;
-					$getFuncName[$data] = 'get'.$str;
-					$productPersistable->$setFuncName($productValue[$data]);
-					$productPersistable->setName($getFuncName[$data]);
-					$productPersistable->setKey($keyName[$data]);
-					$productArray[$data] = array($productPersistable);
+					return $status;
 				}
-				return $productArray;
-			}
-			else
-			{
-				return $status;
 			}
 		}
 	}

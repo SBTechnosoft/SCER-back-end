@@ -46,33 +46,64 @@ class StateController extends BaseController implements ContainerInterface
     public function store(Request $request)
     {
 		$this->request = $request;
+		$stateDataFlag=0;
+		
 		// check the requested Http method
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
 		// insert
 		if($requestMethod == 'POST')
 		{
-			$processor = new StateProcessor();
-			$statePersistable = new StatePersistable();		
-			$stateService= new StateService();			
-			$statePersistable = $processor->createPersistable($this->request);
-			
-			if($statePersistable[0][0]=='[')
+			//primary key state is available
+			if($this->request->input('stateAbb')=="")
 			{
-				return $statePersistable;
-			}
-			else if(is_array($statePersistable))
-			{
-				$status = $stateService->insert($statePersistable);
-				return $status;
+				return $exceptionArray['stateAbb'];
 			}
 			else
 			{
-				return $statePersistable;
+				//check state is exists 
+				$stateModel = new StateModel();
+				$stateData = $stateModel->getAllData();
+				$decodedStateData = json_decode($stateData);
+				for($data=0;$data<count($decodedStateData);$data++)
+				{
+					if(strcmp($decodedStateData[$data]->state_abb,trim($this->request->input('stateAbb')))==0)
+					{
+						$stateDataFlag=1;
+						break;
+					}
+				}
+				//state is exists
+				if($stateDataFlag==1)
+				{
+					return $exceptionArray['stateMatch'];
+				}
+				else
+				{
+					$processor = new StateProcessor();
+					$statePersistable = new StatePersistable();		
+					$stateService= new StateService();			
+					$statePersistable = $processor->createPersistable($this->request);
+					
+					if($statePersistable[0][0]=='[')
+					{
+						return $statePersistable;
+					}
+					else if(is_array($statePersistable))
+					{
+						$status = $stateService->insert($statePersistable);
+						return $status;
+					}
+					else
+					{
+						return $statePersistable;
+					}
+				}	
 			}
-		}
-		else
-		{
-			return $status;
 		}
 	}
 	
@@ -110,7 +141,7 @@ class StateController extends BaseController implements ContainerInterface
 		$stateModel = new StateModel();	
 		$result = $stateModel->getData($stateAbb);
 		
-		//get exception message
+		// get exception message
 		$exception = new ExceptionMessage();
 		$fileSizeArray = $exception->messageArrays();
 		
@@ -149,7 +180,7 @@ class StateController extends BaseController implements ContainerInterface
 		$stateModel = new StateModel();	
 		$result = $stateModel->getData($stateAbb);
 		
-		//get exception message
+		// get exception message
 		$exception = new ExceptionMessage();
 		$fileSizeArray = $exception->messageArrays();
 		

@@ -45,62 +45,69 @@ class ProductGroupProcessor extends BaseProcessor
 		$exception = new ExceptionMessage();
 		$msgArray = $exception->messageArrays();
 		
-		//trim an input 
-		$productGroupTransformer = new ProductGroupTransformer();
-		$tRequest = $productGroupTransformer->trimInsertData($this->request);
-		if($tRequest==1)
+		if(count($_POST)==0)
 		{
-			return $msgArray['content'];
-		}	
+			return $msgArray['204'];
+		}
 		else
 		{
-			//validation
-			$productGroupValidate = new ProductGroupValidate();
-			$status = $productGroupValidate->validate($tRequest);
-			if($status=="Success")
+			//trim an input 
+			$productGroupTransformer = new ProductGroupTransformer();
+			$tRequest = $productGroupTransformer->trimInsertData($this->request);
+			if($tRequest==1)
 			{
-				foreach ($tRequest as $key => $value)
+				return $msgArray['content'];
+			}	
+			else
+			{
+				//validation
+				$productGroupValidate = new ProductGroupValidate();
+				$status = $productGroupValidate->validate($tRequest);
+				if($status=="Success")
 				{
-					if(!is_numeric($value))
+					foreach ($tRequest as $key => $value)
 					{
-						if (strpos($value, '\'') !== FALSE)
+						if(!is_numeric($value))
 						{
-							$productGroupValue[$data]= str_replace("'","\'",$value);
-							$keyName[$data] = $key;
+							if (strpos($value, '\'') !== FALSE)
+							{
+								$productGroupValue[$data]= str_replace("'","\'",$value);
+								$keyName[$data] = $key;
+							}
+							else
+							{
+								$productGroupValue[$data] = $value;
+								$keyName[$data] = $key;
+							}
 						}
 						else
 						{
-							$productGroupValue[$data] = $value;
+							$productGroupValue[$data]= $value;
 							$keyName[$data] = $key;
 						}
+						$data++;
 					}
-					else
+					
+					// set data to the persistable object
+					for($data=0;$data<count($productGroupValue);$data++)
 					{
-						$productGroupValue[$data]= $value;
-						$keyName[$data] = $key;
+						//set the data in persistable object
+						$productGroupPersistable = new ProductGroupPersistable();	
+						$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
+						//make function name dynamically
+						$setFuncName = 'set'.$str;
+						$getFuncName[$data] = 'get'.$str;
+						$productGroupPersistable->$setFuncName($productGroupValue[$data]);
+						$productGroupPersistable->setName($getFuncName[$data]);
+						$productGroupPersistable->setKey($keyName[$data]);
+						$productGroupArray[$data] = array($productGroupPersistable);
 					}
-					$data++;
+					return $productGroupArray;
 				}
-				
-				// set data to the persistable object
-				for($data=0;$data<count($productGroupValue);$data++)
+				else
 				{
-					//set the data in persistable object
-					$productGroupPersistable = new ProductGroupPersistable();	
-					$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
-					//make function name dynamically
-					$setFuncName = 'set'.$str;
-					$getFuncName[$data] = 'get'.$str;
-					$productGroupPersistable->$setFuncName($productGroupValue[$data]);
-					$productGroupPersistable->setName($getFuncName[$data]);
-					$productGroupPersistable->setKey($keyName[$data]);
-					$productGroupArray[$data] = array($productGroupPersistable);
+					return $status;
 				}
-				return $productGroupArray;
-			}
-			else
-			{
-				return $status;
 			}
 		}
 	}

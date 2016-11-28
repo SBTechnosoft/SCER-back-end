@@ -17,6 +17,8 @@ class ExceptionMessage
 		$msgArray['404'] = "404: Not Found";
 		$msgArray['content'] = "content: not proper content"; //company-insert-isDisp&isDef-not proper
 		$msgArray['equal'] = "equal: credit-debit amount is not an equal";
+		$msgArray['stateAbb'] = "required: state-abb is required";
+		$msgArray['stateMatch'] = "Exists: state is already exists";
 		return $msgArray;
 	}
 }

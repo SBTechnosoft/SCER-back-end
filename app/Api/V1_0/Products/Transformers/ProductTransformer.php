@@ -41,28 +41,45 @@ class ProductTransformer
 		$enumIsDispArray = array();
 		$isDispEnum = new IsDisplayEnum();
 		$enumIsDispArray = $isDispEnum->enumArrays();
-		foreach ($enumIsDispArray as $key => $value)
+		if($tIsDisplay=="")
 		{
-			if(strcmp($value,$tIsDisplay)==0)
+			$tIsDisplay=$enumIsDispArray['display'];
+		}
+		else
+		{
+			foreach ($enumIsDispArray as $key => $value)
 			{
-				$isDisplayFlag=1;
-				break;
+				if(strcmp($value,$tIsDisplay)==0)
+				{
+					$isDisplayFlag=1;
+					break;
+				}
+				else
+				{
+					$isDisplayFlag=2;
+				}
 			}
 		}
 		
 		$enumMeasurementUnitArray = array();
 		$measurementUnitEnum = new measurementUnitEnum();
 		$enumMeasurementUnitArray = $measurementUnitEnum->enumArrays();
-		foreach ($enumMeasurementUnitArray as $key => $value)
+		if($tMeasUnit!="")
 		{
-			if(strcmp($value,$tMeasUnit)==0)
+			foreach ($enumMeasurementUnitArray as $key => $value)
 			{
-				$measurementUnitFlag=1;
-				break;
+				if(strcmp($value,$tMeasUnit)==0)
+				{
+					$measurementUnitFlag=1;
+					break;
+				}
+				else
+				{
+					$measurementUnitFlag=2;
+				}
 			}
 		}
-		
-		if($isDisplayFlag==0 || $measurementUnitFlag==0)
+		if($isDisplayFlag==2 || $measurementUnitFlag==2)
 		{
 			return "1";
 		}

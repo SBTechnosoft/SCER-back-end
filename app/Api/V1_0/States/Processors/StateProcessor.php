@@ -37,73 +37,79 @@ class StateProcessor extends BaseProcessor
 		//get exception message
 		$exception = new ExceptionMessage();
 		$msgArray = $exception->messageArrays();
-		
-		//trim an input 
-		$stateTransformer = new StateTransformer();
-		$tRequest = $stateTransformer->trimInsertData($this->request);
-		
-		if($tRequest==1)
+		if(count($_POST)==0)
 		{
-			return $msgArray['content'];
-		}	
+			return $msgArray['204'];
+		}
 		else
 		{
-			//get data from trim array
-			$tStateAbb = $tRequest['state_abb'];
-			$tStateName = $tRequest['state_name'];
-			$tIsDisplay = $tRequest['is_display'];
+			//trim an input 
+			$stateTransformer = new StateTransformer();
+			$tRequest = $stateTransformer->trimInsertData($this->request);
 			
-			//validation
-			$stateValidate = new StateValidate();
-			$status = $stateValidate->validate($tRequest);
-			
-			//if form-data is valid then return status 'Success' otherwise return with error message
-			if($status=="Success")
+			if($tRequest==1)
 			{
-				foreach ($tRequest as $key => $value)
+				return $msgArray['content'];
+			}	
+			else
+			{
+				//get data from trim array
+				$tStateAbb = $tRequest['state_abb'];
+				$tStateName = $tRequest['state_name'];
+				$tIsDisplay = $tRequest['is_display'];
+				
+				//validation
+				$stateValidate = new StateValidate();
+				$status = $stateValidate->validate($tRequest);
+				
+				//if form-data is valid then return status 'Success' otherwise return with error message
+				if($status=="Success")
 				{
-					if(!is_numeric($value))
+					foreach ($tRequest as $key => $value)
 					{
-						if (strpos($value, '\'') !== FALSE)
+						if(!is_numeric($value))
 						{
-							$stateValue[$data]= str_replace("'","\'",$value);
-							$keyName[$data] = $key;
+							if (strpos($value, '\'') !== FALSE)
+							{
+								$stateValue[$data]= str_replace("'","\'",$value);
+								$keyName[$data] = $key;
+							}
+							else
+							{
+								$stateValue[$data] = $value;
+								$keyName[$data] = $key;
+							}
 						}
 						else
 						{
-							$stateValue[$data] = $value;
+							$stateValue[$data]= $value;
 							$keyName[$data] = $key;
 						}
+						$data++;
 					}
-					else
+					
+					// set data to the persistable object
+					for($data=0;$data<count($stateValue);$data++)
 					{
-						$stateValue[$data]= $value;
-						$keyName[$data] = $key;
+						//set the data in persistable object
+						$statePersistable = new StatePersistable();	
+						$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
+						//make function name dynamically
+						$setFuncName = 'set'.$str;
+						$getFuncName[$data] = 'get'.$str;
+						$statePersistable->$setFuncName($stateValue[$data]);
+						$statePersistable->setName($getFuncName[$data]);
+						$statePersistable->setKey($keyName[$data]);
+						$stateArray[$data] = array($statePersistable);
 					}
-					$data++;
-				}
-				
-				// set data to the persistable object
-				for($data=0;$data<count($stateValue);$data++)
+					return $stateArray;
+				}		
+				else
 				{
-					//set the data in persistable object
-					$statePersistable = new StatePersistable();	
-					$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
-					//make function name dynamically
-					$setFuncName = 'set'.$str;
-					$getFuncName[$data] = 'get'.$str;
-					$statePersistable->$setFuncName($stateValue[$data]);
-					$statePersistable->setName($getFuncName[$data]);
-					$statePersistable->setKey($keyName[$data]);
-					$stateArray[$data] = array($statePersistable);
-				}
-				return $stateArray;
-			}		
-			else
-			{
-				return $status;
-			}	
-		}			
+					return $status;
+				}	
+			}
+		}		
     }
 	
 	/**

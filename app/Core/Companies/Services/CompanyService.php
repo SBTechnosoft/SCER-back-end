@@ -81,14 +81,14 @@ class CompanyService extends AbstractService
 				$keyName[$data] = $companyArray[$data][0]->getkey();
 			}
 		}
-		if(is_array($document))
+		if($documentFlag==1)
 		{
-			//data pass to the model object for insert
+			// data pass to the model object for insert
 			$companyModel = new CompanyModel();
 			$status = $companyModel->insertAllData($getData,$keyName,$document);
 			return $status;
 		}
-		else
+		else 
 		{
 			//data pass to the model object for insert
 			$companyModel = new CompanyModel();

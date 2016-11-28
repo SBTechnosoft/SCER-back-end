@@ -38,64 +38,70 @@ class BranchProcessor extends BaseProcessor
 		//get exception message
 		$exception = new ExceptionMessage();
 		$msgArray = $exception->messageArrays();
-		
-		//trim an input 
-		$branchTransformer = new BranchTransformer();
-		$tRequest = $branchTransformer->trimInsertData($this->request);
-		
-		if($tRequest==1)
+		if(count($_POST)==0)
 		{
-			return $msgArray['content'];
-		}	
+			return $msgArray['204'];
+		}
 		else
 		{
-			//validation
-			$branchValidate = new BranchValidate();
-			$status = $branchValidate->validate($tRequest);
-			if($status=="Success")
+			//trim an input 
+			$branchTransformer = new BranchTransformer();
+			$tRequest = $branchTransformer->trimInsertData($this->request);
+			
+			if($tRequest==1)
 			{
-				foreach ($tRequest as $key => $value)
+				return $msgArray['content'];
+			}	
+			else
+			{
+				//validation
+				$branchValidate = new BranchValidate();
+				$status = $branchValidate->validate($tRequest);
+				if($status=="Success")
 				{
-					if(!is_numeric($value))
+					foreach ($tRequest as $key => $value)
 					{
-						if (strpos($value, '\'') !== FALSE)
+						if(!is_numeric($value))
 						{
-							$branchValue[$data]= str_replace("'","\'",$value);
-							$keyName[$data] = $key;
+							if (strpos($value, '\'') !== FALSE)
+							{
+								$branchValue[$data]= str_replace("'","\'",$value);
+								$keyName[$data] = $key;
+							}
+							else
+							{
+								$branchValue[$data] = $value;
+								$keyName[$data] = $key;
+							}
 						}
 						else
 						{
-							$branchValue[$data] = $value;
+							$branchValue[$data]= $value;
 							$keyName[$data] = $key;
 						}
+						$data++;
 					}
-					else
+					
+					// set data to the persistable object
+					for($data=0;$data<count($branchValue);$data++)
 					{
-						$branchValue[$data]= $value;
-						$keyName[$data] = $key;
+						//set the data in persistable object
+						$branchPersistable = new BranchPersistable();	
+						$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
+						//make function name dynamically
+						$setFuncName = 'set'.$str;
+						$getFuncName[$data] = 'get'.$str;
+						$branchPersistable->$setFuncName($branchValue[$data]);
+						$branchPersistable->setName($getFuncName[$data]);
+						$branchPersistable->setKey($keyName[$data]);
+						$branchArray[$data] = array($branchPersistable);
 					}
-					$data++;
+					return $branchArray;
 				}
-				
-				// set data to the persistable object
-				for($data=0;$data<count($branchValue);$data++)
+				else
 				{
-					//set the data in persistable object
-					$branchPersistable = new BranchPersistable();	
-					$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
-					//make function name dynamically
-					$setFuncName = 'set'.$str;
-					$getFuncName[$data] = 'get'.$str;
-					$branchPersistable->$setFuncName($branchValue[$data]);
-					$branchPersistable->setName($getFuncName[$data]);
-					$branchPersistable->setKey($keyName[$data]);
-					$branchArray[$data] = array($branchPersistable);
+					return $status;
 				}
-				return $branchArray;
-			}
-			else
-			{
-				return $status;
 			}
 		}
 	}

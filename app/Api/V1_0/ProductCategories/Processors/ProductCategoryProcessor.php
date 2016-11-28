@@ -41,65 +41,72 @@ class ProductCategoryProcessor extends BaseProcessor
 		$keyName = array();
 		$value = array();
 		$data=0;
-		//trim an input 
-		$productCategoryTransformer = new ProductCategoryTransformer();
-		$tRequest = $productCategoryTransformer->trimInsertData($this->request);
 		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$msgArray = $exception->messageArrays();
-		if($tRequest==1)
+		if(count($_POST)==0)
 		{
-			return $msgArray['content'];
-		}	
+			return $msgArray['204'];
+		}
 		else
 		{
-			//validation
-			$productCategoryValidate = new ProductCategoryValidate();
-			$status = $productCategoryValidate->validate($tRequest);
-			if($status=="Success")
+			//trim an input 
+			$productCategoryTransformer = new ProductCategoryTransformer();
+			$tRequest = $productCategoryTransformer->trimInsertData($this->request);
+			if($tRequest==1)
 			{
-				foreach ($tRequest as $key => $value)
+				return $msgArray['content'];
+			}	
+			else
+			{
+				//validation
+				$productCategoryValidate = new ProductCategoryValidate();
+				$status = $productCategoryValidate->validate($tRequest);
+				if($status=="Success")
 				{
-					if(!is_numeric($value))
+					foreach ($tRequest as $key => $value)
 					{
-						if (strpos($value, '\'') !== FALSE)
+						if(!is_numeric($value))
 						{
-							$productCatValue[$data]= str_replace("'","\'",$value);
-							$keyName[$data] = $key;
+							if (strpos($value, '\'') !== FALSE)
+							{
+								$productCatValue[$data]= str_replace("'","\'",$value);
+								$keyName[$data] = $key;
+							}
+							else
+							{
+								$productCatValue[$data] = $value;
+								$keyName[$data] = $key;
+							}
 						}
 						else
 						{
-							$productCatValue[$data] = $value;
+							$productCatValue[$data]= $value;
 							$keyName[$data] = $key;
 						}
+						$data++;
 					}
-					else
+					// set data to the persistable object
+					for($data=0;$data<count($productCatValue);$data++)
 					{
-						$productCatValue[$data]= $value;
-						$keyName[$data] = $key;
+						//set the data in persistable object
+						$productCategoryPersistable = new ProductCategoryPersistable();	
+						$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
+						//make function name dynamically
+						$setFuncName = 'set'.$str;
+						$getFuncName[$data] = 'get'.$str;
+						$productCategoryPersistable->$setFuncName($productCatValue[$data]);
+						$productCategoryPersistable->setName($getFuncName[$data]);
+						$productCategoryPersistable->setKey($keyName[$data]);
+						$productCatArray[$data] = array($productCategoryPersistable);
 					}
-					$data++;
+					return $productCatArray;
 				}
-				// set data to the persistable object
-				for($data=0;$data<count($productCatValue);$data++)
+				else
 				{
-					//set the data in persistable object
-					$productCategoryPersistable = new ProductCategoryPersistable();	
-					$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
-					//make function name dynamically
-					$setFuncName = 'set'.$str;
-					$getFuncName[$data] = 'get'.$str;
-					$productCategoryPersistable->$setFuncName($productCatValue[$data]);
-					$productCategoryPersistable->setName($getFuncName[$data]);
-					$productCategoryPersistable->setKey($keyName[$data]);
-					$productCatArray[$data] = array($productCategoryPersistable);
+					return $status;
 				}
-				return $productCatArray;
-			}
-			else
-			{
-				return $status;
 			}
 		}
 	}

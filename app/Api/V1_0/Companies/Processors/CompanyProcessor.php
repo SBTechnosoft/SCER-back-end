@@ -49,7 +49,6 @@ class CompanyProcessor extends BaseProcessor
 		//get exception message
 		$exception = new ExceptionMessage();
 		$msgArray = $exception->messageArrays();
-		
 		$file = $request->file();
 		if(count($_POST)==0 && count($file)==0)
 		{
@@ -73,7 +72,6 @@ class CompanyProcessor extends BaseProcessor
 		//trim an input 
 		$companyTransformer = new CompanyTransformer();
 		$tRequest = $companyTransformer->trimInsertData($this->request);
-		
 		if($tRequest==1)
 		{
 			return $msgArray['content'];
