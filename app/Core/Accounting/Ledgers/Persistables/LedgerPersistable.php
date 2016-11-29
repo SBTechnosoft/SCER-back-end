@@ -19,6 +19,9 @@ use ERP\Core\Accounting\Ledgers\Properties\LedgerGrpIdPropertyTrait;
 use ERP\Core\Companies\Properties\CompanyIdPropertyTrait;
 use ERP\Core\Accounting\Ledgers\Properties\ContactNoPropertyTrait;
 use ERP\Core\Accounting\Ledgers\Properties\EmailIdPropertyTrait;
+use ERP\Core\Accounting\Ledgers\Properties\BalanceFlagPropertyTrait;
+use ERP\Core\Accounting\Ledgers\Properties\AmountPropertyTrait;
+use ERP\Core\Accounting\Ledgers\Properties\AmountTypePropertyTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -42,4 +45,7 @@ class LedgerPersistable
 	use GstNoPropertyTrait;
 	use ContactNoPropertyTrait;
 	use EmailIdPropertyTrait;
+	use BalanceFlagPropertyTrait;
+	use AmountPropertyTrait;
+	use AmountTypePropertyTrait;
 }

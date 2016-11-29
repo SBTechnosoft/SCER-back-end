@@ -47,21 +47,56 @@ class LedgerService extends AbstractService
      */
 	public function insert()
 	{
+		$flag=0;
 		$ledgerArray = array();
 		$getData = array();
-		$keyName = array();
+		$dataArray = array();
+		$key = array();
 		$funcName = array();
 		$ledgerArray = func_get_arg(0);
+		$ledgerData=0;
+		$balanceData=0;
+		$ledgerKeyNameExt = array();
 		for($data=0;$data<count($ledgerArray);$data++)
 		{
 			$funcName[$data] = $ledgerArray[$data][0]->getName();
 			$getData[$data] = $ledgerArray[$data][0]->$funcName[$data]();
 			$keyName[$data] = $ledgerArray[$data][0]->getkey();
+			if($data>=10 && $data<=12)
+			{
+				if($getData[10]=="")
+				{
+				}
+				else
+				{
+					$ledgerFuncNameExt[$balanceData] = $funcName[$data];
+					$ledgerGetDataExt[$balanceData] = $getData[$data];
+					$ledgerKeyNameExt[$balanceData] = $keyName[$data];
+					$balanceData++;
+				}
+			}
+			else
+			{
+				$ledgerFuncName[$ledgerData] = $funcName[$data];
+				$ledgerGetData[$ledgerData] = $getData[$data];
+				$ledgerKeyName[$ledgerData] = $keyName[$data];
+				$ledgerData++;
+			}
 		}
-		//data pass to the model object for insert
-		$ledgerModel = new LedgerModel();
-		$status = $ledgerModel->insertData($getData,$keyName);
-		return $status;
+		if(count($ledgerKeyNameExt)!=0)
+		{
+			//data pass to the model object for insert
+			$ledgerModel = new LedgerModel();
+			$status = $ledgerModel->insertAllData($ledgerGetData,$ledgerKeyName,$ledgerGetDataExt,$ledgerKeyNameExt);
+			return $status;
+		}
+		else
+		{
+			//data pass to the model object for insert
+			$ledgerModel = new LedgerModel();
+			$status = $ledgerModel->insertData($ledgerGetData,$ledgerKeyName);
+			return $status;
+		}
 	}
 	
 	/**

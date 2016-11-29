@@ -4,6 +4,8 @@ namespace ERP\Api\V1_0\Accounting\Ledgers\Transformers;
 use Illuminate\Http\Request;
 use ERP\Http\Requests;
 use ERP\Core\Accounting\Ledgers\Entities\InventoryAffectedEnum;
+use ERP\Core\Accounting\Ledgers\Entities\BalanceFlagEnum;
+use ERP\Core\Accounting\Journals\Entities\AmountTypeEnum;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -16,6 +18,8 @@ class LedgerTransformer
     public function trimInsertData(Request $request)
     {
 		$inventoryAffectedFlag=0;
+		$balanceTypeFlag=0;
+		$amountTypeFlag=0;
 		//data get from body
 		$ledgerName = $request->input('ledgerName'); 
 		$alias = $request->input('alias'); 
@@ -27,6 +31,9 @@ class LedgerTransformer
 		$pan = $request->input('pan'); 
 		$tin = $request->input('tin'); 
 		$gstNo = $request->input('gst'); 		
+		$balanceFlag = $request->input('balanceFlag'); 		
+		$amount = $request->input('amount'); 		
+		$amountType = $request->input('amountType'); 		
 		$stateAbb = $request->input('stateAbb'); 			
 		$cityId = $request->input('cityId'); 			
 		$ledgerGrpId = $request->input('ledgerGroupId');  
@@ -43,6 +50,9 @@ class LedgerTransformer
 		$tPan = trim($pan);
 		$tTin = trim($tin);
 		$tGstNo = trim($gstNo);
+		$tBalanceFlag = trim($balanceFlag);
+		$tAmount = trim($amount);
+		$tAmountType = trim($amountType);
 		$tStateAbb = trim($stateAbb);
 		$tCityId = trim($cityId);
 		$tLedgerGrpId = trim($ledgerGrpId);
@@ -65,7 +75,45 @@ class LedgerTransformer
 				}
 			}
 		}
-		if($inventoryAffectedFlag==2)
+		
+		if($tBalanceFlag!="")
+		{
+			$enumBalanceFlagArray = array();
+			$balanceFlagEnum = new BalanceFlagEnum();
+			$enumBalanceFlagArray = $balanceFlagEnum->enumArrays();
+			foreach ($enumBalanceFlagArray as $key => $value)
+			{
+				if(strcmp($value,$tBalanceFlag)==0)
+				{
+					$balanceTypeFlag=1;
+					break;
+				}
+				else
+				{
+					$balanceTypeFlag=2;
+				}
+			}
+		}
+		if($tAmountType!=="")
+		{
+			//check enum type[amount-type]
+			$enumAmountTypeArray = array();
+			$amountTypeEnum = new AmountTypeEnum();
+			$enumAmountTypeArray = $amountTypeEnum->enumArrays();
+			foreach ($enumAmountTypeArray as $key => $value)
+			{
+				if(strcmp($value,$tAmountType)==0)
+				{
+					$amountTypeFlag=1;
+					break;
+				}
+				else
+				{
+					$amountTypeFlag=2;
+				}
+			}
+		}	
+		if($inventoryAffectedFlag==2 || $balanceTypeFlag==2 || $amountTypeFlag==2)
 		{
 			return "1";
 		}
@@ -83,6 +131,9 @@ class LedgerTransformer
 			$data['pan'] = $tPan;
 			$data['tin'] = $tTin;
 			$data['gst'] = $tGstNo;
+			$data['balance_flag'] = $tBalanceFlag;
+			$data['amount'] = $tAmount;
+			$data['amount_type'] = $tAmountType;
 			$data['state_abb'] = $tStateAbb;
 			$data['city_id'] = $tCityId;
 			$data['ledger_group_id'] = $tLedgerGrpId;

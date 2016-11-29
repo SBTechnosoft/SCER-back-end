@@ -47,7 +47,6 @@ class LedgerProcessor extends BaseProcessor
 			//trim an input 
 			$ledgerTransformer = new LedgerTransformer();
 			$tRequest = $ledgerTransformer->trimInsertData($this->request);
-			
 			if($tRequest==1)
 			{
 				return $msgArray['content'];

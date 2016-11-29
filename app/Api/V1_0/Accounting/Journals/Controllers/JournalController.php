@@ -128,8 +128,11 @@ class JournalController extends BaseController implements ContainerInterface
 	/**
      * get the specific data between given date or current year data
      */
-    public function getSpecificData(Request $request)
+    public function getSpecificData(Request $request,$companyId)
     {
+		echo "enter";
+		print_r($companyId);
+		exit;
 		//get the data between fromDate and toDate
 		if(strcmp(array_keys($request->header())[5],"fromdate")==0)
 		{
