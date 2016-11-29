@@ -53,7 +53,6 @@ class JournalService
 		$entryDateArray = array();
 		$companyIdArray = array();
 		$journalArray = func_get_arg(0);
-		
 		for($data=0;$data<count($journalArray);$data++)
 		{
 			$amountArray[$data] = $journalArray[$data]->getAmount();

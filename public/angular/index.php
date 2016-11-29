@@ -337,21 +337,21 @@ include ('connection.php');
 				
 				// special journal
 				// $scope.user = [{"jfId":4,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":35},{"amount":2,"amountType":"credit","ledgerId":35},{"amount":12,"amountType":"debit","ledgerId":35}],"entryDate":"22-10-2015","companyId":14}];
-				// formdata.append('jfId',4);
- 				// formdata.append('companyId',14);
+				formdata.append('jfId',8);
+ 				formdata.append('companyId',14);
  
- 				// formdata.append('entryDate','22-10-2016');
- 				// var json=[{"amount": 10 ,"amountType":" credit ","ledgerId":35},{"amount":2,"amountType":"credit","ledgerId":35},{"amount":12,"amountType":"debit","ledgerId":35}];
+ 				formdata.append('entryDate','22-10-2016');
+ 				var json=[{"amount": 100 ,"amountType":" debit ","ledgerId":39},{"amount":50,"amountType":"credit","ledgerId":37},{"amount":50,"amountType":"credit","ledgerId":35}];
 
  				  
-  				// for(var i=0;i<json.length;i++){
+  				for(var i=0;i<json.length;i++){
    
-  					// angular.forEach(json[i], function (value,key) {
+  					angular.forEach(json[i], function (value,key) {
    						
-   					// formdata.append('data['+i+']['+key+']',value);
-  					// });
+   					formdata.append('data['+i+']['+key+']',value);
+  					});
     
-  				// }
+  				}
 
 				
 				// sale/purchase
@@ -413,7 +413,7 @@ include ('connection.php');
 				// var productId = 8;
 				// var productGrpId = 11;
 				// var productCatId = 16;
-				var companyId=14;
+				// var companyId=14;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -435,8 +435,8 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/products/outward";
 				
 				// var url="http://www.scerp1.com/accos";
-				// var url="http://www.scerp1.com/accounting/journals";
-				var url="http://www.scerp1.com/accounting/journals/company/"+companyId;
+				var url="http://www.scerp1.com/accounting/journals";
+				// var url="http://www.scerp1.com/accounting/journals/company/"+companyId;
 				// var url="http://www.scerp1.com/accounting/journals/next";
 				
 				// var url="http://www.scerp1.com/accounting/ledgers/"+ledgerId+"/transactions";
@@ -480,15 +480,15 @@ include ('connection.php');
 				$http({
                         url: url,
                         // type:'patch',
-						 // method: 'post',
-						method: 'get',
+						 method: 'post',
+						// method: 'get',
 						// method: "PATCH",
 						// method:'delete',
 						processData: false,
                         // headers: {'Content-Type': undefined,'fromDate':'1-10-2016','toDate':'30-12-2016'},
                         headers: {'Content-Type': undefined},
                         // headers: {'Content-Type': undefined,'type':'sales'},
-						// data:formdata
+						data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {
