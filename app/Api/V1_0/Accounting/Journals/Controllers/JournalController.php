@@ -130,9 +130,6 @@ class JournalController extends BaseController implements ContainerInterface
      */
     public function getSpecificData(Request $request,$companyId)
     {
-		echo "enter";
-		print_r($companyId);
-		exit;
 		//get the data between fromDate and toDate
 		if(strcmp(array_keys($request->header())[5],"fromdate")==0)
 		{
@@ -141,14 +138,14 @@ class JournalController extends BaseController implements ContainerInterface
 			$journalPersistable = new JournalPersistable();
 			$journalPersistable = $processor->createPersistableData($this->request);
 			$journalService= new JournalService();
-			$status = $journalService->getJournalDetail($journalPersistable);
+			$status = $journalService->getJournalDetail($journalPersistable,$companyId);
 			return $status;
 		}
 		//if date is not given..get the data of current year
 		else
 		{
 			$journalModel = new JournalModel();
-			$status = $journalModel->getCurrentYearData();
+			$status = $journalModel->getCurrentYearData($companyId);
 			return $status;
 		}
 	}

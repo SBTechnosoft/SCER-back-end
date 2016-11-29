@@ -99,11 +99,12 @@ class JournalService
 	{
 		$processArray = array();
 		$processArray = func_get_arg(0);
+		$companyId = func_get_arg(1);
 		$fromDate = $processArray->getFromDate();
 		$toDate = $processArray->getToDate();
 		
 		$journalModel = new JournalModel();
-		$status = $journalModel->getData($fromDate,$toDate);
+		$status = $journalModel->getData($fromDate,$toDate,$companyId);
 		
 		//get exception message
 		$exception = new ExceptionMessage();

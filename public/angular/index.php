@@ -340,7 +340,7 @@ include ('connection.php');
 				// formdata.append('jfId',4);
  				// formdata.append('companyId',14);
  
- 				// formdata.append('entryDate','22-10-2015');
+ 				// formdata.append('entryDate','22-10-2016');
  				// var json=[{"amount": 10 ,"amountType":" credit ","ledgerId":35},{"amount":2,"amountType":"credit","ledgerId":35},{"amount":12,"amountType":"debit","ledgerId":35}];
 
  				  
@@ -485,8 +485,8 @@ include ('connection.php');
 						// method: "PATCH",
 						// method:'delete',
 						processData: false,
-                        headers: {'Content-Type': undefined,'fromDate':'1-10-2016','toDate':'1-12-2016'},
-                        // headers: {'Content-Type': undefined},
+                        // headers: {'Content-Type': undefined,'fromDate':'1-10-2016','toDate':'30-12-2016'},
+                        headers: {'Content-Type': undefined},
                         // headers: {'Content-Type': undefined,'type':'sales'},
 						// data:formdata
 						// data:$scope.user						

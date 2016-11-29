@@ -107,7 +107,7 @@ class JournalModel extends Model
 	 * get data between given date
 	 * returns the error-message/data
 	*/
-	public function getData($fromDate,$toDate)
+	public function getData($fromDate,$toDate,$companyId)
 	{
 		DB::beginTransaction();
 		$raw = DB::select("SELECT 
@@ -121,7 +121,9 @@ class JournalModel extends Model
 		ledger_id,
 		company_id
 		FROM journal_dtl
-		WHERE (entry_date BETWEEN '".$fromDate."' AND '".$toDate."') and deleted_at='0000-00-00 00:00:00'");
+		WHERE (entry_date BETWEEN '".$fromDate."' AND '".$toDate."') and 
+		company_id='".$companyId."' and 
+		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		// get exception message
@@ -143,9 +145,8 @@ class JournalModel extends Model
 	 * get current year data
 	 * returns the error-message/data
 	*/
-	public function getCurrentYearData()
+	public function getCurrentYearData($companyId)
 	{
-		DB::beginTransaction();
 		$raw = DB::select("SELECT 
 		journal_id,
 		jf_id,
@@ -157,7 +158,9 @@ class JournalModel extends Model
 		ledger_id,
 		company_id
 		FROM journal_dtl  
-		WHERE YEAR(entry_date)= YEAR(CURDATE()) and deleted_at='0000-00-00 00:00:00'");
+		WHERE YEAR(entry_date)= YEAR(CURDATE()) and 
+		company_id='".$companyId."' and 
+		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		if(count($raw)==0)
 		{
