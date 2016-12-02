@@ -76,6 +76,7 @@ class JournalController extends BaseController implements ContainerInterface
 						$outward = $constantArray['journalOutward'];
 						$productProcessor = new ProductProcessor();
 						$productPersistable = $productProcessor->createPersistableInOutWard($this->request,$outward);
+						
 						if(is_array($productPersistable))
 						{
 							$status = $productService->insertInOutward($productPersistable);
@@ -147,6 +148,40 @@ class JournalController extends BaseController implements ContainerInterface
 			$journalModel = new JournalModel();
 			$status = $journalModel->getCurrentYearData($companyId);
 			return $status;
+		}
+	}
+	
+	public function update(Request $request,$journalId)
+	{
+		echo "enter";
+		$this->request = $request;
+		$processor = new JournalProcessor();
+		$journalPersistable = new JournalPersistable();		
+		$journalService= new JournalService();		
+		$journalModel = new JournalModel();
+		$result = $journalModel->getSpecificJournalData($journalId);
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($result,$exceptionArray['404'])==0)
+		{
+			return $result;
+		}
+		else
+		{
+			$journalPersistable = $processor->createPersistableChange($this->request,$journalId);
+			
+			//here two array and string is return at a time
+			if(is_array($journalPersistable))
+			{
+				$status = $journalService->update($journalPersistable);
+				return $status;
+			}
+			else
+			{
+				return $journalPersistable;
+			}
 		}
 	}
 }

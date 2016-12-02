@@ -9,6 +9,9 @@ use ERP\Core\Accounting\Journals\Properties\AmountTypePropertyTrait;
 use ERP\Core\Accounting\Ledgers\Properties\LedgerIdPropertyTrait;
 use ERP\Core\Accounting\Journals\Properties\FromDatePropertyTrait;
 use ERP\Core\Accounting\Journals\Properties\ToDatePropertyTrait;
+use ERP\Core\Accounting\Journals\Properties\JournalIdPropertyTrait;
+use ERP\Core\Shared\Properties\NamePropertyTrait;
+use ERP\Core\Shared\Properties\KeyPropertyTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -22,4 +25,7 @@ class JournalPersistable
     use LedgerIdPropertyTrait;
     use FromDatePropertyTrait;
     use ToDatePropertyTrait;
+    use NamePropertyTrait;
+    use KeyPropertyTrait;
+    use JournalIdPropertyTrait;
 }

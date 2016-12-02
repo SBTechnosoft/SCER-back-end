@@ -154,9 +154,9 @@ class InvoiceService extends AbstractService
 		}
 		else
 		{
-			$encoded = new EncodeAllData();
-			$encodeAllData = $encoded->getEncodedAllData($status);
-			return $encodeAllData;
+			$encoded = new EncodeData();
+			$encodeData = $encoded->getEncodedData($status);
+			return $encodeData;
 		}
 	}
 	

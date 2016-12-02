@@ -23,6 +23,7 @@
 ##### Template type Enum
 			{
 				generalTemplate:'general', 
+				generalTemplate:'invoice', 
 				quotationTemplate:'quotation',
 				emailTemplate :'email', 
 				smsTemplate:'sms'

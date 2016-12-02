@@ -66,7 +66,7 @@ class BillProcessor extends BaseProcessor
 			if($status=="Success")
 			{
 				//get contact-number from input data
-				$contactNo = trim($request->input()['contactNo']);
+				$contactNo = $tRequest['contact_no'];
 				
 				//check client is exists by contact-number
 				$clientService = new ClientService();
@@ -111,7 +111,8 @@ class BillProcessor extends BaseProcessor
 				return $status;
 			}
 		}
-		$paymentMode = $request->input()['paymentMode'];
+		$paymentMode = $tRequest['payment_mode'];
+		
 		//get ledger data for checking client is exist in ledger or not by contact-number
 		$ledgerService = new LedgerService();
 		$ledgerAllData = $ledgerService->getAllLedgerData();
@@ -131,17 +132,18 @@ class BillProcessor extends BaseProcessor
 				$paymentLedgerId = $encodedLedgerData[$contactData]->ledgerId;
 			}
 		}
+		
 		if($contactFlag==0)
 		{
 			$ledgerArray=array();
-			$ledgerArray['ledgerName']=$request->input()['clientName'];
-			$ledgerArray['address1']=$request->input()['address1'];
-			$ledgerArray['address2']=$request->input()['address2'];
-			$ledgerArray['contactNo']=$request->input()['contactNo'];
-			$ledgerArray['emailId']=$request->input()['emailId'];
-			$ledgerArray['stateAbb']=$request->input()['stateAbb'];
-			$ledgerArray['cityId']=$request->input()['cityId'];
-			$ledgerArray['companyId']=$request->input()['companyId'];
+			$ledgerArray['ledgerName']=$tRequest['client_name'];
+			$ledgerArray['address1']=$tRequest['address1'];
+			$ledgerArray['address2']=$tRequest['address2'];
+			$ledgerArray['contactNo']=$tRequest['contact_no'];
+			$ledgerArray['emailId']=$tRequest['email_id'];
+			$ledgerArray['stateAbb']=$tRequest['state_abb'];
+			$ledgerArray['cityId']=$tRequest['city_id'];
+			$ledgerArray['companyId']=$tRequest['company_id'];
 			$ledgerArray['ledgerGroupId']=9;
 			$ledgerController = new LedgerController(new Container());
 			$method=$constantArray['postMethod'];
@@ -149,7 +151,7 @@ class BillProcessor extends BaseProcessor
 			$ledgerRequest = Request::create($path,$method,$ledgerArray);
 			$processedData = $ledgerController->store($ledgerRequest);
 			$ledgerId = json_decode($processedData)[0]->ledger_id;
-			if(strcmp($msgArray['500'],$processedData)!=0)
+			if(strcmp($msgArray['500'],$processedData)==0)
 			{
 				return $processedData;
 			}
@@ -159,20 +161,18 @@ class BillProcessor extends BaseProcessor
 		$jfId = $journalController->getData();
 		$ledgerTaxAcId = "39";
 		$ledgerSaleAcId = "38";
-		
 		$amountTypeEnum = new AmountTypeEnum();
 		$amountTypeArray = $amountTypeEnum->enumArrays();
-		
-		$ledgerAmount = $request->input()['total']-$request->input()['advance'];
+		$ledgerAmount = $tRequest['total']-$tRequest['advance'];
 		//make data array for journal entry
 		if($paymentModeFlag==1)
 		{
-			if($request->input()['tax']!="")
+			if($tRequest['tax']!="")
 			{
-				if($request->input()['balance']!="")
+				if($tRequest['advance']!="")
 				{
 					$dataArray[0]=array(
-						"amount"=>$request->input()['advance'],
+						"amount"=>$tRequest['advance'],
 						"amountType"=>$amountTypeArray['debitType'],
 						"ledgerId"=>$paymentLedgerId,
 					);
@@ -182,12 +182,12 @@ class BillProcessor extends BaseProcessor
 						"ledgerId"=>$ledgerId,
 					);
 					$dataArray[2]=array(
-						"amount"=>$request->input()['tax'],
+						"amount"=>$tRequest['tax'],
 						"amountType"=>$amountTypeArray['debitType'],
 						"ledgerId"=>$ledgerTaxAcId,
 					);
 					$dataArray[3]=array(
-						"amount"=>$request->input()['grandTotal'],
+						"amount"=>$tRequest['grand_total'],
 						"amountType"=>$amountTypeArray['creditType'],
 						"ledgerId"=>$ledgerSaleAcId,
 					);
@@ -195,17 +195,17 @@ class BillProcessor extends BaseProcessor
 				else
 				{
 					$dataArray[0]=array(
-						"amount"=>$request->input()['total'],
+						"amount"=>$tRequest['total'],
 						"amountType"=>$amountTypeArray['debitType'],
 						"ledgerId"=>$paymentLedgerId,
 					);
 					$dataArray[1]=array(
-						"amount"=>$request->input()['tax'],
+						"amount"=>$tRequest['tax'],
 						"amountType"=>$amountTypeArray['debitType'],
 						"ledgerId"=>$ledgerTaxAcId,
 					);
 					$dataArray[2]=array(
-						"amount"=>$request->input()['grandTotal'],
+						"amount"=>$tRequest['grand_total'],
 						"amountType"=>$amountTypeArray['creditType'],
 						"ledgerId"=>$ledgerSaleAcId,
 					);
@@ -213,10 +213,10 @@ class BillProcessor extends BaseProcessor
 			}
 			else
 			{
-				if($request->input()['balance']!="")
+				if($tRequest['advance']!="")
 				{
 					$dataArray[0]=array(
-						"amount"=>$request->input()['advance'],
+						"amount"=>$tRequest['advance'],
 						"amountType"=>$amountTypeArray['debitType'],
 						"ledgerId"=>$paymentLedgerId,
 					);
@@ -226,7 +226,7 @@ class BillProcessor extends BaseProcessor
 						"ledgerId"=>$ledgerId,
 					);
 					$dataArray[2]=array(
-						"amount"=>$request->input()['grandTotal'],
+						"amount"=>$tRequest['grand_total'],
 						"amountType"=>$amountTypeArray['creditType'],
 						"ledgerId"=>$ledgerSaleAcId,
 					);
@@ -234,12 +234,12 @@ class BillProcessor extends BaseProcessor
 				else
 				{
 					$dataArray[0]=array(
-						"amount"=>$request->input()['total'],
+						"amount"=>$tRequest['total'],
 						"amountType"=>$amountTypeArray['debitType'],
 						"ledgerId"=>$paymentLedgerId,
 					);
 					$dataArray[1]=array(
-						"amount"=>$request->input()['grandTotal'],
+						"amount"=>$tRequest['grand_total'],
 						"amountType"=>$amountTypeArray['creditType'],
 						"ledgerId"=>$ledgerSaleAcId,
 					);
@@ -252,22 +252,22 @@ class BillProcessor extends BaseProcessor
 			'jfId' => $jfId,
 			'data' => array(
 			),
-			'entryDate' => $request->input()['entryDate'],
-			'companyId' => $request->input()['companyId'],
+			'entryDate' => $tRequest['entry_date'],
+			'companyId' => $tRequest['company_id'],
 			'inventory' => array(
 			),
-			'transactionDate'=> $request->input()['entryDate'],
-			'billNumber'=> $request->input()['billNumber'],
-			'invoiceNumber'=>$request->input()['invoiceNumber']
+			'transactionDate'=> $tRequest['entry_date'],
+			'billNumber'=> $tRequest['bill_number'],
+			'invoiceNumber'=>$tRequest['invoice_number']
 		);
 		$journalArray['data']=$dataArray;
-		$journalArray['inventory']=$request->input()['inventory'];
+		$journalArray['inventory']=$tRequest[0];
 		$method=$constantArray['postMethod'];
 		$path=$constantArray['journalUrl'];
 		$journalRequest = Request::create($path,$method,$journalArray);
 		$journalRequest->headers->set('type',$request->header()['type'][0]);
-		
 		$processedData = $journalController->store($journalRequest);
+		
 		// print_r($processedData); //simple error msg
 		if(strcmp($processedData,$msgArray['200'])==0)
 		{
@@ -276,12 +276,11 @@ class BillProcessor extends BaseProcessor
 				$inwardTrnType = $constantArray['journalOutward'];
 			}
 			$productArray = array();
-			$productArray['billNumber']=$request->input()['billNumber'];
-			$productArray['invoiceNumber']=$request->input()['invoiceNumber'];
+			$productArray['billNumber']=$tRequest['bill_number'];
+			$productArray['invoiceNumber']=$tRequest['invoice_number'];
 			$productArray['transactionType']=$inwardTrnType;
-			$productArray['companyId']=$request->input()['companyId'];
-			$productArray['inventory'] = $request->input()['inventory'];
-			
+			$productArray['companyId']=$tRequest['company_id'];
+			$productArray['inventory'] = $tRequest[0];
 			$constantClass = new ConstantClass();
 			$constantArray = $constantClass->constantVariable();
 			$documentPath = $constantArray['billDocumentUrl'];
@@ -300,19 +299,19 @@ class BillProcessor extends BaseProcessor
 			}
 			$billPersistable = new BillPersistable();
 			$billPersistable->setProductArray(json_encode($productArray));
-			$billPersistable->setPaymentMode($request->input()['paymentMode']);
-			$billPersistable->setBankName($request->input()['bankName']);
-			$billPersistable->setInvoiceNumber($request->input()['invoiceNumber']);
-			$billPersistable->setCheckNumber($request->input()['checkNumber']);
-			$billPersistable->setTotal($request->input()['total']);
-			$billPersistable->setTax($request->input()['tax']);
-			$billPersistable->setGrandTotal($request->input()['grandTotal']);
-			$billPersistable->setAdvance($request->input()['advance']);
-			$billPersistable->setBalance($request->input()['balance']);
-			$billPersistable->setRemark($request->input()['remark']);
-			$billPersistable->setEntryDate($request->input()['entryDate']);
+			$billPersistable->setPaymentMode($tRequest['payment_mode']);
+			$billPersistable->setBankName($tRequest['bank_name']);
+			$billPersistable->setInvoiceNumber($tRequest['invoice_number']);
+			$billPersistable->setCheckNumber($tRequest['check_number']);
+			$billPersistable->setTotal($tRequest['total']);
+			$billPersistable->setTax($tRequest['tax']);
+			$billPersistable->setGrandTotal($tRequest['grand_total']);
+			$billPersistable->setAdvance($tRequest['advance']);
+			$billPersistable->setBalance($tRequest['balance']);
+			$billPersistable->setRemark($tRequest['remark']);
+			$billPersistable->setEntryDate($tRequest['entry_date']);
 			$billPersistable->setClientId($clientId);
-			$billPersistable->setCompanyId($request->input()['companyId']);
+			$billPersistable->setCompanyId($tRequest['company_id']);
 			if($docFlag==1)
 			{
 				$array1 = array();

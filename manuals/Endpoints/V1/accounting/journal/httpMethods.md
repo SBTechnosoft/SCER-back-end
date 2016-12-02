@@ -63,3 +63,31 @@
 			}
 
 **NOTES:** provide next increment journal folio id(jf_id)
+##### update journals
+##### `POST /accounting/journals/{journalId}`
++ Header
+	- Authentication Token
+	- 'type':'sales'
+	- 'type':'purchase'
++ Body
+
+            {
+				[
+					{
+						... Standard Journals Persistable Object,
+						... Standard Inventory Persistable Object
+						
+					}
+				]
+			}
+
++ Error Message
+
+			{
+				... Error Message
+			}            
++ Response
+
+            {
+                ... HTTP_Status:200
+            }

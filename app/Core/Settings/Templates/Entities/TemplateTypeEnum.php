@@ -14,6 +14,7 @@ class TemplateTypeEnum
 		$enumArray['quotationTemplate'] = "quotation";
 		$enumArray['emailTemplate'] = "email";
 		$enumArray['smsTemplate'] = "sms";
+		$enumArray['invoiceTemplate'] = "invoice";
 		return $enumArray;
 	}
 }

@@ -154,6 +154,7 @@ class ProductTransformer
 				break;
 			}
 		}
+		
 		if($discountTypeFlag==0)
 		{
 			return "1";

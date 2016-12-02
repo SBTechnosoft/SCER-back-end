@@ -192,16 +192,17 @@ class InvoiceModel extends Model
 	*/
 	public function getLatestInvoiceData($companyId)
 	{	
+		
 		DB::beginTransaction();	
 		$raw = DB::select("SELECT 
-		max(invoice_id) invoice_id,
+		invoice_id,
 		invoice_label,
 		invoice_type,
 		start_at,
 		end_at,
 		created_at,
 		company_id		
-		FROM invoice_dtl where company_id='".$companyId."' and deleted_at='0000-00-00 00:00:00'");
+		FROM invoice_dtl where company_id='".$companyId."' and deleted_at='0000-00-00 00:00:00' group by invoice_id desc limit 1");
 		DB::commit();
 		
 		//get exception message

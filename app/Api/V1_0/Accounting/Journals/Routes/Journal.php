@@ -22,6 +22,9 @@ class Journal implements RouteRegistrarInterface
 		
 		// insert data post request
 		Route::post('Accounting/Journals/Journal', 'Accounting\Journals\Controllers\JournalController@store');
+		
+		// update data post request
+		Route::post('Accounting/Journals/Journal/{journalId}', 'Accounting\Journals\Controllers\JournalController@update');
 	
 	}
 }

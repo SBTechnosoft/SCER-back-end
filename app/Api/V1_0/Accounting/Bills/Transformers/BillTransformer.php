@@ -30,6 +30,7 @@ class BillTransformer
 		$tCompanyName = trim($billArrayData['companyName']);
 		$tClientName = trim($billArrayData['clientName']);
 		$tInvoiceNumber = trim($billArrayData['invoiceNumber']);
+		$tBillNumber = trim($billArrayData['billNumber']);
 		$tAddress1 = trim($billArrayData['address1']);
 		$tAddress2 = trim($billArrayData['address2']);
 		$tStateAbb = trim($billArrayData['stateAbb']);
@@ -40,6 +41,7 @@ class BillTransformer
 		$tAdvance = trim($billArrayData['advance']);
 		$tBalance = trim($billArrayData['balance']);
 		$tPaymentMode = trim($billArrayData['paymentMode']);
+		$tBankName = trim($billArrayData['bankName']);
 		$tCheckNumber = trim($billArrayData['checkNumber']);
 		$tRemark = trim($billArrayData['remark']);
 		$tIsDisplay = trim($billArrayData['isDisplay']);
@@ -91,7 +93,8 @@ class BillTransformer
 			$data['is_display'] = $tIsDisplay;
 			$data['company_name'] = $tCompanyName;
 			$data['client_name'] = $tClientName;
-			$data['invocie_number'] = $tInvoiceNumber;
+			$data['invoice_number'] = $tInvoiceNumber;
+			$data['bill_number'] = $tBillNumber;
 			$data['address1'] = $tAddress1;
 			$data['address2'] = $tAddress2;
 			$data['state_abb'] = $tStateAbb;
@@ -101,15 +104,17 @@ class BillTransformer
 			$data['grand_total'] = $tGrandTotal;
 			$data['advance'] = $tAdvance;
 			$data['balance'] = $tBalance;
+			$data['bank_name'] = $tBankName;
 			$data['payment_mode'] = $tPaymentMode;
 			$data['check_number'] = $tCheckNumber;
+			$data['remark'] = $tRemark;
 			$trimArray=array();
 			for($inventoryArray=0;$inventoryArray<count($billArrayData['inventory']);$inventoryArray++)
 			{
 				$trimArray[$inventoryArray]=array(
-					'product_id' => $tInventoryArray[$inventoryArray][0],
+					'productId' => $tInventoryArray[$inventoryArray][0],
 					'discount' => $tInventoryArray[$inventoryArray][1],
-					'discount_type' => $tInventoryArray[$inventoryArray][2],
+					'discountType' => $tInventoryArray[$inventoryArray][2],
 					'price' => $tInventoryArray[$inventoryArray][3],
 					'qty' => $tInventoryArray[$inventoryArray][4]
 				);

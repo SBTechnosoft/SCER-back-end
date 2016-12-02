@@ -1,6 +1,6 @@
 ##### Creates Bill
 
-##### `POST /accounting/bill/`
+##### `POST /accounting/bills/`
 + Header
 	- Authentication Token
 	- 'type':'sales'

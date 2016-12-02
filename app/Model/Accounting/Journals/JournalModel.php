@@ -255,4 +255,36 @@ class JournalModel extends Model
 			return $encodeAllData;
 		}
 	}
+	
+	/**
+	 * get data 
+	 * get data as per journal id
+	 * returns the error-message/data
+	*/
+	public function getSpecificJournalData($journalId)
+	{
+		$raw = DB::select("SELECT 
+		journal_id,
+		jf_id,
+		amount,
+		amount_type,
+		entry_date,
+		created_at,
+		updated_at,
+		ledger_id,
+		company_id
+		FROM journal_dtl  
+		WHERE journal_id='".$journalId."' and 
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		if(count($raw)==0)
+		{
+			return $exceptionArray['404'];
+		}
+		else
+		{
+			$enocodedData = json_encode($raw);
+			return $enocodedData;
+		}
+	}
 }
