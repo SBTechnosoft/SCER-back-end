@@ -27,6 +27,7 @@
             {
                 ... HTTP_Status:200
             }
+##### Gets Journals
 
 ##### `GET /accounting/journals/company/{companyId}`
 + Header
@@ -45,7 +46,27 @@
                 ... HTTP_Status:200
             }
 			
-##### Gets Journals           
+
+##### `GET /accounting/journals/{journalId}/`
++ Header
+	- Authentication Token
+	
++ Error Message
+
+			{
+				... Error Message
+			}            
++ Response
+
+            {
+				[
+					{
+						... Standard Journal Object
+					}
+					...
+				]
+				
+            }           
             
 ##### `GET /accounting/journals/next/`
 + Header 

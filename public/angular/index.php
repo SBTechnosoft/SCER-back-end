@@ -341,17 +341,17 @@ include ('connection.php');
  				// formdata.append('companyId',14);
  
  				// formdata.append('entryDate','22-10-2016');
- 				// var json=[{"amount": 100 ,"amountType":" debit ","ledgerId":39},{"amount":50,"amountType":"credit","ledgerId":37},{"amount":50,"amountType":"credit","ledgerId":35}];
+ 				var json=[{"amount": 200 ,"amountType":" debit ","ledgerId":39},{"amount":100,"amountType":"credit","ledgerId":37},{"amount":100,"amountType":"credit","ledgerId":35}];
 
  				  
-  				// for(var i=0;i<json.length;i++){
+  				for(var i=0;i<json.length;i++){
    
-  					// angular.forEach(json[i], function (value,key) {
+  					angular.forEach(json[i], function (value,key) {
    						
-   					// formdata.append('data['+i+']['+key+']',value);
-  					// });
+   					formdata.append('data['+i+']['+key+']',value);
+  					});
     
-  				// }
+  				}
 
 				
 				// sale/purchase
@@ -424,7 +424,7 @@ include ('connection.php');
 				// var quotationId=3;
 				// var ledgerGrpId=1;
 				// var ledgerId=40;
-				// var journalId=987;
+				var journalId=987;
 				
 				// var url = "http://www.scerp1.com/accounting/bills";
 				

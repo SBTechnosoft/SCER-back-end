@@ -134,10 +134,11 @@ class JournalService
 		$funcName = array();
 		$journalArray = func_get_arg(0);
 		$multipleArray = array();
+		$singleData = array();
 		$arrayFlag=0;
 		$flagData=0;
-		print_r($journalArray);
-		
+		$journalId = func_get_arg(1);
+
 		for($keyData=0;$keyData<count(array_keys($journalArray));$keyData++)
 		{
 			if(strcmp(array_keys($journalArray)[$keyData],"flag")==0)
@@ -145,25 +146,22 @@ class JournalService
 				$flagData=1;
 			}
 		}
-		
 		if($flagData==1)
 		{
-			//only array exists
+			// only array exists
 			for($persistableArray=0;$persistableArray<count($journalArray)-1;$persistableArray++)
 			{
 				$multipleArray[$persistableArray] = array();
 				$multipleArray[$persistableArray]['amount']=$journalArray[$persistableArray][0]->getAmount();
 				$multipleArray[$persistableArray]['amount_type']=$journalArray[$persistableArray][0]->getAmountType();
 				$multipleArray[$persistableArray]['ledger_id']=$journalArray[$persistableArray][0]->getLedgerId();
-				$arrayFlag=1;
 			}
 		}
 		else
 		{
-			// echo "else";
 			for($persistableArray=0;$persistableArray<count($journalArray);$persistableArray++)
 			{
-				// echo "for";
+				// if array is available
 				if(is_array($journalArray[$persistableArray][0]))
 				{
 					for($innerData=0;$innerData<count($journalArray[$persistableArray]);$innerData++)
@@ -172,66 +170,34 @@ class JournalService
 						$multipleArray[$innerData]['amount']=$journalArray[$persistableArray][$innerData][0]->getAmount();
 						$multipleArray[$innerData]['amount_type']=$journalArray[$persistableArray][$innerData][0]->getAmountType();
 						$multipleArray[$innerData]['ledger_id']=$journalArray[$persistableArray][$innerData][0]->getLedgerId();
-						$arrayFlag=1;
 					}
 				}
 				else
 				{
-					// $journalArray[$persistableArray][0]->get
-					
+					$funcName = $journalArray[$persistableArray][0]->getName();
+					$value = $journalArray[$persistableArray][0]->$funcName();
+					$key = $journalArray[$persistableArray][0]->getKey();
+					$singleData[$key] = $value;
 				}
 			}
 		}
-		echo "hh";
-		// print_r($multipleArray);
-		// for($persistableArray=0;$persistableArray<count($journalArray);$persistableArray++)
-		// {
-			// if(is_array($journalArray[$persistableArray][0]))
-			// {
-				// echo "if";
-				// if($flagData==1)
-				// {
-					
-					// if($persistableArray<count($journalArray)-1)
-					// {
-						
-					// }
-				// }
-				// else
-				// {
-					// $multipleArray[$persistableArray] = array();
-					// $multipleArray[$persistableArray]['amount']=$journalArray[$persistableArray][0]->getAmount();
-					// $multipleArray[$persistableArray]['amount_type']=$journalArray[$persistableArray][0]->getAmountType();
-					// $multipleArray[$persistableArray]['ledger_id']=$journalArray[$persistableArray][0]->getLedgerId();
-					// $arrayFlag=1;
-				// }
-			// }
-			// else
-			// {
-				// echo "else";
-				// if($arrayFlag==1)
-				// {
-					// echo "array also";
-				// }
-				// else
-				// {
-					// echo "only data";
-				// }
-			// }
-		// }
-		
-		// print_r(is_array($journalArray[2][0]));
-		// print_r(is_array($journalArray[1][0]));
-		// for($data=0;$data<count($ledgerArray);$data++)
-		// {
-			// $funcName[$data] = $ledgerArray[$data][0]->getName();
-			// $getData[$data] = $ledgerArray[$data][0]->$funcName[$data]();
-			// $keyName[$data] = $ledgerArray[$data][0]->getkey();
-		// }
-		// $ledgerId = $ledgerArray[0][0]->getLedgerId();
-		// data pass to the model object for update
-		// $ledgerModel = new LedgerModel();
-		// $status = $ledgerModel->updateData($getData,$keyName,$ledgerId);
-		// return $status;	
+		if(count($multipleArray)!=0 && count($singleData)!=0)
+		{
+			$journalModel = new JournalModel();
+			$status = $journalModel->updateArrayData($multipleArray,$singleData,$journalId);
+			return $status;
+		}
+		else if(count($multipleArray)!=0)
+		{
+			$journalModel = new JournalModel();
+			$status = $journalModel->updateData($multipleArray,$journalId);
+			return $status;
+		}
+		else
+		{
+			$journalModel = new JournalModel();
+			$status = $journalModel->updateData($singleData,$journalId);
+			return $status;
+		}
 	}
 }

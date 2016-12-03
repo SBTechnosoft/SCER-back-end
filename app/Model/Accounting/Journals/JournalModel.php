@@ -287,4 +287,115 @@ class JournalModel extends Model
 			return $enocodedData;
 		}
 	}
+	public function updateData()
+	{
+		$arrayDataFlag=0;
+		$keyValueString="";
+		$journalArray = func_get_arg(0);
+		$journalId = func_get_arg(1);
+		$mytime = Carbon\Carbon::now();
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+			
+		for($arrayData=0;$arrayData<count($journalArray);$arrayData++)
+		{
+			if(strcmp(array_keys($journalArray)[$arrayData],0)==0)
+			{
+				$arrayDataFlag=1;
+				break;
+			}
+		}
+		if($arrayDataFlag==1)
+		{
+			for($arrayData=0;$arrayData<count($journalArray);$arrayData++)
+			{
+				$keyValueString=$keyValueString."amount ='".$journalArray[$arrayData]['amount']."',";
+				$keyValueString=$keyValueString."amount_type ='".$journalArray[$arrayData]['amount_type']."',";
+				$keyValueString=$keyValueString."ledger_id ='".$journalArray[$arrayData]['ledger_id']."',";
+				
+				DB::beginTransaction();
+				$raw = DB::statement("update journal_dtl 
+				set ".$keyValueString."updated_at='".$mytime."'
+				where journal_id = '".$journalId."'");
+				DB::commit();
+				
+				if($raw==0)
+				{
+					return $exceptionArray['500'];
+				}
+			}
+			if($raw==1)
+			{
+				return $exceptionArray['200'];
+			}
+		}
+		else
+		{
+			
+			for($data=0;$data<count($journalArray);$data++)
+			{
+				$keyValueString=$keyValueString.array_keys($journalArray)[$data]."='".$journalArray[array_keys($journalArray)[$data]]."',";
+			}
+			
+			DB::beginTransaction();
+			$raw = DB::statement("update journal_dtl 
+			set ".$keyValueString."updated_at='".$mytime."'
+			where journal_id = '".$journalId."'");
+			DB::commit();
+			
+			if($raw==1)
+			{
+				return $exceptionArray['200'];
+			}
+			else
+			{
+				return $exceptionArray['500'];
+			}
+		}
+	}
+	public function updateArrayData()
+	{
+		//update array with data
+		$journalArray = func_get_arg(0);
+		$journalData = func_get_arg(1);
+		$journalId = func_get_arg(2);
+		$mytime = Carbon\Carbon::now();
+		$keyValueString="";
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		for($data=0;$data<count($journalData);$data++)
+		{
+			$keyValueString=$keyValueString.array_keys($journalData)[$data]."='".$journalData[array_keys($journalData)[$data]]."',";
+		}
+		for($arrayData=0;$arrayData<count($journalArray);$arrayData++)
+		{
+			$keyValueString=$keyValueString."amount ='".$journalArray[$arrayData]['amount']."',";
+			$keyValueString=$keyValueString."amount_type ='".$journalArray[$arrayData]['amount_type']."',";
+			$keyValueString=$keyValueString."ledger_id ='".$journalArray[$arrayData]['ledger_id']."',";
+			
+			DB::beginTransaction();
+			$raw = DB::statement("update journal_dtl 
+			set ".$keyValueString."updated_at='".$mytime."'
+			where journal_id = '".$journalId."'");
+			DB::commit();
+			
+			if($raw==0)
+			{
+				return $exceptionArray['500'];
+			}
+		}
+		if($raw==1)
+		{
+			return $exceptionArray['200'];
+		}
+		else
+		{
+			return $exceptionArray['500'];
+		}
+	}
 }

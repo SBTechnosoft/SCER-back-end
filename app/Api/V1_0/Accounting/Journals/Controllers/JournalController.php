@@ -153,7 +153,6 @@ class JournalController extends BaseController implements ContainerInterface
 	
 	public function update(Request $request,$journalId)
 	{
-		echo "enter";
 		$this->request = $request;
 		$processor = new JournalProcessor();
 		$journalPersistable = new JournalPersistable();		
@@ -175,7 +174,7 @@ class JournalController extends BaseController implements ContainerInterface
 			//here two array and string is return at a time
 			if(is_array($journalPersistable))
 			{
-				$status = $journalService->update($journalPersistable);
+				$status = $journalService->update($journalPersistable,$journalId);
 				return $status;
 			}
 			else
