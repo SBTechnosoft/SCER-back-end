@@ -22,6 +22,8 @@ use ERP\Core\Accounting\Ledgers\Properties\EmailIdPropertyTrait;
 use ERP\Core\Accounting\Ledgers\Properties\BalanceFlagPropertyTrait;
 use ERP\Core\Accounting\Ledgers\Properties\AmountPropertyTrait;
 use ERP\Core\Accounting\Ledgers\Properties\AmountTypePropertyTrait;
+use ERP\Core\Accounting\Journals\Properties\FromDatePropertyTrait;
+use ERP\Core\Accounting\Journals\Properties\ToDatePropertyTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -48,4 +50,6 @@ class LedgerPersistable
 	use BalanceFlagPropertyTrait;
 	use AmountPropertyTrait;
 	use AmountTypePropertyTrait;
+	use FromDatePropertyTrait;
+	use ToDatePropertyTrait;
 }

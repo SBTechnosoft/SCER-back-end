@@ -219,6 +219,42 @@ class LedgerService extends AbstractService
 		}
 	}
 	
+	/**
+     * get all the data between given date and call the model for database selection opertation
+     * @return status
+     */
+	public function getData()
+	{
+		$processArray = array();
+		$processArray = func_get_arg(0);
+		$companyId = func_get_arg(1);
+		$ledgerType = func_get_arg(2);
+		
+		//get data
+		$fromDate = $processArray->getFromDate();
+		$toDate = $processArray->getToDate();
+		$ledgerModel = new LedgerModel();
+		
+		//get ledger_id
+		$ledgerIdDetail = $ledgerModel->getLedgerId($companyId,$ledgerType);
+		//get ledger data between given date
+		$status = $ledgerModel->getLedgerData($fromDate,$toDate,$companyId,$ledgerType);
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($status,$exceptionArray['404'])==0)
+		{
+			return $status;
+		}
+		else
+		{
+			$encoded = new EncodeTrnAllData();
+			$encodeAllData = $encoded->getEncodedAllData($status,json_decode($ledgerIdDetail)[0]->ledger_id);
+			return $encodeAllData;
+		}
+	}
+	
     /**
      * get the data from persistable object and call the model for database update opertation
      * @param LedgerPersistable $persistable

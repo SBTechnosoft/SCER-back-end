@@ -122,7 +122,7 @@ class JournalService
 	}
 	
 	/**
-     * get all the data and call the model for database selection opertation
+     * get all the data between given date and call the model for database selection opertation
      * @return status
      */
 	public function getJournalDetail()

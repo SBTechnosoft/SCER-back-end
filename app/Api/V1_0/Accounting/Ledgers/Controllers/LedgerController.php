@@ -107,11 +107,45 @@ class LedgerController extends BaseController implements ContainerInterface
      * get the specified resource.
      * @param  int  $companyId
      */
-    public function getLedgerData($companyId)
+    public function getLedgerData(Request $request,$companyId)
     {
-		$ledgerService= new LedgerService();
-		$status = $ledgerService->getLedgerDetail($companyId);
-		return $status;
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		if(array_key_exists("type",$request->header()))
+		{
+			if(strcmp(trim($request->header()['type'][0]),'sales')==0 || strcmp(trim($request->header()['type'][0]),'purchase')==0)
+			{
+				if(array_key_exists("fromdate",$request->header()) && array_key_exists("todate",$request->header()))
+				{
+					$this->request = $request;
+					$processor = new LedgerProcessor();
+					$ledgerPersistable = new LedgerPersistable();
+					$ledgerPersistable = $processor->createPersistableData($this->request);
+					$ledgerService= new LedgerService();
+					$status = $ledgerService->getData($ledgerPersistable,$companyId,$request->header()['type'][0]);
+					return $status;
+				}
+				//get current year data
+				else
+				{
+					$ledgerModel = new LedgerModel();
+					$status = $ledgerModel->getCurrentYearData($companyId,$request->header()['type'][0]);
+					return $status;
+				}
+			}
+			else
+			{
+				return $exceptionArray['content'];
+			}
+		}
+		else
+		{
+			$ledgerService= new LedgerService();
+			$status = $ledgerService->getLedgerDetail($companyId);
+			return $status;
+		}
 	}
 	
 	/**

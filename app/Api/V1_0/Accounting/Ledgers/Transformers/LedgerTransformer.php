@@ -6,6 +6,7 @@ use ERP\Http\Requests;
 use ERP\Core\Accounting\Ledgers\Entities\InventoryAffectedEnum;
 use ERP\Core\Accounting\Ledgers\Entities\BalanceFlagEnum;
 use ERP\Core\Accounting\Journals\Entities\AmountTypeEnum;
+use Carbon;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -141,6 +142,8 @@ class LedgerTransformer
 			return $data;
 		}
 	}
+	
+	//trim update data
 	public function trimUpdateData()
 	{
 		$tLedgerArray = array();
@@ -194,5 +197,26 @@ class LedgerTransformer
 		{
 			return $tLedgerArray;
 		}
+	}
+	//trim fromdate-todate data
+	public function trimDateData(Request $request)
+	{
+		//get data from header
+		$fromDate =$request->header('fromDate');
+		$toDate =$request->header('toDate');
+		
+		//trim the data
+		$tFromDate =  trim($fromDate);
+		$tToDate = trim($toDate);
+		
+		//date format conversion
+		$transformFromDate = Carbon\Carbon::createFromFormat('d-m-Y', $tFromDate)->format('Y-m-d');
+		$transformToDate = Carbon\Carbon::createFromFormat('d-m-Y', $tToDate)->format('Y-m-d');
+		
+		//put date into an array
+		$trimArray = array();
+		$trimArray['fromDate'] = $transformFromDate;
+		$trimArray['toDate'] = $transformToDate;
+		return $trimArray;
 	}
 }

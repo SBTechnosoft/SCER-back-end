@@ -112,6 +112,8 @@ class JournalTransformer extends LedgerModel
 			return $exceptionArray['equal'];
 		}
 	}
+	
+	//trim fromdate-todate data
 	public function trimDateData(Request $request)
 	{
 		//get data from header
@@ -132,6 +134,8 @@ class JournalTransformer extends LedgerModel
 		$trimArray['toDate'] = $transformToDate;
 		return $trimArray;
 	}
+	
+	//trim update data
 	public function trimUpdateData(Request $request)
 	{
 		$amountTypeFlag=0;

@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Core\Accounting\Ledgers\Entities\EncodeTrnAllData;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -468,6 +469,138 @@ class LedgerModel extends Model
 				return $enocodedData;
 			}
 		}	
+	}
+	
+	/**
+	 * get data 
+	 * @param  from-date and to-date
+	 * get data between given date
+	 * returns the error-message/data
+	*/
+	public function getLedgerData($fromDate,$toDate,$companyId,$ledgerType)
+	{
+		DB::beginTransaction();
+		$raw = DB::select("SELECT 
+		ledger_id
+		FROM ledger_mst
+		WHERE ledger_name='".$ledgerType."' and 
+		company_id='".$companyId."' and 
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		if(count($raw)==0)
+		{
+			return $exceptionArray['404'];
+		}
+		else
+		{
+			DB::beginTransaction();
+			$ledgerData = DB::select("SELECT 
+			".$raw[0]->ledger_id."_id,
+			amount,
+			amount_type,
+			entry_date,
+			jf_id,
+			created_at,
+			updated_at,
+			ledger_id
+			FROM ".$raw[0]->ledger_id."_ledger_dtl
+			WHERE (entry_date BETWEEN '".$fromDate."' AND '".$toDate."') and 
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+			if(count($ledgerData)!=0)
+			{
+				$enocodedData = json_encode($ledgerData);
+				return $enocodedData;
+			}
+			else
+			{
+				return $exceptionArray['404'];
+			}
+		}
+	}
+	
+	public function getLedgerId($companyId,$type)
+	{
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		DB::beginTransaction();
+		$raw = DB::select("SELECT 
+		ledger_id
+		FROM ledger_mst
+		WHERE ledger_name='".$type."' and 
+		company_id='".$companyId."' and 
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		if(count($raw)==0)
+		{
+			return $exceptionArray['404'];
+		}
+		else
+		{
+			$enocodedData = json_encode($raw);
+			return $enocodedData;
+		}
+	}
+	
+	/**
+	 * get data 
+	 * get current year data
+	 * returns the error-message/data
+	*/
+	public function getCurrentYearData($companyId,$ledgerType)
+	{
+		DB::beginTransaction();
+		$raw = DB::select("SELECT 
+		ledger_id
+		FROM ledger_mst
+		WHERE ledger_name='".$ledgerType."' and 
+		company_id='".$companyId."' and 
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		if(count($raw)==0)
+		{
+			return $exceptionArray['404'];
+		}
+		else
+		{
+			DB::beginTransaction();
+			$ledgerData = DB::select("SELECT 
+			".$raw[0]->ledger_id."_id,
+			amount,
+			amount_type,
+			entry_date,
+			jf_id,
+			created_at,
+			updated_at,
+			ledger_id
+			FROM ".$raw[0]->ledger_id."_ledger_dtl
+			WHERE YEAR(entry_date)= YEAR(CURDATE()) and 
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+			if(count($ledgerData)!=0)
+			{
+				$enocodedData = json_encode($ledgerData);
+				$encoded = new EncodeTrnAllData();
+				$encodeAllData = $encoded->getEncodedAllData($enocodedData,$raw[0]->ledger_id);
+				return $encodeAllData;
+			}
+			else
+			{
+				return $exceptionArray['404'];
+			}
+		}
 	}
 	
 	//delete

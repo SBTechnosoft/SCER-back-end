@@ -221,4 +221,20 @@ class LedgerProcessor extends BaseProcessor
 			return $ledgerPersistable;
 		}
 	}	
+	
+	//trim data & set header data (fromdate and todate data)
+	public function createPersistableData(Request $request)
+	{
+		$this->request = $request;	
+		
+		//trim an input 
+		$ledgerTransformer = new LedgerTransformer();
+		$tRequest = $ledgerTransformer->trimDateData($this->request);
+		
+		$ledgerPersistable = new LedgerPersistable();
+		$ledgerPersistable->setFromdate($tRequest['fromDate']);
+		$ledgerPersistable->setTodate($tRequest['toDate']);
+		
+		return $ledgerPersistable;
+	}
 }

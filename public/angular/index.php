@@ -428,7 +428,7 @@ include ('connection.php');
 				// var productId = 8;
 				// var productGrpId = 11;
 				// var productCatId = 16;
-				// var companyId=14;
+				var companyId=14;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -457,9 +457,9 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/accounting/journals/next";
 				
 				// var url="http://www.scerp1.com/accounting/ledgers/"+ledgerId+"/transactions";
-				// var url="http://www.scerp1.com/accounting/ledgers/company/"+companyId;
+				var url="http://www.scerp1.com/accounting/ledgers/company/"+companyId;
 				// var url="http://www.scerp1.com/accounting/ledgers/"+ledgerId;
-				var url="http://www.scerp1.com/accounting/ledgers";
+				// var url="http://www.scerp1.com/accounting/ledgers";
 				
 				// var url="http://www.scerp1.com/accounting/ledger-groups/"+ledgerGrpId;
 				// var url="http://www.scerp1.com/accounting/ledger-groups";
@@ -502,7 +502,8 @@ include ('connection.php');
 						// method: "PATCH",
 						// method:'delete',
 						processData: false,
-                        headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016'},
+                        // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016'},
+                        headers: {'Content-Type': undefined,'type':'purchase'},
                         // headers: {'Content-Type': undefined},
                         // headers: {'Content-Type': undefined,'type':'sales'},
 						 // data:formdata

@@ -82,6 +82,7 @@ class JournalProcessor extends BaseProcessor
 			}
 		}
 	}
+	//trim data & set header data (fromdate and todate data)
 	public function createPersistableData(Request $request)
 	{
 		$this->request = $request;	

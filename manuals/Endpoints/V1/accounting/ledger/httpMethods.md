@@ -96,7 +96,10 @@
 ##### `GET /accounting/ledgers/company/{companyId}`
 + Header 
 	- Authentication Token
-	
+	- "fromDate":'date'
+	- "toDate":'date'
+	- 'type':'sales'
+	- 'type':'purchase'
 + Error Message
 
 			{

@@ -145,7 +145,9 @@ class EncodeAllData extends StateService
 				)		
 			);
 		}
+		echo "hi";
 		$jsonEncodedData = json_encode($data);
+		print_r($jsonEncodedData);
 		return $jsonEncodedData;
 	}
 }

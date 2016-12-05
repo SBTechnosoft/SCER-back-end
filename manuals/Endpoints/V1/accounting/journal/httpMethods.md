@@ -32,8 +32,8 @@
 ##### `GET /accounting/journals/company/{companyId}`
 + Header
 	- Authentication Token
-	- "fromDate"
-	- "toDate"
+	- "fromDate":"date"
+	- "toDate":"date"
 
 + Error Message
 

@@ -144,7 +144,7 @@ class JournalController extends BaseController implements ContainerInterface
     public function getSpecificData(Request $request,$companyId)
     {
 		//get the data between fromDate and toDate
-		if(strcmp(array_keys($request->header())[5],"fromdate")==0)
+		if(array_key_exists("fromdate",$request->header()) && array_key_exists("todate",$request->header()))
 		{
 			$this->request = $request;
 			$processor = new JournalProcessor();
