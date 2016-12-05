@@ -274,12 +274,12 @@ include ('connection.php');
 				// formdata.append('companyId',$scope.formAdata.company_id);
 				
 				//ledger
-				// $scope.formAdata.ledger_name = " tax ";
+				// $scope.formAdata.ledger_name = " purchase ";
 				// $scope.formAdata.alias = ' d ';
 				// $scope.formAdata.inventory_affected=' no ';
 				// $scope.formAdata.address1 =" sdx cz ";
 				// $scope.formAdata.address2 = " aEb ";
-				// $scope.formAdata.contact_no = " 8765456752 ";
+				// $scope.formAdata.contact_no = " 8765456751 ";
 				// $scope.formAdata.email_id = " reemapatel25@gmail.co.in ";
 				// $scope.formAdata.pan= ' qqqas1122d ';
 				// $scope.formAdata.tin= ' 42aa3dgg774 ';
@@ -287,7 +287,6 @@ include ('connection.php');
 				// $scope.formAdata.balanceFlag = ' opening ';
 				// $scope.formAdata.amount =123;
 				// $scope.formAdata.amountType = ' credit';
-				
 				// $scope.formAdata.state_abb= ' IN-AG ';
 				// $scope.formAdata.city_id= '1';
 				// $scope.formAdata.ledger_grp_id='9 ';
@@ -337,11 +336,11 @@ include ('connection.php');
 				
 				// special journal
 				// $scope.user = [{"jfId":4,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":35},{"amount":2,"amountType":"credit","ledgerId":35},{"amount":12,"amountType":"debit","ledgerId":35}],"entryDate":"22-10-2015","companyId":14}];
-				// formdata.append('jfId',8);
+				// formdata.append('jfId',4);
  				// formdata.append('companyId',14);
  
  				// formdata.append('entryDate','22-10-2016');
- 				// var json=[{"amount": 200 ,"amountType":" debit ","ledgerId":39},{"amount":100,"amountType":"credit","ledgerId":37},{"amount":100,"amountType":"credit","ledgerId":35}];
+ 				// var json=[{"amount": 100 ,"amountType":" debit ","ledgerId":62},{"amount":50,"amountType":"credit","ledgerId":37},{"amount":50,"amountType":"credit","ledgerId":35}];
 
  				  
   				// for(var i=0;i<json.length;i++){
@@ -357,17 +356,17 @@ include ('connection.php');
 				// formdata.append('companyId',14);
  
  				// formdata.append('entryDate','22-10-2016');
- 				var json=[{"amount": 100 ,"amountType":" debit ","ledgerId":39,"journalId":987},{"amount":50,"amountType":"credit","ledgerId":37,"journalId":988},{"amount":50,"amountType":"credit","ledgerId":35,"journalId":989}];
+ 				// var json=[{"amount": 200 ,"amountType":" debit ","ledgerId":62,"journalId":52},{"amount":100,"amountType":"credit","ledgerId":37,"journalId":53},{"amount":100,"amountType":"credit","ledgerId":35,"journalId":54}];
 
  				  
-  				for(var i=0;i<json.length;i++){
+  				// for(var i=0;i<json.length;i++){
    
-  					angular.forEach(json[i], function (value,key) {
+  					// angular.forEach(json[i], function (value,key) {
    						
-   					formdata.append('data['+i+']['+key+']',value);
-  					});
+   					// formdata.append('data['+i+']['+key+']',value);
+  					// });
     
-  				}
+  				// }
 
 				
 				// sale/purchase
@@ -440,7 +439,7 @@ include ('connection.php');
 				// var quotationId=3;
 				// var ledgerGrpId=1;
 				// var ledgerId=40;
-				var jfId=4;
+				// var jfId=4;
 				
 				// var url = "http://www.scerp1.com/accounting/bills";
 				
@@ -453,14 +452,14 @@ include ('connection.php');
 				
 				// var url="http://www.scerp1.com/accos";
 				// var url="http://www.scerp1.com/accounting/journals";
-				var url="http://www.scerp1.com/accounting/journals/"+jfId;
+				// var url="http://www.scerp1.com/accounting/journals/"+jfId;
 				// var url="http://www.scerp1.com/accounting/journals/company/"+companyId;
 				// var url="http://www.scerp1.com/accounting/journals/next";
 				
 				// var url="http://www.scerp1.com/accounting/ledgers/"+ledgerId+"/transactions";
 				// var url="http://www.scerp1.com/accounting/ledgers/company/"+companyId;
 				// var url="http://www.scerp1.com/accounting/ledgers/"+ledgerId;
-				// var url="http://www.scerp1.com/accounting/ledgers";
+				var url="http://www.scerp1.com/accounting/ledgers";
 				
 				// var url="http://www.scerp1.com/accounting/ledger-groups/"+ledgerGrpId;
 				// var url="http://www.scerp1.com/accounting/ledger-groups";
@@ -498,15 +497,15 @@ include ('connection.php');
 				$http({
                         url: url,
                         // type:'patch',
-						 method: 'post',
-						// method: 'get',
+						 // method: 'post',
+						method: 'get',
 						// method: "PATCH",
 						// method:'delete',
 						processData: false,
-                        // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016'},
-                        headers: {'Content-Type': undefined},
+                        headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016'},
+                        // headers: {'Content-Type': undefined},
                         // headers: {'Content-Type': undefined,'type':'sales'},
-						 data:formdata
+						 // data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

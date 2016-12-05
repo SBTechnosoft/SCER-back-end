@@ -39,6 +39,10 @@ class JournalModel extends Model
 		$debitArray=0;
 		$creditArray=0;
 		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		
 		for($data=0;$data<count($jfIdArray);$data++)
 		{
 			DB::beginTransaction();
@@ -145,9 +149,6 @@ class JournalModel extends Model
 				return $fileSizeArray['500'];
 			}
 		}
-		// get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
 		if($ledgerEntryResult==1)
 		{
 			return $fileSizeArray['200'];
@@ -259,7 +260,7 @@ class JournalModel extends Model
 	
 	/**
 	 * get data 
-	 * get current year data
+	 * get data from jf_id(jf_id is get from journal_id)
 	 * returns the error-message/data
 	*/
 	public function getJournalArrayData($journalId)
@@ -299,7 +300,7 @@ class JournalModel extends Model
 	
 	/**
 	 * get data 
-	 * get data as per journal id
+	 * get jf_id as per journal id
 	 * returns the error-message/data
 	*/
 	public function getSpecificJournalData($journalId)
@@ -324,10 +325,15 @@ class JournalModel extends Model
 	{
 		$arrayDataFlag=0;
 		$keyValueString="";
+		$creditAmount = array();
+		$creditLedger = array();
+		$debitLedger = array();
+		$debitAmount = array();
 		$journalArray = func_get_arg(0);
 		$jfId = func_get_arg(1);
 		$mytime = Carbon\Carbon::now();
 		
+		$journalModel = new JournalModel();
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -344,6 +350,7 @@ class JournalModel extends Model
 		{
 			for($arrayData=0;$arrayData<count($journalArray);$arrayData++)
 			{
+				echo "for";
 				$keyValueString=$keyValueString."amount ='".$journalArray[$arrayData]['amount']."',";
 				$keyValueString=$keyValueString."amount_type ='".$journalArray[$arrayData]['amount_type']."',";
 				$keyValueString=$keyValueString."ledger_id ='".$journalArray[$arrayData]['ledger_id']."',";
@@ -358,10 +365,93 @@ class JournalModel extends Model
 				{
 					return $exceptionArray['500'];
 				}
+				else
+				{
+					$jfIdResult = $journalModel->getSpecificJournalData($journalArray[$arrayData]['journal_id']);
+					$jfId = json_decode($jfIdResult)[0]->jf_id;
+					
+					$creditArray=0;
+					$debitArray=0;
+					for($data=0;$data<count($journalArray);$data++)
+					{
+						// make credit and debit array
+						if($journalArray[$data]['amount_type']=="credit")
+						{
+							$creditAmount[$creditArray] = $journalArray[$data]['amount'];
+							$creditLedger[$creditArray] = $journalArray[$data]['ledger_id'];
+							$creditArray++;
+						}
+						else
+						{
+							$debitAmount[$debitArray] = $journalArray[$data]['amount'];
+							$debitLedger[$debitArray] = $journalArray[$data]['ledger_id'];
+							$debitArray++;
+						}
+					}
+					
+				}
 			}
-			if($raw==1)
+			if(count($jfIdResult)==1)
 			{
-				return $exceptionArray['200'];
+				for($arrayData=0;$arrayData<count($journalArray);$arrayData++)
+				{
+					if($journalArray[$arrayData]['amount_type']=="debit")
+					{
+						//purchase case
+						if(count($creditLedger)>1)
+						{
+							echo "purchase_if";
+							for($creditLoop=0;$creditLoop<count($creditLedger);$creditLoop++)
+							{
+								DB::beginTransaction();
+								$ledgerEntryResult = DB::statement("update
+								".$journalArray[$arrayData]['ledger_id']."_ledger_dtl
+								set amount='".$creditAmount[$creditLoop]."',amount_type='".$journalArray[$arrayData]['amount_type']."',ledger_id='".$creditLedger[$creditLoop]."',updated_at='".$mytime."' where jf_id='".$jfId."' and ledger_id='".$creditLedger[$creditLoop]."'");
+								DB::commit();
+							}
+						}
+						//sale case
+						else
+						{
+							echo "sale";
+							DB::beginTransaction();
+							$ledgerEntryResult = DB::statement("update  
+							".$journalArray[$arrayData]['ledger_id']."_ledger_dtl 
+							set amount='".$journalArray[$arrayData]['amount']."',amount_type='".$journalArray[$arrayData]['amount_type']."',ledger_id='".$creditLedger[0]."',updated_at='".$mytime."' where jf_id='".$jfId."'");
+							DB::commit();
+						}
+					}
+					else
+					{
+						//sale case
+						if(count($debitLedger)>1)
+						{
+							echo "sale_if";
+							for($debitLoop=0;$debitLoop<count($debitLedger);$debitLoop++)
+							{
+								DB::beginTransaction();
+								$ledgerEntryResult = DB::statement("update 
+								".$journalArray[$arrayData]['ledger_id']."_ledger_dtl
+								set amount='".$debitAmount[$debitLoop]."',amount_type='".$journalArray[$arrayData]['amount_type']."',ledger_id='".$debitLedger[$debitLoop]."',updated_at='".$mytime."' where jf_id='".$jfId."' and ledger_id='".$debitLedger[$debitLoop]."'");
+								DB::commit();
+							}
+						}
+						//purchase case
+						else
+						{
+							echo "purchase";
+							DB::beginTransaction();
+							$ledgerEntryResult = DB::statement("update 
+							".$journalArray[$arrayData]['ledger_id']."_ledger_dtl
+							set amount='".$journalArray[$arrayData]['amount']."',amount_type='".$journalArray[$arrayData]['amount_type']."',ledger_id='".$debitLedger[0]."',updated_at='".$mytime."' where jf_id='".$jfId."' ");
+							DB::commit();
+						}
+					}
+				}
+			}
+			else
+			{
+				return $exceptionArray['500'];
 			}
 		}
 		else
