@@ -340,8 +340,24 @@ include ('connection.php');
 				// formdata.append('jfId',8);
  				// formdata.append('companyId',14);
  
- 				formdata.append('entryDate','22-10-2016');
- 				var json=[{"amount": 200 ,"amountType":" debit ","ledgerId":39},{"amount":100,"amountType":"credit","ledgerId":37},{"amount":100,"amountType":"credit","ledgerId":35}];
+ 				// formdata.append('entryDate','22-10-2016');
+ 				// var json=[{"amount": 200 ,"amountType":" debit ","ledgerId":39},{"amount":100,"amountType":"credit","ledgerId":37},{"amount":100,"amountType":"credit","ledgerId":35}];
+
+ 				  
+  				// for(var i=0;i<json.length;i++){
+   
+  					// angular.forEach(json[i], function (value,key) {
+   						
+   					// formdata.append('data['+i+']['+key+']',value);
+  					// });
+    
+  				// }
+				
+				//update....
+				// formdata.append('companyId',14);
+ 
+ 				// formdata.append('entryDate','22-10-2016');
+ 				var json=[{"amount": 100 ,"amountType":" debit ","ledgerId":39,"journalId":987},{"amount":50,"amountType":"credit","ledgerId":37,"journalId":988},{"amount":50,"amountType":"credit","ledgerId":35,"journalId":989}];
 
  				  
   				for(var i=0;i<json.length;i++){
@@ -424,7 +440,7 @@ include ('connection.php');
 				// var quotationId=3;
 				// var ledgerGrpId=1;
 				// var ledgerId=40;
-				var journalId=987;
+				var jfId=4;
 				
 				// var url = "http://www.scerp1.com/accounting/bills";
 				
@@ -437,7 +453,7 @@ include ('connection.php');
 				
 				// var url="http://www.scerp1.com/accos";
 				// var url="http://www.scerp1.com/accounting/journals";
-				var url="http://www.scerp1.com/accounting/journals/"+journalId;
+				var url="http://www.scerp1.com/accounting/journals/"+jfId;
 				// var url="http://www.scerp1.com/accounting/journals/company/"+companyId;
 				// var url="http://www.scerp1.com/accounting/journals/next";
 				

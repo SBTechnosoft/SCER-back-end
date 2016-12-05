@@ -305,16 +305,8 @@ class JournalModel extends Model
 	public function getSpecificJournalData($journalId)
 	{
 		$raw = DB::select("SELECT 
-		journal_id,
-		jf_id,
-		amount,
-		amount_type,
-		entry_date,
-		created_at,
-		updated_at,
-		ledger_id,
-		company_id
-		FROM journal_dtl  
+		jf_id
+		from journal_dtl
 		WHERE journal_id='".$journalId."' and 
 		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
@@ -333,7 +325,7 @@ class JournalModel extends Model
 		$arrayDataFlag=0;
 		$keyValueString="";
 		$journalArray = func_get_arg(0);
-		$journalId = func_get_arg(1);
+		$jfId = func_get_arg(1);
 		$mytime = Carbon\Carbon::now();
 		
 		// get exception message
@@ -359,7 +351,7 @@ class JournalModel extends Model
 				DB::beginTransaction();
 				$raw = DB::statement("update journal_dtl 
 				set ".$keyValueString."updated_at='".$mytime."'
-				where journal_id = '".$journalId."'");
+				where journal_id = '".$journalArray[$arrayData]['journal_id']."'");
 				DB::commit();
 				
 				if($raw==0)
@@ -374,7 +366,6 @@ class JournalModel extends Model
 		}
 		else
 		{
-			
 			for($data=0;$data<count($journalArray);$data++)
 			{
 				$keyValueString=$keyValueString.array_keys($journalArray)[$data]."='".$journalArray[array_keys($journalArray)[$data]]."',";
@@ -383,7 +374,7 @@ class JournalModel extends Model
 			DB::beginTransaction();
 			$raw = DB::statement("update journal_dtl 
 			set ".$keyValueString."updated_at='".$mytime."'
-			where journal_id = '".$journalId."'");
+			where jf_id = '".$jfId."'");
 			DB::commit();
 			
 			if($raw==1)
@@ -401,7 +392,7 @@ class JournalModel extends Model
 		//update array with data
 		$journalArray = func_get_arg(0);
 		$journalData = func_get_arg(1);
-		$journalId = func_get_arg(2);
+		$jfId = func_get_arg(2);
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
 		
@@ -419,10 +410,11 @@ class JournalModel extends Model
 			$keyValueString=$keyValueString."amount_type ='".$journalArray[$arrayData]['amount_type']."',";
 			$keyValueString=$keyValueString."ledger_id ='".$journalArray[$arrayData]['ledger_id']."',";
 			
+			
 			DB::beginTransaction();
 			$raw = DB::statement("update journal_dtl 
 			set ".$keyValueString."updated_at='".$mytime."'
-			where journal_id = '".$journalId."'");
+			where journal_id = '".$journalArray[$arrayData]['journal_id']."'");
 			DB::commit();
 			
 			if($raw==0)

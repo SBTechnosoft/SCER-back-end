@@ -168,7 +168,7 @@ class JournalService
 		$singleData = array();
 		$arrayFlag=0;
 		$flagData=0;
-		$journalId = func_get_arg(1);
+		$jfId = func_get_arg(1);
 
 		for($keyData=0;$keyData<count(array_keys($journalArray));$keyData++)
 		{
@@ -186,6 +186,7 @@ class JournalService
 				$multipleArray[$persistableArray]['amount']=$journalArray[$persistableArray][0]->getAmount();
 				$multipleArray[$persistableArray]['amount_type']=$journalArray[$persistableArray][0]->getAmountType();
 				$multipleArray[$persistableArray]['ledger_id']=$journalArray[$persistableArray][0]->getLedgerId();
+				$multipleArray[$persistableArray]['journal_id']=$journalArray[$persistableArray][0]->getJournalId();
 			}
 		}
 		else
@@ -201,6 +202,7 @@ class JournalService
 						$multipleArray[$innerData]['amount']=$journalArray[$persistableArray][$innerData][0]->getAmount();
 						$multipleArray[$innerData]['amount_type']=$journalArray[$persistableArray][$innerData][0]->getAmountType();
 						$multipleArray[$innerData]['ledger_id']=$journalArray[$persistableArray][$innerData][0]->getLedgerId();
+						$multipleArray[$innerData]['journal_id']=$journalArray[$persistableArray][$innerData][0]->getJournalId();
 					}
 				}
 				else
@@ -215,19 +217,19 @@ class JournalService
 		if(count($multipleArray)!=0 && count($singleData)!=0)
 		{
 			$journalModel = new JournalModel();
-			$status = $journalModel->updateArrayData($multipleArray,$singleData,$journalId);
+			$status = $journalModel->updateArrayData($multipleArray,$singleData,$jfId);
 			return $status;
 		}
 		else if(count($multipleArray)!=0)
 		{
 			$journalModel = new JournalModel();
-			$status = $journalModel->updateData($multipleArray,$journalId);
+			$status = $journalModel->updateData($multipleArray,$jfId);
 			return $status;
 		}
 		else
 		{
 			$journalModel = new JournalModel();
-			$status = $journalModel->updateData($singleData,$journalId);
+			$status = $journalModel->updateData($singleData,$jfId);
 			return $status;
 		}
 	}

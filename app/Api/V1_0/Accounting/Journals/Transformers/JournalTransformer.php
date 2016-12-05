@@ -162,6 +162,7 @@ class JournalTransformer extends LedgerModel
 					$tempArray[$arrayElement]['amount'] = trim($request->input()['data'][$arrayElement]['amount']);
 					$tempArray[$arrayElement]['amount_type'] = trim($request->input()['data'][$arrayElement]['amountType']);
 					$tempArray[$arrayElement]['ledger_id'] = trim($request->input()['data'][$arrayElement]['ledgerId']);
+					$tempArray[$arrayElement]['journal_id'] = trim($request->input()['data'][$arrayElement]['journalId']);
 					
 					//check enum type[amount-type]
 					$enumAmountTypeArray = array();

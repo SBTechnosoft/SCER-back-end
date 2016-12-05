@@ -97,7 +97,7 @@ class JournalProcessor extends BaseProcessor
 		return $journalPersistable;
 	}
 	
-	public function createPersistableChange(Request $request,$journalId)
+	public function createPersistableChange(Request $request,$jfId)
 	{
 		$this->request = $request;
 		$jouunalValue = array();
@@ -148,6 +148,7 @@ class JournalProcessor extends BaseProcessor
 							break;
 						}
 					}
+					//data
 					if($trimFlag==1)
 					{
 						for($trimResponse=0;$trimResponse<count($tRequest);$trimResponse++)
@@ -158,6 +159,7 @@ class JournalProcessor extends BaseProcessor
 								break;
 							}
 						}
+						//array with data
 						if($trimArrayFalg==1)
 						{
 							//validate only single data not an array (pending multiple array data)
@@ -181,7 +183,7 @@ class JournalProcessor extends BaseProcessor
 									$journalPersistable[$trimResponse]->$setFuncName($tValue);
 									$journalPersistable[$trimResponse]->setName($getFuncName);
 									$journalPersistable[$trimResponse]->setKey($tKeyValue);
-									$journalPersistable[$trimResponse]->setJournalId($journalId);
+									$journalPersistable[$trimResponse]->setJfId($jfId);
 									$journalSingleArray[$trimResponse] = array($journalPersistable[$trimResponse]);
 									
 								}
@@ -192,6 +194,7 @@ class JournalProcessor extends BaseProcessor
 								$journalPersistable[$multipleArray]->setAmount($tRequest[0][$multipleArray]['amount']);
 								$journalPersistable[$multipleArray]->setAmountType($tRequest[0][$multipleArray]['amount_type']);
 								$journalPersistable[$multipleArray]->setLedgerId($tRequest[0][$multipleArray]['ledger_id']);
+								$journalPersistable[$multipleArray]->setJournalId($tRequest[0][$multipleArray]['journal_id']);
 								$journalMultipleArray[$multipleArray] = array($journalPersistable[$multipleArray]);
 							}
 							array_push($journalSingleArray,$journalMultipleArray);
@@ -199,6 +202,7 @@ class JournalProcessor extends BaseProcessor
 						}
 						else
 						{
+							echo "else";
 							for($trimResponse=0;$trimResponse<count($tRequest)-1;$trimResponse++)
 							{
 								$tKeyValue = array_keys($tRequest)[$trimResponse];
@@ -218,7 +222,7 @@ class JournalProcessor extends BaseProcessor
 									$journalPersistable[$trimResponse]->$setFuncName($tValue);
 									$journalPersistable[$trimResponse]->setName($getFuncName);
 									$journalPersistable[$trimResponse]->setKey($tKeyValue);
-									$journalPersistable[$trimResponse]->setJournalId($journalId);
+									$journalPersistable[$trimResponse]->setJfId($jfId);
 									$journalSingleArray[$trimResponse] = array($journalPersistable[$trimResponse]);
 								}
 							}
@@ -234,6 +238,7 @@ class JournalProcessor extends BaseProcessor
 							$journalPersistable[$multipleArray]->setAmount($tRequest[$multipleArray]['amount']);
 							$journalPersistable[$multipleArray]->setAmountType($tRequest[$multipleArray]['amount_type']);
 							$journalPersistable[$multipleArray]->setLedgerId($tRequest[$multipleArray]['ledger_id']);
+							$journalPersistable[$multipleArray]->setJournalId($tRequest[$multipleArray]['journal_id']);
 							$journalMultipleArray[$multipleArray] = array($journalPersistable[$multipleArray]);
 						}
 						$journalMultipleArray['flag']="1";

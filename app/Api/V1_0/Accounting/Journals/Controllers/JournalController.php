@@ -161,30 +161,48 @@ class JournalController extends BaseController implements ContainerInterface
 		}
 	}
 	
-	public function update(Request $request,$journalId)
+	public function update(Request $request,$jfId)
 	{
 		$this->request = $request;
 		$processor = new JournalProcessor();
 		$journalPersistable = new JournalPersistable();		
 		$journalService= new JournalService();		
 		$journalModel = new JournalModel();
-		$result = $journalModel->getSpecificJournalData($journalId);
+		$journalFlag=0;
 		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		if(strcmp($result,$exceptionArray['404'])==0)
+		echo "hh";
+		//check array exists
+		if(array_key_exists('data', $this->request->input()))
 		{
-			return $result;
+			$dataCountOfArray = count($this->request->input()['data']);
+			for($dataArray=0;$dataArray<$dataCountOfArray;$dataArray++)
+			{
+				$result = $journalModel->getSpecificJournalData(trim($this->request->input()['data'][0]['journalId']));
+				if(strcmp($result,$exceptionArray['404'])==0)
+				{
+					return $result;
+				}
+				if(strcmp(json_decode($result)[0]->jf_id,$jfId)!=0)
+				{
+					$journalFlag=1;
+				}
+			}
+		}
+		if($journalFlag==1)
+		{
+			return $exceptionArray['content'];
 		}
 		else
 		{
-			$journalPersistable = $processor->createPersistableChange($this->request,$journalId);
+			$journalPersistable = $processor->createPersistableChange($this->request,$jfId);
 			
 			//here two array and string is return at a time
 			if(is_array($journalPersistable))
 			{
-				$status = $journalService->update($journalPersistable,$journalId);
+				$status = $journalService->update($journalPersistable,$jfId);
 				return $status;
 			}
 			else
