@@ -35,6 +35,24 @@
 				"entryDate":Date,
                 "companyId":int
 			}
+			
+##### Standard Journals Persistable Object for update
+			{
+            	"jfId":int,
+				"data":
+				[
+					{
+						"amount":decimal,
+						"amountType":Enum,
+						"ledgerId":int,	
+						"journalId":int
+					},
+					...
+				]
+				"entryDate":Date,
+                "companyId":int
+			}
+
 ##### Standard Inventory Persistable Object
 			{
 				... Standard Product Transaction Persistable Object,

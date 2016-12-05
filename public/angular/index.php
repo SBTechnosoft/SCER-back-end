@@ -340,7 +340,7 @@ include ('connection.php');
 				// formdata.append('jfId',8);
  				// formdata.append('companyId',14);
  
- 				// formdata.append('entryDate','22-10-2016');
+ 				formdata.append('entryDate','22-10-2016');
  				var json=[{"amount": 200 ,"amountType":" debit ","ledgerId":39},{"amount":100,"amountType":"credit","ledgerId":37},{"amount":100,"amountType":"credit","ledgerId":35}];
 
  				  

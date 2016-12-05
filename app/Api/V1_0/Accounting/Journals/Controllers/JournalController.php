@@ -127,6 +127,16 @@ class JournalController extends BaseController implements ContainerInterface
 	}
 	
 	/**
+     * get the journal data
+     */
+    public function getJournalData($journalId)
+    {
+		$journalService = new JournalService();
+		$status = $journalService->getJournalArrayData($journalId);
+		return $status;
+	}
+	
+	/**
      * get the specific data between given date or current year data
      */
     public function getSpecificData(Request $request,$companyId)

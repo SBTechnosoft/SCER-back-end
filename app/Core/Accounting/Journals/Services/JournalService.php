@@ -8,6 +8,7 @@ use ERP\Core\Shared\Options\UpdateOptions;
 use ERP\Core\User\Entities\User;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Core\Accounting\Journals\Entities\EncodeAllData;
+use ERP\Core\Accounting\Journals\Entities\EncodeData;
 
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -87,6 +88,36 @@ class JournalService
 		else
 		{
 			return $status;
+		}
+	}
+	
+	/**
+     * get all the data and call the model for database selection opertation
+     * @return status
+     */
+	public function getJournalArrayData($journalId)
+	{
+		$encodedArrayData = array();
+		$journalModel = new JournalModel();
+		$status = $journalModel->getJournalArrayData($journalId);
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($status,$exceptionArray['404'])==0)
+		{
+			return $status;
+		}
+		else
+		{
+			for($encodeArray=0;$encodeArray<count(json_decode($status));$encodeArray++)
+			{
+				
+				$encodedData = new EncodeData();
+				$encodedResult = $encodedData->getEncodedData(json_decode($status)[$encodeArray]);
+				$encodedArrayData[$encodeArray] = $encodedResult;
+			}
+			return json_encode($encodedArrayData);
 		}
 	}
 	

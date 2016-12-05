@@ -228,6 +228,7 @@ class JournalModel extends Model
 	*/
 	public function getCurrentYearData($companyId)
 	{
+		DB::beginTransaction();
 		$raw = DB::select("SELECT 
 		journal_id,
 		jf_id,
@@ -253,6 +254,46 @@ class JournalModel extends Model
 			$encoded = new EncodeAllData();
 			$encodeAllData = $encoded->getEncodedAllData($enocodedData);
 			return $encodeAllData;
+		}
+	}
+	
+	/**
+	 * get data 
+	 * get current year data
+	 * returns the error-message/data
+	*/
+	public function getJournalArrayData($journalId)
+	{
+		DB::beginTransaction();
+		$jfIdResult = DB::select("SELECT 
+		jf_id
+		FROM journal_dtl  
+		WHERE journal_id='".$journalId."' and 
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		if(count($jfIdResult)==0)
+		{
+			return $exceptionArray['404'];
+		}
+		else
+		{
+			DB::beginTransaction();
+			$raw = DB::select("SELECT 
+			journal_id,
+			jf_id,
+			amount,
+			amount_type,
+			entry_date,
+			created_at,
+			updated_at,
+			ledger_id,
+			company_id
+			FROM journal_dtl  
+			WHERE jf_id='".$jfIdResult[0]->jf_id."' and 
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+			$enocodedData = json_encode($raw);
+			return $enocodedData;
 		}
 	}
 	

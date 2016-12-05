@@ -85,7 +85,7 @@
 
 **NOTES:** provide next increment journal folio id(jf_id)
 ##### update journals
-##### `POST /accounting/journals/{journalId}`
+##### `POST /accounting/journals/{jfId}`
 + Header
 	- Authentication Token
 	- 'type':'sales'
@@ -95,7 +95,7 @@
             {
 				[
 					{
-						... Standard Journals Persistable Object,
+						... Standard Journals Persistable Object for update,
 						... Standard Inventory Persistable Object
 						
 					}
