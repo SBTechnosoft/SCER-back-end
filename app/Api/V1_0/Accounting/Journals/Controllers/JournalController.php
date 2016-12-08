@@ -169,46 +169,42 @@ class JournalController extends BaseController implements ContainerInterface
 		$processor = new JournalProcessor();
 		$journalPersistable = new JournalPersistable();		
 		$journalService= new JournalService();		
-		// $journalModel = new JournalModel();
-		// $journalFlag=0;
+		$journalModel = new JournalModel();
+		$jfIdArrayData = $journalModel->getJfIdArrayData($jfId);
 		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		//check array exists
-		// if(array_key_exists('data', $this->request->input()))
-		// {
-			// $dataCountOfArray = count($this->request->input()['data']);
-			// for($dataArray=0;$dataArray<$dataCountOfArray;$dataArray++)
-			// {
-				// $result = $journalModel->getSpecificJournalData(trim($this->request->input()['data'][0]['journalId']));
-				// if(strcmp($result,$exceptionArray['404'])==0)
-				// {
-					// return $result;
-				// }
-				// if(strcmp(json_decode($result)[0]->jf_id,$jfId)!=0)
-				// {
-					// $journalFlag=1;
-				// }
-			// }
-		// }
-		// if($journalFlag==1)
-		// {
-			// return $exceptionArray['content'];
-		// }
-		// else
-		// {
-			$journalPersistable = $processor->createPersistableChange($this->request,$jfId);
-			//here two array and string is return at a time
-			if(is_array($journalPersistable))
+		if(array_key_exists('data', $this->request->input()))
+		{
+			$journalData = $this->request->input()['data'];
+			$dataCountOfArray = count($this->request->input()['data']);
+			for($dataArray=0;$dataArray<$dataCountOfArray-1;$dataArray++)
 			{
-				$status = $journalService->update($journalPersistable,$jfId);
-				return $status;
+				if(strcmp($journalData[$dataArray]['ledgerId'],$journalData[$dataArray+1]['ledgerId'])==0)
+				{
+					return $exceptionArray['content'];
+				}
 			}
-			else
-			{
-				return $journalPersistable;
-			}
-		// }
+		}
+		//check journal-data is available in database as per given jf-id
+		if(strcmp($jfIdArrayData,$exceptionArray['404'])==0)
+		{
+			return $exceptionArray['404'];
+		}
+		//journal data is processed(trim,validation and set data in object)
+		$journalPersistable = $processor->createPersistableChange($this->request,$jfId);
+		
+		//here two array and string is return at a time
+		if(is_array($journalPersistable))
+		{
+			$status = $journalService->update($journalPersistable,$jfId);
+			return $status;
+		}
+		else
+		{
+			return $journalPersistable;
+		}
 	}
 }

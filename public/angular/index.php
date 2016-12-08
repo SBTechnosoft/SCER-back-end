@@ -355,8 +355,8 @@ include ('connection.php');
 				//update....
 				// formdata.append('companyId',15);
  
- 				// formdata.append('entryDate','24-10-2016');
- 				var json=[{"amount": 200 ,"amountType":" credit ","ledgerId":38},{"amount":200,"amountType":"credit","ledgerId":62},{"amount":400,"amountType":"debit","ledgerId":35}];
+ 				// formdata.append('entryDate','22-10-2016');
+ 				var json=[{"amount": 100 ,"amountType":" credit ","ledgerId":38},{"amount":100,"amountType":"debit","ledgerId":62}];
 
  				  
   				for(var i=0;i<json.length;i++){

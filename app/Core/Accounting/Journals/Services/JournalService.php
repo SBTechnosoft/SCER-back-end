@@ -216,24 +216,18 @@ class JournalService
 		{
 			$journalModel = new JournalModel();
 			$status = $journalModel->updateArrayData($multipleArray,$singleData,$jfId);
-			print_r($status);
-			exit;
 			return $status;
 		}
 		else if(count($multipleArray)!=0)
 		{
 			$journalModel = new JournalModel();
 			$status = $journalModel->updateData($multipleArray,$jfId);
-			print_r($status);
-			exit;
 			return $status;
 		}
 		else
 		{
 			$journalModel = new JournalModel();
 			$status = $journalModel->updateData($singleData,$jfId);
-			print_r($status);
-			exit;
 			return $status;
 		}
 	}
