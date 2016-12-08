@@ -336,7 +336,7 @@ include ('connection.php');
 				
 				// special journal
 				// $scope.user = [{"jfId":4,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":35},{"amount":2,"amountType":"credit","ledgerId":35},{"amount":12,"amountType":"debit","ledgerId":35}],"entryDate":"22-10-2015","companyId":14}];
-				// formdata.append('jfId',5);
+				// formdata.append('jfId',1);
  				// formdata.append('companyId',14);
  
  				// formdata.append('entryDate','22-10-2016');
@@ -356,7 +356,7 @@ include ('connection.php');
 				// formdata.append('companyId',15);
  
  				// formdata.append('entryDate','24-10-2016');
- 				var json=[{"amount": 200 ,"amountType":" debit ","ledgerId":38,"journalId":155},{"amount":100,"amountType":"credit","ledgerId":62,"journalId":154},{"amount":100,"amountType":"credit","ledgerId":35,"journalId":156}];
+ 				var json=[{"amount": 200 ,"amountType":" credit ","ledgerId":38},{"amount":200,"amountType":"credit","ledgerId":62},{"amount":400,"amountType":"debit","ledgerId":35}];
 
  				  
   				for(var i=0;i<json.length;i++){

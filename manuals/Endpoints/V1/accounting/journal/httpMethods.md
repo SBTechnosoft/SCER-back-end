@@ -94,7 +94,7 @@
             {
 				[
 					{
-						... Standard Journals Persistable Object for update,
+						... Standard Journals Persistable Object,
 						... Standard Inventory Persistable Object
 						
 					}

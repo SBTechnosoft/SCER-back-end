@@ -188,7 +188,6 @@ class JournalProcessor extends BaseProcessor
 								$journalPersistable[$multipleArray]->setAmount($tRequest[0][$multipleArray]['amount']);
 								$journalPersistable[$multipleArray]->setAmountType($tRequest[0][$multipleArray]['amount_type']);
 								$journalPersistable[$multipleArray]->setLedgerId($tRequest[0][$multipleArray]['ledger_id']);
-								$journalPersistable[$multipleArray]->setJournalId($tRequest[0][$multipleArray]['journal_id']);
 								$journalMultipleArray[$multipleArray] = array($journalPersistable[$multipleArray]);
 							}
 							array_push($journalSingleArray,$journalMultipleArray);
@@ -232,7 +231,6 @@ class JournalProcessor extends BaseProcessor
 							$journalPersistable[$multipleArray]->setAmount($tRequest[$multipleArray]['amount']);
 							$journalPersistable[$multipleArray]->setAmountType($tRequest[$multipleArray]['amount_type']);
 							$journalPersistable[$multipleArray]->setLedgerId($tRequest[$multipleArray]['ledger_id']);
-							$journalPersistable[$multipleArray]->setJournalId($tRequest[$multipleArray]['journal_id']);
 							$journalMultipleArray[$multipleArray] = array($journalPersistable[$multipleArray]);
 						}
 						$journalMultipleArray['flag']="1";
