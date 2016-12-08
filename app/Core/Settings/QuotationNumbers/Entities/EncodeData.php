@@ -14,6 +14,7 @@ class EncodeData extends CompanyService
 	{
 		$decodedJson = json_decode($status,true);
 		$createdAt = $decodedJson[0]['created_at'];
+		$updatedAt = $decodedJson[0]['updated_at'];
 		$quotationId= $decodedJson[0]['quotation_id'];
 		$quotationLabel= $decodedJson[0]['quotation_label'];
 		$quotationType= $decodedJson[0]['quotation_type'];
@@ -32,6 +33,10 @@ class EncodeData extends CompanyService
 		$quotation->setCreated_at($convertedCreatedDate);
 		$getCreatedDate = $quotation->getCreated_at();
 		
+		$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
+		$quotation->setUpdated_at($convertedUpdatedDate);
+		$getUpdatedDate = $quotation->getUpdated_at();
+		
 		//set all data into json array
 		$data = array();
 		$data['quotationId'] = $quotationId;
@@ -40,6 +45,7 @@ class EncodeData extends CompanyService
 		$data['startAt'] = $startAt;
 		$data['endAt'] = $endAt;
 		$data['createdAt'] = $getCreatedDate;
+		$data['updatedAt'] = $getUpdatedDate;
 		
 		$data['company']= array(
 			'companyId' => $companyDecodedJson['companyId'],	
@@ -65,9 +71,9 @@ class EncodeData extends CompanyService
 			'isDisplay' => $companyDecodedJson['isDisplay'],	
 			'isDefault' => $companyDecodedJson['isDefault'],	
 			'createdAt' => $companyDecodedJson['createdAt'],	
-			'updatedAt' => $companyDecodedJson['updatedAt'],	
-			'stateAbb' => $companyDecodedJson['stateAbb'],
-			'cityId' => $companyDecodedJson['cityId']
+			'updatedAt' => $companyDecodedJson['updatedAt'],
+			'stateAbb' => $companyDecodedJson['state']['stateAbb'],
+			'cityId' => $companyDecodedJson['city']['cityId']
 		);
 		$encodeData = json_encode($data);
 		return $encodeData;

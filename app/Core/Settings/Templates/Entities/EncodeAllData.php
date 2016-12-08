@@ -58,12 +58,12 @@ class EncodeAllData extends CompanyService
 			//date format conversion
 			$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
+			
+			$template->setCreated_at($convertedCreatedDate[$decodedData]);
+			$getCreatedDate[$decodedData] = $template->getCreated_at();
+			$template->setUpdated_at($convertedUpdatedDate[$decodedData]);
+			$getUpdatedDate[$decodedData] = $template->getUpdated_at();
 		}
-		$template->setCreated_at($convertedCreatedDate);
-		$getCreatedDate = $template->getCreated_at();
-		$template->setUpdated_at($convertedUpdatedDate);
-		$getUpdatedDate = $template->getUpdated_at();
-		
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
 		{

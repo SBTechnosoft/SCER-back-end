@@ -27,11 +27,12 @@ class EncodeAllData
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
 			$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
+			
+			$state->setCreated_at($convertedCreatedDate[$decodedData]);
+			$getCreatedDate[$decodedData] = $state->getCreated_at();
+			$state->setUpdated_at($convertedUpdatedDate[$decodedData]);
+			$getUpdatedDate[$decodedData] = $state->getUpdated_at();
 		}
-		$state->setCreated_at($convertedCreatedDate);
-		$getCreatedDate = $state->getCreated_at();
-		$state->setUpdated_at($convertedUpdatedDate);
-		$getUpdatedDate = $state->getUpdated_at();
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
 		{

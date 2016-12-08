@@ -112,7 +112,6 @@ class BillProcessor extends BaseProcessor
 			}
 		}
 		$paymentMode = $tRequest['payment_mode'];
-		
 		//get ledger data for checking client is exist in ledger or not by contact-number
 		$ledgerService = new LedgerService();
 		$ledgerAllData = $ledgerService->getAllLedgerData();
@@ -151,6 +150,7 @@ class BillProcessor extends BaseProcessor
 			$ledgerRequest = Request::create($path,$method,$ledgerArray);
 			$processedData = $ledgerController->store($ledgerRequest);
 			$ledgerId = json_decode($processedData)[0]->ledger_id;
+			
 			if(strcmp($msgArray['500'],$processedData)==0)
 			{
 				return $processedData;
@@ -268,7 +268,6 @@ class BillProcessor extends BaseProcessor
 		$journalRequest->headers->set('type',$request->header()['type'][0]);
 		$processedData = $journalController->store($journalRequest);
 		
-		// print_r($processedData); //simple error msg
 		if(strcmp($processedData,$msgArray['200'])==0)
 		{
 			if(strcmp($request->header()['type'][0],"sales")==0)

@@ -36,7 +36,7 @@ class EncodeAllData extends ProductCategoryService
 			
 			//get the categoryData from database
 			$encodeDataClass = new EncodeAllData();
-			$productStatus[$decodedData] = $encodeDataClass->getProductCatData($productId[$decodedData]);
+			$productStatus[$decodedData] = $encodeDataClass->getProductCatData($productCatId[$decodedData]);
 			$productDecodedJson[$decodedData] = json_decode($productStatus[$decodedData],true);
 			$productCatId[$decodedData]= $productDecodedJson[$decodedData]['productCategoryId'];
 			$productCatName[$decodedData]= $productDecodedJson[$decodedData]['productCategoryName'];
@@ -61,15 +61,13 @@ class EncodeAllData extends ProductCategoryService
 			//product date convertion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$createdAt[$decodedData])->format('d-m-Y');
 			$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$updatedAt[$decodedData])->format('d-m-Y');
-		}
-		
-		$product->setCreated_at($convertedCreatedDate);
-		$getCreatedDate = $product->getCreated_at();
 			
-		$product->setUpdated_at($convertedUpdatedDate);
-		$getUpdatedDate = $product->getUpdated_at();
+			$product->setCreated_at($convertedCreatedDate[$decodedData]);
+			$getCreatedDate[$decodedData] = $product->getCreated_at();
+			$product->setUpdated_at($convertedUpdatedDate[$decodedData]);
+			$getUpdatedDate[$decodedData] = $product->getUpdated_at();
+		}
 		$data = array();
-		
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
 		{
 			$data[$jsonData]= array(

@@ -140,26 +140,19 @@ class JournalProcessor extends BaseProcessor
 				//get data from trim array
 				if(is_array($tRequest))
 				{
-					//array is exists in array or not by flag
-					for($trimResponse=0;$trimResponse<count($tRequest);$trimResponse++)
+					//data is exists in request or not checking by flag
+					if(array_key_exists("flag",$tRequest))
 					{
-						if(strcmp(array_keys($tRequest)[$trimResponse],"flag")==0)
-						{
-							$trimFlag=1;
-							break;
-						}
+						$trimFlag=1;
 					}
 					//data
 					if($trimFlag==1)
 					{
-						for($trimResponse=0;$trimResponse<count($tRequest);$trimResponse++)
+						//check array is exists 
+						if(array_key_exists(0,$tRequest))
 						{
-							if(strcmp(array_keys($tRequest)[$trimResponse],0)==0)
-							{
-								$trimArrayFalg=1;
-								break;
-							}
-						}
+							$trimArrayFalg=1;
+						}	
 						//array with data
 						if($trimArrayFalg==1)
 						{

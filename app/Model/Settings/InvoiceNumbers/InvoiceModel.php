@@ -103,8 +103,9 @@ class InvoiceModel extends Model
 		start_at,
 		end_at,
 		created_at,
+		updated_at,
 		company_id			
-		from invoice_dtl");
+		from invoice_dtl where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message
@@ -136,8 +137,9 @@ class InvoiceModel extends Model
 		start_at,
 		end_at,
 		created_at,
+		updated_at,
 		company_id
-		from invoice_dtl where invoice_id = ".$invoiceId);
+		from invoice_dtl where invoice_id = ".$invoiceId." and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message
@@ -168,8 +170,9 @@ class InvoiceModel extends Model
 		start_at,
 		end_at,
 		created_at,
+		updated_at,
 		company_id
-		from invoice_dtl where company_id=".$companyId);
+		from invoice_dtl where company_id=".$companyId." and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message
@@ -201,6 +204,7 @@ class InvoiceModel extends Model
 		start_at,
 		end_at,
 		created_at,
+		updated_at,
 		company_id		
 		FROM invoice_dtl where company_id='".$companyId."' and deleted_at='0000-00-00 00:00:00' group by invoice_id desc limit 1");
 		DB::commit();

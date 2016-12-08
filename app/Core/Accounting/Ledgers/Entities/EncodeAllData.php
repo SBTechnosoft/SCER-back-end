@@ -65,13 +65,13 @@ class EncodeAllData extends StateService
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
 			$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
+			
+			$ledger->setCreated_at($convertedCreatedDate[$decodedData]);
+			$getCreatedDate[$decodedData] = $ledger->getCreated_at();
+			$ledger->setUpdated_at($convertedUpdatedDate[$decodedData]);
+			$getUpdatedDate[$decodedData] = $ledger->getUpdated_at();
 		}
-		$ledger->setCreated_at($convertedCreatedDate);
-		$getCreatedDate = $ledger->getCreated_at();
-		$ledger->setUpdated_at($convertedUpdatedDate);
-		$getUpdatedDate = $ledger->getUpdated_at();
 		$data = array();
-		
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
 		{
 			$data[$jsonData]= array(
@@ -145,9 +145,7 @@ class EncodeAllData extends StateService
 				)		
 			);
 		}
-		echo "hi";
 		$jsonEncodedData = json_encode($data);
-		print_r($jsonEncodedData);
 		return $jsonEncodedData;
 	}
 }

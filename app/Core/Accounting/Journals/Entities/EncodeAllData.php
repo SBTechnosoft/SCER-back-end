@@ -61,13 +61,14 @@ class EncodeAllData extends LedgerService
 			$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
 			$convertedEntryDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d', $entryDate[$decodedData])->format('d-m-Y');
 			
+			$journal->setCreated_at($convertedCreatedDate[$decodedData]);
+			$getCreatedDate[$decodedData] = $journal->getCreated_at();
+			$journal->setUpdated_at($convertedUpdatedDate[$decodedData]);
+			$getUpdatedDate[$decodedData] = $journal->getUpdated_at();
+			$journal->setEntryDate($convertedEntryDate[$decodedData]);
+			$getEntryDate[$decodedData] = $journal->getEntryDate();
 		}
-		$journal->setCreated_at($convertedCreatedDate);
-		$getCreatedDate = $journal->getCreated_at();
-		$journal->setUpdated_at($convertedUpdatedDate);
-		$getUpdatedDate = $journal->getUpdated_at();
-		$journal->setEntryDate($convertedEntryDate);
-		$getEntryDate = $journal->getEntryDate();
+		
 		$data = array();
 		
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)

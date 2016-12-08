@@ -102,8 +102,9 @@ class QuotationModel extends Model
 		start_at,
 		end_at,
 		created_at,
+		updated_at,
 		company_id			
-		from quotation_dtl");
+		from quotation_dtl where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message
@@ -135,8 +136,9 @@ class QuotationModel extends Model
 		start_at,
 		end_at,
 		created_at,
+		updated_at,
 		company_id
-		from quotation_dtl where quotation_id = ".$quotationId);
+		from quotation_dtl where quotation_id = ".$quotationId." and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message
@@ -166,8 +168,9 @@ class QuotationModel extends Model
 		start_at,
 		end_at,
 		created_at,
+		updated_at,
 		company_id
-		from quotation_dtl where company_id =".$companyId);
+		from quotation_dtl where company_id =".$companyId." and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message
@@ -198,8 +201,9 @@ class QuotationModel extends Model
 		start_at,
 		end_at,
 		created_at,
+		updated_at,
 		company_id		
-		FROM quotation_dtl where company_id=".$companyId);
+		FROM quotation_dtl where company_id=".$companyId." and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message

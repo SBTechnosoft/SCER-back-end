@@ -87,9 +87,9 @@ class BillController extends BaseController implements ContainerInterface
 						}
 						else
 						{
-							echo "pdf";
 							$billMpdf = new BillMpdf();
-							$billPdf = $billMpdf->mpdfGenerate(json_decode($templateData),$status,json_decode($status)[0]->sale_id);
+							$billPdf = $billMpdf->mpdfGenerate($templateData,$status);
+							return $billPdf;
 						}
 					}
 				}

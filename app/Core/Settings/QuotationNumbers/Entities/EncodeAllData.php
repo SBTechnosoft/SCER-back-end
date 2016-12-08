@@ -19,6 +19,7 @@ class EncodeAllData extends CompanyService
 		for($decodedData=0;$decodedData<count($decodedJson);$decodedData++)
 		{
 			$createdAt[$decodedData] = $decodedJson[$decodedData]['created_at'];
+			$updatedAt[$decodedData] = $decodedJson[$decodedData]['updated_at'];
 			$quotationId[$decodedData] = $decodedJson[$decodedData]['quotation_id'];
 			$quotationLabel[$decodedData] = $decodedJson[$decodedData]['quotation_label'];
 			$quotationType[$decodedData] = $decodedJson[$decodedData]['quotation_type'];
@@ -56,11 +57,14 @@ class EncodeAllData extends CompanyService
 		
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
+			$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
+			
+			$quotation->setCreated_at($convertedCreatedDate[$decodedData]);
+			$getCreatedDate[$decodedData] = $quotation->getCreated_at();
+			$quotation->setUpdated_at($convertedUpdatedDate[$decodedData]);
+			$getUpdatedate[$decodedData] = $quotation->getUpdated_at();
 		}
-		$quotation->setCreated_at($convertedCreatedDate);
-		$getCreatedDate = $quotation->getCreated_at();
 		$data = array();
-		
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
 		{
 			$data[$jsonData]= array(
@@ -70,6 +74,7 @@ class EncodeAllData extends CompanyService
 				'startAt' => $startAt[$jsonData],
 				'endAt'=> $endAt[$jsonData],
 				'createdAt' => $getCreatedDate[$jsonData],
+				'updatedAt' => $getUpdatedate[$jsonData],
 				
 				'company' => array(
 					'companyId' => $companyId[$jsonData],

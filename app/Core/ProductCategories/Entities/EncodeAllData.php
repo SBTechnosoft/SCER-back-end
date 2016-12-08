@@ -28,15 +28,13 @@ class EncodeAllData
 			$isDisplay[$decodedData] = $decodedJson[$decodedData]['is_display'];
 			
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
-				
 			$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
-				
-		}
-		$productCategory->setCreated_at($convertedCreatedDate);
-		$getCreatedDate = $productCategory->getCreated_at();
 			
-		$productCategory->setUpdated_at($convertedUpdatedDate);
-		$getUpdatedDate = $productCategory->getUpdated_at();
+			$productCategory->setCreated_at($convertedCreatedDate[$decodedData]);
+			$getCreatedDate[$decodedData] = $productCategory->getCreated_at();
+			$productCategory->setUpdated_at($convertedUpdatedDate[$decodedData]);
+			$getUpdatedDate[$decodedData] = $productCategory->getUpdated_at();
+		}
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
 		{

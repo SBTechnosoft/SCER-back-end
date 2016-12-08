@@ -151,18 +151,22 @@ class JournalModel extends Model
 		}
 		if($ledgerEntryResult==1)
 		{
+			echo "if";
+			exit;
 			return $fileSizeArray['200'];
 		}
 	}
 	/**
 	 * get data 
-	 * get next journal id
+	 * get next jf id
 	 * returns the error-message/data
 	*/
 	public function getJournalData()
 	{
 		DB::beginTransaction();
-		$raw = DB::select('SELECT  MAX(journal_id) AS journal_id from journal_dtl');
+		$raw = DB::select("SELECT  MAX(jf_id) AS jf_id 
+		from journal_dtl
+		where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		// get exception message
@@ -176,7 +180,7 @@ class JournalModel extends Model
 		{
 			$enocodedData = json_encode($raw);
 			$decodedJson = json_decode($enocodedData,true);
-			$nextValue = $decodedJson[0]['journal_id']+1;
+			$nextValue = $decodedJson[0]['jf_id']+1;
 			$data = array();
 			$data['nextValue']=$nextValue;
 			return json_encode($data);
@@ -303,12 +307,44 @@ class JournalModel extends Model
 	 * get jf_id as per journal id
 	 * returns the error-message/data
 	*/
-	public function getSpecificJournalData($journalId)
+	// public function getSpecificJournalData($journalId)
+	// {
+		// $raw = DB::select("SELECT 
+		// jf_id
+		// from journal_dtl
+		// WHERE journal_id='".$journalId."' and 
+		// deleted_at='0000-00-00 00:00:00'");
+		// DB::commit();
+		// if(count($raw)==0)
+		// {
+			// return $exceptionArray['404'];
+		// }
+		// else
+		// {
+			// $enocodedData = json_encode($raw);
+			// return $enocodedData;
+		// }
+	// }
+	
+	/**
+	 * get data 
+	 * get journal data as per jf id
+	 * returns the error-message/data
+	*/
+	public function getJfIdArrayData($jfId)
 	{
 		$raw = DB::select("SELECT 
-		jf_id
+		journal_id,
+		jf_id,
+		amount,
+		amount_type,
+		entry_date,
+		created_at,
+		updated_at,
+		ledger_id,
+		company_id
 		from journal_dtl
-		WHERE journal_id='".$journalId."' and 
+		WHERE jf_id='".$jfId."' and 
 		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		if(count($raw)==0)
@@ -321,8 +357,15 @@ class JournalModel extends Model
 			return $enocodedData;
 		}
 	}
+	
+	/**
+	 * update data 
+	 * @param array
+	 * returns the error-message/status
+	*/
 	public function updateData()
 	{
+		echo "journal model update = ";	
 		$arrayDataFlag=0;
 		$keyValueString="";
 		$creditAmount = array();
@@ -331,143 +374,188 @@ class JournalModel extends Model
 		$debitAmount = array();
 		$journalArray = func_get_arg(0);
 		$jfId = func_get_arg(1);
+		$flag=0;
 		$mytime = Carbon\Carbon::now();
 		
-		$journalModel = new JournalModel();
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-			
-		for($arrayData=0;$arrayData<count($journalArray);$arrayData++)
+		
+		$journalModel = new JournalModel();
+		$jfIdArrayData = $journalModel->getJfIdArrayData($jfId);
+		$jfIdData = json_decode($jfIdArrayData);
+		if(array_key_exists(0,$journalArray))
 		{
-			if(strcmp(array_keys($journalArray)[$arrayData],0)==0)
-			{
-				$arrayDataFlag=1;
-				break;
-			}
+			$arrayDataFlag=1;
 		}
+		
+		//array exists
 		if($arrayDataFlag==1)
 		{
+			$creditArray=0;
+			$debitArray=0;
+			//compare dataabse data with input array data
 			for($arrayData=0;$arrayData<count($journalArray);$arrayData++)
 			{
-				echo "for";
-				$keyValueString=$keyValueString."amount ='".$journalArray[$arrayData]['amount']."',";
-				$keyValueString=$keyValueString."amount_type ='".$journalArray[$arrayData]['amount_type']."',";
-				$keyValueString=$keyValueString."ledger_id ='".$journalArray[$arrayData]['ledger_id']."',";
-				
-				DB::beginTransaction();
-				$raw = DB::statement("update journal_dtl 
-				set ".$keyValueString."updated_at='".$mytime."'
-				where journal_id = '".$journalArray[$arrayData]['journal_id']."'");
-				DB::commit();
-				
-				if($raw==0)
+				$ledgerFlag=0;
+				$journalFlag=0;
+				for($jfIdArray=0;$jfIdArray<count(json_decode($jfIdArrayData));$jfIdArray++)
 				{
-					return $exceptionArray['500'];
+					//if journal_id and ledger match then store ledger_id
+					if(strcmp($journalArray[$arrayData]['journal_id'],$jfIdData[$jfIdArray]->journal_id)==0 && strcmp($journalArray[$arrayData]['ledger_id'],$jfIdData[$jfIdArray]->ledger_id)==0)
+					{
+						$ledgerFlag=1;
+						$storeLedgerId[$arrayData] = $journalArray[$arrayData]['ledger_id'];
+						
+						//update the data
+						DB::beginTransaction();
+						$ledgerDeleteResult = DB::statement("update journal_dtl
+						set amount='".$journalArray[$arrayData]['amount']."',amount_type='".$journalArray[$arrayData]['amount_type']."',updated_at='".$mytime."' where journal_id='".$journalArray[$arrayData]['journal_id']."' and deleted_at='0000-00-00 00:00:00'");
+						DB::commit();
+						break;
+					}
+					if($ledgerFlag==0 && strcmp($journalArray[$arrayData]['journal_id'],$jfIdData[$jfIdArray]->journal_id)==0)
+					{
+						$journalFlag=1;
+						$dbLedgerId = $jfIdData[$jfIdArray]->ledger_id;
+						$dbEntryDate = $jfIdData[$jfIdArray]->entry_date;
+						$dbCompanyId = $jfIdData[$jfIdArray]->company_id;
+						break;
+					}
+				}
+				if($ledgerFlag==0 && $journalFlag==1)
+				{
+					// delete not matched ledger_id data from journal_dtl
+					DB::beginTransaction();
+					$ledgerDeleteResult = DB::statement("update journal_dtl
+					set deleted_at='".$mytime."' where journal_id='".$journalArray[$arrayData]['journal_id']."'");
+					DB::commit();
+					
+					// delete not matched ledger_id data from ledgerId_ledger_dtl
+					DB::beginTransaction();
+					$ledgerDeleteResult = DB::statement("update ".$dbLedgerId."_ledger_dtl
+					set deleted_at='".$mytime."' where jf_id='".$jfId."'");
+					DB::commit();
+					
+					// insert not matched ledger_id in journal_dtl
+					DB::beginTransaction();
+					$ledgerDeleteResult = DB::statement("insert into journal_dtl(jf_id,amount,amount_type,entry_date,ledger_id,company_id,updated_at) values('".$jfId."','".$journalArray[$arrayData]['amount']."','".$journalArray[$arrayData]['amount_type']."','".$dbEntryDate."','".$journalArray[$arrayData]['ledger_id']."','".$dbCompanyId."','".$mytime."')");
+					DB::commit();
+				}
+				// make credit and debit array
+				if($journalArray[$arrayData]['amount_type']=="credit")
+				{
+					$creditAmount[$creditArray] = $journalArray[$arrayData]['amount'];
+					$creditLedger[$creditArray] = $journalArray[$arrayData]['ledger_id'];
+					$creditArray++;
 				}
 				else
 				{
-					$jfIdResult = $journalModel->getSpecificJournalData($journalArray[$arrayData]['journal_id']);
-					$jfId = json_decode($jfIdResult)[0]->jf_id;
-					
-					$creditArray=0;
-					$debitArray=0;
-					for($data=0;$data<count($journalArray);$data++)
-					{
-						// make credit and debit array
-						if($journalArray[$data]['amount_type']=="credit")
-						{
-							$creditAmount[$creditArray] = $journalArray[$data]['amount'];
-							$creditLedger[$creditArray] = $journalArray[$data]['ledger_id'];
-							$creditArray++;
-						}
-						else
-						{
-							$debitAmount[$debitArray] = $journalArray[$data]['amount'];
-							$debitLedger[$debitArray] = $journalArray[$data]['ledger_id'];
-							$debitArray++;
-						}
-					}
-					
+					$debitAmount[$debitArray] = $journalArray[$arrayData]['amount'];
+					$debitLedger[$debitArray] = $journalArray[$arrayData]['ledger_id'];
+					$debitArray++;
 				}
 			}
-			if(count($jfIdResult)==1)
+			exit;
+			//update/insert data into ledgerId_ledger_dtl table
+			for($arrayData=0;$arrayData<count($journalArray);$arrayData++)
 			{
-				for($arrayData=0;$arrayData<count($journalArray);$arrayData++)
+				if($journalArray[$arrayData]['amount_type']=="debit")
 				{
-					if($journalArray[$arrayData]['amount_type']=="debit")
+					//purchase case
+					if(count($creditLedger)>1)
 					{
-						//purchase case
-						if(count($creditLedger)>1)
+						echo "purchase_if";
+						//delete(update data as per jf_id)
+						for($creditLoop=0;$creditLoop<count($creditLedger);$creditLoop++)
 						{
-							echo "purchase_if";
-							for($creditLoop=0;$creditLoop<count($creditLedger);$creditLoop++)
-							{
-								DB::beginTransaction();
-								$ledgerEntryResult = DB::statement("update
-								".$journalArray[$arrayData]['ledger_id']."_ledger_dtl
-								set amount='".$creditAmount[$creditLoop]."',amount_type='".$journalArray[$arrayData]['amount_type']."',ledger_id='".$creditLedger[$creditLoop]."',updated_at='".$mytime."' where jf_id='".$jfId."' and ledger_id='".$creditLedger[$creditLoop]."'");
-								DB::commit();
-							}
-						}
-						//sale case
-						else
-						{
-							echo "sale";
-							DB::beginTransaction();
-							$ledgerEntryResult = DB::statement("update  
-							".$journalArray[$arrayData]['ledger_id']."_ledger_dtl 
-							set amount='".$journalArray[$arrayData]['amount']."',amount_type='".$journalArray[$arrayData]['amount_type']."',ledger_id='".$creditLedger[0]."',updated_at='".$mytime."' where jf_id='".$jfId."'");
-							DB::commit();
+							// DB::beginTransaction();
+							// "insert into 
+							// journal_dtl(
+							// jf_id,
+							// amount,
+							// amount_type,
+							// entry_date,
+							// ledger_id,
+							// company_id) 
+							// values('".$jfIdArray[$data]."','".$amountArray[$data]."','".$amountTypeArray[$data]."','".$entryDateArray[$data]."','".$ledgerIdArray[$data]."','".$companyIdArray[$data]."')"
+							
+							// $ledgerEntryResult = DB::statement("insert into
+							// ".$journalArray[$arrayData]['ledger_id']."_ledger_dtl(amount,amount_type,ledger_id)
+							// values('".$creditAmount[$creditLoop]."','".$journalArray[$arrayData]['amount_type']."','".$creditLedger[$creditLoop]."')");
+							// DB::commit();
 						}
 					}
+					//sale case
 					else
 					{
-						//sale case
-						if(count($debitLedger)>1)
-						{
-							echo "sale_if";
-							for($debitLoop=0;$debitLoop<count($debitLedger);$debitLoop++)
-							{
-								DB::beginTransaction();
-								$ledgerEntryResult = DB::statement("update 
-								".$journalArray[$arrayData]['ledger_id']."_ledger_dtl
-								set amount='".$debitAmount[$debitLoop]."',amount_type='".$journalArray[$arrayData]['amount_type']."',ledger_id='".$debitLedger[$debitLoop]."',updated_at='".$mytime."' where jf_id='".$jfId."' and ledger_id='".$debitLedger[$debitLoop]."'");
-								DB::commit();
-							}
-						}
-						//purchase case
-						else
-						{
-							echo "purchase";
-							DB::beginTransaction();
-							$ledgerEntryResult = DB::statement("update 
-							".$journalArray[$arrayData]['ledger_id']."_ledger_dtl
-							set amount='".$journalArray[$arrayData]['amount']."',amount_type='".$journalArray[$arrayData]['amount_type']."',ledger_id='".$debitLedger[0]."',updated_at='".$mytime."' where jf_id='".$jfId."' ");
-							DB::commit();
-						}
+						echo "sale";
+						// DB::beginTransaction();
+						// $ledgerEntryResult = DB::statement("update  
+						// ".$journalArray[$arrayData]['ledger_id']."_ledger_dtl 
+						// set amount='".$journalArray[$arrayData]['amount']."',amount_type='".$journalArray[$arrayData]['amount_type']."',ledger_id='".$creditLedger[0]."',updated_at='".$mytime."' where jf_id='".$jfId."'");
+						// DB::commit();
+					}
+				}
+				else
+				{
+					//sale case
+					if(count($debitLedger)>1)
+					{
+						echo "sale_if";
+						// for($debitLoop=0;$debitLoop<count($debitLedger);$debitLoop++)
+						// {
+							// DB::beginTransaction();
+							// $ledgerEntryResult = DB::statement("update 
+							// ".$journalArray[$arrayData]['ledger_id']."_ledger_dtl
+							// set amount='".$debitAmount[$debitLoop]."',amount_type='".$journalArray[$arrayData]['amount_type']."',ledger_id='".$debitLedger[$debitLoop]."',updated_at='".$mytime."' where jf_id='".$jfId."' and ledger_id='".$debitLedger[$debitLoop]."'");
+							// DB::commit();
+						// }
+					}
+					//purchase case
+					else
+					{
+						echo "purchase";
+						// DB::beginTransaction();
+						// $ledgerEntryResult = DB::statement("update 
+						// ".$journalArray[$arrayData]['ledger_id']."_ledger_dtl
+						// set amount='".$journalArray[$arrayData]['amount']."',amount_type='".$journalArray[$arrayData]['amount_type']."',ledger_id='".$debitLedger[0]."',updated_at='".$mytime."' where jf_id='".$jfId."' ");
+						// DB::commit();
 					}
 				}
 			}
-			else
-			{
-				return $exceptionArray['500'];
-			}
+			exit;
 		}
 		else
 		{
-			for($data=0;$data<count($journalArray);$data++)
+			//update company_id from journal
+			if(array_key_exists("company_id",$journalArray))
 			{
-				$keyValueString=$keyValueString.array_keys($journalArray)[$data]."='".$journalArray[array_keys($journalArray)[$data]]."',";
+				//update the company_id from journal
+				DB::beginTransaction();
+				$journalResult = DB::statement("update journal_dtl
+				set company_id='".$journalArray['company_id']."',updated_at='".$mytime."' where jf_id='".$jfId."' and deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
 			}
-			
-			DB::beginTransaction();
-			$raw = DB::statement("update journal_dtl 
-			set ".$keyValueString."updated_at='".$mytime."'
-			where jf_id = '".$jfId."'");
-			DB::commit();
-			
-			if($raw==1)
+			//update entryDate from joural and ledgerId_ledger_dtl
+			if(array_key_exists("entry_date",$journalArray))
+			{
+				//update entry_date from journal 
+				DB::beginTransaction();
+				$journalResult = DB::statement("update journal_dtl
+				set entry_date='".$journalArray['entry_date']."',updated_at='".$mytime."' where jf_id='".$jfId."' and deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+				
+				//update entry_date from ledgerId_ledger_dtl
+				for($data=0;$data<count($jfIdData);$data++)
+				{
+					DB::beginTransaction();
+					$journalResult = DB::statement("update ".$jfIdData[$data]->ledger_id."_ledger_dtl
+					set entry_date='".$journalArray['entry_date']."',updated_at='".$mytime."' where jf_id='".$jfId."' and deleted_at='0000-00-00 00:00:00'");
+					DB::commit();
+				}
+			}
+			if($journalResult==1)
 			{
 				return $exceptionArray['200'];
 			}
@@ -477,6 +565,12 @@ class JournalModel extends Model
 			}
 		}
 	}
+	
+	/**
+	 * update array with data 
+	 * @param array,data,jf_id
+	 * returns the error-message/status
+	*/
 	public function updateArrayData()
 	{
 		//update array with data
@@ -486,39 +580,42 @@ class JournalModel extends Model
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
 		
+		$journalModel = new JournalModel();
+		$jfIdArrayData = $journalModel->getJfIdArrayData($jfId);
+		$jfIdData = json_decode($jfIdArrayData);
+		
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
-		for($data=0;$data<count($journalData);$data++)
+		//update company_id from journal
+		if(array_key_exists("company_id",$journalData))
 		{
-			$keyValueString=$keyValueString.array_keys($journalData)[$data]."='".$journalData[array_keys($journalData)[$data]]."',";
-		}
-		for($arrayData=0;$arrayData<count($journalArray);$arrayData++)
-		{
-			$keyValueString=$keyValueString."amount ='".$journalArray[$arrayData]['amount']."',";
-			$keyValueString=$keyValueString."amount_type ='".$journalArray[$arrayData]['amount_type']."',";
-			$keyValueString=$keyValueString."ledger_id ='".$journalArray[$arrayData]['ledger_id']."',";
-			
-			
+			//update the company_id from journal
 			DB::beginTransaction();
-			$raw = DB::statement("update journal_dtl 
-			set ".$keyValueString."updated_at='".$mytime."'
-			where journal_id = '".$journalArray[$arrayData]['journal_id']."'");
+			$journalResult = DB::statement("update journal_dtl
+			set company_id='".$journalData['company_id']."',updated_at='".$mytime."' where jf_id='".$jfId."' and deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+		}
+		
+		//update entryDate from joural and ledgerId_ledger_dtl
+		if(array_key_exists("entry_date",$journalData))
+		{
+			//update entry_date from journal 
+			DB::beginTransaction();
+			$journalResult = DB::statement("update journal_dtl
+			set entry_date='".$journalData['entry_date']."',updated_at='".$mytime."' where jf_id='".$jfId."' and deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
 			
-			if($raw==0)
+			//update entry_date from ledgerId_ledger_dtl
+			for($data=0;$data<count($jfIdData);$data++)
 			{
-				return $exceptionArray['500'];
+				DB::beginTransaction();
+				$journalResult = DB::statement("update ".$jfIdData[$data]->ledger_id."_ledger_dtl
+				set entry_date='".$journalData['entry_date']."',updated_at='".$mytime."' where jf_id='".$jfId."' and deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
 			}
 		}
-		if($raw==1)
-		{
-			return $exceptionArray['200'];
-		}
-		else
-		{
-			return $exceptionArray['500'];
-		}
+		
 	}
 }

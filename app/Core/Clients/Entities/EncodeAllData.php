@@ -50,11 +50,13 @@ class EncodeAllData extends StateService
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
 			$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
+			
+			$client->setCreated_at($convertedCreatedDate[$decodedData]);
+			$getCreatedDate[$decodedData] = $client->getCreated_at();
+			$client->setUpdated_at($convertedUpdatedDate[$decodedData]);
+			$getUpdatedDate[$decodedData] = $client->getUpdated_at();
 		}
-		$client->setCreated_at($convertedCreatedDate);
-		$getCreatedDate = $client->getCreated_at();
-		$client->setUpdated_at($convertedUpdatedDate);
-		$getUpdatedDate = $client->getUpdated_at();
+		
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
 		{

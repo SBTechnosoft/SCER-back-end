@@ -206,6 +206,7 @@ class JournalTransformer extends LedgerModel
 							}
 							else
 							{
+								
 								$debitAmountArray = $debitAmountArray+$tempArray[$arrayElement]['amount'];
 							}
 						}
@@ -264,7 +265,14 @@ class JournalTransformer extends LedgerModel
 		}
 		else if($tempArrayFlag==1)
 		{
-			return $tempArray;
+			if($creditAmountArray==$debitAmountArray)
+			{
+				return $tempArray;
+			}
+			else
+			{
+				return $exceptionArray['equal'];
+			}
 		}
 		else
 		{

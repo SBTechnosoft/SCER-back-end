@@ -66,8 +66,7 @@
 					...
 				]
 				
-            }           
-            
+            } 
 ##### `GET /accounting/journals/next/`
 + Header 
 	- Authentication Token

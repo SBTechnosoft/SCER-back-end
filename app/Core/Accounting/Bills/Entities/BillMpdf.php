@@ -10,12 +10,18 @@ use ERP\Exceptions\ExceptionMessage;
  */
 class BillMpdf 
 {
-	public function mpdfGenerate()
+	public function mpdfGenerate($templateData,$status)
 	{
-		$templateArray = func_get_arg(0);
-		$htmlBody = $templateArray[0]->template_body;
-		$saleId = func_get_arg(2);
-		
+		$htmlBody = json_decode($templateData)[0]->template_body;
+		if(is_object(json_decode($status)))
+		{
+			$saleId = json_decode($status)->saleId;		
+		}
+		else
+		{
+			$saleId = json_decode($status)[0]->sale_id;
+		}
+
 		$billArray = array();
 		$billArray['Company']="Siliconbrain";
 		$billArray['ClientName']="Reema";
@@ -61,7 +67,9 @@ class BillMpdf
 		else
 		{
 			$mpdf->Output($documentPathName,'F');
-			return $exceptionArray['200'];
+			$pathArray = array();
+			$pathArray['documentPath'] = $documentPathName;
+			return $pathArray;
 		}	
 	}
 }

@@ -169,38 +169,36 @@ class JournalController extends BaseController implements ContainerInterface
 		$processor = new JournalProcessor();
 		$journalPersistable = new JournalPersistable();		
 		$journalService= new JournalService();		
-		$journalModel = new JournalModel();
-		$journalFlag=0;
+		// $journalModel = new JournalModel();
+		// $journalFlag=0;
 		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		echo "hh";
 		//check array exists
-		if(array_key_exists('data', $this->request->input()))
-		{
-			$dataCountOfArray = count($this->request->input()['data']);
-			for($dataArray=0;$dataArray<$dataCountOfArray;$dataArray++)
-			{
-				$result = $journalModel->getSpecificJournalData(trim($this->request->input()['data'][0]['journalId']));
-				if(strcmp($result,$exceptionArray['404'])==0)
-				{
-					return $result;
-				}
-				if(strcmp(json_decode($result)[0]->jf_id,$jfId)!=0)
-				{
-					$journalFlag=1;
-				}
-			}
-		}
-		if($journalFlag==1)
-		{
-			return $exceptionArray['content'];
-		}
-		else
-		{
+		// if(array_key_exists('data', $this->request->input()))
+		// {
+			// $dataCountOfArray = count($this->request->input()['data']);
+			// for($dataArray=0;$dataArray<$dataCountOfArray;$dataArray++)
+			// {
+				// $result = $journalModel->getSpecificJournalData(trim($this->request->input()['data'][0]['journalId']));
+				// if(strcmp($result,$exceptionArray['404'])==0)
+				// {
+					// return $result;
+				// }
+				// if(strcmp(json_decode($result)[0]->jf_id,$jfId)!=0)
+				// {
+					// $journalFlag=1;
+				// }
+			// }
+		// }
+		// if($journalFlag==1)
+		// {
+			// return $exceptionArray['content'];
+		// }
+		// else
+		// {
 			$journalPersistable = $processor->createPersistableChange($this->request,$jfId);
-			
 			//here two array and string is return at a time
 			if(is_array($journalPersistable))
 			{
@@ -211,6 +209,6 @@ class JournalController extends BaseController implements ContainerInterface
 			{
 				return $journalPersistable;
 			}
-		}
+		// }
 	}
 }

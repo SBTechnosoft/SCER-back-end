@@ -14,6 +14,7 @@ class EncodeData extends CompanyService
 	{
 		$decodedJson = json_decode($status,true);
 		$createdAt = $decodedJson[0]['created_at'];
+		$updatedAt = $decodedJson[0]['updated_at'];
 		$invoiceId= $decodedJson[0]['invoice_id'];
 		$invoiceLabel= $decodedJson[0]['invoice_label'];
 		$invoiceType= $decodedJson[0]['invoice_type'];
@@ -32,6 +33,10 @@ class EncodeData extends CompanyService
 		$invoice->setCreated_at($convertedCreatedDate);
 		$getCreatedDate = $invoice->getCreated_at();
 		
+		$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
+		$invoice->setUpdated_at($convertedUpdatedDate);
+		$getUpdatedDate = $invoice->getUpdated_at();
+		
 		//set all data into json array
 		$data = array();
 		$data['invoiceId'] = $invoiceId;
@@ -40,6 +45,7 @@ class EncodeData extends CompanyService
 		$data['startAt'] = $startAt;
 		$data['endAt'] = $endAt;
 		$data['createdAt'] = $getCreatedDate;
+		$data['updatedAt'] = $getUpdatedDate;
 		
 		$data['company']= array(
 			'companyId' => $companyDecodedJson['companyId'],	
