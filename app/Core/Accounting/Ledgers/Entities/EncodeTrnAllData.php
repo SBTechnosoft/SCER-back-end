@@ -28,7 +28,7 @@ class EncodeTrnAllData extends LedgerService
 			$jfId[$decodedData] = $decodedJson[$decodedData]['jf_id'];
 			$ledgersId[$decodedData] = $decodedJson[$decodedData]['ledger_id'];
 			
-			//get the state detail from database
+			//get the ledger detail from database
 			$encodeDataClass = new EncodeTrnAllData();
 			$ledgerStatus[$decodedData] = $encodeDataClass->getLedgerData($ledgersId[$decodedData]);
 			$ledgerDecodedJson[$decodedData] = json_decode($ledgerStatus[$decodedData],true);

@@ -428,7 +428,7 @@ include ('connection.php');
 				// var productId = 8;
 				// var productGrpId = 11;
 				// var productCatId = 16;
-				// var companyId=14;
+				var companyId=14;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -439,7 +439,7 @@ include ('connection.php');
 				// var quotationId=3;
 				// var ledgerGrpId=1;
 				// var ledgerId=40;
-				var jfId=1;
+				// var jfId=1;
 				// var journalId=1;
 				
 				// var url = "http://www.scerp1.com/accounting/bills";
@@ -508,7 +508,7 @@ include ('connection.php');
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016'},
                         // headers: {'Content-Type': undefined,'type':'purchase'},
                         // headers: {'Content-Type': undefined},
-                        headers: {'Content-Type': undefined,'type':'sales','jfId':1},
+                        headers: {'Content-Type': undefined,'type':'sales','jfId':4},
 						 // data:formdata
 						// data:$scope.user						
                         

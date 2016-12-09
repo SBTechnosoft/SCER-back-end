@@ -76,34 +76,21 @@ class LedgerController extends BaseController implements ContainerInterface
      * get the specified resource.
      * @param  int  $ledgerId
      */
-    public function getData(Request $request,$ledgerId=null)
+    public function getData($ledgerId=null)
     {
-		echo "enter";
-		
-		if(strcmp($request->header()['type'][0],'sales')==0)
-		{
-			$companyId = 
-		}
-		else if(strcmp($request->header()['type'][0],'purchase')==0)
-		{
-			
+		if($ledgerId==null)
+		{	
+			$ledgerService= new LedgerService();
+			$status = $ledgerService->getAllLedgerData();
+			return $status;
 		}
 		else
-		{
-			if($ledgerId==null)
-			{	
-				$ledgerService= new LedgerService();
-				$status = $ledgerService->getAllLedgerData();
-				return $status;
-			}
-			else
-			{	
-				$ledgerService= new LedgerService();
-				$status = $ledgerService->getLedgerData($ledgerId);
-				return $status;
-			}
+		{	
+			$ledgerService= new LedgerService();
+			$status = $ledgerService->getLedgerData($ledgerId);
+			return $status;
 		}
-    }
+	}
 	
 	/**
      * get the specified resource.
@@ -125,12 +112,19 @@ class LedgerController extends BaseController implements ContainerInterface
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		
 		if(array_key_exists("type",$request->header()))
 		{
 			if(strcmp(trim($request->header()['type'][0]),'sales')==0 || strcmp(trim($request->header()['type'][0]),'purchase')==0)
 			{
-				if(array_key_exists("fromdate",$request->header()) && array_key_exists("todate",$request->header()))
+				//get ledger-data as well as transaction-data for update
+				if(array_key_exists("jfid",$request->header()))
+				{
+					$jfId = $request->header()['jfid'];
+					$ledgerModel = new LedgerModel();
+					$status = $ledgerModel->getLedgerTransactionData($companyId,$request->header()['type'][0],$jfId);
+					return $status;
+				}
+				else if(array_key_exists("fromdate",$request->header()) && array_key_exists("todate",$request->header()))
 				{
 					$this->request = $request;
 					$processor = new LedgerProcessor();

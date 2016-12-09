@@ -6,6 +6,7 @@ use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Core\Accounting\Ledgers\Entities\EncodeTrnAllData;
+use ERP\Core\Accounting\Ledgers\Entities\EncodeProductTrnAllData;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -604,7 +605,103 @@ class LedgerModel extends Model
 		}
 	}
 	
-	//delete
+	/**
+	 * get ledger and ledger transaction-data 
+	 * @param:jf_id,company_id and ledger-type
+	 * returns the error-message/data
+	*/
+	public function getLedgerTransactionData($companyId,$ledgerType,$jfId)
+	{
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		DB::beginTransaction();
+		$raw = DB::select("SELECT 
+		ledger_id
+		FROM ledger_mst
+		WHERE ledger_name='".$ledgerType."' and 
+		company_id='".$companyId."' and 
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		if(count($raw)!=0)
+		{
+			DB::beginTransaction();
+			$ledgerResult = DB::select("SELECT 
+			".$raw[0]->ledger_id."_id,
+			amount,
+			amount_type,
+			entry_date,
+			jf_id,
+			created_at,
+			updated_at,
+			ledger_id
+			FROM ".$raw[0]->ledger_id."_ledger_dtl
+			WHERE jf_id='".$jfId[0]."' and 
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+			
+			if(count($ledgerResult)!=0)
+			{
+				DB::beginTransaction();
+				$transactionResult = DB::select("SELECT 
+				product_trn_id,
+				transaction_date,
+				transaction_type,
+				qty,
+				price,
+				discount,
+				discount_type,
+				is_display,
+				invoice_number,
+				bill_number,
+				created_at,
+				updated_at,
+				company_id,
+				branch_id,
+				product_id,
+				jf_id
+				FROM product_trn
+				WHERE jf_id='".$jfId[0]."' and 
+				deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+				if(count($transactionResult)!=0)
+				{
+					
+					$enocodedData = json_encode($ledgerResult);
+					$encoded = new EncodeTrnAllData();
+					$encodeAllData = $encoded->getEncodedAllData($enocodedData,$raw[0]->ledger_id);
+				
+					$enocodedProductData = json_encode($transactionResult);
+					$encodeProductData = new EncodeProductTrnAllData();
+					$getEncodedData = $encodeProductData->getEncodedAllData($enocodedProductData);
+					$ledgerTransactionarray = array();
+					$ledgerTransactionarray['ledger'] = json_decode($encodeAllData);
+					$ledgerTransactionarray['produdctTransaction'] = json_decode($getEncodedData);
+					
+					return json_encode($ledgerTransactionarray);
+				}
+				else
+				{
+					return $exceptionArray['404'];
+				}
+			}
+			else
+			{
+				return $exceptionArray['404'];
+			}
+		}
+		else
+		{
+			return $exceptionArray['404'];
+		}
+	}
+	
+	/**
+	 * delete the data
+	 * @param: ledgerId
+	 * returns the error-message/status
+	*/
 	public function deleteData($ledgerId)
 	{
 		$mytime = Carbon\Carbon::now();
