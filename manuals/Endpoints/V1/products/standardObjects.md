@@ -49,9 +49,34 @@
 					...
 				],
 				"transactionDate": date,
+				"transactionType":Enum,
 				"companyId": int,
 				"invoiceNumber":string,
 				"billNumber":string,
+				"branchId":int,
+				"jfId":int
+			}
+			
+##### Standard Product Transaction Object
+			{
+            	"inventory":
+				[
+					{
+						"qty": decimal,
+						"price": decimal,
+						"discount":decimal,
+						"discountType":Enum,
+						"productId":int,
+					},
+					...
+				],
+				"transactionDate": date,
+				"transactionType":Enum,
+				"companyId": int,
+				"invoiceNumber":string,
+				"billNumber":string,
+				"branchId":int,
+				"jfId":int
 			}
 #####  Is Display Enum
 			{

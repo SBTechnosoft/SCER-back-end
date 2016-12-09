@@ -368,6 +368,8 @@ class JournalModel extends Model
 	public function updateData()
 	{
 		$arrayDataFlag=0;
+		$ledgerResult=0;
+		$journalRaw=0;
 		$creditAmount = array();
 		$creditLedger = array();
 		$debitLedger = array();
@@ -375,7 +377,8 @@ class JournalModel extends Model
 		$journalArray = func_get_arg(0);
 		$jfId = func_get_arg(1);
 		$mytime = Carbon\Carbon::now();
-		
+		$journalRaw="";
+		$ledgerResult="";
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -583,7 +586,7 @@ class JournalModel extends Model
 					}
 				}
 			}
-			if($journalRaw==1 || $ledgerResul==1)
+			if($journalRaw==1 || $ledgerResult==1)
 			{
 				return $exceptionArray['200'];
 			}
@@ -603,8 +606,10 @@ class JournalModel extends Model
 		$journalData = func_get_arg(1);
 		$jfId = func_get_arg(2);
 		$mytime = Carbon\Carbon::now();
-		$keyValueString="";
-		
+		$journalRaw=0;
+		$ledgerResult=0;
+		$ledgerEntryResult=0;
+
 		$journalModel = new JournalModel();
 		$jfIdArrayData = $journalModel->getJfIdArrayData($jfId);
 		$jfIdData = json_decode($jfIdArrayData);

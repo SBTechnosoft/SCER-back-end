@@ -42,6 +42,25 @@
 
 **NOTES:** Provide details of the Ledger based on the Ledger Number
 
+##### `GET /accounting/ledgers/{jfId}/`
++ Header 
+	- Authentication Token
+	- 'type':'sales'
+	- 'type':'purchase'
++ Error Message
+
+			{
+				... Error Message
+			}
++ Response
+
+			{
+				... Standard Ledger Transaction Object
+				... Standard Product Transaction Object
+			}
+
+**NOTES:** Provide details of the Ledger based on the jornal_folio id
+
 ##### `GET /accounting/ledgers/`
 + Header 
 	- Authentication Token
@@ -108,7 +127,7 @@
 + Response
 
 			{
-				... Standard Ledger Object
+				... Standard Ledger Transaction Object
 			}
 
 **NOTES:** List all the ledger as per the given company id

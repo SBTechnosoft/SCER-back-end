@@ -98,10 +98,8 @@ class JournalProcessor extends BaseProcessor
 		return $journalPersistable;
 	}
 	
-	public function createPersistableChange(Request $request,$jfId)
+	public function createPersistableChange($journalArray,$jfId)
 	{
-		$this->request = $request;
-		$jouunalValue = array();
 		$errorCount=0;
 		$errorStatus=array();
 		$flag=0;
@@ -135,10 +133,14 @@ class JournalProcessor extends BaseProcessor
 				$journalSingleArray = array();
 				//trim an input 
 				$journalTransformer = new JournalTransformer();
-				$tRequest = $journalTransformer->trimUpdateData($this->request);
+				$tRequest = $journalTransformer->trimUpdateData($journalArray);
 				
+				if($tRequest==1)
+				{
+					return $exceptionArray['content'];
+				}
 				//get data from trim array
-				if(is_array($tRequest))
+				else if(is_array($tRequest))
 				{
 					//data is exists in request or not checking by flag
 					if(array_key_exists("flag",$tRequest))
@@ -195,7 +197,6 @@ class JournalProcessor extends BaseProcessor
 						}
 						else
 						{
-							echo "else";
 							for($trimResponse=0;$trimResponse<count($tRequest)-1;$trimResponse++)
 							{
 								$tKeyValue = array_keys($tRequest)[$trimResponse];

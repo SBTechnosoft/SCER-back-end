@@ -282,4 +282,154 @@ class ProductProcessor extends BaseProcessor
 			return $productPersistable;
 		}
 	}	
+	
+	public function createPersistableChangeInOutWard($productArray,$inOutWard)
+	{
+		$errorCount=0;
+		$errorStatus=array();
+		$flag=0;
+		$trimFlag=0;
+		$trimArrayFalg=0;
+		$productPersistable;
+		$productValidate = new ProductValidate();
+		$status;
+		$requestMethod = $_SERVER['REQUEST_METHOD'];
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		// update
+		if($requestMethod == 'POST')
+		{
+			//if data is not available in update request
+			if(count($_POST)==0)
+			{
+				$status = $exceptionArray['204'];
+				return $status;
+			}
+			//data is avalilable for update
+			else
+			{
+				$productPersistable = array();
+				$productMultipleArray = array();
+				//data get from body
+				
+				$productSingleArray = array();
+				//trim an input 
+				$productTransformer = new ProductTransformer();
+				$tRequest = $productTransformer->trimUpdateProductData($productArray,$inOutWard);
+				if($tRequest==1)
+				{
+					return $exceptionArray['content'];
+				}
+				//get data from trim array
+				else if(is_array($tRequest))
+				{
+					//data is exists in request or not checking by flag
+					if(array_key_exists("flag",$tRequest))
+					{
+						$trimFlag=1;
+					}
+					//data
+					if($trimFlag==1)
+					{
+						//check array is exists 
+						if(array_key_exists(0,$tRequest))
+						{
+							$trimArrayFalg=1;
+						}	
+						//array with data
+						if($trimArrayFalg==1)
+						{
+							//validate only single data not an array (pending multiple array data)
+							for($multipleArray=0;$multipleArray<count($tRequest[0]);$multipleArray++)
+							{
+								$productPersistable[$multipleArray] = new ProductPersistable();
+								$productPersistable[$multipleArray]->setDiscount($tRequest[0][$multipleArray]['discount']);
+								$productPersistable[$multipleArray]->setDiscountType($tRequest[0][$multipleArray]['discount_type']);
+								$productPersistable[$multipleArray]->setProductId($tRequest[0][$multipleArray]['product_id']);
+								$productPersistable[$multipleArray]->setPrice($tRequest[0][$multipleArray]['price']);
+								$productPersistable[$multipleArray]->setQty($tRequest[0][$multipleArray]['qty']);
+								$productMultipleArray[$multipleArray] = array($productPersistable[$multipleArray]);
+							}
+						
+							for($trimResponse=0;$trimResponse<count($tRequest)-2;$trimResponse++)
+							{
+								$tKeyValue = array_keys($tRequest)[$trimResponse];
+								$tValue =$tRequest[array_keys($tRequest)[$trimResponse]];
+								$trimRequest[0] = array($tKeyValue=>$tValue);
+								$status = $productValidate->validateTransactionUpdateData($tKeyValue,$tValue,$trimRequest[0]);
+								
+								if(strcmp($status,"Success")!=0)
+								{
+									return $status;
+								}
+								else
+								{
+									$productPersistable[$trimResponse] = new ProductPersistable();
+									$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue)));
+									$setFuncName = 'set'.$str;
+									$getFuncName = 'get'.$str;
+									$productPersistable[$trimResponse]->$setFuncName($tValue);
+									$productPersistable[$trimResponse]->setName($getFuncName);
+									$productPersistable[$trimResponse]->setKey($tKeyValue);
+									$productSingleArray[$trimResponse] = array($productPersistable[$trimResponse]);
+								}
+							}
+							array_push($productSingleArray,$productMultipleArray);
+							return $productSingleArray;
+						}
+						//only data exists
+						else
+						{
+							for($trimResponse=0;$trimResponse<count($tRequest)-1;$trimResponse++)
+							{
+								$tKeyValue = array_keys($tRequest)[$trimResponse];
+								$tValue =$tRequest[array_keys($tRequest)[$trimResponse]];
+								$trimRequest[0] = array($tKeyValue=>$tValue);
+								$status = $productValidate->validateTransactionUpdateData($tKeyValue,$tValue,$trimRequest[0]);
+								
+								if(strcmp($status,"Success")!=0)
+								{
+									return $status;
+								}
+								else
+								{
+									$productPersistable[$trimResponse] = new ProductPersistable();
+									$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue)));
+									$setFuncName = 'set'.$str;
+									$getFuncName = 'get'.$str;
+									$productPersistable[$trimResponse]->$setFuncName($tValue);
+									$productPersistable[$trimResponse]->setName($getFuncName);
+									$productPersistable[$trimResponse]->setKey($tKeyValue);
+									$productSingleArray[$trimResponse] = array($productPersistable[$trimResponse]);
+								}
+							}
+							return $productSingleArray;
+						}
+					}
+					//only array exists
+					else
+					{
+						for($multipleArray=0;$multipleArray<count($tRequest);$multipleArray++)
+						{
+							$productPersistable[$multipleArray] = new ProductPersistable();
+							$productPersistable[$multipleArray]->setDiscount($tRequest[$multipleArray]['discount']);
+							$productPersistable[$multipleArray]->setDiscountType($tRequest[$multipleArray]['discount_type']);
+							$productPersistable[$multipleArray]->setProductId($tRequest[$multipleArray]['product_id']);
+							$productPersistable[$multipleArray]->setPrice($tRequest[$multipleArray]['price']);
+							$productPersistable[$multipleArray]->setQty($tRequest[$multipleArray]['qty']);
+							$productMultipleArray[$multipleArray] = array($productPersistable[$multipleArray]);
+						}
+						$productMultipleArray['flag']="1";
+						return $productMultipleArray;
+					}
+				}
+				else
+				{
+					return $tRequest;
+				}
+			}
+		}
+	}	
 }

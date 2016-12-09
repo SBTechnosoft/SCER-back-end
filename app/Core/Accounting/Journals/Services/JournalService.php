@@ -169,13 +169,10 @@ class JournalService
 		$arrayFlag=0;
 		$flagData=0;
 		$jfId = func_get_arg(1);
-
-		for($keyData=0;$keyData<count(array_keys($journalArray));$keyData++)
+		
+		if(array_key_exists("flag",array_keys($journalArray)))
 		{
-			if(strcmp(array_keys($journalArray)[$keyData],"flag")==0)
-			{
-				$flagData=1;
-			}
+			$flagData=1;
 		}
 		if($flagData==1)
 		{

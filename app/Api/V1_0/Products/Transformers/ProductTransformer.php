@@ -112,9 +112,16 @@ class ProductTransformer
 		//data get from body and trim an input
 		$companyId = trim($request->input()['companyId']); 
 		$transactionDate = trim($request->input()['transactionDate']); 
-		$invoiceNumber = trim($request->input()['invoiceNumber']); 
-		$billNumber = trim($request->input()['billNumber']); 
-		
+		if(array_key_exists('invoiceNumber',$request->input()))
+		{
+			$invoiceNumber = trim($request->input()['invoiceNumber']);
+			$billNumber="";
+		}
+		else
+		{
+			$billNumber = trim($request->input()['billNumber']); 
+			$invoiceNumber="";
+		}
 		
 		//transaction date conversion
 		$transformEntryDate = Carbon\Carbon::createFromFormat('d-m-Y', $transactionDate)->format('Y-m-d');
@@ -261,6 +268,118 @@ class ProductTransformer
 		else
 		{
 			return $tProductArray;
+		}
+	}
+	
+	/**
+	 * trim request data for update
+     * @param object
+     * @return array
+     */
+	public function trimUpdateProductData($productArray,$inOutWard)
+	{
+		$discountTypeFlag=0;
+		$requestArray = array();
+		$exceptionArray = array();
+		$tProductArray = array();
+		$convertedValue="";
+		$arraySample = array();
+		$tempArrayFlag=0;
+		$productArrayFlag=0;
+		$tempFlag=0;
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		for($requestArray=0;$requestArray<count($productArray);$requestArray++)
+		{
+			//check if array is exists
+			if(strcmp(array_keys($productArray)[$requestArray],"inventory")==0)
+			{
+				//number of array elements
+				for($arrayElement=0;$arrayElement<count($productArray['inventory']);$arrayElement++)
+				{
+					$tempArrayFlag=1;
+					$tempArray[$arrayElement] = array();
+					$tempArray[$arrayElement]['product_id'] = trim($productArray['inventory'][$arrayElement]['productId']);
+					$tempArray[$arrayElement]['discount'] = trim($productArray['inventory'][$arrayElement]['discount']);
+					$tempArray[$arrayElement]['discount_type'] = trim($productArray['inventory'][$arrayElement]['discountType']);
+					$tempArray[$arrayElement]['price'] = trim($productArray['inventory'][$arrayElement]['price']);
+					$tempArray[$arrayElement]['qty'] = trim($productArray['inventory'][$arrayElement]['qty']);
+					
+					//check enum type[amount-type]
+					$enumDiscountTypeArray = array();
+					$discountTypeEnum = new DiscountTypeEnum();
+					$enumDiscountTypeArray = $discountTypeEnum->enumArrays();
+					foreach ($enumDiscountTypeArray as $key => $value)
+					{
+						if(strcmp($value,$tempArray[$arrayElement]['discount_type'])==0)
+						{
+							$discountTypeFlag=1;
+							break;
+						}
+						else
+						{
+							$discountTypeFlag=0;
+						}
+					}
+				}
+				if($discountTypeFlag==0)
+				{
+					return "1";
+				}
+			}
+			else
+			{
+				$key = array_keys($productArray)[$requestArray];
+				$value = $productArray[$key];
+				$productArrayFlag=1;
+				for($asciiChar=0;$asciiChar<strlen($key);$asciiChar++)
+				{
+					if(ord($key[$asciiChar])<=90 && ord($key[$asciiChar])>=65) 
+					{
+						$convertedValue1 = "_".chr(ord($key[$asciiChar])+32);
+						$convertedValue=$convertedValue.$convertedValue1;
+					}
+					else
+					{
+						$convertedValue=$convertedValue.$key[$asciiChar];
+					}
+				}
+				if(strcmp($convertedValue,"transaction_date")==0)
+				{
+					$transformTransactionDate = Carbon\Carbon::createFromFormat('d-m-Y', $value)->format('Y-m-d');
+					$tProductArray[$convertedValue]=trim($transformTransactionDate);
+					$convertedValue="";
+				}
+				else
+				{
+					$tProductArray[$convertedValue]=trim($value);
+					$convertedValue="";
+				}
+				$tempFlag=1;
+			}
+			if($tempFlag==1)
+			{
+				if($requestArray==count($productArray)-1)
+				{
+					$tProductArray['transaction_type']=$inOutWard;
+					$tProductArray['flag']="1";
+				}
+			}
+		}
+		if($productArrayFlag==1 && $tempArrayFlag==1)
+		{
+			array_push($tProductArray,$tempArray);
+			return $tProductArray;
+		}
+		else if($productArrayFlag==1)
+		{
+			return $tProductArray;
+		}
+		else
+		{
+			return $tempArray;
 		}
 	}
 }

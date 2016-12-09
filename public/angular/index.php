@@ -356,31 +356,31 @@ include ('connection.php');
 				// formdata.append('companyId',15);
  
  				// formdata.append('entryDate','22-10-2016');
- 				var json=[{"amount": 100 ,"amountType":" credit ","ledgerId":38},{"amount":100,"amountType":"debit","ledgerId":62}];
+ 				// var json=[{"amount": 100 ,"amountType":" credit ","ledgerId":38},{"amount":100,"amountType":"debit","ledgerId":62}];
 
  				  
-  				for(var i=0;i<json.length;i++){
+  				// for(var i=0;i<json.length;i++){
    
-  					angular.forEach(json[i], function (value,key) {
+  					// angular.forEach(json[i], function (value,key) {
    						
-   					formdata.append('data['+i+']['+key+']',value);
-  					});
+   					// formdata.append('data['+i+']['+key+']',value);
+  					// });
     
-  				}
+  				// }
 
 				
 				// sale/purchase
 				// $scope.user = [{"jfId":4,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":1},{"amount":2,"amountType":"credit","ledgerId":1},{"amount":12,"amountType":"debit","ledgerId":1}],"entryDate":"22-10-2015","companyId":14,
 				// "inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"companyId":14,"transactionDate":"22-10-2015","invoiceNumber":23,"billNumber":2}];
 				
-				// formdata.append('jfId',4);
- 				// formdata.append('companyId',15);
+				// formdata.append('jfId',10);
+ 				formdata.append('companyId',14);
 				// formdata.append('entryDate','22-10-2015');
-				// var json=[{"amount": 10 ,"amountType":" credit ","ledgerId":35},{"amount":2,"amountType":"credit","ledgerId":35},{"amount":12,"amountType":"debit","ledgerId":35}];
+				// var json=[{"amount": 10 ,"amountType":" credit ","ledgerId":35},{"amount":2,"amountType":"credit","ledgerId":38},{"amount":12,"amountType":"debit","ledgerId":37}];
 				
-				// var inventory = [{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}];
+				// var inventory = [{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":10,"discountType":"flat","price":1300,"qty":44}];
 				// formdata.append('transactionDate','22-10-2015');
-				// formdata.append('invoiceNumber',23);
+				// formdata.append('invoiceNumber',25);
 				// formdata.append('billNumber',2);
 				
 				// for(var i=0;i<json.length;i++){
@@ -507,8 +507,8 @@ include ('connection.php');
 						processData: false,
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016'},
                         // headers: {'Content-Type': undefined,'type':'purchase'},
-                        headers: {'Content-Type': undefined},
-                        // headers: {'Content-Type': undefined,'type':'sales'},
+                        // headers: {'Content-Type': undefined},
+                        headers: {'Content-Type': undefined,'type':'sales'},
 						 data:formdata
 						// data:$scope.user						
                         

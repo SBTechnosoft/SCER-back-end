@@ -83,6 +83,7 @@
 			}
 
 **NOTES:** provide next increment journal folio id(jf_id)
+
 ##### update journals
 ##### `POST /accounting/journals/{jfId}`
 + Header

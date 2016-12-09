@@ -22,8 +22,7 @@
 			
 ##### Standard Journals Persistable Object
 			{
-            	"jfId":int,
-				"data":
+            	"data":
 				[
 					{
 						"amount":decimal,

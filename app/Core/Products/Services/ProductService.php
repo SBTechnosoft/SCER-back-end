@@ -82,6 +82,7 @@ class ProductService extends AbstractService
 		$billNumberArray = array();
 		$invoiceNumberArray = array();
 		$productArray = func_get_arg(0);
+		$jfId = func_get_arg(1);
 		
 		for($data=0;$data<count($productArray);$data++)
 		{
@@ -99,7 +100,7 @@ class ProductService extends AbstractService
 		}
 		// data pass to the model object for insert
 		$productModel = new ProductModel();
-		$status = $productModel->insertInOutwardData($discountArray,$discountTypeArray,$productIdArray,$qtyArray,$priceArray,$transactionDateArray,$companyIdArray,$transactionTypeArray,$billNumberArray,$invoiceNumberArray);
+		$status = $productModel->insertInOutwardData($discountArray,$discountTypeArray,$productIdArray,$qtyArray,$priceArray,$transactionDateArray,$companyIdArray,$transactionTypeArray,$billNumberArray,$invoiceNumberArray,$jfId);
 		return $status;
 	}
 	
@@ -262,7 +263,92 @@ class ProductService extends AbstractService
 		$status = $productModel->updateData($getData,$keyName,$productId);
 		return $status;
 	}
-
+	
+	/**
+     * get the data from persistable object and call the model for database update opertation
+     * @param ProductPersistable $persistable
+     * @param updateOptions $options [optional]
+	 * parameter is in array form
+     * @return status
+     */
+    public function updateInOutwardData()
+    {
+		$productArray = array();
+		$getData = array();
+		$funcName = array();
+		$productArray = func_get_arg(0);
+		$jfId = func_get_arg(1);
+		$inOutWardData = func_get_arg(2);
+		$multipleArray = array();
+		$singleData = array();
+		$arrayFlag=0;
+		$flagData=0;
+		
+		if(array_key_exists("flag",$productArray))
+		{
+			$flagData=1;
+		}
+		//only array exists
+		if($flagData==1)
+		{
+			for($innerData=0;$innerData<count($productArray)-1;$innerData++)
+			{
+				$multipleArray[$innerData] = array();
+				$multipleArray[$innerData]['discount']=$productArray[$innerData][0]->getDiscount();
+				$multipleArray[$innerData]['discount_type']=$productArray[$innerData][0]->getDiscountType();
+				$multipleArray[$innerData]['product_id']=$productArray[$innerData][0]->getProductId();
+				$multipleArray[$innerData]['price']=$productArray[$innerData][0]->getPrice();
+				$multipleArray[$innerData]['qty']=$productArray[$innerData][0]->getQty();
+			}
+		}
+		else
+		{
+			for($persistableArray=0;$persistableArray<count($productArray);$persistableArray++)
+			{
+				// if array is available
+				if(is_array($productArray[$persistableArray][0]))
+				{
+					for($innerData=0;$innerData<count($productArray[$persistableArray]);$innerData++)
+					{
+						$multipleArray[$innerData] = array();
+						$multipleArray[$innerData]['discount']=$productArray[$persistableArray][$innerData][0]->getDiscount();
+						$multipleArray[$innerData]['discount_type']=$productArray[$persistableArray][$innerData][0]->getDiscountType();
+						$multipleArray[$innerData]['product_id']=$productArray[$persistableArray][$innerData][0]->getProductId();
+						$multipleArray[$innerData]['price']=$productArray[$persistableArray][$innerData][0]->getPrice();
+						$multipleArray[$innerData]['qty']=$productArray[$persistableArray][$innerData][0]->getQty();
+					}
+					
+				}
+				else
+				{
+					
+					$funcName = $productArray[$persistableArray][0]->getName();
+					$value = $productArray[$persistableArray][0]->$funcName();
+					$key = $productArray[$persistableArray][0]->getKey();
+					$singleData[$key] = $value;
+				}
+			}
+		}
+		if(count($multipleArray)!=0 && count($singleData)!=0)
+		{
+			$productModel = new ProductModel();
+			$status = $productModel->updateArrayData($multipleArray,$singleData,$jfId);
+			return $status;
+		}
+		else if(count($multipleArray)!=0)
+		{
+			$productModel = new ProductModel();
+			$status = $productModel->updateTransactionData($multipleArray,$jfId,$inOutWardData);
+			return $status;
+		}
+		else
+		{
+			$productModel = new ProductModel();
+			$status = $productModel->updateTransactionData($singleData,$jfId,$inOutWardData);
+			return $status;
+		}
+	}
+	
     /**
      * get and invoke method is of Container Interface method
      * @param int $id,$name

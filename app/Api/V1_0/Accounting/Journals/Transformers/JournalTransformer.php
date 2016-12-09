@@ -13,6 +13,7 @@ use ERP\Core\Accounting\Journals\Entities\AmountTypeEnum;
 class JournalTransformer extends LedgerModel
 {
     /**
+	 * trim request data for insertion	
      * @param 
      * @return array
      */
@@ -112,8 +113,11 @@ class JournalTransformer extends LedgerModel
 			return $exceptionArray['equal'];
 		}
 	}
-	
-	//trim fromdate-todate data
+	/**
+	 * trim fromdate-todate data
+     * @param object
+     * @return array
+     */
 	public function trimDateData(Request $request)
 	{
 		//get data from header
@@ -134,9 +138,12 @@ class JournalTransformer extends LedgerModel
 		$trimArray['toDate'] = $transformToDate;
 		return $trimArray;
 	}
-	
-	//trim update data
-	public function trimUpdateData(Request $request)
+	/**
+	 * trim request data for update
+     * @param object
+     * @return array
+     */
+	public function trimUpdateData($journalArray)
 	{
 		$amountTypeFlag=0;
 		$creditAmountArray = 0;
@@ -149,23 +156,23 @@ class JournalTransformer extends LedgerModel
 		$tempArrayFlag=0;
 		$journalArrayFlag=0;
 		$tempFlag=0;
+		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		
-		for($requestArray=0;$requestArray<count($request->input());$requestArray++)
+		for($requestArray=0;$requestArray<count($journalArray);$requestArray++)
 		{
 			//check if array is exists
-			if(strcmp(array_keys($request->input())[$requestArray],"data")==0)
+			if(strcmp(array_keys($journalArray)[$requestArray],"data")==0)
 			{
 				//number of array elements
-				for($arrayElement=0;$arrayElement<count($request->input()['data']);$arrayElement++)
+				for($arrayElement=0;$arrayElement<count($journalArray['data']);$arrayElement++)
 				{
 					$tempArrayFlag=1;
 					$tempArray[$arrayElement] = array();
-					$tempArray[$arrayElement]['amount'] = trim($request->input()['data'][$arrayElement]['amount']);
-					$tempArray[$arrayElement]['amount_type'] = trim($request->input()['data'][$arrayElement]['amountType']);
-					$tempArray[$arrayElement]['ledger_id'] = trim($request->input()['data'][$arrayElement]['ledgerId']);
+					$tempArray[$arrayElement]['amount'] = trim($journalArray['data'][$arrayElement]['amount']);
+					$tempArray[$arrayElement]['amount_type'] = trim($journalArray['data'][$arrayElement]['amountType']);
+					$tempArray[$arrayElement]['ledger_id'] = trim($journalArray['data'][$arrayElement]['ledgerId']);
 					
 					//check enum type[amount-type]
 					$enumAmountTypeArray = array();
@@ -214,8 +221,8 @@ class JournalTransformer extends LedgerModel
 			}
 			else
 			{
-				$key = array_keys($request->input())[$requestArray];
-				$value = $request->input()[$key];
+				$key = array_keys($journalArray)[$requestArray];
+				$value = $journalArray[$key];
 				$journalArrayFlag=1;
 				for($asciiChar=0;$asciiChar<strlen($key);$asciiChar++)
 				{
@@ -244,7 +251,7 @@ class JournalTransformer extends LedgerModel
 			}
 			if($tempFlag==1)
 			{
-				if($requestArray==count($request->input())-1)
+				if($requestArray==count($journalArray)-1)
 				{
 					$tJournalArray['flag']="1";
 				}
