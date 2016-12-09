@@ -76,20 +76,33 @@ class LedgerController extends BaseController implements ContainerInterface
      * get the specified resource.
      * @param  int  $ledgerId
      */
-    public function getData($ledgerId=null)
+    public function getData(Request $request,$ledgerId=null)
     {
-		if($ledgerId==null)
-		{	
-			$ledgerService= new LedgerService();
-			$status = $ledgerService->getAllLedgerData();
-			return $status;
+		echo "enter";
+		
+		if(strcmp($request->header()['type'][0],'sales')==0)
+		{
+			$companyId = 
+		}
+		else if(strcmp($request->header()['type'][0],'purchase')==0)
+		{
+			
 		}
 		else
-		{	
-			$ledgerService= new LedgerService();
-			$status = $ledgerService->getLedgerData($ledgerId);
-			return $status;
-		}        
+		{
+			if($ledgerId==null)
+			{	
+				$ledgerService= new LedgerService();
+				$status = $ledgerService->getAllLedgerData();
+				return $status;
+			}
+			else
+			{	
+				$ledgerService= new LedgerService();
+				$status = $ledgerService->getLedgerData($ledgerId);
+				return $status;
+			}
+		}
     }
 	
 	/**
