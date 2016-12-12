@@ -138,7 +138,7 @@ class CompanyModel extends Model
 		}
 		$raw  = DB::statement("update company_mst 
 		set ".$keyValueString."updated_at='".$mytime."',document_name='".$documentData[0][0]."',document_size='".$documentData[0][1]."',document_format='".$documentData[0][2]."' 
-		where company_id = '".$companyId."'");
+		where company_id = '".$companyId."' and deleted_at='0000-00-00 00:00:00'");
 		if($raw==1)
 		{
 			return $exceptionArray['200'];
@@ -190,7 +190,7 @@ class CompanyModel extends Model
 		}
 		$raw  = DB::statement("update company_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
-		where company_id = '".$companyId."'");
+		where company_id = '".$companyId."' and deleted_at='0000-00-00 00:00:00'");
 		if($raw==1)
 		{
 			return $exceptionArray['200'];
@@ -216,7 +216,7 @@ class CompanyModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		$raw  = DB::statement("update company_mst 
 		set document_name='".$documentData[0][0]."',document_size='".$documentData[0][1]."',document_format='".$documentData[0][2]."',updated_at='".$mytime."'
-		where company_id = '".$companyId."'");
+		where company_id = '".$companyId."' and deleted_at='0000-00-00 00:00:00'");
 		if($raw==1)
 		{
 			return $exceptionArray['200'];

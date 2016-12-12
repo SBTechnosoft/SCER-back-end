@@ -6,6 +6,7 @@ use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Core\Accounting\Journals\Entities\EncodeAllData;
+use ERP\Core\Accounting\Ledgers\Entities\EncodeProductTrnAllData;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -300,28 +301,83 @@ class JournalModel extends Model
 	}
 	
 	/**
-	 * get data 
-	 * get jf_id as per journal id
+	 * get journal data and product transaction-data 
+	 * @param:jf_id,company_id and journal-type
 	 * returns the error-message/data
 	*/
-	// public function getSpecificJournalData($journalId)
-	// {
-		// $raw = DB::select("SELECT 
-		// jf_id
-		// from journal_dtl
-		// WHERE journal_id='".$journalId."' and 
-		// deleted_at='0000-00-00 00:00:00'");
-		// DB::commit();
-		// if(count($raw)==0)
-		// {
-			// return $exceptionArray['404'];
-		// }
-		// else
-		// {
-			// $enocodedData = json_encode($raw);
-			// return $enocodedData;
-		// }
-	// }
+	public function getJournalTransactionData($companyId,$journalType,$jfId)
+	{
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		DB::beginTransaction();
+		$raw = DB::select("SELECT 
+		journal_id,
+		amount,
+		jf_id,
+		amount_type,	
+		entry_date,
+		created_at,
+		updated_at,
+		ledger_id,
+		company_id
+		FROM journal_dtl
+		WHERE jf_id='".$jfId[0]."' and 
+		company_id='".$companyId."' and 
+		deleted_at='0000-00-00 00:00:00'");
+		
+		DB::commit();
+		if(count($raw)!=0)
+		{
+			DB::beginTransaction();
+			$transactionResult = DB::select("SELECT 
+			product_trn_id,
+			transaction_date,
+			transaction_type,
+			qty,
+			price,
+			discount,
+			discount_type,
+			is_display,
+			invoice_number,
+			bill_number,
+			created_at,
+			updated_at,
+			company_id,
+			branch_id,
+			product_id,
+			jf_id
+			FROM product_trn
+			WHERE jf_id='".$jfId[0]."' and 
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+			if(count($transactionResult)!=0)
+			{
+				$enocodedData = json_encode($raw);
+				$encode = new EncodeAllData();
+				$result = $encode->getEncodedAllData($enocodedData);
+				
+				$enocodedProductData = json_encode($transactionResult);
+				$encodeProductData = new EncodeProductTrnAllData();
+				$getEncodedData = $encodeProductData->getEncodedAllData($enocodedProductData);
+				
+				$ledgerTransactionarray = array();
+				$ledgerTransactionarray['journal'] = json_decode($result);
+				$ledgerTransactionarray['produdctTransaction'] = json_decode($getEncodedData);
+				return json_encode($ledgerTransactionarray);
+			}
+			else
+			{
+				return $exceptionArray['404'];
+			}
+		}
+		else
+		{
+			return $exceptionArray['404'];
+		}
+	}
 	
 	/**
 	 * get data 

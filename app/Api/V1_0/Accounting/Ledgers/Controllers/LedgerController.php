@@ -116,15 +116,7 @@ class LedgerController extends BaseController implements ContainerInterface
 		{
 			if(strcmp(trim($request->header()['type'][0]),'sales')==0 || strcmp(trim($request->header()['type'][0]),'purchase')==0)
 			{
-				//get ledger-data as well as transaction-data for update
-				if(array_key_exists("jfid",$request->header()))
-				{
-					$jfId = $request->header()['jfid'];
-					$ledgerModel = new LedgerModel();
-					$status = $ledgerModel->getLedgerTransactionData($companyId,$request->header()['type'][0],$jfId);
-					return $status;
-				}
-				else if(array_key_exists("fromdate",$request->header()) && array_key_exists("todate",$request->header()))
+				if(array_key_exists("fromdate",$request->header()) && array_key_exists("todate",$request->header()))
 				{
 					$this->request = $request;
 					$processor = new LedgerProcessor();

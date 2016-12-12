@@ -73,7 +73,7 @@ class InvoiceModel extends Model
 		DB::beginTransaction();
 		$raw = DB::statement("update invoice_dtl 
 		set ".$keyValueString."updated_at='".$mytime."'
-		where invoice_id = '".$invoiceId."'");
+		where invoice_id = '".$invoiceId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message

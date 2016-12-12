@@ -71,7 +71,7 @@ class ProductGroupModel extends Model
 		DB::beginTransaction();
 		$raw = DB::statement("update product_group_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
-		where product_group_id = '".$productGrpId."'");
+		where product_group_id = '".$productGrpId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message

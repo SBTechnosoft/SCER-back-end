@@ -72,7 +72,7 @@ class QuotationModel extends Model
 		DB::beginTransaction();
 		$raw = DB::statement("update quotation_dtl 
 		set ".$keyValueString."updated_at='".$mytime."'
-		where quotation_id = '".$quotationId."'");
+		where quotation_id = '".$quotationId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message

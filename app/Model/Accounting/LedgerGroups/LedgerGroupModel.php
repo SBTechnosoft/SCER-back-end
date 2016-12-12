@@ -25,7 +25,7 @@ class LedgerGroupModel extends Model
 		under_what,
 		nature_of_group,
 		affected_group_profit
-		from ledger_grp_mst");
+		from ledger_grp_mst where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message
@@ -56,7 +56,7 @@ class LedgerGroupModel extends Model
 		under_what,
 		nature_of_group,
 		affected_group_profit
-		from ledger_grp_mst where ledger_group_id = ".$ledgerGrpId);
+		from ledger_grp_mst where ledger_group_id = ".$ledgerGrpId." and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message

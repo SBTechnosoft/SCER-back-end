@@ -6,7 +6,8 @@ use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Core\Accounting\Ledgers\Entities\EncodeTrnAllData;
-use ERP\Core\Accounting\Ledgers\Entities\EncodeProductTrnAllData;
+// use ERP\Core\Accounting\Ledgers\Entities\EncodeProductTrnAllData;
+use ERP\Core\Accounting\Journals\Entities\EncodeAllData;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -160,7 +161,7 @@ class LedgerModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			$ledgerId = DB::select('SELECT  MAX(ledger_id) AS ledger_id from ledger_mst');
+			$ledgerId = DB::select("SELECT  MAX(ledger_id) AS ledger_id from ledger_mst where deleted_at='0000-00-00 00:00:00'");
 			$result = DB::statement("CREATE TABLE ".$ledgerId[0]->ledger_id."_ledger_dtl (
 			 `".$ledgerId[0]->ledger_id."_id` int(11) NOT NULL AUTO_INCREMENT,
 			 `amount` decimal(10,2) NOT NULL,
@@ -238,7 +239,7 @@ class LedgerModel extends Model
 		DB::beginTransaction();
 		$raw = DB::statement("update ledger_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
-		where ledger_id = '".$ledgerId."'");
+		where ledger_id = '".$ledgerId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message
@@ -602,98 +603,6 @@ class LedgerModel extends Model
 			{
 				return $exceptionArray['404'];
 			}
-		}
-	}
-	
-	/**
-	 * get ledger and ledger transaction-data 
-	 * @param:jf_id,company_id and ledger-type
-	 * returns the error-message/data
-	*/
-	public function getLedgerTransactionData($companyId,$ledgerType,$jfId)
-	{
-		// get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
-		
-		DB::beginTransaction();
-		$raw = DB::select("SELECT 
-		ledger_id
-		FROM ledger_mst
-		WHERE ledger_name='".$ledgerType."' and 
-		company_id='".$companyId."' and 
-		deleted_at='0000-00-00 00:00:00'");
-		DB::commit();
-		if(count($raw)!=0)
-		{
-			DB::beginTransaction();
-			$ledgerResult = DB::select("SELECT 
-			".$raw[0]->ledger_id."_id,
-			amount,
-			amount_type,
-			entry_date,
-			jf_id,
-			created_at,
-			updated_at,
-			ledger_id
-			FROM ".$raw[0]->ledger_id."_ledger_dtl
-			WHERE jf_id='".$jfId[0]."' and 
-			deleted_at='0000-00-00 00:00:00'");
-			DB::commit();
-			
-			if(count($ledgerResult)!=0)
-			{
-				DB::beginTransaction();
-				$transactionResult = DB::select("SELECT 
-				product_trn_id,
-				transaction_date,
-				transaction_type,
-				qty,
-				price,
-				discount,
-				discount_type,
-				is_display,
-				invoice_number,
-				bill_number,
-				created_at,
-				updated_at,
-				company_id,
-				branch_id,
-				product_id,
-				jf_id
-				FROM product_trn
-				WHERE jf_id='".$jfId[0]."' and 
-				deleted_at='0000-00-00 00:00:00'");
-				DB::commit();
-				if(count($transactionResult)!=0)
-				{
-					
-					$enocodedData = json_encode($ledgerResult);
-					$encoded = new EncodeTrnAllData();
-					$encodeAllData = $encoded->getEncodedAllData($enocodedData,$raw[0]->ledger_id);
-				
-					$enocodedProductData = json_encode($transactionResult);
-					$encodeProductData = new EncodeProductTrnAllData();
-					$getEncodedData = $encodeProductData->getEncodedAllData($enocodedProductData);
-					$ledgerTransactionarray = array();
-					$ledgerTransactionarray['ledger'] = json_decode($encodeAllData);
-					$ledgerTransactionarray['produdctTransaction'] = json_decode($getEncodedData);
-					
-					return json_encode($ledgerTransactionarray);
-				}
-				else
-				{
-					return $exceptionArray['404'];
-				}
-			}
-			else
-			{
-				return $exceptionArray['404'];
-			}
-		}
-		else
-		{
-			return $exceptionArray['404'];
 		}
 	}
 	

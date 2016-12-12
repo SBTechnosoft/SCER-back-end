@@ -71,7 +71,7 @@ class CityModel extends Model
 		DB::beginTransaction();
 		$raw = DB::statement("update city_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
-		where city_id = '".$cityId."'");
+		where city_id = '".$cityId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message

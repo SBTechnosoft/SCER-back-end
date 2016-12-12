@@ -34,7 +34,7 @@
 	- Authentication Token
 	- "fromDate":"date"
 	- "toDate":"date"
-
+	
 + Error Message
 
 			{
@@ -43,9 +43,38 @@
 + Response
 
             {
-                ... HTTP_Status:200
+                ... Standard Journal Object
             }
 			
+##### `GET /accounting/journals/company/{companyId}`
++ Header
+	- Authentication Token
+	- 'type':'sales'
+	- 'type':'purchase'
+	- 'jfId':'int'
+	
++ Error Message
+
+			{
+				... Error Message
+			}            
++ Response
+
+            {
+				[
+					{
+						... Standard Journal Object
+					},
+					...
+				]
+				[
+					{
+						... Standard Product Transaction Object
+					},
+					...
+				]
+			}
+**NOTES:** Provide details of the journal and product_trn based on the jornal_folio id
 
 ##### `GET /accounting/journals/{journalId}/`
 + Header

@@ -17,6 +17,7 @@ class EncodeAllData extends LedgerService
 		$convertedUpdatedDate =  array();
 		$encodeAllData =  array();
 		$decodedJson = json_decode($status,true);
+		
 		$journal = new Journal();
 		for($decodedData=0;$decodedData<count($decodedJson);$decodedData++)
 		{

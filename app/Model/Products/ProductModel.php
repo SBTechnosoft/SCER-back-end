@@ -84,7 +84,7 @@ class ProductModel extends Model
 		$billNumberArray = func_get_arg(8);
 		$invoiceNumberArray = func_get_arg(9);
 		$jfId = func_get_arg(10);
-		
+		echo " = ";
 		DB::beginTransaction();
 		for($data=0;$data<count($productIdArray);$data++)
 		{
@@ -125,7 +125,7 @@ class ProductModel extends Model
 		DB::beginTransaction();
 		$raw = DB::statement("update product_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
-		where product_id = '".$productId."'");
+		where product_id = '".$productId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message

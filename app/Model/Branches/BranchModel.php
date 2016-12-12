@@ -98,7 +98,7 @@ class BranchModel extends Model
 		DB::beginTransaction();
 		$raw = DB::statement("update branch_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
-		where branch_id = '".$branchId."'");
+		where branch_id = '".$branchId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		if($raw==1)

@@ -73,7 +73,7 @@ class StateModel extends Model
 		DB::beginTransaction();
 		$raw = DB::statement("update state_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
-		where state_abb = '".$stateAbb."'");
+		where state_abb = '".$stateAbb."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message

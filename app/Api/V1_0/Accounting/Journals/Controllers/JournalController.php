@@ -144,8 +144,26 @@ class JournalController extends BaseController implements ContainerInterface
      */
     public function getSpecificData(Request $request,$companyId)
     {
+		if(array_key_exists("type",$request->header()))
+		{
+			if(strcmp(trim($request->header()['type'][0]),'sales')==0 || strcmp(trim($request->header()['type'][0]),'purchase')==0)
+			{
+				//get journal-data as well as transaction-data for update
+				if(array_key_exists("jfid",$request->header()))
+				{
+					$jfId = $request->header()['jfid'];
+					$journalModel = new JournalModel();
+					$status = $journalModel->getJournalTransactionData($companyId,$request->header()['type'][0],$jfId);
+					return $status;
+				}
+			}
+			else
+			{
+				return $exceptionArray['content'];
+			}
+		}
 		//get the data between fromDate and toDate
-		if(array_key_exists("fromdate",$request->header()) && array_key_exists("todate",$request->header()))
+		else if(array_key_exists("fromdate",$request->header()) && array_key_exists("todate",$request->header()))
 		{
 			$this->request = $request;
 			$processor = new JournalProcessor();

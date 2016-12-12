@@ -73,7 +73,7 @@ class TemplateModel extends Model
 		DB::beginTransaction();
 		$raw = DB::statement("update template_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
-		where template_id = '".$templateId."'");
+		where template_id = '".$templateId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message

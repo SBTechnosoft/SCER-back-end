@@ -42,26 +42,6 @@
 
 **NOTES:** Provide details of the Ledger based on the Ledger Number
 
-##### `GET /accounting/ledgers/company/{companyId}/`
-+ Header 
-	- Authentication Token
-	- 'type':'sales'
-	- 'type':'purchase'
-	- 'jfId':'int'
-+ Error Message
-
-			{
-				... Error Message
-			}
-+ Response
-
-			{
-				... Standard Ledger Transaction Object
-				... Standard Product Transaction Object
-			}
-
-**NOTES:** Provide details of the Ledger based on the jornal_folio id
-
 ##### `GET /accounting/ledgers/`
 + Header 
 	- Authentication Token

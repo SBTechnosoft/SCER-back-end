@@ -373,10 +373,10 @@ include ('connection.php');
 				// $scope.user = [{"jfId":4,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":1},{"amount":2,"amountType":"credit","ledgerId":1},{"amount":12,"amountType":"debit","ledgerId":1}],"entryDate":"22-10-2015","companyId":14,
 				// "inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"companyId":14,"transactionDate":"22-10-2015","invoiceNumber":23,"billNumber":2}];
 				
-				// formdata.append('jfId',10);
+				// formdata.append('jfId',5);
  				// formdata.append('companyId',14);
 				// formdata.append('entryDate','22-10-2015');
-				// var json=[{"amount": 10 ,"amountType":" credit ","ledgerId":35},{"amount":2,"amountType":"credit","ledgerId":38},{"amount":12,"amountType":"debit","ledgerId":37}];
+				// var json=[{"amount": 10 ,"amountType":" credit ","ledgerId":35},{"amount":2,"amountType":"credit","ledgerId":37},{"amount":12,"amountType":"debit","ledgerId":38}];
 				
 				// var inventory = [{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":10,"discountType":"flat","price":1300,"qty":44}];
 				// formdata.append('transactionDate','22-10-2015');
@@ -455,11 +455,11 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/accounting/journals";
 				// var url="http://www.scerp1.com/accounting/journals/"+jfId;
 				// var url="http://www.scerp1.com/accounting/journals/"+journalId;
-				// var url="http://www.scerp1.com/accounting/journals/company/"+companyId;
+				var url="http://www.scerp1.com/accounting/journals/company/"+companyId;
 				// var url="http://www.scerp1.com/accounting/journals/next";
 				
 				// var url="http://www.scerp1.com/accounting/ledgers/"+ledgerId+"/transactions";
-				var url="http://www.scerp1.com/accounting/ledgers/company/"+companyId;
+				// var url="http://www.scerp1.com/accounting/ledgers/company/"+companyId;
 				// var url="http://www.scerp1.com/accounting/ledgers/"+ledgerId;
 				// var url="http://www.scerp1.com/accounting/ledgers";
 				
@@ -506,9 +506,9 @@ include ('connection.php');
 						// method:'delete',
 						processData: false,
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016'},
-                        // headers: {'Content-Type': undefined,'type':'purchase'},
+                        // headers: {'Content-Type': undefined,'type':'sales'},
                         // headers: {'Content-Type': undefined},
-                        headers: {'Content-Type': undefined,'type':'sales','jfId':4},
+                        headers: {'Content-Type': undefined,'type':'sales','jfId':5},
 						 // data:formdata
 						// data:$scope.user						
                         
