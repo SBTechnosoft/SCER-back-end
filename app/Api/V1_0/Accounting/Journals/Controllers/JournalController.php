@@ -90,7 +90,7 @@ class JournalController extends BaseController implements ContainerInterface
 							return $productPersistable;
 						}
 					}
-					else if(strcmp($request->header()['type'],"purchase")==0)
+					else if(strcmp($request->header()['type'][0],"purchase")==0)
 					{
 						$inward = $constantArray['journalInward'];
 						$productProcessor = new ProductProcessor();
@@ -154,7 +154,28 @@ class JournalController extends BaseController implements ContainerInterface
 					$jfId = $request->header()['jfid'];
 					$journalModel = new JournalModel();
 					$status = $journalModel->getJournalTransactionData($companyId,$request->header()['type'][0],$jfId);
-					return $status;
+					$result = json_decode($status);
+					print_r($result);
+					
+					// $ledgerId = array();
+					// $balanceData = array();
+					// for($arrayData=0;$arrayData<count($result->journal);$arrayData++)
+					// {
+						// echo "for";
+						// $ledgerId[$arrayData] = $result->journal[$arrayData]->ledger->ledgerId;
+						// $balanceData[$arrayData] = $journalModel->getBalanceData($ledgerId[$arrayData]);
+						// echo "hi";
+						// print_r(array($result->journal[$arrayData]->ledger));
+						// $result->journal[$arrayData]->ledger = (Object)$balanceData[$arrayData];
+						// print_r((Object)$balanceData[$arrayData]);
+						
+						// array_push($result->journal[$arrayData]->ledger,(Object)$balanceData[$arrayData]);
+						// $result->journal[$arrayData]->ledger = $balanceData[$arrayData];
+					// }
+					// print_r($result);
+					// print_r($balanceData);
+					// exit;
+					// return $status;
 				}
 			}
 			else

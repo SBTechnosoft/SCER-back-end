@@ -27,6 +27,10 @@ class EncodeTrnAllData extends LedgerService
 			$entryDate[$decodedData] = $decodedJson[$decodedData]['entry_date'];
 			$jfId[$decodedData] = $decodedJson[$decodedData]['jf_id'];
 			$ledgersId[$decodedData] = $decodedJson[$decodedData]['ledger_id'];
+			$openingBalance[$decodedData] = $decodedJson[$decodedData]['openingBalance'];
+			$openingBalanceType[$decodedData] = $decodedJson[$decodedData]['openingBalanceType'];
+			$currentBalance[$decodedData] = $decodedJson[$decodedData]['currentBalance'];
+			$currentBalanceType[$decodedData] = $decodedJson[$decodedData]['currentBalanceType'];
 			
 			//get the ledger detail from database
 			$encodeDataClass = new EncodeTrnAllData();
@@ -56,6 +60,10 @@ class EncodeTrnAllData extends LedgerService
 				'jfId' => $jfId[$jsonData],
 				'createdAt' => $getCreatedDate[$jsonData],
 				'updatedAt' => $getUpdatedDate[$jsonData],
+				'openingBalance' => $openingBalance[$jsonData],
+				'openingBalanceType' => $openingBalanceType[$jsonData],
+				'currentBalance' => $currentBalance[$jsonData],
+				'currentBalanceType' => $currentBalanceType[$jsonData],
 				'ledger' => array(
 					'ledgerId' => $ledgerDecodedJson[$jsonData]['ledgerId'],
 					'ledgerName' => $ledgerDecodedJson[$jsonData]['ledgerName'],
@@ -70,6 +78,10 @@ class EncodeTrnAllData extends LedgerService
 					'gstNo' => $ledgerDecodedJson[$jsonData]['gstNo'],
 					'createdAt' => $ledgerDecodedJson[$jsonData]['createdAt'],
 					'updatedAt' => $ledgerDecodedJson[$jsonData]['updatedAt'],
+					'openingBalance' => $ledgerDecodedJson[$jsonData]['openingBalance'],
+					'openingBalanceType' => $ledgerDecodedJson[$jsonData]['openingBalanceType'],
+					'currentBalance' => $ledgerDecodedJson[$jsonData]['currentBalance'],
+					'currentBalanceType' => $ledgerDecodedJson[$jsonData]['currentBalanceType'],
 					'ledgerGroupId' => $ledgerDecodedJson[$jsonData]['ledgerGroup']['ledgerGroupId'],
 					'stateAbb' => $ledgerDecodedJson[$jsonData]['state']['stateAbb'],
 					'cityId' => $ledgerDecodedJson[$jsonData]['city']['cityId'],

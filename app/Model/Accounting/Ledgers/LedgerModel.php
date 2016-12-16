@@ -55,10 +55,10 @@ class LedgerModel extends Model
 			$result = DB::statement("CREATE TABLE ".$ledgerId[0]->ledger_id."_ledger_dtl (
 			 `".$ledgerId[0]->ledger_id."_id` int(11) NOT NULL AUTO_INCREMENT,
 			 `amount` decimal(10,2) NOT NULL,
-			 `amount_type` enum('credit','debit') NOT NULL DEFAULT '',
+			 `amount_type` enum('credit','debit') NOT NULL,
 			 `entry_date` date NOT NULL,
 			 `jf_id` int(11) NOT NULL,
-			 `balance_flag` enum('','opening','closing') NOT NULL,
+			 `balance_flag` enum('','opening','closing') NOT NULL DEFAULT '',
 			 `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			 `updated_at` datetime NOT NULL,
 			 `deleted_at` datetime NOT NULL,
@@ -111,6 +111,7 @@ class LedgerModel extends Model
 	*/
 	public function insertAllData()
 	{
+		
 		$getLedgerData = array();
 		$getLedgerKey = array();
 		$getLedgerData = func_get_arg(0);
@@ -168,13 +169,14 @@ class LedgerModel extends Model
 			 `amount_type` enum('credit','debit') NOT NULL,
 			 `entry_date` date NOT NULL,
 			 `jf_id` int(11) NOT NULL,
-			 `balance_flag` enum('opening','closing') NOT NULL,
-			 `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+			 `balance_flag` enum('','opening','closing') NOT NULL  DEFAULT '',
+			 `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			 `updated_at` datetime NOT NULL,
 			 `deleted_at` datetime NOT NULL,
 			 `ledger_id` int(11) NOT NULL,
 			 PRIMARY KEY (`".$ledgerId[0]->ledger_id."_id`)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf16");
+			
 			if($result==1)
 			{
 				//insertion of balance data in ledger table
@@ -262,7 +264,7 @@ class LedgerModel extends Model
 	public function getAllData()
 	{	
 		DB::beginTransaction();		
-		$raw = DB::select("select 
+		$ledgerAllData = DB::select("select 
 		ledger_id,
 		ledger_name,
 		alias,
@@ -283,17 +285,87 @@ class LedgerModel extends Model
 		company_id
 		from ledger_mst where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
-		
+		// print_r($ledgerAllData);
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		if(count($raw)==0)
+		$exceptionArray = $exception->messageArrays();
+		if(count($ledgerAllData)==0)
 		{
-			return $fileSizeArray['204'];
+			return $exceptionArray['204'];
 		}
 		else
 		{
-			$enocodedData = json_encode($raw);
+			$ledgerIdArray = array();
+			$mergeArray = array();
+			for($ledgerDataArray=0;$ledgerDataArray<count($ledgerAllData);$ledgerDataArray++)
+			{
+				$ledgerIdArray[$ledgerDataArray] = $ledgerAllData[$ledgerDataArray]->ledger_id;
+				$currentBalanceType="";
+				
+				//get opening balance
+				DB::beginTransaction();
+				$raw = DB::select("SELECT 
+				".$ledgerIdArray[$ledgerDataArray]."_id,
+				amount,
+				amount_type
+				from ".$ledgerIdArray[$ledgerDataArray]."_ledger_dtl
+				WHERE balance_flag='opening' and 
+				deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+				if(count($raw)!=0)
+				{
+					//get current balance
+					DB::beginTransaction();
+					$ledgerResult = DB::select("SELECT 
+					".$ledgerIdArray[$ledgerDataArray]."_id,
+					amount,
+					amount_type
+					from ".$ledgerIdArray[$ledgerDataArray]."_ledger_dtl
+					WHERE deleted_at='0000-00-00 00:00:00'");
+					DB::commit();
+					
+					$creditAmountArray =0;
+					$debitAmountArray = 0;
+					for($ledgerArrayData=0;$ledgerArrayData<count($ledgerResult);$ledgerArrayData++)
+					{
+						if(strcmp($ledgerResult[$ledgerArrayData]->amount_type,"credit")==0)
+						{
+							$creditAmountArray = $creditAmountArray+$ledgerResult[$ledgerArrayData]->amount;
+							
+						}
+						else
+						{
+							$debitAmountArray = $debitAmountArray+$ledgerResult[$ledgerArrayData]->amount;
+						}
+					}
+					if(count($ledgerResult)==0)
+					{
+						return $exceptionArray['404'];
+					}
+				}
+				else
+				{
+					return $exceptionArray['404'];
+				}
+				//calculate opening balance
+				if($creditAmountArray>$debitAmountArray)
+				{
+					$amountData = $creditAmountArray-$debitAmountArray;
+					$currentBalanceType = "credit";
+				}
+				else
+				{
+					$amountData = $debitAmountArray-$creditAmountArray;
+					$currentBalanceType = "debit";
+				}
+				$balanceAmountArray = array();
+				$balanceAmountArray['openingBalance'] = $raw[0]->amount;
+				$balanceAmountArray['openingBalanceType'] = $raw[0]->amount_type;
+				$balanceAmountArray['currentBalance'] = $amountData;
+				$balanceAmountArray['currentBalanceType'] = $currentBalanceType;
+				$mergeArray[$ledgerDataArray] = (Object)array_merge((array)$ledgerAllData[$ledgerDataArray],(array)((Object)$balanceAmountArray));
+			}
+			$enocodedData = json_encode($mergeArray);
 			return $enocodedData;
 		}
 	}
@@ -306,7 +378,7 @@ class LedgerModel extends Model
 	public function getData($ledgerId)
 	{		
 		DB::beginTransaction();
-		$raw = DB::select("select 
+		$ledgerData = DB::select("select 
 		ledger_id,
 		ledger_name,
 		alias,
@@ -331,13 +403,79 @@ class LedgerModel extends Model
 		//get exception message
 		$exception = new ExceptionMessage();
 		$fileSizeArray = $exception->messageArrays();
-		if(count($raw)==0)
+		if(count($ledgerData)==0)
 		{
+			
 			return $fileSizeArray['404'];
 		}
 		else
 		{
-			$enocodedData = json_encode($raw,true); 	
+			$ledgerId = $ledgerData[0]->ledger_id;
+			$currentBalanceType="";
+			
+			//get opening balance
+			DB::beginTransaction();
+			$raw = DB::select("SELECT 
+			".$ledgerId."_id,
+			amount,
+			amount_type
+			from ".$ledgerId."_ledger_dtl
+			WHERE balance_flag='opening' and 
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+			if(count($raw)!=0)
+			{
+				//get current balance
+				DB::beginTransaction();
+				$ledgerResult = DB::select("SELECT 
+				".$ledgerId."_id,
+				amount,
+				amount_type
+				from ".$ledgerId."_ledger_dtl
+				WHERE deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+				
+				$creditAmountArray =0;
+				$debitAmountArray = 0;
+				for($ledgerArrayData=0;$ledgerArrayData<count($ledgerResult);$ledgerArrayData++)
+				{
+					if(strcmp($ledgerResult[$ledgerArrayData]->amount_type,"credit")==0)
+					{
+						$creditAmountArray = $creditAmountArray+$ledgerResult[$ledgerArrayData]->amount;
+						
+					}
+					else
+					{
+						$debitAmountArray = $debitAmountArray+$ledgerResult[$ledgerArrayData]->amount;
+					}
+				}
+				if(count($ledgerResult)==0)
+				{
+					return $exceptionArray['404'];
+				}
+			}
+			else
+			{
+				return $exceptionArray['404'];
+			}
+			//calculate opening balance
+			if($creditAmountArray>$debitAmountArray)
+			{
+				$amountData = $creditAmountArray-$debitAmountArray;
+				$currentBalanceType = "credit";
+			}
+			else
+			{
+				$amountData = $debitAmountArray-$creditAmountArray;
+				$currentBalanceType = "debit";
+			}
+			$balanceAmountArray = array();
+			$balanceAmountArray['openingBalance'] = $raw[0]->amount;
+			$balanceAmountArray['openingBalanceType'] = $raw[0]->amount_type;
+			$balanceAmountArray['currentBalance'] = $amountData;
+			$balanceAmountArray['currentBalanceType'] = $currentBalanceType;
+			$mergeArray = (Object)array_merge((array)$ledgerData[0],(array)((Object)$balanceAmountArray));
+			$enocodedData = json_encode($mergeArray,true); 	
 			return $enocodedData;
 		}
 	}
@@ -348,7 +486,7 @@ class LedgerModel extends Model
 	public function getAllLedgerData($ledgerGrpId)
 	{	
 		DB::beginTransaction();		
-		$raw = DB::select("select 
+		$ledgerAllData = DB::select("select 
 		ledger_id,
 		ledger_name,
 		alias,
@@ -367,19 +505,88 @@ class LedgerModel extends Model
 		city_id,
 		ledger_group_id,
 		company_id
-		from ledger_mst where ledger_grp_id ='".$ledgerGrpId."' and  deleted_at='0000-00-00 00:00:00'");
+		from ledger_mst where ledger_group_id ='".$ledgerGrpId."' and  deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
-		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		if(count($raw)==0)
+		$exceptionArray = $exception->messageArrays();
+		if(count($ledgerAllData)==0)
 		{
-			return $fileSizeArray['204'];
+			return $exceptionArray['204'];
 		}
 		else
 		{
-			$enocodedData = json_encode($raw);
+			$ledgerIdArray = array();
+			$mergeArray = array();
+			for($ledgerDataArray=0;$ledgerDataArray<count($ledgerAllData);$ledgerDataArray++)
+			{
+				$ledgerIdArray[$ledgerDataArray] = $ledgerAllData[$ledgerDataArray]->ledger_id;
+				$currentBalanceType="";
+				
+				//get opening balance
+				DB::beginTransaction();
+				$raw = DB::select("SELECT 
+				".$ledgerIdArray[$ledgerDataArray]."_id,
+				amount,
+				amount_type
+				from ".$ledgerIdArray[$ledgerDataArray]."_ledger_dtl
+				WHERE balance_flag='opening' and 
+				deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+				if(count($raw)!=0)
+				{
+					//get current balance
+					DB::beginTransaction();
+					$ledgerResult = DB::select("SELECT 
+					".$ledgerIdArray[$ledgerDataArray]."_id,
+					amount,
+					amount_type
+					from ".$ledgerIdArray[$ledgerDataArray]."_ledger_dtl
+					WHERE deleted_at='0000-00-00 00:00:00'");
+					DB::commit();
+					
+					$creditAmountArray =0;
+					$debitAmountArray = 0;
+					for($ledgerArrayData=0;$ledgerArrayData<count($ledgerResult);$ledgerArrayData++)
+					{
+						if(strcmp($ledgerResult[$ledgerArrayData]->amount_type,"credit")==0)
+						{
+							$creditAmountArray = $creditAmountArray+$ledgerResult[$ledgerArrayData]->amount;
+							
+						}
+						else
+						{
+							$debitAmountArray = $debitAmountArray+$ledgerResult[$ledgerArrayData]->amount;
+						}
+					}
+					if(count($ledgerResult)==0)
+					{
+						return $exceptionArray['404'];
+					}
+				}
+				else
+				{
+					return $exceptionArray['404'];
+				}
+				//calculate opening balance
+				if($creditAmountArray>$debitAmountArray)
+				{
+					$amountData = $creditAmountArray-$debitAmountArray;
+					$currentBalanceType = "credit";
+				}
+				else
+				{
+					$amountData = $debitAmountArray-$creditAmountArray;
+					$currentBalanceType = "debit";
+				}
+				$balanceAmountArray = array();
+				$balanceAmountArray['openingBalance'] = $raw[0]->amount;
+				$balanceAmountArray['openingBalanceType'] = $raw[0]->amount_type;
+				$balanceAmountArray['currentBalance'] = $amountData;
+				$balanceAmountArray['currentBalanceType'] = $currentBalanceType;
+				$mergeArray[$ledgerDataArray] = (Object)array_merge((array)$ledgerAllData[$ledgerDataArray],(array)((Object)$balanceAmountArray));
+			}
+			$enocodedData = json_encode($mergeArray);
 			return $enocodedData;
 		}
 	}
@@ -438,40 +645,97 @@ class LedgerModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		
 		DB::beginTransaction();		
-		$ledgerData = DB::select("select 
+		$data = DB::select("select 
+		".$ledgerId."_id,
+		amount,
+		amount_type,
+		entry_date,
+		jf_id,
+		created_at,
+		updated_at,
 		ledger_id
-		from ledger_mst where ledger_id='".$ledgerId."' and deleted_at='0000-00-00 00:00:00'");
+		from ".$ledgerId."_ledger_dtl where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
-		
-		if(count($ledgerData)==0)
+		if(count($data)==0)
 		{
 			return $exceptionArray['204'];
 		}
 		else
 		{
-			DB::beginTransaction();		
-			$raw = DB::select("select 
+			$ledgerId = $data[0]->ledger_id;
+			$currentBalanceType="";
+			
+			//get opening balance
+			DB::beginTransaction();
+			$raw = DB::select("SELECT 
 			".$ledgerId."_id,
 			amount,
-			amount_type,
-			entry_date,
-			jf_id,
-			created_at,
-			updated_at,
-			ledger_id
-			from ".$ledgerId."_ledger_dtl where deleted_at='0000-00-00 00:00:00'");
+			amount_type
+			from ".$ledgerId."_ledger_dtl
+			WHERE balance_flag='opening' and 
+			deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
-			
-			if(count($raw)==0)
+			if(count($raw)!=0)
 			{
-				return $exceptionArray['204'];
+				//get current balance
+				DB::beginTransaction();
+				$ledgerResult = DB::select("SELECT 
+				".$ledgerId."_id,
+				amount,
+				amount_type
+				from ".$ledgerId."_ledger_dtl
+				WHERE deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+				
+				$creditAmountArray =0;
+				$debitAmountArray = 0;
+				for($ledgerArrayData=0;$ledgerArrayData<count($ledgerResult);$ledgerArrayData++)
+				{
+					if(strcmp($ledgerResult[$ledgerArrayData]->amount_type,"credit")==0)
+					{
+						$creditAmountArray = $creditAmountArray+$ledgerResult[$ledgerArrayData]->amount;
+						
+					}
+					else
+					{
+						$debitAmountArray = $debitAmountArray+$ledgerResult[$ledgerArrayData]->amount;
+					}
+				}
+				if(count($ledgerResult)==0)
+				{
+					return $exceptionArray['404'];
+				}
 			}
 			else
 			{
-				$enocodedData = json_encode($raw);
-				return $enocodedData;
+				return $exceptionArray['404'];
 			}
-		}	
+			//calculate opening balance
+			if($creditAmountArray>$debitAmountArray)
+			{
+				$amountData = $creditAmountArray-$debitAmountArray;
+				$currentBalanceType = "credit";
+			}
+			else
+			{
+				$amountData = $debitAmountArray-$creditAmountArray;
+				$currentBalanceType = "debit";
+			}
+			
+			$balanceAmountArray = array();
+			$balanceAmountArray['openingBalance'] = $raw[0]->amount;
+			$balanceAmountArray['openingBalanceType'] = $raw[0]->amount_type;
+			$balanceAmountArray['currentBalance'] = $amountData;
+			$balanceAmountArray['currentBalanceType'] = $currentBalanceType;
+			$mergeArray = array();
+			for($arrayData=0;$arrayData<count($data);$arrayData++)
+			{
+				$mergeArray[$arrayData] = (Object)array_merge((array)$data[$arrayData],(array)((Object)$balanceAmountArray));
+			}
+			
+			$enocodedData = json_encode($mergeArray);
+			return $enocodedData;
+		}
 	}
 	
 	/**
@@ -483,7 +747,7 @@ class LedgerModel extends Model
 	public function getLedgerData($fromDate,$toDate,$companyId,$ledgerType)
 	{
 		DB::beginTransaction();
-		$raw = DB::select("SELECT 
+		$data = DB::select("SELECT 
 		ledger_id
 		FROM ledger_mst
 		WHERE ledger_name='".$ledgerType."' and 
@@ -495,15 +759,15 @@ class LedgerModel extends Model
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
-		if(count($raw)==0)
+		if(count($data)==0)
 		{
 			return $exceptionArray['404'];
 		}
 		else
 		{
 			DB::beginTransaction();
-			$ledgerData = DB::select("SELECT 
-			".$raw[0]->ledger_id."_id,
+			$ledgerAllData = DB::select("SELECT 
+			".$data[0]->ledger_id."_id,
 			amount,
 			amount_type,
 			entry_date,
@@ -511,13 +775,84 @@ class LedgerModel extends Model
 			created_at,
 			updated_at,
 			ledger_id
-			FROM ".$raw[0]->ledger_id."_ledger_dtl
+			FROM ".$data[0]->ledger_id."_ledger_dtl
 			WHERE (entry_date BETWEEN '".$fromDate."' AND '".$toDate."') and 
 			deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
-			if(count($ledgerData)!=0)
+			
+			if(count($ledgerAllData)!=0)
 			{
-				$enocodedData = json_encode($ledgerData);
+				$ledgerId = $data[0]->ledger_id;
+				$currentBalanceType="";
+				
+				//get opening balance
+				DB::beginTransaction();
+				$raw = DB::select("SELECT 
+				".$ledgerId."_id,
+				amount,
+				amount_type
+				from ".$ledgerId."_ledger_dtl
+				WHERE balance_flag='opening' and 
+				deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+				if(count($raw)!=0)
+				{
+					//get current balance
+					DB::beginTransaction();
+					$ledgerResult = DB::select("SELECT 
+					".$ledgerId."_id,
+					amount,
+					amount_type
+					from ".$ledgerId."_ledger_dtl
+					WHERE deleted_at='0000-00-00 00:00:00'");
+					DB::commit();
+					
+					$creditAmountArray =0;
+					$debitAmountArray = 0;
+					for($ledgerArrayData=0;$ledgerArrayData<count($ledgerResult);$ledgerArrayData++)
+					{
+						if(strcmp($ledgerResult[$ledgerArrayData]->amount_type,"credit")==0)
+						{
+							$creditAmountArray = $creditAmountArray+$ledgerResult[$ledgerArrayData]->amount;
+							
+						}
+						else
+						{
+							$debitAmountArray = $debitAmountArray+$ledgerResult[$ledgerArrayData]->amount;
+						}
+					}
+					if(count($ledgerResult)==0)
+					{
+						return $exceptionArray['404'];
+					}
+				}
+				else
+				{
+					return $exceptionArray['404'];
+				}
+				//calculate opening balance
+				if($creditAmountArray>$debitAmountArray)
+				{
+					$amountData = $creditAmountArray-$debitAmountArray;
+					$currentBalanceType = "credit";
+				}
+				else
+				{
+					$amountData = $debitAmountArray-$creditAmountArray;
+					$currentBalanceType = "debit";
+				}
+				
+				$balanceAmountArray = array();
+				$balanceAmountArray['openingBalance'] = $raw[0]->amount;
+				$balanceAmountArray['openingBalanceType'] = $raw[0]->amount_type;
+				$balanceAmountArray['currentBalance'] = $amountData;
+				$balanceAmountArray['currentBalanceType'] = $currentBalanceType;
+				$mergeArray = array();
+				for($arrayData=0;$arrayData<count($ledgerAllData);$arrayData++)
+				{
+					$mergeArray[$arrayData] = (Object)array_merge((array)$ledgerAllData[$arrayData],(array)((Object)$balanceAmountArray));
+				}
+				$enocodedData = json_encode($mergeArray);
 				return $enocodedData;
 			}
 			else
@@ -561,7 +896,7 @@ class LedgerModel extends Model
 	public function getCurrentYearData($companyId,$ledgerType)
 	{
 		DB::beginTransaction();
-		$raw = DB::select("SELECT 
+		$data = DB::select("SELECT 
 		ledger_id
 		FROM ledger_mst
 		WHERE ledger_name='".$ledgerType."' and 
@@ -572,15 +907,15 @@ class LedgerModel extends Model
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
-		if(count($raw)==0)
+		if(count($data)==0)
 		{
 			return $exceptionArray['404'];
 		}
 		else
 		{
 			DB::beginTransaction();
-			$ledgerData = DB::select("SELECT 
-			".$raw[0]->ledger_id."_id,
+			$ledgerAllData = DB::select("SELECT 
+			".$data[0]->ledger_id."_id,
 			amount,
 			amount_type,
 			entry_date,
@@ -588,15 +923,86 @@ class LedgerModel extends Model
 			created_at,
 			updated_at,
 			ledger_id
-			FROM ".$raw[0]->ledger_id."_ledger_dtl
+			FROM ".$data[0]->ledger_id."_ledger_dtl
 			WHERE YEAR(entry_date)= YEAR(CURDATE()) and 
 			deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
-			if(count($ledgerData)!=0)
+			if(count($ledgerAllData)!=0)
 			{
-				$enocodedData = json_encode($ledgerData);
+				$ledgerId = $data[0]->ledger_id;
+				$currentBalanceType="";
+				
+				//get opening balance
+				DB::beginTransaction();
+				$raw = DB::select("SELECT 
+				".$ledgerId."_id,
+				amount,
+				amount_type
+				from ".$ledgerId."_ledger_dtl
+				WHERE balance_flag='opening' and 
+				deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+				if(count($raw)!=0)
+				{
+					//get current balance
+					DB::beginTransaction();
+					$ledgerResult = DB::select("SELECT 
+					".$ledgerId."_id,
+					amount,
+					amount_type
+					from ".$ledgerId."_ledger_dtl
+					WHERE deleted_at='0000-00-00 00:00:00'");
+					DB::commit();
+					
+					$creditAmountArray =0;
+					$debitAmountArray = 0;
+					for($ledgerArrayData=0;$ledgerArrayData<count($ledgerResult);$ledgerArrayData++)
+					{
+						if(strcmp($ledgerResult[$ledgerArrayData]->amount_type,"credit")==0)
+						{
+							$creditAmountArray = $creditAmountArray+$ledgerResult[$ledgerArrayData]->amount;
+							
+						}
+						else
+						{
+							$debitAmountArray = $debitAmountArray+$ledgerResult[$ledgerArrayData]->amount;
+						}
+					}
+					if(count($ledgerResult)==0)
+					{
+						return $exceptionArray['404'];
+					}
+				}
+				else
+				{
+					return $exceptionArray['404'];
+				}
+				//calculate opening balance
+				if($creditAmountArray>$debitAmountArray)
+				{
+					$amountData = $creditAmountArray-$debitAmountArray;
+					$currentBalanceType = "credit";
+				}
+				else
+				{
+					$amountData = $debitAmountArray-$creditAmountArray;
+					$currentBalanceType = "debit";
+				}
+				
+				$balanceAmountArray = array();
+				$balanceAmountArray['openingBalance'] = $raw[0]->amount;
+				$balanceAmountArray['openingBalanceType'] = $raw[0]->amount_type;
+				$balanceAmountArray['currentBalance'] = $amountData;
+				$balanceAmountArray['currentBalanceType'] = $currentBalanceType;
+				$mergeArray = array();
+				for($arrayData=0;$arrayData<count($ledgerAllData);$arrayData++)
+				{
+					$mergeArray[$arrayData] = (Object)array_merge((array)$ledgerAllData[$arrayData],(array)((Object)$balanceAmountArray));
+				}
+				
+				$enocodedData = json_encode($mergeArray);
 				$encoded = new EncodeTrnAllData();
-				$encodeAllData = $encoded->getEncodedAllData($enocodedData,$raw[0]->ledger_id);
+				$encodeAllData = $encoded->getEncodedAllData($enocodedData,$data[0]->ledger_id);
 				return $encodeAllData;
 			}
 			else

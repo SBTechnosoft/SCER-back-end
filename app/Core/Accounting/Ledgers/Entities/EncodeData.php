@@ -16,23 +16,27 @@ class EncodeData extends StateService
 	public function getEncodedData($status)
 	{
 		$decodedJson = json_decode($status,true);
-		$createdAt = $decodedJson[0]['created_at'];
-		$updatedAt= $decodedJson[0]['updated_at'];
-		$ledgerId= $decodedJson[0]['ledger_id'];
-		$ledgerName= $decodedJson[0]['ledger_name'];
-		$alias= $decodedJson[0]['alias'];
-		$inventoryAffected= $decodedJson[0]['inventory_affected'];
-		$address1= $decodedJson[0]['address1'];
-		$address2= $decodedJson[0]['address2'];
-		$contactNo= $decodedJson[0]['contact_no'];
-		$emailId= $decodedJson[0]['email_id'];
-		$panNo = $decodedJson[0]['pan'];
-		$tinNo = $decodedJson[0]['tin'];
-		$gstNo= $decodedJson[0]['gst'];
-		$stateAbb= $decodedJson[0]['state_abb'];
-		$cityId= $decodedJson[0]['city_id'];
-		$ledgerGrpId= $decodedJson[0]['ledger_group_id'];
-		$companyId= $decodedJson[0]['company_id'];
+		$createdAt = $decodedJson['created_at'];
+		$updatedAt= $decodedJson['updated_at'];
+		$ledgerId= $decodedJson['ledger_id'];
+		$ledgerName= $decodedJson['ledger_name'];
+		$alias= $decodedJson['alias'];
+		$inventoryAffected= $decodedJson['inventory_affected'];
+		$address1= $decodedJson['address1'];
+		$address2= $decodedJson['address2'];
+		$contactNo= $decodedJson['contact_no'];
+		$emailId= $decodedJson['email_id'];
+		$panNo = $decodedJson['pan'];
+		$tinNo = $decodedJson['tin'];
+		$gstNo= $decodedJson['gst'];
+		$stateAbb= $decodedJson['state_abb'];
+		$cityId= $decodedJson['city_id'];
+		$ledgerGrpId= $decodedJson['ledger_group_id'];
+		$companyId= $decodedJson['company_id'];
+		$openingBalance= $decodedJson['openingBalance'];
+		$openingBalanceType= $decodedJson['openingBalanceType'];
+		$currentBalance= $decodedJson['currentBalance'];
+		$currentBalanceType= $decodedJson['currentBalanceType'];
 		
 		//get the state details from database
 		$encodeStateDataClass = new EncodeData();
@@ -75,6 +79,10 @@ class EncodeData extends StateService
 		$data['gstNo'] = $gstNo;
 		$data['createdAt'] = $getCreatedDate;
 		$data['updatedAt'] = $getUpdatedDate;	
+		$data['openingBalance'] = $openingBalance;	
+		$data['openingBalanceType'] = $openingBalanceType;	
+		$data['currentBalance'] = $currentBalance;	
+		$data['currentBalanceType'] = $currentBalanceType;	
 		$data['ledgerGroup']= array(
 			'ledgerGroupId' => $ledgerGrpId,	
 			'ledgerGroupName' => $getLedgerGrpDetail['ledgerGroupName'],

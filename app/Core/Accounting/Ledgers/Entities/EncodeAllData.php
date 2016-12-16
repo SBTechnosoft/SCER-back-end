@@ -19,6 +19,7 @@ class EncodeAllData extends StateService
 		$convertedUpdatedDate =  array();
 		$encodeAllData =  array();
 		$decodedJson = json_decode($status,true);
+		
 		$ledger = new Ledger();
 		for($decodedData=0;$decodedData<count($decodedJson);$decodedData++)
 		{
@@ -39,6 +40,10 @@ class EncodeAllData extends StateService
 			$cityId[$decodedData] = $decodedJson[$decodedData]['city_id'];
 			$ledgerGrpId[$decodedData] = $decodedJson[$decodedData]['ledger_group_id'];
 			$companyId[$decodedData] = $decodedJson[$decodedData]['company_id'];
+			$openingBalance[$decodedData] = $decodedJson[$decodedData]['openingBalance'];
+			$openingBalanceType[$decodedData] = $decodedJson[$decodedData]['openingBalanceType'];
+			$currentBalance[$decodedData] = $decodedJson[$decodedData]['currentBalance'];
+			$currentBalanceType[$decodedData] = $decodedJson[$decodedData]['currentBalanceType'];
 			
 			//get the state detail from database
 			$encodeDataClass = new EncodeAllData();
@@ -88,6 +93,10 @@ class EncodeAllData extends StateService
 				'gstNo'=> $gstNo[$jsonData],
 				'createdAt' => $getCreatedDate[$jsonData],
 				'updatedAt' => $getUpdatedDate[$jsonData],
+				'openingBalance' => $openingBalance[$jsonData],
+				'openingBalanceType' => $openingBalanceType[$jsonData],
+				'currentBalance' => $currentBalance[$jsonData],
+				'currentBalanceType' => $currentBalanceType[$jsonData],
 				
 				'state' => array(
 					'stateAbb' => $stateAbb[$jsonData],

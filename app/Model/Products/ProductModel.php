@@ -84,7 +84,7 @@ class ProductModel extends Model
 		$billNumberArray = func_get_arg(8);
 		$invoiceNumberArray = func_get_arg(9);
 		$jfId = func_get_arg(10);
-		echo " = ";
+		
 		DB::beginTransaction();
 		for($data=0;$data<count($productIdArray);$data++)
 		{

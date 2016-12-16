@@ -20,14 +20,17 @@
                 },
 				"createdAt":TimeStamp,
                 "updatedAt":DateTime,
-                "deletedAt":DateTime,
                 "ledgerGroup": {
 					... Standard Ledger Group Object
 				},
 				"company": {
 					... Standard Company Object
-				}
-            }
+				},
+				openingBalance:decimal,
+				openingBalanceType:Enum,
+				currentBalance:decimal,
+				currentBalanceType:Enum
+			}
             
 ##### Standard Ledger Persistable Object
 			{

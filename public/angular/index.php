@@ -274,7 +274,7 @@ include ('connection.php');
 				// formdata.append('companyId',$scope.formAdata.company_id);
 				
 				//ledger
-				// $scope.formAdata.ledger_name = " purchase ";
+				// $scope.formAdata.ledger_name = " person ";
 				// $scope.formAdata.alias = ' d ';
 				// $scope.formAdata.inventory_affected=' no ';
 				// $scope.formAdata.address1 =" sdx cz ";
@@ -290,7 +290,7 @@ include ('connection.php');
 				// $scope.formAdata.state_abb= ' IN-AG ';
 				// $scope.formAdata.city_id= '1';
 				// $scope.formAdata.ledger_grp_id='9 ';
-				// $scope.formAdata.company_id='14 ';
+				// $scope.formAdata.company_id='15 ';
 				
 				// formdata.append('ledgerName',$scope.formAdata.ledger_name);
 				// formdata.append('alias',$scope.formAdata.alias);
@@ -336,11 +336,11 @@ include ('connection.php');
 				
 				// special journal
 				// $scope.user = [{"jfId":4,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":35},{"amount":2,"amountType":"credit","ledgerId":35},{"amount":12,"amountType":"debit","ledgerId":35}],"entryDate":"22-10-2015","companyId":14}];
-				// formdata.append('jfId',1);
- 				// formdata.append('companyId',14);
+				// formdata.append('jfId',3);
+ 				// formdata.append('companyId',15);
  
  				// formdata.append('entryDate','22-10-2016');
- 				// var json=[{"amount": 100 ,"amountType":" debit ","ledgerId":40},{"amount":50,"amountType":"credit","ledgerId":37},{"amount":50,"amountType":"credit","ledgerId":35}];
+ 				// var json=[{"amount": 100 ,"amountType":" debit ","ledgerId":87},{"amount":100,"amountType":"debit","ledgerId":88},{"amount":200,"amountType":"credit","ledgerId":85}];
 
  				  
   				// for(var i=0;i<json.length;i++){
@@ -373,10 +373,10 @@ include ('connection.php');
 				// $scope.user = [{"jfId":4,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":1},{"amount":2,"amountType":"credit","ledgerId":1},{"amount":12,"amountType":"debit","ledgerId":1}],"entryDate":"22-10-2015","companyId":14,
 				// "inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"companyId":14,"transactionDate":"22-10-2015","invoiceNumber":23,"billNumber":2}];
 				
-				// formdata.append('jfId',5);
+				// formdata.append('jfId',13);
  				// formdata.append('companyId',14);
 				// formdata.append('entryDate','22-10-2015');
-				// var json=[{"amount": 10 ,"amountType":" credit ","ledgerId":35},{"amount":2,"amountType":"credit","ledgerId":37},{"amount":12,"amountType":"debit","ledgerId":38}];
+				// var json=[{"amount": 10 ,"amountType":" credit ","ledgerId":62},{"amount":2,"amountType":"credit","ledgerId":74},{"amount":12,"amountType":"debit","ledgerId":75}];
 				
 				// var inventory = [{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":10,"discountType":"flat","price":1300,"qty":44}];
 				// formdata.append('transactionDate','22-10-2015');
@@ -428,7 +428,7 @@ include ('connection.php');
 				// var productId = 8;
 				// var productGrpId = 11;
 				// var productCatId = 16;
-				var companyId=14;
+				// var companyId=15;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -437,8 +437,8 @@ include ('connection.php');
 				// var bankId=2;
 				// var invoiceId=7;
 				// var quotationId=3;
-				// var ledgerGrpId=1;
-				// var ledgerId=40;
+				// var ledgerGrpId=9;
+				var ledgerId=87;
 				// var jfId=1;
 				// var journalId=1;
 				
@@ -455,12 +455,13 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/accounting/journals";
 				// var url="http://www.scerp1.com/accounting/journals/"+jfId;
 				// var url="http://www.scerp1.com/accounting/journals/"+journalId;
-				var url="http://www.scerp1.com/accounting/journals/company/"+companyId;
+				// var url="http://www.scerp1.com/accounting/journals/company/"+companyId;
 				// var url="http://www.scerp1.com/accounting/journals/next";
 				
-				// var url="http://www.scerp1.com/accounting/ledgers/"+ledgerId+"/transactions";
+				var url="http://www.scerp1.com/accounting/ledgers/"+ledgerId+"/transactions";
 				// var url="http://www.scerp1.com/accounting/ledgers/company/"+companyId;
 				// var url="http://www.scerp1.com/accounting/ledgers/"+ledgerId;
+				// var url="http://www.scerp1.com/accounting/ledgers/ledgerGrp/"+ledgerGrpId;
 				// var url="http://www.scerp1.com/accounting/ledgers";
 				
 				// var url="http://www.scerp1.com/accounting/ledger-groups/"+ledgerGrpId;
@@ -505,10 +506,10 @@ include ('connection.php');
 						// method: "PATCH",
 						// method:'delete',
 						processData: false,
-                        // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016'},
+                        // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
                         // headers: {'Content-Type': undefined,'type':'sales'},
-                        // headers: {'Content-Type': undefined},
-                        headers: {'Content-Type': undefined,'type':'sales','jfId':5},
+                        headers: {'Content-Type': undefined},
+                        // headers: {'Content-Type': undefined,'type':'sales','jfId':13},
 						 // data:formdata
 						// data:$scope.user						
                         

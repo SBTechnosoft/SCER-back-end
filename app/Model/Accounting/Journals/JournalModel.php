@@ -307,7 +307,6 @@ class JournalModel extends Model
 	*/
 	public function getJournalTransactionData($companyId,$journalType,$jfId)
 	{
-		
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
