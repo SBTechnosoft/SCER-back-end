@@ -110,7 +110,6 @@ class JournalController extends BaseController implements ContainerInterface
 				{
 					return $status;
 				}
-				
 			}
 			else
 			{

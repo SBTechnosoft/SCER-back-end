@@ -140,22 +140,24 @@ class LedgerController extends BaseController implements ContainerInterface
 				return $exceptionArray['content'];
 			}
 		}
+		else if(array_key_exists("ledgergroup",$request->header()))
+		{
+			$ledgerarray = explode(",", $request->header()['ledgergroup'][0]);
+			$ledgerService= new LedgerService();
+			$ledgerResult = $ledgerService->getDataAsLedgerGrp($ledgerarray,$companyId);
+			return $ledgerResult;
+		}
+		else if(array_key_exists("ledgername",$request->header()))
+		{
+			$ledgerService= new LedgerService();
+			$ledgerResult = $ledgerService->getLedgerDataAsName($request->header(),$companyId);
+			return $ledgerResult;
+		}
 		else
 		{
-			if(array_key_exists("ledgergroup",$request->header()))
-			{
-				$ledgerarray = explode(",", $request->header()['ledgergroup'][0]);
-				$ledgerService= new LedgerService();
-				$ledgerResult = $ledgerService->getDataAsLedgerGrp($ledgerarray,$companyId);
-				return $ledgerResult;
-			}
-			else
-			{
-				echo "not exists";
-			}
-			// $ledgerService= new LedgerService();
-			// $status = $ledgerService->getLedgerDetail($companyId);
-			// return $status;
+			$ledgerService= new LedgerService();
+			$status = $ledgerService->getLedgerDetail($companyId);
+			return $status;
 		}
 	}
 	

@@ -100,6 +100,7 @@
 	- "toDate":'date'
 	- 'type':'sales'
 	- 'type':'purchase'
+	
 + Error Message
 
 			{
@@ -112,6 +113,30 @@
 			}
 
 **NOTES:** List all the ledger as per the given company id
+
+##### `GET /accounting/ledgers/company/{companyId}`
++ Header 
+	- Authentication Token
+	-'ledgerGroup':'[]'
+	-'ledgerName':''
++ Error Message
+
+			{
+				... Error Message
+			}
++ Response
+
+			{
+				[
+					{
+						... Standard Ledger Object
+					}
+					...
+				]
+				...
+			}
+
+**NOTES:** List all the ledger as per the given company id and ledgerGroup-id
 
 ##### Updates Ledgers    
        
