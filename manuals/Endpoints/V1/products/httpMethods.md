@@ -68,7 +68,7 @@
 ##### `GET products/company/{CompanyId}
 + Header 
 	- Authentication Token
-	
+	-'productName':''
 + Error Message
 
 			{
@@ -80,7 +80,7 @@
 				... Standard Product Object
 			}
 
-**NOTES:** List all the product in particular company
+**NOTES:** List all the product in particular company/list the product as per given name and companyId
 
 ##### `GET products/branch/{branchId}`
 + Header 
