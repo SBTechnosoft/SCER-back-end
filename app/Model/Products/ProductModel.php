@@ -383,7 +383,7 @@ class ProductModel extends Model
 	
 	/**
 	 * get All data 
-	 * returns the status
+	 * returns error-message/data
 	*/
 	public function getAllData()
 	{	
@@ -420,7 +420,7 @@ class ProductModel extends Model
 	/**
 	 * get data as per given product Id
 	 * @param $productId
-	 * returns the status
+	 * returns error-message/data
 	*/
 	public function getData($productId)
 	{		
@@ -455,7 +455,7 @@ class ProductModel extends Model
 	}
 	/**
 	 * get All data 
-	 * returns the status
+	 * returns error-message/data
 	*/
 	public function getBCProductData($companyId,$branchId)
 	{	
@@ -491,7 +491,7 @@ class ProductModel extends Model
 	
 	/**
 	 * get All data 
-	 * returns the status
+	 * returns error-message/data
 	*/
 	public function getCProductData($companyId)
 	{	
@@ -527,7 +527,7 @@ class ProductModel extends Model
 	
 	/**
 	 * get All data 
-	 * returns the status
+	 * returns error-message/data
 	*/
 	public function getBProductData($branchId)
 	{	
@@ -545,6 +545,42 @@ class ProductModel extends Model
 		branch_id,
 		company_id	
 		from product_mst where branch_id='".$branchId."' and  deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(count($raw)==0)
+		{
+			return $exceptionArray['204'];
+		}
+		else
+		{
+			$enocodedData = json_encode($raw);
+			return $enocodedData;
+		}
+	}
+	
+	/**
+	 * get data as per given product-name and companyId 
+	 * returns error-message/data
+	*/
+	public function getProductData($productName,$companyId)
+	{
+		DB::beginTransaction();		
+		$raw = DB::select("select 
+		product_id,
+		product_name,
+		measurement_unit,
+		is_display,
+		created_at,
+		updated_at,
+		deleted_at,
+		product_category_id,
+		product_group_id,
+		branch_id,
+		company_id	
+		from product_mst where company_id='".$companyId."' and product_name='".$productName."' and  deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message

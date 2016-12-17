@@ -239,6 +239,22 @@ class ProductService extends AbstractService
 			}
 		}
 	}
+	
+	/**
+     * get all the data as per given companyId and productName and call the model for database selection opertation
+     * @param companyId & productName
+     * @return status
+     */
+	public function getData($productName,$companyId)
+	{
+		$productModel = new ProductModel();
+		$status = $productModel->getProductData($productName,$companyId);
+		
+		$encoded = new EncodeData();
+		$encodeData = $encoded->getEncodedData($status);
+		return $encodeData;
+	}
+	
     /**
      * get the data from persistable object and call the model for database update opertation
      * @param ProductPersistable $persistable

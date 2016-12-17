@@ -65,7 +65,24 @@
             }
 ##### Gets Products           
             
-##### `GET products/company/{CompanyId}
+##### `GET products/company/{CompanyId?}/branch/{branchId?}`
++ Header 
+	- Authentication Token
+	
++ Error Message
+
+			{
+				... Error Message
+			}
++ Response
+
+			{
+				... Standard Product Object
+			}
+
+**NOTES:** List all the product in particular company/&branch
+
+##### `GET products/company/{companyId}`
 + Header 
 	- Authentication Token
 	-'productName':''
@@ -80,24 +97,7 @@
 				... Standard Product Object
 			}
 
-**NOTES:** List all the product in particular company/list the product as per given name and companyId
-
-##### `GET products/branch/{branchId}`
-+ Header 
-	- Authentication Token
-
-+ Error Message
-
-			{
-				... Error Message
-			}
-+ Response
-
-			{
-				... Standard Product Object
-			}
-
-**NOTES:** List all the product in particular branch
+**NOTES:** List the product as per given name and companyId
 
 ##### `GET /products/{productId}`
 + Header

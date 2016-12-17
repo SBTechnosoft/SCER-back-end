@@ -21,6 +21,7 @@ class Product implements RouteRegistrarInterface
 		{
 			Route::get('Products/Product/{productId?}', 'Products\Controllers\ProductController@getData');
 			Route::get('Products/Product/company/{companyId?}/branch/{branchId?}', 'Products\Controllers\ProductController@getAllProductData');
+			Route::get('Products/Product/company/{companyId}', 'Products\Controllers\ProductController@getProductData');
 		});
 		
 		// insert data post request

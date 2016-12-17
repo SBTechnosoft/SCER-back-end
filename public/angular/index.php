@@ -459,7 +459,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/accounting/journals/next";
 				
 				// var url="http://www.scerp1.com/accounting/ledgers/"+ledgerId+"/transactions";
-				var url="http://www.scerp1.com/accounting/ledgers/company/"+companyId;
+				// var url="http://www.scerp1.com/accounting/ledgers/company/"+companyId;
 				// var url="http://www.scerp1.com/accounting/ledgers/"+ledgerId;
 				// var url="http://www.scerp1.com/accounting/ledgers/ledgerGrp/"+ledgerGrpId;
 				// var url="http://www.scerp1.com/accounting/ledgers";
@@ -498,6 +498,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/products/"+productId;
 				// var url="http://www.scerp1.com/products";
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/branch/"+branchId;
+				var url="http://www.scerp1.com/products/company/"+companyId;
 				$http({
                         url: url,
                         // type:'patch',
@@ -507,7 +508,7 @@ include ('connection.php');
 						// method:'delete',
 						processData: false,
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
-                        headers: {'Content-Type': undefined,'ledgerName':'sales'},
+                        headers: {'Content-Type': undefined,'productName':'abc'},
                         // headers: {'Content-Type': undefined,'type':'sales'},
                         // headers: {'Content-Type': undefined},
                         // headers: {'Content-Type': undefined,'ledgerGroup':[9,12]},

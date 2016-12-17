@@ -198,8 +198,31 @@ class ProductController extends BaseController implements ContainerInterface
 			$productService= new ProductService();
 			$status = $productService->getCBProductData($branchId,$companyId);
 			return $status;
-		}        
-    }
+		}
+	}
+	
+	/**
+     * get the specified resource.
+     * @param $productId and $branchId
+     */
+    public function getProductData(Request $request,$companyId)
+    {
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		if(array_key_exists("productname",$request->header()))
+		{	
+			$productService= new ProductService();
+			$status = $productService->getData($request->header()['productname'][0],$companyId);
+			return $status;
+		}
+		else 
+		{
+			return $exceptionArray['content'];
+		}
+		
+	}
 	
 	/**
      * Update the specified resource in storage.
@@ -216,10 +239,10 @@ class ProductController extends BaseController implements ContainerInterface
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		if(strcmp($result,$fileSizeArray['404'])==0)
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($result,$exceptionArray['404'])==0)
 		{
-			return $result;
+			return $exceptionArray;
 		}
 		else
 		{
