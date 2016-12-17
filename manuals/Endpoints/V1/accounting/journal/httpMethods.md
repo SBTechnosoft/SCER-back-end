@@ -5,6 +5,8 @@
 	- Authentication Token
 	- 'type':'sales'
 	- 'type':'purchase'
+	- 'type':'payment'
+	- 'type':'receipt'
 + Body
 
             {
