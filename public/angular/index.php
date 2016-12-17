@@ -336,8 +336,8 @@ include ('connection.php');
 				
 				// special journal
 				// $scope.user = [{"jfId":4,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":35},{"amount":2,"amountType":"credit","ledgerId":35},{"amount":12,"amountType":"debit","ledgerId":35}],"entryDate":"22-10-2015","companyId":14}];
-				formdata.append('jfId',5);
- 				formdata.append('companyId',14);
+				// formdata.append('jfId',5);
+ 				// formdata.append('companyId',14);
  
  				formdata.append('entryDate','22-10-2016');
  				var json=[{"amount": 100 ,"amountType":" debit ","ledgerId":87},{"amount":100,"amountType":"debit","ledgerId":88},{"amount":200,"amountType":"credit","ledgerId":85}];
@@ -439,7 +439,7 @@ include ('connection.php');
 				// var quotationId=3;
 				// var ledgerGrpId=9;
 				// var ledgerId=87;
-				// var jfId=1;
+				var jfId=1;
 				// var journalId=1;
 				
 				// var url = "http://www.scerp1.com/accounting/bills";
@@ -452,8 +452,8 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/products/outward";
 				
 				// var url="http://www.scerp1.com/accos";
-				var url="http://www.scerp1.com/accounting/journals";
-				// var url="http://www.scerp1.com/accounting/journals/"+jfId;
+				// var url="http://www.scerp1.com/accounting/journals";
+				var url="http://www.scerp1.com/accounting/journals/"+jfId;
 				// var url="http://www.scerp1.com/accounting/journals/"+journalId;
 				// var url="http://www.scerp1.com/accounting/journals/company/"+companyId;
 				// var url="http://www.scerp1.com/accounting/journals/next";

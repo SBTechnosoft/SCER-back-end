@@ -144,8 +144,16 @@ class JournalProcessor extends BaseProcessor
 				{
 					return $exceptionArray['content'];
 				}
+				else
+				{
+					
+					//check accounting Rules
+					$buisnessLogic = new BuisnessLogic();
+					$busnessResult = $buisnessLogic->validateUpdateBuisnessLogic($tRequest);
+				}
+				
 				//get data from trim array
-				else if(is_array($tRequest))
+				if(is_array($busnessResult))
 				{
 					//data is exists in request or not checking by flag
 					if(array_key_exists("flag",$tRequest))

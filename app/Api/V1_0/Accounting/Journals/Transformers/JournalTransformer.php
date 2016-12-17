@@ -164,29 +164,6 @@ class JournalTransformer extends LedgerModel
 					{
 						return "1";
 					}
-					else
-					{
-						//check ledger exists
-						$journalObject = new JournalTransformer();
-						$ledgerIdResult = $journalObject->getData($tempArray[$arrayElement]['ledger_id']);
-						if(strcmp($ledgerIdResult,$exceptionArray['404'])==0)
-						{
-							return $exceptionArray['404'];
-						}
-						else
-						{
-							//check credit-debit amount
-							if(strcmp($tempArray[$arrayElement]['amount_type'],"credit")==0)
-							{
-								$creditAmountArray = $creditAmountArray+$tempArray[$arrayElement]['amount'];
-							}
-							else
-							{
-								
-								$debitAmountArray = $debitAmountArray+$tempArray[$arrayElement]['amount'];
-							}
-						}
-					}
 				}
 			}
 			else
@@ -229,26 +206,12 @@ class JournalTransformer extends LedgerModel
 		}
 		if($journalArrayFlag==1 && $tempArrayFlag==1)
 		{
-			if($creditAmountArray==$debitAmountArray)
-			{
-				array_push($tJournalArray,$tempArray);
-				return $tJournalArray;
-			}
-			else
-			{
-				return $exceptionArray['equal'];
-			}
+			array_push($tJournalArray,$tempArray);
+			return $tJournalArray;
 		}
 		else if($tempArrayFlag==1)
 		{
-			if($creditAmountArray==$debitAmountArray)
-			{
-				return $tempArray;
-			}
-			else
-			{
-				return $exceptionArray['equal'];
-			}
+			return $tempArray;
 		}
 		else
 		{
