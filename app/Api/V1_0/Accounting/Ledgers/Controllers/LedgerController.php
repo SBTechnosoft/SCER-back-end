@@ -11,6 +11,7 @@ use ERP\Core\Accounting\Ledgers\Persistables\LedgerPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Model\Accounting\Ledgers\LedgerModel;
+
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -141,9 +142,20 @@ class LedgerController extends BaseController implements ContainerInterface
 		}
 		else
 		{
-			$ledgerService= new LedgerService();
-			$status = $ledgerService->getLedgerDetail($companyId);
-			return $status;
+			if(array_key_exists("ledgergroup",$request->header()))
+			{
+				$ledgerarray = explode(",", $request->header()['ledgergroup'][0]);
+				$ledgerService= new LedgerService();
+				$ledgerResult = $ledgerService->getDataAsLedgerGrp($ledgerarray,$companyId);
+				return $ledgerResult;
+			}
+			else
+			{
+				echo "not exists";
+			}
+			// $ledgerService= new LedgerService();
+			// $status = $ledgerService->getLedgerDetail($companyId);
+			// return $status;
 		}
 	}
 	

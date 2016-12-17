@@ -1013,6 +1013,147 @@ class LedgerModel extends Model
 	}
 	
 	/**
+	 * get data as per company_id and ledger_group id
+	 * returns the error-message/data
+	*/
+	public function getDataAsPerLedgerGrp($ledgerGrpArray,$companyId)
+	{
+		$ledgerGrpArray = func_get_arg(0);
+		$companyId = func_get_arg(1);
+		$ledgerArray = array();
+		$mainResult = array();
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		//get data as per companyId and ledger-group-id
+		for($ledgerGrpArrayData=0;$ledgerGrpArrayData<count($ledgerGrpArray);$ledgerGrpArrayData++)
+		{
+			DB::beginTransaction();
+			$data = DB::select("SELECT 
+			ledger_id,
+			ledger_name,
+			alias,
+			inventory_affected,
+			address1,
+			address2,
+			contact_no,
+			email_id,
+			pan,
+			tin,
+			gst,
+			created_at,
+			updated_at,
+			deleted_at,
+			state_abb,
+			city_id,
+			ledger_group_id,
+			company_id
+			FROM ledger_mst
+			WHERE ledger_group_id='".$ledgerGrpArray[$ledgerGrpArrayData]."' and 
+			company_id='".$companyId."' and 
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+			if(count($data)==0)
+			{
+				return $exceptionArray['404'];
+			}
+			else
+			{
+				$mainResult[$ledgerGrpArrayData] = $data; 
+				for($arrayData=0;$arrayData<count($data);$arrayData++)
+				{
+					$ledgerArray[$ledgerGrpArrayData][$arrayData] = $data[$arrayData]->ledger_id;
+				}
+			}
+		}
+		//add balance in ledger data
+		if(count($data)!=0)
+		{
+			$ledgerIdArray = array();
+			$mergeArray = array();
+			for($ledgerDataArray=0;$ledgerDataArray<count($ledgerArray);$ledgerDataArray++)
+			{
+				for($innerArray=0;$innerArray<count($ledgerArray[$ledgerDataArray]);$innerArray++)
+				{
+					$currentBalanceType="";
+					
+					//get opening balance
+					DB::beginTransaction();
+					$raw = DB::select("SELECT 
+					".$ledgerArray[$ledgerDataArray][$innerArray]."_id,
+					amount,
+					amount_type
+					from ".$ledgerArray[$ledgerDataArray][$innerArray]."_ledger_dtl
+					WHERE balance_flag='opening' and 
+					deleted_at='0000-00-00 00:00:00'");
+					DB::commit();
+					
+					if(count($raw)!=0)
+					{
+						//get current balance
+						DB::beginTransaction();
+						$ledgerResult = DB::select("SELECT 
+						".$ledgerArray[$ledgerDataArray][$innerArray]."_id,
+						amount,
+						amount_type
+						from ".$ledgerArray[$ledgerDataArray][$innerArray]."_ledger_dtl
+						WHERE deleted_at='0000-00-00 00:00:00'");
+						DB::commit();
+						
+						$creditAmountArray =0;
+						$debitAmountArray = 0;
+						for($ledgerArrayData=0;$ledgerArrayData<count($ledgerResult);$ledgerArrayData++)
+						{
+							if(strcmp($ledgerResult[$ledgerArrayData]->amount_type,"credit")==0)
+							{
+								$creditAmountArray = $creditAmountArray+$ledgerResult[$ledgerArrayData]->amount;
+								
+							}
+							else
+							{
+								$debitAmountArray = $debitAmountArray+$ledgerResult[$ledgerArrayData]->amount;
+							}
+						}
+						if(count($ledgerResult)==0)
+						{
+							return $exceptionArray['404'];
+						}
+					}
+					else
+					{
+						return $exceptionArray['404'];
+					}
+					//calculate opening balance
+					if($creditAmountArray>$debitAmountArray)
+					{
+						$amountData = $creditAmountArray-$debitAmountArray;
+						$currentBalanceType = "credit";
+					}
+					else
+					{
+						$amountData = $debitAmountArray-$creditAmountArray;
+						$currentBalanceType = "debit";
+					}
+					$balanceAmountArray = array();
+					$balanceAmountArray['openingBalance'] = $raw[0]->amount;
+					$balanceAmountArray['openingBalanceType'] = $raw[0]->amount_type;
+					$balanceAmountArray['currentBalance'] = $amountData;
+					$balanceAmountArray['currentBalanceType'] = $currentBalanceType;
+					
+					$mergeArray[$ledgerDataArray][$innerArray] = (Object)array_merge((array)$mainResult[$ledgerDataArray][$innerArray],(array)((Object)$balanceAmountArray));
+				}
+			}
+			return $mergeArray;
+		}
+		else
+		{
+			return $exceptionArray['404'];
+		}
+	}
+	
+	/**
 	 * delete the data
 	 * @param: ledgerId
 	 * returns the error-message/status

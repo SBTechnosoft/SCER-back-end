@@ -255,6 +255,39 @@ class LedgerService extends AbstractService
 		}
 	}
 	
+	/**
+     * get all the data as per given ledger-rrp id & company_id and call the model for database 		selection operation
+     * @return status
+     */
+	public function getDataAsLedgerGrp()
+	{
+		$processArray = array();
+		$ledgerGrpArray = func_get_arg(0);
+		$companyId = func_get_arg(1);
+		
+		$ledgerModel = new LedgerModel();
+		$status = $ledgerModel->getDataAsPerLedgerGrp($ledgerGrpArray,$companyId);
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(is_array($status))
+		{
+			
+			for($arrayData=0;$arrayData<count($status);$arrayData++)
+			{
+				$encoded = new EncodeAllData();
+				$encodeAllData = $encoded->getEncodedAllData(json_encode($status[$arrayData]));
+				$ledgerArray[$arrayData]=json_decode($encodeAllData);
+			}
+			return json_encode($ledgerArray);
+		}
+		else
+		{
+			return $status;
+		}
+	}
+	
     /**
      * get the data from persistable object and call the model for database update opertation
      * @param LedgerPersistable $persistable
