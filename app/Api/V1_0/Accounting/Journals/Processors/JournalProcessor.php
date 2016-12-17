@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use ERP\Core\Accounting\Journals\Validations\JournalValidate;
 use ERP\Api\V1_0\Accounting\Journals\Transformers\JournalTransformer;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Core\Accounting\Journals\Validations\BuisnessLogic;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -43,18 +44,22 @@ class JournalProcessor extends BaseProcessor
 			//trim an input 
 			$journalTransformer = new JournalTransformer();
 			$tRequest = $journalTransformer->trimInsertData($this->request);
-			
 			if($tRequest==1)
 			{
 				return $msgArray['content'];
-			}	
-			else if(is_array($tRequest))
+			}
+			else
 			{
-				//validation
+				//check accounting Rules
+				$buisnessLogic = new BuisnessLogic();
+				$busnessResult = $buisnessLogic->validateBuisnessLogic($tRequest);
+			}
+			if(is_array($busnessResult))
+			{
+				//simple validation
 				$journalValidate = new JournalValidate();
 				$status = $journalValidate->validate($tRequest);
-				// echo "else";
-				// print_r($status);
+				
 				if($status=="Success")
 				{
 					$journalPersistable=array();

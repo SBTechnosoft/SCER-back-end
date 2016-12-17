@@ -20,8 +20,6 @@ class JournalTransformer extends LedgerModel
     public function trimInsertData(Request $request)
     {
 		$amountTypeFlag=0;
-		$creditAmountArray = 0;
-		$debitAmountArray = 0;
 		$requestArray = array();
 		$exceptionArray = array();
 		$numberOfArray = count($request->input()['data']);
@@ -64,55 +62,27 @@ class JournalTransformer extends LedgerModel
 			{
 				return "1";
 			}
-			else
-			{
-				//check ledger exists
-				$journalObject = new JournalTransformer();
-				$ledgerIdResult = $journalObject->getData($tempArray[$arrayData][2]);
-				if(strcmp($ledgerIdResult,$exceptionArray['404'])==0)
-				{
-					return $exceptionArray['404'];
-				}
-				else
-				{
-					//check credit-debit amount
-					if(strcmp($tempArray[$arrayData][1],"credit")==0)
-					{
-						$creditAmountArray = $creditAmountArray+$tempArray[$arrayData][0];
-					}
-					else
-					{
-						$debitAmountArray = $debitAmountArray+$tempArray[$arrayData][0];
-					}
-				}
-			}
 		}
 		
-		if($creditAmountArray==$debitAmountArray)
+		// make an array
+		$simpleArray = array();
+		$simpleArray['jfId'] = $jfId;
+		$simpleArray['entryDate'] = $transformEntryDate;
+		$simpleArray['companyId'] = $companyId;
+		
+		$trimArray = array();
+		for($data=0;$data<$numberOfArray;$data++)
 		{
-			// make an array
-			$simpleArray = array();
-			$simpleArray['jfId'] = $jfId;
-			$simpleArray['entryDate'] = $transformEntryDate;
-			$simpleArray['companyId'] = $companyId;
-			
-			$trimArray = array();
-			for($data=0;$data<$numberOfArray;$data++)
-			{
-				$trimArray[$data]= array(
-					'amount' => $tempArray[$data][0],
-					'amountType' => $tempArray[$data][1],
-					'ledgerId' => $tempArray[$data][2]
-				);
-			}
-			array_push($simpleArray,$trimArray);
-			return $simpleArray;
+			$trimArray[$data]= array(
+				'amount' => $tempArray[$data][0],
+				'amountType' => $tempArray[$data][1],
+				'ledgerId' => $tempArray[$data][2]
+			);
 		}
-		else
-		{
-			return $exceptionArray['equal'];
-		}
+		array_push($simpleArray,$trimArray);
+		return $simpleArray;
 	}
+	
 	/**
 	 * trim fromdate-todate data
      * @param object
