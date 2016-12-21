@@ -84,14 +84,15 @@ class ProductModel extends Model
 		$billNumberArray = func_get_arg(8);
 		$invoiceNumberArray = func_get_arg(9);
 		$jfId = func_get_arg(10);
+		$taxArray = func_get_arg(11);
 		
 		DB::beginTransaction();
 		for($data=0;$data<count($productIdArray);$data++)
 		{
 			$raw = DB::statement("insert into 
 			product_trn(transaction_date,transaction_type,qty,price,discount,
-			discount_type,product_id,company_id,branch_id,invoice_number,bill_number,jf_id) 
-			values('".$transactionDateArray[$data]."','".$transactionTypeArray[$data]."','".$qtyArray[$data]."','".$priceArray[$data]."','".$discountArray[$data]."','".$discountTypeArray[$data]."','".$productIdArray[$data]."','".$companyIdArray[$data]."',6,'".$invoiceNumberArray[$data]."','".$billNumberArray[$data]."','".$jfId."')");
+			discount_type,product_id,company_id,branch_id,invoice_number,bill_number,jf_id,tax) 
+			values('".$transactionDateArray[$data]."','".$transactionTypeArray[$data]."','".$qtyArray[$data]."','".$priceArray[$data]."','".$discountArray[$data]."','".$discountTypeArray[$data]."','".$productIdArray[$data]."','".$companyIdArray[$data]."',6,'".$invoiceNumberArray[$data]."','".$billNumberArray[$data]."','".$jfId."','".$taxArray[$data]."')");
 		}
 		DB::commit();
 		

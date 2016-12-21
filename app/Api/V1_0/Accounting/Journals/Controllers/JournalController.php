@@ -208,6 +208,7 @@ class JournalController extends BaseController implements ContainerInterface
 		$invoiceNumberFlag=0;
 		$productArrayFlag=0;
 		$billNumberFlag=0;
+		$taxFlag=0;
 		
 		//get exception message
 		$exception = new ExceptionMessage();
@@ -263,6 +264,11 @@ class JournalController extends BaseController implements ContainerInterface
 					$billNumberFlag=1;
 					$productArray['billNumber'] = $inputArray['billNumber'];
 				}
+				if(array_key_exists('tax',$inputArray))
+				{
+					$taxFlag=1;
+					$productArray['tax'] = $inputArray['tax'];
+				}
 				//check array exists in request 
 				if(array_key_exists('data',$this->request->input()))
 				{
@@ -294,7 +300,7 @@ class JournalController extends BaseController implements ContainerInterface
 				//journal data is available in sale/purchase for update
 				if($entryDateFlag==1 || $companyIdFlag==1 || $journalArrayFlag==1)
 				{
-					if($productArrayFlag==1)
+					if($productArrayFlag==1 || $taxFlag==1)
 					{
 						//journal data is processed(trim,validation and set data in object)
 						$journalPersistable = $processor->createPersistableChangeData($request->header(),$productArray,$journalArray,$jfId);

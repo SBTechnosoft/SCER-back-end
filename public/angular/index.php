@@ -336,7 +336,7 @@ include ('connection.php');
 				
 				// special journal
 				// $scope.user = [{"jfId":4,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":35},{"amount":2,"amountType":"credit","ledgerId":35},{"amount":12,"amountType":"debit","ledgerId":35}],"entryDate":"22-10-2015","companyId":14}];
-				// formdata.append('jfId',5);
+				// formdata.append('jfId',6);
  				// formdata.append('companyId',14);
  
  				// formdata.append('entryDate','22-10-2016');
@@ -378,8 +378,9 @@ include ('connection.php');
 				formdata.append('entryDate','22-10-2016');
 				var json=[{"amount": 10 ,"amountType":" credit ","ledgerId":88},{"amount":2,"amountType":"credit","ledgerId":86},{"amount":12,"amountType":"debit","ledgerId":87}];
 				
-				var inventory = [{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":10,"discountType":"flat","price":1300,"qty":44}];
+				var inventory = [{"productId": 10 ,"discount":12,"discountType":"discount","price":1300,"qty":44},{"productId": 10 ,"discount":10,"discountType":"flat","price":1300,"qty":44}];
 				formdata.append('transactionDate','22-10-2015');
+				formdata.append('tax',100);
 				formdata.append('invoiceNumber',25);
 				// formdata.append('billNumber',2);
 				

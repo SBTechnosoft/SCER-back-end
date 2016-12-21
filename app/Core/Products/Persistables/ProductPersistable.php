@@ -20,6 +20,7 @@ use ERP\Core\Products\Properties\QtyPropertyTrait;
 use ERP\Core\Products\Properties\TransactionTypePropertyTrait;
 use ERP\Core\Products\Properties\InvoiceNumberPropertyTrait;
 use ERP\Core\Products\Properties\BillNumberPropertyTrait;
+use ERP\Core\Products\Properties\TaxPropertyTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -44,4 +45,5 @@ class productPersistable
 	use TransactionTypePropertyTrait;
 	use InvoiceNumberPropertyTrait;
 	use BillNumberPropertyTrait;
+	use TaxPropertyTrait;
 }

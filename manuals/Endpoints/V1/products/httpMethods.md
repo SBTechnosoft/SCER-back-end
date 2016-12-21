@@ -3,8 +3,7 @@
 ##### `POST /products`
 + Header
 	- Authentication Token
-
-
+	
 + Body
 
             {
@@ -116,7 +115,6 @@
 
 **NOTES:** Give only particular product from productId  
 
-
 ##### `GET /products`
 + Header
 	- Authentication Token
@@ -134,8 +132,22 @@
             
 **NOTES:** List All the products available in the system
 
+##### `GET /products`
++ Header
+	- Authentication Token,
+	- 'jfId':''
++ Error Message
 
+			{
+				... Error Message
+			}
++ Response
 
+            {
+                ... Standard Product Transaction Object
+            }
+            
+**NOTES:** List All the product-transaction data available as per given jfId in the system
 
 ##### Updates Products    
        

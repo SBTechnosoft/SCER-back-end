@@ -97,10 +97,11 @@ class ProductService extends AbstractService
 			$transactionTypeArray[$data] = $productArray[$data]->getTransactionType();
 			$billNumberArray[$data] = $productArray[$data]->getBillNumber();
 			$invoiceNumberArray[$data] = $productArray[$data]->getInvoiceNumber();
+			$taxArray[$data] = $productArray[$data]->getTax();
 		}
 		// data pass to the model object for insert
 		$productModel = new ProductModel();
-		$status = $productModel->insertInOutwardData($discountArray,$discountTypeArray,$productIdArray,$qtyArray,$priceArray,$transactionDateArray,$companyIdArray,$transactionTypeArray,$billNumberArray,$invoiceNumberArray,$jfId);
+		$status = $productModel->insertInOutwardData($discountArray,$discountTypeArray,$productIdArray,$qtyArray,$priceArray,$transactionDateArray,$companyIdArray,$transactionTypeArray,$billNumberArray,$invoiceNumberArray,$jfId,$taxArray);
 		return $status;
 	}
 	

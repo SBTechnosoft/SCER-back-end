@@ -111,6 +111,7 @@ class ProductTransformer
 		//data get from body and trim an input
 		$companyId = trim($request->input()['companyId']); 
 		$transactionDate = trim($request->input()['transactionDate']); 
+		$tax = trim($request->input()['tax']); 
 		if(array_key_exists('invoiceNumber',$request->input()))
 		{
 			$invoiceNumber = trim($request->input()['invoiceNumber']);
@@ -174,6 +175,7 @@ class ProductTransformer
 			$simpleArray['transactionType'] = $inOutWard;
 			$simpleArray['invoiceNumber'] = $invoiceNumber;
 			$simpleArray['billNumber'] = $billNumber;
+			$simpleArray['tax'] = $tax;
 			
 			$trimArray = array();
 			for($data=0;$data<$numberOfArray;$data++)

@@ -313,11 +313,11 @@ class JournalProcessor extends BaseProcessor
 					$buisnessLogic = new BuisnessLogic();
 					$buisnessResult = $buisnessLogic->validateUpdateBuisnessLogic($tRequest);
 					
-					//journal array and product array exist
+					//journal array and product array exist/tax exist
 					if(is_array($buisnessResult))
 					{
 						//data is valid and validate journal-product array data
-						$buisnessProductResult = $buisnessLogic->validateUpdateProductBuisnessLogic($headerData,$tRequest,$trimProductData);
+						$buisnessProductResult = $buisnessLogic->validateUpdateProductBuisnessLogic($headerData,$tRequest,$trimProductData,$jfId);
 					}
 					else
 					{
