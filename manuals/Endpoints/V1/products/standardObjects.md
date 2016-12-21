@@ -53,6 +53,7 @@
 				"companyId": int,
 				"invoiceNumber":string,
 				"billNumber":string,
+				"tax":decimal,
 				"branchId":int,
 				"jfId":int
 			}
@@ -75,6 +76,7 @@
 				"companyId": int,
 				"invoiceNumber":string,
 				"billNumber":string,
+				"tax":decimal,
 				"branchId":int,
 				"jfId":int
 			}

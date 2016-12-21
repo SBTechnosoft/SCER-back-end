@@ -117,7 +117,8 @@ class JournalService
 				$encodedResult = $encodedData->getEncodedData(json_decode($status)[$encodeArray]);
 				$encodedArrayData[$encodeArray] = json_decode($encodedResult);
 			}
-			return json_encode($encodedArrayData);
+			$result = $journalModel->getLedgerBalanceData($encodedArrayData);
+			return $result;
 		}
 	}
 	

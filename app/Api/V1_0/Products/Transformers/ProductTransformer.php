@@ -108,7 +108,6 @@ class ProductTransformer
 		$requestArray = array();
 		$exceptionArray = array();
 		$numberOfArray = count($request->input()['inventory']);
-		
 		//data get from body and trim an input
 		$companyId = trim($request->input()['companyId']); 
 		$transactionDate = trim($request->input()['transactionDate']); 

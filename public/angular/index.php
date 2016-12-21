@@ -339,18 +339,18 @@ include ('connection.php');
 				// formdata.append('jfId',5);
  				// formdata.append('companyId',14);
  
- 				formdata.append('entryDate','22-10-2016');
- 				var json=[{"amount": 100 ,"amountType":" debit ","ledgerId":87},{"amount":100,"amountType":"debit","ledgerId":88},{"amount":200,"amountType":"credit","ledgerId":85}];
+ 				// formdata.append('entryDate','22-10-2016');
+ 				// var json=[{"amount": 100 ,"amountType":" debit ","ledgerId":87},{"amount":100,"amountType":"debit","ledgerId":88},{"amount":200,"amountType":"credit","ledgerId":85}];
 
  				  
-  				for(var i=0;i<json.length;i++){
+  				// for(var i=0;i<json.length;i++){
    
-  					angular.forEach(json[i], function (value,key) {
+  					// angular.forEach(json[i], function (value,key) {
    						
-   					formdata.append('data['+i+']['+key+']',value);
-  					});
+   					// formdata.append('data['+i+']['+key+']',value);
+  					// });
     
-  				}
+  				// }
 				
 				//update....
 				// formdata.append('companyId',15);
@@ -373,32 +373,32 @@ include ('connection.php');
 				// $scope.user = [{"jfId":4,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":1},{"amount":2,"amountType":"credit","ledgerId":1},{"amount":12,"amountType":"debit","ledgerId":1}],"entryDate":"22-10-2015","companyId":14,
 				// "inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"companyId":14,"transactionDate":"22-10-2015","invoiceNumber":23,"billNumber":2}];
 				
-				// formdata.append('jfId',13);
- 				// formdata.append('companyId',14);
-				// formdata.append('entryDate','22-10-2015');
-				// var json=[{"amount": 10 ,"amountType":" credit ","ledgerId":62},{"amount":2,"amountType":"credit","ledgerId":74},{"amount":12,"amountType":"debit","ledgerId":75}];
+				// formdata.append('jfId',6);
+ 				// formdata.append('companyId',15);
+				formdata.append('entryDate','22-10-2016');
+				var json=[{"amount": 10 ,"amountType":" credit ","ledgerId":88},{"amount":2,"amountType":"credit","ledgerId":86},{"amount":12,"amountType":"debit","ledgerId":87}];
 				
-				// var inventory = [{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":10,"discountType":"flat","price":1300,"qty":44}];
-				// formdata.append('transactionDate','22-10-2015');
-				// formdata.append('invoiceNumber',25);
+				var inventory = [{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":10,"discountType":"flat","price":1300,"qty":44}];
+				formdata.append('transactionDate','22-10-2015');
+				formdata.append('invoiceNumber',25);
 				// formdata.append('billNumber',2);
 				
-				// for(var i=0;i<json.length;i++){
+				for(var i=0;i<json.length;i++){
    
-  					// angular.forEach(json[i], function (value,key) {
+  					angular.forEach(json[i], function (value,key) {
    						
-   					// formdata.append('data['+i+']['+key+']',value);
-  					// });
+   					formdata.append('data['+i+']['+key+']',value);
+  					});
     
-  				// }
-				// for(var i=0;i<inventory.length;i++){
+  				}
+				for(var i=0;i<inventory.length;i++){
    
-  					// angular.forEach(inventory[i], function (value,key) {
+  					angular.forEach(inventory[i], function (value,key) {
    						
-   					// formdata.append('inventory['+i+']['+key+']',value);
-  					// });
+   					formdata.append('inventory['+i+']['+key+']',value);
+  					});
     
-  				// }
+  				}
 				//transaction
 				// $scope.user = [{"inventory":[{"productId":7 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 7 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"companyId":14,"transactionDate":"22-10-2015"}];
 				
@@ -428,7 +428,7 @@ include ('connection.php');
 				// var productId = 8;
 				// var productGrpId = 11;
 				// var productCatId = 16;
-				// var companyId=15;
+				// var companyId=14;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -440,7 +440,7 @@ include ('connection.php');
 				// var ledgerGrpId=9;
 				// var ledgerId=87;
 				var jfId=1;
-				// var journalId=1;
+				// var journalId=322;
 				
 				// var url = "http://www.scerp1.com/accounting/bills";
 				
@@ -509,10 +509,10 @@ include ('connection.php');
 						processData: false,
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
                         // headers: {'Content-Type': undefined,'productName':'abc'},
-                        // headers: {'Content-Type': undefined,'type':'sales'},
-                        headers: {'Content-Type': undefined},
+                        headers: {'Content-Type': undefined,'type':'sales'},
+                        // headers: {'Content-Type': undefined},
                         // headers: {'Content-Type': undefined,'ledgerGroup':[9,12]},
-                        // headers: {'Content-Type': undefined,'type':'sales','jfId':13},
+                        // headers: {'Content-Type': undefined,'type':'sales','jfId':5},
 						 data:formdata
 						// data:$scope.user						
                         

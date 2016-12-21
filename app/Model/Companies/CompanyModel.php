@@ -347,7 +347,16 @@ class CompanyModel extends Model
 			$product = DB::statement("update product_mst 
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
-			if($branch==1 && $product==1)
+			$template = DB::statement("update template_mst 
+			set deleted_at='".$mytime."' 
+			where company_id=".$companyId);
+			$invoice = DB::statement("update invoice_dtl 
+			set deleted_at='".$mytime."' 
+			where company_id=".$companyId);
+			$quotation = DB::statement("update quotation_dtl 
+			set deleted_at='".$mytime."' 
+			where company_id=".$companyId);
+			if($branch==1 && $product==1 && $template==1 && $invoice==1 && $quotation==1)
 			{
 				return $fileSizeArray['200'];
 			}

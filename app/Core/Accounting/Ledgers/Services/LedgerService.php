@@ -131,7 +131,6 @@ class LedgerService extends AbstractService
 	{
 		$ledgerModel = new LedgerModel();
 		$status = $ledgerModel->getData($ledgerId);
-		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$fileSizeArray = $exception->messageArrays();

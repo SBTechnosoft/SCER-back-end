@@ -153,28 +153,15 @@ class JournalController extends BaseController implements ContainerInterface
 					$jfId = $request->header()['jfid'];
 					$journalModel = new JournalModel();
 					$status = $journalModel->getJournalTransactionData($companyId,$request->header()['type'][0],$jfId);
-					$result = json_decode($status);
-					print_r($result);
-					
-					// $ledgerId = array();
-					// $balanceData = array();
-					// for($arrayData=0;$arrayData<count($result->journal);$arrayData++)
-					// {
-						// echo "for";
-						// $ledgerId[$arrayData] = $result->journal[$arrayData]->ledger->ledgerId;
-						// $balanceData[$arrayData] = $journalModel->getBalanceData($ledgerId[$arrayData]);
-						// echo "hi";
-						// print_r(array($result->journal[$arrayData]->ledger));
-						// $result->journal[$arrayData]->ledger = (Object)$balanceData[$arrayData];
-						// print_r((Object)$balanceData[$arrayData]);
-						
-						// array_push($result->journal[$arrayData]->ledger,(Object)$balanceData[$arrayData]);
-						// $result->journal[$arrayData]->ledger = $balanceData[$arrayData];
-					// }
-					// print_r($result);
-					// print_r($balanceData);
-					// exit;
-					// return $status;
+					if(is_array($status))
+					{
+						$result = json_decode($status);
+						return $result;
+					}
+					else
+					{
+						return $status;
+					}
 				}
 			}
 			else
@@ -303,13 +290,20 @@ class JournalController extends BaseController implements ContainerInterface
 						$productArray['inventory'][$inventoryArray]['price']=$inputArray['inventory'][$inventoryArray]['price'];
 						$productArray['inventory'][$inventoryArray]['qty']=$inputArray['inventory'][$inventoryArray]['qty'];
 					}
-					
 				}
 				//journal data is available in sale/purchase for update
 				if($entryDateFlag==1 || $companyIdFlag==1 || $journalArrayFlag==1)
 				{
-					//journal data is processed(trim,validation and set data in object)
-					$journalPersistable = $processor->createPersistableChange($journalArray,$jfId);
+					if($productArrayFlag==1)
+					{
+						//journal data is processed(trim,validation and set data in object)
+						$journalPersistable = $processor->createPersistableChangeData($request->header(),$productArray,$journalArray,$jfId);
+					}
+					else
+					{
+						//journal data is processed(trim,validation and set data in object)
+						$journalPersistable = $processor->createPersistableChange($journalArray,$jfId);
+					}
 					if(is_array($journalPersistable))
 					{
 						$status = $journalService->update($journalPersistable,$jfId);
@@ -371,7 +365,6 @@ class JournalController extends BaseController implements ContainerInterface
 				}
 				else
 				{
-					echo "else";
 					//sale data update
 					if(strcmp($request->header()['type'][0],'sales')==0)
 					{
@@ -411,8 +404,6 @@ class JournalController extends BaseController implements ContainerInterface
 						return $productPersistable;
 					}
 				}
-				exit;
-				
 			}
 		}
 		else
