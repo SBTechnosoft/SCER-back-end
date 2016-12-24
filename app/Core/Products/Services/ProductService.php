@@ -11,6 +11,7 @@ use ERP\Core\Products\Entities\EncodeData;
 use ERP\Core\Products\Entities\EncodeAllData;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Core\Accounting\Ledgers\Entities\EncodeProductTrnAllData;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -223,8 +224,7 @@ class ProductService extends AbstractService
 			$status = $productModel->getCProductData($companyId);
 			if(strcmp($status,$fileSizeArray['204'])==0)
 			{
-				print_r("bId");
-				// return $status;
+				return $status;
 			}
 			else
 			{
@@ -240,8 +240,7 @@ class ProductService extends AbstractService
 			$status = $productModel->getBProductData($branchId);
 			if(strcmp($status,$fileSizeArray['204'])==0)
 			{
-				print_r("cId");
-				// return $status;
+				return $status;
 			}
 			else
 			{
@@ -330,7 +329,10 @@ class ProductService extends AbstractService
 		$arrayFlag=0;
 		$flagData=0;
 		
-		if(array_key_exists("flag",$productArray))
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(array_key_exists($constantArray['flag'],$productArray))
 		{
 			$flagData=1;
 		}

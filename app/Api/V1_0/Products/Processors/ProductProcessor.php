@@ -10,6 +10,7 @@ use ERP\Core\Products\Validations\ProductValidate;
 use ERP\Api\V1_0\Products\Transformers\ProductTransformer;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Core\Accounting\Journals\Validations\BuisnessLogic;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -174,11 +175,14 @@ class ProductProcessor extends BaseProcessor
 		$flag=0;
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
 		
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		// update
-		if($requestMethod == 'POST')
+		if($requestMethod == $constantArray['postMethod'])
 		{
 			$productValue = array();
 			$productPersistable;
@@ -283,7 +287,7 @@ class ProductProcessor extends BaseProcessor
 		}
 		
 		//delete
-		else if($requestMethod == 'DELETE')
+		else if($requestMethod == $constantArray['deleteMethod'])
 		{
 			$productPersistable = new productPersistable();		
 			$productPersistable->setproductId($productId);			
@@ -308,11 +312,14 @@ class ProductProcessor extends BaseProcessor
 		$status;
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
 		
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		// update
-		if($requestMethod == 'POST')
+		if($requestMethod == $constantArray['postMethod'])
 		{
 			//if data is not available in update request
 			if(count($_POST)==0)
@@ -338,13 +345,13 @@ class ProductProcessor extends BaseProcessor
 				}
 				else
 				{
-					if(strcmp($inOutWard,"Inward")==0)
+					if(strcmp($inOutWard,$constantArray['journalInward'])==0)
 					{
-						$headerType="purchase";
+						$headerType=$constantArray['purchase'];
 					}
 					else
 					{
-						$headerType="sales";
+						$headerType=$constantArray['sales'];
 					}
 					$journalData = array();
 					
@@ -360,7 +367,7 @@ class ProductProcessor extends BaseProcessor
 				if(is_array($tRequest))
 				{
 					//data is exists in request or not checking by flag
-					if(array_key_exists("flag",$tRequest))
+					if(array_key_exists($constantArray['flag'],$tRequest))
 					{
 						$trimFlag=1;
 					}

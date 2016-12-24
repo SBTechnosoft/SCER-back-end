@@ -8,6 +8,7 @@ use Carbon;
 use ERP\Core\Products\Entities\EnumClasses\DiscountTypeEnum;
 use ERP\Entities\EnumClasses\IsDisplayEnum;
 use ERP\Core\Products\Entities\EnumClasses\measurementUnitEnum;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -108,11 +109,15 @@ class ProductTransformer
 		$requestArray = array();
 		$exceptionArray = array();
 		$numberOfArray = count($request->input()['inventory']);
+		
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
 		//data get from body and trim an input
 		$companyId = trim($request->input()['companyId']); 
 		$transactionDate = trim($request->input()['transactionDate']); 
 		$tax = trim($request->input()['tax']); 
-		if(array_key_exists('invoiceNumber',$request->input()))
+		if(array_key_exists($constantArray['invoiceNumber'],$request->input()))
 		{
 			$invoiceNumber = trim($request->input()['invoiceNumber']);
 			$billNumber="";
@@ -206,6 +211,10 @@ class ProductTransformer
 		$productValue;
 		$keyValue = func_get_arg(0);
 		$convertedValue="";
+		
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
 		for($asciiChar=0;$asciiChar<strlen($keyValue);$asciiChar++)
 		{
 			if(ord($keyValue[$asciiChar])<=90 && ord($keyValue[$asciiChar])>=65) 
@@ -229,7 +238,7 @@ class ProductTransformer
 		$measurementUnitEnum = new measurementUnitEnum();
 		$enumMeasurementUnitArray = $measurementUnitEnum->enumArrays();
 		
-		if(strcmp($productEnumArray,'measurement_unit')==0)
+		if(strcmp($productEnumArray,$constantArray['measurementUnit'])==0)
 		{
 			foreach ($enumMeasurementUnitArray as $key => $value)
 			{
@@ -247,7 +256,7 @@ class ProductTransformer
 		$enumIsDispArray = array();
 		$isDispEnum = new IsDisplayEnum();
 		$enumIsDispArray = $isDispEnum->enumArrays();
-		if(strcmp($productEnumArray,'is_display')==0)
+		if(strcmp($productEnumArray,$constantArray['isDisplay'])==0)
 		{
 			foreach ($enumIsDispArray as $key => $value)
 			{
@@ -289,13 +298,16 @@ class ProductTransformer
 		$productArrayFlag=0;
 		$tempFlag=0;
 		
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		for($requestArray=0;$requestArray<count($productArray);$requestArray++)
 		{
 			//check if array is exists
-			if(strcmp(array_keys($productArray)[$requestArray],"inventory")==0)
+			if(strcmp(array_keys($productArray)[$requestArray],$constantArray['inventory'])==0)
 			{
 				//number of array elements
 				for($arrayElement=0;$arrayElement<count($productArray['inventory']);$arrayElement++)
@@ -347,7 +359,7 @@ class ProductTransformer
 						$convertedValue=$convertedValue.$key[$asciiChar];
 					}
 				}
-				if(strcmp($convertedValue,"transaction_date")==0)
+				if(strcmp($convertedValue,$constantArray['transactionDate'])==0)
 				{
 					$transformTransactionDate = Carbon\Carbon::createFromFormat('d-m-Y', $value)->format('Y-m-d');
 					$tProductArray[$convertedValue]=trim($transformTransactionDate);

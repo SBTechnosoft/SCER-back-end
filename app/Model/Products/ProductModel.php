@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -157,6 +158,9 @@ class ProductModel extends Model
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
 		
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
 		//get transaction data from jf_id
 		DB::beginTransaction();
 		$transactionData = DB::select("select 
@@ -175,27 +179,27 @@ class ProductModel extends Model
 			return $exceptionArray['404'];
 		}
 		
-		if(!array_key_exists('transaction_date',$singleArray))
+		if(!array_key_exists($constantArray['transactionDate'],$singleArray))
 		{
 			$productData = $productData."'".$transactionData[0]->transaction_date."',";
 			$keyName =$keyName."transaction_date,";
 		}
-		if(!array_key_exists('company_id',$singleArray))
+		if(!array_key_exists($constantArray['company_id'],$singleArray))
 		{
 			$productData = $productData."'".$transactionData[0]->company_id."',";
 			$keyName =$keyName."company_id,";
 		}
-		if(!array_key_exists('bill_number',$singleArray))
+		if(!array_key_exists($constantArray['bill_number'],$singleArray))
 		{
 			$productData = $productData."'".$transactionData[0]->bill_number."',";
 			$keyName =$keyName."bill_number,";
 		}
-		if(!array_key_exists('invoice_number',$singleArray))
+		if(!array_key_exists($constantArray['invoice_number'],$singleArray))
 		{
 			$productData = $productData."'".$transactionData[0]->invoice_number."',";
 			$keyName =$keyName."invoice_number,";
 		}
-		if(!array_key_exists('branch_id',$singleArray))
+		if(!array_key_exists($constantArray['branch_id'],$singleArray))
 		{
 			$productData = $productData."'".$transactionData[0]->branch_id."',";
 			$keyName =$keyName."branch_id,";

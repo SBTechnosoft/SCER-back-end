@@ -7,6 +7,7 @@ use ERP\Model\Accounting\Ledgers\LedgerModel;
 use ERP\Exceptions\ExceptionMessage;
 use Carbon;
 use ERP\Core\Accounting\Journals\Entities\AmountTypeEnum;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -127,13 +128,15 @@ class JournalTransformer extends LedgerModel
 		$journalArrayFlag=0;
 		$tempFlag=0;
 		
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		for($requestArray=0;$requestArray<count($journalArray);$requestArray++)
 		{
 			//check if array is exists
-			if(strcmp(array_keys($journalArray)[$requestArray],"data")==0)
+			if(strcmp(array_keys($journalArray)[$requestArray],$constantArray['data'])==0)
 			{
 				//number of array elements
 				for($arrayElement=0;$arrayElement<count($journalArray['data']);$arrayElement++)
@@ -183,7 +186,7 @@ class JournalTransformer extends LedgerModel
 						$convertedValue=$convertedValue.$key[$asciiChar];
 					}
 				}
-				if(strcmp($convertedValue,"entry_date")==0)
+				if(strcmp($convertedValue,$constantArray['entry_date'])==0)
 				{
 					$transformEntryDate = Carbon\Carbon::createFromFormat('d-m-Y', $value)->format('Y-m-d');
 					$tJournalArray[$convertedValue]=trim($transformEntryDate);

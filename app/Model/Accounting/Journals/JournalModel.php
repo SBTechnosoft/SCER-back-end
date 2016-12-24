@@ -7,6 +7,7 @@ use Carbon;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Core\Accounting\Journals\Entities\EncodeAllData;
 use ERP\Core\Accounting\Ledgers\Entities\EncodeProductTrnAllData;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -40,6 +41,8 @@ class JournalModel extends Model
 		$debitArray=0;
 		$creditArray=0;
 		
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -59,7 +62,7 @@ class JournalModel extends Model
 			DB::commit();
 			if($raw==1)
 			{
-				if($amountTypeArray[$data]=="credit")
+				if($amountTypeArray[$data]==$constantArray['credit'])
 				{
 					$creditAmount[$creditArray] = $amountArray[$data];
 					$creditLedger[$creditArray] = $ledgerIdArray[$data];
@@ -76,7 +79,7 @@ class JournalModel extends Model
 		//related ledger entry
 		for($data=0;$data<count($jfIdArray);$data++)
 		{
-			if($amountTypeArray[$data]=="debit")
+			if($amountTypeArray[$data]==$constantArray['debit'])
 			{
 				//purchase case
 				if(count($creditLedger)>1)
@@ -324,6 +327,10 @@ class JournalModel extends Model
 		$journalArray = func_get_arg(0);
 		$ledgerIdArray = array();
 		$mergeArray = array();
+		
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
 		for($ledgerDataArray=0;$ledgerDataArray<count($journalArray);$ledgerDataArray++)
 		{
 			$ledgerIdArray[$ledgerDataArray] = $journalArray[$ledgerDataArray]->ledger->ledgerId;
@@ -355,7 +362,7 @@ class JournalModel extends Model
 				$debitAmountArray = 0;
 				for($ledgerArrayData=0;$ledgerArrayData<count($ledgerResult);$ledgerArrayData++)
 				{
-					if(strcmp($ledgerResult[$ledgerArrayData]->amount_type,"credit")==0)
+					if(strcmp($ledgerResult[$ledgerArrayData]->amount_type,$constantArray['credit'])==0)
 					{
 						$creditAmountArray = $creditAmountArray+$ledgerResult[$ledgerArrayData]->amount;
 						
@@ -378,12 +385,12 @@ class JournalModel extends Model
 			if($creditAmountArray>$debitAmountArray)
 			{
 				$amountData = $creditAmountArray-$debitAmountArray;
-				$currentBalanceType = "credit";
+				$currentBalanceType = $constantArray['credit'];
 			}
 			else
 			{
 				$amountData = $debitAmountArray-$creditAmountArray;
-				$currentBalanceType = "debit";
+				$currentBalanceType =$constantArray['debit'];
 			}
 			$balanceAmountArray = array();
 			$balanceAmountArray['openingBalance'] = $raw[0]->amount;
@@ -403,6 +410,9 @@ class JournalModel extends Model
 	*/
 	public function getJournalTransactionData($companyId,$journalType,$jfId)
 	{
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -489,7 +499,7 @@ class JournalModel extends Model
 						$debitAmountArray = 0;
 						for($ledgerArrayData=0;$ledgerArrayData<count($ledgerResult);$ledgerArrayData++)
 						{
-							if(strcmp($ledgerResult[$ledgerArrayData]->amount_type,"credit")==0)
+							if(strcmp($ledgerResult[$ledgerArrayData]->amount_type,$constantArray['credit'])==0)
 							{
 								$creditAmountArray = $creditAmountArray+$ledgerResult[$ledgerArrayData]->amount;
 								
@@ -512,12 +522,12 @@ class JournalModel extends Model
 					if($creditAmountArray>$debitAmountArray)
 					{
 						$amountData = $creditAmountArray-$debitAmountArray;
-						$currentBalanceType = "credit";
+						$currentBalanceType = $constantArray['credit'];
 					}
 					else
 					{
 						$amountData = $debitAmountArray-$creditAmountArray;
-						$currentBalanceType = "debit";
+						$currentBalanceType = $constantArray['debit'];
 					}
 					$balanceAmountArray = array();
 					$balanceAmountArray['openingBalance'] = $raw[0]->amount;
@@ -603,6 +613,10 @@ class JournalModel extends Model
 		$mytime = Carbon\Carbon::now();
 		$journalRaw="";
 		$ledgerResult="";
+		
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -667,7 +681,7 @@ class JournalModel extends Model
 					DB::commit();
 					if($journalInsertResult==1)
 					{
-						if($journalArray[$data]['amount_type']=="credit")
+						if($journalArray[$data]['amount_type']==$constantArray['credit'])
 						{
 							$creditAmount[$creditArray] = $journalArray[$data]['amount'];
 							$creditLedger[$creditArray] = $journalArray[$data]['ledger_id'];
@@ -688,7 +702,7 @@ class JournalModel extends Model
 				//related ledger entry
 				for($data=0;$data<count($journalArray);$data++)
 				{
-					if($journalArray[$data]['amount_type']=="debit")
+					if($journalArray[$data]['amount_type']==$constantArray['debit'])
 					{
 						//purchase case
 						if(count($creditLedger)>1)
@@ -774,7 +788,7 @@ class JournalModel extends Model
 		else
 		{
 			//update company_id from journal
-			if(array_key_exists("company_id",$journalArray))
+			if(array_key_exists($constantArray['company_id'],$journalArray))
 			{
 				//update the company_id from journal
 				DB::beginTransaction();
@@ -787,7 +801,7 @@ class JournalModel extends Model
 				}
 			}
 			//update entryDate from joural and ledgerId_ledger_dtl
-			if(array_key_exists("entry_date",$journalArray))
+			if(array_key_exists($constantArray['entry_date'],$journalArray))
 			{
 				//update entry_date from journal 
 				DB::beginTransaction();
@@ -834,6 +848,9 @@ class JournalModel extends Model
 		$ledgerResult=0;
 		$ledgerEntryResult=0;
 
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
 		$journalModel = new JournalModel();
 		$jfIdArrayData = $journalModel->getJfIdArrayData($jfId);
 		$jfIdData = json_decode($jfIdArrayData);
@@ -893,7 +910,7 @@ class JournalModel extends Model
 					DB::commit();
 					if($journalInsertResult==1)
 					{
-						if($journalArray[$data]['amount_type']=="credit")
+						if($journalArray[$data]['amount_type']==$constantArray['credit'])
 						{
 							$creditAmount[$creditArray] = $journalArray[$data]['amount'];
 							$creditLedger[$creditArray] = $journalArray[$data]['ledger_id'];
@@ -914,7 +931,7 @@ class JournalModel extends Model
 				//related ledger entry
 				for($data=0;$data<count($journalArray);$data++)
 				{
-					if($journalArray[$data]['amount_type']=="debit")
+					if($journalArray[$data]['amount_type']==$constantArray['debit'])
 					{
 						//purchase case
 						if(count($creditLedger)>1)
@@ -994,7 +1011,7 @@ class JournalModel extends Model
 			}
 		}
 		//update company_id from journal
-		if(array_key_exists("company_id",$journalData))
+		if(array_key_exists($constantArray['company_id'],$journalData))
 		{
 			//update the company_id from journal
 			DB::beginTransaction();
@@ -1007,7 +1024,7 @@ class JournalModel extends Model
 			}
 		}
 		//update entryDate from joural and ledgerId_ledger_dtl
-		if(array_key_exists("entry_date",$journalData))
+		if(array_key_exists($constantArray['entry_date'],$journalData))
 		{
 			//update entry_date from journal 
 			DB::beginTransaction();

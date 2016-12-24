@@ -60,7 +60,7 @@ class JournalController extends BaseController implements ContainerInterface
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
 		// insert
-		if($requestMethod == 'POST')
+		if($requestMethod == $constantArray['postMethod'])
 		{
 			$processor = new JournalProcessor();
 			$journalPersistable = new JournalPersistable();
@@ -75,7 +75,7 @@ class JournalController extends BaseController implements ContainerInterface
 				{
 					$productService= new ProductService();	
 					$productPersistable = new ProductPersistable();
-					if(strcmp($request->header()['type'][0],"sales")==0)
+					if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
 					{
 						$outward = $constantArray['journalOutward'];
 						$productProcessor = new ProductProcessor();
@@ -90,7 +90,7 @@ class JournalController extends BaseController implements ContainerInterface
 							return $productPersistable;
 						}
 					}
-					else if(strcmp($request->header()['type'][0],"purchase")==0)
+					else if(strcmp($request->header()['type'][0],$constantArray['purchase'])==0)
 					{
 						$inward = $constantArray['journalInward'];
 						$productProcessor = new ProductProcessor();
@@ -143,12 +143,14 @@ class JournalController extends BaseController implements ContainerInterface
      */
     public function getSpecificData(Request $request,$companyId)
     {
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
 		if(array_key_exists("type",$request->header()))
 		{
-			if(strcmp(trim($request->header()['type'][0]),'sales')==0 || strcmp(trim($request->header()['type'][0]),'purchase')==0)
+			if(strcmp(trim($request->header()['type'][0]),$constantArray['sales'])==0 || strcmp(trim($request->header()['type'][0]),$constantArray['purchase'])==0)
 			{
 				//get journal-data as well as transaction-data for update
-				if(array_key_exists("jfid",$request->header()))
+				if(array_key_exists($constantArray['jfId'],$request->header()))
 				{
 					$jfId = $request->header()['jfid'];
 					$journalModel = new JournalModel();
@@ -170,7 +172,7 @@ class JournalController extends BaseController implements ContainerInterface
 			}
 		}
 		//get the data between fromDate and toDate
-		else if(array_key_exists("fromdate",$request->header()) && array_key_exists("todate",$request->header()))
+		else if(array_key_exists($constantArray['fromDate'],$request->header()) && array_key_exists($constantArray['toDate'],$request->header()))
 		{
 			$this->request = $request;
 			$processor = new JournalProcessor();
@@ -218,7 +220,7 @@ class JournalController extends BaseController implements ContainerInterface
 		$constantArray = $constantClass->constantVariable();
 		
 		//check array exists
-		if(array_key_exists('data', $this->request->input()))
+		if(array_key_exists($constantArray['data'], $this->request->input()))
 		{
 			$journalData = $this->request->input()['data'];
 			$dataCountOfArray = count($this->request->input()['data']);
@@ -235,42 +237,42 @@ class JournalController extends BaseController implements ContainerInterface
 		{
 			return $exceptionArray['404'];
 		}
-		if(array_key_exists('type',$request->header())==1)
+		if(array_key_exists($constantArray['type'],$request->header())==1)
 		{
-			if(strcmp($request->header()['type'][0],'sales')==0 || strcmp($request->header()['type'][0],'purchase')==0)
+			if(strcmp($request->header()['type'][0],$constantArray['sales'])==0 || strcmp($request->header()['type'][0],$constantArray['purchase'])==0)
 			{
 				$productArray = array();
 				$journalArray = array();
 				$inputArray = $this->request->input();
-				if(array_key_exists('entryDate',$inputArray))
+				if(array_key_exists($constantArray['entryDate'],$inputArray))
 				{
 					$entryDateFlag=1;
 					$journalArray['entryDate']=$inputArray['entryDate'];
 					$productArray['transactionDate']=$inputArray['entryDate'];
 				}
-				if(array_key_exists('companyId',$inputArray))
+				if(array_key_exists($constantArray['companyId'],$inputArray))
 				{
 					$companyIdFlag=1;
 					$journalArray['companyId']=$inputArray['companyId'];
 					$productArray['companyId'] = $inputArray['companyId'];
 				}
-				if(array_key_exists('invoiceNumber',$inputArray))
+				if(array_key_exists($constantArray['invoiceNumber'],$inputArray))
 				{
 					$invoiceNumberFlag=1;
 					$productArray['invoiceNumber'] = $inputArray['invoiceNumber'];
 				}
-				if(array_key_exists('billNumber',$inputArray))
+				if(array_key_exists($constantArray['billNumber'],$inputArray))
 				{
 					$billNumberFlag=1;
 					$productArray['billNumber'] = $inputArray['billNumber'];
 				}
-				if(array_key_exists('tax',$inputArray))
+				if(array_key_exists($constantArray['tax'],$inputArray))
 				{
 					$taxFlag=1;
 					$productArray['tax'] = $inputArray['tax'];
 				}
 				//check array exists in request 
-				if(array_key_exists('data',$this->request->input()))
+				if(array_key_exists($constantArray['data'],$this->request->input()))
 				{
 					$journalArrayFlag=1;
 					$journalArray['data']=array();
@@ -283,7 +285,7 @@ class JournalController extends BaseController implements ContainerInterface
 					}
 				}
 				//check array is exists in request
-				if(array_key_exists('inventory',$inputArray))
+				if(array_key_exists($constantArray['inventory'],$inputArray))
 				{
 					$productArrayFlag=1;
 					$productArray['inventory'] = array();
@@ -328,7 +330,7 @@ class JournalController extends BaseController implements ContainerInterface
 							if($productArrayFlag==1 || $invoiceNumberFlag==1 || $entryDateFlag==1 || $companyIdFlag==1 || $billNumberFlag==1)
 							{
 								//sale data update
-								if(strcmp($request->header()['type'][0],'sales')==0)
+								if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
 								{
 									if($billNumberFlag==1)
 									{
@@ -380,7 +382,7 @@ class JournalController extends BaseController implements ContainerInterface
 				else
 				{
 					//sale data update
-					if(strcmp($request->header()['type'][0],'sales')==0)
+					if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
 					{
 						if($billNumberFlag==1)
 						{

@@ -111,7 +111,7 @@ class LedgerModel extends Model
 	*/
 	public function insertAllData()
 	{
-		
+		$mytime = Carbon\Carbon::now();
 		$getLedgerData = array();
 		$getLedgerKey = array();
 		$getLedgerData = func_get_arg(0);
@@ -180,8 +180,8 @@ class LedgerModel extends Model
 			if($result==1)
 			{
 				//insertion of balance data in ledger table
-				$ledgerInsertionResult = DB::statement("insert into ".$ledgerId[0]->ledger_id."_ledger_dtl(".$balanceKeyName.",ledger_id) 
-				values(".$ledgerBalanceData.",'".$ledgerId[0]->ledger_id."')");
+				$ledgerInsertionResult = DB::statement("insert into ".$ledgerId[0]->ledger_id."_ledger_dtl(".$balanceKeyName.",ledger_id,entry_date) 
+				values(".$ledgerBalanceData.",'".$ledgerId[0]->ledger_id."','".$mytime."')");
 				if($ledgerInsertionResult==1)
 				{
 					DB::beginTransaction();

@@ -18,8 +18,37 @@ class ConstantClass
 		$constantArray['productUrl']="http://www.scerp1.com/accounting/products";
 		$constantArray['postMethod']="post";
 		$constantArray['getMethod']="get";
+		$constantArray['deleteMethod']="DELETE";
 		$constantArray['journalInward']="Inward";
 		$constantArray['journalOutward']="Outward";
+		$constantArray['credit']="credit";
+		$constantArray['debit']="debit";
+		
+		//from header data
+		$constantArray['sales']="sales";
+		$constantArray['purchase']="purchase";
+		$constantArray['jfId']="jfid";
+		$constantArray['fromDate']="fromdate";
+		$constantArray['toDate']="todate";
+		$constantArray['data']="data";
+		$constantArray['type']="type";
+		$constantArray['entryDate']="entryDate";
+		$constantArray['companyId']="companyId";
+		$constantArray['invoiceNumber']="invoiceNumber";
+		$constantArray['billNumber']="billNumber";
+		$constantArray['tax']="tax";
+		$constantArray['inventory']="inventory";
+		$constantArray['flag']="flag";
+		$constantArray['productName']="productname";
+		$constantArray['measurementUnit']="measurement_unit";
+		$constantArray['isDisplay']="is_display";
+		$constantArray['transactionDate']="transaction_date";
+		
+		$constantArray['entry_date']="entry_date";
+		$constantArray['company_id']="company_id";
+		$constantArray['bill_number']="bill_number";
+		$constantArray['invoice_number']="invoice_number";
+		$constantArray['branch_id']="branch_id";
 		
 		return $constantArray;
 	}

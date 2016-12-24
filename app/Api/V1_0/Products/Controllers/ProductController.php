@@ -10,6 +10,7 @@ use ERP\Core\Products\Persistables\ProductPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Model\Products\ProductModel;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -49,8 +50,10 @@ class ProductController extends BaseController implements ContainerInterface
 		$this->request = $request;
 		// check the requested Http method
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
 		// insert
-		if($requestMethod == 'POST')
+		if($requestMethod == $constantArray['postMethod'])
 		{
 			$processor = new ProductProcessor();
 			$productPersistable = new ProductPersistable();		
@@ -86,13 +89,15 @@ class ProductController extends BaseController implements ContainerInterface
 		$this->request = $request;
 		// check the requested Http method
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
 		// insert
-		if($requestMethod == 'POST')
+		if($requestMethod == $constantArray['postMethod'])
 		{
 			$processor = new ProductProcessor();
 			$productPersistable = new ProductPersistable();		
 			$productService= new ProductService();			
-			$inward = "Inward";
+			$inward = $constantArray['journalInward'];
 			$productPersistable = $processor->createPersistableInOutWard($this->request,$inward);
 			
 			if(is_array($productPersistable))
@@ -122,13 +127,15 @@ class ProductController extends BaseController implements ContainerInterface
 		$this->request = $request;
 		// check the requested Http method
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
 		// insert
-		if($requestMethod == 'POST')
+		if($requestMethod == $constantArray['postMethod'])
 		{
 			$processor = new ProductProcessor();
 			$productPersistable = new ProductPersistable();		
 			$productService= new ProductService();			
-			$outward = "Outward";
+			$outward = $constantArray['journalOutward'];
 			$productPersistable = $processor->createPersistableInOutWard($this->request,$outward);
 			if(is_array($productPersistable))
 			{
@@ -152,10 +159,12 @@ class ProductController extends BaseController implements ContainerInterface
      */
     public function getData(Request $request,$productId=null)
     {
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
 		if($productId==null)
 		{	
 			//get product_transaction data as per given journal-folio id
-			if(array_key_exists("jfid",$request->header()))
+			if(array_key_exists($constantArray['jfId'],$request->header()))
 			{
 				$productProcessor= new ProductProcessor();
 				$productPersistable = new ProductPersistable();
@@ -222,11 +231,14 @@ class ProductController extends BaseController implements ContainerInterface
      */
     public function getProductData(Request $request,$companyId)
     {
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
-		if(array_key_exists("productname",$request->header()))
+		if(array_key_exists($constantArray['productName'],$request->header()))
 		{	
 			$productService= new ProductService();
 			$status = $productService->getData($request->header()['productname'][0],$companyId);

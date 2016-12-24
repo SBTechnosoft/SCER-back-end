@@ -4,12 +4,11 @@ namespace ERP\Core\Accounting\Journals\Services;
 use ERP\Core\Accounting\Journals\Persistables\JournalPersistable;
 use ERP\Model\Accounting\Journals\JournalModel;
 use ERP\Core\Shared\Options\UpdateOptions;
-// use ERP\Core\Support\Service\AbstractService;
 use ERP\Core\User\Entities\User;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Core\Accounting\Journals\Entities\EncodeAllData;
 use ERP\Core\Accounting\Journals\Entities\EncodeData;
-
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -20,8 +19,7 @@ class JournalService
 	 * $var templateModel
      */
     private $templateService;
-    // private $templateModel;
-	
+    
     /**
      * @param TemplateService $templateService
      */
@@ -171,7 +169,10 @@ class JournalService
 		$flagData=0;
 		$jfId = func_get_arg(1);
 		
-		if(array_key_exists("flag",array_keys($journalArray)))
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(array_key_exists($constantArray['flag'],array_keys($journalArray)))
 		{
 			$flagData=1;
 		}

@@ -11,6 +11,7 @@ use ERP\Api\V1_0\Accounting\Journals\Transformers\JournalTransformer;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Core\Accounting\Journals\Validations\BuisnessLogic;
 use ERP\Api\V1_0\Products\Transformers\ProductTransformer;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -33,6 +34,9 @@ class JournalProcessor extends BaseProcessor
 		$this->request = $request;	
 		$data=0;
 		
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$msgArray = $exception->messageArrays();
@@ -54,15 +58,15 @@ class JournalProcessor extends BaseProcessor
 				//check accounting Rules
 				$buisnessLogic = new BuisnessLogic();
 				$busnessResult = $buisnessLogic->validateBuisnessLogic($tRequest);
-				if(strcmp($request->header()['type'][0],"sales")==0 || strcmp($request->header()['type'][0],"purchase")==0)
+				if(strcmp($request->header()['type'][0],$constantArray['sales'])==0 || strcmp($request->header()['type'][0],$constantArray['purchase'])==0)
 				{
-					if(strcmp($request->header()['type'][0],"sales")==0)
+					if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
 					{
-						$inOutWard = "Outward";
+						$inOutWard = $constantArray['journalOutward'];
 					}
 					else
 					{
-						$inOutWard = "Inward";
+						$inOutWard = $constantArray['journalInward'];
 					}
 					//trim an input 
 					$productTransformer = new ProductTransformer();
@@ -138,11 +142,14 @@ class JournalProcessor extends BaseProcessor
 		$status;
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
 		
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		// update
-		if($requestMethod == 'POST')
+		if($requestMethod == $constantArray['postMethod'])
 		{
 			//if data is not available in update request
 			if(count($_POST)==0)
@@ -195,7 +202,7 @@ class JournalProcessor extends BaseProcessor
 				if(is_array($tRequest))
 				{
 					//data is exists in request or not checking by flag
-					if(array_key_exists("flag",$tRequest))
+					if(array_key_exists($constantArray['flag'],$tRequest))
 					{
 						$trimFlag=1;
 					}
@@ -311,11 +318,14 @@ class JournalProcessor extends BaseProcessor
 		$status;
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
 		
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		// update
-		if($requestMethod == 'POST')
+		if($requestMethod == $constantArray['postMethod'])
 		{
 			//if data is not available in update request
 			if(count($_POST)==0)
@@ -336,13 +346,13 @@ class JournalProcessor extends BaseProcessor
 				$journalTransformer = new JournalTransformer();
 				$tRequest = $journalTransformer->trimUpdateData($journalArray);
 				
-				if(strcmp($headerData['type'][0],"sales")==0)
+				if(strcmp($headerData['type'][0],$constantArray['sales'])==0)
 				{
-					$inOutWard="Outward";
+					$inOutWard=$constantArray['journalOutward'];
 				}	
 				else
 				{
-					$inOutWard="Inward";
+					$inOutWard=$constantArray['journalInward'];
 				}
 				//trim an input 
 				$productTransformer = new ProductTransformer();
@@ -390,7 +400,7 @@ class JournalProcessor extends BaseProcessor
 				if(is_array($tRequest))
 				{
 					//data is exists in request or not checking by flag
-					if(array_key_exists("flag",$tRequest))
+					if(array_key_exists($constantArray['flag'],$tRequest))
 					{
 						$trimFlag=1;
 					}
