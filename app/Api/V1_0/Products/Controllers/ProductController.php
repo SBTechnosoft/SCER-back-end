@@ -150,13 +150,28 @@ class ProductController extends BaseController implements ContainerInterface
      * get the specified resource.
      * @param  int  $productId
      */
-    public function getData($productId=null)
+    public function getData(Request $request,$productId=null)
     {
 		if($productId==null)
 		{	
-			$productService= new ProductService();
-			$status = $productService->getAllProductData();
-			return $status;
+			//get product_transaction data as per given journal-folio id
+			if(array_key_exists("jfid",$request->header()))
+			{
+				$productProcessor= new ProductProcessor();
+				$productPersistable = new ProductPersistable();
+				$productPersistable = $productProcessor->createJfIdPersistableData($request->header());
+				
+				$productService= new ProductService();
+				$status = $productService->getJfIdProductData($productPersistable);
+				return $status;
+			}
+			//get all product data
+			else
+			{
+				$productService= new ProductService();
+				$status = $productService->getAllProductData();
+				return $status;
+			}
 		}
 		else
 		{	

@@ -304,11 +304,19 @@ class JournalController extends BaseController implements ContainerInterface
 					{
 						//journal data is processed(trim,validation and set data in object)
 						$journalPersistable = $processor->createPersistableChangeData($request->header(),$productArray,$journalArray,$jfId);
+						if(!is_array($journalPersistable))
+						{
+							return $journalPersistable;
+						}
 					}
 					else
 					{
 						//journal data is processed(trim,validation and set data in object)
-						$journalPersistable = $processor->createPersistableChange($journalArray,$jfId);
+						$journalPersistable = $processor->createPersistableChange($request->header(),$journalArray,$jfId);
+						if(!is_array($journalPersistable))
+						{
+							return $journalPersistable;
+						}
 					}
 					if(is_array($journalPersistable))
 					{
@@ -397,7 +405,7 @@ class JournalController extends BaseController implements ContainerInterface
 					$productService= new ProductService();	
 					$productPersistable = new ProductPersistable();
 					$productProcessor = new ProductProcessor();
-					$productPersistable = $productProcessor->createPersistableChangeInOutWard($productArray,$inOutward);
+					$productPersistable = $productProcessor->createPersistableChangeInOutWard($productArray,$inOutward,$jfId);
 					
 					//here two array and string is return at a time
 					if(is_array($productPersistable))

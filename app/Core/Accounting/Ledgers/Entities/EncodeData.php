@@ -57,13 +57,20 @@ class EncodeData extends StateService
 		
 		//date format conversion
 		$ledger = new Ledger();
+		
 		$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt)->format('d-m-Y');
 		$ledger->setCreated_at($convertedCreatedDate);
 		$getCreatedDate = $ledger->getCreated_at();
-		$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
-		$ledger->setUpdated_at($convertedUpdatedDate);
-		$getUpdatedDate = $ledger->getUpdated_at();
-		
+		if(strcmp($updatedAt,'0000-00-00 00:00:00')==0)
+		{
+			$getUpdatedDate = "00-00-0000";
+		}
+		else
+		{
+			$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
+			$ledger->setUpdated_at($convertedUpdatedDate);
+			$getUpdatedDate = $ledger->getUpdated_at();
+		}
 		//set all data into json array
 		$data = array();
 		$data['ledgerId'] = $ledgerId;

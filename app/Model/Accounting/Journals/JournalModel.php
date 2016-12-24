@@ -438,6 +438,7 @@ class JournalModel extends Model
 			is_display,
 			invoice_number,
 			bill_number,
+			tax,
 			created_at,
 			updated_at,
 			company_id,

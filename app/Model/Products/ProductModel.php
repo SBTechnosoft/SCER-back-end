@@ -419,6 +419,48 @@ class ProductModel extends Model
 	}
 	
 	/**
+	 * get jfId data from product transaction table
+	 * returns error-message/data
+	*/
+	public function getJfIdProductData($jfId)
+	{	
+		DB::beginTransaction();		
+		$raw = DB::select("select 
+		product_trn_id,
+		transaction_date,
+		transaction_type,
+		qty,
+		price,
+		discount,
+		discount_type,
+		is_display,
+		invoice_number,
+		bill_number,
+		tax,
+		updated_at,
+		created_at,
+		company_id,
+		branch_id,
+		product_id,			
+		jf_id			
+		from product_trn where deleted_at='0000-00-00 00:00:00' and jf_id='".$jfId."'");
+		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(count($raw)==0)
+		{
+			return $exceptionArray['204'];
+		}
+		else
+		{
+			$enocodedData = json_encode($raw);
+			return $enocodedData;
+		}
+	}
+	
+	/**
 	 * get data as per given product Id
 	 * @param $productId
 	 * returns error-message/data

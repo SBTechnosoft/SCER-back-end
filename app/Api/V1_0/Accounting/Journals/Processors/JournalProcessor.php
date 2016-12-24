@@ -54,6 +54,27 @@ class JournalProcessor extends BaseProcessor
 				//check accounting Rules
 				$buisnessLogic = new BuisnessLogic();
 				$busnessResult = $buisnessLogic->validateBuisnessLogic($tRequest);
+				if(strcmp($request->header()['type'][0],"sales")==0 || strcmp($request->header()['type'][0],"purchase")==0)
+				{
+					if(strcmp($request->header()['type'][0],"sales")==0)
+					{
+						$inOutWard = "Outward";
+					}
+					else
+					{
+						$inOutWard = "Inward";
+					}
+					//trim an input 
+					$productTransformer = new ProductTransformer();
+					$trimProductRequest = $productTransformer->trimInsertInOutwardData($this->request,$inOutWard);
+					
+					//check accounting Rules for sale/purchase
+					$busnessValidateResult = $buisnessLogic->validateInsertBuisnessLogic($trimProductRequest,$tRequest,$request->header()['type'][0]);
+					if(!is_array($busnessValidateResult))
+					{
+						return $busnessValidateResult;
+					}
+				}
 			}
 			if(is_array($busnessResult))
 			{
@@ -104,9 +125,8 @@ class JournalProcessor extends BaseProcessor
 		return $journalPersistable;
 	}
 	
-	public function createPersistableChange($journalArray,$jfId)
+	public function createPersistableChange($headerData,$journalArray,$jfId)
 	{
-		echo "processor";
 		$errorCount=0;
 		$errorStatus=array();
 		$flag=0;
@@ -150,9 +170,27 @@ class JournalProcessor extends BaseProcessor
 				{
 					//check accounting Rules
 					$buisnessLogic = new BuisnessLogic();
-					$busnessResult = $buisnessLogic->validateUpdateBuisnessLogic($tRequest);
+					$buisnessResult = $buisnessLogic->validateUpdateBuisnessLogic($tRequest);
+					//journal array and product array exist/tax exist
+					if(is_array($buisnessResult))
+					{
+						//data is valid and validate journal-product array data
+						$buisnessJournalResult = $buisnessLogic->validateJournalBuisnessLogic($headerData,$tRequest,$jfId);
+						if(!is_array($buisnessJournalResult))
+						{
+							return $buisnessJournalResult;
+						}
+					}
+					else
+					{
+						//get error message / journal-array not exist(return 0)
+						if(strcmp($buisnessResult,$exceptionArray['404'])==0 || 
+						strcmp($buisnessResult,$exceptionArray['equal'])==0 )
+						{
+							return $buisnessResult;
+						}
+					}
 				}
-				
 				//get data from trim array
 				if(is_array($tRequest))
 				{
@@ -298,11 +336,17 @@ class JournalProcessor extends BaseProcessor
 				$journalTransformer = new JournalTransformer();
 				$tRequest = $journalTransformer->trimUpdateData($journalArray);
 				
-				$inOutWard="Inward";
+				if(strcmp($headerData['type'][0],"sales")==0)
+				{
+					$inOutWard="Outward";
+				}	
+				else
+				{
+					$inOutWard="Inward";
+				}
 				//trim an input 
 				$productTransformer = new ProductTransformer();
 				$trimProductData = $productTransformer->trimUpdateProductData($productArray,$inOutWard);
-				
 				if($tRequest==1)
 				{
 					return $exceptionArray['content'];
@@ -317,23 +361,31 @@ class JournalProcessor extends BaseProcessor
 					if(is_array($buisnessResult))
 					{
 						//data is valid and validate journal-product array data
-						$buisnessProductResult = $buisnessLogic->validateUpdateProductBuisnessLogic($headerData,$tRequest,$trimProductData,$jfId);
+						$buisnessJournalResult = $buisnessLogic->validateUpdateJournalBuisnessLogic($headerData,$tRequest,$trimProductData,$jfId);
+						if(!is_array($buisnessJournalResult))
+						{
+							return $buisnessJournalResult;
+						}
 					}
 					else
 					{
 						//get error message / journal-array not exist(return 0)
-						if($buisnessResult==0)
-						{
-							//get journal-array from database and validate it with given productArray
-						}
-						else
+						if(strcmp($buisnessResult,$exceptionArray['404'])==0 || 
+						strcmp($buisnessResult,$exceptionArray['equal'])==0 )
 						{
 							return $buisnessResult;
 						}
+						else
+						{
+							//journal-data is not available and validate productData with get journalData
+							$buisnessProductResult = $buisnessLogic->validateUpdateProductBuisnessLogic($headerData['type'][0],$tRequest,$trimProductData,$jfId);
+							if(!is_array($buisnessProductResult))
+							{
+								return $buisnessProductResult;
+							}
+						}
 					}
-					exit;
 				}
-				
 				//get data from trim array
 				if(is_array($tRequest))
 				{

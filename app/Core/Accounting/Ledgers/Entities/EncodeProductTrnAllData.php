@@ -30,6 +30,7 @@ class EncodeProductTrnAllData extends ProductService
 			$price[$decodedData] = $decodedJson[$decodedData]['price'];
 			$discount[$decodedData] = $decodedJson[$decodedData]['discount'];
 			$discountType[$decodedData] = $decodedJson[$decodedData]['discount_type'];
+			$tax[$decodedData] = $decodedJson[$decodedData]['tax'];
 			$isDisplay[$decodedData] = $decodedJson[$decodedData]['is_display'];
 			$invoiceNumber[$decodedData] = $decodedJson[$decodedData]['invoice_number'];
 			$billNumber[$decodedData] = $decodedJson[$decodedData]['bill_number'];
@@ -53,15 +54,29 @@ class EncodeProductTrnAllData extends ProductService
 			
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
-			$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
-			$convertedTransactionDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d', $transactionDate[$decodedData])->format('d-m-Y');
-			
 			$ledger->setCreated_at($convertedCreatedDate[$decodedData]);
 			$getCreatedDate[$decodedData] = $ledger->getCreated_at();
-			$ledger->setUpdated_at($convertedUpdatedDate[$decodedData]);
-			$getUpdatedDate[$decodedData] = $ledger->getUpdated_at();
-			$ledger->setTransactionDate($convertedTransactionDate[$decodedData]);
-			$getTransactionDate[$decodedData] = $ledger->getTransactionDate();
+			
+			if(strcmp($updatedAt[$decodedData],'0000-00-00 00:00:00')==0)
+			{
+				$getUpdatedDate[$decodedData] = "00-00-0000";
+			}
+			else
+			{
+				$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
+				$ledger->setUpdated_at($convertedUpdatedDate[$decodedData]);
+				$getUpdatedDate[$decodedData] = $ledger->getUpdated_at();
+			}
+			if(strcmp($transactionDate[$decodedData],'0000-00-00 00:00:00')==0)
+			{
+				$getTransactionDate[$decodedData]="00-00-0000";
+			}
+			else
+			{
+				$convertedTransactionDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d', $transactionDate[$decodedData])->format('d-m-Y');
+				$ledger->setTransactionDate($convertedTransactionDate[$decodedData]);
+				$getTransactionDate[$decodedData] = $ledger->getTransactionDate();
+			}
 		}
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
@@ -74,6 +89,7 @@ class EncodeProductTrnAllData extends ProductService
 				'discount' => $discount[$jsonData],
 				'discountType' => $discountType[$jsonData],
 				'isDisplay' => $isDisplay[$jsonData],
+				'tax' => $tax[$jsonData],
 				'invoiceNumber' => $invoiceNumber[$jsonData],
 				'billNumber' => $billNumber[$jsonData],
 				'jfId' => $jfId[$jsonData],

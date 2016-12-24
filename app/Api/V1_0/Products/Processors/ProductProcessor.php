@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use ERP\Core\Products\Validations\ProductValidate;
 use ERP\Api\V1_0\Products\Transformers\ProductTransformer;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Core\Accounting\Journals\Validations\BuisnessLogic;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -160,6 +161,12 @@ class ProductProcessor extends BaseProcessor
 			}
 		}
 	}
+	
+	/**
+     * update product
+     * $param Request object [Request $request] and product id
+     * @return product Persistable object
+     */	
 	public function createPersistableChange(Request $request,$productId)
 	{
 		$errorCount=0;
@@ -284,7 +291,12 @@ class ProductProcessor extends BaseProcessor
 		}
 	}	
 	
-	public function createPersistableChangeInOutWard($productArray,$inOutWard)
+	/**
+     * process product-transaction data(sale/purchase)
+     * $param product-array and transaction-type
+     * @return product-transaction Persistable object/exception message / error message
+     */	
+	public function createPersistableChangeInOutWard($productArray,$inOutWard,$jfId)
 	{
 		$errorCount=0;
 		$errorStatus=array();
@@ -319,12 +331,33 @@ class ProductProcessor extends BaseProcessor
 				//trim an input 
 				$productTransformer = new ProductTransformer();
 				$tRequest = $productTransformer->trimUpdateProductData($productArray,$inOutWard);
+				
 				if($tRequest==1)
 				{
 					return $exceptionArray['content'];
 				}
+				else
+				{
+					if(strcmp($inOutWard,"Inward")==0)
+					{
+						$headerType="purchase";
+					}
+					else
+					{
+						$headerType="sales";
+					}
+					$journalData = array();
+					
+					//check accounting Rules
+					$buisnessLogic = new BuisnessLogic();
+					$buisnessResult = $buisnessLogic->validateUpdateProductBuisnessLogic($headerType,$journalData,$tRequest,$jfId);
+					if(!is_array($buisnessResult))
+					{
+						return $buisnessResult;
+					}
+				}
 				//get data from trim array
-				else if(is_array($tRequest))
+				if(is_array($tRequest))
 				{
 					//data is exists in request or not checking by flag
 					if(array_key_exists("flag",$tRequest))
@@ -433,4 +466,17 @@ class ProductProcessor extends BaseProcessor
 			}
 		}
 	}	
+	
+	/**
+     * process header data
+     * $param request header
+     * @return persistable object of header data
+     */	
+	public function createJfIdPersistableData($requestHeader)
+	{
+		$trimJfId = trim($requestHeader['jfid'][0]);
+		$productPersistable = new ProductPersistable();
+		$productPersistable->setJfId($trimJfId);
+		return $productPersistable;
+	}
 }

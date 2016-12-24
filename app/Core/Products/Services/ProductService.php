@@ -10,6 +10,7 @@ use ERP\Core\User\Entities\User;
 use ERP\Core\Products\Entities\EncodeData;
 use ERP\Core\Products\Entities\EncodeAllData;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Core\Accounting\Ledgers\Entities\EncodeProductTrnAllData;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -156,7 +157,7 @@ class ProductService extends AbstractService
 	
 	/**
      * get all the data as per given id and call the model for database selection opertation
-     * @return status
+     * @return exception-message/data
      */
 	public function getAllData($companyId)
 	{
@@ -165,16 +166,44 @@ class ProductService extends AbstractService
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		if(strcmp($status,$fileSizeArray['204'])==0)
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($status,$exceptionArray['204'])==0)
 		{
-			return $status;
+			return $exceptionArray['204'];
 		}
 		else
 		{
 			$encoded = new EncodeAllData();
 			$encodeAllData = $encoded->getEncodedAllData($status);
 			return $encodeAllData;
+		}
+	}
+	
+	/**
+     * get all the data as per given jf-id and call the model for database selection opertation
+     * @return exception-message/data
+     */
+	public function getJfIdProductData()
+	{
+		$jfIdData = func_get_arg(0);
+		$jfId = $jfIdData->getJfId();
+		
+		//get data from database
+		$productModel = new ProductModel();
+		$status = $productModel->getJfIdProductData($jfId);
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($status,$exceptionArray['204'])==0)
+		{
+			return $exceptionArray['204'];
+		}
+		else
+		{
+			$encodeProductData = new EncodeProductTrnAllData();
+			$getEncodedData = $encodeProductData->getEncodedAllData($status);
+			return $getEncodedData;
 		}
 	}
 	

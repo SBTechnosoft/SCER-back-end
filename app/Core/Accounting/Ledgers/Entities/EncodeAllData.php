@@ -53,7 +53,6 @@ class EncodeAllData extends StateService
 			$stateIsDisplay[$decodedData]= $stateDecodedJson[$decodedData]['isDisplay'];
 			$stateCreatedAt[$decodedData]= $stateDecodedJson[$decodedData]['createdAt'];
 			$stateUpdatedAt[$decodedData]= $stateDecodedJson[$decodedData]['updatedAt'];
-			// print_r($stateUpdatedAt[$decodedData]);
 			
 			//get the city details from database
 			$cityDetail = new CityDetail();
@@ -69,12 +68,18 @@ class EncodeAllData extends StateService
 			
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
-			$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
-			
 			$ledger->setCreated_at($convertedCreatedDate[$decodedData]);
 			$getCreatedDate[$decodedData] = $ledger->getCreated_at();
-			$ledger->setUpdated_at($convertedUpdatedDate[$decodedData]);
-			$getUpdatedDate[$decodedData] = $ledger->getUpdated_at();
+			if(strcmp($updatedAt[$decodedData],'0000-00-00 00:00:00')==0)
+			{
+				$getUpdatedDate[$decodedData] = "00-00-0000";
+			}
+			else
+			{
+				$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
+				$ledger->setUpdated_at($convertedUpdatedDate[$decodedData]);
+				$getUpdatedDate[$decodedData] = $ledger->getUpdated_at();
+			}
 		}
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)

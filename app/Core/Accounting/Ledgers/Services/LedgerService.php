@@ -299,16 +299,11 @@ class LedgerService extends AbstractService
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		if(is_array($status))
+		if(is_object(json_decode($status)))
 		{
-			
-			for($arrayData=0;$arrayData<count($status);$arrayData++)
-			{
-				$encoded = new EncodeData();
-				$encodeData = $encoded->getEncodedData(json_encode($status[$arrayData]));
-				$ledgerArray[$arrayData]=json_decode($encodeData);
-			}
-			return json_encode($ledgerArray);
+			$encoded = new EncodeData();
+			$encodeData = $encoded->getEncodedData($status);
+			return $encodeData;
 		}
 		else
 		{

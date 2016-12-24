@@ -68,17 +68,18 @@
 						"discount":decimal,
 						"discountType":Enum,
 						"productId":int,
+						"transactionDate": date,
+						"transactionType":Enum,
+						"companyId": int,
+						"invoiceNumber":string,
+						"billNumber":string,
+						"tax":decimal,
+						"branchId":int,
+						"jfId":int
 					},
 					...
 				],
-				"transactionDate": date,
-				"transactionType":Enum,
-				"companyId": int,
-				"invoiceNumber":string,
-				"billNumber":string,
-				"tax":decimal,
-				"branchId":int,
-				"jfId":int
+				
 			}
 #####  Is Display Enum
 			{

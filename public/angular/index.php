@@ -373,14 +373,14 @@ include ('connection.php');
 				// $scope.user = [{"jfId":4,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":1},{"amount":2,"amountType":"credit","ledgerId":1},{"amount":12,"amountType":"debit","ledgerId":1}],"entryDate":"22-10-2015","companyId":14,
 				// "inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"companyId":14,"transactionDate":"22-10-2015","invoiceNumber":23,"billNumber":2}];
 				
-				// formdata.append('jfId',6);
- 				// formdata.append('companyId',15);
+				formdata.append('jfId',7);
+ 				formdata.append('companyId',15);
 				formdata.append('entryDate','22-10-2016');
-				var json=[{"amount": 10 ,"amountType":" credit ","ledgerId":88},{"amount":2,"amountType":"credit","ledgerId":86},{"amount":12,"amountType":"debit","ledgerId":87}];
+				var json=[{"amount":100 ,"amountType":" credit ","ledgerId":88},{"amount":0,"amountType":"credit","ledgerId":86},{"amount":100,"amountType":"debit","ledgerId":87}];
 				
-				var inventory = [{"productId": 10 ,"discount":12,"discountType":"discount","price":1300,"qty":44},{"productId": 10 ,"discount":10,"discountType":"flat","price":1300,"qty":44}];
+				var inventory = [{"productId": 10 ,"discount":10,"discountType":"percentage","price":900,"qty":44},{"productId": 10 ,"discount":10,"discountType":"flat","price":130,"qty":44}];
 				formdata.append('transactionDate','22-10-2015');
-				formdata.append('tax',100);
+				formdata.append('tax',0);
 				formdata.append('invoiceNumber',25);
 				// formdata.append('billNumber',2);
 				
@@ -426,10 +426,10 @@ include ('connection.php');
 				// }
 				
 				// var clientId=2;
-				// var productId = 8;
+				// var productId = 1;
 				// var productGrpId = 11;
 				// var productCatId = 16;
-				// var companyId=14;
+				var companyId=15;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -440,7 +440,7 @@ include ('connection.php');
 				// var quotationId=3;
 				// var ledgerGrpId=9;
 				// var ledgerId=87;
-				var jfId=1;
+				var jfId=5;
 				// var journalId=322;
 				
 				// var url = "http://www.scerp1.com/accounting/bills";
@@ -454,13 +454,13 @@ include ('connection.php');
 				
 				// var url="http://www.scerp1.com/accos";
 				// var url="http://www.scerp1.com/accounting/journals";
-				var url="http://www.scerp1.com/accounting/journals/"+jfId;
+				// var url="http://www.scerp1.com/accounting/journals/"+jfId;
 				// var url="http://www.scerp1.com/accounting/journals/"+journalId;
 				// var url="http://www.scerp1.com/accounting/journals/company/"+companyId;
 				// var url="http://www.scerp1.com/accounting/journals/next";
 				
 				// var url="http://www.scerp1.com/accounting/ledgers/"+ledgerId+"/transactions";
-				// var url="http://www.scerp1.com/accounting/ledgers/company/"+companyId;
+				var url="http://www.scerp1.com/accounting/ledgers/company/"+companyId;
 				// var url="http://www.scerp1.com/accounting/ledgers/"+ledgerId;
 				// var url="http://www.scerp1.com/accounting/ledgers/ledgerGrp/"+ledgerGrpId;
 				// var url="http://www.scerp1.com/accounting/ledgers";
@@ -503,18 +503,19 @@ include ('connection.php');
 				$http({
                         url: url,
                         // type:'patch',
-						 method: 'post',
-						// method: 'get',
+						 // method: 'post',
+						method: 'get',
 						// method: "PATCH",
 						// method:'delete',
 						processData: false,
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
-                        // headers: {'Content-Type': undefined,'productName':'abc'},
-                        headers: {'Content-Type': undefined,'type':'sales'},
+                        headers: {'Content-Type': undefined,'ledgerName':'sales'},
+                        // headers: {'Content-Type': undefined,'jfId':'4'},
+                        // headers: {'Content-Type': undefined,'type':'sales'},
                         // headers: {'Content-Type': undefined},
                         // headers: {'Content-Type': undefined,'ledgerGroup':[9,12]},
                         // headers: {'Content-Type': undefined,'type':'sales','jfId':5},
-						 data:formdata
+						 // data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {
