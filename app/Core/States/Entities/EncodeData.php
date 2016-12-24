@@ -24,10 +24,17 @@ class EncodeData
 		$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt)->format('d-m-Y');
 		$state->setCreated_at($convertedCreatedDate);
 		$getCreatedDate = $state->getCreated_at();
-		$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
-		$state->setUpdated_at($convertedUpdatedDate);
-		$getUpdatedDate = $state->getUpdated_at();
 		
+		if(strcmp($updatedAt,'0000-00-00 00:00:00')==0)
+		{
+			$getUpdatedDate = "00-00-0000";
+		}
+		else
+		{
+			$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
+			$state->setUpdated_at($convertedUpdatedDate);
+			$getUpdatedDate = $state->getUpdated_at();
+		}
 		//set all data into json array
 		$data = array();
 		$data['stateName'] = $stateName;

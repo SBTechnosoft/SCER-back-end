@@ -57,12 +57,19 @@ class EncodeAllData extends CompanyService
 			
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
-			$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
-			
 			$invoice->setCreated_at($convertedCreatedDate[$decodedData]);
 			$getCreatedDate[$decodedData] = $invoice->getCreated_at();
-			$invoice->setUpdated_at($convertedUpdatedDate[$decodedData]);
-			$getUpdatedDate[$decodedData] = $invoice->getUpdated_at();
+			
+			if(strcmp($updatedAt[$decodedData],'0000-00-00 00:00:00')==0)
+			{
+				$getUpdatedDate[$decodedData] = "00-00-0000";
+			}
+			else
+			{
+				$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
+				$invoice->setUpdated_at($convertedUpdatedDate[$decodedData]);
+				$getUpdatedDate[$decodedData] = $invoice->getUpdated_at();
+			}
 		}
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)

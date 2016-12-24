@@ -56,13 +56,20 @@ class EncodeAllData extends CompanyService
 			$companyCityId[$decodedData]= $companyDecodedJson[$decodedData]['city']['cityId'];
 			
 			//date format conversion
-			$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
-			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
 			
+			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
 			$template->setCreated_at($convertedCreatedDate[$decodedData]);
 			$getCreatedDate[$decodedData] = $template->getCreated_at();
-			$template->setUpdated_at($convertedUpdatedDate[$decodedData]);
-			$getUpdatedDate[$decodedData] = $template->getUpdated_at();
+			if(strcmp($updatedAt[$decodedData],'0000-00-00 00:00:00')==0)
+			{
+				$getUpdatedDate[$decodedData] = "00-00-0000";
+			}
+			else
+			{
+				$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
+				$template->setUpdated_at($convertedUpdatedDate[$decodedData]);
+				$getUpdatedDate[$decodedData] = $template->getUpdated_at();
+			}
 		}
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)

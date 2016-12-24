@@ -56,11 +56,17 @@ class EncodeData extends ProductCategoryService
 		$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt)->format('d-m-Y');
 		$product->setCreated_at($convertedCreatedDate);
 		$getCreatedDate = $product->getCreated_at();
-			
-		$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
-		$product->setUpdated_at($convertedUpdatedDate);
-		$getUpdatedDate = $product->getUpdated_at();
 		
+		if(strcmp($updatedAt,'0000-00-00 00:00:00')==0)
+		{
+			$getUpdatedDate = "00-00-0000";
+		}
+		else
+		{
+			$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
+			$product->setUpdated_at($convertedUpdatedDate);
+			$getUpdatedDate = $product->getUpdated_at();
+		}
 		//set all data into json array
 		$data = array();
 		$data['productId'] = $productId;

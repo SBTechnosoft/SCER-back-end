@@ -46,13 +46,27 @@ class EncodeData extends ClientService
 		$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt)->format('d-m-Y');
 		$bill->setCreated_at($convertedCreatedDate);
 		$getCreatedDate = $bill->getCreated_at();
-		$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
-		$bill->setUpdated_at($convertedUpdatedDate);
-		$getUpdatedDate = $bill->getUpdated_at();
-		$convertedEntryDate = Carbon\Carbon::createFromFormat('Y-m-d', $entryDate)->format('d-m-Y');
-		$bill->setEntryDate($convertedEntryDate);
-		$getEntryDate = $bill->getEntryDate();
 		
+		if(strcmp($updatedAt,'0000-00-00 00:00:00')==0)
+		{
+			$getUpdatedDate = "00-00-0000";
+		}
+		else
+		{
+			$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
+			$bill->setUpdated_at($convertedUpdatedDate);
+			$getUpdatedDate = $bill->getUpdated_at();
+		}
+		if(strcmp($entryDate,'0000-00-00 00:00:00')==0)
+		{
+			$getEntryDate = "00-00-0000";
+		}
+		else
+		{
+			$convertedEntryDate = Carbon\Carbon::createFromFormat('Y-m-d', $entryDate)->format('d-m-Y');
+			$bill->setEntryDate($convertedEntryDate);
+			$getEntryDate = $bill->getEntryDate();
+		}
 		//set all data into json array
 		$data = array();
 		$data['saleId'] = $saleId;

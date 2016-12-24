@@ -1,4 +1,4 @@
-<?php
+<?php	
 namespace ERP\Core\Accounting\Ledgers\Services;
 
 use ERP\Core\Accounting\Ledgers\Persistables\LedgerPersistable;

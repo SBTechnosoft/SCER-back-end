@@ -39,15 +39,29 @@ class EncodeTrnAllData extends LedgerService
 			
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
-			$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
-			$convertedEntryDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d', $entryDate[$decodedData])->format('d-m-Y');
-			
 			$ledger->setCreated_at($convertedCreatedDate[$decodedData]);
 			$getCreatedDate[$decodedData] = $ledger->getCreated_at();
-			$ledger->setUpdated_at($convertedUpdatedDate[$decodedData]);
-			$getUpdatedDate[$decodedData] = $ledger->getUpdated_at();
-			$ledger->setEntryDate($convertedEntryDate[$decodedData]);
-			$getEntryDate[$decodedData] = $ledger->getEntryDate();
+			
+			if(strcmp($updatedAt[$decodedData],'0000-00-00 00:00:00')==0)
+			{
+				$getUpdatedDate[$decodedData]="00-00-0000";
+			}
+			else
+			{	
+				$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
+				$ledger->setUpdated_at($convertedUpdatedDate[$decodedData]);
+				$getUpdatedDate[$decodedData] = $ledger->getUpdated_at();
+			}
+			if(strcmp($entryDate[$decodedData],'0000-00-00 00:00:00')==0)
+			{
+				$getEntryDate[$decodedData]="00-00-0000";
+			}
+			else
+			{
+				$convertedEntryDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d', $entryDate[$decodedData])->format('d-m-Y');
+				$ledger->setEntryDate($convertedEntryDate[$decodedData]);
+				$getEntryDate[$decodedData] = $ledger->getEntryDate();
+			}
 		}
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)

@@ -40,14 +40,26 @@ class EncodeData extends LedgerService
 		$journal->setCreated_at($convertedCreatedDate);
 		$getCreatedDate = $journal->getCreated_at();
 		
-		$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
-		$journal->setUpdated_at($convertedUpdatedDate);
-		$getUpdatedDate = $journal->getUpdated_at();
-		
-		$convertedEntryDate= Carbon\Carbon::createFromFormat('Y-m-d', $entryDate)->format('d-m-Y');
-		$journal->setEntryDate($convertedEntryDate);
-		$getEntryDate = $journal->getEntryDate();
-		
+		if(strcmp($updatedAt,'0000-00-00 00:00:00')==0)
+		{
+			$getUpdatedDate = "00-00-0000";
+		}
+		else
+		{
+			$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
+			$journal->setUpdated_at($convertedUpdatedDate);
+			$getUpdatedDate = $journal->getUpdated_at();
+		}
+		if(strcmp($entryDate,'0000-00-00 00:00:00')==0)
+		{
+			$getEntryDate = "00-00-0000";
+		}
+		else
+		{
+			$convertedEntryDate= Carbon\Carbon::createFromFormat('Y-m-d', $entryDate)->format('d-m-Y');
+			$journal->setEntryDate($convertedEntryDate);
+			$getEntryDate = $journal->getEntryDate();
+		}
 		//set all data into json array
 		$data = array();
 		$data['journalId'] = $journalId;

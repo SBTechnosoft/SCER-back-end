@@ -33,10 +33,16 @@ class EncodeData extends CompanyService
 		$template->setCreated_at($convertedCreatedDate);
 		$getCreatedDate = $template->getCreated_at();
 		
-		$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
-		$template->setUpdated_at($convertedUpdatedDate);
-		$getUpdatedDate = $template->getUpdated_at();
-		
+		if(strcmp($updatedAt,'0000-00-00 00:00:00')==0)
+		{
+			$getUpdatedDate = "00-00-0000";
+		}
+		else
+		{
+			$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
+			$template->setUpdated_at($convertedUpdatedDate);
+			$getUpdatedDate = $template->getUpdated_at();
+		}
 		//set all data into json array
 		$data = array();
 		$data['templateId'] = $templateId;

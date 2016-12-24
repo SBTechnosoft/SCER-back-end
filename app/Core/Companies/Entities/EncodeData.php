@@ -60,11 +60,17 @@ class EncodeData extends StateService
 		$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt)->format('d-m-Y');
 		$company->setCreated_at($convertedCreatedDate);
 		$getCreatedDate = $company->getCreated_at();
-			
-		$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
-		$company->setUpdated_at($convertedUpdatedDate);
-		$getUpdatedDate = $company->getUpdated_at();
 		
+		if(strcmp($updatedAt,'0000-00-00 00:00:00')==0)
+		{
+			$getUpdatedDate = "00-00-0000";
+		}
+		else
+		{	
+			$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
+			$company->setUpdated_at($convertedUpdatedDate);
+			$getUpdatedDate = $company->getUpdated_at();
+		}
 		//set all data into json array
 		$data = array();
 		$data['companyId'] = $companyId;
