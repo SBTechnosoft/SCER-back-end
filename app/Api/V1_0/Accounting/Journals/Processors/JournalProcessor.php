@@ -58,25 +58,29 @@ class JournalProcessor extends BaseProcessor
 				//check accounting Rules
 				$buisnessLogic = new BuisnessLogic();
 				$busnessResult = $buisnessLogic->validateBuisnessLogic($tRequest);
-				if(strcmp($request->header()['type'][0],$constantArray['sales'])==0 || strcmp($request->header()['type'][0],$constantArray['purchase'])==0)
+				if(array_key_exists("type",$request->header()))
 				{
-					if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
+					//check accounting rules for sales/purchase
+					if(strcmp($request->header()['type'][0],$constantArray['sales'])==0 || strcmp($request->header()['type'][0],$constantArray['purchase'])==0)
 					{
-						$inOutWard = $constantArray['journalOutward'];
-					}
-					else
-					{
-						$inOutWard = $constantArray['journalInward'];
-					}
-					//trim an input 
-					$productTransformer = new ProductTransformer();
-					$trimProductRequest = $productTransformer->trimInsertInOutwardData($this->request,$inOutWard);
-					
-					//check accounting Rules for sale/purchase
-					$busnessValidateResult = $buisnessLogic->validateInsertBuisnessLogic($trimProductRequest,$tRequest,$request->header()['type'][0]);
-					if(!is_array($busnessValidateResult))
-					{
-						return $busnessValidateResult;
+						if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
+						{
+							$inOutWard = $constantArray['journalOutward'];
+						}
+						else
+						{
+							$inOutWard = $constantArray['journalInward'];
+						}
+						//trim an input 
+						$productTransformer = new ProductTransformer();
+						$trimProductRequest = $productTransformer->trimInsertInOutwardData($this->request,$inOutWard);
+						
+						//check accounting Rules for sale/purchase
+						$busnessValidateResult = $buisnessLogic->validateInsertBuisnessLogic($trimProductRequest,$tRequest,$request->header()['type'][0]);
+						if(!is_array($busnessValidateResult))
+						{
+							return $busnessValidateResult;
+						}
 					}
 				}
 			}
@@ -95,6 +99,7 @@ class JournalProcessor extends BaseProcessor
 						$journalPersistable[$data]->setJfId($tRequest['jfId']);
 						$journalPersistable[$data]->setEntryDate($tRequest['entryDate']);
 						$journalPersistable[$data]->setCompanyId($tRequest['companyId']);
+						$journalPersistable[$data]->setJournalType($tRequest['journalType']);
 						
 						$journalPersistable[$data]->setAmount($tRequest[0][$data]['amount']);
 						$journalPersistable[$data]->setAmountType($tRequest[0][$data]['amountType']);
@@ -178,14 +183,21 @@ class JournalProcessor extends BaseProcessor
 					//check accounting Rules
 					$buisnessLogic = new BuisnessLogic();
 					$buisnessResult = $buisnessLogic->validateUpdateBuisnessLogic($tRequest);
+					
 					//journal array and product array exist/tax exist
 					if(is_array($buisnessResult))
 					{
-						//data is valid and validate journal-product array data
-						$buisnessJournalResult = $buisnessLogic->validateJournalBuisnessLogic($headerData,$tRequest,$jfId);
-						if(!is_array($buisnessJournalResult))
+						if(array_key_exists("type",$headerData))
 						{
-							return $buisnessJournalResult;
+							if(strcmp($headerData['type'][0],"sales")==0 || strcmp($headerData['type'][0],"purchase")==0)
+							{
+								//data is valid and validate journal-product array data
+								$buisnessJournalResult = $buisnessLogic->validateJournalBuisnessLogic($headerData,$tRequest,$jfId);
+								if(!is_array($buisnessJournalResult))
+								{
+									return $buisnessJournalResult;
+								}
+							}
 						}
 					}
 					else

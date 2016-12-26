@@ -485,7 +485,6 @@ class BuisnessLogic extends LedgerModel
 			return $journalArrayData;
 		}
 		$decodedJournalData = json_decode($journalArrayData);
-		
 		//tax and array both exist
 		if(array_key_exists("tax",$productData) && array_key_exists("0",$productData))
 		{
@@ -700,7 +699,7 @@ class BuisnessLogic extends LedgerModel
 		{
 			$ledgerIdArray[$journalArrayData] = $journalData[0][$journalArrayData]['ledger_id'];
 			$ledgerResult = $ledgerService->getLedgerData($ledgerIdArray[$journalArrayData]);
-			// print_r(json_decode($ledgerResult));
+			
 			if(strcmp("sales",$headerData['type'][0])==0)
 			{
 				if(json_decode($ledgerResult)->ledgerGroup->ledgerGroupId==17)

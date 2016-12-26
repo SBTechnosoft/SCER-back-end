@@ -16,7 +16,8 @@ class ConstantClass
 		$constantArray['ledgerUrl']="http://www.scerp1.com/accounting/ledgers";
 		$constantArray['journalUrl']="http://www.scerp1.com/accounting/journals";
 		$constantArray['productUrl']="http://www.scerp1.com/accounting/products";
-		$constantArray['postMethod']="post";
+		// $constantArray['postMethod']="post";
+		$constantArray['postMethod']="POST";
 		$constantArray['getMethod']="get";
 		$constantArray['deleteMethod']="DELETE";
 		$constantArray['journalInward']="Inward";
@@ -50,6 +51,12 @@ class ConstantClass
 		$constantArray['invoice_number']="invoice_number";
 		$constantArray['branch_id']="branch_id";
 		
+		//for journal-type
+		$constantArray['saleType']="sale";
+		$constantArray['purchaseType']="purchase";
+		$constantArray['paymentType']="payment";
+		$constantArray['receiptType']="receipt";
+		$constantArray['specialJournalType']="special_journal";
 		return $constantArray;
 	}
 }

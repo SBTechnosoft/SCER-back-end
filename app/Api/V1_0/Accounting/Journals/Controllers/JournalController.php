@@ -70,7 +70,6 @@ class JournalController extends BaseController implements ContainerInterface
 			{
 				$journalService= new JournalService();
 				$status = $journalService->insert($journalPersistable);
-				
 				if(count($request->input())>4)
 				{
 					$productService= new ProductService();	
@@ -237,7 +236,7 @@ class JournalController extends BaseController implements ContainerInterface
 		{
 			return $exceptionArray['404'];
 		}
-		if(array_key_exists($constantArray['type'],$request->header())==1)
+		if(array_key_exists($constantArray['type'],$request->header()))
 		{
 			if(strcmp($request->header()['type'][0],$constantArray['sales'])==0 || strcmp($request->header()['type'][0],$constantArray['purchase'])==0)
 			{
@@ -322,7 +321,15 @@ class JournalController extends BaseController implements ContainerInterface
 					}
 					if(is_array($journalPersistable))
 					{
-						$status = $journalService->update($journalPersistable,$jfId);
+						if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
+						{
+							$headerType = "sale";
+						}
+						else
+						{
+							$headerType = "purchase";
+						}
+						$status = $journalService->update($journalPersistable,$jfId,$headerType);
 						//update data in product_transaction
 						if(strcmp($status,$exceptionArray['200'])==0)
 						{
@@ -352,10 +359,11 @@ class JournalController extends BaseController implements ContainerInterface
 										$inOutward = $constantArray['journalInward'];
 									}
 								}
+								
 								$productService= new ProductService();	
 								$productPersistable = new ProductPersistable();
 								$productProcessor = new ProductProcessor();
-								$productPersistable = $productProcessor->createPersistableChangeInOutWard($productArray,$inOutward);
+								$productPersistable = $productProcessor->createPersistableChangeInOutWard($productArray,$inOutward,$jfId);
 								//here two array and string is return at a time
 								if(is_array($productPersistable))
 								{
@@ -421,17 +429,45 @@ class JournalController extends BaseController implements ContainerInterface
 					}
 				}
 			}
+			//payment/receipt
+			else
+			{
+				$headerData = $request->header();
+				$journalArray = $this->request->input();
+				if(strcmp($headerData['type'][0],'payment')==0)
+				{
+					$headerType = "payment";
+				}
+				else
+				{
+					$headerType = "receipt";
+				}
+				//journal data is processed(trim,validation and set data in object)
+				$journalPersistable = $processor->createPersistableChange($headerData,$journalArray,$jfId);
+				//here two array and string is return at a time
+				if(is_array($journalPersistable))
+				{
+					$status = $journalService->update($journalPersistable,$jfId,$headerType);
+					return $status;
+				}
+				else
+				{
+					return $journalPersistable;
+				}
+			}
 		}
 		else
 		{
+			$headerData = $request->header();
+			$headerType = "special_journal";
 			$journalArray = $this->request->input();
 			//journal data is processed(trim,validation and set data in object)
-			$journalPersistable = $processor->createPersistableChange($journalArray,$jfId);
+			$journalPersistable = $processor->createPersistableChange($headerData,$journalArray,$jfId);
+			
 			//here two array and string is return at a time
 			if(is_array($journalPersistable))
 			{
-				$status = $journalService->update($journalPersistable,$jfId);
-				
+				$status = $journalService->update($journalPersistable,$jfId,$headerType);
 				return $status;
 			}
 			else

@@ -25,11 +25,36 @@ class JournalTransformer extends LedgerModel
 		$exceptionArray = array();
 		$numberOfArray = count($request->input()['data']);
 		
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
 		//data get from body and trim an input
 		$jfId = trim($request->input()['jfId']); 
 		$entryDate = trim($request->input()['entryDate']); 
 		$companyId = trim($request->input()['companyId']); 
-		
+		if(array_key_exists("type",$request->header()))
+		{
+			if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
+			{
+				$journalType = $constantArray['saleType'];
+			}
+			else if(strcmp($request->header()['type'][0],$constantArray['purchase'])==0)
+			{
+				$journalType = $constantArray['purchaseType'];
+			}
+			else if(strcmp($request->header()['type'][0],$constantArray['paymentType'])==0)
+			{
+				$journalType = $constantArray['paymentType'];
+			}
+			else
+			{
+				$journalType = $constantArray['receiptType'];
+			}
+		}
+		else
+		{
+			$journalType = $constantArray['specialJournalType'];
+		}
 		//entry date conversion
 		$transformEntryDate = Carbon\Carbon::createFromFormat('d-m-Y', $entryDate)->format('Y-m-d');
 		
@@ -70,6 +95,7 @@ class JournalTransformer extends LedgerModel
 		$simpleArray['jfId'] = $jfId;
 		$simpleArray['entryDate'] = $transformEntryDate;
 		$simpleArray['companyId'] = $companyId;
+		$simpleArray['journalType'] = $journalType;
 		
 		$trimArray = array();
 		for($data=0;$data<$numberOfArray;$data++)

@@ -51,6 +51,7 @@ class JournalService
 		$jfIdArray = array();
 		$entryDateArray = array();
 		$companyIdArray = array();
+		$journalTypeArray = array();
 		$journalArray = func_get_arg(0);
 		for($data=0;$data<count($journalArray);$data++)
 		{
@@ -60,10 +61,11 @@ class JournalService
 			$ledgerIdArray[$data] = $journalArray[$data]->getLedgerId();
 			$entryDateArray[$data] = $journalArray[$data]->getEntryDate();
 			$companyIdArray[$data] = $journalArray[$data]->getCompanyId();
+			$journalTypeArray[$data] = $journalArray[$data]->getJournalType();
 		}
 		// data pass to the model object for insert
 		$journalModel = new JournalModel();
-		$status = $journalModel->insertData($amountArray,$amountTypeArray,$jfIdArray,$ledgerIdArray,$entryDateArray,$companyIdArray);
+		$status = $journalModel->insertData($amountArray,$amountTypeArray,$jfIdArray,$ledgerIdArray,$entryDateArray,$companyIdArray,$journalTypeArray);
 		return $status;
 	}
 	
@@ -168,6 +170,7 @@ class JournalService
 		$arrayFlag=0;
 		$flagData=0;
 		$jfId = func_get_arg(1);
+		$headerType = func_get_arg(2);
 		
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
@@ -214,19 +217,19 @@ class JournalService
 		if(count($multipleArray)!=0 && count($singleData)!=0)
 		{
 			$journalModel = new JournalModel();
-			$status = $journalModel->updateArrayData($multipleArray,$singleData,$jfId);
+			$status = $journalModel->updateArrayData($multipleArray,$singleData,$jfId,$headerType);
 			return $status;
 		}
 		else if(count($multipleArray)!=0)
 		{
 			$journalModel = new JournalModel();
-			$status = $journalModel->updateData($multipleArray,$jfId);
+			$status = $journalModel->updateData($multipleArray,$jfId,$headerType);
 			return $status;
 		}
 		else
 		{
 			$journalModel = new JournalModel();
-			$status = $journalModel->updateData($singleData,$jfId);
+			$status = $journalModel->updateData($singleData,$jfId,$headerType);
 			return $status;
 		}
 	}

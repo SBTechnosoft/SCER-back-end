@@ -338,7 +338,6 @@ class ProductProcessor extends BaseProcessor
 				//trim an input 
 				$productTransformer = new ProductTransformer();
 				$tRequest = $productTransformer->trimUpdateProductData($productArray,$inOutWard);
-				
 				if($tRequest==1)
 				{
 					return $exceptionArray['content'];
@@ -354,13 +353,15 @@ class ProductProcessor extends BaseProcessor
 						$headerType=$constantArray['sales'];
 					}
 					$journalData = array();
-					
-					//check accounting Rules
-					$buisnessLogic = new BuisnessLogic();
-					$buisnessResult = $buisnessLogic->validateUpdateProductBuisnessLogic($headerType,$journalData,$tRequest,$jfId);
-					if(!is_array($buisnessResult))
+					if(array_key_exists("tax",$tRequest) || array_key_exists("0",$tRequest))
 					{
-						return $buisnessResult;
+						//check accounting Rules
+						$buisnessLogic = new BuisnessLogic();
+						$buisnessResult = $buisnessLogic->validateUpdateProductBuisnessLogic($headerType,$journalData,$tRequest,$jfId);
+						if(!is_array($buisnessResult))
+						{
+							return $buisnessResult;
+						}
 					}
 				}
 				//get data from trim array

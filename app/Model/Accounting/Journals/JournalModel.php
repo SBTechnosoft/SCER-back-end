@@ -27,6 +27,7 @@ class JournalModel extends Model
 		$jfIdArray = array();
 		$entryDateArray = array();
 		$companyIdArray = array();
+		$journalTypeArray = array();
 		
 		$amountArray = func_get_arg(0);
 		$amountTypeArray = func_get_arg(1);
@@ -34,6 +35,7 @@ class JournalModel extends Model
 		$ledgerIdArray = func_get_arg(3);
 		$entryDateArray = func_get_arg(4);
 		$companyIdArray = func_get_arg(5);
+		$journalTypeArray = func_get_arg(6);
 		$debitAmount = array();
 		$debitLedger = array();
 		$creditAmount = array();
@@ -57,8 +59,9 @@ class JournalModel extends Model
 			amount_type,
 			entry_date,
 			ledger_id,
-			company_id) 
-			values('".$jfIdArray[$data]."','".$amountArray[$data]."','".$amountTypeArray[$data]."','".$entryDateArray[$data]."','".$ledgerIdArray[$data]."','".$companyIdArray[$data]."')");
+			company_id,
+			journal_type) 
+			values('".$jfIdArray[$data]."','".$amountArray[$data]."','".$amountTypeArray[$data]."','".$entryDateArray[$data]."','".$ledgerIdArray[$data]."','".$companyIdArray[$data]."','".$journalTypeArray[$data]."')");
 			DB::commit();
 			if($raw==1)
 			{
@@ -610,6 +613,7 @@ class JournalModel extends Model
 		$debitAmount = array();
 		$journalArray = func_get_arg(0);
 		$jfId = func_get_arg(1);
+		$journalType = func_get_arg(2);
 		$mytime = Carbon\Carbon::now();
 		$journalRaw="";
 		$ledgerResult="";
@@ -676,8 +680,9 @@ class JournalModel extends Model
 					entry_date,
 					ledger_id,
 					company_id,
+					journal_type,
 					updated_at) 
-					values('".$jfId."','".$journalArray[$data]['amount']."','".$journalArray[$data]['amount_type']."','".$entryDate."','".$journalArray[$data]['ledger_id']."','".$companyId."','".$mytime."')");
+					values('".$jfId."','".$journalArray[$data]['amount']."','".$journalArray[$data]['amount_type']."','".$entryDate."','".$journalArray[$data]['ledger_id']."','".$companyId."','".$journalType."','".$mytime."')");
 					DB::commit();
 					if($journalInsertResult==1)
 					{
@@ -843,6 +848,7 @@ class JournalModel extends Model
 		$journalArray = func_get_arg(0);
 		$journalData = func_get_arg(1);
 		$jfId = func_get_arg(2);
+		$journalType = func_get_arg(3);
 		$mytime = Carbon\Carbon::now();
 		$journalRaw=0;
 		$ledgerResult=0;
@@ -905,8 +911,9 @@ class JournalModel extends Model
 					entry_date,
 					ledger_id,
 					company_id,
+					journal_type,
 					updated_at) 
-					values('".$jfId."','".$journalArray[$data]['amount']."','".$journalArray[$data]['amount_type']."','".$entryDate."','".$journalArray[$data]['ledger_id']."','".$companyId."','".$mytime."')");
+					values('".$jfId."','".$journalArray[$data]['amount']."','".$journalArray[$data]['amount_type']."','".$entryDate."','".$journalArray[$data]['ledger_id']."','".$companyId."','".$journalType."','".$mytime."')");
 					DB::commit();
 					if($journalInsertResult==1)
 					{
