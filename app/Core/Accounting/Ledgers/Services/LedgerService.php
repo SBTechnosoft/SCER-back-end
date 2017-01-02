@@ -1,6 +1,5 @@
 <?php	
 namespace ERP\Core\Accounting\Ledgers\Services;
-
 use ERP\Core\Accounting\Ledgers\Persistables\LedgerPersistable;
 use ERP\Core\Accounting\Ledgers\Entities\Ledger;
 use ERP\Model\Accounting\Ledgers\LedgerModel;
@@ -336,7 +335,6 @@ class LedgerService extends AbstractService
 		$status = $ledgerModel->updateData($getData,$keyName,$ledgerId);
 		return $status;	
 	}
-
     /**
      * get and invoke method is of Container Interface method
      * @param int $id,$name

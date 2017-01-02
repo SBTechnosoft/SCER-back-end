@@ -58,30 +58,37 @@ class JournalProcessor extends BaseProcessor
 				//check accounting Rules
 				$buisnessLogic = new BuisnessLogic();
 				$busnessResult = $buisnessLogic->validateBuisnessLogic($tRequest);
-				if(array_key_exists("type",$request->header()))
+				if(is_array($busnessResult))
 				{
-					//check accounting rules for sales/purchase
-					if(strcmp($request->header()['type'][0],$constantArray['sales'])==0 || strcmp($request->header()['type'][0],$constantArray['purchase'])==0)
+					if(array_key_exists("type",$request->header()))
 					{
-						if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
+						//check accounting rules for sales/purchase
+						if(strcmp($request->header()['type'][0],$constantArray['sales'])==0 || strcmp($request->header()['type'][0],$constantArray['purchase'])==0)
 						{
-							$inOutWard = $constantArray['journalOutward'];
-						}
-						else
-						{
-							$inOutWard = $constantArray['journalInward'];
-						}
-						//trim an input 
-						$productTransformer = new ProductTransformer();
-						$trimProductRequest = $productTransformer->trimInsertInOutwardData($this->request,$inOutWard);
-						
-						//check accounting Rules for sale/purchase
-						$busnessValidateResult = $buisnessLogic->validateInsertBuisnessLogic($trimProductRequest,$tRequest,$request->header()['type'][0]);
-						if(!is_array($busnessValidateResult))
-						{
-							return $busnessValidateResult;
+							if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
+							{
+								$inOutWard = $constantArray['journalOutward'];
+							}
+							else
+							{
+								$inOutWard = $constantArray['journalInward'];
+							}
+							//trim an input 
+							$productTransformer = new ProductTransformer();
+							$trimProductRequest = $productTransformer->trimInsertInOutwardData($this->request,$inOutWard);
+							
+							//check accounting Rules for sale/purchase
+							$busnessValidateResult = $buisnessLogic->validateInsertBuisnessLogic($trimProductRequest,$tRequest,$request->header()['type'][0]);
+							if(!is_array($busnessValidateResult))
+							{
+								return $busnessValidateResult;
+							}
 						}
 					}
+				}
+				else
+				{
+					return $busnessResult;
 				}
 			}
 			if(is_array($busnessResult))
@@ -111,10 +118,6 @@ class JournalProcessor extends BaseProcessor
 				{
 					return $status;
 				}
-			}
-			else
-			{
-				return $tRequest;
 			}
 		}
 	}
@@ -378,12 +381,12 @@ class JournalProcessor extends BaseProcessor
 					//check accounting Rules
 					$buisnessLogic = new BuisnessLogic();
 					$buisnessResult = $buisnessLogic->validateUpdateBuisnessLogic($tRequest);
-					
 					//journal array and product array exist/tax exist
 					if(is_array($buisnessResult))
 					{
 						//data is valid and validate journal-product array data
 						$buisnessJournalResult = $buisnessLogic->validateUpdateJournalBuisnessLogic($headerData,$tRequest,$trimProductData,$jfId);
+						
 						if(!is_array($buisnessJournalResult))
 						{
 							return $buisnessJournalResult;

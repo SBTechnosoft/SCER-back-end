@@ -296,6 +296,7 @@ class ProductModel extends Model
 			invoice_number,
 			bill_number,
 			company_id,
+			tax,
 			branch_id,
 			product_id
 			from product_trn 
@@ -325,6 +326,7 @@ class ProductModel extends Model
 					bill_number,
 					company_id,
 					branch_id,
+					tax,
 					discount,
 					discount_type,
 					price,
@@ -339,6 +341,7 @@ class ProductModel extends Model
 					'".$transactionData[0]->bill_number."',
 					'".$transactionData[0]->company_id."',
 					'".$transactionData[0]->branch_id."',
+					'".$transactionData[0]->tax."',
 					'".$productTransactionData[$arrayData]['discount']."',
 					'".$productTransactionData[$arrayData]['discount_type']."',
 					'".$productTransactionData[$arrayData]['price']."',

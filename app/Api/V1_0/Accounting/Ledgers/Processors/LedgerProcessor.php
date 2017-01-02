@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use ERP\Core\Accounting\Ledgers\Validations\LedgerValidate;
 use ERP\Api\V1_0\Accounting\Ledgers\Transformers\LedgerTransformer;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Core\Accounting\Journals\Validations\BuisnessLogic;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -50,8 +51,13 @@ class LedgerProcessor extends BaseProcessor
 			if($tRequest==1)
 			{
 				return $msgArray['content'];
-			}	
+			}
 			else
+			{
+				$buisnessLogic = new BuisnessLogic();
+				$businessResult = $buisnessLogic->validateLedgerData($tRequest);
+			}
+			if(is_array($businessResult))
 			{
 				//validation
 				$ledgerValidate = new LedgerValidate();
@@ -103,6 +109,10 @@ class LedgerProcessor extends BaseProcessor
 					return $status;
 				}
 			}
+			else
+			{
+				return $businessResult;
+			}
 		}
 	}
 	public function createPersistableChange(Request $request,$ledgerId)
@@ -134,6 +144,7 @@ class LedgerProcessor extends BaseProcessor
 			{
 				for($data=0;$data<count($_POST);$data++)
 				{
+					$buisnessFlag=0;
 					//data get from body
 					$ledgerPersistable = new LedgerPersistable();
 					$value[$data] = $_POST[array_keys($_POST)[$data]];
@@ -146,6 +157,19 @@ class LedgerProcessor extends BaseProcessor
 					if($tRequest==1)
 					{
 						return $exceptionArray['content'];
+					}
+					else
+					{
+						if(array_key_exists("ledger_name",$tRequest[0]))
+						{
+							$buisnessFlag=1;
+							$buisnessLogic = new BuisnessLogic();
+							$businessResult = $buisnessLogic->validateUpdateLedgerData($tRequest,$ledgerId);
+						}
+					}
+					if($buisnessFlag==1 && !is_array($businessResult))
+					{
+						return $businessResult;
 					}
 					else
 					{

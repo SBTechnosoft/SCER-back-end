@@ -207,7 +207,8 @@ class LedgerModel extends Model
 					from ledger_mst 
 					where ledger_id = (select max(ledger_id) from ledger_mst) and deleted_at='0000-00-00 00:00:00'");
 					DB::commit();
-					return json_encode($ledgerData);
+					$encodedData = json_encode($ledgerData);
+					return $encodedData;
 				}
 				else
 				{
@@ -232,22 +233,41 @@ class LedgerModel extends Model
 	*/
 	public function updateData($ledgerData,$key,$ledgerId)
 	{
-		$mytime = Carbon\Carbon::now();
+	    $mytime = Carbon\Carbon::now();
 		$keyValueString="";
+		$keyValueStringAmt="";
 		for($data=0;$data<count($ledgerData);$data++)
 		{
-			$keyValueString=$keyValueString.$key[$data]."='".$ledgerData[$data]."',";
+			if(strcmp($key[$data],"amount")==0 || strcmp($key[$data],"amount_type")==0)
+			{
+				$keyValueStringAmt=$keyValueStringAmt.$key[$data]."='".$ledgerData[$data]."',";
+			}
+			else
+			{
+				$keyValueString=$keyValueString.$key[$data]."='".$ledgerData[$data]."',";
+			}
 		}
-		DB::beginTransaction();
-		$raw = DB::statement("update ledger_mst 
-		set ".$keyValueString."updated_at='".$mytime."'
-		where ledger_id = '".$ledgerId."' and deleted_at='0000-00-00 00:00:00'");
-		DB::commit();
-		
+		if($keyValueStringAmt!="")
+		{
+			DB::beginTransaction();
+			$ledgerTrnData = DB::statement("update ".$ledgerId."_ledger_dtl 
+			set ".$keyValueStringAmt."updated_at='".$mytime."'
+			where ledger_id = '".$ledgerId."' and deleted_at='0000-00-00 00:00:00' and balance_flag='opening'");
+			DB::commit();
+		}
+		if($keyValueString!="")
+		{
+			DB::beginTransaction();
+			$raw = DB::statement("update ledger_mst 
+			set ".$keyValueString."updated_at='".$mytime."'
+			where ledger_id = '".$ledgerId."' and deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+		}
+	  
 		//get exception message
 		$exception = new ExceptionMessage();
 		$fileSizeArray = $exception->messageArrays();
-		if($raw==1)
+		if($keyValueStringAmt!="" && $ledgerTrnData==1 || $keyValueString!="" && $raw==1)
 		{
 			return $fileSizeArray['200'];
 		}
@@ -285,7 +305,7 @@ class LedgerModel extends Model
 		company_id
 		from ledger_mst where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
-		// print_r($ledgerAllData);
+		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -301,7 +321,7 @@ class LedgerModel extends Model
 			{
 				$ledgerIdArray[$ledgerDataArray] = $ledgerAllData[$ledgerDataArray]->ledger_id;
 				$currentBalanceType="";
-				
+				// echo "ss";
 				//get opening balance
 				DB::beginTransaction();
 				$raw = DB::select("SELECT 
@@ -312,6 +332,8 @@ class LedgerModel extends Model
 				WHERE balance_flag='opening' and 
 				deleted_at='0000-00-00 00:00:00'");
 				DB::commit();
+				// print_r($raw);
+				// echo "hhi";
 				if(count($raw)!=0)
 				{
 					//get current balance
@@ -1092,7 +1114,7 @@ class LedgerModel extends Model
 		$companyId = func_get_arg(1);
 		$ledgerArray = array();
 		$mainResult = array();
-		
+		$index=0;
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -1127,11 +1149,12 @@ class LedgerModel extends Model
 			DB::commit();
 			if(count($data)!=0)
 			{
-				$mainResult[$ledgerGrpArrayData] = $data; 
+				$mainResult[$index] = $data; 
 				for($arrayData=0;$arrayData<count($data);$arrayData++)
 				{
-					$ledgerArray[$ledgerGrpArrayData][$arrayData] = $data[$arrayData]->ledger_id;
+					$ledgerArray[$index][$arrayData] = $data[$arrayData]->ledger_id;
 				}
+				$index++;
 			}
 		}
 		//add balance in ledger data

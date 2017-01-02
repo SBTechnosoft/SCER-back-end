@@ -171,11 +171,9 @@ class JournalService
 		$flagData=0;
 		$jfId = func_get_arg(1);
 		$headerType = func_get_arg(2);
-		
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-		
-		if(array_key_exists($constantArray['flag'],array_keys($journalArray)))
+		if(array_key_exists($constantArray['flag'],$journalArray))
 		{
 			$flagData=1;
 		}

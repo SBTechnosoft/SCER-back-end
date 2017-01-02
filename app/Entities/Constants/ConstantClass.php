@@ -24,6 +24,7 @@ class ConstantClass
 		$constantArray['journalOutward']="Outward";
 		$constantArray['credit']="credit";
 		$constantArray['debit']="debit";
+		$constantArray['percentage']="percentage";
 		
 		//from header data
 		$constantArray['sales']="sales";

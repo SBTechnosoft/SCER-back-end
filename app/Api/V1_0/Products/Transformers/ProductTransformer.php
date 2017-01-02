@@ -147,7 +147,13 @@ class ProductTransformer
 			$tempArray[$arrayData][2] = trim($request->input()['inventory'][$arrayData]['discountType']);
 			$tempArray[$arrayData][3] = trim($request->input()['inventory'][$arrayData]['price']);
 			$tempArray[$arrayData][4] = trim($request->input()['inventory'][$arrayData]['qty']);
-			
+			if($tempArray[$arrayData][1]!=0 && $tempArray[$arrayData][1]!="")
+			{
+				if(strcmp($tempArray[$arrayData][2],$constantArray['percentage'])==0)
+				{
+					$tempArray[$arrayData][1]=($tempArray[$arrayData][1]/100)*$tempArray[$arrayData][3];
+				}
+			}
 			foreach ($enumDiscountTypeArray as $key => $value)
 			{
 				if(strcmp($value,$tempArray[$arrayData][2])==0)
@@ -320,6 +326,13 @@ class ProductTransformer
 					$tempArray[$arrayElement]['price'] = trim($productArray['inventory'][$arrayElement]['price']);
 					$tempArray[$arrayElement]['qty'] = trim($productArray['inventory'][$arrayElement]['qty']);
 					
+					if($tempArray[$arrayElement]['discount']!=0 && $tempArray[$arrayElement]['discount']!="")
+					{
+						if(strcmp($tempArray[$arrayElement]['discount_type'],$constantArray['percentage'])==0)
+						{
+							$tempArray[$arrayElement]['discount']=($tempArray[$arrayElement]['discount']/100)* $tempArray[$arrayElement]['price'];
+						}
+					}
 					//check enum type[amount-type]
 					$enumDiscountTypeArray = array();
 					$discountTypeEnum = new DiscountTypeEnum();

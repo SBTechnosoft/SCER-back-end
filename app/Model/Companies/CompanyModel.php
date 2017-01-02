@@ -356,7 +356,20 @@ class CompanyModel extends Model
 			$quotation = DB::statement("update quotation_dtl 
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
-			if($branch==1 && $product==1 && $template==1 && $invoice==1 && $quotation==1)
+			$journal = DB::statement("update journal_dtl 
+			set deleted_at='".$mytime."' 
+			where company_id=".$companyId);
+			$ledger = DB::statement("update ledger_mst 
+			set deleted_at='".$mytime."' 
+			where company_id=".$companyId);
+			$productTrn = DB::statement("update product_trn 
+			set deleted_at='".$mytime."' 
+			where company_id=".$companyId);
+			$retailsalesDtl = DB::statement("update retail_sales_dtl 
+			set deleted_at='".$mytime."' 
+			where company_id=".$companyId);
+			
+			if($branch==1 && $product==1 && $template==1 && $invoice==1 && $quotation==1 && $journal==1 && $ledger==1 && $productTrn==1 && $retailsalesDtl==1)
 			{
 				return $fileSizeArray['200'];
 			}

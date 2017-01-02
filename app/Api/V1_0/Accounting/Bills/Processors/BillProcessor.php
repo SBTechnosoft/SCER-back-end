@@ -131,7 +131,6 @@ class BillProcessor extends BaseProcessor
 				$paymentLedgerId = $encodedLedgerData[$contactData]->ledgerId;
 			}
 		}
-		
 		if($contactFlag==0)
 		{
 			$ledgerArray=array();
@@ -143,6 +142,9 @@ class BillProcessor extends BaseProcessor
 			$ledgerArray['stateAbb']=$tRequest['state_abb'];
 			$ledgerArray['cityId']=$tRequest['city_id'];
 			$ledgerArray['companyId']=$tRequest['company_id'];
+			$ledgerArray['balanceFlag']="opening";
+			$ledgerArray['amount']=0;
+			$ledgerArray['amountType']="credit";
 			$ledgerArray['ledgerGroupId']=9;
 			$ledgerController = new LedgerController(new Container());
 			$method=$constantArray['postMethod'];
@@ -159,15 +161,15 @@ class BillProcessor extends BaseProcessor
 		//get jf_id
 		$journalController = new JournalController(new Container());
 		$jfId = $journalController->getData();
-		$ledgerTaxAcId = "39";
-		$ledgerSaleAcId = "38";
+		$ledgerTaxAcId = "86";
+		$ledgerSaleAcId = "85";
 		$amountTypeEnum = new AmountTypeEnum();
 		$amountTypeArray = $amountTypeEnum->enumArrays();
 		$ledgerAmount = $tRequest['total']-$tRequest['advance'];
 		//make data array for journal entry
 		if($paymentModeFlag==1)
 		{
-			if($tRequest['tax']!="")
+			if($tRequest['tax']!=0)
 			{
 				if($tRequest['advance']!="")
 				{
@@ -197,7 +199,7 @@ class BillProcessor extends BaseProcessor
 					$dataArray[0]=array(
 						"amount"=>$tRequest['total'],
 						"amountType"=>$amountTypeArray['debitType'],
-						"ledgerId"=>$paymentLedgerId,
+						"ledgerId"=>$ledgerId,
 					);
 					$dataArray[1]=array(
 						"amount"=>$tRequest['tax'],
@@ -236,7 +238,7 @@ class BillProcessor extends BaseProcessor
 					$dataArray[0]=array(
 						"amount"=>$tRequest['total'],
 						"amountType"=>$amountTypeArray['debitType'],
-						"ledgerId"=>$paymentLedgerId,
+						"ledgerId"=>$ledgerId,
 					);
 					$dataArray[1]=array(
 						"amount"=>$tRequest['grand_total'],
@@ -249,7 +251,7 @@ class BillProcessor extends BaseProcessor
 		//make data array for journal sale entry
 		$journalArray = array();
 		$journalArray= array(
-			'jfId' => $jfId,
+			'jfId' => json_decode($jfId)->nextValue,
 			'data' => array(
 			),
 			'entryDate' => $tRequest['entry_date'],
@@ -257,7 +259,7 @@ class BillProcessor extends BaseProcessor
 			'inventory' => array(
 			),
 			'transactionDate'=> $tRequest['entry_date'],
-			'billNumber'=> $tRequest['bill_number'],
+			'tax'=> $tRequest['tax'],
 			'invoiceNumber'=>$tRequest['invoice_number']
 		);
 		$journalArray['data']=$dataArray;
@@ -267,7 +269,6 @@ class BillProcessor extends BaseProcessor
 		$journalRequest = Request::create($path,$method,$journalArray);
 		$journalRequest->headers->set('type',$request->header()['type'][0]);
 		$processedData = $journalController->store($journalRequest);
-		
 		if(strcmp($processedData,$msgArray['200'])==0)
 		{
 			if(strcmp($request->header()['type'][0],"sales")==0)

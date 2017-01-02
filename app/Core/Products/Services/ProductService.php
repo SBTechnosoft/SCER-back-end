@@ -328,7 +328,6 @@ class ProductService extends AbstractService
 		$singleData = array();
 		$arrayFlag=0;
 		$flagData=0;
-		
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
 		

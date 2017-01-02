@@ -358,6 +358,7 @@ class ProductProcessor extends BaseProcessor
 						//check accounting Rules
 						$buisnessLogic = new BuisnessLogic();
 						$buisnessResult = $buisnessLogic->validateUpdateProductBuisnessLogic($headerType,$journalData,$tRequest,$jfId);
+						
 						if(!is_array($buisnessResult))
 						{
 							return $buisnessResult;

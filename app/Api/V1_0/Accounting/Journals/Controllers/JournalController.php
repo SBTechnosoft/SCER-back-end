@@ -208,6 +208,7 @@ class JournalController extends BaseController implements ContainerInterface
 		$journalArrayFlag=0;
 		$invoiceNumberFlag=0;
 		$productArrayFlag=0;
+		$transactionDateFlag=0;
 		$billNumberFlag=0;
 		$taxFlag=0;
 		
@@ -247,7 +248,11 @@ class JournalController extends BaseController implements ContainerInterface
 				{
 					$entryDateFlag=1;
 					$journalArray['entryDate']=$inputArray['entryDate'];
-					$productArray['transactionDate']=$inputArray['entryDate'];
+				}
+				if(array_key_exists('transactionDate',$inputArray))
+				{
+					$transactionDateFlag=1;
+					$productArray['transactionDate']=$inputArray['transactionDate'];
 				}
 				if(array_key_exists($constantArray['companyId'],$inputArray))
 				{
@@ -323,22 +328,22 @@ class JournalController extends BaseController implements ContainerInterface
 					{
 						if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
 						{
-							$headerType = "sale";
+							$headerType = $constantArray['saleType'];
 						}
 						else
 						{
-							$headerType = "purchase";
+							$headerType = $constantArray['purchaseType'];
 						}
 						$status = $journalService->update($journalPersistable,$jfId,$headerType);
 						//update data in product_transaction
 						if(strcmp($status,$exceptionArray['200'])==0)
 						{
 							//product transaction data is available for update
-							if($productArrayFlag==1 || $invoiceNumberFlag==1 || $entryDateFlag==1 || $companyIdFlag==1 || $billNumberFlag==1)
+							if($productArrayFlag==1 || $invoiceNumberFlag==1 || $entryDateFlag==1 || $companyIdFlag==1 || $billNumberFlag==1 || $transactionDateFlag==1 || $taxFlag==1)
 							{
 								//sale data update
 								if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
-								{
+								{ 
 									if($billNumberFlag==1)
 									{
 										//wrong entry
@@ -359,7 +364,6 @@ class JournalController extends BaseController implements ContainerInterface
 										$inOutward = $constantArray['journalInward'];
 									}
 								}
-								
 								$productService= new ProductService();	
 								$productPersistable = new ProductPersistable();
 								$productProcessor = new ProductProcessor();
@@ -434,13 +438,13 @@ class JournalController extends BaseController implements ContainerInterface
 			{
 				$headerData = $request->header();
 				$journalArray = $this->request->input();
-				if(strcmp($headerData['type'][0],'payment')==0)
+				if(strcmp($headerData['type'][0],$constantArray['paymentType'])==0)
 				{
-					$headerType = "payment";
+					$headerType = $constantArray['paymentType'];
 				}
 				else
 				{
-					$headerType = "receipt";
+					$headerType = $constantArray['receiptType'];
 				}
 				//journal data is processed(trim,validation and set data in object)
 				$journalPersistable = $processor->createPersistableChange($headerData,$journalArray,$jfId);
@@ -459,7 +463,7 @@ class JournalController extends BaseController implements ContainerInterface
 		else
 		{
 			$headerData = $request->header();
-			$headerType = "special_journal";
+			$headerType = $constantArray['specialJournalType'];
 			$journalArray = $this->request->input();
 			//journal data is processed(trim,validation and set data in object)
 			$journalPersistable = $processor->createPersistableChange($headerData,$journalArray,$jfId);
