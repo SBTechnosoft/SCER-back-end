@@ -429,7 +429,7 @@ include ('connection.php');
 				// var productId = 1;
 				// var productGrpId = 11;
 				// var productCatId = 16;
-				// var companyId=15;
+				var companyId=15;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -439,9 +439,11 @@ include ('connection.php');
 				// var invoiceId=7;
 				// var quotationId=3;
 				// var ledgerGrpId=9;
-				var ledgerId=85;
+				// var ledgerId=85;
 				// var jfId=13;
 				// var journalId=322;
+				
+				var url = "http://www.scerp1.com/accounting/trial-balance/company/"+companyId;
 				
 				// var url = "http://www.scerp1.com/accounting/bills";
 				
@@ -503,8 +505,8 @@ include ('connection.php');
 				$http({
                         url: url,
                         // type:'patch',
-						 method: 'post',
-						// method: 'get',
+						 // method: 'post',
+						method: 'get',
 						// method: "PATCH",
 						// method:'delete',
 						processData: false,
@@ -515,7 +517,7 @@ include ('connection.php');
                         headers: {'Content-Type': undefined},
                         // headers: {'Content-Type': undefined,'ledgerGroup':[9,12]},
                         // headers: {'Content-Type': undefined,'type':'sales','jfId':5},
-						 data:formdata
+						 // data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

@@ -53,6 +53,7 @@ class RouteServiceProvider extends ServiceProvider
 			$routeArray['journals'] = "Journal";
 			$routeArray['clients'] = "Client";
 			$routeArray['bills'] = "Bill";
+			$routeArray['trial-balance'] = "TrialBalance";
 			foreach($routeArray as $key => $value)
 			{
 				if($key==$splitUriRoute[1])

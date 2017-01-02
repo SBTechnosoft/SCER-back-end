@@ -235,7 +235,8 @@ return [
 		'Ledgers',
 		'Journals',
 		'Clients',
-		'Bills'
+		'Bills',
+		'TrialBalance'
 	],
 
     /*
