@@ -170,13 +170,11 @@ class JournalProcessor extends BaseProcessor
 			{
 				$journalPersistable = array();
 				$journalMultipleArray = array();
-				//data get from body
-				
 				$journalSingleArray = array();
+				
 				//trim an input 
 				$journalTransformer = new JournalTransformer();
 				$tRequest = $journalTransformer->trimUpdateData($journalArray);
-				
 				if($tRequest==1)
 				{
 					return $exceptionArray['content'];
@@ -186,7 +184,6 @@ class JournalProcessor extends BaseProcessor
 					//check accounting Rules
 					$buisnessLogic = new BuisnessLogic();
 					$buisnessResult = $buisnessLogic->validateUpdateBuisnessLogic($tRequest);
-					
 					//journal array and product array exist/tax exist
 					if(is_array($buisnessResult))
 					{
@@ -386,7 +383,6 @@ class JournalProcessor extends BaseProcessor
 					{
 						//data is valid and validate journal-product array data
 						$buisnessJournalResult = $buisnessLogic->validateUpdateJournalBuisnessLogic($headerData,$tRequest,$trimProductData,$jfId);
-						
 						if(!is_array($buisnessJournalResult))
 						{
 							return $buisnessJournalResult;

@@ -13,8 +13,8 @@ class CompanyValidate
 	public function validate($request)
 	{
 		$rules = array(
-			'company_name'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]+$/', 
-			'company_display_name'=>'between:1,50|regex:/^[a-zA-Z &_`#().\'-]+$/',
+			'company_name'=> 'between:2,35|regex:/^[a-zA-Z &_`#().\'-]+$/', 
+			'company_display_name'=>'between:2,50|regex:/^[a-zA-Z &_`#().\'-]+$/',
 			'address1'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'address2'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'pincode'=>'between:6,10|regex:/^[0-9]+$/',
@@ -75,8 +75,8 @@ class CompanyValidate
 	public function validateUpdateData($keyName,$value,$request)
 	{
 		$validationArray = array(
-			'company_name'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]+$/', 
-			'company_display_name'=>'between:1,50|regex:/^[a-zA-Z &_`#().\'-]+$/',
+			'company_name'=> 'between:2,35|regex:/^[a-zA-Z &_`#().\'-]+$/', 
+			'company_display_name'=>'between:2,50|regex:/^[a-zA-Z &_`#().\'-]+$/',
 			'address1'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'address2'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'pincode'=>'between:6,10|regex:/^[0-9]+$/',

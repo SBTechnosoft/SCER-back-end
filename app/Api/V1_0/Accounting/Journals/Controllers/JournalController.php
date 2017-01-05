@@ -368,6 +368,7 @@ class JournalController extends BaseController implements ContainerInterface
 								$productPersistable = new ProductPersistable();
 								$productProcessor = new ProductProcessor();
 								$productPersistable = $productProcessor->createPersistableChangeInOutWard($productArray,$inOutward,$jfId);
+								
 								//here two array and string is return at a time
 								if(is_array($productPersistable))
 								{

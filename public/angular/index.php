@@ -274,41 +274,41 @@ include ('connection.php');
 				// formdata.append('companyId',$scope.formAdata.company_id);
 				
 				//ledger
-				$scope.formAdata.ledger_name = " saless ";
-				$scope.formAdata.alias = ' d ';
-				$scope.formAdata.inventory_affected=' no ';
-				$scope.formAdata.address1 =" sdx cz ";
-				$scope.formAdata.address2 = " aEb ";
-				$scope.formAdata.contact_no = " 8765456752 ";
-				$scope.formAdata.email_id = " reemapatel25@gmail.co.in ";
-				$scope.formAdata.pan= ' qqqas1122d ';
-				$scope.formAdata.tin= ' 42aa3dgg774 ';
-				$scope.formAdata.gst = ' 71j0rg778a22b04 ';
-				$scope.formAdata.balanceFlag = ' opening ';
-				$scope.formAdata.amount =123;
-				$scope.formAdata.amountType = ' credit';
-				$scope.formAdata.state_abb= ' IN-AG ';
-				$scope.formAdata.city_id= '1';
-				$scope.formAdata.ledger_grp_id='9 ';
-				$scope.formAdata.company_id='15 ';
+				// $scope.formAdata.ledger_name = " saless ";
+				// $scope.formAdata.alias = ' d ';
+				// $scope.formAdata.inventory_affected=' no ';
+				// $scope.formAdata.address1 =" sdx cz ";
+				// $scope.formAdata.address2 = " aEb ";
+				// $scope.formAdata.contact_no = " 8765456752 ";
+				// $scope.formAdata.email_id = " reemapatel25@gmail.co.in ";
+				// $scope.formAdata.pan= ' qqqas1122d ';
+				// $scope.formAdata.tin= ' 42aa3dgg774 ';
+				// $scope.formAdata.gst = ' 71j0rg778a22b04 ';
+				// $scope.formAdata.balanceFlag = ' opening ';
+				// $scope.formAdata.amount =123;
+				// $scope.formAdata.amountType = ' credit';
+				// $scope.formAdata.state_abb= ' IN-AG ';
+				// $scope.formAdata.city_id= '1';
+				// $scope.formAdata.ledger_grp_id='9 ';
+				// $scope.formAdata.company_id='15 ';
 				
-				formdata.append('ledgerName',$scope.formAdata.ledger_name);
-				formdata.append('alias',$scope.formAdata.alias);
-				formdata.append('inventoryAffected',$scope.formAdata.inventory_affected);
-				formdata.append('address1',$scope.formAdata.address1);
-				formdata.append('address2',$scope.formAdata.address2);
-				formdata.append('contactNo',$scope.formAdata.contact_no);
-				formdata.append('emailId',$scope.formAdata.email_id);
-				formdata.append('pan',$scope.formAdata.pan);
-				formdata.append('tin',$scope.formAdata.tin);
-				formdata.append('gst',$scope.formAdata.gst);
-				formdata.append('balanceFlag',$scope.formAdata.balanceFlag);
-				formdata.append('amount',$scope.formAdata.amount);
-				formdata.append('amountType',$scope.formAdata.amountType);
-				formdata.append('stateAbb',$scope.formAdata.state_abb);
-				formdata.append('cityId',$scope.formAdata.city_id);
-				formdata.append('ledgerGroupId',$scope.formAdata.ledger_grp_id);
-				formdata.append('companyId',$scope.formAdata.company_id);
+				// formdata.append('ledgerName',$scope.formAdata.ledger_name);
+				// formdata.append('alias',$scope.formAdata.alias);
+				// formdata.append('inventoryAffected',$scope.formAdata.inventory_affected);
+				// formdata.append('address1',$scope.formAdata.address1);
+				// formdata.append('address2',$scope.formAdata.address2);
+				// formdata.append('contactNo',$scope.formAdata.contact_no);
+				// formdata.append('emailId',$scope.formAdata.email_id);
+				// formdata.append('pan',$scope.formAdata.pan);
+				// formdata.append('tin',$scope.formAdata.tin);
+				// formdata.append('gst',$scope.formAdata.gst);
+				// formdata.append('balanceFlag',$scope.formAdata.balanceFlag);
+				// formdata.append('amount',$scope.formAdata.amount);
+				// formdata.append('amountType',$scope.formAdata.amountType);
+				// formdata.append('stateAbb',$scope.formAdata.state_abb);
+				// formdata.append('cityId',$scope.formAdata.city_id);
+				// formdata.append('ledgerGroupId',$scope.formAdata.ledger_grp_id);
+				// formdata.append('companyId',$scope.formAdata.company_id);
 				
 				//client
 				// $scope.formAdata.client_name = "abcc";
@@ -376,9 +376,9 @@ include ('connection.php');
 				// formdata.append('jfId',13);
  				// formdata.append('companyId',15);
 				// formdata.append('entryDate','22-10-2016');
-				// var json=[{"amount":120 ,"amountType":" credit ","ledgerId":88},{"amount":21,"amountType":"credit","ledgerId":86},{"amount":141,"amountType":"debit","ledgerId":87}];
+				// var json=[{"amount":200,"amountType":" credit ","ledgerId":88},{"amount":21,"amountType":"credit","ledgerId":86},{"amount":221,"amountType":"debit","ledgerId":87}];
 				
-				// var inventory = [{"productId": 10 ,"discount":100,"discountType":"flat","price":900,"qty":44},{"productId": 10 ,"discount":10,"discountType":"percentage","price":200,"qty":44}];
+				var inventory = [{"productId": 10 ,"discount":100,"discountType":"flat","price":900,"qty":44},{"productId": 10 ,"discount":10,"discountType":"percentage","price":1000,"qty":44}];
 				// formdata.append('transactionDate','24-10-2015');
 				// formdata.append('tax',21);
 				// formdata.append('invoiceNumber',25);
@@ -392,14 +392,14 @@ include ('connection.php');
   					// });
     
   				// }
-				// for(var i=0;i<inventory.length;i++){
+				for(var i=0;i<inventory.length;i++){
    
-  					// angular.forEach(inventory[i], function (value,key) {
+  					angular.forEach(inventory[i], function (value,key) {
    						
-   					// formdata.append('inventory['+i+']['+key+']',value);
-  					// });
+   					formdata.append('inventory['+i+']['+key+']',value);
+  					});
     
-  				// }
+  				}
 				//transaction
 				// $scope.user = [{"inventory":[{"productId":7 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 7 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"companyId":14,"transactionDate":"22-10-2015"}];
 				
@@ -429,7 +429,7 @@ include ('connection.php');
 				// var productId = 1;
 				// var productGrpId = 11;
 				// var productCatId = 16;
-				var companyId=15;
+				// var companyId=15;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -440,10 +440,10 @@ include ('connection.php');
 				// var quotationId=3;
 				// var ledgerGrpId=9;
 				// var ledgerId=85;
-				// var jfId=13;
+				var jfId=13;
 				// var journalId=322;
 				
-				var url = "http://www.scerp1.com/accounting/trial-balance/company/"+companyId;
+				// var url = "http://www.scerp1.com/accounting/trial-balance/company/"+companyId;
 				
 				// var url = "http://www.scerp1.com/accounting/bills";
 				
@@ -456,7 +456,7 @@ include ('connection.php');
 				
 				// var url="http://www.scerp1.com/accos";
 				// var url="http://www.scerp1.com/accounting/journals";
-				// var url="http://www.scerp1.com/accounting/journals/"+jfId;
+				var url="http://www.scerp1.com/accounting/journals/"+jfId;
 				// var url="http://www.scerp1.com/accounting/journals/"+journalId;
 				// var url="http://www.scerp1.com/accounting/journals/company/"+companyId;
 				// var url="http://www.scerp1.com/accounting/journals/next";
@@ -505,19 +505,19 @@ include ('connection.php');
 				$http({
                         url: url,
                         // type:'patch',
-						 // method: 'post',
-						method: 'get',
+						 method: 'post',
+						// method: 'get',
 						// method: "PATCH",
 						// method:'delete',
 						processData: false,
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
                         // headers: {'Content-Type': undefined,'ledgerName':'sales'},
                         // headers: {'Content-Type': undefined,'jfId':'4'},
-                        // headers: {'Content-Type': undefined,'type':'sales'},
-                        headers: {'Content-Type': undefined},
+                        headers: {'Content-Type': undefined,'type':'sales'},
+                        // headers: {'Content-Type': undefined},
                         // headers: {'Content-Type': undefined,'ledgerGroup':[9,12]},
                         // headers: {'Content-Type': undefined,'type':'sales','jfId':5},
-						 // data:formdata
+						 data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

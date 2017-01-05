@@ -37,7 +37,7 @@ class ProductProcessor extends BaseProcessor
 		$value = array();
 		$data=0;
 		
-		//get exception message
+		// get exception message
 		$exception = new ExceptionMessage();
 		$msgArray = $exception->messageArrays();
 		if(count($_POST)==0)
@@ -46,7 +46,7 @@ class ProductProcessor extends BaseProcessor
 		}
 		else
 		{
-			//trim an input 
+			// trim an input 
 			$productTransformer = new ProductTransformer();
 			$tRequest = $productTransformer->trimInsertData($this->request);
 			if($tRequest==1)
@@ -55,7 +55,7 @@ class ProductProcessor extends BaseProcessor
 			}	
 			else
 			{
-				//validation
+				// validation
 				$productValidate = new ProductValidate();
 				$status = $productValidate->validate($tRequest);
 				if($status=="Success")
@@ -86,10 +86,10 @@ class ProductProcessor extends BaseProcessor
 					// set data to the persistable object
 					for($data=0;$data<count($productValue);$data++)
 					{
-						//set the data in persistable object
+						// set the data in persistable object
 						$productPersistable = new ProductPersistable();	
 						$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
-						//make function name dynamically
+						// make function name dynamically
 						$setFuncName = 'set'.$str;
 						$getFuncName[$data] = 'get'.$str;
 						$productPersistable->$setFuncName($productValue[$data]);
@@ -117,11 +117,11 @@ class ProductProcessor extends BaseProcessor
 		$this->request = $request;	
 		$data=0;
 		
-		//trim an input 
+		// trim an input 
 		$productTransformer = new ProductTransformer();
 		$tRequest = $productTransformer->trimInsertInOutwardData($this->request,$inOutWard);
 		
-		//get exception message
+		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
@@ -131,7 +131,7 @@ class ProductProcessor extends BaseProcessor
 		}	
 		else
 		{
-			//validation
+			// validation
 			$productValidate = new ProductValidate();
 			$status = $productValidate->validateInOutward($tRequest);
 			
@@ -178,7 +178,7 @@ class ProductProcessor extends BaseProcessor
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
 		
-		//get exception message
+		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		// update
@@ -189,23 +189,23 @@ class ProductProcessor extends BaseProcessor
 			$productArray = array();
 			$productValidate = new ProductValidate();
 			$status;
-			//if data is not available in update request
+			// if data is not available in update request
 			if(count($_POST)==0)
 			{
 				$status = $exceptionArray['204'];
 				return $status;
 			}
-			//data is avalilable for update
+			// data is avalilable for update
 			else
 			{
 				for($data=0;$data<count($_POST);$data++)
 				{
-					//data get from body
+					// data get from body
 					$productPersistable = new ProductPersistable();
 					$value[$data] = $_POST[array_keys($_POST)[$data]];
 					$key[$data] = array_keys($_POST)[$data];
 					
-					//trim an input 
+					// trim an input 
 					$productTransformer = new ProductTransformer();
 					$tRequest = $productTransformer->trimUpdateData($key[$data],$value[$data]);
 					if($tRequest==1)
@@ -214,13 +214,13 @@ class ProductProcessor extends BaseProcessor
 					}
 					else
 					{
-						//get key value from trim array
+						// get key value from trim array
 						$tKeyValue[$data] = array_keys($tRequest[0])[0];
 						$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
 						
-						//validation
+						// validation
 						$status = $productValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
-						//enter data is valid(one data validate status return)
+						// enter data is valid(one data validate status return)
 						if($status=="Success")
 						{
 							// check data is string or not
@@ -240,11 +240,11 @@ class ProductProcessor extends BaseProcessor
 								$productValue[$data] = $tValue[$data];
 							}
 							
-							//flag=0...then data is valid(consider one data at a time)
+							// flag=0...then data is valid(consider one data at a time)
 							if($flag==0)
 							{
 								$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
-								//make function name dynamically
+								// make function name dynamically
 								$setFuncName = 'set'.$str;
 								$getFuncName[$data] = 'get'.$str;
 								$productPersistable->$setFuncName($productValue[$data]);
@@ -258,10 +258,10 @@ class ProductProcessor extends BaseProcessor
 								
 							}
 						}
-						//enter data is not valid
+						// enter data is not valid
 						else
 						{
-							//if flag==1 then enter data is not valid ..so error return(consider one data at a time)
+							// if flag==1 then enter data is not valid ..so error return(consider one data at a time)
 							$flag=1;
 							if(!empty($status[0]))
 							{
@@ -286,7 +286,7 @@ class ProductProcessor extends BaseProcessor
 			}
 		}
 		
-		//delete
+		// delete
 		else if($requestMethod == $constantArray['deleteMethod'])
 		{
 			$productPersistable = new productPersistable();		
@@ -298,7 +298,7 @@ class ProductProcessor extends BaseProcessor
 	/**
      * process product-transaction data(sale/purchase)
      * $param product-array and transaction-type
-     * @return product-transaction Persistable object/exception message / error message
+     * @return product-transaction Persistable object/exception message/error message
      */	
 	public function createPersistableChangeInOutWard($productArray,$inOutWard,$jfId)
 	{
@@ -315,27 +315,25 @@ class ProductProcessor extends BaseProcessor
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
 		
-		//get exception message
+		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		// update
-		if($requestMethod == $constantArray['postMethod'])
+		if(strcmp($requestMethod,$constantArray['postMethod'])==0)
 		{
-			//if data is not available in update request
+			// if data is not available in update request
 			if(count($_POST)==0)
 			{
 				$status = $exceptionArray['204'];
 				return $status;
 			}
-			//data is avalilable for update
+			// data is avalilable for update
 			else
 			{
 				$productPersistable = array();
 				$productMultipleArray = array();
-				//data get from body
-				
 				$productSingleArray = array();
-				//trim an input 
+				// trim an input 
 				$productTransformer = new ProductTransformer();
 				$tRequest = $productTransformer->trimUpdateProductData($productArray,$inOutWard);
 				if($tRequest==1)
@@ -355,36 +353,35 @@ class ProductProcessor extends BaseProcessor
 					$journalData = array();
 					if(array_key_exists("tax",$tRequest) || array_key_exists("0",$tRequest))
 					{
-						//check accounting Rules
+						// check accounting Rules
 						$buisnessLogic = new BuisnessLogic();
 						$buisnessResult = $buisnessLogic->validateUpdateProductBuisnessLogic($headerType,$journalData,$tRequest,$jfId);
-						
 						if(!is_array($buisnessResult))
 						{
 							return $buisnessResult;
 						}
 					}
 				}
-				//get data from trim array
+				// get data from trim array
 				if(is_array($tRequest))
 				{
-					//data is exists in request or not checking by flag
+					// data is exists in request or not checking by flag
 					if(array_key_exists($constantArray['flag'],$tRequest))
 					{
 						$trimFlag=1;
 					}
-					//data
+					// data
 					if($trimFlag==1)
 					{
-						//check array is exists 
+						// check array is exists 
 						if(array_key_exists(0,$tRequest))
 						{
 							$trimArrayFalg=1;
 						}	
-						//array with data
+						// array with data
 						if($trimArrayFalg==1)
 						{
-							//validate only single data not an array (pending multiple array data)
+							// validate only single data not an array (pending multiple array data)
 							for($multipleArray=0;$multipleArray<count($tRequest[0]);$multipleArray++)
 							{
 								$productPersistable[$multipleArray] = new ProductPersistable();
@@ -422,7 +419,7 @@ class ProductProcessor extends BaseProcessor
 							array_push($productSingleArray,$productMultipleArray);
 							return $productSingleArray;
 						}
-						//only data exists
+						// only data exists
 						else
 						{
 							for($trimResponse=0;$trimResponse<count($tRequest)-1;$trimResponse++)
@@ -451,7 +448,7 @@ class ProductProcessor extends BaseProcessor
 							return $productSingleArray;
 						}
 					}
-					//only array exists
+					// only array exists
 					else
 					{
 						for($multipleArray=0;$multipleArray<count($tRequest);$multipleArray++)

@@ -255,6 +255,7 @@ class BuisnessLogic extends LedgerModel
 		$discountFlag=0;
 		$journalDiscountFlag=0;
 		$journalTaxFlag=0;
+		$disFlag=0;
 		
 		//get exception message
 		$exception = new ExceptionMessage();
@@ -324,6 +325,10 @@ class BuisnessLogic extends LedgerModel
 							$discountFlag=1;
 						}
 					}
+					if(json_decode($ledgerResult)->ledgerGroup->ledgerGroupId!=16 && $discountTotal==0)
+					{
+						$disFlag++;
+					}
 				}
 				else
 				{
@@ -343,11 +348,22 @@ class BuisnessLogic extends LedgerModel
 							$discountFlag=1;
 						}
 					}
+					if(json_decode($ledgerResult)->ledgerGroup->ledgerGroupId!=17 && $discountTotal==0)
+					{
+						$disFlag++;
+					}
 				}
+				
 			}
-			if($taxFlag==0 || $discountFlag==0)
+			if(count($trimData)==$disFlag && $taxFlag==1)
+			{
+			}
+			else if($discountFlag==0 || $taxFlag==0)
 			{
 				return $exceptionArray['content'];
+			}
+			else
+			{
 			}
 		}
 		//only tax exist
@@ -475,6 +491,10 @@ class BuisnessLogic extends LedgerModel
 							$discountFlag=1;
 						}
 					}
+					if(json_decode($ledgerResult)->ledgerGroup->ledgerGroupId!=16 && $discountTotal==0)
+					{
+						$disFlag++;
+					}
 					if(json_decode($ledgerResult)->ledgerGroup->ledgerGroupId==17)
 					{
 						// discount ledger exist
@@ -502,6 +522,10 @@ class BuisnessLogic extends LedgerModel
 							$discountFlag=1;
 						}
 					}
+					if(json_decode($ledgerResult)->ledgerGroup->ledgerGroupId!=17 && $discountTotal==0)
+					{
+						$disFlag++;
+					}
 					if(json_decode($ledgerResult)->ledgerGroup->ledgerGroupId==16)
 					{
 						// discount ledger exist
@@ -520,7 +544,14 @@ class BuisnessLogic extends LedgerModel
 					}
 				}
 			}
-			if($discountFlag==0 || $journalTaxFlag==1 && $taxFlag==0)
+			if(count($trimData)==$disFlag)
+			{
+			}
+			else if($discountFlag==0)
+			{
+				return $exceptionArray['content'];
+			}
+			if($journalTaxFlag==1 && $taxFlag==0)
 			{
 				return $exceptionArray['content'];
 			}
@@ -538,6 +569,7 @@ class BuisnessLogic extends LedgerModel
 	{
 		$journalDiscountFlag=0;
 		$taxFlag=0;
+		$disFlag=0;
 		$discountFlag=0;
 		$ledgerIdArray = array();
 		$discountArray = array();
@@ -582,7 +614,12 @@ class BuisnessLogic extends LedgerModel
 			{
 				$arrayProductData = $productData;
 			}
-			
+			$discountTotal=0;
+			//discount ledger exist
+			for($productArrayData=0;$productArrayData<count($arrayProductData);$productArrayData++)
+			{
+				$discountTotal = $discountTotal+$arrayProductData[$productArrayData]['discount'];
+			}
 			for($journalArrayData=0;$journalArrayData<count($decodedJournalData);$journalArrayData++)
 			{
 				$ledgerIdArray[$journalArrayData] = $decodedJournalData[$journalArrayData]->ledger_id;
@@ -599,16 +636,14 @@ class BuisnessLogic extends LedgerModel
 					}
 					if(json_decode($ledgerResult)->ledgerGroup->ledgerGroupId==16)
 					{
-						$discountTotal = 0;
-						//discount ledger exist
-						for($productArrayData=0;$productArrayData<count($arrayProductData);$productArrayData++)
-						{
-							$discountTotal = $discountTotal+$arrayProductData[$productArrayData]['discount'];
-						}
 						if($discountTotal == $decodedJournalData[$journalArrayData]->amount)
 						{
 							$discountFlag=1;
 						}
+					}
+					if(json_decode($ledgerResult)->ledgerGroup->ledgerGroupId!=16 && $discountTotal==0)
+					{
+						$disFlag++;
 					}
 				}
 				else
@@ -623,22 +658,26 @@ class BuisnessLogic extends LedgerModel
 					}
 					if(json_decode($ledgerResult)->ledgerGroup->ledgerGroupId==17)
 					{
-						$discountTotal = 0;
-						//discount ledger exist
-						for($productArrayData=0;$productArrayData<count($arrayProductData);$productArrayData++)
-						{
-							$discountTotal = $discountTotal+$arrayProductData[$productArrayData]['discount'];
-						}
 						if($discountTotal == $decodedJournalData[$journalArrayData]->amount)
 						{
 							$discountFlag=1;
 						}
 					}
+					if(json_decode($ledgerResult)->ledgerGroup->ledgerGroupId!=17 && $discountTotal==0)
+					{
+						$disFlag++;
+					}
 				}
 			}
-			if($discountFlag==0 || $taxFlag==0)
+			if(count($decodedJournalData)==$disFlag && $taxFlag==1)
+			{
+			}
+			else if($discountFlag==0 || $taxFlag==0)
 			{
 				return $exceptionArray['content'];
+			}
+			else
+			{
 			}
 		}
 		//only tax exist
@@ -687,6 +726,12 @@ class BuisnessLogic extends LedgerModel
 			{
 				$arrayProductData = $productData;
 			}
+			$discountTotal=0;
+			//discount ledger exist
+			for($productArrayData=0;$productArrayData<count($arrayProductData);$productArrayData++)
+			{
+				$discountTotal = $discountTotal+$arrayProductData[$productArrayData]['discount'];
+			}
 			for($journalArrayData=0;$journalArrayData<count($decodedJournalData);$journalArrayData++)
 			{
 				$ledgerIdArray[$journalArrayData] = $decodedJournalData[$journalArrayData]->ledger_id;
@@ -695,38 +740,40 @@ class BuisnessLogic extends LedgerModel
 				{
 					if(json_decode($ledgerResult)->ledgerGroup->ledgerGroupId==16)
 					{
-						$discountTotal=0;
-						//discount ledger exist
-						for($productArrayData=0;$productArrayData<count($arrayProductData);$productArrayData++)
-						{
-							$discountTotal = $discountTotal+$arrayProductData[$productArrayData]['discount'];
-						}
 						if($discountTotal == $decodedJournalData[$journalArrayData]->amount)
 						{
 							$discountFlag=1;
 						}
+					}
+					if(json_decode($ledgerResult)->ledgerGroup->ledgerGroupId!=16 && $discountTotal==0)
+					{
+						$disFlag++;
 					}
 				}
 				else
 				{
 					if(json_decode($ledgerResult)->ledgerGroup->ledgerGroupId==17)
 					{
-						$discountTotal=0;
-						//discount ledger exist
-						for($productArrayData=0;$productArrayData<count($arrayProductData);$productArrayData++)
-						{
-							$discountTotal = $discountTotal+$arrayProductData[$productArrayData]['discount'];
-						}
 						if($discountTotal == $decodedJournalData[$journalArrayData]->amount)
 						{
 							$discountFlag=1;
 						}
 					}
+					if(json_decode($ledgerResult)->ledgerGroup->ledgerGroupId!=17 && $discountTotal==0)
+					{
+						$disFlag++;
+					}
 				}
 			}
-			if($discountFlag==0)
+			if(count($decodedJournalData)==$disFlag)
+			{
+			}
+			else if($discountFlag==0)
 			{
 				return $exceptionArray['content'];
+			}
+			else
+			{
 			}
 		}
 		return $trimJournalData;
@@ -765,19 +812,25 @@ class BuisnessLogic extends LedgerModel
 		$productRequest->headers->set('jfid',$jfId);
 		$processedData = $productController->getData($productRequest);
 		$jsonDecodedProductData = json_decode($processedData);
-		
-		for($journalArrayData=0;$journalArrayData<count($journalData[0]);$journalArrayData++)
+		if(array_key_exists("flag",$journalData))
 		{
-			$ledgerIdArray[$journalArrayData] = $journalData[0][$journalArrayData]['ledger_id'];
+			$journalDataArray = $journalData[0];
+		}
+		else
+		{
+			$journalDataArray = $journalData;
+		}
+		for($journalArrayData=0;$journalArrayData<count($journalDataArray);$journalArrayData++)
+		{
+			$ledgerIdArray[$journalArrayData] = $journalDataArray[$journalArrayData]['ledger_id'];
 			$ledgerResult = $ledgerService->getLedgerData($ledgerIdArray[$journalArrayData]);
-			
 			if(strcmp("sales",$headerData['type'][0])==0)
 			{
 				if(json_decode($ledgerResult)->ledgerGroup->ledgerGroupId==17)
 				{
 					$journalTaxFlag=1;
-					//tax  ledger exist
-					if($journalData[0][$journalArrayData]['amount']==$jsonDecodedProductData[0]->tax)
+					//tax ledger exist
+					if($journalDataArray[$journalArrayData]['amount']==$jsonDecodedProductData[0]->tax)
 					{
 						$taxFlag=1;
 					}
@@ -800,7 +853,7 @@ class BuisnessLogic extends LedgerModel
 						}
 						$discount = $discount+$discountArray[$productArrayData];
 					}
-					if($discount==$journalData[0][$journalArrayData]['amount'])
+					if($discount==$journalDataArray[$journalArrayData]['amount'])
 					{
 						$discountFlag=1;
 					}
@@ -812,7 +865,7 @@ class BuisnessLogic extends LedgerModel
 				{
 					$journalTaxFlag=1;
 					//tax  ledger exist
-					if($journalData[0][$journalArrayData]['amount']==$jsonDecodedProductData[0]->tax)
+					if($journalDataArray[$journalArrayData]['amount']==$jsonDecodedProductData[0]->tax)
 					{
 						$taxFlag=1;
 					}
@@ -834,7 +887,7 @@ class BuisnessLogic extends LedgerModel
 						}
 						$discount = $discount+$discountArray[$productArrayData];
 					}
-					if($discount==$journalData[0][$journalArrayData]['amount'])
+					if($discount==$journalDataArray[$journalArrayData]['amount'])
 					{
 						$discountFlag=1;
 					}

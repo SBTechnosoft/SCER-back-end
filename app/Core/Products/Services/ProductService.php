@@ -330,7 +330,6 @@ class ProductService extends AbstractService
 		$flagData=0;
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-		
 		if(array_key_exists($constantArray['flag'],$productArray))
 		{
 			$flagData=1;
