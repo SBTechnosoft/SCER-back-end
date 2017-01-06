@@ -12,7 +12,7 @@
                 "state": {
                     ... Standard State Object
                 },
-                "pincode": char,
+                "pincode": int,
 				"pan": char,
 				"tin": char,
 				"vatNo": char,

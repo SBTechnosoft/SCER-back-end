@@ -442,7 +442,9 @@ include ('connection.php');
 				// var ledgerId=85;
 				var jfId=13;
 				// var journalId=322;
-				
+				var url = "http://www.scerp1.com/users";
+				var url = "http://www.scerp1.com/users/"+userId;
+				var url = "http://www.scerp1.com/users/email-address/"+emailId;
 				// var url = "http://www.scerp1.com/accounting/trial-balance/company/"+companyId;
 				
 				// var url = "http://www.scerp1.com/accounting/bills";
