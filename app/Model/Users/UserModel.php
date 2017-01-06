@@ -167,42 +167,34 @@ class UserModel extends Model
 	}
 	
 	//delete
-	public function deleteData($stateAbb)
+	public function deleteData($userId)
 	{
 		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
-		$raw = DB::statement("update state_mst 
+		$raw = DB::statement("update user_mst 
 		set deleted_at='".$mytime."'
-		where state_abb = '".$stateAbb."'");
+		where user_id = '".$userId."'");
 		DB::commit();
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			$city = DB::statement("update city_mst 
-			set deleted_at='".$mytime."'
-			where state_abb = '".$stateAbb."'");
-			$company = DB::statement("update company_mst 
-			set deleted_at='".$mytime."'
-			where state_abb = '".$stateAbb."'");
-			$branch = DB::statement("update branch_mst 
-			set deleted_at='".$mytime."'
-			where state_abb = '".$stateAbb."'");
-			
-			if($city==1 && $company==1 && $branch==1)
-			{
-				return $fileSizeArray['200'];
-			}
-			else
-			{
-				return $fileSizeArray['500'];
-			}
+			// $activeSession = DB::statement("delete from active_session 
+			// where user_id = '".$userId."'");
+			// if($activeSession==1)
+			// {
+				return $exceptionArray['200'];
+			// }
+			// else
+			// {
+				// return $exceptionArray['500'];
+			// }
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return $exceptionArray['500'];
 		}
 	}
 }

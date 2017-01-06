@@ -138,28 +138,28 @@ class UserController extends BaseController implements ContainerInterface
      * @param  Request object[Request $request]     
      * @param  state_abb     
      */
-    public function Destroy(Request $request,$stateAbb)
+    public function Destroy(Request $request,$userId)
     {
         $this->request = $request;
-		$processor = new StateProcessor();
-		$statePersistable = new StatePersistable();		
-		$stateService= new StateService();	
+		$processor = new UserProcessor();
+		$userPersistable = new UserPersistable();		
+		$userService= new UserService();	
 		
-		$stateModel = new StateModel();	
-		$result = $stateModel->getData($stateAbb);
+		$userModel = new UserModel();	
+		$result = $userModel->getData($userId);
 		
 		// get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		
-		if(strcmp($result,$fileSizeArray['404'])==0)
+		if(strcmp($result,$exceptionArray['404'])==0)
 		{
-			return $fileSizeArray['404'];
+			return $exceptionArray['404'];
 		}
 		else
 		{		
-			$statePersistable = $processor->createPersistableChange($this->request,$stateAbb);
-			$status = $stateService->delete($statePersistable);
+			$userPersistable = $processor->createPersistableChange($this->request,$userId);
+			$status = $userService->delete($userPersistable);
 			return $status;
 		}
     }

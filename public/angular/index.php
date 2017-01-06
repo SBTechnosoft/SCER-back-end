@@ -356,6 +356,11 @@ include ('connection.php');
 				// formdata.append('stateAbb',$scope.formAdata.state_abb);
 				// formdata.append('cityId',$scope.formAdata.city_id);
 				
+				//Authenticate
+				$scope.formAdata.email_id = "farhan@gmail.com";
+				$scope.formAdata.password = "farhan";
+				formdata.append('emailId',$scope.formAdata.email_id);
+				formdata.append('password',$scope.formAdata.password);
 				
 				// special journal
 				// $scope.user = [{"jfId":4,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":35},{"amount":2,"amountType":"credit","ledgerId":35},{"amount":12,"amountType":"debit","ledgerId":35}],"entryDate":"22-10-2015","companyId":14}];
@@ -447,7 +452,7 @@ include ('connection.php');
 						// formdata.append('inventory['+i+']['+key+']',input);
 					// });
 				// }
-				var userId=3;
+				// var userId=4;
 				// var clientId=2;
 				// var productId = 1;
 				// var productGrpId = 11;
@@ -466,7 +471,8 @@ include ('connection.php');
 				// var jfId=13;
 				// var journalId=322;
 				// var url = "http://www.scerp1.com/users";
-				var url = "http://www.scerp1.com/users/"+userId;
+				// var url = "http://www.scerp1.com/users/"+userId;
+				var url = "http://www.scerp1.com/authenticate";
 				// var url = "http://www.scerp1.com/users/email-address/"+emailId;
 				// var url = "http://www.scerp1.com/accounting/trial-balance/company/"+companyId;
 				
@@ -530,10 +536,10 @@ include ('connection.php');
 				$http({
                         url: url,
                         // type:'patch',
-						 // method: 'post',
+						 method: 'post',
 						// method: 'get',
 						// method: "PATCH",
-						method:'delete',
+						// method:'delete',
 						processData: false,
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
                         // headers: {'Content-Type': undefined,'ledgerName':'sales'},

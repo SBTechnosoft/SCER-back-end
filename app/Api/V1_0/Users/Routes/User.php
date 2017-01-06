@@ -28,7 +28,7 @@ class User implements RouteRegistrarInterface
 		Route::post('Users/User/{userId}', 'Users\Controllers\UserController@update');
 		
 		//delete data delete request
-		// Route::delete('States/State/{stateAbb}', 'States\Controllers\StateController@Destroy');
+		Route::delete('Users/User/{userId}', 'Users\Controllers\UserController@Destroy');
 			
     }
 }

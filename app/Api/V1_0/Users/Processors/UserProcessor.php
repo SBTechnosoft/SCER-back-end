@@ -227,9 +227,9 @@ class UserProcessor extends BaseProcessor
 		//delete
 		else if($requestMethod == 'DELETE')
 		{
-			$statePersistable = new StatePersistable();		
-			$statePersistable->setStateAbb($stateAbb);			
-			return $statePersistable;
+			$userPersistable = new UserPersistable();		
+			$userPersistable->setUserId($userId);			
+			return $userPersistable;
 		}
 	}
 	

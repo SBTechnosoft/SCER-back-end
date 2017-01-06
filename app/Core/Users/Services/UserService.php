@@ -150,11 +150,11 @@ class UserService extends AbstractService
      * delete
      * @param $StatePersistable $persistable 
      */
-    public function delete(StatePersistable $persistable)
+    public function delete(UserPersistable $persistable)
     {      
-		$stateAbb = $persistable->getStateAbb();
-        $stateModel = new StateModel();
-		$status = $stateModel->deleteData($stateAbb);
+		$userId = $persistable->getUserId();
+		$userModel = new UserModel();
+		$status = $userModel->deleteData($userId);
 		return $status;
     }   
 }
