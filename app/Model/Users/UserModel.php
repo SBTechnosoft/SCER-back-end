@@ -1,5 +1,5 @@
 <?php
-namespace ERP\Model\States;
+namespace ERP\Model\Users;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
@@ -8,9 +8,9 @@ use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class StateModel extends Model
+class UserModel extends Model
 {
-	protected $table = 'state_mst';
+	protected $table = 'user_mst';
 	
 	/**
 	 * insert data 
@@ -19,41 +19,41 @@ class StateModel extends Model
 	*/
 	public function insertData()
 	{
-		$getStateData = array();
-		$getStateKey = array();
-		$getStateData = func_get_arg(0);
-		$getStateKey = func_get_arg(1);
-		$stateData="";
+		$getUserData = array();
+		$getUserKey = array();
+		$getUserData = func_get_arg(0);
+		$getUserKey = func_get_arg(1);
+		$userData="";
 		$keyName = "";
-		for($data=0;$data<count($getStateData);$data++)
+		for($data=0;$data<count($getUserData);$data++)
 		{
-			if($data == (count($getStateData)-1))
+			if($data == (count($getUserData)-1))
 			{
-				$stateData = $stateData."'".$getStateData[$data]."'";
-				$keyName =$keyName.$getStateKey[$data];
+				$userData = $userData."'".$getUserData[$data]."'";
+				$keyName =$keyName.$getUserKey[$data];
 			}
 			else
 			{
-				$stateData = $stateData."'".$getStateData[$data]."',";
-				$keyName =$keyName.$getStateKey[$data].",";
+				$userData = $userData."'".$getUserData[$data]."',";
+				$keyName =$keyName.$getUserKey[$data].",";
 			}
 		}
 		
 		DB::beginTransaction();
-		$raw = DB::statement("insert into state_mst(".$keyName.") 
-		values(".$stateData.")");
+		$raw = DB::statement("insert into user_mst(".$keyName.") 
+		values(".$userData.")");
 		DB::commit();
 		
-		//get exception message
+		// get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $fileSizeArray['200'];
+			return $exceptionArray['200'];
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return $exceptionArray['500'];
 		}
 	}
 	/**
@@ -97,20 +97,28 @@ class StateModel extends Model
 	{	
 		DB::beginTransaction();		
 		$raw = DB::select("select 
+		user_id,
+		user_name,
+		email_id,
+		password,
+		contact_no,
+		address,
+		pincode,
 		state_abb,
-		state_name,
-		is_display,
+		city_id,
+		company_id,
+		branch_id,
 		created_at,
 		updated_at
-		from state_mst where deleted_at='0000-00-00 00:00:00'");
+		from user_mst where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['204'];
+			return $exceptionArray['204'];
 		}
 		else
 		{
@@ -120,28 +128,36 @@ class StateModel extends Model
 	}
 	
 	/**
-	 * get data as per given state_abb
-	 * @param $stateAbb
+	 * get data as per given user_id
+	 * @param $userId
 	 * returns the status
 	*/
-	public function getData($stateAbb)
+	public function getData($userId)
 	{		
 		DB::beginTransaction();
 		$raw = DB::select("select 
+		user_id,
+		user_name,
+		email_id,
+		password,
+		contact_no,
+		address,
+		pincode,
 		state_abb,
-		state_name,
-		is_display,
+		city_id,
+		company_id,
+		branch_id,
 		created_at,
 		updated_at
-		from state_mst where state_abb = '".$stateAbb."' and deleted_at='0000-00-00 00:00:00'");
+		from user_mst where user_id = '".$userId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['404'];
+			return $exceptionArray['404'];
 		}
 		else
 		{
