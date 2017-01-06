@@ -122,7 +122,7 @@ class UserProcessor extends BaseProcessor
      * $param state_abb
      * @return State Persistable object
      */
-	public function createPersistableChange(Request $request,$stateAbb)
+	public function createPersistableChange(Request $request,$userId)
 	{
 		$errorCount=0;
 		$errorStatus=array();
@@ -131,9 +131,9 @@ class UserProcessor extends BaseProcessor
 		// update
 		if($requestMethod == 'POST')
 		{
-			$statePersistable;
-			$stateArray = array();
-			$stateValidate = new StateValidate();
+			$userPersistable;
+			$userArray = array();
+			$userValidate = new UserValidate();
 			$status;
 			
 			//get exception message
@@ -152,65 +152,73 @@ class UserProcessor extends BaseProcessor
 				for($data=0;$data<count($_POST);$data++)
 				{
 					//data get from body
-					$statePersistable = new StatePersistable();
+					$userPersistable = new UserPersistable();
 					$value[$data] = $_POST[array_keys($_POST)[$data]];
 					$key[$data] = array_keys($_POST)[$data];
 					
 					//trim an input 
-					$stateTransformer = new StateTransformer();
-					$tRequest = $stateTransformer->trimUpdateData($key[$data],$value[$data]);
-					
+					$userTransformer = new UserTransformer();
+					$tRequest = $userTransformer->trimUpdateData($key[$data],$value[$data]);
 					if($tRequest==1)
 					{
 						return $exceptionArray['content'];
 					}
 					else
 					{
-						//get key value from trim array
-						$tKeyValue[$data] = array_keys($tRequest[0])[0];
-						$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
-						
-						//validation
-						$status = $stateValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
-						
-						//enter data is valid(one data validate status return)
-						if($status=="Success")
+						//check emailId is exist or not?
+						if(array_key_exists("email_id",$tRequest[0]))
 						{
-							//flag=0...then data is valid(consider one data at a time)
-							if($flag==0)
+							$emailIdResult = $userValidate->emailIdCheck($tRequest[0]);
+							if(!is_array($emailIdResult))
 							{
-								$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
-								//make function name dynamically
-								$setFuncName = 'set'.$str;
-								$getFuncName[$data] = 'get'.$str;
-								$statePersistable->$setFuncName($tValue[$data]);
-								$statePersistable->setName($getFuncName[$data]);
-								$statePersistable->setKey($tKeyValue[$data]);
-								$statePersistable->setStateAbb($stateAbb);
-								$stateArray[$data] = array($statePersistable);
+								return $emailIdResult;
 							}
 						}
-						//enter data is not valid
+					}
+					//get key value from trim array
+					$tKeyValue[$data] = array_keys($tRequest[0])[0];
+					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
+					
+					//validation
+					$status = $userValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
+					
+					//enter data is valid(one data validate status return)
+					if($status=="Success")
+					{
+						//flag=0...then data is valid(consider one data at a time)
+						if($flag==0)
+						{
+							$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
+							//make function name dynamically
+							$setFuncName = 'set'.$str;
+							$getFuncName[$data] = 'get'.$str;
+							$userPersistable->$setFuncName($tValue[$data]);
+							$userPersistable->setName($getFuncName[$data]);
+							$userPersistable->setKey($tKeyValue[$data]);
+							$userPersistable->setUserId($userId);
+							$userArray[$data] = array($userPersistable);
+						}
+					}
+					//enter data is not valid
+					else
+					{
+						//if flag==1 then enter data is not valid ..so error return(consider one data at a time)
+						$flag=1;
+						if(!empty($status[0]))
+						{
+							$errorStatus[$errorCount]=$status[0];
+							$errorCount++;
+						}
+					}
+					if($data==(count($_POST)-1))
+					{
+						if($flag==1)
+						{
+							return json_encode($errorStatus);
+						}
 						else
 						{
-							//if flag==1 then enter data is not valid ..so error return(consider one data at a time)
-							$flag=1;
-							if(!empty($status[0]))
-							{
-								$errorStatus[$errorCount]=$status[0];
-								$errorCount++;
-							}
-						}
-						if($data==(count($_POST)-1))
-						{
-							if($flag==1)
-							{
-								return json_encode($errorStatus);
-							}
-							else
-							{
-								return $stateArray;
-							}
+							return $userArray;
 						}
 					}
 				}

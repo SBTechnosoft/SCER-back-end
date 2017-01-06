@@ -87,7 +87,11 @@ class UserValidate
      */
 	public function validateUpdateData($keyName,$value,$request)
 	{
-		$validationArray = array('state_name'=>"between:1,35|regex:/^[a-zA-Z &-]+$/");
+		$validationArray = array(
+			'user_name'=>"between:1,35|regex:/^[a-zA-Z &-]+$/",
+			'address'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
+			'pincode'=>'between:6,10|regex:/^[0-9]+$/'
+		);
 		$rules = array();
 		foreach ($validationArray as $key => $value) 
 		{
@@ -103,8 +107,12 @@ class UserValidate
 				$key=> $rules[$key]
 			);
 			$messages = [
-				'state_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
-				'state_name.regex' => 'state-name contains character from "a-zA-Z -&" only',
+				'user_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
+				'user_name.regex' => 'user-name contains character from "a-zA-Z -&" only',
+				'address.between' => 'StringLengthException :Enter the :attribute less then 35 character',
+				'address.regex' => 'address contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
+				'pincode.between' => 'NumberFormatException :Enter the :attribute between 6 and 10 character',
+				'pincode.regex' => 'pincode contains numbers only'
 			];
 			$validator = Validator::make($request,$rules,$messages);
 			

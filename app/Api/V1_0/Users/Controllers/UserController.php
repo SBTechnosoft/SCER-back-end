@@ -101,35 +101,34 @@ class UserController extends BaseController implements ContainerInterface
      * @param  Request object[Request $request]
      * @param  state_abb
      */
-	public function update(Request $request,$stateAbb)
+	public function update(Request $request,$userId)
     {    
 		$this->request = $request;
-		$processor = new StateProcessor();
-		$statePersistable = new StatePersistable();		
-		$stateService= new StateService();
-		$stateModel = new StateModel();	
-		$result = $stateModel->getData($stateAbb);
+		$processor = new UserProcessor();
+		$userPersistable = new UserPersistable();		
+		$userService= new UserService();
+		$userModel = new UserModel();	
+		$result = $userModel->getData($userId);
 		
 		// get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		
-		if(strcmp($result,$fileSizeArray['404'])==0)
+		if(strcmp($result,$exceptionArray['404'])==0)
 		{
-			return $fileSizeArray['404'];
+			return $exceptionArray['404'];
 		}
 		else
 		{
-			$statePersistable = $processor->createPersistableChange($this->request,$stateAbb);
-			
-			if(is_array($statePersistable))
+			$userPersistable = $processor->createPersistableChange($this->request,$userId);
+			if(is_array($userPersistable))
 			{
-				$status = $stateService->update($statePersistable);
+				$status = $userService->update($userPersistable);
 				return $status;
 			}
 			else
 			{
-				return $statePersistable;
+				return $userPersistable;
 			}
 		}
 	}

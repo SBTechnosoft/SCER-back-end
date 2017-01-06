@@ -108,28 +108,28 @@ class UserService extends AbstractService
 	
     /**
      * get the data from persistable object and call the model for database update opertation
-     * @param StatePersistable $persistable
+     * @param UserPersistable $persistable
      * @param updateOptions $options [optional]
 	 * parameter is in array form.
      * @return status
      */
     public function update()
     {
-		$stateArray = array();
+		$userArray = array();
 		$getData = array();
 		$funcName = array();
-		$stateArray = func_get_arg(0);
+		$userArray = func_get_arg(0);
 		
-		for($data=0;$data<count($stateArray);$data++)
+		for($data=0;$data<count($userArray);$data++)
 		{
-			$funcName[$data] = $stateArray[$data][0]->getName();
-			$getData[$data] = $stateArray[$data][0]->$funcName[$data]();
-			$keyName[$data] = $stateArray[$data][0]->getkey();
+			$funcName[$data] = $userArray[$data][0]->getName();
+			$getData[$data] = $userArray[$data][0]->$funcName[$data]();
+			$keyName[$data] = $userArray[$data][0]->getkey();
 		}
-		$stateAbb = $stateArray[0][0]->getStateAbb();
+		$userId = $userArray[0][0]->getUserId();
 		//data pass to the model object for update
-		$stateModel = new StateModel();
-		$status = $stateModel->updateData($getData,$keyName,$stateAbb);
+		$userModel = new UserModel();
+		$status = $userModel->updateData($getData,$keyName,$userId);
 		return $status;		
     }
 

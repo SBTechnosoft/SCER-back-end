@@ -335,11 +335,11 @@ include ('connection.php');
 				
 				//User
 				// $scope.formAdata.user_name = "farhan";
-				// $scope.formAdata.contact_no = "87654534546";
-				// $scope.formAdata.email_id = "abc1@gmail.com";
-				// $scope.formAdata.password = "reema";
-				// $scope.formAdata.address ="35,abc2";
-				// $scope.formAdata.pincode = "876789";
+				// $scope.formAdata.contact_no = "87654534541";
+				// $scope.formAdata.email_id = "farhan@gmail.com";
+				// $scope.formAdata.password = "farhan";
+				// $scope.formAdata.address ="35,abc1";
+				// $scope.formAdata.pincode = "876781";
 				// $scope.formAdata.company_id= '14';
 				// $scope.formAdata.branch_id= '6';
 				// $scope.formAdata.state_abb= 'IN-AG';
@@ -447,7 +447,7 @@ include ('connection.php');
 						// formdata.append('inventory['+i+']['+key+']',input);
 					// });
 				// }
-				var userId=2;
+				var userId=3;
 				// var clientId=2;
 				// var productId = 1;
 				// var productGrpId = 11;
@@ -531,9 +531,9 @@ include ('connection.php');
                         url: url,
                         // type:'patch',
 						 // method: 'post',
-						method: 'get',
+						// method: 'get',
 						// method: "PATCH",
-						// method:'delete',
+						method:'delete',
 						processData: false,
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
                         // headers: {'Content-Type': undefined,'ledgerName':'sales'},
@@ -542,7 +542,7 @@ include ('connection.php');
                         headers: {'Content-Type': undefined},
                         // headers: {'Content-Type': undefined,'ledgerGroup':[9,12]},
                         // headers: {'Content-Type': undefined,'type':'sales','jfId':5},
-						 // data:formdata
+						 data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

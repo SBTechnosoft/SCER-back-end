@@ -58,34 +58,34 @@ class UserModel extends Model
 	}
 	/**
 	 * update data 
-	 * @param state_abb,state-data and key of state-data
+	 * @param user-id,user-data and key of user-data
 	 * returns the status
 	*/
-	public function updateData($stateData,$key,$stateAbb)
+	public function updateData($userData,$key,$userId)
 	{
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
-		for($data=0;$data<count($stateData);$data++)
+		for($data=0;$data<count($userData);$data++)
 		{
-			$keyValueString=$keyValueString.$key[$data]."='".$stateData[$data]."',";
+			$keyValueString=$keyValueString.$key[$data]."='".$userData[$data]."',";
 		}
 		
 		DB::beginTransaction();
-		$raw = DB::statement("update state_mst 
+		$raw = DB::statement("update user_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
-		where state_abb = '".$stateAbb."' and deleted_at='0000-00-00 00:00:00'");
+		where user_id = '".$userId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $fileSizeArray['200'];
+			return $exceptionArray['200'];
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return $exceptionArray['500'];
 		}
 	}
 	

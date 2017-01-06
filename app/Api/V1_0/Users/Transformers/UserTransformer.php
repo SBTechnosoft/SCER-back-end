@@ -63,11 +63,11 @@ class UserTransformer
 	public function trimUpdateData()
 	{
 		$isDisplayFlag=0;
-		$tStateArray = array();
-		$stateValue;
+		$tUserArray = array();
+		$userValue;
 		$convertedValue="";
 		$keyValue = func_get_arg(0);
-		$stateEnumArray = array();
+		$userEnumArray = array();
 		for($asciiChar=0;$asciiChar<strlen($keyValue);$asciiChar++)
 		{
 			if(ord($keyValue[$asciiChar])<=90 && ord($keyValue[$asciiChar])>=65) 
@@ -80,38 +80,17 @@ class UserTransformer
 				$convertedValue=$convertedValue.$keyValue[$asciiChar];
 			}
 		}
-		$stateValue = func_get_arg(1);
-		for($data=0;$data<count($stateValue);$data++)
+		$userValue = func_get_arg(1);
+		for($data=0;$data<count($userValue);$data++)
 		{
-			$tStateArray[$data]= array($convertedValue=> trim($stateValue));
-			$stateEnumArray = array_keys($tStateArray[$data])[0];
+			$tUserArray[$data]= array($convertedValue=> trim($userValue));
+			$userEnumArray = array_keys($tUserArray[$data])[0];
 		}
-		
-		$enumIsDispArray = array();
-		$isDispEnum = new IsDisplayEnum();
-		$enumIsDispArray = $isDispEnum->enumArrays();
-		if(strcmp($stateEnumArray,'is_display')==0)
+		if(array_key_exists("password",$tUserArray[0]))
 		{
-			foreach ($enumIsDispArray as $key => $value)
-			{
-				if(strcmp($tStateArray[0]['is_display'],$value)==0)
-				{
-					$isDisplayFlag=1;
-					break;
-				}
-				else
-				{
-					$isDisplayFlag=2;
-				}
-			}
+			//convert password into base64_encode
+			$tUserArray[0]['password'] = base64_encode($tUserArray[0]['password']);
 		}
-		if($isDisplayFlag==2)
-		{
-			return "1";
-		}
-		else
-		{
-			return $tStateArray;
-		}
+		return $tUserArray;
 	}
 }
