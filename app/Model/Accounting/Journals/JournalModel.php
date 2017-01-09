@@ -257,7 +257,7 @@ class JournalModel extends Model
 		ledger_id,
 		company_id
 		FROM journal_dtl  
-		WHERE YEAR(entry_date)= YEAR(CURDATE()) and 
+		WHERE YEAR(created_at)= YEAR(CURDATE()) and 
 		company_id='".$companyId."' and 
 		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();

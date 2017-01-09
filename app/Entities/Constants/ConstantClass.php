@@ -9,6 +9,8 @@ class ConstantClass
     public function constantVariable()
 	{
 		$constantArray = array();
+		$constantArray['token'] = "authenticationToken";
+		$constantArray['success'] = "success";
 		$constantArray['documentUrl'] = "Storage/Document/";
 		$constantArray['billDocumentUrl'] = "Storage/Bill/Document";
 		$constantArray['billUrl']="Storage/Bill/";

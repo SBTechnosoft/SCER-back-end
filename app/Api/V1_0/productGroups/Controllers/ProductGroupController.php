@@ -10,6 +10,8 @@ use ERP\Core\ProductGroups\Persistables\ProductGroupPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Model\ProductGroups\ProductGroupModel;
+use ERP\Entities\AuthenticationClass\TokenAuthentication;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -47,32 +49,48 @@ class ProductGroupController extends BaseController implements ContainerInterfac
 	*/
     public function store(Request $request)
     {
-		$this->request = $request;
-		// check the requested Http method
-		$requestMethod = $_SERVER['REQUEST_METHOD'];
-		// insert
-		if($requestMethod == 'POST')
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			$productGroupProcessor = new ProductGroupProcessor();
-			$productGroupPersistable = new ProductGroupPersistable();		
-			$productGroupService= new ProductGroupService();			
-			$productGroupPersistable = $productGroupProcessor->createPersistable($this->request);
-			if($productGroupPersistable[0][0]=='[')
+			$this->request = $request;
+			// check the requested Http method
+			$requestMethod = $_SERVER['REQUEST_METHOD'];
+			// insert
+			if($requestMethod == 'POST')
 			{
-				return $productGroupPersistable;
-			}
-			else if(is_array($productGroupPersistable))
-			{
-				$status = $productGroupService->insert($productGroupPersistable);
-				return $status;
+				$productGroupProcessor = new ProductGroupProcessor();
+				$productGroupPersistable = new ProductGroupPersistable();		
+				$productGroupService= new ProductGroupService();			
+				$productGroupPersistable = $productGroupProcessor->createPersistable($this->request);
+				if($productGroupPersistable[0][0]=='[')
+				{
+					return $productGroupPersistable;
+				}
+				else if(is_array($productGroupPersistable))
+				{
+					$status = $productGroupService->insert($productGroupPersistable);
+					return $status;
+				}
+				else
+				{
+					return $productGroupPersistable;
+				}
 			}
 			else
 			{
-				return $productGroupPersistable;
+				return $status;
 			}
 		}
-		else{
-			return $status;
+		else
+		{
+			return $authenticationResult;
 		}
 	}
 	
@@ -80,20 +98,35 @@ class ProductGroupController extends BaseController implements ContainerInterfac
      * get the specified resource.
      * @param  int  $companyId
      */
-    public function getData($productGroupId=null)
+    public function getData(Request $request,$productGroupId=null)
     {
-		if($productGroupId==null)
-		{			
-			$productGroupService= new productGroupService();
-			$status = $productGroupService->getAllproductGrpData();
-			return $status;
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			if($productGroupId==null)
+			{			
+				$productGroupService= new productGroupService();
+				$status = $productGroupService->getAllproductGrpData();
+				return $status;
+			}
+			else
+			{	
+				$productGroupService= new ProductGroupService();
+				$status = $productGroupService->getproductGrpData($productGroupId);
+				return $status;
+			}     
 		}
 		else
-		{	
-			$productGroupService= new ProductGroupService();
-			$status = $productGroupService->getproductGrpData($productGroupId);
-			return $status;
-		}        
+		{
+			return $authenticationResult;
+		}	
     }
 	
     /**
@@ -101,34 +134,49 @@ class ProductGroupController extends BaseController implements ContainerInterfac
      * @param  Request object[Request $request]
      */
 	public function update(Request $request,$productGroupId)
-    {    
-		$this->request = $request;
-		$productGroupProcessor = new ProductGroupProcessor();
-		$productGroupPersistable = new ProductGroupPersistable();		
-		$productGroupService= new ProductGroupService();		
-		$productGroupModel = new ProductGroupModel();	
-		$result = $productGroupModel->getData($productGroupId);
+    {
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		if(strcmp($result,$fileSizeArray['404'])==0)
-		{
-			return $result; 
-		}
-		else
-		{
-			$productGroupPersistable = $productGroupProcessor->createPersistableChange($this->request,$productGroupId);
-			//here two array and string is return at a time
-			if(is_array($productGroupPersistable))
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{	
+			$this->request = $request;
+			$productGroupProcessor = new ProductGroupProcessor();
+			$productGroupPersistable = new ProductGroupPersistable();		
+			$productGroupService= new ProductGroupService();		
+			$productGroupModel = new ProductGroupModel();	
+			$result = $productGroupModel->getData($productGroupId);
+			
+			//get exception message
+			$exception = new ExceptionMessage();
+			$fileSizeArray = $exception->messageArrays();
+			if(strcmp($result,$fileSizeArray['404'])==0)
 			{
-				$status = $productGroupService->update($productGroupPersistable);
-				return $status;
+				return $result; 
 			}
 			else
 			{
-				return $productGroupPersistable;
+				$productGroupPersistable = $productGroupProcessor->createPersistableChange($this->request,$productGroupId);
+				//here two array and string is return at a time
+				if(is_array($productGroupPersistable))
+				{
+					$status = $productGroupService->update($productGroupPersistable);
+					return $status;
+				}
+				else
+				{
+					return $productGroupPersistable;
+				}
 			}
+		}
+		else
+		{
+			return $authenticationResult;
 		}
 	}
 	
@@ -138,25 +186,40 @@ class ProductGroupController extends BaseController implements ContainerInterfac
      */
     public function Destroy(Request $request,$productGroupId)
     {
-        $this->request = $request;
-		$processor = new ProductGroupProcessor();
-		$productGroupPersistable = new ProductGroupPersistable();		
-		$productGroupService= new ProductGroupService();		
-		$productGroupModel = new ProductGroupModel();	
-		$result = $productGroupModel->getData($productGroupId);
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		if(strcmp($result,$fileSizeArray['404'])==0)
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			return $result; 
+			$this->request = $request;
+			$processor = new ProductGroupProcessor();
+			$productGroupPersistable = new ProductGroupPersistable();		
+			$productGroupService= new ProductGroupService();		
+			$productGroupModel = new ProductGroupModel();	
+			$result = $productGroupModel->getData($productGroupId);
+			
+			//get exception message
+			$exception = new ExceptionMessage();
+			$fileSizeArray = $exception->messageArrays();
+			if(strcmp($result,$fileSizeArray['404'])==0)
+			{
+				return $result; 
+			}
+			else
+			{		
+				$productGroupPersistable = $processor->createPersistableChange($this->request,$productGroupId);
+				$status = $productGroupService->delete($productGroupPersistable);
+				return $status;
+			}
 		}
 		else
-		{		
-			$productGroupPersistable = $processor->createPersistableChange($this->request,$productGroupId);
-			$status = $productGroupService->delete($productGroupPersistable);
-			return $status;
+		{
+			return $authenticationResult;
 		}
     }
 }

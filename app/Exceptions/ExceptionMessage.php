@@ -19,6 +19,9 @@ class ExceptionMessage
 		$msgArray['equal'] = "equal: credit-debit amount is not an equal";
 		$msgArray['stateAbb'] = "required: state-abb is required";
 		$msgArray['stateMatch'] = "Exists: state is already exists";
+		$msgArray['token'] = "Expired: Token Expired";
+		$msgArray['NoMatch'] = "NoMatch: Token Not Matched";
+		$msgArray['Exists'] = "Exists: Token Already Exists";
 		return $msgArray;
 	}
 }

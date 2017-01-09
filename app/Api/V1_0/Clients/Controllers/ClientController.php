@@ -10,6 +10,8 @@ use ERP\Api\V1_0\Clients\Processors\ClientProcessor;
 use ERP\Core\Clients\Persistables\ClientPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Entities\AuthenticationClass\TokenAuthentication;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -45,29 +47,44 @@ class ClientController extends BaseController implements ContainerInterface
 	*/
     public function store(Request $request)
     {
-		$this->request = $request;
-		// check the requested Http method
-		$requestMethod = $_SERVER['REQUEST_METHOD'];
-		// insert
-		if($requestMethod == 'POST')
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			$processor = new ClientProcessor();
-			$clientPersistable = new ClientPersistable();		
-			$clientService= new ClientService();			
-			$clientPersistable = $processor->createPersistable($this->request);
-			if($clientPersistable[0][0]=='[')
+			$this->request = $request;
+			// check the requested Http method
+			$requestMethod = $_SERVER['REQUEST_METHOD'];
+			// insert
+			if($requestMethod == 'POST')
 			{
-				return $clientPersistable;
+				$processor = new ClientProcessor();
+				$clientPersistable = new ClientPersistable();		
+				$clientService= new ClientService();			
+				$clientPersistable = $processor->createPersistable($this->request);
+				if($clientPersistable[0][0]=='[')
+				{
+					return $clientPersistable;
+				}
+				else if(is_array($clientPersistable))
+				{
+					$status = $clientService->insert($clientPersistable);
+					return $status;
+				}
+				else
+				{
+					return $clientPersistable;
+				}
 			}
-			else if(is_array($clientPersistable))
-			{
-				$status = $clientService->insert($clientPersistable);
-				return $status;
-			}
-			else
-			{
-				return $clientPersistable;
-			}
+		}
+		else
+		{
+			return $authenticationResult;
 		}
 	}
 	
@@ -75,19 +92,34 @@ class ClientController extends BaseController implements ContainerInterface
      * get the specified resource.
      * @param  int  $branchId
      */
-    public function getData($clientId=null)
+    public function getData(Request $request,$clientId=null)
     {
-		if($clientId==null)
-		{	
-			$clientService= new ClientService();
-			$status = $clientService->getAllClientData();
-			return $status;
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			if($clientId==null)
+			{	
+				$clientService= new ClientService();
+				$status = $clientService->getAllClientData();
+				return $status;
+			}
+			else
+			{	
+				$clientService= new ClientService();
+				$status = $clientService->getClientData($clientId);
+				return $status;
+			}
 		}
 		else
-		{	
-			$clientService= new ClientService();
-			$status = $clientService->getClientData($clientId);
-			return $status;
+		{
+			return $authenticationResult;
 		}
 	}
 }

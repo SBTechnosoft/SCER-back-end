@@ -11,6 +11,8 @@ use ERP\Core\Settings\QuotationNumbers\Persistables\QuotationPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Model\Settings\QuotationNumbers\QuotationModel;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Entities\AuthenticationClass\TokenAuthentication;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -46,29 +48,44 @@ class QuotationController extends BaseController implements ContainerInterface
 	*/
     public function store(Request $request)
     {
-		$this->request = $request;
-		// check the requested Http method
-		$requestMethod = $_SERVER['REQUEST_METHOD'];
-		// insert
-		if($requestMethod == 'POST')
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			$processor = new QuotationProcessor();
-			$quotationPersistable = new QuotationPersistable();		
-			$quotationService= new QuotationService();			
-			$quotationPersistable = $processor->createPersistable($this->request);
-			if($quotationPersistable[0][0]=='[')
+			$this->request = $request;
+			// check the requested Http method
+			$requestMethod = $_SERVER['REQUEST_METHOD'];
+			// insert
+			if($requestMethod == 'POST')
 			{
-				return $quotationPersistable;
+				$processor = new QuotationProcessor();
+				$quotationPersistable = new QuotationPersistable();		
+				$quotationService= new QuotationService();			
+				$quotationPersistable = $processor->createPersistable($this->request);
+				if($quotationPersistable[0][0]=='[')
+				{
+					return $quotationPersistable;
+				}
+				else if(is_array($quotationPersistable))
+				{
+					$status = $quotationService->insert($quotationPersistable);
+					return $status;
+				}
+				else
+				{
+					return $quotationPersistable;
+				}
 			}
-			else if(is_array($quotationPersistable))
-			{
-				$status = $quotationService->insert($quotationPersistable);
-				return $status;
-			}
-			else
-			{
-				return $quotationPersistable;
-			}
+		}
+		else
+		{
+			return $authenticationResult;
 		}
 	}
 	
@@ -79,35 +96,50 @@ class QuotationController extends BaseController implements ContainerInterface
      */
 	public function update(Request $request,$quotationId)
     {    
-		$this->request = $request;
-		$processor = new QuotationProcessor();
-		$quotationPersistable = new QuotationPersistable();		
-		$quotationService= new QuotationService();		
-		$quotationModel = new QuotationModel();
-		$result = $quotationModel->getData($quotationId);
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
-	
-		if(strcmp($result,$exceptionArray['404'])==0)
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			return $result;
-		}
-		else
-		{
-			$quotationPersistable = $processor->createPersistableChange($this->request,$quotationId);
+			$this->request = $request;
+			$processor = new QuotationProcessor();
+			$quotationPersistable = new QuotationPersistable();		
+			$quotationService= new QuotationService();		
+			$quotationModel = new QuotationModel();
+			$result = $quotationModel->getData($quotationId);
 			
-			//here two array and string is return at a time
-			if(is_array($quotationPersistable))
+			//get exception message
+			$exception = new ExceptionMessage();
+			$exceptionArray = $exception->messageArrays();
+		
+			if(strcmp($result,$exceptionArray['404'])==0)
 			{
-				$status = $quotationService->update($quotationPersistable);
-				return $status;
+				return $result;
 			}
 			else
 			{
-				return $quotationPersistable;
+				$quotationPersistable = $processor->createPersistableChange($this->request,$quotationId);
+				
+				//here two array and string is return at a time
+				if(is_array($quotationPersistable))
+				{
+					$status = $quotationService->update($quotationPersistable);
+					return $status;
+				}
+				else
+				{
+					return $quotationPersistable;
+				}
 			}
+		}
+		else
+		{
+			return $authenticationResult;
 		}
 	}
 	
@@ -115,38 +147,68 @@ class QuotationController extends BaseController implements ContainerInterface
      * get the specified resource.
      * @param  int  $quotationId
      */
-    public function getData($quotationId=null)
+    public function getData(Request $request,$quotationId=null)
     {
-		$quotationService= new QuotationService();
-		if($quotationId==null)
-		{	
-			$status = $quotationService->getAllQuotationData();
-			return $status;
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$quotationService= new QuotationService();
+			if($quotationId==null)
+			{	
+				$status = $quotationService->getAllQuotationData();
+				return $status;
+			}
+			else
+			{	
+				$status = $quotationService->getQuotationData($quotationId);
+				return $status;
+			}  
 		}
 		else
-		{	
-			$status = $quotationService->getQuotationData($quotationId);
-			return $status;
-		}        
+		{
+			return $authenticationResult;
+		}	
     }
 	
 	/**
      * get the specified resource.
      * @param  int  $companyId
      */
-    public function getAllData($companyId=null)
+    public function getAllData(Request $request,$companyId=null)
     {
-		$quotationService= new QuotationService();
-		if($companyId=="null")
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			
-			$status = $quotationService->getAllQuotationData();
-			return $status;
+			$quotationService= new QuotationService();
+			if($companyId=="null")
+			{
+				
+				$status = $quotationService->getAllQuotationData();
+				return $status;
+			}
+			else
+			{
+				$status = $quotationService->getAllData($companyId);
+				return $status;
+			}
 		}
 		else
 		{
-			$status = $quotationService->getAllData($companyId);
-			return $status;
+			return $authenticationResult;
 		}
 	}
 	
@@ -154,10 +216,25 @@ class QuotationController extends BaseController implements ContainerInterface
      * get the latest quotation number data.
      * @param  int  $companyId
      */
-    public function getLatestData($companyId)
+    public function getLatestData(Request $request,$companyId)
     {
-		$quotationService= new QuotationService();
-		$status = $quotationService->getLatestQuotationData($companyId);
-		return $status;
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$quotationService= new QuotationService();
+			$status = $quotationService->getLatestQuotationData($companyId);
+			return $status;
+		}
+		else
+		{
+			return $authenticationResult;
+		}
 	}
 }

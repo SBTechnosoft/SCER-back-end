@@ -8,6 +8,8 @@ use ERP\Http\Requests;
 use ERP\Api\V1_0\Support\BaseController;
 use ERP\Core\Banks\Persistables\BankPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
+use ERP\Entities\AuthenticationClass\TokenAuthentication;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -40,16 +42,31 @@ class BankController extends BaseController implements ContainerInterface
      */
     public function getData($bankId=null)
     {
-		$bankService= new BankService();
-		if($bankId==null)
-		{	
-			$status = $bankService->getAllBankData();
-			return $status;
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$bankService= new BankService();
+			if($bankId==null)
+			{	
+				$status = $bankService->getAllBankData();
+				return $status;
+			}
+			else
+			{	
+				$status = $bankService->getBankData($bankId);
+				return $status;
+			}    
 		}
 		else
-		{	
-			$status = $bankService->getBankData($bankId);
-			return $status;
-		}        
+		{
+			return $authenticationResult;
+		}		
     }
 }

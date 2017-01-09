@@ -64,17 +64,18 @@ class EncodeAllData extends StateService
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
 			$user->setCreated_at($convertedCreatedDate[$decodedData]);
 			$getCreatedDate[$decodedData] = $user->getCreated_at();
-			
 			if(strcmp($updatedAt[$decodedData],'0000-00-00 00:00:00')==0)
 			{
 				$getUpdatedDate[$decodedData] = "00-00-0000";
 			}
 			else
 			{
+				
 				$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
-				$state->setUpdated_at($convertedUpdatedDate[$decodedData]);
-				$getUpdatedDate[$decodedData] = $state->getUpdated_at();
+				$user->setUpdated_at($convertedUpdatedDate[$decodedData]);
+				$getUpdatedDate[$decodedData] = $user->getUpdated_at();
 			}
+			
 		}
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)

@@ -10,6 +10,8 @@ use ERP\Core\States\Persistables\StatePersistable;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Model\States\StateModel;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Entities\AuthenticationClass\TokenAuthentication;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -45,65 +47,80 @@ class StateController extends BaseController implements ContainerInterface
 	*/
     public function store(Request $request)
     {
-		$this->request = $request;
-		$stateDataFlag=0;
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
-		// check the requested Http method
-		$requestMethod = $_SERVER['REQUEST_METHOD'];
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
 		
-		// get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
-		
-		// insert
-		if($requestMethod == 'POST')
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			//primary key state is available
-			if($this->request->input('stateAbb')=="")
+			$this->request = $request;
+			$stateDataFlag=0;
+			
+			// check the requested Http method
+			$requestMethod = $_SERVER['REQUEST_METHOD'];
+			
+			// get exception message
+			$exception = new ExceptionMessage();
+			$exceptionArray = $exception->messageArrays();
+			
+			// insert
+			if($requestMethod == 'POST')
 			{
-				return $exceptionArray['stateAbb'];
-			}
-			else
-			{
-				//check state is exists 
-				$stateModel = new StateModel();
-				$stateData = $stateModel->getAllData();
-				$decodedStateData = json_decode($stateData);
-				for($data=0;$data<count($decodedStateData);$data++)
+				//primary key state is available
+				if($this->request->input('stateAbb')=="")
 				{
-					if(strcmp($decodedStateData[$data]->state_abb,trim($this->request->input('stateAbb')))==0)
-					{
-						$stateDataFlag=1;
-						break;
-					}
-				}
-				//state is exists
-				if($stateDataFlag==1)
-				{
-					return $exceptionArray['stateMatch'];
+					return $exceptionArray['stateAbb'];
 				}
 				else
 				{
-					$processor = new StateProcessor();
-					$statePersistable = new StatePersistable();		
-					$stateService= new StateService();			
-					$statePersistable = $processor->createPersistable($this->request);
-					
-					if($statePersistable[0][0]=='[')
+					//check state is exists 
+					$stateModel = new StateModel();
+					$stateData = $stateModel->getAllData();
+					$decodedStateData = json_decode($stateData);
+					for($data=0;$data<count($decodedStateData);$data++)
 					{
-						return $statePersistable;
+						if(strcmp($decodedStateData[$data]->state_abb,trim($this->request->input('stateAbb')))==0)
+						{
+							$stateDataFlag=1;
+							break;
+						}
 					}
-					else if(is_array($statePersistable))
+					//state is exists
+					if($stateDataFlag==1)
 					{
-						$status = $stateService->insert($statePersistable);
-						return $status;
+						return $exceptionArray['stateMatch'];
 					}
 					else
 					{
-						return $statePersistable;
-					}
-				}	
+						$processor = new StateProcessor();
+						$statePersistable = new StatePersistable();		
+						$stateService= new StateService();			
+						$statePersistable = $processor->createPersistable($this->request);
+						
+						if($statePersistable[0][0]=='[')
+						{
+							return $statePersistable;
+						}
+						else if(is_array($statePersistable))
+						{
+							$status = $stateService->insert($statePersistable);
+							return $status;
+						}
+						else
+						{
+							return $statePersistable;
+						}
+					}	
+				}
 			}
+		}
+		else
+		{
+			return $authenticationResult;
 		}
 	}
 	
@@ -111,20 +128,35 @@ class StateController extends BaseController implements ContainerInterface
      * get the specified resource.
      * @param  state_id
      */
-    public function getData($stateId=null)
+    public function getData(Request $request,$stateId=null)
     {
-		if($stateId==null)
-		{			
-			$stateService= new StateService();
-			$status = $stateService->getAllStateData();
-			return $status;
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			if($stateId==null)
+			{			
+				$stateService= new StateService();
+				$status = $stateService->getAllStateData();
+				return $status;
+			}
+			else
+			{	
+				$stateService= new StateService();
+				$status = $stateService->getStateData($stateId);
+				return $status;
+			} 
 		}
 		else
-		{	
-			$stateService= new StateService();
-			$status = $stateService->getStateData($stateId);
-			return $status;
-		}        
+		{
+			return $authenticationResult;
+		}		
     }
 	
     /**
@@ -133,35 +165,50 @@ class StateController extends BaseController implements ContainerInterface
      * @param  state_abb
      */
 	public function update(Request $request,$stateAbb)
-    {    
-		$this->request = $request;
-		$processor = new StateProcessor();
-		$statePersistable = new StatePersistable();		
-		$stateService= new StateService();
-		$stateModel = new StateModel();	
-		$result = $stateModel->getData($stateAbb);
+    {   
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
-		// get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
 		
-		if(strcmp($result,$fileSizeArray['404'])==0)
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			return $fileSizeArray['404'];
-		}
-		else
-		{
-			$statePersistable = $processor->createPersistableChange($this->request,$stateAbb);
+			$this->request = $request;
+			$processor = new StateProcessor();
+			$statePersistable = new StatePersistable();		
+			$stateService= new StateService();
+			$stateModel = new StateModel();	
+			$result = $stateModel->getData($stateAbb);
 			
-			if(is_array($statePersistable))
+			// get exception message
+			$exception = new ExceptionMessage();
+			$fileSizeArray = $exception->messageArrays();
+			
+			if(strcmp($result,$fileSizeArray['404'])==0)
 			{
-				$status = $stateService->update($statePersistable);
-				return $status;
+				return $fileSizeArray['404'];
 			}
 			else
 			{
-				return $statePersistable;
+				$statePersistable = $processor->createPersistableChange($this->request,$stateAbb);
+				
+				if(is_array($statePersistable))
+				{
+					$status = $stateService->update($statePersistable);
+					return $status;
+				}
+				else
+				{
+					return $statePersistable;
+				}
 			}
+		}
+		else
+		{
+			return $authenticationResult;
 		}
 	}
 	
@@ -172,27 +219,42 @@ class StateController extends BaseController implements ContainerInterface
      */
     public function Destroy(Request $request,$stateAbb)
     {
-        $this->request = $request;
-		$processor = new StateProcessor();
-		$statePersistable = new StatePersistable();		
-		$stateService= new StateService();	
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
-		$stateModel = new StateModel();	
-		$result = $stateModel->getData($stateAbb);
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
 		
-		// get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		
-		if(strcmp($result,$fileSizeArray['404'])==0)
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			return $fileSizeArray['404'];
+			$this->request = $request;
+			$processor = new StateProcessor();
+			$statePersistable = new StatePersistable();		
+			$stateService= new StateService();	
+			
+			$stateModel = new StateModel();	
+			$result = $stateModel->getData($stateAbb);
+			
+			// get exception message
+			$exception = new ExceptionMessage();
+			$fileSizeArray = $exception->messageArrays();
+			
+			if(strcmp($result,$fileSizeArray['404'])==0)
+			{
+				return $fileSizeArray['404'];
+			}
+			else
+			{		
+				$statePersistable = $processor->createPersistableChange($this->request,$stateAbb);
+				$status = $stateService->delete($statePersistable);
+				return $status;
+			}
 		}
 		else
-		{		
-			$statePersistable = $processor->createPersistableChange($this->request,$stateAbb);
-			$status = $stateService->delete($statePersistable);
-			return $status;
+		{
+			return $authenticationResult;
 		}
     }
 }

@@ -2,7 +2,7 @@
 
 ##### `POST /users`
 + Header
-	- Authentication Token
+	- 'authenticationToken':string
 
 
 + Body
@@ -26,7 +26,7 @@
             
 ##### `GET /users/`
 + Header 
-	- Authentication Token
+	- 'authenticationToken':string
 
 + Error Message
 

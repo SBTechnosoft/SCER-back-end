@@ -10,6 +10,8 @@ use ERP\Core\Cities\Persistables\CityPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Model\Cities\CityModel;
+use ERP\Entities\AuthenticationClass\TokenAuthentication;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -45,33 +47,48 @@ class CityController extends BaseController implements ContainerInterface
 	*/
     public function store(Request $request)
     {
-		$this->request = $request;
-		// check the requested Http method
-		$requestMethod = $_SERVER['REQUEST_METHOD'];
-		// insert
-		if($requestMethod == 'POST')
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			$processor = new Cityprocessor();
-			$cityPersistable = new CityPersistable();		
-			$cityService= new CityService();			
-			$cityPersistable = $processor->createPersistable($this->request);
-			if($cityPersistable[0][0]=='[')
+			$this->request = $request;
+			// check the requested Http method
+			$requestMethod = $_SERVER['REQUEST_METHOD'];
+			// insert
+			if($requestMethod == 'POST')
 			{
-				return $cityPersistable;
-			}
-			else if(is_array($cityPersistable))
-			{
-				$status = $cityService->insert($cityPersistable);
-				return $status;
+				$processor = new Cityprocessor();
+				$cityPersistable = new CityPersistable();		
+				$cityService= new CityService();			
+				$cityPersistable = $processor->createPersistable($this->request);
+				if($cityPersistable[0][0]=='[')
+				{
+					return $cityPersistable;
+				}
+				else if(is_array($cityPersistable))
+				{
+					$status = $cityService->insert($cityPersistable);
+					return $status;
+				}
+				else
+				{
+					return $cityPersistable;
+				}
 			}
 			else
 			{
-				return $cityPersistable;
+				return $status;
 			}
 		}
 		else
 		{
-			return $status;
+			return $authenticationResult;
 		}
 	}
 	
@@ -79,31 +96,61 @@ class CityController extends BaseController implements ContainerInterface
      * get the specified resource.
      * @param  int  $cityId
      */
-    public function getData($cityId=null)
+    public function getData(Request $request,$cityId=null)
     {
-		if($cityId==null)
-		{			
-			$cityService= new CityService();
-			$status = $cityService->getAllCityData();
-			return $status;
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			if($cityId==null)
+			{			
+				$cityService= new CityService();
+				$status = $cityService->getAllCityData();
+				return $status;
+			}
+			else
+			{	
+				$cityService= new CityService();
+				$status = $cityService->getCityData($cityId);
+				return $status;
+			} 
 		}
 		else
-		{	
-			$cityService= new CityService();
-			$status = $cityService->getCityData($cityId);
-			return $status;
-		}        
+		{
+			return $authenticationResult;
+		}
     }
 	
 	/**
      * get the specified resource.
      * @param  int  $stateAbb
      */
-    public function getAllData($stateAbb)
+    public function getAllData(Request $request,$stateAbb)
     {
-		$cityService= new CityService();
-		$status = $cityService->getAllData($stateAbb);
-		return $status;
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$cityService= new CityService();
+			$status = $cityService->getAllData($stateAbb);
+			return $status;
+		}
+		else
+		{
+			return $authenticationResult;
+		}
 	}
 	
     /**
@@ -114,33 +161,48 @@ class CityController extends BaseController implements ContainerInterface
      */
 	public function update(Request $request,$cityId)
     {    
-		$this->request = $request;
-		$processor = new CityProcessor();
-		$cityPersistable = new CityPersistable();		
-		$cityService= new CityService();			
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
 		
-		$cityModel = new CityModel();
-		$result = $cityModel->getData($cityId);
-		if(strcmp($result,$exceptionArray['404'])==0)
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			return $result;
-		}
-		else
-		{
-			$cityPersistable = $processor->createPersistableChange($this->request,$cityId);
-			if(is_array($cityPersistable))
+			$this->request = $request;
+			$processor = new CityProcessor();
+			$cityPersistable = new CityPersistable();		
+			$cityService= new CityService();			
+			
+			//get exception message
+			$exception = new ExceptionMessage();
+			$exceptionArray = $exception->messageArrays();
+			
+			$cityModel = new CityModel();
+			$result = $cityModel->getData($cityId);
+			if(strcmp($result,$exceptionArray['404'])==0)
 			{
-				$status = $cityService->update($cityPersistable);
-				return $status;
+				return $result;
 			}
 			else
 			{
-				return $cityPersistable;
+				$cityPersistable = $processor->createPersistableChange($this->request,$cityId);
+				if(is_array($cityPersistable))
+				{
+					$status = $cityService->update($cityPersistable);
+					return $status;
+				}
+				else
+				{
+					return $cityPersistable;
+				}
 			}
+		}
+		else
+		{
+			return $authenticationResult;
 		}
 	}
 	
@@ -152,25 +214,40 @@ class CityController extends BaseController implements ContainerInterface
      */
     public function Destroy(Request $request,$cityId)
     {
-		$this->request = $request;
-		$processor = new CityProcessor();
-		$cityPersistable = new CityPersistable();		
-		$cityService= new CityService();			
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
-		$cityModel = new CityModel();
-		$result = $cityModel->getData($cityId);
-		if(strcmp($result,$fileSizeArray['404'])==0)
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			return $result;
+			$this->request = $request;
+			$processor = new CityProcessor();
+			$cityPersistable = new CityPersistable();		
+			$cityService= new CityService();			
+			//get exception message
+			$exception = new ExceptionMessage();
+			$fileSizeArray = $exception->messageArrays();
+			
+			$cityModel = new CityModel();
+			$result = $cityModel->getData($cityId);
+			if(strcmp($result,$fileSizeArray['404'])==0)
+			{
+				return $result;
+			}
+			else
+			{
+				$cityPersistable = $processor->createPersistableChange($this->request,$cityId);
+				$status = $cityService->delete($cityPersistable);
+				return $status;
+			}
 		}
 		else
 		{
-			$cityPersistable = $processor->createPersistableChange($this->request,$cityId);
-			$status = $cityService->delete($cityPersistable);
-			return $status;
+			return $authenticationResult;
 		}
     }
 }

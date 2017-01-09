@@ -136,7 +136,6 @@ class EncodeData extends StateService
 			'companyId' => $getBranchDetails['company']['companyId']
 		);	
 		$encodeData = json_encode($data);
-		print_r($encodeData);
-		// return $encodeData;
+		return $encodeData;
 	}
 }

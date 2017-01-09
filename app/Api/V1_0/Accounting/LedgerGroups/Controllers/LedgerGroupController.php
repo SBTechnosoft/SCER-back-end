@@ -8,6 +8,8 @@ use ERP\Http\Requests;
 use ERP\Api\V1_0\Support\BaseController;
 use ERP\Core\Accounting\LedgerGroups\Persistables\LedgerGroupPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
+use ERP\Entities\AuthenticationClass\TokenAuthentication;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -38,18 +40,33 @@ class LedgerGroupController extends BaseController implements ContainerInterface
      * get the specified resource.
      * @param  int  $ledgerGrpId
      */
-    public function getData($ledgerGrpId=null)
+    public function getData(Request $request,$ledgerGrpId=null)
     {
-		$ledgerGrpService= new LedgerGroupService();
-		if($ledgerGrpId==null)
-		{	
-			$status = $ledgerGrpService->getAllLedgerGrpData();
-			return $status;
-		}
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$ledgerGrpService= new LedgerGroupService();
+			if($ledgerGrpId==null)
+			{	
+				$status = $ledgerGrpService->getAllLedgerGrpData();
+				return $status;
+			}
+			else
+			{	
+				$status = $ledgerGrpService->getLedgerGrpData($ledgerGrpId);
+				return $status;
+			} 
+		}	
 		else
-		{	
-			$status = $ledgerGrpService->getLedgerGrpData($ledgerGrpId);
-			return $status;
-		}        
+		{
+			return $authenticationResult;
+		}
     }
 }

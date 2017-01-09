@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use ERP\Core\Accounting\TrialBalance\Services\TrialBalanceService;
 use ERP\Http\Requests;
 use ERP\Api\V1_0\Support\BaseController;
-// use ERP\Api\V1_0\Accounting\TrialBalance\Processors\LedgerProcessor;
-// use ERP\Core\Accounting\TrialBalance\Persistables\LedgerPersistable;
+use ERP\Entities\AuthenticationClass\TokenAuthentication;
+use ERP\Entities\Constants\ConstantClass;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Model\Accounting\TrialBalance\TrialBalanceModel;
@@ -17,17 +17,6 @@ use ERP\Model\Accounting\TrialBalance\TrialBalanceModel;
  */
 class TrialBalanceController extends BaseController implements ContainerInterface
 {
-	/**
-     * @var ledgerService
-     * @var processor
-     * @var request
-     * @var ledgerPersistable
-     */
-	// private $ledgerService;
-	// private $processor;
-	// private $request;
-	// private $ledgerPersistable;	
-	
 	/**
 	 * get and invoke method is of ContainerInterface method
 	 */		
@@ -45,11 +34,25 @@ class TrialBalanceController extends BaseController implements ContainerInterfac
 	 * @param  companyId
 	 * method calls the model and get the data
 	*/
-    public function getTrialBalanceData($companyId)
+    public function getTrialBalanceData(Request $request,$companyId)
     {
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
-		$trialBalance = new TrialBalanceService();
-		$result = $trialBalance->getData($companyId);
-		return $result;
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$trialBalance = new TrialBalanceService();
+			$result = $trialBalance->getData($companyId);
+			return $result;
+		}
+		else
+		{
+			return $authenticationResult;
+		}
 	}
 }

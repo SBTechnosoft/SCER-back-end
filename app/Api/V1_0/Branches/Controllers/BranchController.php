@@ -11,6 +11,8 @@ use ERP\Core\Branches\Persistables\BranchPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Model\Branches\BranchModel;
+use ERP\Entities\AuthenticationClass\TokenAuthentication;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -46,30 +48,45 @@ class BranchController extends BaseController implements ContainerInterface
 	*/
     public function store(Request $request)
     {
-		$this->request = $request;
-		// check the requested Http method
-		$requestMethod = $_SERVER['REQUEST_METHOD'];
-		// insert
-		if($requestMethod == 'POST')
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			$processor = new BranchProcessor();
-			$branchPersistable = new BranchPersistable();		
-			$branchService= new BranchService();			
-			$branchPersistable = $processor->createPersistable($this->request);
-			
-			if($branchPersistable[0][0]=='[')
+			$this->request = $request;
+			// check the requested Http method
+			$requestMethod = $_SERVER['REQUEST_METHOD'];
+			// insert
+			if($requestMethod == 'POST')
 			{
-				return $branchPersistable;
+				$processor = new BranchProcessor();
+				$branchPersistable = new BranchPersistable();		
+				$branchService= new BranchService();			
+				$branchPersistable = $processor->createPersistable($this->request);
+				
+				if($branchPersistable[0][0]=='[')
+				{
+					return $branchPersistable;
+				}
+				else if(is_array($branchPersistable))
+				{
+					$status = $branchService->insert($branchPersistable);
+					return $status;
+				}
+				else
+				{
+					return $branchPersistable;
+				}
 			}
-			else if(is_array($branchPersistable))
-			{
-				$status = $branchService->insert($branchPersistable);
-				return $status;
-			}
-			else
-			{
-				return $branchPersistable;
-			}
+		}
+		else
+		{
+			return $authenticationResult;
 		}
 	}
 	
@@ -77,39 +94,69 @@ class BranchController extends BaseController implements ContainerInterface
      * get the specified resource.
      * @param  int  $branchId
      */
-    public function getData($branchId=null)
+    public function getData(Request $request,$branchId=null)
     {
-		if($branchId==null)
-		{	
-			$branchService= new BranchService();
-			$status = $branchService->getAllBranchData();
-			return $status;
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			if($branchId==null)
+			{	
+				$branchService= new BranchService();
+				$status = $branchService->getAllBranchData();
+				return $status;
+			}
+			else
+			{	
+				$branchService= new BranchService();
+				$status = $branchService->getBranchData($branchId);
+				return $status;
+			}   
 		}
 		else
-		{	
-			$branchService= new BranchService();
-			$status = $branchService->getBranchData($branchId);
-			return $status;
-		}        
+		{
+			return $authenticationResult;
+		}
     }
 	
 	/**
      * get the specified resource.
      * @param  int  $companyId
      */
-    public function getAllData($companyId=null)
+    public function getAllData(Request $request,$companyId=null)
     {
-		if($companyId=="null")
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			$branchService= new BranchService();
-			$status = $branchService->getAllBranchData();
-			return $status;
+			if($companyId=="null")
+			{
+				$branchService= new BranchService();
+				$status = $branchService->getAllBranchData();
+				return $status;
+			}
+			else
+			{
+				$branchService= new BranchService();
+				$status = $branchService->getAllData($companyId);
+				return $status;
+			}
 		}
 		else
 		{
-			$branchService= new BranchService();
-			$status = $branchService->getAllData($companyId);
-			return $status;
+			return $authenticationResult;
 		}
 	}
 	
@@ -120,35 +167,49 @@ class BranchController extends BaseController implements ContainerInterface
      */
 	public function update(Request $request,$branchId)
     {    
-		$this->request = $request;
-		$processor = new BranchProcessor();
-		$branchPersistable = new BranchPersistable();		
-		$branchService= new BranchService();	
-		$branchModel = new BranchModel();	
-		$result = $branchModel->getData($branchId);
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		if(strcmp($result,$fileSizeArray['404'])==0)
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			return $result;
-		}
-		else
-		{
-			$branchPersistable = $processor->createPersistableChange($this->request,$branchId);
-			//here two array and string is return at a time
-			if(is_array($branchPersistable))
+			$this->request = $request;
+			$processor = new BranchProcessor();
+			$branchPersistable = new BranchPersistable();		
+			$branchService= new BranchService();	
+			$branchModel = new BranchModel();	
+			$result = $branchModel->getData($branchId);
+			
+			//get exception message
+			$exception = new ExceptionMessage();
+			$fileSizeArray = $exception->messageArrays();
+			if(strcmp($result,$fileSizeArray['404'])==0)
 			{
-				$status = $branchService->update($branchPersistable);
-				return $status;
+				return $result;
 			}
 			else
 			{
-				return $branchPersistable;
+				$branchPersistable = $processor->createPersistableChange($this->request,$branchId);
+				//here two array and string is return at a time
+				if(is_array($branchPersistable))
+				{
+					$status = $branchService->update($branchPersistable);
+					return $status;
+				}
+				else
+				{
+					return $branchPersistable;
+				}
 			}
 		}
-		
+		else
+		{
+			return $authenticationResult;
+		}
 	}
 	
     /**
@@ -158,26 +219,41 @@ class BranchController extends BaseController implements ContainerInterface
      */
     public function Destroy(Request $request,$branchId)
     {
-        $this->request = $request;
-		$processor = new BranchProcessor();
-		$branchPersistable = new BranchPersistable();		
-		$branchService= new BranchService();	
-		$branchModel = new BranchModel();	
-		$result = $branchModel->getData($branchId);
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		if(strcmp($result,$fileSizeArray['404'])==0)
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			return $result;
+			$this->request = $request;
+			$processor = new BranchProcessor();
+			$branchPersistable = new BranchPersistable();		
+			$branchService= new BranchService();	
+			$branchModel = new BranchModel();	
+			$result = $branchModel->getData($branchId);
+			
+			//get exception message
+			$exception = new ExceptionMessage();
+			$fileSizeArray = $exception->messageArrays();
+			if(strcmp($result,$fileSizeArray['404'])==0)
+			{
+				return $result;
+			}
+			else
+			{		
+				$branchPersistable = $processor->createPersistableChange($this->request,$branchId);
+				$branchService->create($branchPersistable);
+				$status = $branchService->delete($branchPersistable);
+				return $status;
+			}
 		}
 		else
-		{		
-			$branchPersistable = $processor->createPersistableChange($this->request,$branchId);
-			$branchService->create($branchPersistable);
-			$status = $branchService->delete($branchPersistable);
-			return $status;
+		{
+			return $authenticationResult;
 		}
     }
 }

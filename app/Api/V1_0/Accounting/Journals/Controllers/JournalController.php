@@ -16,6 +16,7 @@ use ERP\Core\Products\Services\ProductService;
 use ERP\Core\Products\Persistables\ProductPersistable;
 use ERP\Model\Accounting\Journals\JournalModel;
 use ERP\Entities\Constants\ConstantClass;
+use ERP\Entities\AuthenticationClass\TokenAuthentication;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -51,90 +52,133 @@ class JournalController extends BaseController implements ContainerInterface
 	*/
     public function store(Request $request)
     {
-		//special journal entry and inventory entry
-		$this->request = $request;
-		$jfId = trim($this->request->input()['jfId']);
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
-		// check the requested Http method
-		$requestMethod = $_SERVER['REQUEST_METHOD'];
+		//get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-		// insert
-		if($requestMethod == $constantArray['postMethod'])
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			$processor = new JournalProcessor();
-			$journalPersistable = new JournalPersistable();
-			$journalPersistable = $processor->createPersistable($this->request);
+			//special journal entry and inventory entry
+			$this->request = $request;
+			$jfId = trim($this->request->input()['jfId']);
 			
-			if(is_array($journalPersistable))
+			// check the requested Http method
+			$requestMethod = $_SERVER['REQUEST_METHOD'];
+			
+			// insert
+			if($requestMethod == $constantArray['postMethod'])
 			{
-				$journalService= new JournalService();
-				$status = $journalService->insert($journalPersistable);
-				if(count($request->input())>4)
+				$processor = new JournalProcessor();
+				$journalPersistable = new JournalPersistable();
+				$journalPersistable = $processor->createPersistable($this->request);
+				if(is_array($journalPersistable))
 				{
-					$productService= new ProductService();	
-					$productPersistable = new ProductPersistable();
-					if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
+					$journalService= new JournalService();
+					$status = $journalService->insert($journalPersistable);
+					if(count($request->input())>4)
 					{
-						$outward = $constantArray['journalOutward'];
-						$productProcessor = new ProductProcessor();
-						$productPersistable = $productProcessor->createPersistableInOutWard($this->request,$outward);
-						if(is_array($productPersistable))
+						$productService= new ProductService();	
+						$productPersistable = new ProductPersistable();
+						if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
 						{
-							$status = $productService->insertInOutward($productPersistable,$jfId);
-							return $status;
+							$outward = $constantArray['journalOutward'];
+							$productProcessor = new ProductProcessor();
+							$productPersistable = $productProcessor->createPersistableInOutWard($this->request,$outward);
+							if(is_array($productPersistable))
+							{
+								$status = $productService->insertInOutward($productPersistable,$jfId);
+								return $status;
+							}
+							else
+							{
+								return $productPersistable;
+							}
 						}
-						else
+						else if(strcmp($request->header()['type'][0],$constantArray['purchase'])==0)
 						{
-							return $productPersistable;
+							$inward = $constantArray['journalInward'];
+							$productProcessor = new ProductProcessor();
+							$productPersistable = $productProcessor->createPersistableInOutWard($this->request,$inward);
+							if(is_array($productPersistable))
+							{
+								$status = $productService->insertInOutward($productPersistable,$jfId);
+								return $status;
+							}
+							else
+							{
+								return $productPersistable;
+							}
 						}
 					}
-					else if(strcmp($request->header()['type'][0],$constantArray['purchase'])==0)
+					else
 					{
-						$inward = $constantArray['journalInward'];
-						$productProcessor = new ProductProcessor();
-						$productPersistable = $productProcessor->createPersistableInOutWard($this->request,$inward);
-						if(is_array($productPersistable))
-						{
-							$status = $productService->insertInOutward($productPersistable,$jfId);
-							return $status;
-						}
-						else
-						{
-							return $productPersistable;
-						}
+						return $status;
 					}
 				}
 				else
 				{
-					return $status;
+					return $journalPersistable;
 				}
 			}
-			else
-			{
-				return $journalPersistable;
-			}
+		}
+		else
+		{
+			return $authenticationResult;
 		}
 	}
 	
 	/**
      * get the next journal folio id
      */
-    public function getData()
+    public function getData(Request $request)
     {
-		$journalService = new JournalService();
-		$status = $journalService->getJournalData();
-		return $status;
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$journalService = new JournalService();
+			$status = $journalService->getJournalData();
+			return $status;
+		}
+		else
+		{
+			return $authenticationResult;
+		}
 	}
 	
 	/**
      * get the journal data
      */
-    public function getJournalData($journalId)
+    public function getJournalData(Request $request,$journalId)
     {
-		$journalService = new JournalService();
-		$status = $journalService->getJournalArrayData($journalId);
-		return $status;
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$journalService = new JournalService();
+			$status = $journalService->getJournalArrayData($journalId);
+			return $status;
+		}
+		else
+		{
+			return $authenticationResult;
+		}
 	}
 	
 	/**
@@ -142,51 +186,64 @@ class JournalController extends BaseController implements ContainerInterface
      */
     public function getSpecificData(Request $request,$companyId)
     {
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-		if(array_key_exists("type",$request->header()))
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			if(strcmp(trim($request->header()['type'][0]),$constantArray['sales'])==0 || strcmp(trim($request->header()['type'][0]),$constantArray['purchase'])==0)
+			if(array_key_exists("type",$request->header()))
 			{
-				//get journal-data as well as transaction-data for update
-				if(array_key_exists($constantArray['jfId'],$request->header()))
+				if(strcmp(trim($request->header()['type'][0]),$constantArray['sales'])==0 || strcmp(trim($request->header()['type'][0]),$constantArray['purchase'])==0)
 				{
-					$jfId = $request->header()['jfid'];
-					$journalModel = new JournalModel();
-					$status = $journalModel->getJournalTransactionData($companyId,$request->header()['type'][0],$jfId);
-					if(is_array($status))
+					//get journal-data as well as transaction-data for update
+					if(array_key_exists($constantArray['jfId'],$request->header()))
 					{
-						$result = json_decode($status);
-						return $result;
-					}
-					else
-					{
-						return $status;
+						$jfId = $request->header()['jfid'];
+						$journalModel = new JournalModel();
+						$status = $journalModel->getJournalTransactionData($companyId,$request->header()['type'][0],$jfId);
+						if(is_array($status))
+						{
+							$result = json_decode($status);
+							return $result;
+						}
+						else
+						{
+							return $status;
+						}
 					}
 				}
+				else
+				{
+					return $exceptionArray['content'];
+				}
 			}
+			//get the data between fromDate and toDate
+			else if(array_key_exists($constantArray['fromDate'],$request->header()) && array_key_exists($constantArray['toDate'],$request->header()))
+			{
+				$this->request = $request;
+				$processor = new JournalProcessor();
+				$journalPersistable = new JournalPersistable();
+				$journalPersistable = $processor->createPersistableData($this->request);
+				$journalService= new JournalService();
+				$status = $journalService->getJournalDetail($journalPersistable,$companyId);
+				return $status;
+			}
+			//if date is not given..get the data of current year
 			else
 			{
-				return $exceptionArray['content'];
+				$journalModel = new JournalModel();
+				$status = $journalModel->getCurrentYearData($companyId);
+				return $status;
 			}
 		}
-		//get the data between fromDate and toDate
-		else if(array_key_exists($constantArray['fromDate'],$request->header()) && array_key_exists($constantArray['toDate'],$request->header()))
-		{
-			$this->request = $request;
-			$processor = new JournalProcessor();
-			$journalPersistable = new JournalPersistable();
-			$journalPersistable = $processor->createPersistableData($this->request);
-			$journalService= new JournalService();
-			$status = $journalService->getJournalDetail($journalPersistable,$companyId);
-			return $status;
-		}
-		//if date is not given..get the data of current year
 		else
 		{
-			$journalModel = new JournalModel();
-			$status = $journalModel->getCurrentYearData($companyId);
-			return $status;
+			return $authenticationResult;
 		}
 	}
 	
@@ -197,258 +254,285 @@ class JournalController extends BaseController implements ContainerInterface
 	*/
 	public function update(Request $request,$jfId)
 	{
-		$this->request = $request;
-		$processor = new JournalProcessor();
-		$journalPersistable = new JournalPersistable();		
-		$journalService= new JournalService();		
-		$journalModel = new JournalModel();
-		$jfIdArrayData = $journalModel->getJfIdArrayData($jfId);
-		$entryDateFlag=0;
-		$companyIdFlag=0;
-		$journalArrayFlag=0;
-		$invoiceNumberFlag=0;
-		$productArrayFlag=0;
-		$transactionDateFlag=0;
-		$billNumberFlag=0;
-		$taxFlag=0;
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
-		
+		//get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
 		
-		//check array exists
-		if(array_key_exists($constantArray['data'], $this->request->input()))
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			$journalData = $this->request->input()['data'];
-			$dataCountOfArray = count($this->request->input()['data']);
-			for($dataArray=0;$dataArray<$dataCountOfArray-1;$dataArray++)
+			$this->request = $request;
+			$processor = new JournalProcessor();
+			$journalPersistable = new JournalPersistable();		
+			$journalService= new JournalService();		
+			$journalModel = new JournalModel();
+			$jfIdArrayData = $journalModel->getJfIdArrayData($jfId);
+			$entryDateFlag=0;
+			$companyIdFlag=0;
+			$journalArrayFlag=0;
+			$invoiceNumberFlag=0;
+			$productArrayFlag=0;
+			$transactionDateFlag=0;
+			$billNumberFlag=0;
+			$taxFlag=0;
+			
+			//get exception message
+			$exception = new ExceptionMessage();
+			$exceptionArray = $exception->messageArrays();
+			
+			//check array exists
+			if(array_key_exists($constantArray['data'], $this->request->input()))
 			{
-				if(strcmp($journalData[$dataArray]['ledgerId'],$journalData[$dataArray+1]['ledgerId'])==0)
+				$journalData = $this->request->input()['data'];
+				$dataCountOfArray = count($this->request->input()['data']);
+				for($dataArray=0;$dataArray<$dataCountOfArray-1;$dataArray++)
 				{
-					return $exceptionArray['content'];
+					if(strcmp($journalData[$dataArray]['ledgerId'],$journalData[$dataArray+1]['ledgerId'])==0)
+					{
+						return $exceptionArray['content'];
+					}
 				}
 			}
-		}
-		//check journal-data is available in database as per given jf-id
-		if(strcmp($jfIdArrayData,$exceptionArray['404'])==0)
-		{
-			return $exceptionArray['404'];
-		}
-		if(array_key_exists($constantArray['type'],$request->header()))
-		{
-			if(strcmp($request->header()['type'][0],$constantArray['sales'])==0 || strcmp($request->header()['type'][0],$constantArray['purchase'])==0)
+			//check journal-data is available in database as per given jf-id
+			if(strcmp($jfIdArrayData,$exceptionArray['404'])==0)
 			{
-				$productArray = array();
-				$journalArray = array();
-				$inputArray = $this->request->input();
-				if(array_key_exists($constantArray['entryDate'],$inputArray))
+				return $exceptionArray['404'];
+			}
+			if(array_key_exists($constantArray['type'],$request->header()))
+			{
+				if(strcmp($request->header()['type'][0],$constantArray['sales'])==0 || strcmp($request->header()['type'][0],$constantArray['purchase'])==0)
 				{
-					$entryDateFlag=1;
-					$journalArray['entryDate']=$inputArray['entryDate'];
-				}
-				if(array_key_exists('transactionDate',$inputArray))
-				{
-					$transactionDateFlag=1;
-					$productArray['transactionDate']=$inputArray['transactionDate'];
-				}
-				if(array_key_exists($constantArray['companyId'],$inputArray))
-				{
-					$companyIdFlag=1;
-					$journalArray['companyId']=$inputArray['companyId'];
-					$productArray['companyId'] = $inputArray['companyId'];
-				}
-				if(array_key_exists($constantArray['invoiceNumber'],$inputArray))
-				{
-					$invoiceNumberFlag=1;
-					$productArray['invoiceNumber'] = $inputArray['invoiceNumber'];
-				}
-				if(array_key_exists($constantArray['billNumber'],$inputArray))
-				{
-					$billNumberFlag=1;
-					$productArray['billNumber'] = $inputArray['billNumber'];
-				}
-				if(array_key_exists($constantArray['tax'],$inputArray))
-				{
-					$taxFlag=1;
-					$productArray['tax'] = $inputArray['tax'];
-				}
-				//check array exists in request 
-				if(array_key_exists($constantArray['data'],$this->request->input()))
-				{
-					$journalArrayFlag=1;
-					$journalArray['data']=array();
-					for($arrayData=0;$arrayData<count($this->request->input()['data']);$arrayData++)
+					$productArray = array();
+					$journalArray = array();
+					$inputArray = $this->request->input();
+					if(array_key_exists($constantArray['entryDate'],$inputArray))
 					{
-						$journalArray['data'][$arrayData]=array();
-						$journalArray['data'][$arrayData]['amount']=$this->request->input()['data'][$arrayData]['amount'];
-						$journalArray['data'][$arrayData]['amountType']=$this->request->input()['data'][$arrayData]['amountType'];
-						$journalArray['data'][$arrayData]['ledgerId']=$this->request->input()['data'][$arrayData]['ledgerId'];
+						$entryDateFlag=1;
+						$journalArray['entryDate']=$inputArray['entryDate'];
 					}
-				}
-				//check array is exists in request
-				if(array_key_exists($constantArray['inventory'],$inputArray))
-				{
-					$productArrayFlag=1;
-					$productArray['inventory'] = array();
-					for($inventoryArray=0;$inventoryArray<count($inputArray['inventory']);$inventoryArray++)
+					if(array_key_exists('transactionDate',$inputArray))
 					{
-						$productArray['inventory'][$inventoryArray] = array();
-						$productArray['inventory'][$inventoryArray]['productId']=$inputArray['inventory'][$inventoryArray]['productId'];
-						$productArray['inventory'][$inventoryArray]['discount']=$inputArray['inventory'][$inventoryArray]['discount'];
-						$productArray['inventory'][$inventoryArray]['discountType']=$inputArray['inventory'][$inventoryArray]['discountType'];
-						$productArray['inventory'][$inventoryArray]['price']=$inputArray['inventory'][$inventoryArray]['price'];
-						$productArray['inventory'][$inventoryArray]['qty']=$inputArray['inventory'][$inventoryArray]['qty'];
+						$transactionDateFlag=1;
+						$productArray['transactionDate']=$inputArray['transactionDate'];
 					}
-				}
-				//journal data is available in sale/purchase for update
-				if($entryDateFlag==1 || $companyIdFlag==1 || $journalArrayFlag==1)
-				{
-					if($productArrayFlag==1 || $taxFlag==1)
+					if(array_key_exists($constantArray['companyId'],$inputArray))
 					{
-						//journal data is processed(trim,validation and set data in object)
-						$journalPersistable = $processor->createPersistableChangeData($request->header(),$productArray,$journalArray,$jfId);
-						if(!is_array($journalPersistable))
+						$companyIdFlag=1;
+						$journalArray['companyId']=$inputArray['companyId'];
+						$productArray['companyId'] = $inputArray['companyId'];
+					}
+					if(array_key_exists($constantArray['invoiceNumber'],$inputArray))
+					{
+						$invoiceNumberFlag=1;
+						$productArray['invoiceNumber'] = $inputArray['invoiceNumber'];
+					}
+					if(array_key_exists($constantArray['billNumber'],$inputArray))
+					{
+						$billNumberFlag=1;
+						$productArray['billNumber'] = $inputArray['billNumber'];
+					}
+					if(array_key_exists($constantArray['tax'],$inputArray))
+					{
+						$taxFlag=1;
+						$productArray['tax'] = $inputArray['tax'];
+					}
+					//check array exists in request 
+					if(array_key_exists($constantArray['data'],$this->request->input()))
+					{
+						$journalArrayFlag=1;
+						$journalArray['data']=array();
+						for($arrayData=0;$arrayData<count($this->request->input()['data']);$arrayData++)
 						{
-							return $journalPersistable;
+							$journalArray['data'][$arrayData]=array();
+							$journalArray['data'][$arrayData]['amount']=$this->request->input()['data'][$arrayData]['amount'];
+							$journalArray['data'][$arrayData]['amountType']=$this->request->input()['data'][$arrayData]['amountType'];
+							$journalArray['data'][$arrayData]['ledgerId']=$this->request->input()['data'][$arrayData]['ledgerId'];
 						}
 					}
-					else
+					//check array is exists in request
+					if(array_key_exists($constantArray['inventory'],$inputArray))
 					{
-						//journal data is processed(trim,validation and set data in object)
-						$journalPersistable = $processor->createPersistableChange($request->header(),$journalArray,$jfId);
-						if(!is_array($journalPersistable))
+						$productArrayFlag=1;
+						$productArray['inventory'] = array();
+						for($inventoryArray=0;$inventoryArray<count($inputArray['inventory']);$inventoryArray++)
 						{
-							return $journalPersistable;
+							$productArray['inventory'][$inventoryArray] = array();
+							$productArray['inventory'][$inventoryArray]['productId']=$inputArray['inventory'][$inventoryArray]['productId'];
+							$productArray['inventory'][$inventoryArray]['discount']=$inputArray['inventory'][$inventoryArray]['discount'];
+							$productArray['inventory'][$inventoryArray]['discountType']=$inputArray['inventory'][$inventoryArray]['discountType'];
+							$productArray['inventory'][$inventoryArray]['price']=$inputArray['inventory'][$inventoryArray]['price'];
+							$productArray['inventory'][$inventoryArray]['qty']=$inputArray['inventory'][$inventoryArray]['qty'];
 						}
 					}
-					if(is_array($journalPersistable))
+					//journal data is available in sale/purchase for update
+					if($entryDateFlag==1 || $companyIdFlag==1 || $journalArrayFlag==1)
 					{
-						if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
+						if($productArrayFlag==1 || $taxFlag==1)
 						{
-							$headerType = $constantArray['saleType'];
+							//journal data is processed(trim,validation and set data in object)
+							$journalPersistable = $processor->createPersistableChangeData($request->header(),$productArray,$journalArray,$jfId);
+							if(!is_array($journalPersistable))
+							{
+								return $journalPersistable;
+							}
 						}
 						else
 						{
-							$headerType = $constantArray['purchaseType'];
-						}
-						$status = $journalService->update($journalPersistable,$jfId,$headerType);
-						//update data in product_transaction
-						if(strcmp($status,$exceptionArray['200'])==0)
-						{
-							//product transaction data is available for update
-							if($productArrayFlag==1 || $invoiceNumberFlag==1 || $entryDateFlag==1 || $companyIdFlag==1 || $billNumberFlag==1 || $transactionDateFlag==1 || $taxFlag==1)
+							//journal data is processed(trim,validation and set data in object)
+							$journalPersistable = $processor->createPersistableChange($request->header(),$journalArray,$jfId);
+							if(!is_array($journalPersistable))
 							{
-								//sale data update
-								if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
-								{ 
-									if($billNumberFlag==1)
-									{
-										//wrong entry
-									}
-									else
-									{
-										$inOutward = $constantArray['journalOutward'];
-									}
-								}
-								else
-								{
-									if($invoiceNumberFlag==1)
-									{
-										//wrong entry
-									}
-									else
-									{
-										$inOutward = $constantArray['journalInward'];
-									}
-								}
-								$productService= new ProductService();	
-								$productPersistable = new ProductPersistable();
-								$productProcessor = new ProductProcessor();
-								$productPersistable = $productProcessor->createPersistableChangeInOutWard($productArray,$inOutward,$jfId);
-								
-								//here two array and string is return at a time
-								if(is_array($productPersistable))
-								{
-									$status = $productService->updateInOutwardData($productPersistable,$jfId,$inOutward);
-									return $status;
-								}
-								else
-								{
-									return $productPersistable;
-								}
+								return $journalPersistable;
+							}
+						}
+						if(is_array($journalPersistable))
+						{
+							if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
+							{
+								$headerType = $constantArray['saleType'];
 							}
 							else
 							{
-								return $status;
+								$headerType = $constantArray['purchaseType'];
 							}
-							
-						}
-						else
-						{
-							return $journalPersistable;
-						}
-					}
-				}
-				else
-				{
-					//sale data update
-					if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
-					{
-						if($billNumberFlag==1)
-						{
-							//wrong entry
-						}
-						else
-						{
-							$inOutward = $constantArray['journalOutward'];
+							$status = $journalService->update($journalPersistable,$jfId,$headerType);
+							//update data in product_transaction
+							if(strcmp($status,$exceptionArray['200'])==0)
+							{
+								//product transaction data is available for update
+								if($productArrayFlag==1 || $invoiceNumberFlag==1 || $entryDateFlag==1 || $companyIdFlag==1 || $billNumberFlag==1 || $transactionDateFlag==1 || $taxFlag==1)
+								{
+									//sale data update
+									if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
+									{ 
+										if($billNumberFlag==1)
+										{
+											//wrong entry
+										}
+										else
+										{
+											$inOutward = $constantArray['journalOutward'];
+										}
+									}
+									else
+									{
+										if($invoiceNumberFlag==1)
+										{
+											//wrong entry
+										}
+										else
+										{
+											$inOutward = $constantArray['journalInward'];
+										}
+									}
+									$productService= new ProductService();	
+									$productPersistable = new ProductPersistable();
+									$productProcessor = new ProductProcessor();
+									$productPersistable = $productProcessor->createPersistableChangeInOutWard($productArray,$inOutward,$jfId);
+									
+									//here two array and string is return at a time
+									if(is_array($productPersistable))
+									{
+										$status = $productService->updateInOutwardData($productPersistable,$jfId,$inOutward);
+										return $status;
+									}
+									else
+									{
+										return $productPersistable;
+									}
+								}
+								else
+								{
+									return $status;
+								}
+								
+							}
+							else
+							{
+								return $journalPersistable;
+							}
 						}
 					}
 					else
 					{
-						if($invoiceNumberFlag==1)
+						//sale data update
+						if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
 						{
-							//wrong entry
+							if($billNumberFlag==1)
+							{
+								//wrong entry
+							}
+							else
+							{
+								$inOutward = $constantArray['journalOutward'];
+							}
 						}
 						else
 						{
-							$inOutward = $constantArray['journalInward'];
+							if($invoiceNumberFlag==1)
+							{
+								//wrong entry
+							}
+							else
+							{
+								$inOutward = $constantArray['journalInward'];
+							}
+						}
+						$productService= new ProductService();	
+						$productPersistable = new ProductPersistable();
+						$productProcessor = new ProductProcessor();
+						$productPersistable = $productProcessor->createPersistableChangeInOutWard($productArray,$inOutward,$jfId);
+						
+						//here two array and string is return at a time
+						if(is_array($productPersistable))
+						{
+							$status = $productService->updateInOutwardData($productPersistable,$jfId,$inOutward);
+							return $status;
+						}
+						else
+						{
+							return $productPersistable;
 						}
 					}
-					$productService= new ProductService();	
-					$productPersistable = new ProductPersistable();
-					$productProcessor = new ProductProcessor();
-					$productPersistable = $productProcessor->createPersistableChangeInOutWard($productArray,$inOutward,$jfId);
-					
-					//here two array and string is return at a time
-					if(is_array($productPersistable))
+				}
+				//payment/receipt
+				else
+				{
+					$headerData = $request->header();
+					$journalArray = $this->request->input();
+					if(strcmp($headerData['type'][0],$constantArray['paymentType'])==0)
 					{
-						$status = $productService->updateInOutwardData($productPersistable,$jfId,$inOutward);
+						$headerType = $constantArray['paymentType'];
+					}
+					else
+					{
+						$headerType = $constantArray['receiptType'];
+					}
+					//journal data is processed(trim,validation and set data in object)
+					$journalPersistable = $processor->createPersistableChange($headerData,$journalArray,$jfId);
+					//here two array and string is return at a time
+					if(is_array($journalPersistable))
+					{
+						$status = $journalService->update($journalPersistable,$jfId,$headerType);
 						return $status;
 					}
 					else
 					{
-						return $productPersistable;
+						return $journalPersistable;
 					}
 				}
 			}
-			//payment/receipt
 			else
 			{
 				$headerData = $request->header();
+				$headerType = $constantArray['specialJournalType'];
 				$journalArray = $this->request->input();
-				if(strcmp($headerData['type'][0],$constantArray['paymentType'])==0)
-				{
-					$headerType = $constantArray['paymentType'];
-				}
-				else
-				{
-					$headerType = $constantArray['receiptType'];
-				}
 				//journal data is processed(trim,validation and set data in object)
 				$journalPersistable = $processor->createPersistableChange($headerData,$journalArray,$jfId);
+				
 				//here two array and string is return at a time
 				if(is_array($journalPersistable))
 				{
@@ -463,22 +547,7 @@ class JournalController extends BaseController implements ContainerInterface
 		}
 		else
 		{
-			$headerData = $request->header();
-			$headerType = $constantArray['specialJournalType'];
-			$journalArray = $this->request->input();
-			//journal data is processed(trim,validation and set data in object)
-			$journalPersistable = $processor->createPersistableChange($headerData,$journalArray,$jfId);
-			
-			//here two array and string is return at a time
-			if(is_array($journalPersistable))
-			{
-				$status = $journalService->update($journalPersistable,$jfId,$headerType);
-				return $status;
-			}
-			else
-			{
-				return $journalPersistable;
-			}
+			return $authenticationResult;
 		}
 	}
 }

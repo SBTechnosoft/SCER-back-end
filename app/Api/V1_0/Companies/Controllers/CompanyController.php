@@ -13,6 +13,7 @@ use ERP\Core\Companies\Validations\CompanyValidate;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Model\Companies\CompanyModel;
 use ERP\Entities\Constants\ConstantClass;
+use ERP\Entities\AuthenticationClass\TokenAuthentication;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -48,35 +49,50 @@ class CompanyController extends BaseController implements ContainerInterface
 	*/
     public function store(Request $request)
     {
-		$this->request = $request;
-		// check the requested Http method
-		$requestMethod = $_SERVER['REQUEST_METHOD'];
-		// insert
-		if($requestMethod == 'POST')
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			$processor = new CompanyProcessor();
-			$companyPersistable = new CompanyPersistable();		
-			$companyService= new CompanyService();		
-					
-			$companyPersistable = $processor->createPersistable($this->request);
-			
-			//get exception message
-			$exception = new ExceptionMessage();
-			$fileSizeArray = $exception->messageArrays();
-			
-			if($companyPersistable[0][0]=='[')
+			$this->request = $request;
+			// check the requested Http method
+			$requestMethod = $_SERVER['REQUEST_METHOD'];
+			// insert
+			if($requestMethod == 'POST')
 			{
-				return $companyPersistable;
+				$processor = new CompanyProcessor();
+				$companyPersistable = new CompanyPersistable();		
+				$companyService= new CompanyService();		
+						
+				$companyPersistable = $processor->createPersistable($this->request);
+				
+				//get exception message
+				$exception = new ExceptionMessage();
+				$fileSizeArray = $exception->messageArrays();
+				
+				if($companyPersistable[0][0]=='[')
+				{
+					return $companyPersistable;
+				}
+				else if(is_array($companyPersistable))
+				{
+					$status = $companyService->insert($companyPersistable);
+					return $status;
+				}
+				else
+				{
+					return $companyPersistable;
+				}
 			}
-			else if(is_array($companyPersistable))
-			{
-				$status = $companyService->insert($companyPersistable);
-				return $status;
-			}
-			else
-			{
-				return $companyPersistable;
-			}
+		}
+		else
+		{
+			return $authenticationResult;
 		}
 	}
 	
@@ -84,20 +100,35 @@ class CompanyController extends BaseController implements ContainerInterface
      * get the specified resource.
      * @param  int  $companyId
      */
-    public function getData($companyId=null)
+    public function getData(Request $request,$companyId=null)
     {
-		if($companyId==null)
-		{	
-			$companyService= new CompanyService();
-			$status = $companyService->getAllCompanyData();
-			return $status;
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			if($companyId==null)
+			{	
+				$companyService= new CompanyService();
+				$status = $companyService->getAllCompanyData();
+				return $status;
+			}
+			else
+			{	
+				$companyService= new CompanyService();
+				$status = $companyService->getCompanyData($companyId);
+				return $status;
+			}    
 		}
 		else
-		{	
-			$companyService= new CompanyService();
-			$status = $companyService->getCompanyData($companyId);
-			return $status;
-		}        
+		{
+			return $authenticationResult;
+		}	
     }
 	
     /**
@@ -107,35 +138,50 @@ class CompanyController extends BaseController implements ContainerInterface
      */
 	public function update(Request $request,$companyId)
     {    
-		$this->request = $request;
-		$processor = new CompanyProcessor();
-		$companyPersistable = new CompanyPersistable();	
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
 		
-		//check for company is available in database...
-		$companyModel = new CompanyModel();
-		$result = $companyModel->getData($companyId);
-		if(strcmp($result,$fileSizeArray['404'])==0)
-		{	
-			return $result;
-		}
-		else
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			$companyPersistable = $processor->createPersistableChange($this->request,$companyId);
-			$companyService= new CompanyService();
-			if(is_array($companyPersistable))
-			{
-				$status = $companyService->update($companyPersistable,$companyId);
-				return $status;
+			$this->request = $request;
+			$processor = new CompanyProcessor();
+			$companyPersistable = new CompanyPersistable();	
+			
+			//get exception message
+			$exception = new ExceptionMessage();
+			$fileSizeArray = $exception->messageArrays();
+			
+			//check for company is available in database...
+			$companyModel = new CompanyModel();
+			$result = $companyModel->getData($companyId);
+			if(strcmp($result,$fileSizeArray['404'])==0)
+			{	
+				return $result;
 			}
 			else
 			{
-				return $companyPersistable;
+				$companyPersistable = $processor->createPersistableChange($this->request,$companyId);
+				$companyService= new CompanyService();
+				if(is_array($companyPersistable))
+				{
+					$status = $companyService->update($companyPersistable,$companyId);
+					return $status;
+				}
+				else
+				{
+					return $companyPersistable;
+				}
 			}
 		}
+		else
+		{
+			return $authenticationResult;
+		}	
 	}
 	
     /**
@@ -145,26 +191,40 @@ class CompanyController extends BaseController implements ContainerInterface
      */
     public function destroy(Request $request,$companyId)
     {
-        $this->request = $request;
-		$processor = new CompanyProcessor();
-		$companyPersistable = new CompanyPersistable();		
-		$companyService= new CompanyService();	
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		
-		$companyModel = new CompanyModel();
-		$result = $companyModel->getData($companyId);
-		if(strcmp($result,$fileSizeArray['404'])==0)
-		{	
-			return $result;
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$this->request = $request;
+			$processor = new CompanyProcessor();
+			$companyPersistable = new CompanyPersistable();		
+			$companyService= new CompanyService();	
+			
+			//get exception message
+			$exception = new ExceptionMessage();
+			$fileSizeArray = $exception->messageArrays();
+			
+			$companyModel = new CompanyModel();
+			$result = $companyModel->getData($companyId);
+			if(strcmp($result,$fileSizeArray['404'])==0)
+			{	
+				return $result;
+			}
+			else
+			{
+				$companyPersistable = $processor->createPersistableChange($this->request,$companyId);
+				$status = $companyService->delete($companyPersistable);
+				return $status;
+			}
 		}
 		else
 		{
-			$companyPersistable = $processor->createPersistableChange($this->request,$companyId);
-			$status = $companyService->delete($companyPersistable);
-			return $status;
+			return $authenticationResult;
 		}
     }
 }

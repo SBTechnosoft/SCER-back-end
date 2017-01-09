@@ -1,7 +1,7 @@
 <?php
 namespace ERP\Api\V1_0\Authenticate\Routes;
 
-// use ERP\Api\V1_0\Authenticate\Controllers\StateController;
+use ERP\Api\V1_0\Authenticate\Controllers\AuthenticateController;
 use ERP\Support\Interfaces\RouteRegistrarInterface;
 use Illuminate\Contracts\Routing\Registrar as RegistrarInterface;
 use Illuminate\Support\Facades\Route;
@@ -16,15 +16,14 @@ class Authenticate implements RouteRegistrarInterface
      */
     public function register(RegistrarInterface $Registrar)
     {
-		echo "route";
-		exit;
-		// all the possible get request 
-		// Route::group(['as' => 'get'], function ()
-		// {
-			// Route::get('States/State/{stateId?}', 'States\Controllers\StateController@getData');
-		// });
+		// get data get request
+		Route::get('Authenticate/Authenticate', 'Authenticate\Controllers\AuthenticateController@getAllData');
+		
+		// get data get request
+		Route::get('Authenticate/Authenticate/users/{userId}', 'Authenticate\Controllers\AuthenticateController@getData');
+		
 		// insert data post request
-		// Route::post('States/State', 'States\Controllers\StateController@store');
+		Route::post('Authenticate/Authenticate', 'Authenticate\Controllers\AuthenticateController@store');
 	}
 }
 

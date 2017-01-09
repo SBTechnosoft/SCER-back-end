@@ -10,6 +10,8 @@ use ERP\Core\Users\Persistables\UserPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Model\Users\UserModel;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Entities\AuthenticationClass\TokenAuthentication;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -45,34 +47,49 @@ class UserController extends BaseController implements ContainerInterface
 	*/
     public function store(Request $request)
     {
-		$this->request = $request;
-		// check the requested Http method
-		$requestMethod = $_SERVER['REQUEST_METHOD'];
-		// insert
-		if($requestMethod == 'POST')
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			$processor = new Userprocessor();
-			$userPersistable = new UserPersistable();	
-			$userService= new UserService();
-			$userPersistable = $processor->createPersistable($this->request);
-			
-			if($userPersistable[0][0]=='[')
+			$this->request = $request;
+			// check the requested Http method
+			$requestMethod = $_SERVER['REQUEST_METHOD'];
+			// insert
+			if($requestMethod == 'POST')
 			{
-				return $userPersistable;
-			}
-			else if(is_array($userPersistable))
-			{
-				$status = $userService->insert($userPersistable);
-				return $status;
+				$processor = new Userprocessor();
+				$userPersistable = new UserPersistable();	
+				$userService= new UserService();
+				$userPersistable = $processor->createPersistable($this->request);
+				
+				if($userPersistable[0][0]=='[')
+				{
+					return $userPersistable;
+				}
+				else if(is_array($userPersistable))
+				{
+					$status = $userService->insert($userPersistable);
+					return $status;
+				}
+				else
+				{
+					return $userPersistable;
+				}
 			}
 			else
 			{
-				return $userPersistable;
+				return $status;
 			}
 		}
 		else
 		{
-			return $status;
+			return $authenticationResult;
 		}
 	}
 	
@@ -80,21 +97,36 @@ class UserController extends BaseController implements ContainerInterface
      * get the specified resource.
      * @param  state_id
      */
-    public function getData($userId=null)
+    public function getData(Request $request,$userId=null)
     {
-		if($userId==null)
-		{		
-			$userService= new UserService();
-			$status = $userService->getAllUserData();
-			return $status;
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			if($userId==null)
+			{		
+				$userService= new UserService();
+				$status = $userService->getAllUserData();
+				return $status;
+			}
+			else
+			{	
+				$userService= new UserService();
+				$status = $userService->getUserData($userId);
+				return $status;
+			}    
 		}
 		else
-		{	
-			$userService= new UserService();
-			$status = $userService->getUserData($userId);
-			return $status;
-		}        
-    }
+		{
+			return $authenticationResult;
+		}
+	}
 	
     /**
      * Update the specified resource in storage.
@@ -103,33 +135,48 @@ class UserController extends BaseController implements ContainerInterface
      */
 	public function update(Request $request,$userId)
     {    
-		$this->request = $request;
-		$processor = new UserProcessor();
-		$userPersistable = new UserPersistable();		
-		$userService= new UserService();
-		$userModel = new UserModel();	
-		$result = $userModel->getData($userId);
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
-		// get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
 		
-		if(strcmp($result,$exceptionArray['404'])==0)
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			return $exceptionArray['404'];
-		}
-		else
-		{
-			$userPersistable = $processor->createPersistableChange($this->request,$userId);
-			if(is_array($userPersistable))
+			$this->request = $request;
+			$processor = new UserProcessor();
+			$userPersistable = new UserPersistable();		
+			$userService= new UserService();
+			$userModel = new UserModel();	
+			$result = $userModel->getData($userId);
+			
+			// get exception message
+			$exception = new ExceptionMessage();
+			$exceptionArray = $exception->messageArrays();
+			
+			if(strcmp($result,$exceptionArray['404'])==0)
 			{
-				$status = $userService->update($userPersistable);
-				return $status;
+				return $exceptionArray['404'];
 			}
 			else
 			{
-				return $userPersistable;
+				$userPersistable = $processor->createPersistableChange($this->request,$userId);
+				if(is_array($userPersistable))
+				{
+					$status = $userService->update($userPersistable);
+					return $status;
+				}
+				else
+				{
+					return $userPersistable;
+				}
 			}
+		}
+		else
+		{
+			return $authenticationResult;
 		}
 	}
 	
@@ -140,27 +187,42 @@ class UserController extends BaseController implements ContainerInterface
      */
     public function Destroy(Request $request,$userId)
     {
-        $this->request = $request;
-		$processor = new UserProcessor();
-		$userPersistable = new UserPersistable();		
-		$userService= new UserService();	
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
-		$userModel = new UserModel();	
-		$result = $userModel->getData($userId);
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
 		
-		// get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
-		
-		if(strcmp($result,$exceptionArray['404'])==0)
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			return $exceptionArray['404'];
+			$this->request = $request;
+			$processor = new UserProcessor();
+			$userPersistable = new UserPersistable();		
+			$userService= new UserService();	
+			
+			$userModel = new UserModel();	
+			$result = $userModel->getData($userId);
+			
+			// get exception message
+			$exception = new ExceptionMessage();
+			$exceptionArray = $exception->messageArrays();
+			
+			if(strcmp($result,$exceptionArray['404'])==0)
+			{
+				return $exceptionArray['404'];
+			}
+			else
+			{		
+				$userPersistable = $processor->createPersistableChange($this->request,$userId);
+				$status = $userService->delete($userPersistable);
+				return $status;
+			}
 		}
 		else
-		{		
-			$userPersistable = $processor->createPersistableChange($this->request,$userId);
-			$status = $userService->delete($userPersistable);
-			return $status;
+		{
+			return $authenticationResult;
 		}
     }
 }

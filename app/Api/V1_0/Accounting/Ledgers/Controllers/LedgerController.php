@@ -11,7 +11,8 @@ use ERP\Core\Accounting\Ledgers\Persistables\LedgerPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Model\Accounting\Ledgers\LedgerModel;
-
+use ERP\Entities\AuthenticationClass\TokenAuthentication;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -47,29 +48,44 @@ class LedgerController extends BaseController implements ContainerInterface
 	*/
     public function store(Request $request)
     {
-		$this->request = $request;
-		// check the requested Http method
-		$requestMethod = $_SERVER['REQUEST_METHOD'];
-		// insert
-		if($requestMethod == 'POST')
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			$processor = new LedgerProcessor();
-			$ledgerPersistable = new LedgerPersistable();
-			$ledgerPersistable = $processor->createPersistable($this->request);
-			if($ledgerPersistable[0][0]=='[')
+			$this->request = $request;
+			// check the requested Http method
+			$requestMethod = $_SERVER['REQUEST_METHOD'];
+			// insert
+			if($requestMethod == 'POST')
 			{
-				return $ledgerPersistable;
+				$processor = new LedgerProcessor();
+				$ledgerPersistable = new LedgerPersistable();
+				$ledgerPersistable = $processor->createPersistable($this->request);
+				if($ledgerPersistable[0][0]=='[')
+				{
+					return $ledgerPersistable;
+				}
+				else if(is_array($ledgerPersistable))
+				{
+					$ledgerService= new LedgerService();
+					$status = $ledgerService->insert($ledgerPersistable);
+					return $status;
+				}
+				else
+				{
+					return $ledgerPersistable;
+				}
 			}
-			else if(is_array($ledgerPersistable))
-			{
-				$ledgerService= new LedgerService();
-				$status = $ledgerService->insert($ledgerPersistable);
-				return $status;
-			}
-			else
-			{
-				return $ledgerPersistable;
-			}
+		}
+		else
+		{
+			return $authenticationResult;
 		}
 	}
 	
@@ -77,19 +93,34 @@ class LedgerController extends BaseController implements ContainerInterface
      * get the specified resource.
      * @param  int  $ledgerId
      */
-    public function getData($ledgerId=null)
+    public function getData(Request $request,$ledgerId=null)
     {
-		if($ledgerId==null)
-		{	
-			$ledgerService= new LedgerService();
-			$status = $ledgerService->getAllLedgerData();
-			return $status;
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			if($ledgerId==null)
+			{	
+				$ledgerService= new LedgerService();
+				$status = $ledgerService->getAllLedgerData();
+				return $status;
+			}
+			else
+			{	
+				$ledgerService= new LedgerService();
+				$status = $ledgerService->getLedgerData($ledgerId);
+				return $status;
+			}
 		}
 		else
-		{	
-			$ledgerService= new LedgerService();
-			$status = $ledgerService->getLedgerData($ledgerId);
-			return $status;
+		{
+			return $authenticationResult;
 		}
 	}
 	
@@ -97,11 +128,26 @@ class LedgerController extends BaseController implements ContainerInterface
      * get the specified resource.
      * @param  int  $ledgerGrpId
      */
-    public function getAllData($ledgerGrpId)
+    public function getAllData(Request $request,$ledgerGrpId)
     {
-		$ledgerService= new LedgerService();
-		$status = $ledgerService->getAllData($ledgerGrpId);
-		return $status;
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$ledgerService= new LedgerService();
+			$status = $ledgerService->getAllData($ledgerGrpId);
+			return $status;
+		}
+		else
+		{
+			return $authenticationResult;
+		}
 	}
 	
 	/**
@@ -110,54 +156,69 @@ class LedgerController extends BaseController implements ContainerInterface
      */
     public function getLedgerData(Request $request,$companyId)
     {
-		//get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
-		if(array_key_exists("type",$request->header()))
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			if(strcmp(trim($request->header()['type'][0]),'sales')==0 || strcmp(trim($request->header()['type'][0]),'purchase')==0)
+			//get exception message
+			$exception = new ExceptionMessage();
+			$exceptionArray = $exception->messageArrays();
+			if(array_key_exists("type",$request->header()))
 			{
-				if(array_key_exists("fromdate",$request->header()) && array_key_exists("todate",$request->header()))
+				if(strcmp(trim($request->header()['type'][0]),'sales')==0 || strcmp(trim($request->header()['type'][0]),'purchase')==0)
 				{
-					$this->request = $request;
-					$processor = new LedgerProcessor();
-					$ledgerPersistable = new LedgerPersistable();
-					$ledgerPersistable = $processor->createPersistableData($this->request);
-					$ledgerService= new LedgerService();
-					$status = $ledgerService->getData($ledgerPersistable,$companyId,$request->header()['type'][0]);
-					return $status;
+					if(array_key_exists("fromdate",$request->header()) && array_key_exists("todate",$request->header()))
+					{
+						$this->request = $request;
+						$processor = new LedgerProcessor();
+						$ledgerPersistable = new LedgerPersistable();
+						$ledgerPersistable = $processor->createPersistableData($this->request);
+						$ledgerService= new LedgerService();
+						$status = $ledgerService->getData($ledgerPersistable,$companyId,$request->header()['type'][0]);
+						return $status;
+					}
+					//get current year data
+					else
+					{
+						$ledgerModel = new LedgerModel();
+						$status = $ledgerModel->getCurrentYearData($companyId,$request->header()['type'][0]);
+						return $status;
+					}
 				}
-				//get current year data
 				else
 				{
-					$ledgerModel = new LedgerModel();
-					$status = $ledgerModel->getCurrentYearData($companyId,$request->header()['type'][0]);
-					return $status;
+					return $exceptionArray['content'];
 				}
+			}
+			else if(array_key_exists("ledgergroup",$request->header()))
+			{
+				$ledgerarray = explode(",", $request->header()['ledgergroup'][0]);
+				$ledgerService= new LedgerService();
+				$ledgerResult = $ledgerService->getDataAsLedgerGrp($ledgerarray,$companyId);
+				return $ledgerResult;
+			}
+			else if(array_key_exists("ledgername",$request->header()))
+			{
+				$ledgerService= new LedgerService();
+				$ledgerResult = $ledgerService->getLedgerDataAsName($request->header(),$companyId);
+				return $ledgerResult;
 			}
 			else
 			{
-				return $exceptionArray['content'];
+				$ledgerService= new LedgerService();
+				$status = $ledgerService->getLedgerDetail($companyId);
+				return $status;
 			}
-		}
-		else if(array_key_exists("ledgergroup",$request->header()))
-		{
-			$ledgerarray = explode(",", $request->header()['ledgergroup'][0]);
-			$ledgerService= new LedgerService();
-			$ledgerResult = $ledgerService->getDataAsLedgerGrp($ledgerarray,$companyId);
-			return $ledgerResult;
-		}
-		else if(array_key_exists("ledgername",$request->header()))
-		{
-			$ledgerService= new LedgerService();
-			$ledgerResult = $ledgerService->getLedgerDataAsName($request->header(),$companyId);
-			return $ledgerResult;
 		}
 		else
 		{
-			$ledgerService= new LedgerService();
-			$status = $ledgerService->getLedgerDetail($companyId);
-			return $status;
+			return $authenticationResult;
 		}
 	}
 	
@@ -167,9 +228,24 @@ class LedgerController extends BaseController implements ContainerInterface
      */
     public function getLedgerTransactionData($ledgerId)
     {
-		$ledgerService= new LedgerService();
-		$status = $ledgerService->getLedgerTransactionDetail($ledgerId);
-		return $status;
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$ledgerService= new LedgerService();
+			$status = $ledgerService->getLedgerTransactionDetail($ledgerId);
+			return $status;
+		}
+		else
+		{
+			return $authenticationResult;
+		}
 	}
 	
     /**
@@ -179,33 +255,48 @@ class LedgerController extends BaseController implements ContainerInterface
      */
 	public function update(Request $request,$ledgerId)
     {    
-		$this->request = $request;
-		$processor = new LedgerProcessor();
-		$ledgerPersistable = new LedgerPersistable();		
-		$ledgerService= new LedgerService();		
-		$ledgerModel = new LedgerModel();
-		$result = $ledgerModel->getData($ledgerId);
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
-		if(strcmp($result,$exceptionArray['404'])==0)
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			return $result;
-		}
-		else
-		{
-			$ledgerPersistable = $processor->createPersistableChange($this->request,$ledgerId);
-			//here two array and string is return at a time
-			if(is_array($ledgerPersistable))
+			$this->request = $request;
+			$processor = new LedgerProcessor();
+			$ledgerPersistable = new LedgerPersistable();		
+			$ledgerService= new LedgerService();		
+			$ledgerModel = new LedgerModel();
+			$result = $ledgerModel->getData($ledgerId);
+			
+			//get exception message
+			$exception = new ExceptionMessage();
+			$exceptionArray = $exception->messageArrays();
+			if(strcmp($result,$exceptionArray['404'])==0)
 			{
-				$status = $ledgerService->update($ledgerPersistable);
-				return $status;
+				return $result;
 			}
 			else
 			{
-				return $ledgerPersistable;
+				$ledgerPersistable = $processor->createPersistableChange($this->request,$ledgerId);
+				//here two array and string is return at a time
+				if(is_array($ledgerPersistable))
+				{
+					$status = $ledgerService->update($ledgerPersistable);
+					return $status;
+				}
+				else
+				{
+					return $ledgerPersistable;
+				}
 			}
+		}
+		else
+		{
+			return $authenticationResult;
 		}
 	}
 	
@@ -216,7 +307,7 @@ class LedgerController extends BaseController implements ContainerInterface
      */
     public function destroy(Request $request,$ledgerId)
     {
-        $this->request = $request;
+		$this->request = $request;
 		$Processor = new LedgerProcessor();
 		$ledgerPersistable = new LedgerPersistable();		
 		$ledgerService= new LedgerService();	

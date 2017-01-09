@@ -11,6 +11,8 @@ use ERP\Core\Settings\Templates\Persistables\TemplatePersistable;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Model\Settings\Templates\TemplateModel;
+use ERP\Entities\AuthenticationClass\TokenAuthentication;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -46,30 +48,45 @@ class TemplateController extends BaseController implements ContainerInterface
 	*/
 	public function store(Request $request)
     {
-		$this->request = $request;
-		// check the requested Http method
-		$requestMethod = $_SERVER['REQUEST_METHOD'];
-		// insert
-		if($requestMethod == 'POST')
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			$processor = new TemplateProcessor();
-			$templatePersistable = new TemplatePersistable();		
-			$templateService= new TemplateService();			
-			$templatePersistable = $processor->createPersistable($this->request);
-			
-			if($templatePersistable[0][0]=='[')
+			$this->request = $request;
+			// check the requested Http method
+			$requestMethod = $_SERVER['REQUEST_METHOD'];
+			// insert
+			if($requestMethod == 'POST')
 			{
-				return $templatePersistable;
+				$processor = new TemplateProcessor();
+				$templatePersistable = new TemplatePersistable();		
+				$templateService= new TemplateService();			
+				$templatePersistable = $processor->createPersistable($this->request);
+				
+				if($templatePersistable[0][0]=='[')
+				{
+					return $templatePersistable;
+				}
+				else if(is_array($templatePersistable))
+				{
+					$status = $templateService->insert($templatePersistable);
+					return $status;
+				}
+				else
+				{
+					return $templatePersistable;
+				}
 			}
-			else if(is_array($templatePersistable))
-			{
-				$status = $templateService->insert($templatePersistable);
-				return $status;
-			}
-			else
-			{
-				return $templatePersistable;
-			}
+		}
+		else
+		{
+			return $authenticationResult;
 		}
 	}
 	
@@ -77,31 +94,61 @@ class TemplateController extends BaseController implements ContainerInterface
      * get the specified resource.
      * @param  int  $templateId
      */
-    public function getData($templateId=null)
+    public function getData(Request $request,$templateId=null)
     {
-		if($templateId==null)
-		{	
-			$templateService= new TemplateService();
-			$status = $templateService->getAllTemplateData();
-			return $status;
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			if($templateId==null)
+			{	
+				$templateService= new TemplateService();
+				$status = $templateService->getAllTemplateData();
+				return $status;
+			}
+			else
+			{	
+				$templateService= new TemplateService();
+				$status = $templateService->getTemplateData($templateId);
+				return $status;
+			} 
 		}
 		else
-		{	
-			$templateService= new TemplateService();
-			$status = $templateService->getTemplateData($templateId);
-			return $status;
-		}        
+		{
+			return $authenticationResult;
+		}		
     }
 	
 	/**
      * get the specified resource.
      * @param  int  $companyId
      */
-    public function getTemplateData($companyId)
+    public function getTemplateData(Request $request,$companyId)
     {
-		$templateService= new TemplateService();
-		$status = $templateService->getSpecificData($companyId);
-		return $status;
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$templateService= new TemplateService();
+			$status = $templateService->getSpecificData($companyId);
+			return $status;
+		}
+		else
+		{
+			return $authenticationResult;
+		}
 	}
 	
 	/**
@@ -110,35 +157,49 @@ class TemplateController extends BaseController implements ContainerInterface
      * @param  branch_id
      */
 	public function update(Request $request,$templateId)
-    {    
-		$this->request = $request;
-		$processor = new TemplateProcessor();
-		$templatePersistable = new TemplatePersistable();
-		$templateModel = new TemplateModel();		
-		$result = $templateModel->getData($templateId);
+    {
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		if(strcmp($result,$fileSizeArray['404'])==0)
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			return $result;
-		}
-		else
-		{
-			$templatePersistable = $processor->createPersistableChange($this->request,$templateId);
-			//here two array and string is return at a time
-			if(is_array($templatePersistable))
+			$this->request = $request;
+			$processor = new TemplateProcessor();
+			$templatePersistable = new TemplatePersistable();
+			$templateModel = new TemplateModel();		
+			$result = $templateModel->getData($templateId);
+			
+			//get exception message
+			$exception = new ExceptionMessage();
+			$fileSizeArray = $exception->messageArrays();
+			if(strcmp($result,$fileSizeArray['404'])==0)
 			{
-				$templateService= new TemplateService();	
-				$status = $templateService->update($templatePersistable);
-				return $status;
+				return $result;
 			}
 			else
 			{
-				return $templatePersistable;
+				$templatePersistable = $processor->createPersistableChange($this->request,$templateId);
+				//here two array and string is return at a time
+				if(is_array($templatePersistable))
+				{
+					$templateService= new TemplateService();	
+					$status = $templateService->update($templatePersistable);
+					return $status;
+				}
+				else
+				{
+					return $templatePersistable;
+				}
 			}
 		}
-		
+		else
+		{
+			return $authenticationResult;
+		}
 	}
 }

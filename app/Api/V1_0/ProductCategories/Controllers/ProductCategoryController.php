@@ -10,6 +10,8 @@ use ERP\Core\ProductCategories\Persistables\ProductCategoryPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Model\ProductCategories\ProductCategoryModel;
+use ERP\Entities\AuthenticationClass\TokenAuthentication;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -47,33 +49,48 @@ class ProductCategoryController extends BaseController implements ContainerInter
 	*/
     public function store(Request $request)
     {
-		$this->request = $request;
-		// check the requested Http method
-		$requestMethod = $_SERVER['REQUEST_METHOD'];
-		// insert
-		if($requestMethod == 'POST')
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			$processor = new ProductCategoryProcessor();
-			$productCategoryPersistable = new ProductCategoryPersistable();		
-			$productCategoryService= new ProductCategoryService();			
-			$productCategoryPersistable = $processor->createPersistable($this->request);
-			if($productCategoryPersistable[0][0]=='[')
+			$this->request = $request;
+			// check the requested Http method
+			$requestMethod = $_SERVER['REQUEST_METHOD'];
+			// insert
+			if($requestMethod == 'POST')
 			{
-				return $productCategoryPersistable;
-			}
-			else if(is_array($productCategoryPersistable))
-			{
-				$status = $productCategoryService->insert($productCategoryPersistable);
-				return $status;
+				$processor = new ProductCategoryProcessor();
+				$productCategoryPersistable = new ProductCategoryPersistable();		
+				$productCategoryService= new ProductCategoryService();			
+				$productCategoryPersistable = $processor->createPersistable($this->request);
+				if($productCategoryPersistable[0][0]=='[')
+				{
+					return $productCategoryPersistable;
+				}
+				else if(is_array($productCategoryPersistable))
+				{
+					$status = $productCategoryService->insert($productCategoryPersistable);
+					return $status;
+				}
+				else
+				{
+					return $productCategoryPersistable;
+				}
 			}
 			else
 			{
-				return $productCategoryPersistable;
+				return $status;
 			}
 		}
 		else
 		{
-			return $status;
+			return $authenticationResult;
 		}
 	}
 	
@@ -81,20 +98,35 @@ class ProductCategoryController extends BaseController implements ContainerInter
      * get the specified resource.
      * @param  int  $productCategoryId
      */
-    public function getData($productCategoryId=null)
+    public function getData(Request $request,$productCategoryId=null)
     {
-		if($productCategoryId==null)
-		{			
-			$productCategoryService= new ProductCategoryService();
-			$status = $productCategoryService->getAllProductCatData();
-			return $status;
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			if($productCategoryId==null)
+			{			
+				$productCategoryService= new ProductCategoryService();
+				$status = $productCategoryService->getAllProductCatData();
+				return $status;
+			}
+			else
+			{	
+				$productCategoryService= new ProductCategoryService();
+				$status = $productCategoryService->getProductCatData($productCategoryId);
+				return $status;
+			}   
 		}
 		else
-		{	
-			$productCategoryService= new ProductCategoryService();
-			$status = $productCategoryService->getProductCatData($productCategoryId);
-			return $status;
-		}        
+		{
+			return $authenticationResult;
+		}
     }
 	
     /**
@@ -102,35 +134,49 @@ class ProductCategoryController extends BaseController implements ContainerInter
      * @param  Request object[Request $request]
      */
 	public function update(Request $request,$productCategoryId)
-    {    
-		$this->request = $request;
-		$processor = new ProductCategoryProcessor();
-		$productCategoryPersistable = new ProductCategoryPersistable();		
-		$productCategoryService= new ProductCategoryService();	
-		$productCategoryModel = new ProductCategoryModel();		
-		$result = $productCategoryModel->getData($productCategoryId);
+    {  
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
-		// get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		if(strcmp($result,$fileSizeArray['404'])==0)
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			return $result;
-		}
-		else
-		{
-			$productCategoryPersistable = $processor->createPersistableChange($this->request,$productCategoryId);
-			if(is_array($productCategoryPersistable))
+			$this->request = $request;
+			$processor = new ProductCategoryProcessor();
+			$productCategoryPersistable = new ProductCategoryPersistable();		
+			$productCategoryService= new ProductCategoryService();	
+			$productCategoryModel = new ProductCategoryModel();		
+			$result = $productCategoryModel->getData($productCategoryId);
+			
+			// get exception message
+			$exception = new ExceptionMessage();
+			$fileSizeArray = $exception->messageArrays();
+			if(strcmp($result,$fileSizeArray['404'])==0)
 			{
-				$status = $productCategoryService->update($productCategoryPersistable);
-				return $status;
+				return $result;
 			}
 			else
 			{
-				return $productCategoryPersistable;
+				$productCategoryPersistable = $processor->createPersistableChange($this->request,$productCategoryId);
+				if(is_array($productCategoryPersistable))
+				{
+					$status = $productCategoryService->update($productCategoryPersistable);
+					return $status;
+				}
+				else
+				{
+					return $productCategoryPersistable;
+				}
 			}
 		}
-		
+		else
+		{
+			return $authenticationResult;
+		}
 	}
 	
     /**
@@ -139,25 +185,40 @@ class ProductCategoryController extends BaseController implements ContainerInter
      */
     public function Destroy(Request $request,$productCategoryId)
     {
-        $this->request = $request;
-		$processor = new ProductCategoryProcessor();
-		$productCategoryPersistable = new ProductCategoryPersistable();		
-		$productCategoryService= new ProductCategoryService();			
-		$productCategoryModel = new ProductCategoryModel();		
-		$result = $productCategoryModel->getData($productCategoryId);
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
-		// get exception message
-		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		if(strcmp($result,$fileSizeArray['404'])==0)
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			return $result;
+			$this->request = $request;
+			$processor = new ProductCategoryProcessor();
+			$productCategoryPersistable = new ProductCategoryPersistable();		
+			$productCategoryService= new ProductCategoryService();			
+			$productCategoryModel = new ProductCategoryModel();		
+			$result = $productCategoryModel->getData($productCategoryId);
+			
+			// get exception message
+			$exception = new ExceptionMessage();
+			$fileSizeArray = $exception->messageArrays();
+			if(strcmp($result,$fileSizeArray['404'])==0)
+			{
+				return $result;
+			}
+			else
+			{
+				$productCategoryPersistable = $processor->createPersistableChange($this->request,$productCategoryId);
+				$status = $productCategoryService->delete($productCategoryPersistable);
+				return $status;
+			}
 		}
 		else
 		{
-			$productCategoryPersistable = $processor->createPersistableChange($this->request,$productCategoryId);
-			$status = $productCategoryService->delete($productCategoryPersistable);
-			return $status;
+			return $authenticationResult;
 		}
     }
 }
