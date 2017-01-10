@@ -22,6 +22,12 @@ use ERP\Core\Products\Properties\InvoiceNumberPropertyTrait;
 use ERP\Core\Products\Properties\BillNumberPropertyTrait;
 use ERP\Core\Products\Properties\TaxPropertyTrait;
 use ERP\Core\Products\Properties\JfIdPropertyTrait;
+use ERP\Core\Products\Properties\PurchasePricePropertyTrait;
+use ERP\Core\Products\Properties\WholeSaleMarginPropertyTrait;
+use ERP\Core\Products\Properties\SemiWholeSaleMarginPropertyTrait;
+use ERP\Core\Products\Properties\VatPropertyTrait;
+use ERP\Core\Products\Properties\MrpPropertyTrait;
+use ERP\Core\Products\Properties\MarginPropertyTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -48,4 +54,10 @@ class productPersistable
 	use BillNumberPropertyTrait;
 	use TaxPropertyTrait;
 	use JfIdPropertyTrait;
+	use PurchasePricePropertyTrait;
+	use WholeSaleMarginPropertyTrait;
+	use SemiWholeSaleMarginPropertyTrait;
+	use VatPropertyTrait;
+	use MrpPropertyTrait;
+	use MarginPropertyTrait;
 }

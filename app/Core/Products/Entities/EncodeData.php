@@ -23,6 +23,12 @@ class EncodeData extends ProductCategoryService
 		$productName= $decodedJson[0]['product_name'];
 		$measurementUnit= $decodedJson[0]['measurement_unit'];
 		$isDisplay= $decodedJson[0]['is_display'];
+		$purchasePrice= $decodedJson[0]['purchase_price'];
+		$wholesaleMargin= $decodedJson[0]['wholesale_margin'];
+		$semiWholeSaleMargin= $decodedJson[0]['semi_wholesale_margin'];
+		$vat= $decodedJson[0]['vat'];
+		$mrp= $decodedJson[0]['mrp'];
+		$margin= $decodedJson[0]['margin'];
 		$productCatId= $decodedJson[0]['product_category_id'];
 		$productGrpId= $decodedJson[0]['product_group_id'];
 		$companyId= $decodedJson[0]['company_id'];
@@ -73,6 +79,12 @@ class EncodeData extends ProductCategoryService
 		$data['productName'] = $productName;
 		$data['measurementUnit'] = $measurementUnit;
 		$data['isDisplay'] = $isDisplay;
+		$data['purchasePrice'] = $purchasePrice;
+		$data['wholesaleMargin'] = $wholesaleMargin;
+		$data['semiWholesaleMargin'] = $semiWholeSaleMargin;
+		$data['vat'] = $vat;
+		$data['mrp'] = $mrp;
+		$data['margin'] = $margin;
 		$data['createdAt'] = $getCreatedDate;
 		$data['updatedAt'] = $getUpdatedDate;	
 		

@@ -26,14 +26,27 @@ class ProductTransformer
 		$productName = $request->input('productName'); 
 		$measurementUnit = $request->input('measurementUnit'); 
 		$isDisplay = $request->input('isDisplay'); 			
+		$purchasePrice = $request->input('purchasePrice'); 			
+		$wholeSaleMargin = $request->input('wholeSaleMargin'); 			
+		$semiWholeSaleMargin = $request->input('semiWholeSaleMargin'); 			
+		$vat = $request->input('vat'); 			
+		$mrp = $request->input('mrp'); 			
+		$margin = $request->input('margin'); 			
 		$companyId = $request->input('companyId'); 			
 		$productCatId = $request->input('productCategoryId'); 			
 		$productGrpId = $request->input('productGroupId'); 			
 		$branchId = $request->input('branchId'); 	 
+		
 		//trim an input
 		$tProductName = trim($productName);
 		$tMeasUnit = trim($measurementUnit);
 		$tIsDisplay = trim($isDisplay);
+		$tPurchasePrice = trim($purchasePrice);
+		$tWholeSaleMargin = trim($wholeSaleMargin);
+		$tSemiWholeSaleMargin = trim($semiWholeSaleMargin);
+		$tVat = trim($vat);
+		$tMrp = trim($mrp);
+		$tMargin = trim($margin);
 		$tCompanyId = trim($companyId);
 		$tProductCatId = trim($productCatId);
 		$tProductGrpId = trim($productGrpId);
@@ -91,6 +104,12 @@ class ProductTransformer
 			$data['product_name'] = $tProductName;
 			$data['measurement_unit'] = $tMeasUnit;
 			$data['is_display'] = $tIsDisplay;
+			$data['purchase_price'] = $tPurchasePrice;
+			$data['wholesale_margin'] = $tWholeSaleMargin;
+			$data['vat'] = $tVat;
+			$data['mrp'] = $tMrp;
+			$data['margin'] = $tMargin;
+			$data['semi_wholesale_margin'] = $tSemiWholeSaleMargin;
 			$data['company_id'] = $tCompanyId;
 			$data['product_category_id'] = $tProductCatId;
 			$data['product_group_id'] = $tProductGrpId;

@@ -220,21 +220,33 @@ include ('connection.php');
 				// formdata.append('productGroupParentId',$scope.formAdata.product_group_parent_id);
 				
 				//product
-				$scope.formAdata.product_name = "abc";
-				$scope.formAdata.is_display = 'no';
-				$scope.formAdata.product_cat_id='2';
-				$scope.formAdata.measurement_unit='litre';
-				$scope.formAdata.product_group_id='10';
-				$scope.formAdata.company_id='14';
-				$scope.formAdata.branch_id='6';
+				// $scope.formAdata.product_name = "abc";
+				// $scope.formAdata.is_display = 'no';
+				// $scope.formAdata.product_cat_id='18';
+				// $scope.formAdata.measurement_unit='litre';
+				// $scope.formAdata.purchase_price='120';
+				// $scope.formAdata.wholesale_margin='12';
+				// $scope.formAdata.semi_wholesale_margin='10';
+				// $scope.formAdata.vat='10';
+				// $scope.formAdata.margin='10';
+				// $scope.formAdata.mrp='140';
+				// $scope.formAdata.product_group_id='10';
+				// $scope.formAdata.company_id='14';
+				// $scope.formAdata.branch_id='6';
 				
-				formdata.append('productName',$scope.formAdata.product_name);
-				formdata.append('isDisplay',$scope.formAdata.is_display);
-				formdata.append('measurementUnit',$scope.formAdata.measurement_unit);
-				formdata.append('productCategoryId',$scope.formAdata.product_cat_id);
-				formdata.append('productGroupId',$scope.formAdata.product_group_id);
-				formdata.append('companyId',$scope.formAdata.company_id);
-				formdata.append('branchId',$scope.formAdata.branch_id);
+				// formdata.append('productName',$scope.formAdata.product_name);
+				// formdata.append('isDisplay',$scope.formAdata.is_display);
+				// formdata.append('measurementUnit',$scope.formAdata.measurement_unit);
+				// formdata.append('purchasePrice',$scope.formAdata.purchase_price);
+				// formdata.append('wholesaleMargin',$scope.formAdata.wholesale_margin);
+				// formdata.append('semiWholesaleMargin',$scope.formAdata.semi_wholesale_margin);
+				// formdata.append('vat',$scope.formAdata.vat);
+				// formdata.append('mrp',$scope.formAdata.mrp);
+				// formdata.append('margin',$scope.formAdata.margin);
+				// formdata.append('productCategoryId',$scope.formAdata.product_cat_id);
+				// formdata.append('productGroupId',$scope.formAdata.product_group_id);
+				// formdata.append('companyId',$scope.formAdata.company_id);
+				// formdata.append('branchId',$scope.formAdata.branch_id);
 				
 				//template
 				// $scope.formAdata.template_name = " abcffd ";
@@ -457,7 +469,7 @@ include ('connection.php');
 				// var productId = 1;
 				// var productGrpId = 11;
 				// var productCatId = 16;
-				// var companyId=15;
+				var companyId=14;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -533,24 +545,24 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/products/"+productId;
 				// var url="http://www.scerp1.com/products";
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/branch/"+branchId;
-				// var url="http://www.scerp1.com/products/company/"+companyId;
+				var url="http://www.scerp1.com/products/company/"+companyId;
 				$http({
                         url: url,
                         // type:'patch',
-						 method: 'post',
-						// method: 'get',
+						 // method: 'post',
+						method: 'get',
 						// method: "PATCH",
 						// method:'delete',
 						processData: false,
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
                         // headers: {'Content-Type': undefined,'ledgerName':'sales'},
-                        // headers: {'Content-Type': undefined,'jfId':'4'},
+                        // headers: {'Content-Type': undefined,'jfId':'4','authenticationToken':'728023b3579a2c3177020535991bc3ae'},
                         // headers: {'Content-Type': undefined,'type':'sales'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'728023b3579a2c3177020535991bc3ae','type':'sales','salesType':'retail_sales'},
-                        headers: {'Content-Type': undefined,'authenticationToken':'728023b3579a2c3177020535991bc3ae'},
+                        headers: {'Content-Type': undefined,'authenticationToken':'728023b3579a2c3177020535991bc3ae','productname':'abc'},
                         // headers: {'Content-Type': undefined,'ledgerGroup':[9,12]},
                         // headers: {'Content-Type': undefined,'type':'sales','jfId':5},
-						 data:formdata
+						 // data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

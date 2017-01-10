@@ -20,6 +20,7 @@ class ProductModel extends Model
 	*/
 	public function insertData()
 	{
+		
 		$getProductData = array();
 		$getproductKey = array();
 		$getProductData = func_get_arg(0);
@@ -39,7 +40,6 @@ class ProductModel extends Model
 				$keyName =$keyName.$getProductKey[$data].",";
 			}
 		}
-		
 		DB::beginTransaction();
 		$raw = DB::statement("insert into product_mst(".$keyName.") 
 		values(".$productData.")");
@@ -123,7 +123,6 @@ class ProductModel extends Model
 		{
 			$keyValueString=$keyValueString.$key[$data]."='".$productData[$data]."',";
 		}
-		
 		DB::beginTransaction();
 		$raw = DB::statement("update product_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
@@ -400,6 +399,12 @@ class ProductModel extends Model
 		product_id,
 		product_name,
 		measurement_unit,
+		purchase_price,
+		wholesale_margin,
+		semi_wholesale_margin,
+		vat,
+		margin,
+		mrp,
 		is_display,
 		created_at,
 		updated_at,
@@ -480,6 +485,12 @@ class ProductModel extends Model
 		product_name,
 		measurement_unit,
 		is_display,
+		purchase_price,
+		wholesale_margin,
+		semi_wholesale_margin,
+		vat,
+		margin,
+		mrp,
 		created_at,
 		updated_at,
 		deleted_at,
@@ -487,7 +498,7 @@ class ProductModel extends Model
 		product_group_id,
 		branch_id,
 		company_id	
-		from product_mst where product_id = ".$productId." and deleted_at='0000-00-00 00:00:00'");
+		from product_mst where product_id = '".$productId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message
@@ -515,6 +526,12 @@ class ProductModel extends Model
 		product_name,
 		measurement_unit,
 		is_display,
+		purchase_price,
+		wholesale_margin,
+		semi_wholesale_margin,
+		vat,
+		margin,
+		mrp,
 		created_at,
 		updated_at,
 		deleted_at,
@@ -551,6 +568,12 @@ class ProductModel extends Model
 		product_name,
 		measurement_unit,
 		is_display,
+		purchase_price,
+		wholesale_margin,
+		semi_wholesale_margin,
+		vat,
+		margin,
+		mrp,
 		created_at,
 		updated_at,
 		deleted_at,
@@ -587,6 +610,12 @@ class ProductModel extends Model
 		product_name,
 		measurement_unit,
 		is_display,
+		purchase_price,
+		wholesale_margin,
+		semi_wholesale_margin,
+		vat,
+		margin,
+		mrp,
 		created_at,
 		updated_at,
 		deleted_at,
@@ -623,6 +652,12 @@ class ProductModel extends Model
 		product_name,
 		measurement_unit,
 		is_display,
+		purchase_price,
+		wholesale_margin,
+		semi_wholesale_margin,
+		vat,
+		mrp,
+		margin,
 		created_at,
 		updated_at,
 		deleted_at,

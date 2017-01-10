@@ -259,15 +259,15 @@ class ProductController extends BaseController implements ContainerInterface
 		
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			if($branchId=="null" && $companyId=="null")
+			if($branchId=="" && $companyId=="")
 			{	
 				$productService= new ProductService();
 				$status = $productService->getAllProductData();
 				return $status;
 			}
-			else if($branchId=="null" || $companyId=="null")
+			else if($branchId=="" || $companyId=="")
 			{
-				if($branchId=="null")	
+				if($branchId=="")	
 				{
 					$productService= new ProductService();
 					$status = $productService->getCBProductData($branchId,$companyId);
@@ -352,13 +352,13 @@ class ProductController extends BaseController implements ContainerInterface
 			$productService= new ProductService();			
 			$productModel = new ProductModel();
 			$result = $productModel->getData($productId);
-			
+		
 			//get exception message
 			$exception = new ExceptionMessage();
 			$exceptionArray = $exception->messageArrays();
 			if(strcmp($result,$exceptionArray['404'])==0)
 			{
-				return $exceptionArray;
+				return $exceptionArray['404'];
 			}
 			else
 			{

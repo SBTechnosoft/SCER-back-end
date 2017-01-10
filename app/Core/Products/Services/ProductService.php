@@ -216,13 +216,13 @@ class ProductService extends AbstractService
 	{
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		if($branchId=="null")
+		$exceptionArray = $exception->messageArrays();
+		if($branchId=="")
 		{
 			//getCompanyProductData(getCProductData)
 			$productModel = new ProductModel();
 			$status = $productModel->getCProductData($companyId);
-			if(strcmp($status,$fileSizeArray['204'])==0)
+			if(strcmp($status,$exceptionArray['204'])==0)
 			{
 				return $status;
 			}
@@ -233,12 +233,12 @@ class ProductService extends AbstractService
 				return $encodeAllData;
 			}
 		}
-		else if($companyId=="null")
+		else if($companyId=="")
 		{
 			//getBranchProductData(getBProductData)
 			$productModel = new ProductModel();
 			$status = $productModel->getBProductData($branchId);
-			if(strcmp($status,$fileSizeArray['204'])==0)
+			if(strcmp($status,$exceptionArray['204'])==0)
 			{
 				return $status;
 			}
@@ -256,7 +256,7 @@ class ProductService extends AbstractService
 			//getBranchCompanyProductData(getBCProductData)
 			$productModel = new ProductModel();
 			$status = $productModel->getBCProductData($companyId,$branchId);
-			if(strcmp($status,$fileSizeArray['204'])==0)
+			if(strcmp($status,$exceptionArray['204'])==0)
 			{
 				return $status;
 			}
@@ -276,12 +276,23 @@ class ProductService extends AbstractService
      */
 	public function getData($productName,$companyId)
 	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
 		$productModel = new ProductModel();
 		$status = $productModel->getProductData($productName,$companyId);
 		
-		$encoded = new EncodeData();
-		$encodeData = $encoded->getEncodedData($status);
-		return $encodeData;
+		if(strcmp($status,$exceptionArray['204'])==0)
+		{
+			return $exceptionArray['204'];
+		}
+		else
+		{
+			$encoded = new EncodeData();
+			$encodeData = $encoded->getEncodedData($status);
+			return $encodeData;
+		}
 	}
 	
     /**

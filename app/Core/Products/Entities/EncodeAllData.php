@@ -29,6 +29,12 @@ class EncodeAllData extends ProductCategoryService
 			$productName[$decodedData] = $decodedJson[$decodedData]['product_name'];
 			$measurementUnit[$decodedData] = $decodedJson[$decodedData]['measurement_unit'];
 			$isDisplay[$decodedData] = $decodedJson[$decodedData]['is_display'];
+			$purchasePrice[$decodedData] = $decodedJson[$decodedData]['purchase_price'];
+			$wholesaleMargin[$decodedData] = $decodedJson[$decodedData]['wholesale_margin'];
+			$semiWholesaleMargin[$decodedData] = $decodedJson[$decodedData]['semi_wholesale_margin'];
+			$vat[$decodedData] = $decodedJson[$decodedData]['vat'];
+			$margin[$decodedData] = $decodedJson[$decodedData]['margin'];
+			$mrp[$decodedData] = $decodedJson[$decodedData]['mrp'];
 			$productCatId[$decodedData] = $decodedJson[$decodedData]['product_category_id'];
 			$productGrpId[$decodedData] = $decodedJson[$decodedData]['product_group_id'];
 			$companyId[$decodedData] = $decodedJson[$decodedData]['company_id'];
@@ -81,6 +87,12 @@ class EncodeAllData extends ProductCategoryService
 				'productId'=>$productId[$jsonData],
 				'productName' => $productName[$jsonData],
 				'isDisplay' => $isDisplay[$jsonData],
+				'purchasePrice' => $purchasePrice[$jsonData],
+				'wholesaleMargin' => $wholesaleMargin[$jsonData],
+				'semiWholesaleMargin' => $semiWholesaleMargin[$jsonData],
+				'vat' => $vat[$jsonData],
+				'margin' => $margin[$jsonData],
+				'mrp' => $mrp[$jsonData],
 				'measurementUnit' => $measurementUnit[$jsonData],
 				'createdAt' => $getCreatedDate[$jsonData],
 				'updatedAt' => $getUpdatedDate[$jsonData],
