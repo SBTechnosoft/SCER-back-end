@@ -220,21 +220,21 @@ include ('connection.php');
 				// formdata.append('productGroupParentId',$scope.formAdata.product_group_parent_id);
 				
 				//product
-				// $scope.formAdata.product_name = "abc";
-				// $scope.formAdata.is_display = 'no';
-				// $scope.formAdata.product_cat_id='2';
-				// $scope.formAdata.measurement_unit='litre';
-				// $scope.formAdata.product_group_id='10';
-				// $scope.formAdata.company_id='14';
-				// $scope.formAdata.branch_id='6';
+				$scope.formAdata.product_name = "abc";
+				$scope.formAdata.is_display = 'no';
+				$scope.formAdata.product_cat_id='2';
+				$scope.formAdata.measurement_unit='litre';
+				$scope.formAdata.product_group_id='10';
+				$scope.formAdata.company_id='14';
+				$scope.formAdata.branch_id='6';
 				
-				// formdata.append('productName',$scope.formAdata.product_name);
-				// formdata.append('isDisplay',$scope.formAdata.is_display);
-				// formdata.append('measurementUnit',$scope.formAdata.measurement_unit);
-				// formdata.append('productCategoryId',$scope.formAdata.product_cat_id);
-				// formdata.append('productGroupId',$scope.formAdata.product_group_id);
-				// formdata.append('companyId',$scope.formAdata.company_id);
-				// formdata.append('branchId',$scope.formAdata.branch_id);
+				formdata.append('productName',$scope.formAdata.product_name);
+				formdata.append('isDisplay',$scope.formAdata.is_display);
+				formdata.append('measurementUnit',$scope.formAdata.measurement_unit);
+				formdata.append('productCategoryId',$scope.formAdata.product_cat_id);
+				formdata.append('productGroupId',$scope.formAdata.product_group_id);
+				formdata.append('companyId',$scope.formAdata.company_id);
+				formdata.append('branchId',$scope.formAdata.branch_id);
 				
 				//template
 				// $scope.formAdata.template_name = " abcffd ";
@@ -437,7 +437,7 @@ include ('connection.php');
 				
 				//9875647544
 				//bill
-				// $scope.user = [{"billData":[{"companyId":14,"entryDate":"22-10-2015","contactNo":"9875647544","workNo":"9875647344","isDisplay":"yes","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbrain","clientName":"reema","invoiceNumber":"INV/2016-12/53","address1":"sfja,sa","address2":"dfsd,ds","stateAbb":"IN-AG","cityId":1,"total":100,"tax":10,"grandTotal":110,"advance":100,"balance":10,"paymentMode":"cash","bankName":"abc","checkNumber":"abbb34eQ1G","remark":"adsfsf afasf"}]}];
+				// $scope.user = [{"billData":[{"companyId":15,"entryDate":"22-10-2015","contactNo":"9875347543","workNo":"9875647344","isDisplay":"yes","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbrain","clientName":"palak","invoiceNumber":"INV/2016-12/53","address1":"sfja,sa","address2":"dfsd,ds","stateAbb":"IN-AG","cityId":1,"total":100,"tax":10,"grandTotal":134,"advance":100,"balance":10,"paymentMode":"cash","bankName":"abc","checkNumber":"abbb34eQ1G","remark":"adsfsf afasf"}]}];
 				
 				// $scope.inventory=[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}];
 				
@@ -457,7 +457,7 @@ include ('connection.php');
 				// var productId = 1;
 				// var productGrpId = 11;
 				// var productCatId = 16;
-				var companyId=15;
+				// var companyId=15;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -476,7 +476,7 @@ include ('connection.php');
 				// var url = "http://www.scerp1.com/authenticate/users/"+userId;
 				// var url = "http://www.scerp1.com/authenticate";
 				// var url = "http://www.scerp1.com/users/email-address/"+emailId;
-				var url = "http://www.scerp1.com/accounting/trial-balance/company/"+companyId;
+				// var url = "http://www.scerp1.com/accounting/trial-balance/company/"+companyId;
 				
 				// var url = "http://www.scerp1.com/accounting/bills";
 				
@@ -537,8 +537,8 @@ include ('connection.php');
 				$http({
                         url: url,
                         // type:'patch',
-						 // method: 'post',
-						method: 'get',
+						 method: 'post',
+						// method: 'get',
 						// method: "PATCH",
 						// method:'delete',
 						processData: false,
@@ -546,11 +546,11 @@ include ('connection.php');
                         // headers: {'Content-Type': undefined,'ledgerName':'sales'},
                         // headers: {'Content-Type': undefined,'jfId':'4'},
                         // headers: {'Content-Type': undefined,'type':'sales'},
+                        // headers: {'Content-Type': undefined,'authenticationToken':'728023b3579a2c3177020535991bc3ae','type':'sales','salesType':'retail_sales'},
                         headers: {'Content-Type': undefined,'authenticationToken':'728023b3579a2c3177020535991bc3ae'},
-                        // headers: {'Content-Type': undefined},
                         // headers: {'Content-Type': undefined,'ledgerGroup':[9,12]},
                         // headers: {'Content-Type': undefined,'type':'sales','jfId':5},
-						 // data:formdata
+						 data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

@@ -52,15 +52,10 @@ class JournalController extends BaseController implements ContainerInterface
 	*/
     public function store(Request $request)
     {
-		//Authentication
-		$tokenAuthentication = new TokenAuthentication();
-		$authenticationResult = $tokenAuthentication->authenticate($request->header());
-		
 		//get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-		
-		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		if(strcmp($_SERVER['REQUEST_URI'],"/accounting/bills")==0)
 		{
 			//special journal entry and inventory entry
 			$this->request = $request;
@@ -127,7 +122,79 @@ class JournalController extends BaseController implements ContainerInterface
 		}
 		else
 		{
-			return $authenticationResult;
+			//Authentication
+			$tokenAuthentication = new TokenAuthentication();
+			$authenticationResult = $tokenAuthentication->authenticate($request->header());
+			
+			if(strcmp($constantArray['success'],$authenticationResult)==0)
+			{
+				//special journal entry and inventory entry
+				$this->request = $request;
+				$jfId = trim($this->request->input()['jfId']);
+				
+				// check the requested Http method
+				$requestMethod = $_SERVER['REQUEST_METHOD'];
+				
+				// insert
+				if($requestMethod == $constantArray['postMethod'])
+				{
+					$processor = new JournalProcessor();
+					$journalPersistable = new JournalPersistable();
+					$journalPersistable = $processor->createPersistable($this->request);
+					if(is_array($journalPersistable))
+					{
+						$journalService= new JournalService();
+						$status = $journalService->insert($journalPersistable);
+						if(count($request->input())>4)
+						{
+							$productService= new ProductService();	
+							$productPersistable = new ProductPersistable();
+							if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
+							{
+								$outward = $constantArray['journalOutward'];
+								$productProcessor = new ProductProcessor();
+								$productPersistable = $productProcessor->createPersistableInOutWard($this->request,$outward);
+								if(is_array($productPersistable))
+								{
+									$status = $productService->insertInOutward($productPersistable,$jfId);
+									return $status;
+								}
+								else
+								{
+									return $productPersistable;
+								}
+							}
+							else if(strcmp($request->header()['type'][0],$constantArray['purchase'])==0)
+							{
+								$inward = $constantArray['journalInward'];
+								$productProcessor = new ProductProcessor();
+								$productPersistable = $productProcessor->createPersistableInOutWard($this->request,$inward);
+								if(is_array($productPersistable))
+								{
+									$status = $productService->insertInOutward($productPersistable,$jfId);
+									return $status;
+								}
+								else
+								{
+									return $productPersistable;
+								}
+							}
+						}
+						else
+						{
+							return $status;
+						}
+					}
+					else
+					{
+						return $journalPersistable;
+					}
+				}
+			}
+			else
+			{
+				return $authenticationResult;
+			}
 		}
 	}
 	
@@ -136,15 +203,7 @@ class JournalController extends BaseController implements ContainerInterface
      */
     public function getData(Request $request)
     {
-		//Authentication
-		$tokenAuthentication = new TokenAuthentication();
-		$authenticationResult = $tokenAuthentication->authenticate($request->header());
-		
-		//get constant array
-		$constantClass = new ConstantClass();
-		$constantArray = $constantClass->constantVariable();
-		
-		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		if(strcmp($_SERVER['REQUEST_URI'],"/accounting/bills")==0)
 		{
 			$journalService = new JournalService();
 			$status = $journalService->getJournalData();
@@ -152,7 +211,24 @@ class JournalController extends BaseController implements ContainerInterface
 		}
 		else
 		{
-			return $authenticationResult;
+			//Authentication
+			$tokenAuthentication = new TokenAuthentication();
+			$authenticationResult = $tokenAuthentication->authenticate($request->header());
+			
+			//get constant array
+			$constantClass = new ConstantClass();
+			$constantArray = $constantClass->constantVariable();
+			
+			if(strcmp($constantArray['success'],$authenticationResult)==0)
+			{
+				$journalService = new JournalService();
+				$status = $journalService->getJournalData();
+				return $status;
+			}
+			else
+			{
+				return $authenticationResult;
+			}
 		}
 	}
 	

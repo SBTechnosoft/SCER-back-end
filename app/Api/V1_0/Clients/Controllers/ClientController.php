@@ -47,15 +47,7 @@ class ClientController extends BaseController implements ContainerInterface
 	*/
     public function store(Request $request)
     {
-		//Authentication
-		$tokenAuthentication = new TokenAuthentication();
-		$authenticationResult = $tokenAuthentication->authenticate($request->header());
-		
-		//get constant array
-		$constantClass = new ConstantClass();
-		$constantArray = $constantClass->constantVariable();
-		
-		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		if(strcmp($_SERVER['REQUEST_URI'],"/accounting/bills")==0)
 		{
 			$this->request = $request;
 			// check the requested Http method
@@ -81,10 +73,49 @@ class ClientController extends BaseController implements ContainerInterface
 					return $clientPersistable;
 				}
 			}
+			
 		}
 		else
 		{
-			return $authenticationResult;
+			//Authentication
+			$tokenAuthentication = new TokenAuthentication();
+			$authenticationResult = $tokenAuthentication->authenticate($request->header());
+			
+			//get constant array
+			$constantClass = new ConstantClass();
+			$constantArray = $constantClass->constantVariable();
+			
+			if(strcmp($constantArray['success'],$authenticationResult)==0)
+			{
+				$this->request = $request;
+				// check the requested Http method
+				$requestMethod = $_SERVER['REQUEST_METHOD'];
+				// insert
+				if($requestMethod == 'POST')
+				{
+					$processor = new ClientProcessor();
+					$clientPersistable = new ClientPersistable();		
+					$clientService= new ClientService();			
+					$clientPersistable = $processor->createPersistable($this->request);
+					if($clientPersistable[0][0]=='[')
+					{
+						return $clientPersistable;
+					}
+					else if(is_array($clientPersistable))
+					{
+						$status = $clientService->insert($clientPersistable);
+						return $status;
+					}
+					else
+					{
+						return $clientPersistable;
+					}
+				}
+			}
+			else
+			{
+				return $authenticationResult;
+			}
 		}
 	}
 	

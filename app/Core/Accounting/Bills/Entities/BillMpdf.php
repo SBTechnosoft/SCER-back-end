@@ -23,15 +23,32 @@ class BillMpdf
 		}
 
 		$billArray = array();
-		$billArray['Company']="Siliconbrain";
-		$billArray['ClientName']="Reema";
+		$billArray['ClientName']="Siliconbrain";
+		$billArray['Company']="Reema";
 		$billArray['OrderDate']="25-11-2016";
-		$billArray['CLIENTADD']="dfs,sg/sgs-343434";
-		$billArray['INVID']="rgrfd";
-		$billArray['ClientCharge']="500";
-		$billArray['Discount']="50%";
-		$billArray['TaxAmt']="100";
+		$billArray['OrderName']="dfs,sg/sgs-343434";
+		$billArray['Venue']="rgrfd";
+		$billArray['OrderId']="500";
+		$billArray['ClientCharge']="50%";
+		$billArray['Discount']="100";
+		$billArray['TaxAmt']="300";
 		$billArray['Total']="300";
+		$billArray['TaxRate']="300";
+		$billArray['DeliveryDate']="300";
+		$billArray['Organization']="300";
+		$billArray['Banner_Img']="300";
+		$billArray['OrderDesc']="300";
+		$billArray['Email']="300";
+		$billArray['HomeMob']="300";
+		$billArray['WorkMob']="300";
+		$billArray['Mobile']="300";
+		$billArray['ADATE']="300";
+		$billArray['INVID']="300";
+		$billArray['CLIENTADD']="300";
+		$billArray['CMPLOGO']="300";
+		$billArray['PAIDAMT']="300";
+		$billArray['REMAINAMT']="300";
+		$billArray['OPERATOR']="300";
 		
 		$mpdf = new mPDF();
 		$mpdf->SetDisplayMode('fullpage');

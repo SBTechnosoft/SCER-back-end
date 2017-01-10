@@ -48,15 +48,7 @@ class LedgerController extends BaseController implements ContainerInterface
 	*/
     public function store(Request $request)
     {
-		//Authentication
-		$tokenAuthentication = new TokenAuthentication();
-		$authenticationResult = $tokenAuthentication->authenticate($request->header());
-		
-		//get constant array
-		$constantClass = new ConstantClass();
-		$constantArray = $constantClass->constantVariable();
-		
-		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		if(strcmp($_SERVER['REQUEST_URI'],"/accounting/bills")==0)
 		{
 			$this->request = $request;
 			// check the requested Http method
@@ -64,6 +56,7 @@ class LedgerController extends BaseController implements ContainerInterface
 			// insert
 			if($requestMethod == 'POST')
 			{
+				print_r($request->input());
 				$processor = new LedgerProcessor();
 				$ledgerPersistable = new LedgerPersistable();
 				$ledgerPersistable = $processor->createPersistable($this->request);
@@ -85,7 +78,45 @@ class LedgerController extends BaseController implements ContainerInterface
 		}
 		else
 		{
-			return $authenticationResult;
+			//Authentication
+			$tokenAuthentication = new TokenAuthentication();
+			$authenticationResult = $tokenAuthentication->authenticate($request->header());
+			
+			//get constant array
+			$constantClass = new ConstantClass();
+			$constantArray = $constantClass->constantVariable();
+			
+			if(strcmp($constantArray['success'],$authenticationResult)==0)
+			{
+				$this->request = $request;
+				// check the requested Http method
+				$requestMethod = $_SERVER['REQUEST_METHOD'];
+				// insert
+				if($requestMethod == 'POST')
+				{
+					$processor = new LedgerProcessor();
+					$ledgerPersistable = new LedgerPersistable();
+					$ledgerPersistable = $processor->createPersistable($this->request);
+					if($ledgerPersistable[0][0]=='[')
+					{
+						return $ledgerPersistable;
+					}
+					else if(is_array($ledgerPersistable))
+					{
+						$ledgerService= new LedgerService();
+						$status = $ledgerService->insert($ledgerPersistable);
+						return $status;
+					}
+					else
+					{
+						return $ledgerPersistable;
+					}
+				}
+			}
+			else
+			{
+				return $authenticationResult;
+			}
 		}
 	}
 	

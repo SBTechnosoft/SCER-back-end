@@ -10,17 +10,17 @@ use ERP\Exceptions\ExceptionMessage;
  */
 class BillModel extends Model
 {
-	protected $table = 'retail_sales_dtl';
+	protected $table = 'sales_bill';
 	
 	/**
 	 * insert data with document
 	 * @param  array
 	 * returns the status
 	*/
-	public function insertAllData($productArray,$paymentMode,$invoiceNumber,$bankName,$checkNumber,$total,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$documentArray)
+	public function insertAllData($productArray,$paymentMode,$invoiceNumber,$bankName,$checkNumber,$total,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray)
 	{
 		DB::beginTransaction();
-		$raw = DB::statement("insert into retail_sales_dtl(
+		$raw = DB::statement("insert into sales_bill(
 		product_array,
 		payment_mode,
 		invoice_number,
@@ -34,8 +34,9 @@ class BillModel extends Model
 		remark,
 		entry_date,
 		company_id,
+		sales_type,
 		client_id) 
-		values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."')");
+		values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$salesType."','".$ClientId."')");
 		DB::commit();
 		
 		//get exception message
@@ -45,14 +46,14 @@ class BillModel extends Model
 		{
 			$saleId = DB::select("SELECT 
 			max(sale_id) sale_id
-			FROM retail_sales_dtl where deleted_at='0000-00-00 00:00:00'");
+			FROM sales_bill where deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
 			if(is_array($saleId))
 			{
 				for($docArray=0;$docArray<count($documentArray);$docArray++)
 				{
 					DB::beginTransaction();
-					$documentResult = DB::statement("insert into retail_sales_doc_dtl(
+					$documentResult = DB::statement("insert into sales_bill_doc_dtl(
 					sale_id,
 					document_name,
 					document_size,
@@ -81,11 +82,12 @@ class BillModel extends Model
 					balance,
 					remark,
 					entry_date,
+					sales_type,
 					client_id,
 					company_id,
 					created_at,
 					updated_at 
-					from retail_sales_dtl where sale_id=(select MAX(sale_id) as sale_id from retail_sales_dtl) and deleted_at='0000-00-00 00:00:00'"); 
+					from sales_bill where sale_id=(select MAX(sale_id) as sale_id from sales_bill) and deleted_at='0000-00-00 00:00:00'"); 
 					DB::commit();
 					if(count($billResult)==1)
 					{
@@ -113,10 +115,10 @@ class BillModel extends Model
 	 * @param  array
 	 * returns the status
 	*/
-	public function insertData($productArray,$paymentMode,$invoiceNumber,$bankName,$checkNumber,$total,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId)
+	public function insertData($productArray,$paymentMode,$invoiceNumber,$bankName,$checkNumber,$total,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType)
 	{
 		DB::beginTransaction();
-		$raw = DB::statement("insert into retail_sales_dtl(
+		$raw = DB::statement("insert into sales_bill(
 		product_array,
 		payment_mode,
 		invoice_number,
@@ -130,8 +132,9 @@ class BillModel extends Model
 		remark,
 		entry_date,
 		company_id,
-		client_id) 
-		values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."')");
+		client_id,
+		sales_type) 
+		values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$salesType."')");
 		DB::commit();
 		
 		//get exception message
@@ -155,10 +158,11 @@ class BillModel extends Model
 			remark,
 			entry_date,
 			client_id,
+			sales_type,
 			company_id,
 			created_at,
 			updated_at 
-			from retail_sales_dtl where sale_id=(select MAX(sale_id) as sale_id from retail_sales_dtl) and deleted_at='0000-00-00 00:00:00'"); 
+			from sales_bill where sale_id=(select MAX(sale_id) as sale_id from sales_bill) and deleted_at='0000-00-00 00:00:00'"); 
 			DB::commit();
 			if(count($billResult)==1)
 			{
@@ -177,7 +181,7 @@ class BillModel extends Model
 	public function billDocumentData($saleId,$documentName,$documentFormat,$documentType)
 	{
 		DB::beginTransaction();
-		$raw = DB::statement("insert into retail_sales_doc_dtl(
+		$raw = DB::statement("insert into sales_bill_doc_dtl(
 		sale_id,
 		document_name,
 		document_format,

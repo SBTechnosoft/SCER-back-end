@@ -12,6 +12,8 @@ use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Core\Settings\Templates\Services\TemplateService;
 use ERP\Core\Accounting\Bills\Entities\BillMpdf;
+use ERP\Entities\AuthenticationClass\TokenAuthentication;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -47,57 +49,71 @@ class BillController extends BaseController implements ContainerInterface
 	*/
     public function store(Request $request)
     {
-		$this->request = $request;
-		// check the requested Http method
-		$requestMethod = $_SERVER['REQUEST_METHOD'];
-
-		// get exception message
-		$exception = new ExceptionMessage();
-		$msgArray = $exception->messageArrays();
-		// insert
-		if($requestMethod == 'POST')
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			if(count($_POST)==0)
+			$this->request = $request;
+			// check the requested Http method
+			$requestMethod = $_SERVER['REQUEST_METHOD'];
+
+			// get exception message
+			$exception = new ExceptionMessage();
+			$msgArray = $exception->messageArrays();
+			// insert
+			if($requestMethod == 'POST')
 			{
-				return $msgArray['204'];
-			}
-			else
-			{
-				$processor = new BillProcessor();
-				$billPersistable = new BillPersistable();
-				$billPersistable = $processor->createPersistable($this->request);
-				if(is_array($billPersistable) || is_object($billPersistable))
+				if(count($_POST)==0)
 				{
-					$billService= new BillService();
-					$status = $billService->insert($billPersistable);
-					
-					if(strcmp($status,$msgArray['500'])==0)
-					{
-						return $status;
-					}
-					else
-					{
-						$templateType="general";
-						$templateService = new TemplateService();
-						$templateData = $templateService->getSpecificData($request->input()['companyId'],$templateType);
-						
-						if(strcmp($templateData,$msgArray['404'])==0)
-						{
-							return $templateData;
-						}
-						else
-						{
-							$billMpdf = new BillMpdf();
-							$billPdf = $billMpdf->mpdfGenerate($templateData,$status);
-							return $billPdf;
-						}
-					}
+					return $msgArray['204'];
 				}
 				else
 				{
-					return $billPersistable;
+					$processor = new BillProcessor();
+					$billPersistable = new BillPersistable();
+					$billPersistable = $processor->createPersistable($this->request);
+					if(is_array($billPersistable) || is_object($billPersistable))
+					{
+						$billService= new BillService();
+						$status = $billService->insert($billPersistable);
+						if(strcmp($status,$msgArray['500'])==0)
+						{
+							return $status;
+						}
+						else
+						{
+							$templateType="general";
+							$templateService = new TemplateService();
+							$templateData = $templateService->getSpecificData($request->input()['companyId'],$templateType);
+							
+							if(strcmp($templateData,$msgArray['404'])==0)
+							{
+								return $templateData;
+							}
+							else
+							{
+								$billMpdf = new BillMpdf();
+								$billPdf = $billMpdf->mpdfGenerate($templateData,$status);
+								return $billPdf;
+							}
+						}
+					}
+					else
+					{
+						return $billPersistable;
+					}
 				}
 			}
+		}
+		else
+		{
+			return $authenticationResult;
 		}
 	}
 }

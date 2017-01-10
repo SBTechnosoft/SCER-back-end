@@ -4,6 +4,12 @@
             "productId": int,
             "productName": string,
             "measurementUnit": Enum,
+			"purchasePrice": decimal,
+			"wholeSaleMargin": decimal,
+			"semiWholeSaleMargin": decimal,
+			"vat": decimal,
+			"margin": decimal,
+			"mrp": decimal,
             "productCategory": {
                 ... Standard Products Category Object
             },
@@ -19,9 +25,7 @@
 			"isDisplay": Enum,
 			"createdAt" timestamp,
 			"updatedAt": datetime
-            
-
-        }
+         }
 
 ##### Standard Products Persistable Object
 
@@ -30,6 +34,12 @@
             "measurementUnit": Enum,
             "productCategoryId": int,
             "productGroupId": int,
+			"purchasePrice": decimal,
+			"wholeSaleMargin": decimal,
+			"semiWholeSaleMargin": decimal,
+			"vat": decimal,
+			"margin": decimal,
+			"mrp": decimal,
             "companyId": int,
             "branchId" : int,
 			"isDisplay": Enum,

@@ -4,6 +4,7 @@
 + Header
 	- Authentication Token
 	- 'type':'sales'
+	- 'salesType':'retail_sales/whole_sales'
 + Body
 
             {
