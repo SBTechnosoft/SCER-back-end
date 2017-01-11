@@ -5,6 +5,12 @@ use mPDF;
 use ERP\Entities\Constants\ConstantClass;
 use ERP\Model\Accounting\Bills\BillModel;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Core\Products\Services\ProductService;
+use ERP\Core\Settings\InvoiceNumbers\Services\InvoiceService;
+use Illuminate\Http\Request;
+use ERP\Http\Requests;
+use Illuminate\Container\Container;
+use ERP\Api\V1_0\Settings\InvoiceNumbers\Controllers\InvoiceController;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -12,52 +18,95 @@ class BillMpdf
 {
 	public function mpdfGenerate($templateData,$status)
 	{
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
 		$htmlBody = json_decode($templateData)[0]->template_body;
-		if(is_object(json_decode($status)))
+		$decodedBillData = json_decode($status);
+		if(is_object($decodedBillData))
 		{
-			$saleId = json_decode($status)->saleId;		
+			$saleId = $decodedBillData->saleId;		
 		}
 		else
 		{
-			$saleId = json_decode($status)[0]->sale_id;
+			$saleId = $decodedBillData[0]->sale_id;
 		}
-
-		$billArray = array();
-		$billArray['ClientName']="Siliconbrain";
-		$billArray['Company']="Reema";
-		$billArray['OrderDate']="25-11-2016";
-		$billArray['OrderName']="dfs,sg/sgs-343434";
-		$billArray['Venue']="rgrfd";
-		$billArray['OrderId']="500";
-		$billArray['ClientCharge']="50%";
-		$billArray['Discount']="100";
-		$billArray['TaxAmt']="300";
-		$billArray['Total']="300";
-		$billArray['TaxRate']="300";
-		$billArray['DeliveryDate']="300";
-		$billArray['Organization']="300";
-		$billArray['Banner_Img']="300";
-		$billArray['OrderDesc']="300";
-		$billArray['Email']="300";
-		$billArray['HomeMob']="300";
-		$billArray['WorkMob']="300";
-		$billArray['Mobile']="300";
-		$billArray['ADATE']="300";
-		$billArray['INVID']="300";
-		$billArray['CLIENTADD']="300";
-		$billArray['CMPLOGO']="300";
-		$billArray['PAIDAMT']="300";
-		$billArray['REMAINAMT']="300";
-		$billArray['OPERATOR']="300";
+		//update invoice data (endAt)
+		$decodedArray = json_decode($decodedBillData->productArray);
+		$productService = new ProductService();
+		$productData = array();
+		$decodedData = array();
+		$index=1;
 		
+		$invoiceService = new InvoiceService();	
+		$invoiceData = $invoiceService->getLatestInvoiceData($decodedBillData->company->companyId);
+		$endAt = json_decode($invoiceData)->endAt;
+		$invoiceController = new InvoiceController(new Container());
+		$invoiceMethod=$constantArray['postMethod'];
+		$invoicePath=$constantArray['invoiceUrl'];
+		$invoiceDataArray = array();
+		$invoiceDataArray['endAt'] = $endAt+1;
+		
+		$invoiceRequest = Request::create($invoicePath,$invoiceMethod,$invoiceDataArray);
+		$updateResult = $invoiceController->update($invoiceRequest,json_decode($invoiceData)->invoiceId);
+		
+		$output="";
+		for($productArray=0;$productArray<count($decodedArray->inventory);$productArray++)
+		{
+			//get product-data
+			$productData[$productArray] = $productService->getProductData($decodedArray->inventory[$productArray]->productId);
+			$decodedData[$productArray] = json_decode($productData[$productArray]);
+			$output =$output."".
+			'<tr><td class= style="padding: 10px 5px; top: 0px;font-family: Calibri; font-size: 12px; vertical-align: bottom; color: black;" colspan="0">'.$index.'</td> 
+			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1;" colspan="1"> '. $decodedData[$productArray]->productName.'</td>
+			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1;" colspan="0"></td> 
+			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1;" colspan="0"></td> 
+			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1;" colspan="1"> '. $decodedArray->inventory[$productArray]->qty.'</td>
+			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1;" colspan="1"> '. $decodedArray->inventory[$productArray]->price.'</td>
+			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1;" colspan="1"> '. $decodedArray->inventory[$productArray]->discount.'</td>
+			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1;" colspan="1"> '. $decodedData[$productArray]->vat.'</td>
+			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1;" colspan="1"></td>
+			  <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1;" colspan="1"> '. $decodedArray->inventory[$productArray]->qty*$decodedArray->inventory[$productArray]->price.'</td></tr>';
+			 $index++;
+			
+		}
+		
+		$billArray = array();
+		$billArray['Description']=$output;
+		$billArray['ClientName']=$decodedBillData->client->clientName;
+		$billArray['Company']=$decodedBillData->company->companyName;
+		// $billArray['OrderDate']=$decodedBillData->createdAt;
+		// $billArray['OrderName']="dfs,sg/sgs-343434";
+		// $billArray['Venue']=$decodedBillData->company->address1;
+		// $billArray['OrderId']="500";
+		// $billArray['ClientCharge']="50%";
+		// --$billArray['Discount']="100";
+		// --$billArray['TaxAmt']="300";
+		// $billArray['Total']="300";
+		// $billArray['TaxRate']="300";
+		// $billArray['DeliveryDate']="300";
+		// $billArray['Organization']="300";
+		// $billArray['Banner_Img']="300";
+		// $billArray['OrderDesc']="300";
+		// $billArray['Email']="300";
+		// $billArray['HomeMob']="300";
+		// $billArray['WorkMob']="300";
+		$billArray['Mobile']=$decodedBillData->client->contactNo;
+		// $billArray['ADATE']="300";
+		$billArray['INVID']=$decodedBillData->invoiceNumber;
+		// $billArray['CLIENTADD']="300";
+		// $billArray['CMPLOGO']="300";
+		// $billArray['PAIDAMT']="300";
+		// $billArray['REMAINAMT']="300";
+		// $billArray['OPERATOR']="300";
+		// echo "ooooooo";
 		$mpdf = new mPDF();
 		$mpdf->SetDisplayMode('fullpage');
 		foreach($billArray as $key => $value)
 		{
 			$htmlBody = str_replace('['.$key.']', $value, $htmlBody);
 		}
-		$constantClass = new ConstantClass();
-		$constantArray = $constantClass->constantVariable();
+		
 		$mpdf->WriteHTML($htmlBody);
 		$path = $constantArray['billUrl'];
 		
@@ -70,6 +119,7 @@ class BillMpdf
 		$documentPathName = $path.$documentName;
 		$documentFormat="pdf";
 		$documentType ="bill";
+		
 		//insertion bill document data into database
 		$billModel = new BillModel();
 		$billDocumentStatus = $billModel->billDocumentData($saleId,$documentName,$documentFormat,$documentType);

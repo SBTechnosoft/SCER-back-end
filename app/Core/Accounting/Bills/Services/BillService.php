@@ -5,10 +5,8 @@ use ERP\Core\Accounting\Bills\Persistables\BillPersistable;
 use ERP\Core\Accounting\Bills\Entities\Bill;
 use ERP\Model\Accounting\Bills\BillModel;
 use ERP\Core\Shared\Options\UpdateOptions;
-// use ERP\Core\Support\Service\AbstractService;
 use ERP\Core\User\Entities\User;
 use ERP\Core\Accounting\Bills\Entities\EncodeData;
-// use ERP\Core\Accounting\Bills\Entities\EncodeAllData;
 use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -74,7 +72,20 @@ class BillService
 			//data pass to the model object for insert
 			$billModel = new BillModel();
 			$status = $billModel->insertData($productArray,$paymentMode,$invoiceNumber,$bankName,$checkNumber,$total,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType);
-			return $status;
+			
+			//get exception message
+			$exception = new ExceptionMessage();
+			$exceptionArray = $exception->messageArrays();
+			if(strcmp($status,$exceptionArray['500'])==0)
+			{
+				return $status;
+			}
+			else
+			{
+				$encoded = new EncodeData();
+				$encodeData = $encoded->getEncodedData($status);
+				return $encodeData;
+			}
 		}
 		//data with image insertion
 		else
@@ -105,8 +116,8 @@ class BillService
 			
 			//get exception message
 			$exception = new ExceptionMessage();
-			$fileSizeArray = $exception->messageArrays();
-			if(strcmp($status,$fileSizeArray['500'])==0)
+			$exceptionArray = $exception->messageArrays();
+			if(strcmp($status,$exceptionArray['500'])==0)
 			{
 				return $status;
 			}

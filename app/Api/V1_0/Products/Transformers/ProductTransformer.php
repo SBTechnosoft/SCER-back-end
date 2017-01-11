@@ -27,8 +27,8 @@ class ProductTransformer
 		$measurementUnit = $request->input('measurementUnit'); 
 		$isDisplay = $request->input('isDisplay'); 			
 		$purchasePrice = $request->input('purchasePrice'); 			
-		$wholeSaleMargin = $request->input('wholeSaleMargin'); 			
-		$semiWholeSaleMargin = $request->input('semiWholeSaleMargin'); 			
+		$wholeSaleMargin = $request->input('wholesaleMargin'); 			
+		$semiWholeSaleMargin = $request->input('semiWholesaleMargin'); 			
 		$vat = $request->input('vat'); 			
 		$mrp = $request->input('mrp'); 			
 		$margin = $request->input('margin'); 			

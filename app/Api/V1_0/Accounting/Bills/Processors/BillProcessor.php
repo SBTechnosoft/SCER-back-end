@@ -18,6 +18,7 @@ use ERP\Api\V1_0\Documents\Controllers\DocumentController;
 use ERP\Core\Accounting\Journals\Entities\AmountTypeEnum;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Entities\Constants\ConstantClass;
+use ERP\Core\Accounting\Bills\Entities\SalesTypeEnum;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -171,7 +172,6 @@ class BillProcessor extends BaseProcessor
 		$amountTypeEnum = new AmountTypeEnum();
 		$amountTypeArray = $amountTypeEnum->enumArrays();
 		$ledgerAmount = $tRequest['total']-$tRequest['advance'];
-		
 		$discountTotal=0;
 		for($discountArray=0;$discountArray<count($tRequest[0]);$discountArray++)
 		{
@@ -375,7 +375,6 @@ class BillProcessor extends BaseProcessor
 				}
 			}
 		}
-		
 		//make data array for journal sale entry
 		$journalArray = array();
 		$journalArray= array(
@@ -395,18 +394,13 @@ class BillProcessor extends BaseProcessor
 		$method=$constantArray['postMethod'];
 		$path=$constantArray['journalUrl'];
 		$journalRequest = Request::create($path,$method,$journalArray);
-		$journalRequest->headers->set('type',$request->header()['type'][0]);
+		$journalRequest->headers->set('type',$constantArray['sales']);
 		$processedData = $journalController->store($journalRequest);
-		
 		if(strcmp($processedData,$msgArray['200'])==0)
 		{
-			if(strcmp($request->header()['type'][0],"sales")==0)
-			{
-				$inwardTrnType = $constantArray['journalOutward'];
-			}
 			$productArray = array();
 			$productArray['invoiceNumber']=$tRequest['invoice_number'];
-			$productArray['transactionType']=$inwardTrnType;
+			$productArray['transactionType']=$constantArray['journalOutward'];
 			$productArray['companyId']=$tRequest['company_id'];
 			$productArray['inventory'] = $tRequest[0];
 			$documentPath = $constantArray['billDocumentUrl'];
@@ -438,8 +432,17 @@ class BillProcessor extends BaseProcessor
 			$billPersistable->setEntryDate($tRequest['entry_date']);
 			$billPersistable->setClientId($clientId);
 			$billPersistable->setCompanyId($tRequest['company_id']);
-			$billPersistable->setSalesType($request->header()['salestype'][0]);
 			
+			$salesTypeEnum = new SalesTypeEnum();
+			$salesTypeEnumArray = $salesTypeEnum->enumArrays();
+			if(strcmp($request->header()['salestype'][0],$salesTypeEnumArray['retailSales'])==0 || strcmp($request->header()['salestype'][0],$salesTypeEnumArray['wholesales'])==0)
+			{
+				$billPersistable->setSalesType($request->header()['salestype'][0]);
+			}
+			else
+			{
+				return $msgArray['content'];
+			}
 			if($docFlag==1)
 			{
 				$array1 = array();

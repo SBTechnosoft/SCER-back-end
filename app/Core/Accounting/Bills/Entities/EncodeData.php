@@ -86,7 +86,6 @@ class EncodeData extends ClientService
 		$data['entryDate'] = $getEntryDate;
 		$data['clientId'] = $clientId;
 		$data['salesType'] = $salesType;
-		$data['companyId'] = $companyId;
 		$data['updatedAt'] = $getUpdatedDate;	
 		$data['client']= array(
 			'clientId' => $clientDecodedJson['clientId'],	

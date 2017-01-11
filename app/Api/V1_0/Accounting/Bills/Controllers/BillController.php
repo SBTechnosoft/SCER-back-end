@@ -14,6 +14,7 @@ use ERP\Core\Settings\Templates\Services\TemplateService;
 use ERP\Core\Accounting\Bills\Entities\BillMpdf;
 use ERP\Entities\AuthenticationClass\TokenAuthentication;
 use ERP\Entities\Constants\ConstantClass;
+use ERP\Core\Settings\Templates\Entities\TemplateTypeEnum;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -88,7 +89,9 @@ class BillController extends BaseController implements ContainerInterface
 						}
 						else
 						{
-							$templateType="general";
+							$templateType = new TemplateTypeEnum();
+							$templateArray = $templateType->enumArrays();
+							$templateType=$templateArray['invoiceTemplate'];
 							$templateService = new TemplateService();
 							$templateData = $templateService->getSpecificData($request->input()['companyId'],$templateType);
 							

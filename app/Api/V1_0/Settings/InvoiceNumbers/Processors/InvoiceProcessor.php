@@ -125,11 +125,12 @@ class InvoiceProcessor extends BaseProcessor
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
+		
 		// update
 		if($requestMethod == 'POST')
 		{
 			//if data is not available in update request
-			if(count($_POST)==0)
+			if(count($request->input())==0)
 			{
 				$status = $exceptionArray['204'];
 				return $status;
@@ -137,16 +138,17 @@ class InvoiceProcessor extends BaseProcessor
 			//data is avalilable for update
 			else
 			{
-				for($data=0;$data<count($_POST);$data++)
+				for($data=0;$data<count($request->input());$data++)
 				{
 					//data get from body
 					$invoicePersistable = new InvoicePersistable();
-					$value[$data] = $_POST[array_keys($_POST)[$data]];
-					$key[$data] = array_keys($_POST)[$data];
+					$value[$data] = $request->input()[array_keys($request->input())[$data]];
+					$key[$data] = array_keys($request->input())[$data];
 					
 					//trim an input 
 					$invoiceTransformer = new InvoiceTransformer();
 					$tRequest = $invoiceTransformer->trimUpdateData($key[$data],$value[$data]);
+					
 					//get data from trim array
 					if($tRequest==1)
 					{
@@ -204,7 +206,7 @@ class InvoiceProcessor extends BaseProcessor
 								$errorCount++;
 							}
 						}
-						if($data==(count($_POST)-1))
+						if($data==(count($request->input())-1))
 						{
 							if($flag==1)
 							{

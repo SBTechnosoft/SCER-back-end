@@ -37,7 +37,7 @@ class AuthenticateService
      * @return status
      */
 	public function insert()
-	{
+	{	
 		$authenticateArray = func_get_arg(0);
 		
 		// get exception message

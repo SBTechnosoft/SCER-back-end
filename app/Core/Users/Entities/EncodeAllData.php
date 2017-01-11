@@ -150,6 +150,8 @@ class EncodeAllData extends StateService
 				)
 			);	
 		}
+		
 		return json_encode($data);
+		// return $data;
 	}
 }

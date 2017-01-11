@@ -1,3 +1,34 @@
+##### Standard Bill Object
+			{
+				"saleId":int,
+				"productArray":string,
+				"paymentMode":Enum,
+				"bankName":string,
+				"checkNumber":string,
+				"total":decimal,
+				"tax":decimal,
+				"grandTotal":decimal,
+				"advance":decimal,
+				"balance":decimal,
+				"salesType":Enum,
+				"remark":string,
+				"entryDate":datetime,
+				"createdAt":timestamp,
+				"updatedAt":datetime,
+				"client":{
+					... standard client object
+				}
+            	"company":{
+					... standard company object
+				},
+                
+				"invoiceNumber":string,	
+				"file":
+				{
+					... Standard Document Persistable Object
+				}
+            }
+			
 ##### Standard Bill Persistable Object
 			{
             	"companyId":String,

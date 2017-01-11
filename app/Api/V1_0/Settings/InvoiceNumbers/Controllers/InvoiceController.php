@@ -192,15 +192,7 @@ class InvoiceController extends BaseController implements ContainerInterface
      */
 	public function update(Request $request,$invoiceId)
     {    
-		//Authentication
-		$tokenAuthentication = new TokenAuthentication();
-		$authenticationResult = $tokenAuthentication->authenticate($request->header());
-		
-		//get constant array
-		$constantClass = new ConstantClass();
-		$constantArray = $constantClass->constantVariable();
-		
-		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		if(strcmp($_SERVER['REQUEST_URI'],"/accounting/bills")==0)
 		{
 			$this->request = $request;
 			$processor = new InvoiceProcessor();
@@ -219,7 +211,6 @@ class InvoiceController extends BaseController implements ContainerInterface
 			else
 			{
 				$invoicePersistable = $processor->createPersistableChange($this->request,$invoiceId);
-				
 				//here two array and string is return at a time
 				if(is_array($invoicePersistable))
 				{
@@ -234,7 +225,51 @@ class InvoiceController extends BaseController implements ContainerInterface
 		}
 		else
 		{
-			return $authenticationResult;
+			//Authentication
+			$tokenAuthentication = new TokenAuthentication();
+			$authenticationResult = $tokenAuthentication->authenticate($request->header());
+			
+			//get constant array
+			$constantClass = new ConstantClass();
+			$constantArray = $constantClass->constantVariable();
+			
+			if(strcmp($constantArray['success'],$authenticationResult)==0)
+			{
+				$this->request = $request;
+				$processor = new InvoiceProcessor();
+				$invoicePersistable = new InvoicePersistable();		
+				$invoiceService= new InvoiceService();		
+				$invoiceModel = new InvoiceModel();
+				$result = $invoiceModel->getData($invoiceId);
+				
+				//get exception message
+				$exception = new ExceptionMessage();
+				$exceptionArray = $exception->messageArrays();
+				if(strcmp($result,$exceptionArray['404'])==0)
+				{
+					return $result;
+				}
+				else
+				{
+					$invoicePersistable = $processor->createPersistableChange($this->request,$invoiceId);
+					
+					//here two array and string is return at a time
+					if(is_array($invoicePersistable))
+					{
+						$status = $invoiceService->update($invoicePersistable);
+						return $status;
+					}
+					else
+					{
+						return $invoicePersistable;
+					}
+				}
+			}
+			else
+			{
+				return $authenticationResult;
+			}
 		}
+		
 	}
 }
