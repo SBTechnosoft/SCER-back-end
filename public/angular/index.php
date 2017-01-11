@@ -469,7 +469,7 @@ include ('connection.php');
 				// var productId = 1;
 				// var productGrpId = 11;
 				// var productCatId = 16;
-				// var companyId=14;
+				var companyId=15;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -490,7 +490,8 @@ include ('connection.php');
 				// var url = "http://www.scerp1.com/users/email-address/"+emailId;
 				// var url = "http://www.scerp1.com/accounting/trial-balance/company/"+companyId;
 				
-				var url = "http://www.scerp1.com/accounting/bills";
+				// var url = "http://www.scerp1.com/accounting/bills";
+				var url = "http://www.scerp1.com/accounting/bills/company/"+companyId;
 				
 				// var url = "http://www.scerp1.com/clients/"+clientId;
 				// var url = "http://www.scerp1.com/clients";
@@ -549,8 +550,8 @@ include ('connection.php');
 				$http({
                         url: url,
                         // type:'patch',
-						 method: 'post',
-						// method: 'get',
+						 // method: 'post',
+						method: 'get',
 						// method: "PATCH",
 						// method:'delete',
 						processData: false,
@@ -559,10 +560,10 @@ include ('connection.php');
                         // headers: {'Content-Type': undefined,'jfId':'4','authenticationToken':'728023b3579a2c3177020535991bc3ae'},
                         // headers: {'Content-Type': undefined,'type':'sales'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'728023b3579a2c3177020535991bc3ae','type':'sales','salesType':'retail_sales'},
-                        headers: {'Content-Type': undefined,'authenticationToken':'eb7cd694eabac838e0f9cba8789b668e','salesType':'retail_sales'},
+                        headers: {'Content-Type': undefined,'authenticationToken':'eb7cd694eabac838e0f9cba8789b668e','salesType':'retail_sales','fromDate':'00-00-0000','toDate':'22-10-2015'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'eb7cd694eabac838e0f9cba8789b668e'},
                         // headers: {'Content-Type': undefined,'type':'sales','jfId':5},
-						 data:formdata
+						 // data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

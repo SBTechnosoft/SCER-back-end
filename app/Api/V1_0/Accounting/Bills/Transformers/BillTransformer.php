@@ -30,7 +30,6 @@ class BillTransformer
 		$tCompanyName = trim($billArrayData['companyName']);
 		$tClientName = trim($billArrayData['clientName']);
 		$tInvoiceNumber = trim($billArrayData['invoiceNumber']);
-		// $tBillNumber = trim($billArrayData['billNumber']);
 		$tAddress1 = trim($billArrayData['address1']);
 		$tAddress2 = trim($billArrayData['address2']);
 		$tStateAbb = trim($billArrayData['stateAbb']);
@@ -45,6 +44,7 @@ class BillTransformer
 		$tCheckNumber = trim($billArrayData['checkNumber']);
 		$tRemark = trim($billArrayData['remark']);
 		$tIsDisplay = trim($billArrayData['isDisplay']);
+		
 		if($tIsDisplay=="")
 		{
 			$isDisplayEnum = new IsDisplayEnum();
@@ -94,7 +94,6 @@ class BillTransformer
 			$data['company_name'] = $tCompanyName;
 			$data['client_name'] = $tClientName;
 			$data['invoice_number'] = $tInvoiceNumber;
-			// $data['bill_number'] = $tBillNumber;
 			$data['address1'] = $tAddress1;
 			$data['address2'] = $tAddress2;
 			$data['state_abb'] = $tStateAbb;

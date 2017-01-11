@@ -19,6 +19,7 @@ use ERP\Core\Accounting\Journals\Entities\AmountTypeEnum;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Entities\Constants\ConstantClass;
 use ERP\Core\Accounting\Bills\Entities\SalesTypeEnum;
+use Carbon;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -417,6 +418,9 @@ class BillProcessor extends BaseProcessor
 					return $processedData;
 				}
 			}
+			//entry date conversion
+			$transformEntryDate = Carbon\Carbon::createFromFormat('d-m-Y', $tRequest['entry_date'])->format('Y-m-d');
+		
 			$billPersistable = new BillPersistable();
 			$billPersistable->setProductArray(json_encode($productArray));
 			$billPersistable->setPaymentMode($tRequest['payment_mode']);
@@ -429,10 +433,9 @@ class BillProcessor extends BaseProcessor
 			$billPersistable->setAdvance($tRequest['advance']);
 			$billPersistable->setBalance($tRequest['balance']);
 			$billPersistable->setRemark($tRequest['remark']);
-			$billPersistable->setEntryDate($tRequest['entry_date']);
+			$billPersistable->setEntryDate($transformEntryDate);
 			$billPersistable->setClientId($clientId);
 			$billPersistable->setCompanyId($tRequest['company_id']);
-			
 			$salesTypeEnum = new SalesTypeEnum();
 			$salesTypeEnumArray = $salesTypeEnum->enumArrays();
 			if(strcmp($request->header()['salestype'][0],$salesTypeEnumArray['retailSales'])==0 || strcmp($request->header()['salestype'][0],$salesTypeEnumArray['wholesales'])==0)
