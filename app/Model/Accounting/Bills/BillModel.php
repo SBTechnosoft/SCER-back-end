@@ -178,6 +178,12 @@ class BillModel extends Model
 			return $exceptionArray['500'];
 		}
 	}
+	
+	/**
+	 * insert document data
+	 * @param  sale-id,document-name,document-format,document-type
+	 * returns the exception-message
+	*/
 	public function billDocumentData($saleId,$documentName,$documentFormat,$documentType)
 	{
 		DB::beginTransaction();
@@ -199,6 +205,79 @@ class BillModel extends Model
 		else
 		{
 			return $exceptionArray['500'];
+		}
+	}
+	
+	/**
+	 * get bill-document data
+	 * @param  company-id,sales-type,from-date,to-date
+	 * returns the exception-message
+	*/
+	public function getSpecifiedData($companyId,$salesType,$fromDate,$toDate)
+	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		DB::beginTransaction();
+		$raw = DB::select("select 
+		sale_id,
+		product_array,
+		payment_mode,
+		bank_name,
+		invoice_number,
+		check_number,
+		total,
+		tax,
+		grand_total,
+		advance,
+		balance,
+		remark,
+		entry_date,
+		client_id,
+		sales_type,
+		company_id,
+		created_at,
+		updated_at 
+		from sales_bill 
+		where sales_type='".$salesType."' and
+		(entry_date BETWEEN '".$fromDate."' AND '".$toDate."') and 
+		company_id='".$companyId."' and 
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		if(count($raw)==0)
+		{
+			return $exceptionArray['404']; 
+		}
+		else
+		{
+		
+			$documentResult = array();
+			for($saleData=0;$saleData<count($raw);$saleData++)
+			{
+				DB::beginTransaction();
+				$documentResult[$saleData] = DB::select("select
+				document_id,
+				sale_id,
+				document_name,
+				document_size,
+				document_format,
+				document_type,
+				created_at,
+				updated_at
+				from sales_bill_doc_dtl
+				where sale_id='".$raw[$saleData]->sale_id."' and 
+				deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+				if(count($documentResult[$saleData])==0)
+				{
+					return $exceptionArray['404'];
+				}
+			}
+			$salesArrayData = array();
+			$salesArrayData['salesData'] = json_encode($raw);
+			$salesArrayData['documentData'] = json_encode($documentResult);
+			return json_encode($salesArrayData);
 		}
 	}
 }

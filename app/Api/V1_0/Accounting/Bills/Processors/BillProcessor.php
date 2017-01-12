@@ -26,7 +26,7 @@ use Carbon;
 class BillProcessor extends BaseProcessor
 {
 	/**
-     * @var ledgerPersistable
+     * @var billPersistable
 	 * @var request
      */
 	private $billPersistable;
@@ -35,7 +35,7 @@ class BillProcessor extends BaseProcessor
     /**
      * get the form-data and set into the persistable object
      * $param Request object [Request $request]
-     * @return Ledger Persistable object
+     * @return Bill Persistable object
      */	
     public function createPersistable(Request $request)
 	{	
@@ -460,6 +460,36 @@ class BillProcessor extends BaseProcessor
 		else
 		{
 			return $processedData;
+		}
+	}
+	
+	/**
+     * get the fromDate-toDate data and set into the persistable object
+     * $param Request object [Request $request]
+     * @return Bill Persistable object
+     */	
+	public function getPersistableData($requestHeader)
+	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$msgArray = $exception->messageArrays();
+		
+		//trim an input 
+		$billTransformer = new BillTransformer();
+		$tRequest = $billTransformer->trimFromToDateData($requestHeader);
+		
+		if(is_array($tRequest))
+		{
+			// set data in persistable object
+			$billPersistable = new BillPersistable();
+			$billPersistable->setSalesType($tRequest['salesType']);
+			$billPersistable->setFromDate($tRequest['fromDate']);
+			$billPersistable->setToDate($tRequest['toDate']);
+			return $billPersistable;
+		}
+		else
+		{
+			return $tRequest;
 		}
 	}
 }

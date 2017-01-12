@@ -5,14 +5,17 @@ use Illuminate\Http\Request;
 use ERP\Http\Requests;
 use ERP\Core\Accounting\Bills\Entities\PaymentModeEnum;
 use  ERP\Entities\EnumClasses\IsDisplayEnum;
+use Carbon;
+use ERP\Core\Accounting\Bills\Entities\SalesTypeEnum;
+use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
 class BillTransformer
 {
     /**
-     * @param 
-     * @return array
+     * @param Request Object
+     * @return array/error message
      */
     public function trimInsertData(Request $request)
     {
@@ -120,6 +123,57 @@ class BillTransformer
 			}
 			array_push($data,$trimArray);
 			return $data;
+		}
+	}
+	
+	 /**
+     * @param request header
+	 * trim data -> conversion date -> make an array of transform data
+     * @return array/error message
+     */
+	public function trimFromToDateData($headerData)
+	{
+		//get date from header and trim data
+		$salesType = trim($headerData['salestype'][0]);
+		$fromDate = trim($headerData['fromdate'][0]);
+		$toDate = trim($headerData['todate'][0]);
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$msgArray = $exception->messageArrays();
+		
+		//check enum-type data
+		$salesTypeEnum = new SalesTypeEnum();
+		$salesTypeArray = $salesTypeEnum->enumArrays();
+		if(strcmp($salesType,$salesTypeArray['retailSales'])==0 || strcmp($salesType,$salesTypeArray['wholesales'])==0)
+		{
+			if(strcmp($fromDate,'00-00-0000')==0)
+			{
+				$transformFromDate = '0000-00-00';
+			}
+			else
+			{
+				//from-date conversion
+				$transformFromDate = Carbon\Carbon::createFromFormat('d-m-Y', $fromDate)->format('Y-m-d');
+			}
+			if(strcmp($toDate,'00-00-0000')==0)
+			{
+				$transformToDate = '0000-00-00';
+			}
+			else
+			{
+				//to-date conversion
+				$transformToDate = Carbon\Carbon::createFromFormat('d-m-Y', $toDate)->format('Y-m-d');
+			}
+			$trimArray = array();	
+			$trimArray['salesType'] = $salesType;	
+			$trimArray['fromDate'] = $transformFromDate;	
+			$trimArray['toDate'] = $transformToDate;	
+			return $trimArray;
+		}
+		else
+		{
+			return $msgArray['content'];
 		}
 	}
 }

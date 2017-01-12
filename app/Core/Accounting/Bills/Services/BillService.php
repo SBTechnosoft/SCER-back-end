@@ -7,6 +7,7 @@ use ERP\Model\Accounting\Bills\BillModel;
 use ERP\Core\Shared\Options\UpdateOptions;
 use ERP\Core\User\Entities\User;
 use ERP\Core\Accounting\Bills\Entities\EncodeData;
+use ERP\Core\Accounting\Bills\Entities\EncodeAllData;
 use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -127,6 +128,39 @@ class BillService
 				$encodeData = $encoded->getEncodedData($status);
 				return $encodeData;
 			}
+		}
+	}
+	
+	 /**
+     * get the data from persistable object and call the model for database get opertation
+     * @param BillPersistable $persistable
+     * @return status
+     */
+	public function getData()
+	{
+		$persistableData = func_get_arg(0);
+		$companyId = func_get_arg(1);
+		
+		$salesType = $persistableData->getSalesType();
+		$fromDate = $persistableData->getFromDate();
+		$toDate = $persistableData->getToDate();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+			
+		//data pass to the model object for getData
+		$billModel = new BillModel();
+		$billResult = $billModel->getSpecifiedData($companyId,$salesType,$fromDate,$toDate);
+		
+		if(strcmp($billResult,$exceptionArray['404'])==0)
+		{
+			return $billResult;
+		}
+		else
+		{
+			$encodeAllData = new EncodeAllData();
+			$encodingResult = $encodeAllData->getEncodedAllData($billResult);
 		}
 	}
 }

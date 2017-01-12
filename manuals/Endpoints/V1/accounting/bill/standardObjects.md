@@ -25,7 +25,20 @@
 				"invoiceNumber":string,	
 				"file":
 				{
-					... Standard Document Persistable Object
+					{
+						{
+							"documentId":int,
+							"saleId":int,
+							"documentName":string,
+							"documentSize":int,
+							"documentFormat":string,
+							"documentType":string,
+							"createdAt":timestamp,
+							"updatedAt":datetime
+						}
+						...
+					}
+					...
 				}
             }
 			
@@ -56,7 +69,17 @@
 				"remark":string,
 				"file":
 				{
-					... Standard Document Persistable Object
+					{
+						"documentId":int,
+						"saleId":int,
+						"documentName":string,
+						"documentSize":int,
+						"documentFormat":string,
+						"documentType":string,
+						"createdAt":timestamp,
+						"updatedAt":datetime
+					}
+					...
 				}
             }
 

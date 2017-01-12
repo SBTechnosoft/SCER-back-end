@@ -559,8 +559,8 @@ include ('connection.php');
                         // headers: {'Content-Type': undefined,'ledgerName':'sales'},
                         // headers: {'Content-Type': undefined,'jfId':'4','authenticationToken':'728023b3579a2c3177020535991bc3ae'},
                         // headers: {'Content-Type': undefined,'type':'sales'},
-                        // headers: {'Content-Type': undefined,'authenticationToken':'728023b3579a2c3177020535991bc3ae','type':'sales','salesType':'retail_sales'},
-                        headers: {'Content-Type': undefined,'authenticationToken':'eb7cd694eabac838e0f9cba8789b668e','salesType':'retail_sales','fromDate':'00-00-0000','toDate':'22-10-2015'},
+                        // headers: {'Content-Type': undefined,'authenticationToken':'eb7cd694eabac838e0f9cba8789b668e','salesType':'retail_sales'},
+                        headers: {'Content-Type': undefined,'authenticationToken':'eb7cd694eabac838e0f9cba8789b668e','salesType':'retail_sales','fromDate':'22-10-2015','toDate':'22-10-2015'}
                         // headers: {'Content-Type': undefined,'authenticationToken':'eb7cd694eabac838e0f9cba8789b668e'},
                         // headers: {'Content-Type': undefined,'type':'sales','jfId':5},
 						 // data:formdata

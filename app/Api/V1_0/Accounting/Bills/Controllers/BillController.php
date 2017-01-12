@@ -119,4 +119,40 @@ class BillController extends BaseController implements ContainerInterface
 			return $authenticationResult;
 		}
 	}
+	
+	/**
+	 * get the specified resource 
+	 * @param  Request object[Request $request] and companyId
+	 * method calls the processor for creating persistable object & setting the data
+	*/
+	public function getData(Request $request,$companyId)
+	{
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		// get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$processor = new BillProcessor();
+			$billPersistable = new BillPersistable();
+			$billPersistable = $processor->getPersistableData($request->header());
+			
+			if(is_object($billPersistable))
+			{
+				$billService= new BillService();
+				$status = $billService->getData($billPersistable,$companyId);
+			}
+			else
+			{
+				return $billPersistable;
+			}
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+	}
 }
