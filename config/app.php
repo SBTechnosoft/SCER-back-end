@@ -238,7 +238,8 @@ return [
 		'Bills',
 		'TrialBalance',
 		'Users',
-		'Authenticate'
+		'Authenticate',
+		'Logout'
 	],
 
     /*

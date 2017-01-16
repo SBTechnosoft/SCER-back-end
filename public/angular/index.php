@@ -464,12 +464,12 @@ include ('connection.php');
 						// formdata.append('inventory['+i+']['+key+']',input);
 					// });
 				// }
-				// var userId=1;
+				var userId=8;
 				// var clientId=2;
 				// var productId = 1;
 				// var productGrpId = 11;
 				// var productCatId = 16;
-				var companyId=82;
+				// var companyId=82;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -482,6 +482,8 @@ include ('connection.php');
 				// var ledgerId=114;
 				// var jfId=15;
 				// var journalId=802;
+				
+				var url = "http://www.scerp1.com/logout/user/"+userId;
 				
 				// var url = "http://www.scerp1.com/users";
 				// var url = "http://www.scerp1.com/users/"+userId;
@@ -525,7 +527,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/settings/invoice-numbers/"+invoiceId;
 				// var url="http://www.scerp1.com/settings/invoice-numbers/company/"+companyId;
 				// var url="http://www.scerp1.com/banks/"+bankId;
-				var url="http://www.scerp1.com/banks";
+				// var url="http://www.scerp1.com/banks";
 				// var url="http://www.scerp1.com/settings/templates/"+templateId;
 				// var url="http://www.scerp1.com/settings/templates/"+companyId;
 				// var url="http://www.scerp1.com/settings/templates";
@@ -551,9 +553,9 @@ include ('connection.php');
                         url: url,
                         // type:'patch',
 						 // method: 'post',
-						method: 'get',
+						// method: 'get',
 						// method: "PATCH",
-						// method:'delete',
+						method:'delete',
 						processData: false,
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
                         // headers: {'Content-Type': undefined,'ledgerName':'sales'},
@@ -561,9 +563,10 @@ include ('connection.php');
                         // headers: {'Content-Type': undefined,'type':'sales'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'eb7cd694eabac838e0f9cba8789b668e','salesType':'retail_sales'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'eb7cd694eabac838e0f9cba8789b668e','salesType':'retail_sales','fromDate':'22-10-2015','toDate':'22-10-2015'}
-                        headers: {'Content-Type': undefined,'authenticationToken':'eb7cd694eabac838e0f9cba8789b668e'},
+                        // headers: {'Content-Type': undefined,'authenticationToken':'eb7cd694eabac838e0f9cba8789b668e'},
                         // headers: {'Content-Type': undefined,'type':'sales','jfId':5},
-						 data:formdata
+                        headers: {'Content-Type': undefined},
+						 // data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

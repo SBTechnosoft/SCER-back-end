@@ -46,14 +46,14 @@ class StateModel extends Model
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $fileSizeArray['200'];
+			return $exceptionArray['200'];
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return $exceptionArray['500'];
 		}
 	}
 	/**
@@ -78,14 +78,14 @@ class StateModel extends Model
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $fileSizeArray['200'];
+			return $exceptionArray['200'];
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return $exceptionArray['500'];
 		}
 	}
 	
@@ -107,10 +107,10 @@ class StateModel extends Model
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['204'];
+			return $exceptionArray['204'];
 		}
 		else
 		{
@@ -138,10 +138,10 @@ class StateModel extends Model
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['404'];
+			return $exceptionArray['404'];
 		}
 		else
 		{
@@ -162,7 +162,7 @@ class StateModel extends Model
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
 			$city = DB::statement("update city_mst 
@@ -177,16 +177,16 @@ class StateModel extends Model
 			
 			if($city==1 && $company==1 && $branch==1)
 			{
-				return $fileSizeArray['200'];
+				return $exceptionArray['200'];
 			}
 			else
 			{
-				return $fileSizeArray['500'];
+				return $exceptionArray['500'];
 			}
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return $exceptionArray['500'];
 		}
 	}
 }
