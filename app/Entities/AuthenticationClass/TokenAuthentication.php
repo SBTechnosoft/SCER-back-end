@@ -72,6 +72,7 @@ class TokenAuthentication extends AuthenticateService
 			$hourValue = 24;
 			if($hours<$hourValue || $hours==$hourValue && $minutes==0 && $seconds==0)
 			{
+				// update updated_at time of token
 				return $constantArray['success'];
 			}
 			else
