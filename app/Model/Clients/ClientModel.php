@@ -164,4 +164,44 @@ class ClientModel extends Model
 		}
 	}
 	
+	/**
+	 * get client data 
+	 * @param contact-no,company_id
+	 * returns the status
+	*/
+	public function getClientData($contactNo,$emailId)
+	{
+		if($contactNo=="")
+		{
+			DB::beginTransaction();		
+			$raw = DB::select("select 
+			client_id
+			from client_mst 
+			where deleted_at='0000-00-00 00:00:00' and 
+			email_id='".$emailId."'");
+			DB::commit();
+		}
+		else
+		{
+			DB::beginTransaction();		
+			$raw = DB::select("select 
+			client_id
+			from client_mst 
+			where deleted_at='0000-00-00 00:00:00' and 
+			contact_no='".$contactNo."'");
+			DB::commit();
+		}
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(count($raw)==0)
+		{
+			return $exceptionArray['200'];
+		}
+		else
+		{
+			$enocodedData = json_encode($raw);
+			return $enocodedData;
+		}
+	}
 }

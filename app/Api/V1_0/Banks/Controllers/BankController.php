@@ -40,12 +40,12 @@ class BankController extends BaseController implements ContainerInterface
      * get the specified resource.
      * @param  int  $bankId
      */
-    public function getData($bankId=null)
+    public function getData(Request $request,$bankId=null)
     {
 		//Authentication
 		$tokenAuthentication = new TokenAuthentication();
 		$authenticationResult = $tokenAuthentication->authenticate($request->header());
-		
+
 		//get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();

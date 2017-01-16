@@ -11,7 +11,6 @@ class PaymentModeEnum
 	{
 		$enumArray = array();
 		$enumArray['cashPayment'] = "cash";
-		$enumArray['creditPayment'] = "credit";
 		$enumArray['bankPayment'] = "bank";
 		$enumArray['cardPayment'] = "card";
 		return $enumArray;

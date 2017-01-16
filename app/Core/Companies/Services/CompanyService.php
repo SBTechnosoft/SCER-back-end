@@ -10,6 +10,7 @@ use ERP\Core\User\Entities\User;
 use ERP\Core\Companies\Entities\EncodeData;
 use ERP\Core\Companies\Entities\EncodeAllData;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Model\Accounting\Ledgers\LedgerModel;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -53,6 +54,10 @@ class CompanyService extends AbstractService
 		$companyArray = func_get_arg(0);
 		$documentFlag=0;
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
 		//check document is available
 		if(is_array($companyArray[count($companyArray)-1][0]))
 		{
@@ -81,19 +86,37 @@ class CompanyService extends AbstractService
 				$keyName[$data] = $companyArray[$data][0]->getkey();
 			}
 		}
+		$ledgerModel = new LedgerModel();
 		if($documentFlag==1)
 		{
 			// data pass to the model object for insert
 			$companyModel = new CompanyModel();
 			$status = $companyModel->insertAllData($getData,$keyName,$document);
-			return $status;
+			
+			if(is_array($status))
+			{
+				$ledgerResult = $ledgerModel->insertGeneralLedger($status);
+				return $ledgerResult;
+			}
+			else
+			{
+				return $status;
+			}
 		}
 		else 
 		{
 			//data pass to the model object for insert
 			$companyModel = new CompanyModel();
 			$status = $companyModel->insertData($getData,$keyName);
-			return $status;
+			if(is_array($status))
+			{
+				$ledgerResult = $ledgerModel->insertGeneralLedger($status);
+				return $ledgerResult;
+			}
+			else
+			{
+				return $status;
+			}
 		}
 	}
 	
@@ -105,11 +128,11 @@ class CompanyService extends AbstractService
 	{
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		
 		$companyModel = new CompanyModel();
 		$status = $companyModel->getAllData();
-		if(strcmp($status,$fileSizeArray['204'])==0)
+		if(strcmp($status,$exceptionArray['204'])==0)
 		{
 			return $status;
 		}
@@ -132,8 +155,8 @@ class CompanyService extends AbstractService
 		$status = $companyModel->getData($companyId);
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		if(strcmp($status,$fileSizeArray['404'])==0)
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($status,$exceptionArray['404'])==0)
 		{
 			return $status;
 		}

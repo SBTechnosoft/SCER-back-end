@@ -161,6 +161,7 @@ class BillService
 		{
 			$encodeAllData = new EncodeAllData();
 			$encodingResult = $encodeAllData->getEncodedAllData($billResult);
+			return $encodingResult;
 		}
 	}
 }

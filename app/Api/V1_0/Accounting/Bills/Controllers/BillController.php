@@ -144,6 +144,7 @@ class BillController extends BaseController implements ContainerInterface
 			{
 				$billService= new BillService();
 				$status = $billService->getData($billPersistable,$companyId);
+				return $status;
 			}
 			else
 			{

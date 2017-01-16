@@ -47,7 +47,12 @@ class CompanyModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $exceptionArray['200'];
+			DB::beginTransaction();
+			$companyId = DB::select("select
+			max(company_id) as company_id 
+			from company_mst where deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+			return $companyId;
 		}
 		else
 		{
@@ -90,7 +95,12 @@ class CompanyModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $exceptionArray['200'];
+			DB::beginTransaction();
+			$companyId = DB::select("select
+			max(company_id) as company_id 
+			from company_mst where deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+			return $companyId;
 		}
 		else
 		{
@@ -183,7 +193,6 @@ class CompanyModel extends Model
 				}
 			}	
 		}
-		
 		for($data=0;$data<count($companyData);$data++)
 		{
 			$keyValueString=$keyValueString.$key[$data]."='".$companyData[$data]."',";
@@ -338,9 +347,13 @@ class CompanyModel extends Model
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
+			$ledgerId = DB::select("select ledger_id 
+			from ledger_mst 
+			where company_id=".$companyId." and deleted_at='0000-00-00 00:00:00'");
+			
 			$branch = DB::statement("update branch_mst 
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
@@ -365,22 +378,33 @@ class CompanyModel extends Model
 			$productTrn = DB::statement("update product_trn 
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
-			$retailsalesDtl = DB::statement("update retail_sales_dtl 
+			$retailsalesDtl = DB::statement("update sales_bill
+			set deleted_at='".$mytime."' 
+			where company_id=".$companyId);
+			$userMst = DB::statement("update user_mst
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
 			
-			if($branch==1 && $product==1 && $template==1 && $invoice==1 && $quotation==1 && $journal==1 && $ledger==1 && $productTrn==1 && $retailsalesDtl==1)
+			//ledegerId_ledger_dtl drop
+			for($ledgerArray=0;$ledgerArray<count($ledgerId);$ledgerArray++)
 			{
-				return $fileSizeArray['200'];
+				DB::beginTransaction();
+				$dropLedger = DB::statement("drop table
+				".$ledgerId[$ledgerArray]->ledger_id."_ledger_dtl");
+				DB::commit();
+			}
+			if($branch==1 && $product==1 && $template==1 && $invoice==1 && $quotation==1 && $journal==1 && $ledger==1 && $productTrn==1 && $retailsalesDtl==1 && $userMst==1) 
+			{
+				return $exceptionArray['200'];
 			}
 			else
 			{
-				return $fileSizeArray['500'];
+				return $exceptionArray['500'];
 			}
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return $exceptionArray['500'];
 		}
 	}
 }

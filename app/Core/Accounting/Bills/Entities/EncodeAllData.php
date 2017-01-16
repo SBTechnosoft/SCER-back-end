@@ -4,6 +4,7 @@ namespace ERP\Core\Accounting\Bills\Entities;
 use ERP\Core\Accounting\Bills\Entities\Bill;
 use ERP\Core\Clients\Services\ClientService;
 use ERP\Core\Entities\CompanyDetail;
+use ERP\Entities\Constants\ConstantClass;
 use Carbon;
 /**
  *
@@ -13,14 +14,15 @@ class EncodeAllData extends ClientService
 {
 	public function getEncodedAllData($status)
 	{
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
 		$convertedCreatedDate =  array();
 		$convertedUpdatedDate =  array();
-		// $encodeAllData =  array();
 		$decodedJson = json_decode($status,true);
 		$deocodedJsonData = json_decode($decodedJson['salesData']);
 		$decodedDocumentData = json_decode($decodedJson['documentData']);
-		
 		$bill = new Bill();
+
 		for($decodedData=0;$decodedData<count($deocodedJsonData);$decodedData++)
 		{
 			$saleId[$decodedData] = $deocodedJsonData[$decodedData]->sale_id;
@@ -41,20 +43,19 @@ class EncodeAllData extends ClientService
 			$companyId[$decodedData] = $deocodedJsonData[$decodedData]->company_id;
 			$createdAt[$decodedData] = $deocodedJsonData[$decodedData]->created_at;
 			$updatedAt[$decodedData] = $deocodedJsonData[$decodedData]->updated_at;
-			
+
 			//get the client detail from database
 			$encodeAllData = new EncodeAllData();
 			$getClientDetails[$decodedData] = $encodeAllData->getClientData($clientId[$decodedData]);
-			
+
 			//get the company detail from database
 			$companyDetail  = new CompanyDetail();
 			$getCompanyDetails[$decodedData] = $companyDetail->getCompanyDetails($companyId[$decodedData]);
-			
+
 			//date format conversion
 			$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
 			$bill->setCreated_at($convertedCreatedDate);
 			$getCreatedDate[$decodedData] = $bill->getCreated_at();
-			
 			if(strcmp($updatedAt[$decodedData],'0000-00-00 00:00:00')==0)
 			{
 				$getUpdatedDate[$decodedData] = "00-00-0000";
@@ -92,18 +93,16 @@ class EncodeAllData extends ClientService
 				$documentId[$decodedData][$documentArray] = $decodedDocumentData[$decodedData][$documentArray]->document_id;
 				$documentSaleId[$decodedData][$documentArray] = $decodedDocumentData[$decodedData][$documentArray]->sale_id;
 				$documentName[$decodedData][$documentArray] = $decodedDocumentData[$decodedData][$documentArray]->document_name;
-				
 				$documentSize[$decodedData][$documentArray] = $decodedDocumentData[$decodedData][$documentArray]->document_size;
 				$documentFormat[$decodedData][$documentArray] = $decodedDocumentData[$decodedData][$documentArray]->document_format;
 				$documentType[$decodedData][$documentArray] = $decodedDocumentData[$decodedData][$documentArray]->document_type;
 				$documentCreatedAt[$decodedData][$documentArray] = $decodedDocumentData[$decodedData][$documentArray]->created_at;
 				$documentUpdatedAt[$decodedData][$documentArray] = $decodedDocumentData[$decodedData][$documentArray]->updated_at;
-				
+			
 				//date format conversion
 				$documentCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $documentCreatedAt[$decodedData][$documentArray])->format('d-m-Y');
 				$bill->setCreated_at($documentCreatedDate);
 				$getDocumentCreatedDate[$decodedData][$documentArray] = $bill->getCreated_at();
-				
 				if(strcmp($documentUpdatedAt[$decodedData][$documentArray],'0000-00-00 00:00:00')==0)
 				{
 					$getDocumentUpdatedDate[$decodedData][$documentArray] = "00-00-0000";
@@ -119,27 +118,23 @@ class EncodeAllData extends ClientService
 		$documentData = array();
 		$innerArrayData = array();
 		$arrayData = array();
-		for($documentData=0;$documentData<count($deocodedJsonData);$documentData++)
-		{
-			$arrayData[$documentData] = array();
-			for($innerArrayData=0;$innerArrayData<count($decodedDocumentData[$documentData]);$innerArrayData++)
-			{
-				$arrayData[$documentData][$innerArrayData] = array(
-					'documentId'=>$documentId[$documentData][$innerArrayData],
-					'saleId'=>$documentSaleId[$documentData][$innerArrayData],
-					'documentName'=>$documentName[$documentData][$innerArrayData],
-					'documentSize'=>$documentSize[$documentData][$innerArrayData],
-					'documentFormat'=>$documentFormat[$documentData][$innerArrayData],
-					'documentType'=>$documentType[$documentData][$innerArrayData],
-					'createdAt'=>$getDocumentCreatedDate[$documentData][$innerArrayData],
-					'updatedAt'=>$getDocumentUpdatedDate[$documentData][$innerArrayData]
-				);
-			}
-		}
-		
 		$data = array();
 		for($jsonData=0;$jsonData<count($deocodedJsonData);$jsonData++)
 		{
+			for($innerArrayData=0;$innerArrayData<count($decodedDocumentData[$jsonData]);$innerArrayData++)
+			{
+				$arrayData[$innerArrayData] = array(
+					'documentId'=>$documentId[$jsonData][$innerArrayData],
+					'saleId'=>$documentSaleId[$jsonData][$innerArrayData],
+					'documentName'=>$documentName[$jsonData][$innerArrayData],
+					'documentSize'=>$documentSize[$jsonData][$innerArrayData],
+					'documentFormat'=>$documentFormat[$jsonData][$innerArrayData],
+					'documentType'=>$documentType[$jsonData][$innerArrayData],
+					'documentUrl'=>$constantArray['billUrl'],
+					'createdAt'=>$getDocumentCreatedDate[$jsonData][$innerArrayData],
+					'updatedAt'=>$getDocumentUpdatedDate[$jsonData][$innerArrayData]
+				);
+			}
 			$clientData = json_decode($getClientDetails[$jsonData]);
 			$data[$jsonData]= array(
 				'saleId'=>$saleId[$jsonData],
@@ -189,23 +184,21 @@ class EncodeAllData extends ClientService
 					'noOfDecimalPoints' => $getCompanyDetails[$jsonData]['noOfDecimalPoints'],	
 					'currencySymbol' => $getCompanyDetails[$jsonData]['currencySymbol'],	
 					'logo'=> array(
-						'documentName' => $getCompanyDetails[$jsonData]['logo']['documentName'],	
+						'documentName' => $getCompanyDetails[$jsonData]['logo']['documentName'],
 						'documentUrl' => $getCompanyDetails[$jsonData]['logo']['documentUrl'],	
 						'documentSize' =>$getCompanyDetails[$jsonData]['logo']['documentSize'],	
 						'documentFormat' => $getCompanyDetails[$jsonData]['logo']['documentFormat']
 					),
 					'isDisplay' => $getCompanyDetails[$jsonData]['isDisplay'],	
-					'isDefault' => $getCompanyDetails[$jsonData]['isDefault'],	
-					'createdAt' => $getCompanyDetails[$jsonData]['createdAt'],	
-					'updatedAt' => $getCompanyDetails[$jsonData]['updatedAt'],	
-					'stateAbb' => $getCompanyDetails[$jsonData]['state']['stateAbb'],	
+					'isDefault' => $getCompanyDetails[$jsonData]['isDefault'],
+					'createdAt' => $getCompanyDetails[$jsonData]['createdAt'],
+					'updatedAt' => $getCompanyDetails[$jsonData]['updatedAt'],
+					'stateAbb' => $getCompanyDetails[$jsonData]['state']['stateAbb'],
 					'cityId' => $getCompanyDetails[$jsonData]['city']['cityId']	
 				)		
 			);
+			$data[$jsonData]['file'] = $arrayData;
 		}
-		$data['file'] = $arrayData;
-		print_r($data);
-		exit;
 		$jsonEncodedData = json_encode($data);
 		return $jsonEncodedData;
 	}

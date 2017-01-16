@@ -86,7 +86,6 @@
 ##### Payment Mode Enum
 			{
 				"cashPayment":'cash',
-				"creditPayment":'credit',
 				"bankPayment":'bank',
 				"cardPayment":'card'
 			}

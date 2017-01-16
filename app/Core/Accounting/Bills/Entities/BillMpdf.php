@@ -59,14 +59,12 @@ class BillMpdf
 			$output =$output."".
 			'<tr><td class= style="padding: 10px 5px; top: 0px;font-family: Calibri; font-size: 12px; vertical-align: bottom; color: black;" colspan="0">'.$index.'</td> 
 			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1;" colspan="1"> '. $decodedData[$productArray]->productName.'</td>
-			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1;" colspan="0"></td> 
-			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1;" colspan="0"></td> 
-			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1;" colspan="1"> '. $decodedArray->inventory[$productArray]->qty.'</td>
-			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1;" colspan="1"> '. $decodedArray->inventory[$productArray]->price.'</td>
-			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1;" colspan="1"> '. $decodedArray->inventory[$productArray]->discount.'</td>
-			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1;" colspan="1"> '. $decodedData[$productArray]->vat.'</td>
-			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1;" colspan="1"></td>
-			  <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1;" colspan="1"> '. $decodedArray->inventory[$productArray]->qty*$decodedArray->inventory[$productArray]->price.'</td></tr>';
+			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1"> '. $decodedArray->inventory[$productArray]->qty.'</td>
+			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1"> '. $decodedArray->inventory[$productArray]->price.'</td>
+			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1"> '. $decodedArray->inventory[$productArray]->discount.'</td>
+			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1"> '. $decodedData[$productArray]->vat.'</td>
+			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1"></td>
+			  <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1"> '. $decodedArray->inventory[$productArray]->qty*$decodedArray->inventory[$productArray]->price.'</td></tr>';
 			 $index++;
 			
 		}

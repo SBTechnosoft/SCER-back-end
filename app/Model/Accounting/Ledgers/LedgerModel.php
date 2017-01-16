@@ -6,8 +6,9 @@ use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Core\Accounting\Ledgers\Entities\EncodeTrnAllData;
-// use ERP\Core\Accounting\Ledgers\Entities\EncodeProductTrnAllData;
 use ERP\Core\Accounting\Journals\Entities\EncodeAllData;
+use ERP\Model\Companies\CompanyModel;
+use ERP\Core\Accounting\Ledgers\Entities\ledgerArray;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -231,6 +232,112 @@ class LedgerModel extends Model
 	 * @param  ledger-data,key of ledger-data,ledger-id
 	 * returns the status
 	*/
+	public function insertGeneralLedger($companyId)
+	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		//get company data as per given companyId
+		$companyModel = new CompanyModel();
+		$companyData = $companyModel->getData($companyId[0]->company_id);
+		$decodedCompanyData = json_decode($companyData);
+		$stateAbb = $decodedCompanyData[0]->state_abb;
+		$cityId = $decodedCompanyData[0]->city_id;
+		
+		$ledgerArray = new ledgerArray();
+		$generalLedgerArray = $ledgerArray->ledgerArrays();
+		$generalLedgerGrpArray = $ledgerArray->ledgerGrpArray();
+		
+		for($arrayData=0;$arrayData<count($generalLedgerArray);$arrayData++)
+		{
+			DB::beginTransaction();
+			$ledgerInsertionResult = DB::statement("insert into ledger_mst
+			(ledger_name,
+			inventory_affected,
+			state_abb,
+			city_id,
+			ledger_group_id,
+			company_id)
+			values
+			('".$generalLedgerArray[$arrayData]."',
+			'yes',
+			'".$stateAbb."',
+			'".$cityId."',
+			'".$generalLedgerGrpArray[$arrayData]."',
+			'".$companyId[0]->company_id."')");
+			DB::commit();
+			
+			if($ledgerInsertionResult==0)
+			{
+				return $exceptionArray['500'];
+			}
+		}
+		//get max ledgerId
+		DB::beginTransaction();
+		$ledgerIdData = DB::select("select 
+		ledger_id,
+		created_at
+		from ledger_mst 
+		where deleted_at='0000-00-00 00:00:00' and company_id='".$companyId[0]->company_id."'");
+		DB::commit();
+		if(count($ledgerIdData)==0)
+		{
+			return $exceptionArray['404'];
+		}
+		else
+		{
+			//insert ledger into ledgerId_ledger_dtl
+			for($ledgerIdArray=0;$ledgerIdArray<count($ledgerIdData);$ledgerIdArray++)
+			{
+				DB::beginTransaction();
+				$result = DB::statement("CREATE TABLE ".$ledgerIdData[$ledgerIdArray]->ledger_id."_ledger_dtl (
+				 `".$ledgerIdData[$ledgerIdArray]->ledger_id."_id` int(11) NOT NULL AUTO_INCREMENT,
+				 `amount` decimal(10,2) NOT NULL,
+				 `amount_type` enum('credit','debit') NOT NULL,
+				 `entry_date` date NOT NULL,
+				 `jf_id` int(11) NOT NULL,
+				 `balance_flag` enum('','opening','closing') NOT NULL  DEFAULT '',
+				 `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				 `updated_at` datetime NOT NULL,
+				 `deleted_at` datetime NOT NULL,
+				 `ledger_id` int(11) NOT NULL,
+				 PRIMARY KEY (`".$ledgerIdData[$ledgerIdArray]->ledger_id."_id`)
+				) ENGINE=InnoDB DEFAULT CHARSET=utf16");
+				DB::commit();
+				
+				DB::beginTransaction();
+				$ledgerTrnData = DB::statement("insert into 
+				".$ledgerIdData[$ledgerIdArray]->ledger_id."_ledger_dtl
+				(amount,
+				amount_type,
+				balance_flag,
+				entry_date,
+				jf_id,
+				ledger_id)
+				values
+				('0.00',
+				'credit',
+				'opening',
+				'".$ledgerIdData[$ledgerIdArray]->created_at."',
+				'0',
+				'".$ledgerIdData[$ledgerIdArray]->ledger_id."')");
+				DB::commit();
+				if($ledgerTrnData==0)
+				{
+					return $exceptionArray['500'];
+				}
+			}
+			return $exceptionArray['200'];
+		}
+		
+	}
+	
+	/**
+	 * update data 
+	 * @param  ledger-data,key of ledger-data,ledger-id
+	 * returns the status
+	*/
 	public function updateData($ledgerData,$key,$ledgerId)
 	{
 	    $mytime = Carbon\Carbon::now();
@@ -266,14 +373,14 @@ class LedgerModel extends Model
 	  
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if($keyValueStringAmt!="" && $ledgerTrnData==1 || $keyValueString!="" && $raw==1)
 		{
-			return $fileSizeArray['200'];
+			return $exceptionArray['200'];
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return $exceptionArray['500'];
 		}
 	}
 	
@@ -321,7 +428,7 @@ class LedgerModel extends Model
 			{
 				$ledgerIdArray[$ledgerDataArray] = $ledgerAllData[$ledgerDataArray]->ledger_id;
 				$currentBalanceType="";
-				// echo "ss";
+				
 				//get opening balance
 				DB::beginTransaction();
 				$raw = DB::select("SELECT 
@@ -332,8 +439,7 @@ class LedgerModel extends Model
 				WHERE balance_flag='opening' and 
 				deleted_at='0000-00-00 00:00:00'");
 				DB::commit();
-				// print_r($raw);
-				// echo "hhi";
+				
 				if(count($raw)!=0)
 				{
 					//get current balance
@@ -424,11 +530,11 @@ class LedgerModel extends Model
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if(count($ledgerData)==0)
 		{
 			
-			return $fileSizeArray['404'];
+			return $exceptionArray['404'];
 		}
 		else
 		{
@@ -954,6 +1060,11 @@ class LedgerModel extends Model
 		}
 	}
 	
+	/**
+	 * get ledger id 
+	 * @param company-id,ledger-name
+	 * returns the error-message/data
+	*/
 	public function getLedgerId($companyId,$type)
 	{
 		// get exception message
@@ -968,7 +1079,6 @@ class LedgerModel extends Model
 		company_id='".$companyId."' and 
 		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
-		
 		if(count($raw)==0)
 		{
 			return $exceptionArray['404'];
@@ -1351,6 +1461,67 @@ class LedgerModel extends Model
 	}
 	
 	/**
+	 * get data as per companyId
+	 * @param: companyId,contactNo
+	 * returns the error-message/data
+	*/
+	public function getDataAsPerContactNo($companyId,$contactNo)
+	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		DB::beginTransaction();
+		$raw = DB::select("select ledger_id 
+		from ledger_mst 
+		where company_id='".$companyId."' and 
+		contact_no='".$contactNo."' and
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		if(count($raw)==0)
+		{
+			return $exceptionArray['500'];
+		}
+		else
+		{
+			$encodedData = json_encode($raw);
+			return $encodedData;
+		}
+	}
+	
+	/**
+	 * get data as per companyId
+	 * @param: companyId
+	 * returns the error-message/data
+	*/
+	public function getLedger($companyId)
+	{
+		$raw = array();
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		$ledgerArray = new ledgerArray();
+		$ledgerResult = $ledgerArray->billLedgerArray();
+		for($ledgerDataArray=0;$ledgerDataArray<count($ledgerResult);$ledgerDataArray++)
+		{
+			DB::beginTransaction();
+			$raw[$ledgerDataArray] = DB::select("select ledger_id 
+			from ledger_mst 
+			where company_id='".$companyId."' and 
+			ledger_name='".$ledgerResult[$ledgerDataArray]."' and
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+			if(count($raw[$ledgerDataArray])==0)
+			{
+				return $exceptionArray['500'];
+			}
+		}
+		$encodedData = json_encode($raw);
+		return $encodedData;
+	}
+	
+	/**
 	 * delete the data
 	 * @param: ledgerId
 	 * returns the error-message/status
@@ -1366,14 +1537,14 @@ class LedgerModel extends Model
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $fileSizeArray['200'];
+			return $exceptionArray['200'];
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return $exceptionArray['500'];
 		}
 	}
 }
