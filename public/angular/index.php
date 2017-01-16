@@ -161,41 +161,41 @@ include ('connection.php');
 				//company
 				// $scope.formAdata.company_name = "reema2232323222222222222222222222222222222222222";
 				// $scope.formAdata.company_name = " 1sh1l lbaaaaa-&_().\'aadks "; //0-9 not allow(error:allow)
-				$scope.formAdata.company_name = " abcdefdd";
-				$scope.formAdata.company_display_name = " aaa ";
-				$scope.formAdata.address1 =" address1";
-				$scope.formAdata.address2 = " address2 ";
-				$scope.formAdata.pincode = 311411;
-				$scope.formAdata.pan= ' qqqas1122a ';
-				$scope.formAdata.tin= ' 42aa3dgg778 ';
-				$scope.formAdata.vat_no= ' aadgg78w1a0 ';
-				$scope.formAdata.service_tax_no = ' 71j0rg778a22b01 ';
-				$scope.formAdata.basic_currency_symbol= " ALR ";
-				$scope.formAdata.formal_name = " qgfrd-&_().\'frtgfrta ";
-				$scope.formAdata.no_of_decimal_points = 4;
-				$scope.formAdata.currency_symbol = ' prefix ';
-				$scope.formAdata.is_display = ' no ';
-				$scope.formAdata.is_default = ' ok ';
-				$scope.formAdata.state_abb= ' IN-AG ';
-				$scope.formAdata.city_id= 1;
+				// $scope.formAdata.company_name = " abcdefdd";
+				// $scope.formAdata.company_display_name = " aaa ";
+				// $scope.formAdata.address1 =" address1";
+				// $scope.formAdata.address2 = " address2 ";
+				// $scope.formAdata.pincode = 311411;
+				// $scope.formAdata.pan= ' qqqas1122a ';
+				// $scope.formAdata.tin= ' 42aa3dgg778 ';
+				// $scope.formAdata.vat_no= ' aadgg78w1a0 ';
+				// $scope.formAdata.service_tax_no = ' 71j0rg778a22b01 ';
+				// $scope.formAdata.basic_currency_symbol= " ALR ";
+				// $scope.formAdata.formal_name = " qgfrd-&_().\'frtgfrta ";
+				// $scope.formAdata.no_of_decimal_points = 4;
+				// $scope.formAdata.currency_symbol = ' prefix ';
+				// $scope.formAdata.is_display = ' no ';
+				// $scope.formAdata.is_default = ' ok ';
+				// $scope.formAdata.state_abb= ' IN-AG ';
+				// $scope.formAdata.city_id= 1;
 				
-				formdata.append('companyName',$scope.formAdata.company_name);
-				formdata.append('companyDisplayName',$scope.formAdata.company_display_name);
-				formdata.append('address1',$scope.formAdata.address1);
-				formdata.append('address2',$scope.formAdata.address2);
-				formdata.append('pincode',$scope.formAdata.pincode);
-				formdata.append('pan',$scope.formAdata.pan);
-				formdata.append('tin',$scope.formAdata.tin);
-				formdata.append('vatNo',$scope.formAdata.vat_no);
-				formdata.append('serviceTaxNo',$scope.formAdata.service_tax_no);
-				formdata.append('basicCurrencySymbol',$scope.formAdata.basic_currency_symbol);
-				formdata.append('formalName',$scope.formAdata.formal_name);
-				formdata.append('noOfDecimalPoints',$scope.formAdata.no_of_decimal_points);
-				formdata.append('currencySymbol',$scope.formAdata.currency_symbol);
-				formdata.append('isDisplay',$scope.formAdata.is_display);
-				formdata.append('isDefault',$scope.formAdata.is_default);
-				formdata.append('stateAbb',$scope.formAdata.state_abb);
-				formdata.append('cityId',$scope.formAdata.city_id);
+				// formdata.append('companyName',$scope.formAdata.company_name);
+				// formdata.append('companyDisplayName',$scope.formAdata.company_display_name);
+				// formdata.append('address1',$scope.formAdata.address1);
+				// formdata.append('address2',$scope.formAdata.address2);
+				// formdata.append('pincode',$scope.formAdata.pincode);
+				// formdata.append('pan',$scope.formAdata.pan);
+				// formdata.append('tin',$scope.formAdata.tin);
+				// formdata.append('vatNo',$scope.formAdata.vat_no);
+				// formdata.append('serviceTaxNo',$scope.formAdata.service_tax_no);
+				// formdata.append('basicCurrencySymbol',$scope.formAdata.basic_currency_symbol);
+				// formdata.append('formalName',$scope.formAdata.formal_name);
+				// formdata.append('noOfDecimalPoints',$scope.formAdata.no_of_decimal_points);
+				// formdata.append('currencySymbol',$scope.formAdata.currency_symbol);
+				// formdata.append('isDisplay',$scope.formAdata.is_display);
+				// formdata.append('isDefault',$scope.formAdata.is_default);
+				// formdata.append('stateAbb',$scope.formAdata.state_abb);
+				// formdata.append('cityId',$scope.formAdata.city_id);
 				
 				//productCategory
 				// $scope.formAdata.productCatName = "abcd";
@@ -347,7 +347,8 @@ include ('connection.php');
 				
 				//User
 				// $scope.formAdata.user_name = "palak";
-				// $scope.formAdata.contact_no = "87654534541";
+				// $scope.formAdata.user_type = "staff";
+				// $scope.formAdata.contact_no = "87654534542";
 				// $scope.formAdata.email_id = "palak1@gmail.com";
 				// $scope.formAdata.password = "reema";
 				// $scope.formAdata.address ="35,abc1";
@@ -358,6 +359,7 @@ include ('connection.php');
 				// $scope.formAdata.city_id= 1;
 				
 				// formdata.append('userName',$scope.formAdata.user_name);
+				// formdata.append('userType',$scope.formAdata.user_type);
 				// formdata.append('password',$scope.formAdata.password);
 				// formdata.append('contactNo',$scope.formAdata.contact_no);
 				// formdata.append('emailId',$scope.formAdata.email_id);
@@ -369,8 +371,8 @@ include ('connection.php');
 				// formdata.append('cityId',$scope.formAdata.city_id);
 				
 				//Authenticate
-				// $scope.formAdata.email_id = "jscs@gmail.com";
-				// $scope.formAdata.password = "jscs123";
+				// $scope.formAdata.email_id = "palak1@gmail.com";
+				// $scope.formAdata.password = "reema";
 				// formdata.append('emailId',$scope.formAdata.email_id);
 				// formdata.append('password',$scope.formAdata.password);
 				
@@ -464,12 +466,12 @@ include ('connection.php');
 						// formdata.append('inventory['+i+']['+key+']',input);
 					// });
 				// }
-				var userId=8;
+				var userId=9;
 				// var clientId=2;
 				// var productId = 1;
 				// var productGrpId = 11;
 				// var productCatId = 16;
-				// var companyId=82;
+				var companyId=55;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -483,7 +485,7 @@ include ('connection.php');
 				// var jfId=15;
 				// var journalId=802;
 				
-				var url = "http://www.scerp1.com/logout/user/"+userId;
+				// var url = "http://www.scerp1.com/logout/user/"+userId;
 				
 				// var url = "http://www.scerp1.com/users";
 				// var url = "http://www.scerp1.com/users/"+userId;
@@ -531,7 +533,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/settings/templates/"+templateId;
 				// var url="http://www.scerp1.com/settings/templates/"+companyId;
 				// var url="http://www.scerp1.com/settings/templates";
-				// var url="http://www.scerp1.com/companies/"+companyId;
+				var url="http://www.scerp1.com/companies/"+companyId;
 				// var url="http://www.scerp1.com/companies";	
 				// var url="http://www.scerp1.com/branches";	
 				 // var url="http://www.scerp1.com/branches/"+branchId;
@@ -563,11 +565,11 @@ include ('connection.php');
                         // headers: {'Content-Type': undefined,'type':'sales'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'eb7cd694eabac838e0f9cba8789b668e','salesType':'retail_sales'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'eb7cd694eabac838e0f9cba8789b668e','salesType':'retail_sales','fromDate':'22-10-2015','toDate':'22-10-2015'}
-                        // headers: {'Content-Type': undefined,'authenticationToken':'eb7cd694eabac838e0f9cba8789b668e'},
+                        headers: {'Content-Type': undefined,'authenticationToken':'eb7cd694eabac838e0f9cba8789b668e'},
                         // headers: {'Content-Type': undefined,'type':'sales','jfId':5},
-                        headers: {'Content-Type': undefined},
+                        // headers: {'Content-Type': undefined},
 						 // data:formdata
-						// data:$scope.user						
+						// data:$scope.user			8f193a56901542b085390cfbeb3f0d62 				
                         
                     }).success(function(data, status, headers, config) {
 						console.log(data);	//post	//get	//update //delete

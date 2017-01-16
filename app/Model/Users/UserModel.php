@@ -181,16 +181,10 @@ class UserModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			// $activeSession = DB::statement("delete from active_session 
-			// where user_id = '".$userId."'");
-			// if($activeSession==1)
-			// {
-				return $exceptionArray['200'];
-			// }
-			// else
-			// {
-				// return $exceptionArray['500'];
-			// }
+			$activeSession = DB::statement("delete 
+			from active_session 
+			where user_id = '".$userId."'");
+			return $exceptionArray['200'];
 		}
 		else
 		{

@@ -15,15 +15,15 @@ use ERP\Exceptions\ExceptionMessage;
 class AuthenticateController extends BaseController implements ContainerInterface
 {
 	/**
-     * @var stateService
+     * @var authenticateService
      * @var processor
      * @var request
-     * @var statePersistable
+     * @var authenticatePersistable
      */
-	// private $stateService;
-	// private $processor;
-	// private $request;
-	// private $statePersistable;	
+	private $authenticateService;
+	private $processor;
+	private $request;
+	private $authenticatePersistable;	
 	
 	/**
 	 * get and invoke method is of ContainerInterface method

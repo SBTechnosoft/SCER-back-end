@@ -44,10 +44,10 @@ class UserProcessor extends BaseProcessor
 		else
 		{
 			$userValidate = new UserValidate();
+			
 			//trim an input 
 			$userTransformer = new UserTransformer();
 			$tRequest = $userTransformer->trimInsertData($this->request);
-			
 			if($tRequest==1)
 			{
 				return $msgArray['content'];

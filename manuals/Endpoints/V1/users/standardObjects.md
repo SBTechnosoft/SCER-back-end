@@ -4,6 +4,7 @@
                 "userId": int,
                 "userName": string,
 				"emailId":string,
+				"userType":Enum,
 				"password":string,
 				"contactNo":string,
 				"address":string,
@@ -29,6 +30,7 @@
 
  			{
             	"userName": string,
+				"userType":Enum,
 				"emailId":string,
 				"password":string,
 				"contactNo":string,
@@ -39,4 +41,8 @@
 				"companyId":int,
 				"branchId": int,
 			}
-
+##### user type enum
+			{
+				adminType :'admin',
+				staffType :'staff'
+			}

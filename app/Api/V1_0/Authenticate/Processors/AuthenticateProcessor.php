@@ -45,7 +45,6 @@ class AuthenticateProcessor extends BaseProcessor
 			//trim an input 
 			$authenticateTransformer = new AuthenticateTransformer();
 			$tRequest = $authenticateTransformer->trimInsertData($this->request);
-			
 			if($tRequest==1)
 			{
 				return $msgArray['content'];

@@ -353,7 +353,9 @@ class CompanyModel extends Model
 			$ledgerId = DB::select("select ledger_id 
 			from ledger_mst 
 			where company_id=".$companyId." and deleted_at='0000-00-00 00:00:00'");
-			
+			$userId = DB::select("select user_id 
+			from user_mst 
+			where company_id=".$companyId." and deleted_at='0000-00-00 00:00:00'");
 			$branch = DB::statement("update branch_mst 
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
@@ -384,7 +386,15 @@ class CompanyModel extends Model
 			$userMst = DB::statement("update user_mst
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
-			
+			//delete from active_session
+			for($userData=0;$userData<count($userId);$userData++)
+			{
+				DB::beginTransaction();
+				$userId = DB::statement("delete
+				from active_session
+				where user_id='".$userId[$userData]->user_id."'");
+				DB::commit();
+			}
 			//ledegerId_ledger_dtl drop
 			for($ledgerArray=0;$ledgerArray<count($ledgerId);$ledgerArray++)
 			{

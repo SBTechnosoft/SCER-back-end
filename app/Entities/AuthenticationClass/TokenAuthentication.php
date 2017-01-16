@@ -5,6 +5,7 @@ use ERP\Core\Authenticate\Services\AuthenticateService;
 use Carbon;
 use ERP\Entities\Constants\ConstantClass;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Model\Authenticate\AuthenticateModel;
 /**
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -73,6 +74,8 @@ class TokenAuthentication extends AuthenticateService
 			if($hours<$hourValue || $hours==$hourValue && $minutes==0 && $seconds==0)
 			{
 				// update updated_at time of token
+				$authenticationModel = new AuthenticateModel();
+				$authenticationResult = $authenticationModel->changeDate($headerData);
 				return $constantArray['success'];
 			}
 			else

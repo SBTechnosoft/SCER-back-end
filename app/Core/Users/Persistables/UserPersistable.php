@@ -7,6 +7,7 @@ use ERP\Core\Accounting\Ledgers\Properties\ContactNoPropertyTrait;
 use ERP\Core\Accounting\Ledgers\Properties\EmailIdPropertyTrait;
 use ERP\Core\Users\Properties\PasswordPropertyTrait;
 use ERP\Core\Users\Properties\AddressPropertyTrait;
+use ERP\Core\Users\Properties\UserTypePropertyTrait;
 use ERP\Core\Companies\Properties\PincodePropertyTrait;
 use ERP\Core\Companies\Properties\CompanyIdPropertyTrait;
 use ERP\Core\Branches\Properties\BranchIdPropertyTrait;
@@ -32,4 +33,5 @@ class UserPersistable
     use KeyPropertyTrait;
     use NamePropertyTrait;
     use PasswordPropertyTrait;
+    use UserTypePropertyTrait;
 }

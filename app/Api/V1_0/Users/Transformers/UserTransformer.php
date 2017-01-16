@@ -3,6 +3,7 @@ namespace ERP\Api\V1_0\Users\Transformers;
 
 use Illuminate\Http\Request;
 use ERP\Http\Requests;
+use ERP\Core\Users\Entities\UserTypeEnum;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -14,8 +15,9 @@ class UserTransformer
      */
     public function trimInsertData(Request $request)
     {
-		$isDisplayFlag=0;
+		$userTypeFlag=0;
 		$userName = $request->input('userName'); 
+		$userType = $request->input('userType'); 
 		$emailId = $request->input('emailId'); 
 		$password = $request->input('password'); 
 		$contactNo = $request->input('contactNo'); 
@@ -28,6 +30,7 @@ class UserTransformer
 		
 		//trim an input
 		$tUserName = trim($userName);
+		$tUserType = trim($userType);
 		$tEmailId = trim($emailId);
 		$tPassword = trim($password);
 		$tContactNo = trim($contactNo);
@@ -38,22 +41,40 @@ class UserTransformer
 		$tCompanyId = trim($companyId);
 		$tBranchId = trim($branchId);
 		
-		//convert password into base64_encode
-		$encodedPassword = base64_encode($tPassword);
-		
-		//make an array
-		$data = array();
-		$data['user_name'] = $tUserName;
-		$data['email_id'] = $tEmailId;
-		$data['password'] = $encodedPassword;
-		$data['contact_no'] = $tContactNo;
-		$data['address'] = $tAddress;
-		$data['pincode'] = $tPincode;
-		$data['state_abb'] = $tStateAbb;
-		$data['city_id'] = $tCityId;
-		$data['company_id'] = $tCompanyId;
-		$data['branch_id'] = $tBranchId;
-		return $data;
+		//check enum user type
+		$userType = new UserTypeEnum();
+		$userArray = $userType->enumArrays();
+		foreach ($userArray as $key => $value)
+		{
+			if(strcmp($value,$tUserType)==0)
+			{
+				$userTypeFlag=1;
+				break;
+			}
+		}
+		if($userTypeFlag==1)
+		{
+			//convert password into base64_encode
+			$encodedPassword = base64_encode($tPassword);
+			//make an array
+			$data = array();
+			$data['user_name'] = $tUserName;
+			$data['user_type'] = $tUserType;
+			$data['email_id'] = $tEmailId;
+			$data['password'] = $encodedPassword;
+			$data['contact_no'] = $tContactNo;
+			$data['address'] = $tAddress;
+			$data['pincode'] = $tPincode;
+			$data['state_abb'] = $tStateAbb;
+			$data['city_id'] = $tCityId;
+			$data['company_id'] = $tCompanyId;
+			$data['branch_id'] = $tBranchId;
+			return $data;
+		}
+		else
+		{
+			return 1;
+		}
 	}
 	
 	/**
@@ -62,7 +83,7 @@ class UserTransformer
      */
 	public function trimUpdateData()
 	{
-		$isDisplayFlag=0;
+		$userTypeFlag=0;
 		$tUserArray = array();
 		$userValue;
 		$convertedValue="";
@@ -86,11 +107,36 @@ class UserTransformer
 			$tUserArray[$data]= array($convertedValue=> trim($userValue));
 			$userEnumArray = array_keys($tUserArray[$data])[0];
 		}
-		if(array_key_exists("password",$tUserArray[0]))
+		//check enum user type
+		$userType = new UserTypeEnum();
+		$userArray = $userType->enumArrays();
+		if(strcmp($userEnumArray,'user_type')==0)
 		{
-			//convert password into base64_encode
-			$tUserArray[0]['password'] = base64_encode($tUserArray[0]['password']);
+			foreach ($userArray as $key => $value)
+			{
+				if(strcmp($tUserArray[0]['user_type'],$value)==0)
+				{
+					$userTypeFlag=1;
+					break;
+				}
+				else
+				{
+					$userTypeFlag=2;
+				}
+			}
 		}
-		return $tUserArray;
+		if($userTypeFlag==2)
+		{
+			return 1;
+		}
+		else
+		{
+			if(array_key_exists("password",$tUserArray[0]))
+			{
+				//convert password into base64_encode
+				$tUserArray[0]['password'] = base64_encode($tUserArray[0]['password']);
+			}
+			return $tUserArray;
+		}
 	}
 }

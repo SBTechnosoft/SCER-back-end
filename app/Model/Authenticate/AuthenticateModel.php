@@ -53,7 +53,7 @@ class AuthenticateModel extends Model
 		
 		DB::beginTransaction();
 		$raw = DB::statement("update active_session 
-		set updated_at='".$mytime."' where deleted_at='0000-00-00 00:00:00' and user_id='".$userId."'");
+		set updated_at='".$mytime."' where user_id='".$userId."'");
 		DB::commit();
 		
 		//get exception message
@@ -118,7 +118,7 @@ class AuthenticateModel extends Model
 		created_at,
 		updated_at,
 		user_id
-		from active_session where user_id='".$userId."' and deleted_at='0000-00-00 00:00:00 	'");
+		from active_session where user_id='".$userId."'");
 		DB::commit();
 		
 		if(count($raw)!=0)
@@ -132,4 +132,52 @@ class AuthenticateModel extends Model
 		}
 	}
 	
+	/**
+	 * get user-type 
+	 * @param header-data
+	 * returns the exception-message/user-type
+	*/
+	public function getUserType($headerData)
+	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		DB::beginTransaction();
+		$raw = DB::select("select
+		u.user_type
+		from active_session a  
+		RIGHT JOIN user_mst u
+		ON a.user_id=u.user_id
+		where token='".$headerData['authenticationtoken'][0]."'");
+		DB::commit();
+		if(strcmp($raw[0]->user_type,'admin')==0)
+		{
+			return $exceptionArray['200'];
+		}
+		else
+		{
+			return $exceptionArray['content'];
+		}
+	}
+	
+	/**
+	 * change updated_at date
+	 * @param header-data
+	 * returns the exception-message/status
+	*/
+	public function changeDate($headerData)
+	{
+		$mytime = Carbon\Carbon::now();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		DB::beginTransaction();
+		$raw = DB::select("update active_session
+		set updated_at='".$mytime."'
+		where token='".$headerData['authenticationtoken'][0]."'");
+		DB::commit();
+		return $exceptionArray['200'];
+	}
 }
