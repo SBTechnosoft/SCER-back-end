@@ -51,6 +51,7 @@ class EncodeData extends UserService
 		$data['user'] = array(
 			'userId' => $userDecodedData->userId,
 			'userName' => $userDecodedData->userName,	
+			'userType' => $userDecodedData->userType,	
 			'contactNo' => $userDecodedData->contactNo,	
 			'emailId' => $userDecodedData->emailId,	
 			'address' => $userDecodedData->address,

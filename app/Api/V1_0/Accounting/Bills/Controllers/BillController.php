@@ -91,7 +91,7 @@ class BillController extends BaseController implements ContainerInterface
 						{
 							$templateType = new TemplateTypeEnum();
 							$templateArray = $templateType->enumArrays();
-							$templateType=$templateArray['invoiceTemplate'];
+							$templateType = $templateArray['invoiceTemplate'];
 							$templateService = new TemplateService();
 							$templateData = $templateService->getSpecificData($request->input()['companyId'],$templateType);
 							

@@ -31,6 +31,7 @@ class BillMpdf
 		{
 			$saleId = $decodedBillData[0]->sale_id;
 		}
+		
 		//update invoice data (endAt)
 		$decodedArray = json_decode($decodedBillData->productArray);
 		$productService = new ProductService();
@@ -40,6 +41,7 @@ class BillMpdf
 		
 		$invoiceService = new InvoiceService();	
 		$invoiceData = $invoiceService->getLatestInvoiceData($decodedBillData->company->companyId);
+		
 		$endAt = json_decode($invoiceData)->endAt;
 		$invoiceController = new InvoiceController(new Container());
 		$invoiceMethod=$constantArray['postMethod'];
@@ -51,22 +53,67 @@ class BillMpdf
 		$updateResult = $invoiceController->update($invoiceRequest,json_decode($invoiceData)->invoiceId);
 		
 		$output="";
-		for($productArray=0;$productArray<count($decodedArray->inventory);$productArray++)
+		$totalAmount =0;
+		if(strcmp($decodedBillData->salesType,"retail_sales")==0)
 		{
-			//get product-data
-			$productData[$productArray] = $productService->getProductData($decodedArray->inventory[$productArray]->productId);
-			$decodedData[$productArray] = json_decode($productData[$productArray]);
-			$output =$output."".
-			'<tr><td class= style="padding: 10px 5px; top: 0px;font-family: Calibri; font-size: 12px; vertical-align: bottom; color: black;" colspan="0">'.$index.'</td> 
-			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1;" colspan="1"> '. $decodedData[$productArray]->productName.'</td>
-			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1"> '. $decodedArray->inventory[$productArray]->qty.'</td>
-			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1"> '. $decodedArray->inventory[$productArray]->price.'</td>
-			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1"> '. $decodedArray->inventory[$productArray]->discount.'</td>
-			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1"> '. $decodedData[$productArray]->vat.'</td>
-			 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1"></td>
-			  <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1"> '. $decodedArray->inventory[$productArray]->qty*$decodedArray->inventory[$productArray]->price.'</td></tr>';
-			 $index++;
-			
+			for($productArray=0;$productArray<count($decodedArray->inventory);$productArray++)
+			{
+				//get product-data
+				$productData[$productArray] = $productService->getProductData($decodedArray->inventory[$productArray]->productId);
+				$decodedData[$productArray] = json_decode($productData[$productArray]);
+				//calculate retail price
+				
+				//calculate vat value;
+				$vatValue[$productArray]=($decodedData[$productArray]->vat/100)*$decodedData[$productArray]->purchasePrice;
+				//calculate margin value
+				$marginValue[$productArray]=($decodedData[$productArray]->margin/100)*$decodedData[$productArray]->purchasePrice;
+				
+				$retailValue = $decodedData[$productArray]->purchasePrice+$vatValue[$productArray]+$marginValue[$productArray];
+				if($retailValue=="" || $retailValue==0)
+				{
+					$retailValue=$decodedData[$productArray]->mrp;
+					$decodedData[$productArray]->purchasePrice=$decodedData[$productArray]->mrp;
+				}
+				$total[$productArray] =($decodedData[$productArray]->purchasePrice*$decodedArray->inventory[$productArray]->qty)+$decodedArray->inventory[$productArray]->discount+$marginValue[$productArray]+$vatValue[$productArray];
+				$output =$output."".
+				'<tr><td class= style="padding: 10px 5px; top: 0px;font-family: Calibri; font-size: 12px; vertical-align: bottom; color: black;" colspan="0">'.$index.'</td> 
+				 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1;" colspan="1"> '. $decodedData[$productArray]->productName.'</td>
+				 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1"> '. $decodedArray->inventory[$productArray]->qty.'</td>
+				 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1"> '. $decodedData[$productArray]->purchasePrice.'</td>
+				 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1"> '. $decodedArray->inventory[$productArray]->discount.'</td>
+				 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1"> '. $decodedData[$productArray]->vat.'</td>
+				 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1">'.$vatValue[$productArray].'</td>
+				  <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1">'.$decodedData[$productArray]->margin.'</td>
+				   <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1">'.$marginValue[$productArray].'</td>
+				   <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1">'.$total[$productArray].'</td></tr>';
+				 $index++;
+				$totalAmount=$totalAmount+$total[$productArray];
+			}
+		}
+		else
+		{
+			for($productArray=0;$productArray<count($decodedArray->inventory);$productArray++)
+			{
+				//get product-data
+				$productData[$productArray] = $productService->getProductData($decodedArray->inventory[$productArray]->productId);
+				$decodedData[$productArray] = json_decode($productData[$productArray]);
+				$marginPrice[$productArray] = ($decodedData[$productArray]->wholesaleMargin/100)*$decodedData[$productArray]->purchasePrice;
+				$totalHalf[$productArray] = $decodedData[$productArray]->purchasePrice*$decodedArray->inventory[$productArray]->qty;
+				$total[$productArray] = $totalHalf[$productArray]+$decodedArray->inventory[$productArray]->discount+$marginPrice[$productArray];
+				$output =$output."".
+				'<tr><td class= style="padding: 10px 5px; top: 0px;font-family: Calibri; font-size: 12px; vertical-align: bottom; color: black;" colspan="0">'.$index.'</td> 
+				 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1;" colspan="1"> '. $decodedData[$productArray]->productName.'</td>
+				 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1"> '. $decodedArray->inventory[$productArray]->qty.'</td>
+				 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1"> '. $decodedData[$productArray]->purchasePrice.'</td>
+				 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1"> '. $decodedArray->inventory[$productArray]->discount.'</td>
+				 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1">0</td>
+				 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1">0</td>
+				 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1"> '. $decodedData[$productArray]->wholesaleMargin.'</td>
+				 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1"> '.$marginPrice[$productArray]. '</td>
+				 <td class="tg-vi9z" style="background-color: #9a9a9a; padding: 20px 5px; font-family: Calibri; font-size: 12px; vertical-align: bottom; color: #e1e1e1; text-align:right;" colspan="1">'.$total[$productArray].'</td></tr>';
+				 $index++;
+				 $totalAmount=$totalAmount+$total[$productArray];
+			}
 		}
 		
 		$billArray = array();
@@ -80,7 +127,7 @@ class BillMpdf
 		// $billArray['ClientCharge']="50%";
 		// --$billArray['Discount']="100";
 		// --$billArray['TaxAmt']="300";
-		// $billArray['Total']="300";
+		$billArray['Total']=$totalAmount;
 		// $billArray['TaxRate']="300";
 		// $billArray['DeliveryDate']="300";
 		// $billArray['Organization']="300";

@@ -153,6 +153,7 @@ class LedgerProcessor extends BaseProcessor
 					//trim an input 
 					$ledgerTransformer = new LedgerTransformer();
 					$tRequest = $ledgerTransformer->trimUpdateData($key[$data],$value[$data]);
+					
 					//get data from trim array
 					if($tRequest==1)
 					{

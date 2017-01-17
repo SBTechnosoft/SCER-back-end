@@ -99,6 +99,7 @@ class UserModel extends Model
 		$raw = DB::select("select 
 		user_id,
 		user_name,
+		user_type,
 		email_id,
 		password,
 		contact_no,
@@ -138,6 +139,7 @@ class UserModel extends Model
 		$raw = DB::select("select 
 		user_id,
 		user_name,
+		user_type,
 		email_id,
 		password,
 		contact_no,

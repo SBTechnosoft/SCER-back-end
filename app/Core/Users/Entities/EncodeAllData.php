@@ -25,6 +25,7 @@ class EncodeAllData extends StateService
 			$createdAt[$decodedData] = $decodedJson[$decodedData]['created_at'];
 			$updatedAt[$decodedData] = $decodedJson[$decodedData]['updated_at'];
 			$userName[$decodedData] = $decodedJson[$decodedData]['user_name'];
+			$userType[$decodedData] = $decodedJson[$decodedData]['user_type'];
 			$userId[$decodedData] = $decodedJson[$decodedData]['user_id'];
 			$emailId[$decodedData] = $decodedJson[$decodedData]['email_id'];
 			$password[$decodedData] = $decodedJson[$decodedData]['password'];
@@ -82,6 +83,7 @@ class EncodeAllData extends StateService
 		{
 			$data[$jsonData]= array(
 				'userName' => $userName[$jsonData],
+				'userType' => $userType[$jsonData],
 				'userId' =>$userId[$jsonData],
 				'emailId' => $emailId[$jsonData],
 				'password' => $decodedPassword[$jsonData],

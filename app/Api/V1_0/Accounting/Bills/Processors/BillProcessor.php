@@ -120,7 +120,7 @@ class BillProcessor extends BaseProcessor
 		if($tRequest['balance']!="" || $tRequest['balance']!=0)
 		{
 		   	// get ledger data for checking client is exist in ledger or not by contact-number
-			$ledgerData = $ledgerModel->getDataAsPerContactNo($tRequest['company_id'],$tRequest['contact_no']);
+			$ledgerData = $ledgerModel->getDataAsPerContactNo($tRequest['company_id'],$tRequest['contact_no'],$tRequest['email_id']);
 			if(is_array(json_decode($ledgerData)))
 			{
 				$contactFlag=1;
@@ -170,8 +170,23 @@ class BillProcessor extends BaseProcessor
 		$generalLedgerData = $ledgerModel->getLedger($tRequest['company_id']);
 		$generalLedgerArray = json_decode($generalLedgerData);
 		
+		$salesTypeEnum = new SalesTypeEnum();
+		$salesTypeEnumArray = $salesTypeEnum->enumArrays();
+		if(strcmp($request->header()['salestype'][0],$salesTypeEnumArray['retailSales'])==0)
+		{
+			//get ledger-id of retail_sales as per given company_id
+			$ledgerIdData = $ledgerModel->getLedgerId($tRequest['company_id'],$request->header()['salestype'][0]);
+			$decodedLedgerId = json_decode($ledgerIdData);
+		}
+		else
+		{
+			//get ledger-id of whole sales as per given company_id
+			$ledgerIdData = $ledgerModel->getLedgerId($tRequest['company_id'],$request->header()['salestype'][0]);
+			$decodedLedgerId = json_decode($ledgerIdData);
+		}	
+		
 		$ledgerTaxAcId = $generalLedgerArray[1][0]->ledger_id;
-		$ledgerSaleAcId = $generalLedgerArray[0][0]->ledger_id;
+		$ledgerSaleAcId = $decodedLedgerId[0]->ledger_id;
 		$ledgerDiscountAcId = $generalLedgerArray[2][0]->ledger_id;
 		
 		$amountTypeEnum = new AmountTypeEnum();
@@ -435,8 +450,7 @@ class BillProcessor extends BaseProcessor
 			$billPersistable->setEntryDate($transformEntryDate);
 			$billPersistable->setClientId($clientId);
 			$billPersistable->setCompanyId($tRequest['company_id']);
-			$salesTypeEnum = new SalesTypeEnum();
-			$salesTypeEnumArray = $salesTypeEnum->enumArrays();
+			
 			if(strcmp($request->header()['salestype'][0],$salesTypeEnumArray['retailSales'])==0 || strcmp($request->header()['salestype'][0],$salesTypeEnumArray['wholesales'])==0)
 			{
 				$billPersistable->setSalesType($request->header()['salestype'][0]);

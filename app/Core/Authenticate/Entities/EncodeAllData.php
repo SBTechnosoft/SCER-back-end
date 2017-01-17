@@ -56,6 +56,7 @@ class EncodeAllData extends UserService
 				'user' => array(
 					'userId' => $userDecodedData[$jsonData]->userId,
 					'userName' => $userDecodedData[$jsonData]->userName,
+					'userType' => $userDecodedData[$jsonData]->userType,
 					'contactNo' => $userDecodedData[$jsonData]->contactNo,
 					'emailId' => $userDecodedData[$jsonData]->emailId,
 					'address' => $userDecodedData[$jsonData]->address,

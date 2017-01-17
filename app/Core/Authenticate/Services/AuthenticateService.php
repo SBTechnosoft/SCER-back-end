@@ -50,11 +50,8 @@ class AuthenticateService
 			$status = $authenticateModel->updateDate($authenticateArray['userId']);
 			if(strcmp($status,$exceptionArray['200'])==0)
 			{
-				$result = $authenticateModel->getData($authenticateArray['userId']);
-				$decodedResult = json_decode($result);
-				$tokenArray = array();
-				$tokenArray['authenticationToken'] = $decodedResult[0]->token;
-				return $tokenArray;
+				$result = $this->getData($authenticateArray['userId']);
+				return $result;
 			}
 			return $status;
 		}
@@ -67,9 +64,8 @@ class AuthenticateService
 			$status = $authenticateModel->insertData($userId,$token);
 			if(strcmp($status,$exceptionArray['200'])==0)
 			{
-				$tokenArray = array();
-				$tokenArray['authenticationToken'] = $token;
-				return $tokenArray;
+				$result = $this->getData($userId);
+				return $result;
 			}
 			return $status;
 		}

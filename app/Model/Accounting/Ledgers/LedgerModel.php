@@ -345,7 +345,7 @@ class LedgerModel extends Model
 		$keyValueStringAmt="";
 		for($data=0;$data<count($ledgerData);$data++)
 		{
-			if(strcmp($key[$data],"amount")==0 || strcmp($key[$data],"amount_type")==0)
+			if(strcmp($key[$data],"amount")==0 || strcmp($key[$data],"amount_type")==0 || strcmp($key[$data],"balance_flag")==0)
 			{
 				$keyValueStringAmt=$keyValueStringAmt.$key[$data]."='".$ledgerData[$data]."',";
 			}
@@ -1465,19 +1465,31 @@ class LedgerModel extends Model
 	 * @param: companyId,contactNo
 	 * returns the error-message/data
 	*/
-	public function getDataAsPerContactNo($companyId,$contactNo)
+	public function getDataAsPerContactNo($companyId,$contactNo,$emailId)
 	{
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		
-		DB::beginTransaction();
-		$raw = DB::select("select ledger_id 
-		from ledger_mst 
-		where company_id='".$companyId."' and 
-		contact_no='".$contactNo."' and
-		deleted_at='0000-00-00 00:00:00'");
-		DB::commit();
+		if($contactNo=="")
+		{
+			DB::beginTransaction();
+			$raw = DB::select("select ledger_id 
+			from ledger_mst 
+			where email_id='".$emailId."' and 
+			contact_no='".$contactNo."' and
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+		}
+		else
+		{
+			DB::beginTransaction();
+			$raw = DB::select("select ledger_id 
+			from ledger_mst 
+			where company_id='".$companyId."' and 
+			contact_no='".$contactNo."' and
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+		}
 		if(count($raw)==0)
 		{
 			return $exceptionArray['500'];
@@ -1487,6 +1499,7 @@ class LedgerModel extends Model
 			$encodedData = json_encode($raw);
 			return $encodedData;
 		}
+		
 	}
 	
 	/**

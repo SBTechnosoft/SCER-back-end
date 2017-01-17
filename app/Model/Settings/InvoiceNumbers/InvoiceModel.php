@@ -195,7 +195,6 @@ class InvoiceModel extends Model
 	*/
 	public function getLatestInvoiceData($companyId)
 	{	
-		
 		DB::beginTransaction();	
 		$raw = DB::select("SELECT 
 		invoice_id,

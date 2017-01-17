@@ -286,7 +286,7 @@ include ('connection.php');
 				// formdata.append('companyId',$scope.formAdata.company_id);
 				
 				//ledger
-				// $scope.formAdata.ledger_name = " discount(Expense)";
+				// $scope.formAdata.ledger_name = " reemaa";
 				// $scope.formAdata.alias = ' ddsaf ';
 				// $scope.formAdata.inventory_affected=' no ';
 				// $scope.formAdata.address1 =" sdx cz ";
@@ -297,7 +297,7 @@ include ('connection.php');
 				// $scope.formAdata.tin= ' 42aa3dgg774 ';
 				// $scope.formAdata.gst = ' 71j0rg778a22b04 ';
 				// $scope.formAdata.balanceFlag = ' opening ';
-				// $scope.formAdata.amount =123;
+				// $scope.formAdata.amount =1231;
 				// $scope.formAdata.amountType = ' credit';
 				// $scope.formAdata.state_abb= ' IN-AG ';
 				// $scope.formAdata.city_id= '1';
@@ -451,27 +451,27 @@ include ('connection.php');
 				
 				//9875647544
 				//bill
-				// $scope.user = [{"billData":[{"companyId":83,"entryDate":"22-10-2015","contactNo":"9875347543","workNo":"9875647344","isDisplay":"yes","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbrain","clientName":"palak","invoiceNumber":"INV/2016-12/53","address1":"sfja,sa","address2":"dfsd,ds","stateAbb":"IN-AG","cityId":1,"total":100,"tax":10,"grandTotal":134,"advance":100,"balance":10,"paymentMode":"cash","bankName":"abc","checkNumber":"abbb34eQ1G","remark":"adsfsf afasf"}]}];
+				$scope.user = [{"billData":[{"companyId":83,"entryDate":"22-10-2015","contactNo":"9875347543","workNo":"9875647344","isDisplay":"yes","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbrain","clientName":"palak","invoiceNumber":"INV/2016-12/53","address1":"sfja,sa","address2":"dfsd,ds","stateAbb":"IN-AG","cityId":1,"total":100,"tax":10,"grandTotal":134,"advance":100,"balance":10,"paymentMode":"cash","bankName":"abc","checkNumber":"abbb34eQ1G","remark":"adsfsf afasf"}]}];
 				
-				// $scope.inventory=[{"productId": 1 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":40}];
+				$scope.inventory=[{"productId": 1 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":40}];
 				
-				// angular.forEach($scope.user[0]['billData'][0], function (input,key) {
+				angular.forEach($scope.user[0]['billData'][0], function (input,key) {
 					
-					// formdata.append(key,input);
-				// });
-				// for(var i=0;i<$scope.inventory.length;i++)
-				// {
-					// angular.forEach($scope.inventory[i], function (input,key) {
+					formdata.append(key,input);
+				});
+				for(var i=0;i<$scope.inventory.length;i++)
+				{
+					angular.forEach($scope.inventory[i], function (input,key) {
 						
-						// formdata.append('inventory['+i+']['+key+']',input);
-					// });
-				// }
-				var userId=9;
+						formdata.append('inventory['+i+']['+key+']',input);
+					});
+				}
+				// var userId=9;
 				// var clientId=2;
 				// var productId = 1;
 				// var productGrpId = 11;
 				// var productCatId = 16;
-				var companyId=55;
+				// var companyId=55;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -481,7 +481,7 @@ include ('connection.php');
 				// var invoiceId=7;
 				// var quotationId=3;
 				// var ledgerGrpId=9;
-				// var ledgerId=114;
+				// var ledgerId=111;
 				// var jfId=15;
 				// var journalId=802;
 				
@@ -494,7 +494,7 @@ include ('connection.php');
 				// var url = "http://www.scerp1.com/users/email-address/"+emailId;
 				// var url = "http://www.scerp1.com/accounting/trial-balance/company/"+companyId;
 				
-				// var url = "http://www.scerp1.com/accounting/bills";
+				var url = "http://www.scerp1.com/accounting/bills";
 				// var url = "http://www.scerp1.com/accounting/bills/company/"+companyId;
 				
 				// var url = "http://www.scerp1.com/clients/"+clientId;
@@ -533,7 +533,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/settings/templates/"+templateId;
 				// var url="http://www.scerp1.com/settings/templates/"+companyId;
 				// var url="http://www.scerp1.com/settings/templates";
-				var url="http://www.scerp1.com/companies/"+companyId;
+				// var url="http://www.scerp1.com/companies/"+companyId;
 				// var url="http://www.scerp1.com/companies";	
 				// var url="http://www.scerp1.com/branches";	
 				 // var url="http://www.scerp1.com/branches/"+branchId;
@@ -554,10 +554,10 @@ include ('connection.php');
 				$http({
                         url: url,
                         // type:'patch',
-						 // method: 'post',
+						 method: 'post',
 						// method: 'get',
 						// method: "PATCH",
-						method:'delete',
+						// method:'delete',
 						processData: false,
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
                         // headers: {'Content-Type': undefined,'ledgerName':'sales'},
@@ -565,10 +565,10 @@ include ('connection.php');
                         // headers: {'Content-Type': undefined,'type':'sales'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'eb7cd694eabac838e0f9cba8789b668e','salesType':'retail_sales'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'eb7cd694eabac838e0f9cba8789b668e','salesType':'retail_sales','fromDate':'22-10-2015','toDate':'22-10-2015'}
-                        headers: {'Content-Type': undefined,'authenticationToken':'eb7cd694eabac838e0f9cba8789b668e'},
+                        headers: {'Content-Type': undefined,'authenticationToken':'eb7cd694eabac838e0f9cba8789b668e','salesType':'whole_sales'},
                         // headers: {'Content-Type': undefined,'type':'sales','jfId':5},
                         // headers: {'Content-Type': undefined},
-						 // data:formdata
+						 data:formdata
 						// data:$scope.user			8f193a56901542b085390cfbeb3f0d62 				
                         
                     }).success(function(data, status, headers, config) {

@@ -21,6 +21,7 @@ class EncodeData extends StateService
 		$updatedAt= $decodedJson[0]['updated_at'];
 		$userId= $decodedJson[0]['user_id'];
 		$userName= $decodedJson[0]['user_name'];
+		$userType= $decodedJson[0]['user_type'];
 		$contactNo= $decodedJson[0]['contact_no'];
 		$emailId= $decodedJson[0]['email_id'];
 		$address= $decodedJson[0]['address'];
@@ -71,6 +72,7 @@ class EncodeData extends StateService
 		$data = array();
 		$data['userId'] = $userId;
 		$data['userName'] = $userName;
+		$data['userType'] = $userType;
 		$data['contactNo'] = $contactNo;
 		$data['emailId'] = $emailId;
 		$data['address'] = $address;	

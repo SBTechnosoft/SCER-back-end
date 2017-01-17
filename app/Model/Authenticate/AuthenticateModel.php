@@ -19,13 +19,16 @@ class AuthenticateModel extends Model
 	*/
 	public function insertData($userId,$token)
 	{
+		$mytime = Carbon\Carbon::now();
 		DB::beginTransaction();
 		$raw = DB::statement("insert into active_session
 		(user_id,
-		token)
+		token,
+		updated_at)
 		values(
 		'".$userId."',
-		'".$token."'
+		'".$token."',
+		'".$mytime."'
 		)");
 		DB::commit();
 		
@@ -173,8 +176,9 @@ class AuthenticateModel extends Model
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
+
 		DB::beginTransaction();
-		$raw = DB::select("update active_session
+		$raw = DB::statement("update active_session
 		set updated_at='".$mytime."'
 		where token='".$headerData['authenticationtoken'][0]."'");
 		DB::commit();

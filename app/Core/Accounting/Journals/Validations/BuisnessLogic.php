@@ -30,23 +30,16 @@ class BuisnessLogic extends LedgerModel
 		
 		//get ledger-data from database
 		$ledgerModel = new BuisnessLogic();
-		$ledgerResult = $ledgerModel->getLedgerDetail($trimRequest['company_id']);
+		$ledgerResult = $ledgerModel->getLedgerId($trimRequest['company_id'],$trimRequest['ledger_name']);
 		
-		if(is_array(json_decode($ledgerResult)))
+		if(strcmp($ledgerResult,$exceptionArray['404'])==0)
 		{
-			for($ledgerArrayData=0;$ledgerArrayData<count(json_decode($ledgerResult));$ledgerArrayData++)
-			{
-				if(strcmp(json_decode($ledgerResult)[$ledgerArrayData]->ledger_name,$trimRequest['ledger_name'])==0)
-				{
-					return $exceptionArray['content'];
-				}
-			}
+			return $trimRequest;
 		}
 		else
 		{
-			return $ledgerResult;
+			return $exceptionArray['content'];
 		}
-		return $trimRequest;
 	}
 	
 	/**
@@ -66,20 +59,21 @@ class BuisnessLogic extends LedgerModel
 		$ledgerCompanyData = $ledgerModel->getData($ledgerId);
 		if(is_object(json_decode($ledgerCompanyData)))
 		{
-			$ledgerResult = $ledgerModel->getLedgerDetail(json_decode($ledgerCompanyData)->company_id);
-			if(is_array(json_decode($ledgerResult)))
+			$ledgerResult = $ledgerModel->getLedgerId(json_decode($ledgerCompanyData)->company_id,$trimRequest[0]['ledger_name']);
+			if(strcmp($ledgerResult,$exceptionArray['404'])==0)
 			{
-				for($ledgerArrayData=0;$ledgerArrayData<count(json_decode($ledgerResult));$ledgerArrayData++)
-				{
-					if(strcmp(json_decode($ledgerResult)[$ledgerArrayData]->ledger_name,$trimRequest[0]['ledger_name'])==0)
-					{
-						return $exceptionArray['content'];
-					}
-				}
+				return $trimRequest;
 			}
 			else
 			{
-				return $ledgerResult;
+				if(strcmp(json_decode($ledgerResult)[0]->ledger_id,$ledgerId)==0)
+				{
+					return $trimRequest;
+				}
+				else
+				{
+					return $exceptionArray['content'];
+				}
 			}
 		}
 		else
