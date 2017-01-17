@@ -98,7 +98,9 @@
 	- Authentication Token
 	- "fromDate":'date'
 	- "toDate":'date'
-	- 'type':'sales'
+	- 'type':'retail_sales'
+	- 'type':'whole_sales'
+	- 'type':'all'
 	- 'type':'purchase'
 	
 + Error Message
