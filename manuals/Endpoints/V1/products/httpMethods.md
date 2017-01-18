@@ -84,7 +84,7 @@
 ##### `GET products/company/{companyId}`
 + Header 
 	- Authentication Token
-	-'productName':''
+	- 'productName':''
 + Error Message
 
 			{
@@ -97,6 +97,27 @@
 			}
 
 **NOTES:** List the product as per given name and companyId
+
+##### `GET products/company/{companyId}/transaction`
++ Header 
+	- Authentication Token
+	- 'fromDate':''
+	- 'toDate':''
+	- 'productId':''
+	- 'productGroupId':''
+	- 'productCategoryId':''
++ Error Message
+
+			{
+				... Error Message
+			}
++ Response
+
+			{
+				... Standard Product Transaction Object
+			}
+
+**NOTES:** List the product-transaction data as per given data
 
 ##### `GET /products/{productId}`
 + Header
