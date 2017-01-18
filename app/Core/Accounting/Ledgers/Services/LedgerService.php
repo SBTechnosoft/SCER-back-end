@@ -237,9 +237,9 @@ class LedgerService extends AbstractService
 		
 		//get ledger_id
 		$ledgerIdDetail = $ledgerModel->getLedgerId($companyId,$ledgerType);
+		
 		//get ledger data between given date
 		$status = $ledgerModel->getLedgerData($fromDate,$toDate,$companyId,$ledgerType);
-		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -250,7 +250,7 @@ class LedgerService extends AbstractService
 		else
 		{
 			$encoded = new EncodeTrnAllData();
-			$encodeAllData = $encoded->getEncodedAllData($status,json_decode($ledgerIdDetail)[0]->ledger_id);
+			$encodeAllData = $encoded->getEncodedAllData($status,json_decode($ledgerIdDetail));
 			return $encodeAllData;
 		}
 	}

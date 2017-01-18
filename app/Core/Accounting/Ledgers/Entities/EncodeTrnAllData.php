@@ -16,52 +16,104 @@ class EncodeTrnAllData extends LedgerService
 		$convertedUpdatedDate =  array();
 		$encodeAllData =  array();
 		$decodedJson = json_decode($status,true);
+		
 		$ledger = new Ledger();
 		for($decodedData=0;$decodedData<count($decodedJson);$decodedData++)
 		{
-			$createdAt[$decodedData] = $decodedJson[$decodedData]['created_at'];
-			$updatedAt[$decodedData] = $decodedJson[$decodedData]['updated_at'];
-			$id[$decodedData] = $decodedJson[$decodedData][$ledgerId.'_id'];
-			$amount[$decodedData] = $decodedJson[$decodedData]['amount'];
-			$amountType[$decodedData] = $decodedJson[$decodedData]['amount_type'];
-			$entryDate[$decodedData] = $decodedJson[$decodedData]['entry_date'];
-			$jfId[$decodedData] = $decodedJson[$decodedData]['jf_id'];
-			$ledgersId[$decodedData] = $decodedJson[$decodedData]['ledger_id'];
-			$openingBalance[$decodedData] = $decodedJson[$decodedData]['openingBalance'];
-			$openingBalanceType[$decodedData] = $decodedJson[$decodedData]['openingBalanceType'];
-			$currentBalance[$decodedData] = $decodedJson[$decodedData]['currentBalance'];
-			$currentBalanceType[$decodedData] = $decodedJson[$decodedData]['currentBalanceType'];
-			
-			//get the ledger detail from database
-			$encodeDataClass = new EncodeTrnAllData();
-			$ledgerStatus[$decodedData] = $encodeDataClass->getLedgerData($ledgersId[$decodedData]);
-			$ledgerDecodedJson[$decodedData] = json_decode($ledgerStatus[$decodedData],true);
-			
-			//date format conversion
-			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
-			$ledger->setCreated_at($convertedCreatedDate[$decodedData]);
-			$getCreatedDate[$decodedData] = $ledger->getCreated_at();
-			
-			if(strcmp($updatedAt[$decodedData],'0000-00-00 00:00:00')==0)
+			if(array_key_exists($ledgerId[0]->ledger_id.'_id',$decodedJson[$decodedData]))
 			{
-				$getUpdatedDate[$decodedData]="00-00-0000";
+				$createdAt[$decodedData] = $decodedJson[$decodedData]['created_at'];
+				$updatedAt[$decodedData] = $decodedJson[$decodedData]['updated_at'];
+				$id[$decodedData] = $decodedJson[$decodedData][$ledgerId[0]->ledger_id.'_id'];
+				$amount[$decodedData] = $decodedJson[$decodedData]['amount'];
+				$amountType[$decodedData] = $decodedJson[$decodedData]['amount_type'];
+				$entryDate[$decodedData] = $decodedJson[$decodedData]['entry_date'];
+				$jfId[$decodedData] = $decodedJson[$decodedData]['jf_id'];
+				$ledgersId[$decodedData] = $decodedJson[$decodedData]['ledger_id'];
+				$openingBalance[$decodedData] = $decodedJson[$decodedData]['openingBalance'];
+				$openingBalanceType[$decodedData] = $decodedJson[$decodedData]['openingBalanceType'];
+				$currentBalance[$decodedData] = $decodedJson[$decodedData]['currentBalance'];
+				$currentBalanceType[$decodedData] = $decodedJson[$decodedData]['currentBalanceType'];
+				
+				// get the ledger detail from database
+				$encodeDataClass = new EncodeTrnAllData();
+				$ledgerStatus[$decodedData] = $encodeDataClass->getLedgerData($ledgersId[$decodedData]);
+				$ledgerDecodedJson[$decodedData] = json_decode($ledgerStatus[$decodedData],true);
+				
+				// date format conversion
+				$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
+				$ledger->setCreated_at($convertedCreatedDate[$decodedData]);
+				$getCreatedDate[$decodedData] = $ledger->getCreated_at();
+				
+				if(strcmp($updatedAt[$decodedData],'0000-00-00 00:00:00')==0)
+				{
+					$getUpdatedDate[$decodedData]="00-00-0000";
+				}
+				else
+				{	
+					$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
+					$ledger->setUpdated_at($convertedUpdatedDate[$decodedData]);
+					$getUpdatedDate[$decodedData] = $ledger->getUpdated_at();
+				}
+				if(strcmp($entryDate[$decodedData],'0000-00-00 00:00:00')==0)
+				{
+					$getEntryDate[$decodedData]="00-00-0000";
+				}
+				else
+				{
+					$convertedEntryDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d', $entryDate[$decodedData])->format('d-m-Y');
+					$ledger->setEntryDate($convertedEntryDate[$decodedData]);
+					$getEntryDate[$decodedData] = $ledger->getEntryDate();
+				}
 			}
 			else
-			{	
-				$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
-				$ledger->setUpdated_at($convertedUpdatedDate[$decodedData]);
-				$getUpdatedDate[$decodedData] = $ledger->getUpdated_at();
-			}
-			if(strcmp($entryDate[$decodedData],'0000-00-00 00:00:00')==0)
 			{
-				$getEntryDate[$decodedData]="00-00-0000";
+				
+				$createdAt[$decodedData] = $decodedJson[$decodedData]['created_at'];
+				$updatedAt[$decodedData] = $decodedJson[$decodedData]['updated_at'];
+				$id[$decodedData] = $decodedJson[$decodedData][$ledgerId[1]->ledger_id.'_id'];
+				$amount[$decodedData] = $decodedJson[$decodedData]['amount'];
+				$amountType[$decodedData] = $decodedJson[$decodedData]['amount_type'];
+				$entryDate[$decodedData] = $decodedJson[$decodedData]['entry_date'];
+				$jfId[$decodedData] = $decodedJson[$decodedData]['jf_id'];
+				$ledgersId[$decodedData] = $decodedJson[$decodedData]['ledger_id'];
+				$openingBalance[$decodedData] = $decodedJson[$decodedData]['openingBalance'];
+				$openingBalanceType[$decodedData] = $decodedJson[$decodedData]['openingBalanceType'];
+				$currentBalance[$decodedData] = $decodedJson[$decodedData]['currentBalance'];
+				$currentBalanceType[$decodedData] = $decodedJson[$decodedData]['currentBalanceType'];
+				
+				// get the ledger detail from database
+				$encodeDataClass = new EncodeTrnAllData();
+				$ledgerStatus[$decodedData] = $encodeDataClass->getLedgerData($ledgersId[$decodedData]);
+				$ledgerDecodedJson[$decodedData] = json_decode($ledgerStatus[$decodedData],true);
+				
+				// date format conversion
+				$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
+				$ledger->setCreated_at($convertedCreatedDate[$decodedData]);
+				$getCreatedDate[$decodedData] = $ledger->getCreated_at();
+				
+				if(strcmp($updatedAt[$decodedData],'0000-00-00 00:00:00')==0)
+				{
+					$getUpdatedDate[$decodedData]="00-00-0000";
+				}
+				else
+				{	
+					$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
+					$ledger->setUpdated_at($convertedUpdatedDate[$decodedData]);
+					$getUpdatedDate[$decodedData] = $ledger->getUpdated_at();
+				}
+				if(strcmp($entryDate[$decodedData],'0000-00-00 00:00:00')==0)
+				{
+					$getEntryDate[$decodedData]="00-00-0000";
+				}
+				else
+				{
+					$convertedEntryDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d', $entryDate[$decodedData])->format('d-m-Y');
+					$ledger->setEntryDate($convertedEntryDate[$decodedData]);
+					$getEntryDate[$decodedData] = $ledger->getEntryDate();
+				}
 			}
-			else
-			{
-				$convertedEntryDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d', $entryDate[$decodedData])->format('d-m-Y');
-				$ledger->setEntryDate($convertedEntryDate[$decodedData]);
-				$getEntryDate[$decodedData] = $ledger->getEntryDate();
-			}
+			
 		}
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)

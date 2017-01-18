@@ -202,7 +202,7 @@ class LedgerController extends BaseController implements ContainerInterface
 			$exceptionArray = $exception->messageArrays();
 			if(array_key_exists("type",$request->header()))
 			{
-				if(strcmp(trim($request->header()['type'][0]),'sales')==0 || strcmp(trim($request->header()['type'][0]),'purchase')==0)
+				if(strcmp(trim($request->header()['type'][0]),'retail_sales')==0 || strcmp(trim($request->header()['type'][0]),'purchase')==0 || strcmp(trim($request->header()['type'][0]),'whole_sales')==0 || strcmp(trim($request->header()['type'][0]),'all')==0)
 				{
 					if(array_key_exists("fromdate",$request->header()) && array_key_exists("todate",$request->header()))
 					{

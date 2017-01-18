@@ -259,17 +259,7 @@ class BuisnessLogic extends LedgerModel
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
 		
-		// get productArray and validate it with journal array
-		$productController = new ProductController(new Container());
-		$method=$constantArray['getMethod'];
-		$path=$constantArray['productUrl'];
-		$productId = array();
-		$productRequest = Request::create($path,$method,$productId);
-		$productRequest->headers->set('jfid',$jfId);
-		$processedData = $productController->getData($productRequest);
-		$jsonDecodedProductData = json_decode($processedData);
 		$ledgerService = new LedgerService();
-		
 		//tax and array both exist
 		if(array_key_exists("tax",$productData) && array_key_exists("0",$productData))
 		{
@@ -295,7 +285,7 @@ class BuisnessLogic extends LedgerModel
 			{
 				$discountTotal = $discountTotal+$arrayProductData[$arrayData]['discount'];
 			}
-			
+				
 			//check tax and discount is available in journal data
 			for($journalArrayData=0;$journalArrayData<count($trimData);$journalArrayData++)
 			{
@@ -363,6 +353,15 @@ class BuisnessLogic extends LedgerModel
 		//only tax exist
 		else if(array_key_exists("tax",$productData))
 		{
+			// get productArray and validate it with journal array
+			$productController = new ProductController(new Container());
+			$method=$constantArray['getMethod'];
+			$path=$constantArray['productUrl'];
+			$productId = array();
+			$productRequest = Request::create($path,$method,$productId);
+			$productRequest->headers->set('jfid',$jfId);
+			$processedData = $productController->getData($productRequest);
+			$jsonDecodedProductData = json_decode($processedData);
 			if(array_key_exists("flag",$trimJournalData))
 			{
 				$trimData=$trimJournalData[0];
@@ -446,6 +445,16 @@ class BuisnessLogic extends LedgerModel
 		//only array exist
 		else
 		{
+			// get productArray and validate it with journal array
+			$productController = new ProductController(new Container());
+			$method=$constantArray['getMethod'];
+			$path=$constantArray['productUrl'];
+			$productId = array();
+			$productRequest = Request::create($path,$method,$productId);
+			$productRequest->headers->set('jfid',$jfId);
+			$processedData = $productController->getData($productRequest);
+			$jsonDecodedProductData = json_decode($processedData);
+
 			if(array_key_exists("flag",$trimJournalData))
 			{
 				$trimData = $trimJournalData[0];
@@ -581,14 +590,14 @@ class BuisnessLogic extends LedgerModel
 		$constantArray = $constantClass->constantVariable();
 		
 		// get productArray and validate it with journal array
-		$productController = new ProductController(new Container());
-		$method=$constantArray['getMethod'];
-		$path=$constantArray['productUrl'];
-		$productId = array();
-		$productRequest = Request::create($path,$method,$productId);
-		$productRequest->headers->set('jfid',$jfId);
-		$processedData = $productController->getData($productRequest);
-		$jsonDecodedProductData = json_decode($processedData);
+		//$productController = new ProductController(new Container());
+		//$method=$constantArray['getMethod'];
+		//$path=$constantArray['productUrl'];
+		//$productId = array();
+		//$productRequest = Request::create($path,$method,$productId);
+		//$productRequest->headers->set('jfid',$jfId);
+		//$processedData = $productController->getData($productRequest);
+		//$jsonDecodedProductData = json_decode($processedData);
 		$decodedJournalData = json_decode($journalArrayData);
 		
 		
