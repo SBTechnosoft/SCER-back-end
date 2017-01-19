@@ -61,6 +61,22 @@ class ConstantClass
 		$constantArray['paymentType']="payment";
 		$constantArray['receiptType']="receipt";
 		$constantArray['specialJournalType']="special_journal";
+		$constantArray['fromDate']="fromdate";
+		$constantArray['toDate']="todate";
 		return $constantArray;
+	}
+	
+	public function constantDatabase()
+	{
+		if(strcmp("www.scerp1.com",$_SERVER['HTTP_HOST'])==0)
+		{
+			$database = "mysql";
+			return $database;
+		}
+		else
+		{
+			$database = "mysql_silicon";
+			return $database;
+		}
 	}
 }

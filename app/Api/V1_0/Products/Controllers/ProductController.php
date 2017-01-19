@@ -331,6 +331,43 @@ class ProductController extends BaseController implements ContainerInterface
 	}
 	
 	/**
+     * get the specified resource.
+     * @param $productId and $branchId
+     */
+    public function getProductTransactionData(Request $request,$companyId)
+    {
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			// get exception message
+			$exception = new ExceptionMessage();
+			$exceptionArray = $exception->messageArrays();
+			
+			if(array_key_exists($constantArray['fromDate'],$request->header()) && array_key_exists($constantArray['toDate'],$request->header()))
+			{	
+				$productService= new ProductService();
+				$status = $productService->getProductTransactionData($request->header(),$companyId);
+				return $status;
+			}
+			else 
+			{
+				return $exceptionArray['content'];
+			}
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+	}
+	
+	/**
      * Update the specified resource in storage.
      * @param  Request object[Request $request]
      */

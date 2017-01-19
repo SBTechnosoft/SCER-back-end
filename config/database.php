@@ -65,6 +65,19 @@ return [
             'strict' => false,
             'engine' => null,
         ],
+		'mysql_silicon' => [
+            'driver' => 'mysql',
+            'host' => env('DB_SILICON_HOST', 'localhost'),
+            'port' => env('DB_SILICON_PORT', '3306'),
+            'database' => env('DB_SILICON_DATABASE', 'cycle_db'),
+            'username' => env('DB_SILICON_USERNAME', 'root'),
+            'password' => env('DB_SILICON_PASSWORD', ''),
+            'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix' => '',
+            'strict' => false,
+            'engine' => null,
+        ],
 		
         'pgsql' => [
             'driver' => 'pgsql',

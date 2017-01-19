@@ -194,7 +194,6 @@ class LedgerController extends BaseController implements ContainerInterface
 		//get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-		
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
 			//get exception message
@@ -217,8 +216,8 @@ class LedgerController extends BaseController implements ContainerInterface
 					//get current year data
 					else
 					{
-						$ledgerModel = new LedgerModel();
-						$status = $ledgerModel->getCurrentYearData($companyId,$request->header()['type'][0]);
+						$ledgerService = new LedgerService();
+						$status = $ledgerService->getCurrentYearData($companyId,$request->header()['type'][0]);
 						return $status;
 					}
 				}

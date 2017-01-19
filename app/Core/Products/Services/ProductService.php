@@ -118,8 +118,8 @@ class ProductService extends AbstractService
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		if(strcmp($status,$fileSizeArray['204'])==0)
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($status,$exceptionArray['204'])==0)
 		{
 			return $status;
 		}
@@ -143,8 +143,34 @@ class ProductService extends AbstractService
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		if(strcmp($status,$fileSizeArray['404'])==0)
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($status,$exceptionArray['404'])==0)
+		{
+			return $status;
+		}
+		else
+		{
+			$encoded = new EncodeData();
+			$encodeData = $encoded->getEncodedData($status);
+			return $encodeData;
+		}
+	}
+	
+	/**
+     * get all the data from the table and call the model for database selection opertation
+     * @param $companyId and header-data
+     * @return exception-message/data
+     */
+	public function getProductTransactionData($header,$companyId)
+	{
+		$productModel = new ProductModel();
+		$status = $productModel->getTransactionData($header,$companyId);
+		print_r($status);
+		exit;
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($status,$exceptionArray['404'])==0)
 		{
 			return $status;
 		}

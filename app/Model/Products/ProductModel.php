@@ -431,6 +431,60 @@ class ProductModel extends Model
 	}
 	
 	/**
+	 * get data as per given header data and company-id
+	 * returns error-message/data
+	*/
+	public function getTransactionData($headerData,$companyId)
+	{	
+		echo "model";
+		// print_r($headerData);
+		// print_r($companyId);
+		// DB::beginTransaction();
+		// $raw = DB::select("select product_id
+		// from product_mst 
+		// where company_id='".$companyId."' and
+		// product_id='".$headerData['productid'][0]."' and
+		// product_category_id='".."' and 
+		// product_group_id='".."'
+		// ");
+		// DB::commit();
+		// DB::beginTransaction();		
+		// $raw = DB::select("select 
+		// product_id,
+		// product_name,
+		// measurement_unit,
+		// purchase_price,
+		// wholesale_margin,
+		// semi_wholesale_margin,
+		// vat,
+		// margin,
+		// mrp,
+		// is_display,
+		// created_at,
+		// updated_at,
+		// deleted_at,
+		// product_category_id,
+		// product_group_id,
+		// branch_id,
+		// company_id			
+		// from product_mst where deleted_at='0000-00-00 00:00:00'");
+		// DB::commit();
+		
+		// get exception message
+		// $exception = new ExceptionMessage();
+		// $exceptionArray = $exception->messageArrays();
+		// if(count($raw)==0)
+		// {
+			// return $exceptionArray['204'];
+		// }
+		// else
+		// {
+			// $enocodedData = json_encode($raw);
+			// return $enocodedData;
+		// }
+	}
+	
+	/**
 	 * get jfId data from product transaction table
 	 * returns error-message/data
 	*/

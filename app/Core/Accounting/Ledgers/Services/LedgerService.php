@@ -256,6 +256,39 @@ class LedgerService extends AbstractService
 	}
 	
 	/**
+     * get current-year data and call the model for database selection opertation
+     * @return status
+     */
+	public function getCurrentYearData()
+	{
+		$processArray = array();
+		$ledgerType = func_get_arg(1);
+		$companyId = func_get_arg(0);
+		
+		$ledgerModel = new LedgerModel();
+		
+		//get ledger_id
+		$ledgerIdDetail = $ledgerModel->getLedgerId($companyId,$ledgerType);
+		
+		//get ledger data between given date
+		$status = $ledgerModel->getCurrentYearData($companyId,$ledgerType);
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($status,$exceptionArray['404'])==0)
+		{
+			return $status;
+		}
+		else
+		{
+			
+			$encoded = new EncodeTrnAllData();
+			$encodeAllData = $encoded->getEncodedAllData($status,json_decode($ledgerIdDetail));
+			return $encodeAllData;
+		}
+	}
+	
+	/**
      * get all the data as per given ledger-grp id & company_id and call the model for database 		selection operation
      * @return status
      */

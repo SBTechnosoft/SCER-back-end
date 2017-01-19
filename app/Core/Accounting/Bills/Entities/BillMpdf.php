@@ -18,6 +18,10 @@ class BillMpdf
 {
 	public function mpdfGenerate($templateData,$status)
 	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
 		
@@ -41,7 +45,10 @@ class BillMpdf
 		
 		$invoiceService = new InvoiceService();	
 		$invoiceData = $invoiceService->getLatestInvoiceData($decodedBillData->company->companyId);
-		
+		if(strcmp($exceptionArray['204'],$invoiceData)==0)
+		{
+			return $invoiceData;
+		}
 		$endAt = json_decode($invoiceData)->endAt;
 		$invoiceController = new InvoiceController(new Container());
 		$invoiceMethod=$constantArray['postMethod'];
@@ -58,15 +65,19 @@ class BillMpdf
 		{
 			for($productArray=0;$productArray<count($decodedArray->inventory);$productArray++)
 			{
+				// print_r($decodedArray);
 				//get product-data
 				$productData[$productArray] = $productService->getProductData($decodedArray->inventory[$productArray]->productId);
 				$decodedData[$productArray] = json_decode($productData[$productArray]);
 				//calculate retail price
 				
-				//calculate vat value;
-				$vatValue[$productArray]=($decodedData[$productArray]->vat/100)*$decodedData[$productArray]->purchasePrice;
 				//calculate margin value
 				$marginValue[$productArray]=($decodedData[$productArray]->margin/100)*$decodedData[$productArray]->purchasePrice;
+				
+				// $finalRetailValue = $decodedData[$productArray]->purchasePrice+$marginValue[$productArray]-
+				//calculate vat value;
+				$vatValue[$productArray]=($decodedData[$productArray]->vat/100)*($decodedData[$productArray]->purchasePrice+$marginValue[$productArray]);
+				
 				
 				$retailValue = $decodedData[$productArray]->purchasePrice+$vatValue[$productArray]+$marginValue[$productArray];
 				if($retailValue=="" || $retailValue==0)
@@ -115,7 +126,7 @@ class BillMpdf
 				 $totalAmount=$totalAmount+$total[$productArray];
 			}
 		}
-		
+		exit;
 		$billArray = array();
 		$billArray['Description']=$output;
 		$billArray['ClientName']=$decodedBillData->client->clientName;
@@ -169,9 +180,6 @@ class BillMpdf
 		$billModel = new BillModel();
 		$billDocumentStatus = $billModel->billDocumentData($saleId,$documentName,$documentFormat,$documentType);
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
 		if(strcmp($exceptionArray['500'],$billDocumentStatus)==0)
 		{
 			return $billDocumentStatus;

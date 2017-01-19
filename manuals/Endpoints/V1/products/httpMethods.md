@@ -100,7 +100,7 @@
 
 ##### `GET products/company/{companyId}/transaction`
 + Header 
-	- Authentication Token
+	- 'authenticationToken':''
 	- 'fromDate':''
 	- 'toDate':''
 	- 'productId':''
