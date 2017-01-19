@@ -298,27 +298,27 @@ class ProductService extends AbstractService
 	}
 	
 	/**
-     * get all the data as per given companyId and productName and call the model for database selection opertation
+     * get all the data as per given companyId and headerData and call the model for database selection opertation
      * @param companyId & productName
      * @return status
      */
-	public function getData($productName,$companyId)
+	public function getData($headerData,$companyId)
 	{
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
 		$productModel = new ProductModel();
-		$status = $productModel->getProductData($productName,$companyId);
+		$status = $productModel->getProductData($headerData,$companyId);
 		
-		if(strcmp($status,$exceptionArray['204'])==0)
+		if(strcmp($status,$exceptionArray['404'])==0)
 		{
-			return $exceptionArray['204'];
+			return $exceptionArray['404'];
 		}
 		else
 		{
-			$encoded = new EncodeData();
-			$encodeData = $encoded->getEncodedData($status);
+			$encodedAllData = new EncodeAllData();
+			$encodeData = $encodedAllData->getEncodedAllData($status);
 			return $encodeData;
 		}
 	}

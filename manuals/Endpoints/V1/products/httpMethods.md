@@ -85,6 +85,8 @@
 + Header 
 	- Authentication Token
 	- 'productName':''
+	- 'productCategoryId':''
+	- 'productGroupId':''
 + Error Message
 
 			{
@@ -96,7 +98,7 @@
 				... Standard Product Object
 			}
 
-**NOTES:** List the product as per given name and companyId
+**NOTES:** List the product as per given parameter in header and companyId
 
 ##### `GET products/company/{companyId}/transaction`
 + Header 

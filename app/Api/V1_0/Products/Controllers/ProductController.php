@@ -347,16 +347,9 @@ class ProductController extends BaseController implements ContainerInterface
 			$exception = new ExceptionMessage();
 			$exceptionArray = $exception->messageArrays();
 			
-			if(array_key_exists($constantArray['productName'],$request->header()))
-			{	
-				$productService= new ProductService();
-				$status = $productService->getData($request->header()['productname'][0],$companyId);
-				return $status;
-			}
-			else 
-			{
-				return $exceptionArray['content'];
-			}
+			$productService= new ProductService();
+			$status = $productService->getData($request->header(),$companyId);
+			return $status;	
 		}
 		else
 		{

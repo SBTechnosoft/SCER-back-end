@@ -6,6 +6,7 @@ use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Entities\Constants\ConstantClass;
+use ERP\Entities\ProductArray;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -712,11 +713,24 @@ class ProductModel extends Model
 	}
 	
 	/**
-	 * get data as per given product-name and companyId 
+	 * get data as per given headerData and companyId 
 	 * returns error-message/data
 	*/
-	public function getProductData($productName,$companyId)
+	public function getProductData($headerData,$companyId)
 	{
+		$productArray = new ProductArray();
+		$arrayData = $productArray->productDataArray();
+		$arrayValue = $productArray->productValueArray();
+		$querySet = "";
+		for($data=0;$data<count($arrayData);$data++)
+		{
+			if(array_key_exists($arrayData[$data],$headerData))
+			{
+				$key[$data] = $arrayValue[$data];
+				$value[$data] = $headerData[$arrayData[$data]][0];
+				$querySet = $querySet.$key[$data]." = ".$value[$data]." and ";
+			}
+		}
 		DB::beginTransaction();		
 		$raw = DB::select("select 
 		product_id,
@@ -736,15 +750,15 @@ class ProductModel extends Model
 		product_group_id,
 		branch_id,
 		company_id	
-		from product_mst where company_id='".$companyId."' and product_name='".$productName."' and  deleted_at='0000-00-00 00:00:00'");
+		from product_mst where company_id='".$companyId."' and ".$querySet."deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
-		//get exception message
+		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $exceptionArray['204'];
+			return $exceptionArray['404'];
 		}
 		else
 		{
