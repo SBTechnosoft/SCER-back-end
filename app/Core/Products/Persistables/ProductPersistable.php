@@ -28,6 +28,7 @@ use ERP\Core\Products\Properties\SemiWholeSaleMarginPropertyTrait;
 use ERP\Core\Products\Properties\VatPropertyTrait;
 use ERP\Core\Products\Properties\MrpPropertyTrait;
 use ERP\Core\Products\Properties\MarginPropertyTrait;
+use ERP\Core\Products\Properties\DiscountValuePropertyTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -60,4 +61,5 @@ class productPersistable
 	use VatPropertyTrait;
 	use MrpPropertyTrait;
 	use MarginPropertyTrait;
+	use DiscountValuePropertyTrait;
 }

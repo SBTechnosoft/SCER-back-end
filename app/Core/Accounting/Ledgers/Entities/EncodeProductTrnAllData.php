@@ -30,6 +30,7 @@ class EncodeProductTrnAllData extends ProductService
 			$price[$decodedData] = $decodedJson[$decodedData]['price'];
 			$discount[$decodedData] = $decodedJson[$decodedData]['discount'];
 			$discountType[$decodedData] = $decodedJson[$decodedData]['discount_type'];
+			$discountValue[$decodedData] = $decodedJson[$decodedData]['discount_value'];
 			$tax[$decodedData] = $decodedJson[$decodedData]['tax'];
 			$isDisplay[$decodedData] = $decodedJson[$decodedData]['is_display'];
 			$invoiceNumber[$decodedData] = $decodedJson[$decodedData]['invoice_number'];
@@ -87,6 +88,7 @@ class EncodeProductTrnAllData extends ProductService
 				'qty' => $qty[$jsonData],
 				'price' => $price[$jsonData],
 				'discount' => $discount[$jsonData],
+				'discountValue' => $discountValue[$jsonData],
 				'discountType' => $discountType[$jsonData],
 				'isDisplay' => $isDisplay[$jsonData],
 				'tax' => $tax[$jsonData],

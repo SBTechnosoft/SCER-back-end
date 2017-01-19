@@ -199,15 +199,12 @@ class ProductController extends BaseController implements ContainerInterface
      */
     public function getData(Request $request,$productId=null)
     {
-		//Authentication
-		$tokenAuthentication = new TokenAuthentication();
-		$authenticationResult = $tokenAuthentication->authenticate($request->header());
-		
 		//get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-		
-		if(strcmp($constantArray['success'],$authenticationResult)==0)
+			
+		$uri = "/accounting/journals/".$request->header()['jfid'][0];
+		if(strcmp($_SERVER['REQUEST_URI'],$uri)==0)
 		{
 			if($productId==null)
 			{	
@@ -239,8 +236,45 @@ class ProductController extends BaseController implements ContainerInterface
 		}
 		else
 		{
-			return $authenticationResult;
-		}	
+			//Authentication
+			$tokenAuthentication = new TokenAuthentication();
+			$authenticationResult = $tokenAuthentication->authenticate($request->header());
+			
+			if(strcmp($constantArray['success'],$authenticationResult)==0)
+			{
+				if($productId==null)
+				{	
+					//get product_transaction data as per given journal-folio id
+					if(array_key_exists($constantArray['jfId'],$request->header()))
+					{
+						$productProcessor= new ProductProcessor();
+						$productPersistable = new ProductPersistable();
+						$productPersistable = $productProcessor->createJfIdPersistableData($request->header());
+						
+						$productService= new ProductService();
+						$status = $productService->getJfIdProductData($productPersistable);
+						return $status;
+					}
+					//get all product data
+					else
+					{
+						$productService= new ProductService();
+						$status = $productService->getAllProductData();
+						return $status;
+					}
+				}
+				else
+				{	
+					$productService= new ProductService();
+					$status = $productService->getProductData($productId);
+					return $status;
+				} 
+			}
+			else
+			{
+				return $authenticationResult;
+			}	
+		}
     }
 	
 	/**

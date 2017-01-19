@@ -66,6 +66,7 @@ class ProductModel extends Model
 	public function insertInOutwardData()
 	{
 		$discountArray = array();
+		$discountValueArray = array();
 		$discountTypeArray = array();
 		$qtyArray = array();
 		$priceArray = array();
@@ -75,25 +76,26 @@ class ProductModel extends Model
 		$transactionTypeArray = array();
 		
 		$discountArray = func_get_arg(0);
-		$discountTypeArray = func_get_arg(1);
-		$productIdArray = func_get_arg(2);
-		$qtyArray = func_get_arg(3);
-		$priceArray = func_get_arg(4);
-		$transactionDateArray = func_get_arg(5);
-		$companyIdArray = func_get_arg(6);
-		$transactionTypeArray = func_get_arg(7);
-		$billNumberArray = func_get_arg(8);
-		$invoiceNumberArray = func_get_arg(9);
-		$jfId = func_get_arg(10);
-		$taxArray = func_get_arg(11);
+		$discountValueArray = func_get_arg(1);
+		$discountTypeArray = func_get_arg(2);
+		$productIdArray = func_get_arg(3);
+		$qtyArray = func_get_arg(4);
+		$priceArray = func_get_arg(5);
+		$transactionDateArray = func_get_arg(6);
+		$companyIdArray = func_get_arg(7);
+		$transactionTypeArray = func_get_arg(8);
+		$billNumberArray = func_get_arg(9);
+		$invoiceNumberArray = func_get_arg(10);
+		$jfId = func_get_arg(11);
+		$taxArray = func_get_arg(12);
 		
 		DB::beginTransaction();
 		for($data=0;$data<count($productIdArray);$data++)
 		{
 			$raw = DB::statement("insert into 
-			product_trn(transaction_date,transaction_type,qty,price,discount,
+			product_trn(transaction_date,transaction_type,qty,price,discount,discount_value,
 			discount_type,product_id,company_id,branch_id,invoice_number,bill_number,jf_id,tax) 
-			values('".$transactionDateArray[$data]."','".$transactionTypeArray[$data]."','".$qtyArray[$data]."','".$priceArray[$data]."','".$discountArray[$data]."','".$discountTypeArray[$data]."','".$productIdArray[$data]."','".$companyIdArray[$data]."',6,'".$invoiceNumberArray[$data]."','".$billNumberArray[$data]."','".$jfId."','".$taxArray[$data]."')");
+			values('".$transactionDateArray[$data]."','".$transactionTypeArray[$data]."','".$qtyArray[$data]."','".$priceArray[$data]."','".$discountArray[$data]."','".$discountValueArray[$data]."','".$discountTypeArray[$data]."','".$productIdArray[$data]."','".$companyIdArray[$data]."',6,'".$invoiceNumberArray[$data]."','".$billNumberArray[$data]."','".$jfId."','".$taxArray[$data]."')");
 		}
 		DB::commit();
 		
@@ -165,6 +167,8 @@ class ProductModel extends Model
 		$transactionData = DB::select("select 
 		transaction_date,
 		invoice_number,
+		tax,
+		is_display,
 		bill_number,
 		company_id,
 		branch_id,
@@ -203,6 +207,16 @@ class ProductModel extends Model
 			$productData = $productData."'".$transactionData[0]->branch_id."',";
 			$keyName =$keyName."branch_id,";
 		}
+		if(!array_key_exists('tax',$singleArray))
+		{
+			$productData = $productData."'".$transactionData[0]->tax."',";
+			$keyName =$keyName."tax,";
+		}
+		if(!array_key_exists('is_display',$singleArray))
+		{
+			$productData = $productData."'".$transactionData[0]->is_display."',";
+			$keyName =$keyName."is_display,";
+		}
 		for($data=0;$data<count($singleArray);$data++)
 		{
 			$productData = $productData."'".$singleArray[array_keys($singleArray)[$data]]."',";
@@ -212,14 +226,12 @@ class ProductModel extends Model
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		
 		//delete existing data and then insert new data
 		DB::beginTransaction();
 		$raw = DB::statement("update product_trn 
 		set deleted_at='".$mytime."'
 		where jf_id='".$jfId."'");
 		DB::commit();
-		
 		if($raw==1)
 		{
 			//insert data
@@ -229,6 +241,7 @@ class ProductModel extends Model
 				$transactionResult = DB::statement("insert into product_trn
 				(".$keyName."
 				discount,
+				discount_value,
 				discount_type,
 				price,
 				qty,
@@ -238,6 +251,7 @@ class ProductModel extends Model
 				values(
 				".$productData."
 				'".$multipleArary[$arrayData]['discount']."',
+				'".$multipleArary[$arrayData]['discount_value']."',
 				'".$multipleArary[$arrayData]['discount_type']."',
 				'".$multipleArary[$arrayData]['price']."',
 				'".$multipleArary[$arrayData]['qty']."',
@@ -327,6 +341,7 @@ class ProductModel extends Model
 					branch_id,
 					tax,
 					discount,
+					discount_value,
 					discount_type,
 					price,
 					qty,
@@ -342,6 +357,7 @@ class ProductModel extends Model
 					'".$transactionData[0]->branch_id."',
 					'".$transactionData[0]->tax."',
 					'".$productTransactionData[$arrayData]['discount']."',
+					'".$productTransactionData[$arrayData]['discount_value']."',
 					'".$productTransactionData[$arrayData]['discount_type']."',
 					'".$productTransactionData[$arrayData]['price']."',
 					'".$productTransactionData[$arrayData]['qty']."',
@@ -498,6 +514,7 @@ class ProductModel extends Model
 		qty,
 		price,
 		discount,
+		discount_value,
 		discount_type,
 		is_display,
 		invoice_number,

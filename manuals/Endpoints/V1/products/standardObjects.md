@@ -53,7 +53,6 @@
 						"qty": decimal,
 						"price": decimal,
 						"discount":decimal,
-						"discountValue":decimal,
 						"discountType":Enum,
 						"productId":int,
 					},

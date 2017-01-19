@@ -150,6 +150,7 @@ class ProductProcessor extends BaseProcessor
 					
 					$productPersistable[$data]->setProductId($tRequest[0][$data]['productId']);
 					$productPersistable[$data]->setDiscount($tRequest[0][$data]['discount']);
+					$productPersistable[$data]->setDiscountValue($tRequest[0][$data]['discountValue']);
 					$productPersistable[$data]->setDiscountType($tRequest[0][$data]['discountType']);
 					$productPersistable[$data]->setPrice($tRequest[0][$data]['price']);
 					$productPersistable[$data]->setQty($tRequest[0][$data]['qty']);
@@ -336,6 +337,7 @@ class ProductProcessor extends BaseProcessor
 				// trim an input 
 				$productTransformer = new ProductTransformer();
 				$tRequest = $productTransformer->trimUpdateProductData($productArray,$inOutWard);
+				
 				if($tRequest==1)
 				{
 					return $exceptionArray['content'];
@@ -386,6 +388,7 @@ class ProductProcessor extends BaseProcessor
 							{
 								$productPersistable[$multipleArray] = new ProductPersistable();
 								$productPersistable[$multipleArray]->setDiscount($tRequest[0][$multipleArray]['discount']);
+								$productPersistable[$multipleArray]->setDiscountValue($tRequest[0][$multipleArray]['discount_value']);
 								$productPersistable[$multipleArray]->setDiscountType($tRequest[0][$multipleArray]['discount_type']);
 								$productPersistable[$multipleArray]->setProductId($tRequest[0][$multipleArray]['product_id']);
 								$productPersistable[$multipleArray]->setPrice($tRequest[0][$multipleArray]['price']);
@@ -455,6 +458,7 @@ class ProductProcessor extends BaseProcessor
 						{
 							$productPersistable[$multipleArray] = new ProductPersistable();
 							$productPersistable[$multipleArray]->setDiscount($tRequest[$multipleArray]['discount']);
+							$productPersistable[$multipleArray]->setDiscountValue($tRequest[$multipleArray]['discount_value']);
 							$productPersistable[$multipleArray]->setDiscountType($tRequest[$multipleArray]['discount_type']);
 							$productPersistable[$multipleArray]->setProductId($tRequest[$multipleArray]['product_id']);
 							$productPersistable[$multipleArray]->setPrice($tRequest[$multipleArray]['price']);

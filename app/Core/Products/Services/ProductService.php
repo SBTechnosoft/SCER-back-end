@@ -74,6 +74,7 @@ class ProductService extends AbstractService
 	{
 		$productArray = array();
 		$discountArray = array();
+		$discountValueArray = array();
 		$discountTypeArray = array();
 		$qtyArray = array();
 		$priceArray = array();
@@ -89,6 +90,7 @@ class ProductService extends AbstractService
 		for($data=0;$data<count($productArray);$data++)
 		{
 			$discountArray[$data] = $productArray[$data]->getDiscount();
+			$discountValueArray[$data] = $productArray[$data]->getDiscountValue();
 			$discountTypeArray[$data] = $productArray[$data]->getDiscountType();
 			$productIdArray[$data] = $productArray[$data]->getProductId();
 			$qtyArray[$data] = $productArray[$data]->getQty();
@@ -103,7 +105,7 @@ class ProductService extends AbstractService
 		}
 		// data pass to the model object for insert
 		$productModel = new ProductModel();
-		$status = $productModel->insertInOutwardData($discountArray,$discountTypeArray,$productIdArray,$qtyArray,$priceArray,$transactionDateArray,$companyIdArray,$transactionTypeArray,$billNumberArray,$invoiceNumberArray,$jfId,$taxArray);
+		$status = $productModel->insertInOutwardData($discountArray,$discountValueArray,$discountTypeArray,$productIdArray,$qtyArray,$priceArray,$transactionDateArray,$companyIdArray,$transactionTypeArray,$billNumberArray,$invoiceNumberArray,$jfId,$taxArray);
 		return $status;
 	}
 	
@@ -378,6 +380,7 @@ class ProductService extends AbstractService
 			{
 				$multipleArray[$innerData] = array();
 				$multipleArray[$innerData]['discount']=$productArray[$innerData][0]->getDiscount();
+				$multipleArray[$innerData]['discount_value']=$productArray[$innerData][0]->getDiscountValue();
 				$multipleArray[$innerData]['discount_type']=$productArray[$innerData][0]->getDiscountType();
 				$multipleArray[$innerData]['product_id']=$productArray[$innerData][0]->getProductId();
 				$multipleArray[$innerData]['price']=$productArray[$innerData][0]->getPrice();
@@ -395,6 +398,7 @@ class ProductService extends AbstractService
 					{
 						$multipleArray[$innerData] = array();
 						$multipleArray[$innerData]['discount']=$productArray[$persistableArray][$innerData][0]->getDiscount();
+						$multipleArray[$innerData]['discount_value']=$productArray[$persistableArray][$innerData][0]->getDiscountValue();
 						$multipleArray[$innerData]['discount_type']=$productArray[$persistableArray][$innerData][0]->getDiscountType();
 						$multipleArray[$innerData]['product_id']=$productArray[$persistableArray][$innerData][0]->getProductId();
 						$multipleArray[$innerData]['price']=$productArray[$persistableArray][$innerData][0]->getPrice();

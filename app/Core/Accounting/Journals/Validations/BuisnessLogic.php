@@ -250,7 +250,6 @@ class BuisnessLogic extends LedgerModel
 		$journalDiscountFlag=0;
 		$journalTaxFlag=0;
 		$disFlag=0;
-		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -258,7 +257,6 @@ class BuisnessLogic extends LedgerModel
 		// get constant variables array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-		
 		$ledgerService = new LedgerService();
 		//tax and array both exist
 		if(array_key_exists("tax",$productData) && array_key_exists("0",$productData))
@@ -283,9 +281,9 @@ class BuisnessLogic extends LedgerModel
 			//calculate total discount amount
 			for($arrayData=0;$arrayData<count($arrayProductData);$arrayData++)
 			{
-				$discountTotal = $discountTotal+$arrayProductData[$arrayData]['discount'];
+				// print_r($arrayProductData[$arrayData]['discount_value']);
+				$discountTotal = $discountTotal+$arrayProductData[$arrayData]['discount_value'];
 			}
-				
 			//check tax and discount is available in journal data
 			for($journalArrayData=0;$journalArrayData<count($trimData);$journalArrayData++)
 			{
@@ -362,6 +360,7 @@ class BuisnessLogic extends LedgerModel
 			$productRequest->headers->set('jfid',$jfId);
 			$processedData = $productController->getData($productRequest);
 			$jsonDecodedProductData = json_decode($processedData);
+			
 			if(array_key_exists("flag",$trimJournalData))
 			{
 				$trimData=$trimJournalData[0];
@@ -393,7 +392,7 @@ class BuisnessLogic extends LedgerModel
 						{
 							for($productArrayData=0;$productArrayData<count($jsonDecodedProductData);$productArrayData++)
 							{
-								$discountTotal = $discountTotal+$jsonDecodedProductData[$productArrayData]->discount;
+								$discountTotal = $discountTotal+$jsonDecodedProductData[$productArrayData]->discountValue;
 							}
 							if($trimData[$journalArrayData]['amount']==$discountTotal)
 							{
@@ -423,7 +422,7 @@ class BuisnessLogic extends LedgerModel
 						{
 							for($productArrayData=0;$productArrayData<count($jsonDecodedProductData);$productArrayData++)
 							{
-								$discountTotal = $discountTotal+$jsonDecodedProductData[$productArrayData]->discount;
+								$discountTotal = $discountTotal+$jsonDecodedProductData[$productArrayData]->discountValue;
 							}
 							if($trimData[$journalArrayData]['amount']==$discountTotal)
 							{
@@ -454,7 +453,7 @@ class BuisnessLogic extends LedgerModel
 			$productRequest->headers->set('jfid',$jfId);
 			$processedData = $productController->getData($productRequest);
 			$jsonDecodedProductData = json_decode($processedData);
-
+			// print_r($productData);
 			if(array_key_exists("flag",$trimJournalData))
 			{
 				$trimData = $trimJournalData[0];
@@ -476,7 +475,7 @@ class BuisnessLogic extends LedgerModel
 			for($arrayData=0;$arrayData<count($productArrayData);$arrayData++)
 			{
 				
-				$discountTotal = $discountTotal+$productArrayData[$arrayData]['discount'];
+				$discountTotal = $discountTotal+$productArrayData[$arrayData]['discount_value'];
 			}
 			
 			//check tax and discount is available in journal data
@@ -605,7 +604,6 @@ class BuisnessLogic extends LedgerModel
 		{
 			return $journalArrayData;
 		}
-		
 		//tax and array both exist
 		if(array_key_exists("tax",$productData) && array_key_exists("0",$productData))
 		{
@@ -621,7 +619,7 @@ class BuisnessLogic extends LedgerModel
 			//discount ledger exist
 			for($productArrayData=0;$productArrayData<count($arrayProductData);$productArrayData++)
 			{
-				$discountTotal = $discountTotal+$arrayProductData[$productArrayData]['discount'];
+				$discountTotal = $discountTotal+$arrayProductData[$productArrayData]['discount_value'];
 			}
 			for($journalArrayData=0;$journalArrayData<count($decodedJournalData);$journalArrayData++)
 			{
@@ -703,7 +701,7 @@ class BuisnessLogic extends LedgerModel
 				}
 				else
 				{
-					if(json_decode($ledgerResult)->ledgerGroup->ledgerGroupId==17)
+					if(json_decode($ledgerResult)->ledgerGroup->ledgerGroupId==16)
 					{
 						// tax ledger exist
 						if($decodedJournalData[$journalArrayData]->amount==$productData['tax'])
@@ -733,7 +731,7 @@ class BuisnessLogic extends LedgerModel
 			//discount ledger exist
 			for($productArrayData=0;$productArrayData<count($arrayProductData);$productArrayData++)
 			{
-				$discountTotal = $discountTotal+$arrayProductData[$productArrayData]['discount'];
+				$discountTotal = $discountTotal+$arrayProductData[$productArrayData]['discount_value'];
 			}
 			for($journalArrayData=0;$journalArrayData<count($decodedJournalData);$journalArrayData++)
 			{
@@ -905,7 +903,7 @@ class BuisnessLogic extends LedgerModel
 	}
 	
 	/**
-	 * validate jouranl-product data for update
+	 * validate jouranl-product data for update/insert
      * @param trim-array of journal and product header data
 	 * check journal and product data and if tax and discount is available then check that value
      * @return array/exception message
@@ -916,7 +914,6 @@ class BuisnessLogic extends LedgerModel
 		$journalTaxFlag=0;
 		$journalDiscountFlag=0;
 		$discountFlag=0;
-		// $jouranlDiscountFlag=0;
 		$discountJournalFlag=0;
 		$discountArray = array();
 		$ledgerService = new LedgerService();
@@ -947,7 +944,7 @@ class BuisnessLogic extends LedgerModel
 					//calculate total discount in product
 					for($productArrayData=0;$productArrayData<count($productData[0]);$productArrayData++)
 					{
-						$discount = $discount+$productData[0][$productArrayData]['discount'];
+						$discount = $discount+$productData[0][$productArrayData]['discountValue'];
 					} 
 					if($discount==$journalData[0][$journalArrayData]['amount'])
 					{
@@ -974,7 +971,7 @@ class BuisnessLogic extends LedgerModel
 					//calculate total discount in product
 					for($productArrayData=0;$productArrayData<count($productData[0]);$productArrayData++)
 					{
-						$discount = $discount+$productData[0][$productArrayData]['discount'];
+						$discount = $discount+$productData[0][$productArrayData]['discountValue'];
 					}
 					if($discount==$journalData[0][$journalArrayData]['amount'])
 					{
@@ -994,7 +991,7 @@ class BuisnessLogic extends LedgerModel
 			$discount=0;
 			for($productArrayData=0;$productArrayData<count($productData[0]);$productArrayData++)
 			{
-				$discount = $discount+$productData[0][$productArrayData]['discount'];
+				$discount = $discount+$productData[0][$productArrayData]['discountValue'];
 			}
 			if($discount!=0)
 			{
@@ -1072,7 +1069,7 @@ class BuisnessLogic extends LedgerModel
 			$discount=0;
 			for($productArrayData=0;$productArrayData<count($productData[0]);$productArrayData++)
 			{
-				$discount = $discount+$productData[0][$productArrayData]['discount'];
+				$discount = $discount+$productData[0][$productArrayData]['discountValue'];
 			}
 			if($discount!=0)
 			{
