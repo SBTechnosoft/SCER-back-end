@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -19,6 +20,11 @@ class ProductGroupModel extends Model
 	*/
 	public function insertData()
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$getProductGrpData = array();
 		$getProductGrpKey = array();
 		$getProductGrpData = func_get_arg(0);
@@ -39,7 +45,7 @@ class ProductGroupModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::statement("insert into product_group_mst(".$keyName.") 
+		$raw = DB::connection($databaseName)->statement("insert into product_group_mst(".$keyName.") 
 		values(".$productGrpData.")");
 		DB::commit();
 		
@@ -62,6 +68,11 @@ class ProductGroupModel extends Model
 	*/
 	public function updateData($productGrpData,$key,$productGrpId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
 		for($data=0;$data<count($productGrpData);$data++)
@@ -69,7 +80,7 @@ class ProductGroupModel extends Model
 			$keyValueString=$keyValueString.$key[$data]."='".$productGrpData[$data]."',";
 		}
 		DB::beginTransaction();
-		$raw = DB::statement("update product_group_mst 
+		$raw = DB::connection($databaseName)->statement("update product_group_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
 		where product_group_id = '".$productGrpId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
@@ -93,8 +104,13 @@ class ProductGroupModel extends Model
 	*/
 	public function getAllData()
 	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();		
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		product_group_id,
 		product_group_name,
 		product_group_description,
@@ -125,9 +141,14 @@ class ProductGroupModel extends Model
 	 * returns the status
 	*/
 	public function getData($productGrpId)
-	{		
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		product_group_id,
 		product_group_name,
 		product_group_description,
@@ -155,9 +176,14 @@ class ProductGroupModel extends Model
 	//delete
 	public function deleteData($productGrpId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
-		$raw = DB::statement("update product_group_mst 
+		$raw = DB::connection($databaseName)->statement("update product_group_mst 
 		set deleted_at='".$mytime."'
 		where product_group_id = '".$productGrpId."'");
 		DB::commit();
@@ -167,14 +193,14 @@ class ProductGroupModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			$productGrp = DB::statement("update product_mst 
+			$productGrp = DB::connection($databaseName)->statement("update product_mst 
 			set deleted_at='".$mytime."'
 			where product_group_id = '".$productGrpId."'");
 			if($productGrp==1)
 			{
 				DB::beginTransaction();
 				$mytime = Carbon\Carbon::now();
-				$productGrpRaw = DB::statement("update product_group_mst 
+				$productGrpRaw = DB::connection($databaseName)->statement("update product_group_mst 
 				set deleted_at='".$mytime."'
 				where product_group_parent_id='".$productGrpId."'");
 				DB::commit();
@@ -195,7 +221,7 @@ class ProductGroupModel extends Model
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return $exceptionArray['500'];
 		}
 	}
 }

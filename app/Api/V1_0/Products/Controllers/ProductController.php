@@ -202,8 +202,13 @@ class ProductController extends BaseController implements ContainerInterface
 		//get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-			
-		$uri = "/accounting/journals/".$request->header()['jfid'][0];
+		
+		$param = "";
+		if(isset($request->header()['jfid'][0]) && !empty($request->header()['jfid'][0]))
+		{
+			$param = $request->header()['jfid'][0];
+		}
+		$uri = "/accounting/journals/".$param;
 		if(strcmp($_SERVER['REQUEST_URI'],$uri)==0)
 		{
 			if($productId==null)
@@ -347,9 +352,19 @@ class ProductController extends BaseController implements ContainerInterface
 			$exception = new ExceptionMessage();
 			$exceptionArray = $exception->messageArrays();
 			
-			$productService= new ProductService();
-			$status = $productService->getData($request->header(),$companyId);
-			return $status;	
+			if(array_key_exists("salestype",$request->header()))
+			{
+				$productService= new ProductService();
+				$status = $productService->getProductTrnData($request->header(),$companyId);
+				return $status;	
+			}
+			else
+			{
+				$productService= new ProductService();
+				$status = $productService->getData($request->header(),$companyId);
+				return $status;	
+			}
+			
 		}
 		else
 		{
@@ -379,8 +394,12 @@ class ProductController extends BaseController implements ContainerInterface
 			
 			if(array_key_exists($constantArray['fromDate'],$request->header()) && array_key_exists($constantArray['toDate'],$request->header()))
 			{	
+				$productPersistable = new ProductPersistable();
+				$productProcessor = new ProductProcessor();
+				$productPersistable = $productProcessor->createprocessDatePersistableData($request->header());
+				
 				$productService= new ProductService();
-				$status = $productService->getProductTransactionData($request->header(),$companyId);
+				$status = $productService->getProductTransactionData($productPersistable,$request->header(),$companyId);
 				return $status;
 			}
 			else 

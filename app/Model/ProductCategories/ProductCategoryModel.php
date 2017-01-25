@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -19,6 +20,11 @@ class ProductCategoryModel extends Model
 	*/
 	public function insertData()
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$getProductCatData = array();
 		$getProductCatKey = array();
 		$getProductCatData = func_get_arg(0);
@@ -39,7 +45,7 @@ class ProductCategoryModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::statement("insert into product_category_mst(".$keyName.") 
+		$raw = DB::connection($databaseName)->statement("insert into product_category_mst(".$keyName.") 
 		values(".$productCatData.")");
 		DB::commit();
 		
@@ -62,6 +68,11 @@ class ProductCategoryModel extends Model
 	*/
 	public function updateData($productCatData,$key,$productCatId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
 		for($data=0;$data<count($productCatData);$data++)
@@ -69,7 +80,7 @@ class ProductCategoryModel extends Model
 			$keyValueString=$keyValueString.$key[$data]."='".$productCatData[$data]."',";
 		}
 		DB::beginTransaction();
-		$raw = DB::statement("update product_category_mst 
+		$raw = DB::connection($databaseName)->statement("update product_category_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
 		where product_category_id ='".$productCatId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
@@ -94,8 +105,13 @@ class ProductCategoryModel extends Model
 	*/
 	public function getAllData()
 	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();		
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		product_category_id,
 		product_category_name,
 		product_category_description,
@@ -126,9 +142,14 @@ class ProductCategoryModel extends Model
 	 * returns the status
 	*/
 	public function getData($productCategoryId)
-	{		
+	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		product_category_id,
 		product_category_name,
 		product_category_description,
@@ -156,9 +177,14 @@ class ProductCategoryModel extends Model
 	//delete
 	public function deleteData($productCatId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
-		$raw = DB::statement("update product_category_mst 
+		$raw = DB::connection($databaseName)->statement("update product_category_mst 
 		set deleted_at='".$mytime."'
 		where product_category_id = '".$productCatId."'");
 		DB::commit();
@@ -168,14 +194,14 @@ class ProductCategoryModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			$product = DB::statement("update product_mst 
+			$product = DB::connection($databaseName)->statement("update product_mst 
 			set deleted_at='".$mytime."'
 			where product_category_id = '".$productCatId."'");
 			if($product==1)
 			{
 				DB::beginTransaction();
 				$mytime = Carbon\Carbon::now();
-				$productCatRaw = DB::statement("update product_category_mst 
+				$productCatRaw = DB::connection($databaseName)->statement("update product_category_mst 
 				set deleted_at='".$mytime."'
 				where product_parent_category_id='".$productCatId."'");
 				DB::commit();

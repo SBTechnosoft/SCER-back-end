@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -19,6 +20,11 @@ class InvoiceModel extends Model
 	*/
 	public function insertData()
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		date_default_timezone_set("Asia/Calcutta");
 		$getInvoiceData = array();
 		$getInvoiceKey = array();
@@ -40,20 +46,20 @@ class InvoiceModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::statement("insert into invoice_dtl(".$keyName.") 
+		$raw = DB::connection($databaseName)->statement("insert into invoice_dtl(".$keyName.") 
 		values(".$invoiceData.")");
 		DB::commit();
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $fileSizeArray['200'];
+			return $exceptionArray['200'];
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return $exceptionArray['500'];
 		}
 	}
 	
@@ -64,6 +70,11 @@ class InvoiceModel extends Model
 	*/
 	public function updateData($invoiceData,$key,$invoiceId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
 		for($data=0;$data<count($invoiceData);$data++)
@@ -71,9 +82,10 @@ class InvoiceModel extends Model
 			$keyValueString=$keyValueString.$key[$data]."='".$invoiceData[$data]."',";
 		}
 		DB::beginTransaction();
-		$raw = DB::statement("update invoice_dtl 
+		$raw = DB::connection($databaseName)->statement("update invoice_dtl 
 		set ".$keyValueString."updated_at='".$mytime."'
-		where invoice_id = '".$invoiceId."' and deleted_at='0000-00-00 00:00:00'");
+		where invoice_id = '".$invoiceId."' and 
+		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message
@@ -95,8 +107,13 @@ class InvoiceModel extends Model
 	*/
 	public function getAllData()
 	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();		
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		invoice_id,
 		invoice_label,
 		invoice_type,
@@ -105,15 +122,16 @@ class InvoiceModel extends Model
 		created_at,
 		updated_at,
 		company_id			
-		from invoice_dtl where deleted_at='0000-00-00 00:00:00'");
+		from invoice_dtl 
+		where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['204'];
+			return $exceptionArray['204'];
 		}
 		else
 		{
@@ -128,9 +146,14 @@ class InvoiceModel extends Model
 	 * returns the status
 	*/
 	public function getData($invoiceId)
-	{		
+	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		invoice_id,
 		invoice_label,
 		invoice_type,
@@ -139,15 +162,17 @@ class InvoiceModel extends Model
 		created_at,
 		updated_at,
 		company_id
-		from invoice_dtl where invoice_id = ".$invoiceId." and deleted_at='0000-00-00 00:00:00'");
+		from invoice_dtl 
+		where invoice_id = ".$invoiceId." and 
+		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['404'];
+			return $exceptionArray['404'];
 		}
 		else
 		{
@@ -162,8 +187,13 @@ class InvoiceModel extends Model
 	*/
 	public function getAllInvoiceData($companyId)
 	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();	
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		invoice_id,
 		invoice_label,
 		invoice_type,
@@ -172,15 +202,17 @@ class InvoiceModel extends Model
 		created_at,
 		updated_at,
 		company_id
-		from invoice_dtl where company_id=".$companyId." and deleted_at='0000-00-00 00:00:00'");
+		from invoice_dtl 
+		where company_id=".$companyId." and 
+		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['204'];
+			return $exceptionArray['204'];
 		}
 		else
 		{
@@ -194,9 +226,14 @@ class InvoiceModel extends Model
 	 * returns the status
 	*/
 	public function getLatestInvoiceData($companyId)
-	{	
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();	
-		$raw = DB::select("SELECT 
+		$raw = DB::connection($databaseName)->select("SELECT 
 		invoice_id,
 		invoice_label,
 		invoice_type,
@@ -205,15 +242,18 @@ class InvoiceModel extends Model
 		created_at,
 		updated_at,
 		company_id		
-		FROM invoice_dtl where company_id='".$companyId."' and deleted_at='0000-00-00 00:00:00' group by invoice_id desc limit 1");
+		FROM invoice_dtl 
+		where company_id='".$companyId."' and 
+		deleted_at='0000-00-00 00:00:00' 
+		group by invoice_id desc limit 1");
 		DB::commit();
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['204'];
+			return $exceptionArray['204'];
 		}
 		else
 		{

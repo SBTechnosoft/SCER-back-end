@@ -11,6 +11,7 @@ use ERP\Api\V1_0\Products\Transformers\ProductTransformer;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Core\Accounting\Journals\Validations\BuisnessLogic;
 use ERP\Entities\Constants\ConstantClass;
+use Carbon;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -487,6 +488,25 @@ class ProductProcessor extends BaseProcessor
 		$trimJfId = trim($requestHeader['jfid'][0]);
 		$productPersistable = new ProductPersistable();
 		$productPersistable->setJfId($trimJfId);
+		return $productPersistable;
+	}
+	
+	/**
+     * process header data
+     * $param request header
+     * @return persistable object of header data
+     */	
+	public function createprocessDatePersistableData($requestHeader)
+	{
+		$fromDate = $requestHeader['fromdate'][0];
+		$toDate = $requestHeader['todate'][0];
+		
+		//date conversion
+		$transformFromDate = Carbon\Carbon::createFromFormat('d-m-Y', $fromDate)->format('Y-m-d');
+		$transformToDate = Carbon\Carbon::createFromFormat('d-m-Y', $toDate)->format('Y-m-d');
+		$productPersistable = new ProductPersistable();
+		$productPersistable->setFromDate($transformFromDate);
+		$productPersistable->setToDate($transformToDate);
 		return $productPersistable;
 	}
 }

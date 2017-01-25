@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -17,9 +18,14 @@ class DocumentModel extends Model
 	*/
 	public function insertData($documentName,$documentSize,$documentFormat,$status)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
-		$raw = DB::statement("update company_mst
+		$raw = DB::connection($databaseName)->statement("update company_mst
 		set document_name='".$documentName."',
 		document_size='".$documentSize."',
 		document_format='".$documentFormat."',
@@ -28,14 +34,14 @@ class DocumentModel extends Model
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $fileSizeArray['200'];
+			return $exceptionArray['200'];
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return $exceptionArray['500'];
 		}
 	}
 	/**
@@ -45,9 +51,14 @@ class DocumentModel extends Model
 	*/
 	public function updateData($documentName,$documentSize,$documentFormat,$companyId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
-		$raw = DB::statement("update company_mst 
+		$raw = DB::connection($databaseName)->statement("update company_mst 
 		set document_name='".$documentName."',
 		document_size='".$documentSize."',
 		document_format='".$documentFormat."',
@@ -56,14 +67,14 @@ class DocumentModel extends Model
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $fileSizeArray['200'];
+			return $exceptionArray['200'];
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return $exceptionArray['500'];
 		}
 	}
 	
@@ -73,8 +84,13 @@ class DocumentModel extends Model
 	*/
 	public function getAllData()
 	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();		
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		document_name,
 		document_size,
 		document_format
@@ -83,10 +99,10 @@ class DocumentModel extends Model
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['204'];
+			return $exceptionArray['204'];
 		}
 		else
 		{
@@ -101,9 +117,14 @@ class DocumentModel extends Model
 	 * returns the status
 	*/
 	public function getData($companyId)
-	{		
+	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		document_name,
 		document_size,
 		document_format
@@ -112,10 +133,10 @@ class DocumentModel extends Model
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['404'];
+			return $exceptionArray['404'];
 		}
 		else
 		{
@@ -127,33 +148,38 @@ class DocumentModel extends Model
 	//delete
 	public function deleteData($stateAbb)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
-		$raw = DB::statement("update state_mst 
+		$raw = DB::connection($databaseName)->statement("update state_mst 
 		set deleted_at='".$mytime."'
 		where state_abb = '".$stateAbb."'");
 		DB::commit();
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			$city = DB::statement("update city_mst 
+			$city = DB::connection($databaseName)->statement("update city_mst 
 			set deleted_at='".$mytime."'
 			where state_abb = '".$stateAbb."'");
 			if($city==1)
 			{
-				return $fileSizeArray['200'];
+				return $exceptionArray['200'];
 			}
 			else
 			{
-				return $fileSizeArray['500'];
+				return $exceptionArray['500'];
 			}
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return $exceptionArray['500'];
 		}
 	}
 }

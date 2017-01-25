@@ -6,6 +6,7 @@ use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Entities\EnumClasses\IsDisplayEnum;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -20,6 +21,11 @@ class ClientModel extends Model
 	*/
 	public function insertData()
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$getClientData = array();
 		$getClientKey = array();
 		$getClientData = func_get_arg(0);
@@ -50,7 +56,7 @@ class ClientModel extends Model
 		}
 		
 		DB::beginTransaction();
-		$raw = DB::statement("insert into client_mst(".$keyName.") 
+		$raw = DB::connection($databaseName)->statement("insert into client_mst(".$keyName.") 
 		values(".$clientData.")");
 		DB::commit();
 		
@@ -60,7 +66,7 @@ class ClientModel extends Model
 		if($raw==1)
 		{
 			DB::beginTransaction();
-			$clientData = DB::select("select 
+			$clientData = DB::connection($databaseName)->select("select 
 			client_id,
 			client_name,
 			company_name,
@@ -91,9 +97,14 @@ class ClientModel extends Model
 	 * returns the status
 	*/
 	public function getData($clientId)
-	{		
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		client_id,
 		client_name,
 		company_name,
@@ -130,9 +141,14 @@ class ClientModel extends Model
 	 * returns the status
 	*/
 	public function getAllData()
-	{	
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();		
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		client_id,
 		client_name,
 		company_name,
@@ -171,10 +187,15 @@ class ClientModel extends Model
 	*/
 	public function getClientData($contactNo,$emailId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		if($contactNo=="")
 		{
 			DB::beginTransaction();		
-			$raw = DB::select("select 
+			$raw = DB::connection($databaseName)->select("select 
 			client_id
 			from client_mst 
 			where deleted_at='0000-00-00 00:00:00' and 
@@ -184,7 +205,7 @@ class ClientModel extends Model
 		else
 		{
 			DB::beginTransaction();		
-			$raw = DB::select("select 
+			$raw = DB::connection($databaseName)->select("select 
 			client_id
 			from client_mst 
 			where deleted_at='0000-00-00 00:00:00' and 

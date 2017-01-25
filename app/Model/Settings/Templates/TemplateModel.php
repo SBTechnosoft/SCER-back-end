@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -19,6 +20,11 @@ class TemplateModel extends Model
 	*/
 	public function insertData()
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$getTemplateData = array();
 		$getTemplateKey = array();
 		$getTemplateData = func_get_arg(0);
@@ -39,7 +45,7 @@ class TemplateModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::statement("insert into template_mst(".$keyName.") 
+		$raw = DB::connection($databaseName)->statement("insert into template_mst(".$keyName.") 
 		values(".$templateData.")");
 		DB::commit();
 		
@@ -63,6 +69,11 @@ class TemplateModel extends Model
 	*/
 	public function updateData($templateData,$key,$templateId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		date_default_timezone_set("Asia/Calcutta");
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
@@ -71,21 +82,22 @@ class TemplateModel extends Model
 			$keyValueString=$keyValueString.$key[$data]."='".$templateData[$data]."',";
 		}
 		DB::beginTransaction();
-		$raw = DB::statement("update template_mst 
+		$raw = DB::connection($databaseName)->statement("update template_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
-		where template_id = '".$templateId."' and deleted_at='0000-00-00 00:00:00'");
+		where template_id = '".$templateId."' and 
+		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $fileSizeArray['200'];
+			return $exceptionArray['200'];
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return $exceptionArray['500'];
 		}
 	}
 	
@@ -95,8 +107,13 @@ class TemplateModel extends Model
 	*/
 	public function getAllData()
 	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();		
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		template_id,
 		template_name,
 		template_body,
@@ -104,15 +121,16 @@ class TemplateModel extends Model
 		updated_at,
 		created_at,
 		company_id
-		from template_mst where deleted_at='0000-00-00 00:00:00'");
+		from template_mst 
+		where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['204'];
+			return $exceptionArray['204'];
 		}
 		else
 		{
@@ -128,8 +146,13 @@ class TemplateModel extends Model
 	*/
 	public function getData($templateId)
 	{		
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		template_id,
 		template_name,
 		template_body,
@@ -137,15 +160,17 @@ class TemplateModel extends Model
 		updated_at,
 		created_at,
 		company_id
-		from template_mst where template_id ='".$templateId."' and deleted_at='0000-00-00 00:00:00'");
+		from template_mst 
+		where template_id ='".$templateId."' and 
+		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['404'];
+			return $exceptionArray['404'];
 		}
 		else
 		{
@@ -161,19 +186,27 @@ class TemplateModel extends Model
 	*/
 	public function getAllTemplateData($companyId,$templateType)
 	{		
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		template_id,
 		template_body
-		from template_mst where template_type ='".$templateType."' and company_id='".$companyId."' and deleted_at='0000-00-00 00:00:00'");
+		from template_mst 
+		where template_type ='".$templateType."' and 
+		company_id='".$companyId."' and 
+		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['404'];
+			return $exceptionArray['404'];
 		}
 		else
 		{

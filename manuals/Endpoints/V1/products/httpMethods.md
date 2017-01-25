@@ -95,7 +95,10 @@
 + Response
 
 			{
-				... Standard Product Object
+				{
+					... Standard Product Object
+				}
+				...
 			}
 
 **NOTES:** List the product as per given parameter in header and companyId

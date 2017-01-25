@@ -9,6 +9,7 @@ use ERP\Core\Accounting\Ledgers\Entities\EncodeTrnAllData;
 use ERP\Core\Accounting\Journals\Entities\EncodeAllData;
 use ERP\Model\Companies\CompanyModel;
 use ERP\Core\Accounting\Ledgers\Entities\ledgerArray;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -23,6 +24,11 @@ class LedgerModel extends Model
 	*/
 	public function insertData()
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$getLedgerData = array();
 		$getLedgerKey = array();
 		$getLedgerData = func_get_arg(0);
@@ -43,7 +49,7 @@ class LedgerModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::statement("insert into ledger_mst(".$keyName.") 
+		$raw = DB::connection($databaseName)->statement("insert into ledger_mst(".$keyName.") 
 		values(".$ledgerData.")");
 		DB::commit();
 		
@@ -52,8 +58,8 @@ class LedgerModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			$ledgerId = DB::select("SELECT  MAX(ledger_id) AS ledger_id from ledger_mst where deleted_at='0000-00-00 00:00:00'");
-			$result = DB::statement("CREATE TABLE ".$ledgerId[0]->ledger_id."_ledger_dtl (
+			$ledgerId = DB::connection($databaseName)->select("SELECT  MAX(ledger_id) AS ledger_id from ledger_mst where deleted_at='0000-00-00 00:00:00'");
+			$result = DB::connection($databaseName)->statement("CREATE TABLE ".$ledgerId[0]->ledger_id."_ledger_dtl (
 			 `".$ledgerId[0]->ledger_id."_id` int(11) NOT NULL AUTO_INCREMENT,
 			 `amount` decimal(10,2) NOT NULL,
 			 `amount_type` enum('credit','debit') NOT NULL,
@@ -70,7 +76,7 @@ class LedgerModel extends Model
 			if($result==1)
 			{
 				DB::beginTransaction();
-				$ledgerData = DB::select("select 
+				$ledgerData = DB::connection($databaseName)->select("select 
 				ledger_id,
 				ledger_name,
 				alias,
@@ -112,6 +118,11 @@ class LedgerModel extends Model
 	*/
 	public function insertAllData()
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$mytime = Carbon\Carbon::now();
 		$getLedgerData = array();
 		$getLedgerKey = array();
@@ -154,7 +165,7 @@ class LedgerModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::statement("insert into ledger_mst(".$keyName.") 
+		$raw = DB::connection($databaseName)->statement("insert into ledger_mst(".$keyName.") 
 		values(".$ledgerData.")");
 		DB::commit();
 		
@@ -163,8 +174,8 @@ class LedgerModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			$ledgerId = DB::select("SELECT  MAX(ledger_id) AS ledger_id from ledger_mst where deleted_at='0000-00-00 00:00:00'");
-			$result = DB::statement("CREATE TABLE ".$ledgerId[0]->ledger_id."_ledger_dtl (
+			$ledgerId = DB::connection($databaseName)->select("SELECT  MAX(ledger_id) AS ledger_id from ledger_mst where deleted_at='0000-00-00 00:00:00'");
+			$result = DB::connection($databaseName)->statement("CREATE TABLE ".$ledgerId[0]->ledger_id."_ledger_dtl (
 			 `".$ledgerId[0]->ledger_id."_id` int(11) NOT NULL AUTO_INCREMENT,
 			 `amount` decimal(10,2) NOT NULL,
 			 `amount_type` enum('credit','debit') NOT NULL,
@@ -181,12 +192,12 @@ class LedgerModel extends Model
 			if($result==1)
 			{
 				//insertion of balance data in ledger table
-				$ledgerInsertionResult = DB::statement("insert into ".$ledgerId[0]->ledger_id."_ledger_dtl(".$balanceKeyName.",ledger_id,entry_date) 
+				$ledgerInsertionResult = DB::connection($databaseName)->statement("insert into ".$ledgerId[0]->ledger_id."_ledger_dtl(".$balanceKeyName.",ledger_id,entry_date) 
 				values(".$ledgerBalanceData.",'".$ledgerId[0]->ledger_id."','".$mytime."')");
 				if($ledgerInsertionResult==1)
 				{
 					DB::beginTransaction();
-					$ledgerData = DB::select("select 
+					$ledgerData = DB::connection($databaseName)->select("select 
 					ledger_id,
 					ledger_name,
 					alias,
@@ -234,6 +245,11 @@ class LedgerModel extends Model
 	*/
 	public function insertGeneralLedger($companyId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -252,7 +268,7 @@ class LedgerModel extends Model
 		for($arrayData=0;$arrayData<count($generalLedgerArray);$arrayData++)
 		{
 			DB::beginTransaction();
-			$ledgerInsertionResult = DB::statement("insert into ledger_mst
+			$ledgerInsertionResult = DB::connection($databaseName)->statement("insert into ledger_mst
 			(ledger_name,
 			inventory_affected,
 			state_abb,
@@ -275,7 +291,7 @@ class LedgerModel extends Model
 		}
 		//get max ledgerId
 		DB::beginTransaction();
-		$ledgerIdData = DB::select("select 
+		$ledgerIdData = DB::connection($databaseName)->select("select 
 		ledger_id,
 		created_at
 		from ledger_mst 
@@ -291,7 +307,7 @@ class LedgerModel extends Model
 			for($ledgerIdArray=0;$ledgerIdArray<count($ledgerIdData);$ledgerIdArray++)
 			{
 				DB::beginTransaction();
-				$result = DB::statement("CREATE TABLE ".$ledgerIdData[$ledgerIdArray]->ledger_id."_ledger_dtl (
+				$result = DB::connection($databaseName)->statement("CREATE TABLE ".$ledgerIdData[$ledgerIdArray]->ledger_id."_ledger_dtl (
 				 `".$ledgerIdData[$ledgerIdArray]->ledger_id."_id` int(11) NOT NULL AUTO_INCREMENT,
 				 `amount` decimal(10,2) NOT NULL,
 				 `amount_type` enum('credit','debit') NOT NULL,
@@ -307,7 +323,7 @@ class LedgerModel extends Model
 				DB::commit();
 				
 				DB::beginTransaction();
-				$ledgerTrnData = DB::statement("insert into 
+				$ledgerTrnData = DB::connection($databaseName)->statement("insert into 
 				".$ledgerIdData[$ledgerIdArray]->ledger_id."_ledger_dtl
 				(amount,
 				amount_type,
@@ -340,6 +356,11 @@ class LedgerModel extends Model
 	*/
 	public function updateData($ledgerData,$key,$ledgerId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 	    $mytime = Carbon\Carbon::now();
 		$keyValueString="";
 		$keyValueStringAmt="";
@@ -357,7 +378,7 @@ class LedgerModel extends Model
 		if($keyValueStringAmt!="")
 		{
 			DB::beginTransaction();
-			$ledgerTrnData = DB::statement("update ".$ledgerId."_ledger_dtl 
+			$ledgerTrnData = DB::connection($databaseName)->statement("update ".$ledgerId."_ledger_dtl 
 			set ".$keyValueStringAmt."updated_at='".$mytime."'
 			where ledger_id = '".$ledgerId."' and deleted_at='0000-00-00 00:00:00' and balance_flag='opening'");
 			DB::commit();
@@ -365,7 +386,7 @@ class LedgerModel extends Model
 		if($keyValueString!="")
 		{
 			DB::beginTransaction();
-			$raw = DB::statement("update ledger_mst 
+			$raw = DB::connection($databaseName)->statement("update ledger_mst 
 			set ".$keyValueString."updated_at='".$mytime."'
 			where ledger_id = '".$ledgerId."' and deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
@@ -390,8 +411,13 @@ class LedgerModel extends Model
 	*/
 	public function getAllData()
 	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();		
-		$ledgerAllData = DB::select("select 
+		$ledgerAllData = DB::connection($databaseName)->select("select 
 		ledger_id,
 		ledger_name,
 		alias,
@@ -431,7 +457,7 @@ class LedgerModel extends Model
 				
 				//get opening balance
 				DB::beginTransaction();
-				$raw = DB::select("SELECT 
+				$raw = DB::connection($databaseName)->select("SELECT 
 				".$ledgerIdArray[$ledgerDataArray]."_id,
 				amount,
 				amount_type
@@ -444,7 +470,7 @@ class LedgerModel extends Model
 				{
 					//get current balance
 					DB::beginTransaction();
-					$ledgerResult = DB::select("SELECT 
+					$ledgerResult = DB::connection($databaseName)->select("SELECT 
 					".$ledgerIdArray[$ledgerDataArray]."_id,
 					amount,
 					amount_type
@@ -504,9 +530,14 @@ class LedgerModel extends Model
 	 * returns the status
 	*/
 	public function getData($ledgerId)
-	{		
+	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
-		$ledgerData = DB::select("select 
+		$ledgerData = DB::connection($databaseName)->select("select 
 		ledger_id,
 		ledger_name,
 		alias,
@@ -543,7 +574,7 @@ class LedgerModel extends Model
 			
 			//get opening balance
 			DB::beginTransaction();
-			$raw = DB::select("SELECT 
+			$raw = DB::connection($databaseName)->select("SELECT 
 			".$ledgerId."_id,
 			amount,
 			amount_type
@@ -555,7 +586,7 @@ class LedgerModel extends Model
 			{
 				//get current balance
 				DB::beginTransaction();
-				$ledgerResult = DB::select("SELECT 
+				$ledgerResult = DB::connection($databaseName)->select("SELECT 
 				".$ledgerId."_id,
 				amount,
 				amount_type
@@ -613,8 +644,13 @@ class LedgerModel extends Model
 	*/
 	public function getAllLedgerData($ledgerGrpId)
 	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();		
-		$ledgerAllData = DB::select("select 
+		$ledgerAllData = DB::connection($databaseName)->select("select 
 		ledger_id,
 		ledger_name,
 		alias,
@@ -653,7 +689,7 @@ class LedgerModel extends Model
 				
 				//get opening balance
 				DB::beginTransaction();
-				$raw = DB::select("SELECT 
+				$raw = DB::connection($databaseName)->select("SELECT 
 				".$ledgerIdArray[$ledgerDataArray]."_id,
 				amount,
 				amount_type
@@ -665,7 +701,7 @@ class LedgerModel extends Model
 				{
 					//get current balance
 					DB::beginTransaction();
-					$ledgerResult = DB::select("SELECT 
+					$ledgerResult = DB::connection($databaseName)->select("SELECT 
 					".$ledgerIdArray[$ledgerDataArray]."_id,
 					amount,
 					amount_type
@@ -725,8 +761,13 @@ class LedgerModel extends Model
 	*/
 	public function getLedgerDetail($companyId)
 	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();		
-		$ledgerAllData = DB::select("select 
+		$ledgerAllData = DB::connection($databaseName)->select("select 
 		ledger_id,
 		ledger_name,
 		alias,
@@ -766,7 +807,7 @@ class LedgerModel extends Model
 				
 				//get opening balance
 				DB::beginTransaction();
-				$raw = DB::select("SELECT 
+				$raw = DB::connection($databaseName)->select("SELECT 
 				".$ledgerIdArray[$ledgerDataArray]."_id,
 				amount,
 				amount_type
@@ -778,7 +819,7 @@ class LedgerModel extends Model
 				{
 					//get current balance
 					DB::beginTransaction();
-					$ledgerResult = DB::select("SELECT 
+					$ledgerResult = DB::connection($databaseName)->select("SELECT 
 					".$ledgerIdArray[$ledgerDataArray]."_id,
 					amount,
 					amount_type
@@ -838,12 +879,17 @@ class LedgerModel extends Model
 	*/
 	public function getLedgerTransactionDetail($ledgerId)
 	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
 		DB::beginTransaction();		
-		$data = DB::select("select 
+		$data = DB::connection($databaseName)->select("select 
 		".$ledgerId."_id,
 		amount,
 		amount_type,
@@ -865,7 +911,7 @@ class LedgerModel extends Model
 			
 			//get opening balance
 			DB::beginTransaction();
-			$raw = DB::select("SELECT 
+			$raw = DB::connection($databaseName)->select("SELECT 
 			".$ledgerId."_id,
 			amount,
 			amount_type
@@ -877,7 +923,7 @@ class LedgerModel extends Model
 			{
 				//get current balance
 				DB::beginTransaction();
-				$ledgerResult = DB::select("SELECT 
+				$ledgerResult = DB::connection($databaseName)->select("SELECT 
 				".$ledgerId."_id,
 				amount,
 				amount_type
@@ -944,22 +990,28 @@ class LedgerModel extends Model
 	*/
 	public function getLedgerData($fromDate,$toDate,$companyId,$ledgerType)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		if(strcmp($ledgerType,"all")==0)
 		{
 			DB::beginTransaction();
-			$data = DB::select("SELECT 
+			$data = DB::connection($databaseName)->select("SELECT 
 			ledger_id
 			FROM ledger_mst
 			WHERE (ledger_name='retail_sales' OR 
 			ledger_name='whole_sales') and 
 			company_id='".$companyId."' and 
+			
 			deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
 		}
 		else
 		{
 			DB::beginTransaction();
-			$data = DB::select("SELECT 
+			$data = DB::connection($databaseName)->select("SELECT 
 			ledger_id
 			FROM ledger_mst
 			WHERE ledger_name='".$ledgerType."' and 
@@ -967,6 +1019,7 @@ class LedgerModel extends Model
 			deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
 		}
+		
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -978,9 +1031,9 @@ class LedgerModel extends Model
 		{
 			$mergeArray = array();
 			for($ledgerData=0;$ledgerData<count($data);$ledgerData++)
-			{
+			{				
 				DB::beginTransaction();
-				$ledgerAllData = DB::select("SELECT 
+				$ledgerAllData = DB::connection($databaseName)->select("SELECT 
 				".$data[$ledgerData]->ledger_id."_id,
 				amount,
 				amount_type,
@@ -1000,7 +1053,7 @@ class LedgerModel extends Model
 					$currentBalanceType="";
 					//get opening balance
 					DB::beginTransaction();
-					$raw = DB::select("SELECT 
+					$raw = DB::connection($databaseName)->select("SELECT 
 					".$ledgerId."_id,
 					amount,
 					amount_type
@@ -1012,7 +1065,7 @@ class LedgerModel extends Model
 					{
 						//get current balance
 						DB::beginTransaction();
-						$ledgerResult = DB::select("SELECT 
+						$ledgerResult = DB::connection($databaseName)->select("SELECT 
 						".$ledgerId."_id,
 						amount,
 						amount_type
@@ -1060,16 +1113,15 @@ class LedgerModel extends Model
 					$balanceAmountArray['openingBalanceType'] = $raw[0]->amount_type;
 					$balanceAmountArray['currentBalance'] = $amountData;
 					$balanceAmountArray['currentBalanceType'] = $currentBalanceType;
-					
 					for($arrayData=0;$arrayData<count($ledgerAllData);$arrayData++)
 					{
 						array_push($mergeArray,(Object)array_merge((array)$ledgerAllData[$arrayData],(array)((Object)$balanceAmountArray)));
 					}
 				}
-				else
-				{
-					return $exceptionArray['404'];
-				}
+				//else
+				//{
+					//return $exceptionArray['404'];
+				//}
 			}
 			return json_encode($mergeArray);
 		}
@@ -1082,13 +1134,18 @@ class LedgerModel extends Model
 	*/
 	public function getLedgerId($companyId,$type)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		if(strcmp($type,"all")==0)
 		{
 			DB::beginTransaction();
-			$raw = DB::select("SELECT 
+			$raw = DB::connection($databaseName)->select("SELECT 
 			ledger_id
 			FROM ledger_mst
 			WHERE (ledger_name='retail_sales' OR 
@@ -1100,7 +1157,7 @@ class LedgerModel extends Model
 		else
 		{
 			DB::beginTransaction();
-			$raw = DB::select("SELECT 
+			$raw = DB::connection($databaseName)->select("SELECT 
 			ledger_id
 			FROM ledger_mst
 			WHERE ledger_name='".$type."' and 
@@ -1127,10 +1184,15 @@ class LedgerModel extends Model
 	*/
 	public function getCurrentYearData($companyId,$ledgerType)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		if(strcmp($ledgerType,"all")==0)
 		{
 			DB::beginTransaction();
-			$data = DB::select("SELECT 
+			$data = DB::connection($databaseName)->select("SELECT 
 			ledger_id
 			FROM ledger_mst
 			WHERE (ledger_name='retail_sales' OR 
@@ -1142,7 +1204,7 @@ class LedgerModel extends Model
 		else
 		{
 			DB::beginTransaction();
-			$data = DB::select("SELECT 
+			$data = DB::connection($databaseName)->select("SELECT 
 			ledger_id
 			FROM ledger_mst
 			WHERE ledger_name='".$ledgerType."' and 
@@ -1164,7 +1226,7 @@ class LedgerModel extends Model
 			for($ledgerData=0;$ledgerData<count($data);$ledgerData++)
 			{
 				DB::beginTransaction();
-				$ledgerAllData = DB::select("SELECT 
+				$ledgerAllData = DB::connection($databaseName)->select("SELECT 
 				".$data[$ledgerData]->ledger_id."_id,
 				amount,
 				amount_type,
@@ -1184,7 +1246,7 @@ class LedgerModel extends Model
 					
 					//get opening balance
 					DB::beginTransaction();
-					$raw = DB::select("SELECT 
+					$raw = DB::connection($databaseName)->select("SELECT 
 					".$ledgerId."_id,
 					amount,
 					amount_type
@@ -1196,7 +1258,7 @@ class LedgerModel extends Model
 					{
 						//get current balance
 						DB::beginTransaction();
-						$ledgerResult = DB::select("SELECT 
+						$ledgerResult = DB::connection($databaseName)->select("SELECT 
 						".$ledgerId."_id,
 						amount,
 						amount_type
@@ -1265,6 +1327,11 @@ class LedgerModel extends Model
 	*/
 	public function getDataAsPerLedgerGrp($ledgerGrpArray,$companyId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$ledgerGrpArray = func_get_arg(0);
 		$companyId = func_get_arg(1);
 		$ledgerArray = array();
@@ -1278,7 +1345,7 @@ class LedgerModel extends Model
 		for($ledgerGrpArrayData=0;$ledgerGrpArrayData<count($ledgerGrpArray);$ledgerGrpArrayData++)
 		{
 			DB::beginTransaction();
-			$data = DB::select("SELECT 
+			$data = DB::connection($databaseName)->select("SELECT 
 			ledger_id,
 			ledger_name,
 			alias,
@@ -1325,7 +1392,7 @@ class LedgerModel extends Model
 					
 					//get opening balance
 					DB::beginTransaction();
-					$raw = DB::select("SELECT 
+					$raw = DB::connection($databaseName)->select("SELECT 
 					".$ledgerArray[$ledgerDataArray][$innerArray]."_id,
 					amount,
 					amount_type
@@ -1338,7 +1405,7 @@ class LedgerModel extends Model
 					{
 						//get current balance
 						DB::beginTransaction();
-						$ledgerResult = DB::select("SELECT 
+						$ledgerResult = DB::connection($databaseName)->select("SELECT 
 						".$ledgerArray[$ledgerDataArray][$innerArray]."_id,
 						amount,
 						amount_type
@@ -1403,8 +1470,13 @@ class LedgerModel extends Model
 	*/
 	public function getDataAsPerLedgerName($ledgerName,$companyId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();		
-		$ledgerData = DB::select("select 
+		$ledgerData = DB::connection($databaseName)->select("select 
 		ledger_id,
 		ledger_name,
 		alias,
@@ -1440,7 +1512,7 @@ class LedgerModel extends Model
 			
 			//get opening balance
 			DB::beginTransaction();
-			$raw = DB::select("SELECT 
+			$raw = DB::connection($databaseName)->select("SELECT 
 			".$ledgerId."_id,
 			amount,
 			amount_type
@@ -1452,7 +1524,7 @@ class LedgerModel extends Model
 			{
 				//get current balance
 				DB::beginTransaction();
-				$ledgerResult = DB::select("SELECT 
+				$ledgerResult = DB::connection($databaseName)->select("SELECT 
 				".$ledgerId."_id,
 				amount,
 				amount_type
@@ -1512,13 +1584,18 @@ class LedgerModel extends Model
 	*/
 	public function getDataAsPerContactNo($companyId,$contactNo,$emailId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		if($contactNo=="")
 		{
 			DB::beginTransaction();
-			$raw = DB::select("select ledger_id 
+			$raw = DB::connection($databaseName)->select("select ledger_id 
 			from ledger_mst 
 			where email_id='".$emailId."' and 
 			contact_no='".$contactNo."' and
@@ -1528,7 +1605,7 @@ class LedgerModel extends Model
 		else
 		{
 			DB::beginTransaction();
-			$raw = DB::select("select ledger_id 
+			$raw = DB::connection($databaseName)->select("select ledger_id 
 			from ledger_mst 
 			where company_id='".$companyId."' and 
 			contact_no='".$contactNo."' and
@@ -1554,6 +1631,11 @@ class LedgerModel extends Model
 	*/
 	public function getLedger($companyId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$raw = array();
 		//get exception message
 		$exception = new ExceptionMessage();
@@ -1564,7 +1646,7 @@ class LedgerModel extends Model
 		for($ledgerDataArray=0;$ledgerDataArray<count($ledgerResult);$ledgerDataArray++)
 		{
 			DB::beginTransaction();
-			$raw[$ledgerDataArray] = DB::select("select ledger_id 
+			$raw[$ledgerDataArray] = DB::connection($databaseName)->select("select ledger_id 
 			from ledger_mst 
 			where company_id='".$companyId."' and 
 			ledger_name='".$ledgerResult[$ledgerDataArray]."' and
@@ -1586,9 +1668,14 @@ class LedgerModel extends Model
 	*/
 	public function deleteData($ledgerId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$mytime = Carbon\Carbon::now();
 		DB::beginTransaction();
-		$raw = DB::statement("update ledger_mst 
+		$raw = DB::connection($databaseName)->statement("update ledger_mst 
 		set deleted_at='".$mytime."' 
 		where ledger_id=".$ledgerId);
 		DB::commit();

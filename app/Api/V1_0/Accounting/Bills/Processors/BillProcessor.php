@@ -24,14 +24,12 @@ use Carbon;
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
 class BillProcessor extends BaseProcessor
-{
-	/**
+{	/**
      * @var billPersistable
 	 * @var request
      */
 	private $billPersistable;
 	private $request;    
-	
     /**
      * get the form-data and set into the persistable object
      * $param Request object [Request $request]
@@ -48,14 +46,14 @@ class BillProcessor extends BaseProcessor
 		//get exception message
 		$exception = new ExceptionMessage();
 		$msgArray = $exception->messageArrays();
-		
+
 		//get constant variables array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
 		
 		//trim an input 
 		$billTransformer = new BillTransformer();
-		$tRequest = $billTransformer->trimInsertData($this->request);
+		$tRequest = $billTransformer->trimInsertData($this->request);	
 		if($tRequest==1)
 		{
 			return $msgArray['content'];
@@ -77,11 +75,11 @@ class BillProcessor extends BaseProcessor
 				}
 				//check client is exists by contact-number
 				$clientModel = new ClientModel();
-				$clientData = $clientModel->getClientData($contactNo,$emailId);
+				$clientData = $clientModel->getClientData($contactNo,$emailId);			
 				if(is_array(json_decode($clientData)))
 				{
 					$encodedClientData = json_decode($clientData);
-					$clientId = $encodedClientData[0]->client_id;
+					$clientId = $encodedClientData[0]->client_id;				
 				}
 				else
 				{
@@ -150,8 +148,7 @@ class BillProcessor extends BaseProcessor
 			$method=$constantArray['postMethod'];
 			$path=$constantArray['ledgerUrl'];
 			$ledgerRequest = Request::create($path,$method,$ledgerArray);
-			$processedData = $ledgerController->store($ledgerRequest);
-			
+			$processedData = $ledgerController->store($ledgerRequest);			
 			if(strcmp($msgArray['500'],$processedData)==0 || strcmp($msgArray['content'],$processedData)==0)
 			{
 				return $processedData;
@@ -165,13 +162,11 @@ class BillProcessor extends BaseProcessor
 		$journalDataArray = array();
 		$journalJfIdRequest = Request::create($journalPath,$journalMethod,$journalDataArray);
 		$jfId = $journalController->getData($journalJfIdRequest);
-		
 		//get general ledger array data
 		$generalLedgerData = $ledgerModel->getLedger($tRequest['company_id']);
 		$generalLedgerArray = json_decode($generalLedgerData);
-		
 		$salesTypeEnum = new SalesTypeEnum();
-		$salesTypeEnumArray = $salesTypeEnum->enumArrays();
+		$salesTypeEnumArray = $salesTypeEnum->enumArrays();		
 		if(strcmp($request->header()['salestype'][0],$salesTypeEnumArray['retailSales'])==0)
 		{
 			//get ledger-id of retail_sales as per given company_id
@@ -183,16 +178,14 @@ class BillProcessor extends BaseProcessor
 			//get ledger-id of whole sales as per given company_id
 			$ledgerIdData = $ledgerModel->getLedgerId($tRequest['company_id'],$request->header()['salestype'][0]);
 			$decodedLedgerId = json_decode($ledgerIdData);
-		}	
-		
-		$ledgerTaxAcId = $generalLedgerArray[1][0]->ledger_id;
+		}
+		$ledgerTaxAcId = $generalLedgerArray[0][0]->ledger_id;
 		$ledgerSaleAcId = $decodedLedgerId[0]->ledger_id;
-		$ledgerDiscountAcId = $generalLedgerArray[2][0]->ledger_id;
+		$ledgerDiscountAcId = $generalLedgerArray[1][0]->ledger_id;
 		
 		$amountTypeEnum = new AmountTypeEnum();
 		$amountTypeArray = $amountTypeEnum->enumArrays();
-		$ledgerAmount = $tRequest['total']-$tRequest['advance'];
-		
+		$ledgerAmount = $tRequest['total']-$tRequest['advance'];		
 		$discountTotal=0;
 		for($discountArray=0;$discountArray<count($tRequest[0]);$discountArray++)
 		{
@@ -329,6 +322,7 @@ class BillProcessor extends BaseProcessor
 						"amountType"=>$amountTypeArray['debitType'],
 						"ledgerId"=>$ledgerId,
 					);
+
 					$dataArray[1]=array(
 						"amount"=>$tRequest['tax'],
 						"amountType"=>$amountTypeArray['debitType'],
@@ -475,7 +469,7 @@ class BillProcessor extends BaseProcessor
 			return $processedData;
 		}
 	}
-	
+
 	/**
      * get the fromDate-toDate data and set into the persistable object
      * $param Request object [Request $request]
@@ -486,11 +480,10 @@ class BillProcessor extends BaseProcessor
 		//get exception message
 		$exception = new ExceptionMessage();
 		$msgArray = $exception->messageArrays();
-		
+
 		//trim an input 
 		$billTransformer = new BillTransformer();
 		$tRequest = $billTransformer->trimFromToDateData($requestHeader);
-		
 		if(is_array($tRequest))
 		{
 			// set data in persistable object

@@ -128,8 +128,8 @@ include ('connection.php');
 				// formdata.append('isDisplay',$scope.formAdata.is_display);
 				
 				//city
-				// $scope.formAdata.city_name = " Ananddd ";
-				// $scope.formAdata.is_display = ' no1';
+				// $scope.formAdata.city_name = " Anandddd ";
+				// $scope.formAdata.is_display = ' no';
 				// $scope.formAdata.state_abb = 'IN-AG';
 				
 				// formdata.append('cityName',$scope.formAdata.city_name);
@@ -416,7 +416,7 @@ include ('connection.php');
 				// "inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"companyId":14,"transactionDate":"22-10-2015","invoiceNumber":23,"billNumber":2}];
 				
 				// formdata.append('jfId',52);
- 				// formdata.append('companyId',83);
+ 				// formdata.append('companyId',14);
 				// formdata.append('entryDate','19-01-2017');
 				// var json=[{"amount":220,"amountType":" credit ","ledgerId":271},{"amount":23,"amountType":"credit","ledgerId":270},{"amount":243,"amountType":"debit","ledgerId":267}];
 				
@@ -451,7 +451,7 @@ include ('connection.php');
 				
 				//9875647544
 				//bill
-				// $scope.user = [{"billData":[{"companyId":83,"entryDate":"22-10-2015","contactNo":"9875347543","workNo":"9875647344","isDisplay":"yes","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbrain","clientName":"palak","invoiceNumber":"INV/2016-12/53","address1":"sfja,sa","address2":"dfsd,ds","stateAbb":"IN-AG","cityId":1,"total":100,"tax":10,"grandTotal":134,"advance":100,"balance":10,"paymentMode":"cash","bankName":"abc","checkNumber":"abbb34eQ1G","remark":"adsfsf afasf"}]}];
+				// $scope.user = [{"billData":[{"companyId":83,"entryDate":"22-10-2015","contactNo":"9875311143","workNo":"9875647344","isDisplay":"yes","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbrain","clientName":"ssaass","invoiceNumber":"INV/2016-12/53","address1":"sfja,sa","address2":"dfsd,ds","stateAbb":"IN-AG","cityId":1,"total":100,"tax":10,"grandTotal":134,"advance":100,"balance":10,"paymentMode":"cash","bankName":"abc","checkNumber":"abbb34eQ1G","remark":"adsfsf afasf"}]}];
 				
 				// $scope.inventory=[{"productId": 1 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":40}];
 				
@@ -471,7 +471,7 @@ include ('connection.php');
 				// var productId = 1;
 				// var productGrpId = 11;
 				// var productCatId = 16;
-				var companyId=14;
+				var companyId=83;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -485,7 +485,7 @@ include ('connection.php');
 				// var jfId=52;
 				// var journalId=802;
 				
-				var url="http://www.scerp1.com/products/company/"+companyId+"/transaction";
+				// var url="http://www.scerp1.com/products/company/"+companyId+"/transaction";
 				// var url = "http://www.scerp1.com/logout/user/"+userId;
 				
 				// var url = "http://www.scerp1.com/users";
@@ -563,11 +563,11 @@ include ('connection.php');
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productCategoryId':18},
                         // headers: {'Content-Type': undefined,'jfId':'4','authenticationToken':'728023b3579a2c3177020535991bc3ae'},
-                        // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','type':'purchase'},
+                        headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','salesType':'retail_sales','productCategoryId':18,'productGroupId':10},
                         // headers: {'Content-Type': undefined,'type':'sales'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'eb7cd694eabac838e0f9cba8789b668e','salesType':'retail_sales'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'eb7cd694eabac838e0f9cba8789b668e','salesType':'retail_sales','fromDate':'22-10-2015','toDate':'22-10-2015'}
-                        // headers: {'Content-Type': undefined,'authenticationToken':'eb7cd694eabac838e0f9cba8789b668e','productId':1,'productGroupId':10,'productCategoryId':18,'fromDate':'10-01-2017','toDate':'18-01-2017'},
+                        // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productId':1,'fromDate':'22-10-2015','toDate':'20-01-2017'},
                         // headers: {'Content-Type': undefined,'type':'sales','jfId':5},
                         // headers: {'Content-Type': undefined},
 						 // data:formdata

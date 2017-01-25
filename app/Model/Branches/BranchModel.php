@@ -6,6 +6,7 @@ use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Entities\EnumClasses\IsDefaultEnum;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -20,6 +21,11 @@ class BranchModel extends Model
 	*/
 	public function insertData()
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$getBranchData = array();
 		$getBranchKey = array();
 		$getBranchData = func_get_arg(0);
@@ -40,7 +46,7 @@ class BranchModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::statement("insert into branch_mst(".$keyName.") 
+		$raw = DB::connection($databaseName)->statement("insert into branch_mst(".$keyName.") 
 		values(".$branchData.")");
 		DB::commit();
 		
@@ -63,6 +69,11 @@ class BranchModel extends Model
 	*/
 	public function updateData($branchData,$key,$branchId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
 		
@@ -80,7 +91,7 @@ class BranchModel extends Model
 			{
 				if(strcmp($branchData[$keyData],$enumIsDefArray['default'])==0)
 				{
-					$raw  = DB::statement("update branch_mst 
+					$raw  = DB::connection($databaseName)->statement("update branch_mst 
 					set is_default='".$enumIsDefArray['notDefault']."',updated_at='".$mytime."' 
 					where deleted_at = '0000-00-00 00:00:00'");
 					if($raw==0)
@@ -96,7 +107,7 @@ class BranchModel extends Model
 			$keyValueString=$keyValueString.$key[$data]."='".$branchData[$data]."',";
 		}
 		DB::beginTransaction();
-		$raw = DB::statement("update branch_mst 
+		$raw = DB::connection($databaseName)->statement("update branch_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
 		where branch_id = '".$branchId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
@@ -117,8 +128,13 @@ class BranchModel extends Model
 	*/
 	public function getAllData()
 	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();		
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		branch_id,
 		branch_name,
 		address1,
@@ -155,9 +171,14 @@ class BranchModel extends Model
 	 * returns the status
 	*/
 	public function getData($branchId)
-	{		
+	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		branch_id,
 		branch_name,
 		address1,
@@ -193,8 +214,13 @@ class BranchModel extends Model
 	*/
 	public function getAllBranchData($companyId)
 	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();		
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		branch_id,
 		branch_name,
 		address1,
@@ -228,9 +254,14 @@ class BranchModel extends Model
 	//delete
 	public function deleteData($branchId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
-		$raw = DB::statement("update product_mst 
+		$raw = DB::connection($databaseName)->statement("update product_mst 
 		set deleted_at='".$mytime."' 
 		where branch_id=".$branchId);
 		DB::commit();
@@ -240,7 +271,7 @@ class BranchModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			$product = DB::statement("update branch_mst 
+			$product = DB::connection($databaseName)->statement("update branch_mst 
 			set deleted_at='".$mytime."' 
 			where branch_id=".$branchId);
 			if($product==1)

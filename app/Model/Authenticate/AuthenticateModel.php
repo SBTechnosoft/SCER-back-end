@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -19,9 +20,14 @@ class AuthenticateModel extends Model
 	*/
 	public function insertData($userId,$token)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$mytime = Carbon\Carbon::now();
 		DB::beginTransaction();
-		$raw = DB::statement("insert into active_session
+		$raw = DB::connection($databaseName)->statement("insert into active_session
 		(user_id,
 		token,
 		updated_at)
@@ -52,10 +58,15 @@ class AuthenticateModel extends Model
 	*/
 	public function updateDate($userId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$mytime = Carbon\Carbon::now();
 		
 		DB::beginTransaction();
-		$raw = DB::statement("update active_session 
+		$raw = DB::connection($databaseName)->statement("update active_session 
 		set updated_at='".$mytime."' where user_id='".$userId."'");
 		DB::commit();
 		
@@ -78,12 +89,17 @@ class AuthenticateModel extends Model
 	*/
 	public function getAllData()
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
 		DB::beginTransaction();
-		$raw = DB::select("select
+		$raw = DB::connection($databaseName)->select("select
 		session_id,
 		token,
 		created_at,
@@ -110,12 +126,17 @@ class AuthenticateModel extends Model
 	*/
 	public function getData($userId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
 		DB::beginTransaction();
-		$raw = DB::select("select
+		$raw = DB::connection($databaseName)->select("select
 		session_id,
 		token,
 		created_at,
@@ -142,12 +163,17 @@ class AuthenticateModel extends Model
 	*/
 	public function getUserType($headerData)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
 		DB::beginTransaction();
-		$raw = DB::select("select
+		$raw = DB::connection($databaseName)->select("select
 		u.user_type
 		from active_session a  
 		RIGHT JOIN user_mst u
@@ -171,6 +197,11 @@ class AuthenticateModel extends Model
 	*/
 	public function changeDate($headerData)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$mytime = Carbon\Carbon::now();
 		
 		//get exception message
@@ -178,7 +209,7 @@ class AuthenticateModel extends Model
 		$exceptionArray = $exception->messageArrays();
 
 		DB::beginTransaction();
-		$raw = DB::statement("update active_session
+		$raw = DB::connection($databaseName)->statement("update active_session
 		set updated_at='".$mytime."'
 		where token='".$headerData['authenticationtoken'][0]."'");
 		DB::commit();

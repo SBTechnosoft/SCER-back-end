@@ -29,6 +29,8 @@ use ERP\Core\Products\Properties\VatPropertyTrait;
 use ERP\Core\Products\Properties\MrpPropertyTrait;
 use ERP\Core\Products\Properties\MarginPropertyTrait;
 use ERP\Core\Products\Properties\DiscountValuePropertyTrait;
+use ERP\Core\Products\Properties\FromDatePropertyTrait;
+use ERP\Core\Products\Properties\ToDatePropertyTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -62,4 +64,6 @@ class productPersistable
 	use MrpPropertyTrait;
 	use MarginPropertyTrait;
 	use DiscountValuePropertyTrait;
+	use FromDatePropertyTrait;
+	use ToDatePropertyTrait;
 }

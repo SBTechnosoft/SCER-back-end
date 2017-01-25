@@ -4,6 +4,7 @@ namespace ERP\Model\Banks;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -17,8 +18,13 @@ class BankModel extends Model
 	*/
 	public function getAllData()
 	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();		
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		bank_id,
 		bank_name
 		from bank_mst where deleted_at='0000-00-00 00:00:00'");
@@ -26,10 +32,10 @@ class BankModel extends Model
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['204'];
+			return $exceptionArray['204'];
 		}
 		else
 		{
@@ -44,8 +50,13 @@ class BankModel extends Model
 	*/
 	public function getData($bankId)
 	{		
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		bank_id,
 		bank_name
 		from bank_mst where bank_id = ".$bankId." and deleted_at='0000-00-00 00:00:00'");
@@ -53,10 +64,10 @@ class BankModel extends Model
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['404'];
+			return $exceptionArray['404'];
 		}
 		else
 		{

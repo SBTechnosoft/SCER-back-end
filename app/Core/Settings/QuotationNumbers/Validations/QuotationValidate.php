@@ -13,7 +13,7 @@ class QuotationValidate
 	public function validate($request)
 	{
 		$rules = array(
-			'quotation_label'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]*$/', 
+			'quotation_label'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-/\\\]*$/', 
 		);
 		$messages = [
 			'quotation_label.between' => 'StringLengthException :Enter the :attribute less then 35 character',
@@ -38,7 +38,7 @@ class QuotationValidate
 	public function validateUpdateData($keyName,$value,$request)
 	{
 		$validationArray = array(
-			'quotation_label'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]*$/', 
+			'quotation_label'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-/\\\]*$/', 
 		);
 		$rules =array();
 		foreach ($validationArray as $key => $value) 

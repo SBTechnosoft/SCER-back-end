@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -17,19 +18,24 @@ class TrialBalanceModel extends Model
 	 * returns the array-data/exception message
 	*/
 	public function getTrialBalanceData($companyId)
-	{	
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
 		//truncate table trial-balance
 		DB::beginTransaction();	
-		$truncateTable = DB::statement("truncate table trial_balance_dtl"); 
+		$truncateTable = DB::connection($databaseName)->statement("truncate table trial_balance_dtl"); 
 		DB::commit();
 		
 		//get ledgerId from ledger 
 		DB::beginTransaction();	
-		$ledgerResult = DB::select("select
+		$ledgerResult = DB::connection($databaseName)->select("select
 		ledger_id
 		from ledger_mst
 		where company_id='".$companyId."' and deleted_at='0000-00-00 00:00:00'"); 
@@ -41,7 +47,7 @@ class TrialBalanceModel extends Model
 			$balanceType="";
 			// get amount,amount_type from particular ledgerId_ledger_dtl
 			DB::beginTransaction();	
-			$ledgerAmountResult = DB::select("select
+			$ledgerAmountResult = DB::connection($databaseName)->select("select
 			amount,
 			amount_type
 			from ".$ledgerResult[$ledgerData]->ledger_id."_ledger_dtl
@@ -78,7 +84,7 @@ class TrialBalanceModel extends Model
 			{
 				// insert amount,amount_type in trial-balance
 				DB::beginTransaction();	
-				$trialBalanceResult = DB::statement("insert into trial_balance_dtl(
+				$trialBalanceResult = DB::connection($databaseName)->statement("insert into trial_balance_dtl(
 				amount,
 				amount_type,
 				ledger_id)
@@ -88,7 +94,7 @@ class TrialBalanceModel extends Model
 		}
 		//get trial-balance data
 		DB::beginTransaction();	
-		$trialBalanceResult = DB::select("select 
+		$trialBalanceResult = DB::connection($databaseName)->select("select 
 		trial_balance_id,
 		amount,
 		amount_type,

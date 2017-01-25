@@ -6,6 +6,7 @@ use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Entities\EnumClasses\IsDefaultEnum;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -17,6 +18,11 @@ class CompanyModel extends Model
 	*/
 	public function insertAllData()
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$getCompanyData = array();
 		$getCompanyKey = array();
 		$getCompanyData = func_get_arg(0);
@@ -38,7 +44,7 @@ class CompanyModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::statement("insert into company_mst(".$keyName.",document_name,document_size,document_format) 
+		$raw = DB::connection($databaseName)->statement("insert into company_mst(".$keyName.",document_name,document_size,document_format) 
 		values(".$companyData.",'".$getDocumentData[0][0]."','".$getDocumentData[0][1]."','".$getDocumentData[0][2]."')");
 		DB::commit();
 		
@@ -48,7 +54,7 @@ class CompanyModel extends Model
 		if($raw==1)
 		{
 			DB::beginTransaction();
-			$companyId = DB::select("select
+			$companyId = DB::connection($databaseName)->select("select
 			max(company_id) as company_id 
 			from company_mst where deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
@@ -66,6 +72,11 @@ class CompanyModel extends Model
 	*/
 	public function insertData()
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$getCompanyData = array();
 		$getCompanyKey = array();
 		$getCompanyData = func_get_arg(0);
@@ -86,7 +97,7 @@ class CompanyModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::statement("insert into company_mst(".$keyName.") 
+		$raw = DB::connection($databaseName)->statement("insert into company_mst(".$keyName.") 
 		values(".$companyData.")");
 		DB::commit();
 		
@@ -96,7 +107,7 @@ class CompanyModel extends Model
 		if($raw==1)
 		{
 			DB::beginTransaction();
-			$companyId = DB::select("select
+			$companyId = DB::connection($databaseName)->select("select
 			max(company_id) as company_id 
 			from company_mst where deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
@@ -114,6 +125,11 @@ class CompanyModel extends Model
 	*/
 	public function updateData($companyData,$key,$companyId,$documentData)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
 		
@@ -131,8 +147,9 @@ class CompanyModel extends Model
 			{
 				if(strcmp($companyData[$keyData],$enumIsDefArray['default'])==0)
 				{
-					$raw  = DB::statement("update company_mst 
-					set is_default='".$enumIsDefArray['notDefault']."',updated_at='".$mytime."' 
+					$raw  = DB::connection($databaseName)->statement("update company_mst 
+					set is_default='".$enumIsDefArray['notDefault']."',
+					updated_at='".$mytime."' 
 					where deleted_at = '0000-00-00 00:00:00'");
 					if($raw==0)
 					{
@@ -146,8 +163,11 @@ class CompanyModel extends Model
 		{
 			$keyValueString=$keyValueString.$key[$data]."='".$companyData[$data]."',";
 		}
-		$raw  = DB::statement("update company_mst 
-		set ".$keyValueString."updated_at='".$mytime."',document_name='".$documentData[0][0]."',document_size='".$documentData[0][1]."',document_format='".$documentData[0][2]."' 
+		$raw  = DB::connection($databaseName)->statement("update company_mst 
+		set ".$keyValueString."updated_at='".$mytime."',
+		document_name='".$documentData[0][0]."',
+		document_size='".$documentData[0][1]."',
+		document_format='".$documentData[0][2]."' 
 		where company_id = '".$companyId."' and deleted_at='0000-00-00 00:00:00'");
 		if($raw==1)
 		{
@@ -166,6 +186,11 @@ class CompanyModel extends Model
 	*/
 	public function updateCompanyData($companyData,$key,$companyId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
 		
@@ -183,7 +208,7 @@ class CompanyModel extends Model
 			{
 				if(strcmp($companyData[$keyData],$enumIsDefArray['default'])==0)
 				{
-					$raw  = DB::statement("update company_mst 
+					$raw  = DB::connection($databaseName)->statement("update company_mst 
 					set is_default='".$enumIsDefArray['notDefault']."',updated_at='".$mytime."' 
 					where deleted_at = '0000-00-00 00:00:00'");
 					if($raw==0)
@@ -197,7 +222,7 @@ class CompanyModel extends Model
 		{
 			$keyValueString=$keyValueString.$key[$data]."='".$companyData[$data]."',";
 		}
-		$raw  = DB::statement("update company_mst 
+		$raw  = DB::connection($databaseName)->statement("update company_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
 		where company_id = '".$companyId."' and deleted_at='0000-00-00 00:00:00'");
 		if($raw==1)
@@ -217,14 +242,22 @@ class CompanyModel extends Model
 	*/
 	public function updateDocumentData($companyId,$documentData)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
 		
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		$raw  = DB::statement("update company_mst 
-		set document_name='".$documentData[0][0]."',document_size='".$documentData[0][1]."',document_format='".$documentData[0][2]."',updated_at='".$mytime."'
+		$raw  = DB::connection($databaseName)->statement("update company_mst 
+		set document_name='".$documentData[0][0]."',
+		document_size='".$documentData[0][1]."',
+		document_format='".$documentData[0][2]."',
+		updated_at='".$mytime."'
 		where company_id = '".$companyId."' and deleted_at='0000-00-00 00:00:00'");
 		if($raw==1)
 		{
@@ -241,8 +274,13 @@ class CompanyModel extends Model
 	*/
 	public function getAllData()
 	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();		
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		company_id,
 		company_name,
 		company_display_name,
@@ -272,11 +310,11 @@ class CompanyModel extends Model
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['204'];
+			return $exceptionArray['204'];
 		}
 		else
 		{
@@ -292,8 +330,13 @@ class CompanyModel extends Model
 	*/
 	public function getData($companyId)
 	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		company_id,
 		company_name,
 		company_display_name,
@@ -338,9 +381,14 @@ class CompanyModel extends Model
 	//delete
 	public function deleteData($companyId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
-		$raw = DB::statement("update company_mst 
+		$raw = DB::connection($databaseName)->statement("update company_mst 
 		set deleted_at='".$mytime."' 
 		where company_id=".$companyId);
 		DB::commit();
@@ -350,47 +398,47 @@ class CompanyModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			$ledgerId = DB::select("select ledger_id 
+			$ledgerId = DB::connection($databaseName)->select("select ledger_id 
 			from ledger_mst 
 			where company_id=".$companyId." and deleted_at='0000-00-00 00:00:00'");
-			$userId = DB::select("select user_id 
+			$userId = DB::connection($databaseName)->select("select user_id 
 			from user_mst 
 			where company_id=".$companyId." and deleted_at='0000-00-00 00:00:00'");
-			$branch = DB::statement("update branch_mst 
+			$branch = DB::connection($databaseName)->statement("update branch_mst 
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
-			$product = DB::statement("update product_mst 
+			$product = DB::connection($databaseName)->statement("update product_mst 
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
-			$template = DB::statement("update template_mst 
+			$template = DB::connection($databaseName)->statement("update template_mst 
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
-			$invoice = DB::statement("update invoice_dtl 
+			$invoice = DB::connection($databaseName)->statement("update invoice_dtl 
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
-			$quotation = DB::statement("update quotation_dtl 
+			$quotation = DB::connection($databaseName)->statement("update quotation_dtl 
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
-			$journal = DB::statement("update journal_dtl 
+			$journal = DB::connection($databaseName)->statement("update journal_dtl 
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
-			$ledger = DB::statement("update ledger_mst 
+			$ledger = DB::connection($databaseName)->statement("update ledger_mst 
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
-			$productTrn = DB::statement("update product_trn 
+			$productTrn = DB::connection($databaseName)->statement("update product_trn 
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
-			$retailsalesDtl = DB::statement("update sales_bill
+			$retailsalesDtl = DB::connection($databaseName)->statement("update sales_bill
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
-			$userMst = DB::statement("update user_mst
+			$userMst = DB::connection($databaseName)->statement("update user_mst
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
 			//delete from active_session
 			for($userData=0;$userData<count($userId);$userData++)
 			{
 				DB::beginTransaction();
-				$userId = DB::statement("delete
+				$userId = DB::connection($databaseName)->statement("delete
 				from active_session
 				where user_id='".$userId[$userData]->user_id."'");
 				DB::commit();
@@ -399,7 +447,7 @@ class CompanyModel extends Model
 			for($ledgerArray=0;$ledgerArray<count($ledgerId);$ledgerArray++)
 			{
 				DB::beginTransaction();
-				$dropLedger = DB::statement("drop table
+				$dropLedger = DB::connection($databaseName)->statement("drop table
 				".$ledgerId[$ledgerArray]->ledger_id."_ledger_dtl");
 				DB::commit();
 			}

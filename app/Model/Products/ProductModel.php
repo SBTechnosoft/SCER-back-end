@@ -21,6 +21,10 @@ class ProductModel extends Model
 	*/
 	public function insertData()
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
 		
 		$getProductData = array();
 		$getproductKey = array();
@@ -42,7 +46,7 @@ class ProductModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::statement("insert into product_mst(".$keyName.") 
+		$raw = DB::connection($databaseName)->statement("insert into product_mst(".$keyName.") 
 		values(".$productData.")");
 		DB::commit();
 		
@@ -66,6 +70,11 @@ class ProductModel extends Model
 	*/
 	public function insertInOutwardData()
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$discountArray = array();
 		$discountValueArray = array();
 		$discountTypeArray = array();
@@ -93,10 +102,34 @@ class ProductModel extends Model
 		DB::beginTransaction();
 		for($data=0;$data<count($productIdArray);$data++)
 		{
-			$raw = DB::statement("insert into 
-			product_trn(transaction_date,transaction_type,qty,price,discount,discount_value,
-			discount_type,product_id,company_id,branch_id,invoice_number,bill_number,jf_id,tax) 
-			values('".$transactionDateArray[$data]."','".$transactionTypeArray[$data]."','".$qtyArray[$data]."','".$priceArray[$data]."','".$discountArray[$data]."','".$discountValueArray[$data]."','".$discountTypeArray[$data]."','".$productIdArray[$data]."','".$companyIdArray[$data]."',6,'".$invoiceNumberArray[$data]."','".$billNumberArray[$data]."','".$jfId."','".$taxArray[$data]."')");
+			$raw = DB::connection($databaseName)->statement("insert into 
+			product_trn(transaction_date,
+			transaction_type,
+			qty,price,
+			discount,
+			discount_value,
+			discount_type,
+			product_id,
+			company_id,
+			branch_id,
+			invoice_number,
+			bill_number,
+			jf_id,
+			tax) 
+			values('".$transactionDateArray[$data]."',
+			'".$transactionTypeArray[$data]."',
+			'".$qtyArray[$data]."',
+			'".$priceArray[$data]."',
+			'".$discountArray[$data]."',
+			'".$discountValueArray[$data]."',
+			'".$discountTypeArray[$data]."',
+			'".$productIdArray[$data]."',
+			'".$companyIdArray[$data]."',
+			6,
+			'".$invoiceNumberArray[$data]."',
+			'".$billNumberArray[$data]."',
+			'".$jfId."',
+			'".$taxArray[$data]."')");
 		}
 		DB::commit();
 		
@@ -120,6 +153,11 @@ class ProductModel extends Model
 	*/
 	public function updateData($productData,$key,$productId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
 		for($data=0;$data<count($productData);$data++)
@@ -127,7 +165,7 @@ class ProductModel extends Model
 			$keyValueString=$keyValueString.$key[$data]."='".$productData[$data]."',";
 		}
 		DB::beginTransaction();
-		$raw = DB::statement("update product_mst 
+		$raw = DB::connection($databaseName)->statement("update product_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
 		where product_id = '".$productId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
@@ -151,6 +189,11 @@ class ProductModel extends Model
 	*/
 	public function updateArrayData()
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$multipleArary = func_get_arg(0);
 		$singleArray = func_get_arg(1);
 		$jfId = func_get_arg(2);
@@ -163,9 +206,13 @@ class ProductModel extends Model
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
 		//get transaction data from jf_id
 		DB::beginTransaction();
-		$transactionData = DB::select("select 
+		$transactionData = DB::connection($databaseName)->select("select 
 		transaction_date,
 		invoice_number,
 		tax,
@@ -224,12 +271,9 @@ class ProductModel extends Model
 			$keyName =$keyName.array_keys($singleArray)[$data].",";
 		}
 	
-		//get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
 		//delete existing data and then insert new data
 		DB::beginTransaction();
-		$raw = DB::statement("update product_trn 
+		$raw = DB::connection($databaseName)->statement("update product_trn 
 		set deleted_at='".$mytime."'
 		where jf_id='".$jfId."'");
 		DB::commit();
@@ -239,7 +283,7 @@ class ProductModel extends Model
 			for($arrayData=0;$arrayData<count($multipleArary);$arrayData++)
 			{
 				DB::beginTransaction();
-				$transactionResult = DB::statement("insert into product_trn
+				$transactionResult = DB::connection($databaseName)->statement("insert into product_trn
 				(".$keyName."
 				discount,
 				discount_value,
@@ -284,6 +328,11 @@ class ProductModel extends Model
 	*/
 	public function updateTransactionData()
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$productTransactionData = func_get_arg(0);
 		$jfId = func_get_arg(1);
 		$inOutWardData = func_get_arg(2);
@@ -305,7 +354,7 @@ class ProductModel extends Model
 		{
 			//get transaction data from jf_id
 			DB::beginTransaction();
-			$transactionData = DB::select("select 
+			$transactionData = DB::connection($databaseName)->select("select 
 			transaction_date,
 			invoice_number,
 			bill_number,
@@ -324,7 +373,7 @@ class ProductModel extends Model
 			
 			//delete existing data and then insert new data
 			DB::beginTransaction();
-			$raw = DB::statement("update product_trn 
+			$raw = DB::connection($databaseName)->statement("update product_trn 
 			set deleted_at='".$mytime."'
 			where jf_id='".$jfId."'");
 			DB::commit();
@@ -333,7 +382,7 @@ class ProductModel extends Model
 				for($arrayData=0;$arrayData<count($productTransactionData);$arrayData++)
 				{
 					DB::beginTransaction();
-					$transactionResult = DB::statement("insert into product_trn
+					$transactionResult = DB::connection($databaseName)->statement("insert into product_trn
 					(transaction_date,
 					transaction_type,
 					invoice_number,
@@ -389,7 +438,7 @@ class ProductModel extends Model
 			}
 			
 			DB::beginTransaction();
-			$transactionResult = DB::statement("update product_trn
+			$transactionResult = DB::connection($databaseName)->statement("update product_trn
 			set ".$keyValueString."
 			updated_at='".$mytime."'
 			where jf_id='".$jfId."' and deleted_at='0000-00-00 00:00:00'");
@@ -411,8 +460,13 @@ class ProductModel extends Model
 	*/
 	public function getAllData()
 	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();		
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		product_id,
 		product_name,
 		measurement_unit,
@@ -451,54 +505,51 @@ class ProductModel extends Model
 	 * get data as per given header data and company-id
 	 * returns error-message/data
 	*/
-	public function getTransactionData($headerData,$companyId)
+	public function getTransactionData($fromDate,$toDate,$headerData,$companyId)
 	{	
-		echo "model";
-		// print_r($headerData);
-		// print_r($companyId);
-		// DB::beginTransaction();
-		// $raw = DB::select("select product_id
-		// from product_mst 
-		// where company_id='".$companyId."' and
-		// product_id='".$headerData['productid'][0]."' and
-		// product_category_id='".."' and 
-		// product_group_id='".."'
-		// ");
-		// DB::commit();
-		// DB::beginTransaction();		
-		// $raw = DB::select("select 
-		// product_id,
-		// product_name,
-		// measurement_unit,
-		// purchase_price,
-		// wholesale_margin,
-		// semi_wholesale_margin,
-		// vat,
-		// margin,
-		// mrp,
-		// is_display,
-		// created_at,
-		// updated_at,
-		// deleted_at,
-		// product_category_id,
-		// product_group_id,
-		// branch_id,
-		// company_id			
-		// from product_mst where deleted_at='0000-00-00 00:00:00'");
-		// DB::commit();
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->select("select 
+		product_trn_id,
+		transaction_date,
+		transaction_type,
+		qty,
+		price,
+		discount,
+		discount_value,
+		discount_type,
+		is_display,
+		invoice_number,
+		bill_number,
+		tax,
+		updated_at,
+		created_at,
+		company_id,
+		branch_id,
+		product_id,			
+		jf_id	
+		from product_trn 
+		where (transaction_date BETWEEN '".$fromDate."' AND '".$toDate."') and company_id='".$companyId."' and 
+		product_id='".$headerData['productid'][0]."' and 
+		deleted_at='0000-00-00 00:00:00' ORDER BY transaction_date,product_trn_id");
+		DB::commit();
 		
 		// get exception message
-		// $exception = new ExceptionMessage();
-		// $exceptionArray = $exception->messageArrays();
-		// if(count($raw)==0)
-		// {
-			// return $exceptionArray['204'];
-		// }
-		// else
-		// {
-			// $enocodedData = json_encode($raw);
-			// return $enocodedData;
-		// }
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(count($raw)==0)
+		{
+			return $exceptionArray['204'];
+		}
+		else
+		{
+			$enocodedData = json_encode($raw);
+			return $enocodedData;
+		}
 	}
 	
 	/**
@@ -506,9 +557,14 @@ class ProductModel extends Model
 	 * returns error-message/data
 	*/
 	public function getJfIdProductData($jfId)
-	{	
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();		
+		
 		DB::beginTransaction();		
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		product_trn_id,
 		transaction_date,
 		transaction_type,
@@ -550,9 +606,14 @@ class ProductModel extends Model
 	 * returns error-message/data
 	*/
 	public function getData($productId)
-	{		
+	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		product_id,
 		product_name,
 		measurement_unit,
@@ -591,9 +652,14 @@ class ProductModel extends Model
 	 * returns error-message/data
 	*/
 	public function getBCProductData($companyId,$branchId)
-	{	
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();		
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		product_id,
 		product_name,
 		measurement_unit,
@@ -633,9 +699,14 @@ class ProductModel extends Model
 	 * returns error-message/data
 	*/
 	public function getCProductData($companyId)
-	{	
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();		
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		product_id,
 		product_name,
 		measurement_unit,
@@ -676,8 +747,13 @@ class ProductModel extends Model
 	*/
 	public function getBProductData($branchId)
 	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();		
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		product_id,
 		product_name,
 		measurement_unit,
@@ -718,6 +794,11 @@ class ProductModel extends Model
 	*/
 	public function getProductData($headerData,$companyId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$productArray = new ProductArray();
 		$arrayData = $productArray->productDataArray();
 		$arrayValue = $productArray->productValueArray();
@@ -728,11 +809,11 @@ class ProductModel extends Model
 			{
 				$key[$data] = $arrayValue[$data];
 				$value[$data] = $headerData[$arrayData[$data]][0];
-				$querySet = $querySet.$key[$data]." = ".$value[$data]." and ";
+				$querySet = $querySet.$key[$data]." = '".$value[$data]."' and ";
 			}
 		}
 		DB::beginTransaction();		
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		product_id,
 		product_name,
 		measurement_unit,
@@ -767,12 +848,100 @@ class ProductModel extends Model
 		}
 	}
 	
+	/**
+	 * get data as per given headerData and companyId 
+	 * returns error-message/data
+	*/
+	public function getProductTrnData($headerData,$companyId)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		$productArray = new ProductArray();
+		$arrayData = $productArray->productDataArray();
+		$arrayValue = $productArray->productValueArray();
+		$querySet = "";
+		for($data=0;$data<count($arrayData);$data++)
+		{
+			if(array_key_exists($arrayData[$data],$headerData))
+			{
+				$key[$data] = $arrayValue[$data];
+				$value[$data] = $headerData[$arrayData[$data]][0];
+				$querySet = "".$querySet."p1.".$key[$data]." = '".$value[$data]."' and ";
+			}
+		}
+		DB::beginTransaction();
+		$ledgerId = DB::connection($databaseName)->select("select
+		ledger_id 
+		from ledger_mst 
+		where company_id='".$companyId."' and 
+		ledger_name='".$headerData['salestype'][0]."' and 
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		if(count($ledgerId)!=0)
+		{
+			DB::beginTransaction();
+			$productTrnData = DB::connection($databaseName)->select("select
+			p.product_trn_id,
+			p.transaction_date,
+			p.transaction_type,
+			p.qty,
+			p.price,
+			p.discount,
+			p.discount_value,
+			p.discount_type,
+			p.is_display,
+			p.invoice_number,
+			p.bill_number,
+			p.tax,
+			p.updated_at,
+			p.created_at,
+			p.company_id,
+			p.branch_id,
+			p.product_id,			
+			p.jf_id	
+			from product_trn p,".$ledgerId[0]->ledger_id."_ledger_dtl l,product_mst p1
+			where p.jf_id = l.jf_id and
+			p.product_id=p1.product_id and 
+			p.transaction_type = 'Outward' and 
+			p1.company_id='".$companyId."' and
+			p.deleted_at = '0000-00-00 00:00:00' and
+			".$querySet."p1.deleted_at='0000-00-00 00:00:00'
+			group by p.product_trn_id");
+			DB::commit();
+			if(count($productTrnData)!=0)
+			{
+				$enocodedData = json_encode($productTrnData);
+				return $enocodedData;
+			}
+			else
+			{
+				return $exceptionArray['404'];
+			}
+		}
+		else
+		{
+			return $exceptionArray['404'];
+		}
+	}
+	
 	//delete
 	public function deleteData($productId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
-		$raw = DB::statement("update product_mst 
+		$raw = DB::connection($databaseName)->statement("update product_mst 
 		set deleted_at='".$mytime."' 
 		where product_id=".$productId);
 		DB::commit();

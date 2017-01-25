@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -19,8 +20,13 @@ class BillModel extends Model
 	*/
 	public function insertAllData($productArray,$paymentMode,$invoiceNumber,$bankName,$checkNumber,$total,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
-		$raw = DB::statement("insert into sales_bill(
+		$raw = DB::connection($databaseName)->statement("insert into sales_bill(
 		product_array,
 		payment_mode,
 		invoice_number,
@@ -44,7 +50,7 @@ class BillModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			$saleId = DB::select("SELECT 
+			$saleId = DB::connection($databaseName)->select("SELECT 
 			max(sale_id) sale_id
 			FROM sales_bill where deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
@@ -53,7 +59,7 @@ class BillModel extends Model
 				for($docArray=0;$docArray<count($documentArray);$docArray++)
 				{
 					DB::beginTransaction();
-					$documentResult = DB::statement("insert into sales_bill_doc_dtl(
+					$documentResult = DB::connection($databaseName)->statement("insert into sales_bill_doc_dtl(
 					sale_id,
 					document_name,
 					document_size,
@@ -68,7 +74,7 @@ class BillModel extends Model
 				if($documentResult==1)
 				{
 					DB::beginTransaction();
-					$billResult = DB::select("select
+					$billResult = DB::connection($databaseName)->select("select
 					sale_id,
 					product_array,
 					payment_mode,
@@ -117,8 +123,13 @@ class BillModel extends Model
 	*/
 	public function insertData($productArray,$paymentMode,$invoiceNumber,$bankName,$checkNumber,$total,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
-		$raw = DB::statement("insert into sales_bill(
+		$raw = DB::connection($databaseName)->statement("insert into sales_bill(
 		product_array,
 		payment_mode,
 		invoice_number,
@@ -143,7 +154,7 @@ class BillModel extends Model
 		if($raw==1)
 		{
 			DB::beginTransaction();
-			$billResult = DB::select("select
+			$billResult = DB::connection($databaseName)->select("select
 			sale_id,
 			product_array,
 			payment_mode,
@@ -186,8 +197,13 @@ class BillModel extends Model
 	*/
 	public function billDocumentData($saleId,$documentName,$documentFormat,$documentType)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
-		$raw = DB::statement("insert into sales_bill_doc_dtl(
+		$raw = DB::connection($databaseName)->statement("insert into sales_bill_doc_dtl(
 		sale_id,
 		document_name,
 		document_format,
@@ -215,12 +231,17 @@ class BillModel extends Model
 	*/
 	public function getSpecifiedData($companyId,$salesType,$fromDate,$toDate)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
 		DB::beginTransaction();
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		sale_id,
 		product_array,
 		payment_mode,
@@ -256,7 +277,7 @@ class BillModel extends Model
 			for($saleData=0;$saleData<count($raw);$saleData++)
 			{
 				DB::beginTransaction();
-				$documentResult[$saleData] = DB::select("select
+				$documentResult[$saleData] = DB::connection($databaseName)->select("select
 				document_id,
 				sale_id,
 				document_name,

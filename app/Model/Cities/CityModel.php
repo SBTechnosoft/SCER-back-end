@@ -19,6 +19,11 @@ class CityModel extends Model
 	*/
 	public function insertData()
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$getCityData = array();
 		$getCityKey = array();
 		$getCityData = func_get_arg(0);
@@ -39,20 +44,20 @@ class CityModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::statement("insert into city_mst(".$keyName.") 
+		$raw = DB::connection($databaseName)->statement("insert into city_mst(".$keyName.") 
 		values(".$cityData.")");
 		DB::commit();
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $fileSizeArray['200'];
+			return $exceptionArray['200'];
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return $exceptionArray['500'];
 		}
 	}
 	
@@ -63,6 +68,11 @@ class CityModel extends Model
 	*/
 	public function updateData($cityData,$key,$cityId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
 		for($data=0;$data<count($cityData);$data++)
@@ -70,21 +80,21 @@ class CityModel extends Model
 			$keyValueString=$keyValueString.$key[$data]."='".$cityData[$data]."',";
 		}
 		DB::beginTransaction();
-		$raw = DB::statement("update city_mst 
+		$raw = DB::connection($databaseName)->statement("update city_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
 		where city_id = '".$cityId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $fileSizeArray['200'];
+			return $exceptionArray['200'];
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return $exceptionArray['500'];
 		}
 	}
 	
@@ -94,6 +104,7 @@ class CityModel extends Model
 	*/
 	public function getAllData()
 	{	
+		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
@@ -112,10 +123,10 @@ class CityModel extends Model
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['204'];
+			return $exceptionArray['204'];
 		}
 		else
 		{
@@ -131,8 +142,13 @@ class CityModel extends Model
 	*/
 	public function getData($cityId)
 	{		
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		city_id,
 		city_name,
 		is_display,
@@ -145,10 +161,10 @@ class CityModel extends Model
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['404'];
+			return $exceptionArray['404'];
 		}
 		else
 		{
@@ -164,8 +180,13 @@ class CityModel extends Model
 	*/
 	public function getAllCityData($stateAbb)
 	{		
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		city_id,
 		city_name,
 		is_display,
@@ -178,10 +199,10 @@ class CityModel extends Model
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $fileSizeArray['404'];
+			return $exceptionArray['404'];
 		}
 		else
 		{
@@ -193,37 +214,41 @@ class CityModel extends Model
 	//delete
 	public function deleteData($cityId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
-		$raw = DB::statement("update city_mst 
+		$raw = DB::connection($databaseName)->statement("update city_mst 
 		set deleted_at='".$mytime."'
 		where city_id = '".$cityId."'");
 		DB::commit();
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
+		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			$branch = DB::statement("update branch_mst 
+			$branch = DB::connection($databaseName)->statement("update branch_mst 
 			set deleted_at='".$mytime."'
 			where city_id = '".$cityId."'");
-			$company = DB::statement("update company_mst 
+			$company = DB::connection($databaseName)->statement("update company_mst 
 			set deleted_at='".$mytime."'
 			where city_id = '".$cityId."'");
 			if($branch==1 && $company==1)
 			{
-				return $fileSizeArray['200'];
+				return $exceptionArray['200'];
 			}
 			else
 			{
-				return $fileSizeArray['500'];
+				return $exceptionArray['500'];
 			}
-			
 		}
 		else
 		{
-			return $fileSizeArray['500'];
+			return $exceptionArray['500'];
 		}
 	}
 }

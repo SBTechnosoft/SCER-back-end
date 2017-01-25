@@ -21,6 +21,11 @@ class JournalModel extends Model
 	*/
 	public function insertData()
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$amountArray = array();
 		$amountTypeArray = array();
 		$ledgerIdArray = array();
@@ -52,7 +57,7 @@ class JournalModel extends Model
 		for($data=0;$data<count($jfIdArray);$data++)
 		{
 			DB::beginTransaction();
-			$raw = DB::statement("insert into 
+			$raw = DB::connection($databaseName)->statement("insert into 
 			journal_dtl(
 			jf_id,
 			amount,
@@ -90,7 +95,7 @@ class JournalModel extends Model
 					for($creditLoop=0;$creditLoop<count($creditLedger);$creditLoop++)
 					{
 						DB::beginTransaction();
-						$ledgerEntryResult = DB::statement("insert into 
+						$ledgerEntryResult = DB::connection($databaseName)->statement("insert into 
 						".$ledgerIdArray[$data]."_ledger_dtl(
 						jf_id,
 						amount,
@@ -105,7 +110,7 @@ class JournalModel extends Model
 				else
 				{
 					DB::beginTransaction();
-					$ledgerEntryResult = DB::statement("insert into 
+					$ledgerEntryResult = DB::connection($databaseName)->statement("insert into 
 					".$ledgerIdArray[$data]."_ledger_dtl(
 					jf_id,
 					amount,
@@ -124,7 +129,7 @@ class JournalModel extends Model
 					for($debitLoop=0;$debitLoop<count($debitLedger);$debitLoop++)
 					{
 						DB::beginTransaction();
-						$ledgerEntryResult = DB::statement("insert into 
+						$ledgerEntryResult = DB::connection($databaseName)->statement("insert into 
 						".$ledgerIdArray[$data]."_ledger_dtl(
 						jf_id,
 						amount,
@@ -139,7 +144,7 @@ class JournalModel extends Model
 				else
 				{
 					DB::beginTransaction();
-					$ledgerEntryResult = DB::statement("insert into 
+					$ledgerEntryResult = DB::connection($databaseName)->statement("insert into 
 					".$ledgerIdArray[$data]."_ledger_dtl(
 					jf_id,
 					amount,
@@ -167,8 +172,13 @@ class JournalModel extends Model
 	*/
 	public function getJournalData()
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
-		$raw = DB::select("SELECT  MAX(jf_id) AS jf_id 
+		$raw = DB::connection($databaseName)->select("SELECT  MAX(jf_id) AS jf_id 
 		from journal_dtl
 		where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
@@ -199,12 +209,17 @@ class JournalModel extends Model
 	*/
 	public function getData($fromDate,$toDate,$companyId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
 		DB::beginTransaction();
-		$raw = DB::select("SELECT 
+		$raw = DB::connection($databaseName)->select("SELECT 
 		journal_id,
 		jf_id,
 		amount,
@@ -241,12 +256,17 @@ class JournalModel extends Model
 	*/
 	public function getCurrentYearData($companyId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
 		DB::beginTransaction();
-		$raw = DB::select("SELECT 
+		$raw = DB::connection($databaseName)->select("SELECT 
 		journal_id,
 		jf_id,
 		amount,
@@ -281,12 +301,17 @@ class JournalModel extends Model
 	*/
 	public function getJournalArrayData($journalId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
 		DB::beginTransaction();
-		$jfIdResult = DB::select("SELECT 
+		$jfIdResult = DB::connection($databaseName)->select("SELECT 
 		jf_id
 		FROM journal_dtl  
 		WHERE journal_id='".$journalId."' and 
@@ -300,7 +325,7 @@ class JournalModel extends Model
 		else
 		{
 			DB::beginTransaction();
-			$raw = DB::select("SELECT 
+			$raw = DB::connection($databaseName)->select("SELECT 
 			journal_id,
 			jf_id,
 			amount,
@@ -327,9 +352,18 @@ class JournalModel extends Model
 	*/
 	public function getLedgerBalanceData()
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$journalArray = func_get_arg(0);
 		$ledgerIdArray = array();
 		$mergeArray = array();
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
 		
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
@@ -341,7 +375,7 @@ class JournalModel extends Model
 			
 			//get opening balance
 			DB::beginTransaction();
-			$raw = DB::select("SELECT 
+			$raw = DB::connection($databaseName)->select("SELECT 
 			".$ledgerIdArray[$ledgerDataArray]."_id,
 			amount,
 			amount_type
@@ -353,7 +387,7 @@ class JournalModel extends Model
 			{
 				//get current balance
 				DB::beginTransaction();
-				$ledgerResult = DB::select("SELECT 
+				$ledgerResult = DB::connection($databaseName)->select("SELECT 
 				".$ledgerIdArray[$ledgerDataArray]."_id,
 				amount,
 				amount_type
@@ -413,6 +447,11 @@ class JournalModel extends Model
 	*/
 	public function getJournalTransactionData($companyId,$journalType,$jfId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
 		
@@ -421,7 +460,7 @@ class JournalModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		
 		DB::beginTransaction();
-		$journalResult = DB::select("SELECT 
+		$journalResult = DB::connection($databaseName)->select("SELECT 
 		journal_id,
 		amount,
 		jf_id,
@@ -435,18 +474,19 @@ class JournalModel extends Model
 		WHERE jf_id='".$jfId[0]."' and 
 		company_id='".$companyId."' and 
 		deleted_at='0000-00-00 00:00:00'");
-		// print_r($journalResult);
+		
 		DB::commit();
 		if(count($journalResult)!=0)
 		{
 			DB::beginTransaction();
-			$transactionResult = DB::select("SELECT 
+			$transactionResult = DB::connection($databaseName)->select("SELECT 
 			product_trn_id,
 			transaction_date,
 			transaction_type,
 			qty,
 			price,
 			discount,
+			discount_value,
 			discount_type,
 			is_display,
 			invoice_number,
@@ -478,7 +518,7 @@ class JournalModel extends Model
 					
 					//get opening balance
 					DB::beginTransaction();
-					$raw = DB::select("SELECT 
+					$raw = DB::connection($databaseName)->select("SELECT 
 					".$ledgerIdArray[$ledgerDataArray]."_id,
 					amount,
 					amount_type
@@ -490,7 +530,7 @@ class JournalModel extends Model
 					{
 						//get current balance
 						DB::beginTransaction();
-						$ledgerResult = DB::select("SELECT 
+						$ledgerResult = DB::connection($databaseName)->select("SELECT 
 						".$ledgerIdArray[$ledgerDataArray]."_id,
 						amount,
 						amount_type
@@ -539,11 +579,11 @@ class JournalModel extends Model
 					$balanceAmountArray['currentBalanceType'] = $currentBalanceType;
 					$mergeArray[$ledgerDataArray] = (Object)array_merge((array)$encodedResult[$ledgerDataArray]->ledger,(array)((Object)$balanceAmountArray));
 					$encodedResult[$ledgerDataArray]->ledger=$mergeArray[$ledgerDataArray];
-				}
+				}		
+					
 				$enocodedProductData = json_encode($transactionResult);
 				$encodeProductData = new EncodeProductTrnAllData();
 				$getEncodedData = $encodeProductData->getEncodedAllData($enocodedProductData);
-				
 				$ledgerTransactionarray = array();
 				$ledgerTransactionarray['journal'] = $encodedResult;
 				$ledgerTransactionarray['productTransaction'] = json_decode($getEncodedData);
@@ -567,12 +607,17 @@ class JournalModel extends Model
 	*/
 	public function getJfIdArrayData($jfId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
 		DB::beginTransaction();
-		$raw = DB::select("SELECT 
+		$raw = DB::connection($databaseName)->select("SELECT 
 		journal_id,
 		jf_id,
 		amount,
@@ -604,6 +649,11 @@ class JournalModel extends Model
 	*/
 	public function updateData()
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$arrayDataFlag=0;
 		$ledgerResult=0;
 		$journalRaw=0;
@@ -643,8 +693,9 @@ class JournalModel extends Model
 				$companyId = $jfIdData[0]->company_id;
 				//delete the ledger entry
 				DB::beginTransaction();
-				$ledgerResult = DB::statement("update ".$jfIdData[$dbJournalData]->ledger_id."_ledger_dtl
-				set deleted_at='".$mytime."' where jf_id='".$jfId."'");
+				$ledgerResult = DB::connection($databaseName)->statement("update ".$jfIdData[$dbJournalData]->ledger_id."_ledger_dtl
+				set deleted_at='".$mytime."' 
+				where jf_id='".$jfId."'");
 				DB::commit();
 				if($ledgerResult==0)
 				{
@@ -655,7 +706,7 @@ class JournalModel extends Model
 			if($ledgerResult==1)
 			{
 				DB::beginTransaction();
-				$journalResult = DB::statement("update journal_dtl
+				$journalResult = DB::connection($databaseName)->statement("update journal_dtl
 				set deleted_at='".$mytime."' where jf_id='".$jfId."'");
 				DB::commit();
 				if($journalResult==0)
@@ -672,7 +723,7 @@ class JournalModel extends Model
 				for($data=0;$data<count($journalArray);$data++)
 				{
 					DB::beginTransaction();
-					$journalInsertResult = DB::statement("insert into 
+					$journalInsertResult = DB::connection($databaseName)->statement("insert into 
 					journal_dtl(
 					jf_id,
 					amount,
@@ -715,7 +766,7 @@ class JournalModel extends Model
 							for($creditLoop=0;$creditLoop<count($creditLedger);$creditLoop++)
 							{
 								DB::beginTransaction();
-								$ledgerEntryResult = DB::statement("insert into 
+								$ledgerEntryResult = DB::connection($databaseName)->statement("insert into 
 								".$journalArray[$data]['ledger_id']."_ledger_dtl(
 								jf_id,
 								amount,
@@ -731,7 +782,7 @@ class JournalModel extends Model
 						else
 						{
 							DB::beginTransaction();
-							$ledgerEntryResult = DB::statement("insert into 
+							$ledgerEntryResult = DB::connection($databaseName)->statement("insert into 
 							".$journalArray[$data]['ledger_id']."_ledger_dtl(
 							jf_id,
 							amount,
@@ -751,7 +802,7 @@ class JournalModel extends Model
 							for($debitLoop=0;$debitLoop<count($debitLedger);$debitLoop++)
 							{
 								DB::beginTransaction();
-								$ledgerEntryResult = DB::statement("insert into 
+								$ledgerEntryResult = DB::connection($databaseName)->statement("insert into 
 								".$journalArray[$data]['ledger_id']."_ledger_dtl(
 								jf_id,
 								amount,
@@ -767,7 +818,7 @@ class JournalModel extends Model
 						else
 						{
 							DB::beginTransaction();
-							$ledgerEntryResult = DB::statement("insert into 
+							$ledgerEntryResult = DB::connection($databaseName)->statement("insert into 
 							".$journalArray[$data]['ledger_id']."_ledger_dtl(
 							jf_id,
 							amount,
@@ -797,7 +848,7 @@ class JournalModel extends Model
 			{
 				//update the company_id from journal
 				DB::beginTransaction();
-				$journalRaw = DB::statement("update journal_dtl
+				$journalRaw = DB::connection($databaseName)->statement("update journal_dtl
 				set company_id='".$journalArray['company_id']."',updated_at='".$mytime."' where jf_id='".$jfId."' and deleted_at='0000-00-00 00:00:00'");
 				DB::commit();
 				if($journalRaw==0)
@@ -810,7 +861,7 @@ class JournalModel extends Model
 			{
 				//update entry_date from journal 
 				DB::beginTransaction();
-				$journalResult = DB::statement("update journal_dtl
+				$journalResult = DB::connection($databaseName)->statement("update journal_dtl
 				set entry_date='".$journalArray['entry_date']."',updated_at='".$mytime."' where jf_id='".$jfId."' and deleted_at='0000-00-00 00:00:00'");
 				DB::commit();
 				if($journalResult==1)
@@ -819,7 +870,7 @@ class JournalModel extends Model
 					for($data=0;$data<count($jfIdData);$data++)
 					{
 						DB::beginTransaction();
-						$ledgerResult = DB::statement("update ".$jfIdData[$data]->ledger_id."_ledger_dtl
+						$ledgerResult = DB::connection($databaseName)->statement("update ".$jfIdData[$data]->ledger_id."_ledger_dtl
 						set entry_date='".$journalArray['entry_date']."',updated_at='".$mytime."' where jf_id='".$jfId."' and deleted_at='0000-00-00 00:00:00'");
 						DB::commit();
 						if($ledgerResult==0)
@@ -844,6 +895,11 @@ class JournalModel extends Model
 	*/
 	public function updateArrayData()
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		//update array with data
 		$journalArray = func_get_arg(0);
 		$journalData = func_get_arg(1);
@@ -874,7 +930,7 @@ class JournalModel extends Model
 				$companyId = $jfIdData[0]->company_id;
 				//delete the ledger entry
 				DB::beginTransaction();
-				$ledgerResult = DB::statement("update ".$jfIdData[$dbJournalData]->ledger_id."_ledger_dtl
+				$ledgerResult = DB::connection($databaseName)->statement("update ".$jfIdData[$dbJournalData]->ledger_id."_ledger_dtl
 				set deleted_at='".$mytime."' where jf_id='".$jfId."'");
 				DB::commit();
 				if($ledgerResult==0)
@@ -886,7 +942,7 @@ class JournalModel extends Model
 			if($ledgerResult==1)
 			{
 				DB::beginTransaction();
-				$journalResult = DB::statement("update journal_dtl
+				$journalResult = DB::connection($databaseName)->statement("update journal_dtl
 				set deleted_at='".$mytime."' where jf_id='".$jfId."'");
 				DB::commit();
 				if($journalResult==0)
@@ -903,7 +959,7 @@ class JournalModel extends Model
 				for($data=0;$data<count($journalArray);$data++)
 				{
 					DB::beginTransaction();
-					$journalInsertResult = DB::statement("insert into 
+					$journalInsertResult = DB::connection($databaseName)->statement("insert into 
 					journal_dtl(
 					jf_id,
 					amount,
@@ -946,7 +1002,7 @@ class JournalModel extends Model
 							for($creditLoop=0;$creditLoop<count($creditLedger);$creditLoop++)
 							{
 								DB::beginTransaction();
-								$ledgerEntryResult = DB::statement("insert into 
+								$ledgerEntryResult = DB::connection($databaseName)->statement("insert into 
 								".$journalArray[$data]['ledger_id']."_ledger_dtl(
 								jf_id,
 								amount,
@@ -962,7 +1018,7 @@ class JournalModel extends Model
 						else
 						{
 							DB::beginTransaction();
-							$ledgerEntryResult = DB::statement("insert into 
+							$ledgerEntryResult = DB::connection($databaseName)->statement("insert into 
 							".$journalArray[$data]['ledger_id']."_ledger_dtl(
 							jf_id,
 							amount,
@@ -982,7 +1038,7 @@ class JournalModel extends Model
 							for($debitLoop=0;$debitLoop<count($debitLedger);$debitLoop++)
 							{
 								DB::beginTransaction();
-								$ledgerEntryResult = DB::statement("insert into 
+								$ledgerEntryResult = DB::connection($databaseName)->statement("insert into 
 								".$journalArray[$data]['ledger_id']."_ledger_dtl(
 								jf_id,
 								amount,
@@ -998,7 +1054,7 @@ class JournalModel extends Model
 						else
 						{
 							DB::beginTransaction();
-							$ledgerEntryResult = DB::statement("insert into 
+							$ledgerEntryResult = DB::connection($databaseName)->statement("insert into 
 							".$journalArray[$data]['ledger_id']."_ledger_dtl(
 							jf_id,
 							amount,
@@ -1022,7 +1078,7 @@ class JournalModel extends Model
 		{
 			//update the company_id from journal
 			DB::beginTransaction();
-			$journalRaw = DB::statement("update journal_dtl
+			$journalRaw = DB::connection($databaseName)->statement("update journal_dtl
 			set company_id='".$journalData['company_id']."',updated_at='".$mytime."' where jf_id='".$jfId."' and deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
 			if($journalRaw==0)
@@ -1035,7 +1091,7 @@ class JournalModel extends Model
 		{
 			//update entry_date from journal 
 			DB::beginTransaction();
-			$journalResult = DB::statement("update journal_dtl
+			$journalResult = DB::connection($databaseName)->statement("update journal_dtl
 			set entry_date='".$journalData['entry_date']."',updated_at='".$mytime."' where jf_id='".$jfId."' and deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
 			if($journalResult==1)
@@ -1044,7 +1100,7 @@ class JournalModel extends Model
 				for($data=0;$data<count($jfIdData);$data++)
 				{
 					DB::beginTransaction();
-					$ledgerResult = DB::statement("update ".$jfIdData[$data]->ledger_id."_ledger_dtl
+					$ledgerResult = DB::connection($databaseName)->statement("update ".$jfIdData[$data]->ledger_id."_ledger_dtl
 					set entry_date='".$journalData['entry_date']."',updated_at='".$mytime."' where jf_id='".$jfId."' and deleted_at='0000-00-00 00:00:00'");
 					DB::commit();
 					if($ledgerResult==0)

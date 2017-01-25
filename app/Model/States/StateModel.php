@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -19,6 +20,11 @@ class StateModel extends Model
 	*/
 	public function insertData()
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$getStateData = array();
 		$getStateKey = array();
 		$getStateData = func_get_arg(0);
@@ -40,7 +46,7 @@ class StateModel extends Model
 		}
 		
 		DB::beginTransaction();
-		$raw = DB::statement("insert into state_mst(".$keyName.") 
+		$raw = DB::connection($databaseName)->statement("insert into state_mst(".$keyName.") 
 		values(".$stateData.")");
 		DB::commit();
 		
@@ -63,6 +69,11 @@ class StateModel extends Model
 	*/
 	public function updateData($stateData,$key,$stateAbb)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
 		for($data=0;$data<count($stateData);$data++)
@@ -71,7 +82,7 @@ class StateModel extends Model
 		}
 		
 		DB::beginTransaction();
-		$raw = DB::statement("update state_mst 
+		$raw = DB::connection($databaseName)->statement("update state_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
 		where state_abb = '".$stateAbb."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
@@ -95,8 +106,13 @@ class StateModel extends Model
 	*/
 	public function getAllData()
 	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();		
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		state_abb,
 		state_name,
 		is_display,
@@ -126,8 +142,13 @@ class StateModel extends Model
 	*/
 	public function getData($stateAbb)
 	{		
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		state_abb,
 		state_name,
 		is_display,
@@ -153,9 +174,14 @@ class StateModel extends Model
 	//delete
 	public function deleteData($stateAbb)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
-		$raw = DB::statement("update state_mst 
+		$raw = DB::connection($databaseName)->statement("update state_mst 
 		set deleted_at='".$mytime."'
 		where state_abb = '".$stateAbb."'");
 		DB::commit();
@@ -165,13 +191,13 @@ class StateModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			$city = DB::statement("update city_mst 
+			$city = DB::connection($databaseName)->statement("update city_mst 
 			set deleted_at='".$mytime."'
 			where state_abb = '".$stateAbb."'");
-			$company = DB::statement("update company_mst 
+			$company = DB::connection($databaseName)->statement("update company_mst 
 			set deleted_at='".$mytime."'
 			where state_abb = '".$stateAbb."'");
-			$branch = DB::statement("update branch_mst 
+			$branch = DB::connection($databaseName)->statement("update branch_mst 
 			set deleted_at='".$mytime."'
 			where state_abb = '".$stateAbb."'");
 			

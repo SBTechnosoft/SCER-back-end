@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -19,6 +20,11 @@ class UserModel extends Model
 	*/
 	public function insertData()
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$getUserData = array();
 		$getUserKey = array();
 		$getUserData = func_get_arg(0);
@@ -40,7 +46,7 @@ class UserModel extends Model
 		}
 		
 		DB::beginTransaction();
-		$raw = DB::statement("insert into user_mst(".$keyName.") 
+		$raw = DB::connection($databaseName)->statement("insert into user_mst(".$keyName.") 
 		values(".$userData.")");
 		DB::commit();
 		
@@ -63,6 +69,11 @@ class UserModel extends Model
 	*/
 	public function updateData($userData,$key,$userId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
 		for($data=0;$data<count($userData);$data++)
@@ -71,7 +82,7 @@ class UserModel extends Model
 		}
 		
 		DB::beginTransaction();
-		$raw = DB::statement("update user_mst 
+		$raw = DB::connection($databaseName)->statement("update user_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
 		where user_id = '".$userId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
@@ -95,8 +106,13 @@ class UserModel extends Model
 	*/
 	public function getAllData()
 	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();		
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		user_id,
 		user_name,
 		user_type,
@@ -134,9 +150,14 @@ class UserModel extends Model
 	 * returns the status
 	*/
 	public function getData($userId)
-	{		
+	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
-		$raw = DB::select("select 
+		$raw = DB::connection($databaseName)->select("select 
 		user_id,
 		user_name,
 		user_type,
@@ -171,9 +192,14 @@ class UserModel extends Model
 	//delete
 	public function deleteData($userId)
 	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
-		$raw = DB::statement("update user_mst 
+		$raw = DB::connection($databaseName)->statement("update user_mst 
 		set deleted_at='".$mytime."'
 		where user_id = '".$userId."'");
 		DB::commit();

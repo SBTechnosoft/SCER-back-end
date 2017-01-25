@@ -178,6 +178,11 @@ class ProductTransformer
 					$tempArray[$arrayData][5]=$tempArray[$arrayData][1];
 				}
 			}
+			else
+		    {
+				$tempArray[$arrayData][5] = 0;
+				$tempArray[$arrayData][1] = 0;
+		    }
 			foreach ($enumDiscountTypeArray as $key => $value)
 			{
 				if(strcmp($value,$tempArray[$arrayData][2])==0)

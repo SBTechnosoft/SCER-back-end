@@ -95,7 +95,7 @@ class EncodeData extends ClientService
 			'workNo' => $clientDecodedJson['workNo'],	
 			'emailId' => $clientDecodedJson['emailId'],	
 			'address1' => $clientDecodedJson['address1'],	
-			'address1' => $clientDecodedJson['address2'],	
+			'address2' => $clientDecodedJson['address2'],	
 			'isDisplay' => $clientDecodedJson['isDisplay'],	
 			'createdAt' => $clientDecodedJson['createdAt'],	
 			'updatedAt' => $clientDecodedJson['updatedAt'],	

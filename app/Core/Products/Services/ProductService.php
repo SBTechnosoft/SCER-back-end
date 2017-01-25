@@ -163,23 +163,29 @@ class ProductService extends AbstractService
      * @param $companyId and header-data
      * @return exception-message/data
      */
-	public function getProductTransactionData($header,$companyId)
+	public function getProductTransactionData()
 	{
+		$persistableObject = func_get_arg(0);
+		$header = func_get_arg(1);
+		$companyId = func_get_arg(2);
+		
+		$fromDate = $persistableObject->getFromDate();
+		$toDate = $persistableObject->getToDate();
+		
 		$productModel = new ProductModel();
-		$status = $productModel->getTransactionData($header,$companyId);
-		print_r($status);
-		exit;
+		$status = $productModel->getTransactionData($fromDate,$toDate,$header,$companyId);
+		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		if(strcmp($status,$exceptionArray['404'])==0)
+		if(strcmp($status,$exceptionArray['204'])==0)
 		{
 			return $status;
 		}
 		else
 		{
-			$encoded = new EncodeData();
-			$encodeData = $encoded->getEncodedData($status);
+			$encoded = new EncodeProductTrnAllData();
+			$encodeData = $encoded->getEncodedAllData($status);
 			return $encodeData;
 		}
 	}
@@ -318,6 +324,32 @@ class ProductService extends AbstractService
 		else
 		{
 			$encodedAllData = new EncodeAllData();
+			$encodeData = $encodedAllData->getEncodedAllData($status);
+			return $encodeData;
+		}
+	}
+	
+	/**
+     * get product-trn data as per given companyId and headerData and call the model for database selection 	  opertation
+     * @param companyId & productName
+     * @return status
+     */
+	public function getProductTrnData($headerData,$companyId)
+	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		$productModel = new ProductModel();
+		$status = $productModel->getProductTrnData($headerData,$companyId);
+		
+		if(strcmp($status,$exceptionArray['404'])==0)
+		{
+			return $exceptionArray['404'];
+		}
+		else
+		{
+			$encodedAllData = new EncodeProductTrnAllData();
 			$encodeData = $encodedAllData->getEncodedAllData($status);
 			return $encodeData;
 		}
