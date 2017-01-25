@@ -13,7 +13,7 @@ class LedgerValidate
 	public function validate($request)
 	{
 		$rules = array(
-			'ledger_name'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]*$/', 
+			'ledger_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 &_`#().\'-]*$/', 
 			'alias'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]*$/', 
 			'address1'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'address2'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
@@ -63,7 +63,7 @@ class LedgerValidate
 	public function validateUpdateData($keyName,$value,$request)
 	{
 		$validationArray = array(
-			'ledger_name'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]*$/', 
+			'ledger_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 &_`#().\'-]*$/', 
 			'alias'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]*$/', 
 			'address1'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'address2'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',

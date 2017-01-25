@@ -67,15 +67,14 @@ class BillProcessor extends BaseProcessor
 			{
 				//get contact-number from input data
 				$contactNo = $tRequest['contact_no'];
-				$emailId = $tRequest['email_id'];
 				
-				if($contactNo=="" && $emailId=="")
+				if($contactNo=="" || $contactNo==0)
 				{
 				   	return $msgArray['content'];
 				}
 				//check client is exists by contact-number
 				$clientModel = new ClientModel();
-				$clientData = $clientModel->getClientData($contactNo,$emailId);			
+				$clientData = $clientModel->getClientData($contactNo);			
 				if(is_array(json_decode($clientData)))
 				{
 					$encodedClientData = json_decode($clientData);
@@ -118,7 +117,7 @@ class BillProcessor extends BaseProcessor
 		if($tRequest['balance']!="" || $tRequest['balance']!=0)
 		{
 		   	// get ledger data for checking client is exist in ledger or not by contact-number
-			$ledgerData = $ledgerModel->getDataAsPerContactNo($tRequest['company_id'],$tRequest['contact_no'],$tRequest['email_id']);
+			$ledgerData = $ledgerModel->getDataAsPerContactNo($tRequest['company_id'],$tRequest['contact_no']);
 			if(is_array(json_decode($ledgerData)))
 			{
 				$contactFlag=1;
@@ -148,7 +147,8 @@ class BillProcessor extends BaseProcessor
 			$method=$constantArray['postMethod'];
 			$path=$constantArray['ledgerUrl'];
 			$ledgerRequest = Request::create($path,$method,$ledgerArray);
-			$processedData = $ledgerController->store($ledgerRequest);			
+			$processedData = $ledgerController->store($ledgerRequest);	
+			//|| $processedData[0][0]=='[' error while validation error occur
 			if(strcmp($msgArray['500'],$processedData)==0 || strcmp($msgArray['content'],$processedData)==0)
 			{
 				return $processedData;

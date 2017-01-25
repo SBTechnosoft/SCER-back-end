@@ -1582,7 +1582,7 @@ class LedgerModel extends Model
 	 * @param: companyId,contactNo
 	 * returns the error-message/data
 	*/
-	public function getDataAsPerContactNo($companyId,$contactNo,$emailId)
+	public function getDataAsPerContactNo($companyId,$contactNo)
 	{
 		//database selection
 		$database = "";
@@ -1592,26 +1592,15 @@ class LedgerModel extends Model
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		if($contactNo=="")
-		{
-			DB::beginTransaction();
-			$raw = DB::connection($databaseName)->select("select ledger_id 
-			from ledger_mst 
-			where email_id='".$emailId."' and 
-			contact_no='".$contactNo."' and
-			deleted_at='0000-00-00 00:00:00'");
-			DB::commit();
-		}
-		else
-		{
-			DB::beginTransaction();
-			$raw = DB::connection($databaseName)->select("select ledger_id 
-			from ledger_mst 
-			where company_id='".$companyId."' and 
-			contact_no='".$contactNo."' and
-			deleted_at='0000-00-00 00:00:00'");
-			DB::commit();
-		}
+		
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->select("select ledger_id 
+		from ledger_mst 
+		where company_id='".$companyId."' and 
+		contact_no='".$contactNo."' and
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
 		if(count($raw)==0)
 		{
 			return $exceptionArray['500'];
@@ -1621,7 +1610,6 @@ class LedgerModel extends Model
 			$encodedData = json_encode($raw);
 			return $encodedData;
 		}
-		
 	}
 	
 	/**

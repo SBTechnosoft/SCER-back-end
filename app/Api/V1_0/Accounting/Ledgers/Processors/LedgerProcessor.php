@@ -54,8 +54,14 @@ class LedgerProcessor extends BaseProcessor
 			}
 			else
 			{
+				$businessResult = array();
 				$buisnessLogic = new BuisnessLogic();
 				$businessResult = $buisnessLogic->validateLedgerData($tRequest);
+				if(strcmp($businessResult,$msgArray['content'])==0)
+				{
+					$tRequest['ledger_name'] = $tRequest['ledger_name'].$tRequest['contact_no'];
+					$businessResult = $tRequest;
+				}
 			}
 			if(is_array($businessResult))
 			{

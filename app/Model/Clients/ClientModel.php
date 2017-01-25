@@ -185,33 +185,21 @@ class ClientModel extends Model
 	 * @param contact-no,company_id
 	 * returns the status
 	*/
-	public function getClientData($contactNo,$emailId)
+	public function getClientData($contactNo)
 	{
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
-		if($contactNo=="")
-		{
-			DB::beginTransaction();		
-			$raw = DB::connection($databaseName)->select("select 
-			client_id
-			from client_mst 
-			where deleted_at='0000-00-00 00:00:00' and 
-			email_id='".$emailId."'");
-			DB::commit();
-		}
-		else
-		{
-			DB::beginTransaction();		
-			$raw = DB::connection($databaseName)->select("select 
-			client_id
-			from client_mst 
-			where deleted_at='0000-00-00 00:00:00' and 
-			contact_no='".$contactNo."'");
-			DB::commit();
-		}
+		DB::beginTransaction();		
+		$raw = DB::connection($databaseName)->select("select 
+		client_id
+		from client_mst 
+		where deleted_at='0000-00-00 00:00:00' and 
+		contact_no='".$contactNo."'");
+		DB::commit();
+		
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();

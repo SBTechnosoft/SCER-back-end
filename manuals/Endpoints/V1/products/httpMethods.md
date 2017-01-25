@@ -123,7 +123,7 @@
 				...
 			}
 
-**NOTES:** List the product as per given parameter in header and companyId
+**NOTES:** List the product-trn data as per given parameter in header and companyId
 
 ##### `GET products/company/{companyId}/transaction`
 + Header 

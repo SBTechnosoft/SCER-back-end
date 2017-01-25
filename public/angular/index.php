@@ -451,27 +451,27 @@ include ('connection.php');
 				
 				//9875647544
 				//bill
-				// $scope.user = [{"billData":[{"companyId":83,"entryDate":"22-10-2015","contactNo":"9875311143","workNo":"9875647344","isDisplay":"yes","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbrain","clientName":"ssaass","invoiceNumber":"INV/2016-12/53","address1":"sfja,sa","address2":"dfsd,ds","stateAbb":"IN-AG","cityId":1,"total":100,"tax":10,"grandTotal":134,"advance":100,"balance":10,"paymentMode":"cash","bankName":"abc","checkNumber":"abbb34eQ1G","remark":"adsfsf afasf"}]}];
+				$scope.user = [{"billData":[{"companyId":83,"entryDate":"22-10-2015","contactNo":"8224441539","workNo":"9875647344","isDisplay":"yes","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbrain","clientName":"palakss","invoiceNumber":"INV/2016-12/53","address1":"sfja,sa","address2":"dfsd,ds","stateAbb":"IN-AG","cityId":1,"total":100,"tax":10,"grandTotal":134,"advance":100,"balance":10,"paymentMode":"cash","bankName":"abc","checkNumber":"abbb34eQ1G","remark":"adsfsf afasf"}]}];
 				
-				// $scope.inventory=[{"productId": 1 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":40}];
+				$scope.inventory=[{"productId": 1 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":40}];
 				
-				// angular.forEach($scope.user[0]['billData'][0], function (input,key) {
+				angular.forEach($scope.user[0]['billData'][0], function (input,key) {
 					
-					// formdata.append(key,input);
-				// });
-				// for(var i=0;i<$scope.inventory.length;i++)
-				// {
-					// angular.forEach($scope.inventory[i], function (input,key) {
+					formdata.append(key,input);
+				});
+				for(var i=0;i<$scope.inventory.length;i++)
+				{
+					angular.forEach($scope.inventory[i], function (input,key) {
 						
-						// formdata.append('inventory['+i+']['+key+']',input);
-					// });
-				// }
+						formdata.append('inventory['+i+']['+key+']',input);
+					});
+				}
 				// var userId=9;
 				// var clientId=2;
 				// var productId = 1;
 				// var productGrpId = 11;
 				// var productCatId = 16;
-				var companyId=83;
+				// var companyId=83;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -495,7 +495,7 @@ include ('connection.php');
 				// var url = "http://www.scerp1.com/users/email-address/"+emailId;
 				// var url = "http://www.scerp1.com/accounting/trial-balance/company/"+companyId;
 				
-				// var url = "http://www.scerp1.com/accounting/bills";
+				var url = "http://www.scerp1.com/accounting/bills";
 				// var url = "http://www.scerp1.com/accounting/bills/company/"+companyId;
 				
 				// var url = "http://www.scerp1.com/clients/"+clientId;
@@ -551,26 +551,26 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/products/"+productId;
 				// var url="http://www.scerp1.com/products";
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/branch/"+branchId;
-				var url="http://www.scerp1.com/products/company/"+companyId;
+				// var url="http://www.scerp1.com/products/company/"+companyId;
 				$http({
                         url: url,
                         // type:'patch',
-						 // method: 'post',
-						method: 'get',
+						 method: 'post',
+						// method: 'get',
 						// method: "PATCH",
 						// method:'delete',
 						processData: false,
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
-                        // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productCategoryId':18},
+                        headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','salesType':'retail_sales'},
                         // headers: {'Content-Type': undefined,'jfId':'4','authenticationToken':'728023b3579a2c3177020535991bc3ae'},
-                        headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','salesType':'retail_sales','productCategoryId':18,'productGroupId':10},
+                        // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','salesType':'retail_sales','productCategoryId':18,'productGroupId':10},
                         // headers: {'Content-Type': undefined,'type':'sales'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'eb7cd694eabac838e0f9cba8789b668e','salesType':'retail_sales'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'eb7cd694eabac838e0f9cba8789b668e','salesType':'retail_sales','fromDate':'22-10-2015','toDate':'22-10-2015'}
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productId':1,'fromDate':'22-10-2015','toDate':'20-01-2017'},
                         // headers: {'Content-Type': undefined,'type':'sales','jfId':5},
                         // headers: {'Content-Type': undefined},
-						 // data:formdata
+						 data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

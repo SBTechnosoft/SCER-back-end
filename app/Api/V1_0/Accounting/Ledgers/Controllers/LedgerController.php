@@ -56,7 +56,6 @@ class LedgerController extends BaseController implements ContainerInterface
 			// insert
 			if($requestMethod == 'POST')
 			{
-				print_r($request->input());
 				$processor = new LedgerProcessor();
 				$ledgerPersistable = new LedgerPersistable();
 				$ledgerPersistable = $processor->createPersistable($this->request);
