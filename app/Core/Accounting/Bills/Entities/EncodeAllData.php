@@ -123,17 +123,34 @@ class EncodeAllData extends ClientService
 		{
 			for($innerArrayData=0;$innerArrayData<count($decodedDocumentData[$jsonData]);$innerArrayData++)
 			{
-				$arrayData[$innerArrayData] = array(
-					'documentId'=>$documentId[$jsonData][$innerArrayData],
-					'saleId'=>$documentSaleId[$jsonData][$innerArrayData],
-					'documentName'=>$documentName[$jsonData][$innerArrayData],
-					'documentSize'=>$documentSize[$jsonData][$innerArrayData],
-					'documentFormat'=>$documentFormat[$jsonData][$innerArrayData],
-					'documentType'=>$documentType[$jsonData][$innerArrayData],
-					'documentUrl'=>$constantArray['billUrl'],
-					'createdAt'=>$getDocumentCreatedDate[$jsonData][$innerArrayData],
-					'updatedAt'=>$getDocumentUpdatedDate[$jsonData][$innerArrayData]
-				);
+				if(strcmp($documentFormat[$jsonData][$innerArrayData],"pdf")==0)
+				{
+					$arrayData[$innerArrayData] = array(
+						'documentId'=>$documentId[$jsonData][$innerArrayData],
+						'saleId'=>$documentSaleId[$jsonData][$innerArrayData],
+						'documentName'=>$documentName[$jsonData][$innerArrayData],
+						'documentSize'=>$documentSize[$jsonData][$innerArrayData],
+						'documentFormat'=>$documentFormat[$jsonData][$innerArrayData],
+						'documentType'=>$documentType[$jsonData][$innerArrayData],
+						'documentUrl'=>$constantArray['billUrl'],
+						'createdAt'=>$getDocumentCreatedDate[$jsonData][$innerArrayData],
+						'updatedAt'=>$getDocumentUpdatedDate[$jsonData][$innerArrayData]
+					);
+				}	
+				else
+				{
+					$arrayData[$innerArrayData] = array(
+						'documentId'=>$documentId[$jsonData][$innerArrayData],
+						'saleId'=>$documentSaleId[$jsonData][$innerArrayData],
+						'documentName'=>$documentName[$jsonData][$innerArrayData],
+						'documentSize'=>$documentSize[$jsonData][$innerArrayData],
+						'documentFormat'=>$documentFormat[$jsonData][$innerArrayData],
+						'documentType'=>$documentType[$jsonData][$innerArrayData],
+						'documentUrl'=>$constantArray['billDocumentUrl'],
+						'createdAt'=>$getDocumentCreatedDate[$jsonData][$innerArrayData],
+						'updatedAt'=>$getDocumentUpdatedDate[$jsonData][$innerArrayData]
+					);
+				}
 			}
 			$clientData = json_decode($getClientDetails[$jsonData]);
 			$data[$jsonData]= array(

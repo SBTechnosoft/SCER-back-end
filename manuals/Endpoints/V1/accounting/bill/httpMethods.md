@@ -18,7 +18,7 @@
 + Response
 
             {
-                ... Standard Bill Object
+                "documentPath":''
             }
 			
 ##### `GET /accounting/bills/company/{companyId}`

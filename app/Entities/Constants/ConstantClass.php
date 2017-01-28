@@ -12,8 +12,10 @@ class ConstantClass
 		$constantArray['token'] = "authenticationToken";
 		$constantArray['success'] = "success";
 		$constantArray['documentUrl'] = "Storage/Document/";
-		$constantArray['billDocumentUrl'] = "Storage/Bill/Document";
+		$constantArray['billDocumentUrl'] = "Storage/Bill/Document/";
 		$constantArray['billUrl']="Storage/Bill/";
+		$constantArray['stockUrl']="Storage/StockRegister/";
+		$constantArray['priceList']="Storage/PriceList/";
 		$constantArray['clientUrl']="http://www.scerp1.com/clients";
 		$constantArray['ledgerUrl']="http://www.scerp1.com/accounting/ledgers";
 		$constantArray['journalUrl']="http://www.scerp1.com/accounting/journals";

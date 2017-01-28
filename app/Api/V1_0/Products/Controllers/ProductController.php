@@ -12,6 +12,8 @@ use ERP\Exceptions\ExceptionMessage;
 use ERP\Model\Products\ProductModel;
 use ERP\Entities\Constants\ConstantClass;
 use ERP\Entities\AuthenticationClass\TokenAuthentication;
+use ERP\Core\Products\Entities\StockManageMpdf;
+use ERP\Core\Products\Entities\PriceListMpdf;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -334,7 +336,7 @@ class ProductController extends BaseController implements ContainerInterface
 	
 	/**
      * get the specified resource.
-     * @param $productId and $branchId
+     * @param $companyId
      */
     public function getProductData(Request $request,$companyId)
     {
@@ -369,6 +371,52 @@ class ProductController extends BaseController implements ContainerInterface
 		else
 		{
 			return $authenticationResult;
+		}
+	}
+	
+	/**
+     * get the specified resource.
+     * @param $companyId
+     */
+    public function getStockDocumentPath(Request $request,$companyId)
+    {
+		$result = $this->getProductTransactionData($request,$companyId);
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($result,$exceptionArray['204'])==0)
+		{
+			return $result;
+		}
+		else
+		{
+			$stockManageMpdf = new StockManageMpdf();
+			$mpdfResult = $stockManageMpdf->calculateBalance($result);
+			return $mpdfResult;
+		}
+	}
+	
+	/**
+     * get the specified resource.
+     * @param $companyId
+     */
+    public function getPriceListDocumentPath(Request $request,$companyId)
+    {
+		$result = $this->getProductData($request,$companyId);
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($result,$exceptionArray['404'])==0)
+		{
+			return $result;
+		}
+		else
+		{
+			$priceListMpdf = new PriceListMpdf();
+			$mpdfResult = $priceListMpdf->generatePdf($result);
+			return $mpdfResult;
 		}
 	}
 	

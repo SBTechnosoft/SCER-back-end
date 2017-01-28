@@ -125,6 +125,46 @@
 
 **NOTES:** List the product-trn data as per given parameter in header and companyId
 
+##### `GET products/company/{companyId}/mpdf`
++ Header 
+	- Authentication Token
+	- 'productCategoryId':''
+	- 'productGroupId':''
+	- 'salesType':'retail_sales/whole_sales'
++ Error Message
+
+			{
+				... Error Message
+			}
++ Response
+
+			{
+				"documentPath":''			
+			}
+
+**NOTES:** List the product-trn data as per given parameter in header and companyId (price-list)
+
+##### `GET products/company/{companyId}/transaction/mpdf`
++ Header 
+	- Authentication Token
+	- 'fromDate':''
+	- 'toDate':''
+	- 'productId':''
+	- 'productCategoryId':''
+	- 'productGroupId':''
++ Error Message
+
+			{
+				... Error Message
+			}
++ Response
+
+			{
+				"documentPath":''			
+			}
+
+**NOTES:** List the product-trn data as per given parameter in header and companyId (stock register)
+
 ##### `GET products/company/{companyId}/transaction`
 + Header 
 	- 'authenticationToken':''
