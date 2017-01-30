@@ -471,7 +471,7 @@ include ('connection.php');
 				// var productId = 1;
 				// var productGrpId = 11;
 				// var productCatId = 16;
-				// var companyId=83;
+				var companyId=83;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -482,17 +482,17 @@ include ('connection.php');
 				// var quotationId=3;
 				// var ledgerGrpId=9;
 				// var ledgerId=111;
-				// var jfId=52;
-				// var journalId=802;
+				// var jfId=4;
+				// var journalId=327;
 				
-				// var url="http://www.scerp1.com/products/company/"+companyId+"/mpdf";  //priceList
+				var url="http://www.scerp1.com/products/company/"+companyId+"/priceList";  //priceList
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/transaction/mpdf"; //stock-register
 				
 				
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/transaction";
 				// var url = "http://www.scerp1.com/logout/user/"+userId;
 				
-				var url = "http://www.scerp1.com/users";
+				// var url = "http://www.scerp1.com/users";
 				// var url = "http://www.scerp1.com/users/"+userId;
 				// var url = "http://www.scerp1.com/authenticate/users/"+userId;
 				// var url = "http://www.scerp1.com/authenticate";
@@ -512,7 +512,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/accounting/journals";
 				// var url="http://www.scerp1.com/accounting/journals/"+jfId;
 				// var url="http://www.scerp1.com/accounting/journals/"+journalId;
-				// var url="http://www.scerp1.com/accounting/journals/company/"+companyId;
+				var url="http://www.scerp1.com/accounting/journals/company/"+companyId;
 				// var url="http://www.scerp1.com/accounting/journals/next";
 				
 				// var url="http://www.scerp1.com/accounting/ledgers/"+ledgerId+"/transactions";
@@ -566,7 +566,7 @@ include ('connection.php');
 						// method:'delete',
 						processData: false,
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
-                        headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','branchId':'6'},
+                        headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','type':'sales','jfId':64},
                         // headers: {'Content-Type': undefined,'jfId':'4','authenticationToken':'728023b3579a2c3177020535991bc3ae'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','salesType':'retail_sales','productCategoryId':18,'productGroupId':10},
                         // headers: {'Content-Type': undefined,'type':'sales'},

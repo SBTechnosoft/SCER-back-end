@@ -62,6 +62,9 @@ class EncodeAllData extends LedgerService
 			$journal->setCreated_at($convertedCreatedDate[$decodedData]);
 			$getCreatedDate[$decodedData] = $journal->getCreated_at();
 			
+			//convert amount(round) into their company's selected decimal points
+			$amount[$decodedData] = round($amount[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
+			
 			if(strcmp($updatedAt[$decodedData],'0000-00-00 00:00:00')==0)
 			{
 				$getUpdatedDate[$decodedData] = "00-00-0000";
@@ -145,6 +148,7 @@ class EncodeAllData extends LedgerService
 			);
 		}
 		$jsonEncodedData = json_encode($data);
+		// print_r($jsonEncodedData);
 		return $jsonEncodedData;
 	}
 }

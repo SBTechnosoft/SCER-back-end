@@ -125,9 +125,10 @@
 
 **NOTES:** List the product-trn data as per given parameter in header and companyId
 
-##### `GET products/company/{companyId}/mpdf`
+##### `GET products/company/{companyId}/priceList`
 + Header 
 	- Authentication Token
+	- 'operation':'pdf'
 	- 'productCategoryId':''
 	- 'productGroupId':''
 	- 'salesType':'retail_sales/whole_sales'
@@ -144,9 +145,10 @@
 
 **NOTES:** List the product-trn data as per given parameter in header and companyId (price-list)
 
-##### `GET products/company/{companyId}/transaction/mpdf`
+##### `GET products/company/{companyId}/transaction/details`
 + Header 
 	- Authentication Token
+	- 'operation':'pdf'
 	- 'fromDate':''
 	- 'toDate':''
 	- 'productId':''
@@ -163,7 +165,7 @@
 				"documentPath":''			
 			}
 
-**NOTES:** List the product-trn data as per given parameter in header and companyId (stock register)
+**NOTES:** List the product-trn data as per given parameter in header and companyId (stock-register)
 
 ##### `GET products/company/{companyId}/transaction`
 + Header 

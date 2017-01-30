@@ -60,6 +60,9 @@ class EncodeData extends LedgerService
 			$journal->setEntryDate($convertedEntryDate);
 			$getEntryDate = $journal->getEntryDate();
 		}
+		//convert amount(round) into their company's selected decimal points
+		$amount = round($amount,$companyDetails['noOfDecimalPoints']);
+		
 		//set all data into json array
 		$data = array();
 		$data['journalId'] = $journalId;
@@ -100,6 +103,7 @@ class EncodeData extends LedgerService
 			'vatNo' =>$companyDetails['vatNo'],
 			'serviceTaxNo' => $companyDetails['serviceTaxNo'],
 			'basicCurrencySymbol' => $companyDetails['basicCurrencySymbol'],
+			'noOfDecimalPoints' => $companyDetails['noOfDecimalPoints'],
 			'formalName' => $companyDetails['formalName'],
 			'noOfDecimalPoints' => $companyDetails['currencySymbol'],	
 			'logo'=> array(

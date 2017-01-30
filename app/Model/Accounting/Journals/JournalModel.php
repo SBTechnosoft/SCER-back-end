@@ -526,6 +526,7 @@ class JournalModel extends Model
 					WHERE balance_flag='opening' and 
 					deleted_at='0000-00-00 00:00:00'");
 					DB::commit();
+					
 					if(count($raw)!=0)
 					{
 						//get current balance
@@ -580,7 +581,6 @@ class JournalModel extends Model
 					$mergeArray[$ledgerDataArray] = (Object)array_merge((array)$encodedResult[$ledgerDataArray]->ledger,(array)((Object)$balanceAmountArray));
 					$encodedResult[$ledgerDataArray]->ledger=$mergeArray[$ledgerDataArray];
 				}		
-					
 				$enocodedProductData = json_encode($transactionResult);
 				$encodeProductData = new EncodeProductTrnAllData();
 				$getEncodedData = $encodeProductData->getEncodedAllData($enocodedProductData);

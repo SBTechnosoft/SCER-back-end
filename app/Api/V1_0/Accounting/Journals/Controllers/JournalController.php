@@ -285,7 +285,7 @@ class JournalController extends BaseController implements ContainerInterface
 						if(is_array($status))
 						{
 							$result = json_decode($status);
-							return $result;
+							return $status;
 						}
 						else
 						{
