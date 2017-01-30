@@ -124,9 +124,9 @@ class UserController extends BaseController implements ContainerInterface
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
 			if($userId==null)
-			{		
+			{
 				$userService= new UserService();
-				$status = $userService->getAllUserData();
+				$status = $userService->getAllUserData($request);
 				return $status;
 			}
 			else

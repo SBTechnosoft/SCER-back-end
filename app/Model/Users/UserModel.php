@@ -6,6 +6,9 @@ use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Entities\Constants\ConstantClass;
+use ERP\Http\Requests;
+use Illuminate\Http\Request;
+use ERP\Core\Users\Entities\UserArray;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -104,31 +107,65 @@ class UserModel extends Model
 	 * get All data 
 	 * returns the status
 	*/
-	public function getAllData()
+	public function getAllData(Request $request)
 	{	
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
-		DB::beginTransaction();		
-		$raw = DB::connection($databaseName)->select("select 
-		user_id,
-		user_name,
-		user_type,
-		email_id,
-		password,
-		contact_no,
-		address,
-		pincode,
-		state_abb,
-		city_id,
-		company_id,
-		branch_id,
-		created_at,
-		updated_at
-		from user_mst where deleted_at='0000-00-00 00:00:00'");
-		DB::commit();
+		if(array_key_exists('companyid',$request->header()) || array_key_exists('branchid',$request->header()))
+		{
+			$userArray = new UserArray();
+			$userArrayData = $userArray->userSearching();
+			$querySet = "";
+			for($arrayData=0;$arrayData<count($userArrayData);$arrayData++)
+			{
+				if(array_key_exists(array_keys($userArrayData)[$arrayData],$request->header()))
+				{
+					$querySet = $querySet.$userArrayData[array_keys($userArrayData)[$arrayData]]." = ".$request->header()[array_keys($userArrayData)[$arrayData]][0]." and ";
+				}
+			}
+			DB::beginTransaction();	
+			$raw = DB::connection($databaseName)->select("select 
+			user_id,
+			user_name,
+			user_type,
+			email_id,
+			password,
+			contact_no,
+			address,
+			pincode,
+			state_abb,
+			city_id,
+			company_id,
+			branch_id,
+			created_at,
+			updated_at
+			from user_mst where ".$querySet." deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+		}
+		else
+		{
+			DB::beginTransaction();		
+			$raw = DB::connection($databaseName)->select("select 
+			user_id,
+			user_name,
+			user_type,
+			email_id,
+			password,
+			contact_no,
+			address,
+			pincode,
+			state_abb,
+			city_id,
+			company_id,
+			branch_id,
+			created_at,
+			updated_at
+			from user_mst where deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+		}
 		
 		//get exception message
 		$exception = new ExceptionMessage();

@@ -9,6 +9,8 @@ use ERP\Core\Users\Entities\User;
 use ERP\Core\Users\Entities\EncodeData;
 use ERP\Core\Users\Entities\EncodeAllData;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Http\Requests;
+use Illuminate\Http\Request;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -61,10 +63,10 @@ class UserService extends AbstractService
      * get all the data and call the model for database selection opertation
      * @return status
      */
-	public function getAllUserData()
+	public function getAllUserData(Request $request)
 	{
 		$userModel = new UserModel();
-		$status = $userModel->getAllData();
+		$status = $userModel->getAllData($request);
 		
 		//get exception message
 		$exception = new ExceptionMessage();
