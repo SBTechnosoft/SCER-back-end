@@ -485,8 +485,10 @@ include ('connection.php');
 				// var jfId=52;
 				// var journalId=802;
 				
-				var url="http://www.scerp1.com/products/company/"+companyId+"/mpdf";
-				// var url="http://www.scerp1.com/products/company/"+companyId+"/transaction/mpdf";
+				// var url="http://www.scerp1.com/products/company/"+companyId+"/mpdf";  //priceList
+				// var url="http://www.scerp1.com/products/company/"+companyId+"/transaction/mpdf"; //stock-register
+				
+				
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/transaction";
 				// var url = "http://www.scerp1.com/logout/user/"+userId;
 				

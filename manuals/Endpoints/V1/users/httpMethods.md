@@ -27,7 +27,8 @@
 ##### `GET /users/`
 + Header 
 	- 'authenticationToken':string
-
+	- 'companyId':''
+	- 'branchId':''
 + Error Message
 
 			{
