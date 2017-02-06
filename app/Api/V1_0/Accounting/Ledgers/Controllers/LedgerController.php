@@ -255,12 +255,12 @@ class LedgerController extends BaseController implements ContainerInterface
      * get the transaction resource.
      * @param  int  $ledgerId
      */
-    public function getLedgerTransactionData($ledgerId)
+    public function getLedgerTransactionData(Request $request,$ledgerId)
     {
 		//Authentication
 		$tokenAuthentication = new TokenAuthentication();
 		$authenticationResult = $tokenAuthentication->authenticate($request->header());
-		
+
 		//get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();

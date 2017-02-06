@@ -87,6 +87,7 @@
 	- 'productName':''
 	- 'productCategoryId':''
 	- 'productGroupId':''
+	- 'salesType':'retail_sales/whole_sales'
 + Error Message
 
 			{
@@ -102,28 +103,6 @@
 			}
 
 **NOTES:** List the product as per given parameter in header and companyId
-
-##### `GET products/company/{companyId}`
-+ Header 
-	- Authentication Token
-	- 'productCategoryId':''
-	- 'productGroupId':''
-	- 'salesType':'retail_sales/whole_sales'
-+ Error Message
-
-			{
-				... Error Message
-			}
-+ Response
-
-			{
-				{
-					... Standard Product Transaction Object
-				}
-				...
-			}
-
-**NOTES:** List the product-trn data as per given parameter in header and companyId
 
 ##### `GET products/company/{companyId}/priceList`
 + Header 

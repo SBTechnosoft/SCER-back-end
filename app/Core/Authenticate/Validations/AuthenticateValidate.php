@@ -7,12 +7,14 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Route;
 use ERP\Core\Users\Services\UserService;
 use ERP\Exceptions\ExceptionMessage;
+use Illuminate\Http\Request;
+use ERP\Http\Requests;
 /**
   * @author Reema Patel<reema.p@siliconbrain.in>
   */
 class AuthenticateValidate extends UserService
 {
-	public function insertValidate($request)
+	public function insertValidate(Request $request ,$tRequest)
 	{
 		$matchFlag=0;
 		//get exception message
@@ -20,15 +22,15 @@ class AuthenticateValidate extends UserService
 		$msgArray = $exception->messageArrays();
 		
 		//convert password into base64_encode
-		$decodedPassword = base64_decode($request['password']);
+		$decodedPassword = base64_decode($tRequest['password']);
 		
 		//get user data
 		$userService = new AuthenticateValidate();
-		$getAllData = $userService->getAllUserData();
+		$getAllData = $userService->getAllUserData($request);
 		$decodedUserData = json_decode($getAllData);
 		for($arrayData=0;$arrayData<count($decodedUserData);$arrayData++)
 		{
-			if(strcmp($decodedUserData[$arrayData]->emailId,$request['email_id'])==0 && strcmp($decodedUserData[$arrayData]->password,$decodedPassword)==0)
+			if(strcmp($decodedUserData[$arrayData]->emailId,$tRequest['email_id'])==0 && strcmp($decodedUserData[$arrayData]->password,$decodedPassword)==0)
 			{
 				$matchFlag=1;
 				$userId = $decodedUserData[$arrayData]->userId;

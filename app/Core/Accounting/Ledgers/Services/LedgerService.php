@@ -9,6 +9,7 @@ use ERP\Core\User\Entities\User;
 use ERP\Core\Accounting\Ledgers\Entities\EncodeData;
 use ERP\Core\Accounting\Ledgers\Entities\EncodeAllData;
 use ERP\Core\Accounting\Ledgers\Entities\EncodeTrnAllData;
+use ERP\Core\Accounting\Ledgers\Entities\EncodeTransationAllData;
 use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -213,7 +214,7 @@ class LedgerService extends AbstractService
 		}
 		else
 		{
-			$encoded = new EncodeTrnAllData();
+			$encoded = new EncodeTransationAllData();
 			$encodeAllData = $encoded->getEncodedAllData($status,$ledgerId);
 			return $encodeAllData;
 		}

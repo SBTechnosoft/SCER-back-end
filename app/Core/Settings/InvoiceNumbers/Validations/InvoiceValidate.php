@@ -13,10 +13,14 @@ class InvoiceValidate
 	public function validate($request)
 	{
 		$rules = array(
-			'invoice_label'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-/\\\]*$/', 
+			'invoice_label'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-\/]*$/', 
+			'start_at'=> 'regex:/^[0-9]*$/', 
+			'end_at'=> 'regex:/^[0-9]*$/', 
 		);
 		$messages = [
 			'invoice_label.between' => 'StringLengthException :Enter the :attribute less then 35 character',
+			'start_at.between' => 'start_at contains character from "0-9" only',
+			'end_at.between' => 'end_at contains character from "0-9" only',
 		];
 		$validator = Validator::make($request,$rules,$messages);
 		if ($validator->fails()) {
@@ -38,7 +42,9 @@ class InvoiceValidate
 	public function validateUpdateData($keyName,$value,$request)
 	{
 		$validationArray = array(
-			'invoice_label'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-/\\\]*$/', 
+			'invoice_label'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-\/]*$/', 
+			'start_at'=> 'regex:/^[0-9]*$/', 
+			'end_at'=> 'regex:/^[0-9]*$/', 
 		);
 		$rules =array();
 		foreach ($validationArray as $key => $value) 
@@ -56,6 +62,8 @@ class InvoiceValidate
 			);
 			$messages = [
 				'invoice_label.between' => 'StringLengthException :Enter the :attribute less then 35 character',
+				'start_at.between' => 'start_at contains character from "0-9" only',
+				'end_at.between' => 'end_at contains character from "0-9" only',
 			];
 			$validator = Validator::make($request,$rules,$messages);
 			

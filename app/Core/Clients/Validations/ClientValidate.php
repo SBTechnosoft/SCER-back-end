@@ -14,10 +14,10 @@ class ClientValidate
 	{
 		$rules = array(
 			'client_name'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]*$/', 
-			'company_name'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]*$/', 
-			'contact_no'=> 'between:10,12|regex:/^[0-9]*$/', 
-			'work_no'=> 'between:10,12|regex:/^[0-9]*$/', 
-			// 'email_id'=> 'regex:/^[a-zA-Z]*$/', 
+			'company_name'=> 'between:2,50|regex:/^[a-zA-Z &_`#().\'-]+$/', 
+			'contact_no'=> 'between:10,12|regex:/^[1-9][0-9]+$/', 
+			'work_no'=> 'between:10,12|regex:/^[1-9][0-9]+$/', 
+			'email_id'=> 'regex:/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,})$/', 
 			'address1'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'address2'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 		);
@@ -26,14 +26,15 @@ class ClientValidate
 			'client_name.regex' => 'client-name contains character from "a-zA-Z &_`#().\'-" only','company_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
 			'company_name.regex' => 'company-name contains character from "a-zA-Z &_`#().\'-" only',
 			'contact_no.between' => 'StringLengthException :Enter the :attribute between 10-12 number',
+			// 'contact_no.required' => 'contact-no is required',
 			'contact_no.regex' => 'contact-no contains character from "0-9" only',
 			'work_no.between' => 'StringLengthException :Enter the :attribute between 10-12 number',
 			'work_no.regex' => 'work-no contains character from "0-9" only',
-			// 'email_id.regex' => 'entered email id is not correct',
+			'email_id.regex' => 'please enter your email-address in proper format',
 			'address1.between' => 'StringLengthException :Enter the :attribute less then 35 character',
-			'address1.regex' => 'address1 contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
+			'address1.regex' => 'address1 contains character from "a-zA-Z0-9* ,- /_`#[]().\" only',
 			'address2.between' => 'StringLengthException :Enter the :attribute less then 35 character',
-			'address2.regex' => 'address2 contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
+			'address2.regex' => 'address2 contains character from "a-zA-Z0-9* ,- /_`#[]().\" only',
 		];
 		$validator = Validator::make($request,$rules,$messages);
 		if ($validator->fails()) {

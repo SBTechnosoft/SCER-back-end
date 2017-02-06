@@ -124,7 +124,8 @@ class BuisnessLogic extends LedgerModel
 				}
 			}
 		}
-		if($creditAmountArray==$debitAmountArray)
+		$epsilon = 0.00001;
+		if(abs($creditAmountArray-$debitAmountArray)<$epsilon)
 		{
 			return $trimRequest;
 		}
@@ -181,7 +182,8 @@ class BuisnessLogic extends LedgerModel
 						}
 					}
 				}
-				if($creditAmountArray==$debitAmountArray)
+				$epsilon = 0.00001;
+				if(abs($creditAmountArray-$creditAmountArray)<$epsilon)
 				{
 					return $trimRequest;
 				}	
@@ -218,7 +220,8 @@ class BuisnessLogic extends LedgerModel
 						}
 					}
 				}
-				if($creditAmountArray==$debitAmountArray)
+				$epsilon = 0.00001;
+				if(abs($creditAmountArray-$debitAmountArray)<$epsilon)
 				{
 					return $trimRequest;
 				}

@@ -29,6 +29,8 @@ class EncodeData extends ProductCategoryService
 		$vat= $decodedJson[0]['vat'];
 		$mrp= $decodedJson[0]['mrp'];
 		$margin= $decodedJson[0]['margin'];
+		$productDescription= $decodedJson[0]['product_description'];
+		$additionalTax= $decodedJson[0]['additional_tax'];
 		$productCatId= $decodedJson[0]['product_category_id'];
 		$productGrpId= $decodedJson[0]['product_group_id'];
 		$companyId= $decodedJson[0]['company_id'];
@@ -56,6 +58,15 @@ class EncodeData extends ProductCategoryService
 		//get the branch detail from database
 		$branchDetail  = new BranchDetail();
 		$getBranchDetails = $branchDetail->getBranchDetails($branchId);
+		
+		//convert amount(round) into their company's selected decimal points
+		$purchasePrice = round($purchasePrice,$getCompanyDetails['noOfDecimalPoints']);
+		$wholesaleMargin = round($wholesaleMargin,$getCompanyDetails['noOfDecimalPoints']);
+		$semiWholeSaleMargin = round($semiWholeSaleMargin,$getCompanyDetails['noOfDecimalPoints']);
+		$vat= round($vat,$getCompanyDetails['noOfDecimalPoints']);
+		$mrp= round($mrp,$getCompanyDetails['noOfDecimalPoints']);
+		$margin= round($margin,$getCompanyDetails['noOfDecimalPoints']);
+		$additionalTax = round($additionalTax,$getCompanyDetails['noOfDecimalPoints']);
 		
 		//date format conversion['created_at','updated_at'] product
 		$product = new Product();
@@ -85,6 +96,8 @@ class EncodeData extends ProductCategoryService
 		$data['vat'] = $vat;
 		$data['mrp'] = $mrp;
 		$data['margin'] = $margin;
+		$data['productDescription'] = $productDescription;
+		$data['additionalTax'] = $additionalTax;
 		$data['createdAt'] = $getCreatedDate;
 		$data['updatedAt'] = $getUpdatedDate;	
 		

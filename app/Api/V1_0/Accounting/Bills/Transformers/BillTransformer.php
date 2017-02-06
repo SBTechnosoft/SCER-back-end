@@ -43,9 +43,30 @@ class BillTransformer
 		$tAdvance = trim($billArrayData['advance']);
 		$tBalance = trim($billArrayData['balance']);
 		$tPaymentMode = trim($billArrayData['paymentMode']);
-		$tBankName = trim($billArrayData['bankName']);
-		$tCheckNumber = trim($billArrayData['checkNumber']);
-		$tRemark = trim($billArrayData['remark']);
+		if(strcmp($tPaymentMode,"bank")==0)
+		{
+			$tBankName = trim($billArrayData['bankName']);
+			$tCheckNumber = trim($billArrayData['checkNumber']);
+		}
+		else
+		{
+			$tBankName="";	
+			$tCheckNumber="";
+			if($tPaymentMode=="")
+			{
+				$tPaymentMode=$paymentModeArray['cashPayment'];
+			}
+		}
+
+		if(array_key_exists("remark",$billArrayData))
+		{
+			$tRemark = trim($billArrayData['remark']);
+		}
+		else
+		{
+			$tRemark ="";
+		}
+
 		$tIsDisplay = trim($billArrayData['isDisplay']);
 		
 		if($tIsDisplay=="")
@@ -58,10 +79,7 @@ class BillTransformer
 		$paymentModeArray = array();
 		$paymentModeEnum = new PaymentModeEnum();
 		$paymentModeArray = $paymentModeEnum->enumArrays();
-		if($tPaymentMode=="")
-		{
-			$tPaymentMode=$paymentModeArray['cashPayment'];
-		}
+		
 		for($trimInventory=0;$trimInventory<count($billArrayData['inventory']);$trimInventory++)
 		{
 			$tInventoryArray[$trimInventory] = array();

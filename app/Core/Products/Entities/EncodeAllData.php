@@ -35,6 +35,8 @@ class EncodeAllData extends ProductCategoryService
 			$vat[$decodedData] = $decodedJson[$decodedData]['vat'];
 			$margin[$decodedData] = $decodedJson[$decodedData]['margin'];
 			$mrp[$decodedData] = $decodedJson[$decodedData]['mrp'];
+			$productDescription[$decodedData] = $decodedJson[$decodedData]['product_description'];
+			$additionalTax[$decodedData] = $decodedJson[$decodedData]['additional_tax'];
 			$productCatId[$decodedData] = $decodedJson[$decodedData]['product_category_id'];
 			$productGrpId[$decodedData] = $decodedJson[$decodedData]['product_group_id'];
 			$companyId[$decodedData] = $decodedJson[$decodedData]['company_id'];
@@ -63,6 +65,15 @@ class EncodeAllData extends ProductCategoryService
 			//get the branch detail from database
 			$branchDetail  = new BranchDetail();
 			$getBranchDetails[$decodedData] = $branchDetail->getBranchDetails($branchId[$decodedData]);
+			
+			//convert amount(round) into their company's selected decimal points
+			$purchasePrice[$decodedData] = round($purchasePrice[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
+			$wholesaleMargin[$decodedData] = round($wholesaleMargin[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
+			$semiWholesaleMargin[$decodedData] = round($semiWholesaleMargin[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
+			$vat[$decodedData] = round($vat[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
+			$margin[$decodedData] = round($margin[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
+			$mrp[$decodedData] = round($mrp[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
+			$additionalTax[$decodedData] = round($additionalTax[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
 			
 			//product date convertion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$createdAt[$decodedData])->format('d-m-Y');
@@ -93,6 +104,8 @@ class EncodeAllData extends ProductCategoryService
 				'vat' => $vat[$jsonData],
 				'margin' => $margin[$jsonData],
 				'mrp' => $mrp[$jsonData],
+				'productDescription' => $productDescription[$jsonData],
+				'additionalTax' => $additionalTax[$jsonData],
 				'measurementUnit' => $measurementUnit[$jsonData],
 				'createdAt' => $getCreatedDate[$jsonData],
 				'updatedAt' => $getUpdatedDate[$jsonData],

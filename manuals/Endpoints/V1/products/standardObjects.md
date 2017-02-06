@@ -10,6 +10,8 @@
 			"vat": decimal,
 			"margin": decimal,
 			"mrp": decimal,
+			"additionalTax":decimal,
+			"productDescription":string,
             "productCategory": {
                 ... Standard Products Category Object
             },
@@ -40,6 +42,8 @@
 			"vat": decimal,
 			"margin": decimal,
 			"mrp": decimal,
+			"additionalTax":decimal,
+			"productDescription":string,
             "companyId": int,
             "branchId" : int,
 			"isDisplay": Enum,

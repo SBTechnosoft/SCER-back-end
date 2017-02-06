@@ -354,19 +354,9 @@ class ProductController extends BaseController implements ContainerInterface
 			$exception = new ExceptionMessage();
 			$exceptionArray = $exception->messageArrays();
 			
-			if(array_key_exists("salestype",$request->header()))
-			{
-				$productService= new ProductService();
-				$status = $productService->getProductTrnData($request->header(),$companyId);
-				return $status;	
-			}
-			else
-			{
-				$productService= new ProductService();
-				$status = $productService->getData($request->header(),$companyId);
-				return $status;	
-			}
-			
+			$productService= new ProductService();
+			$status = $productService->getData($request->header(),$companyId);
+			return $status;	
 		}
 		else
 		{
@@ -415,7 +405,7 @@ class ProductController extends BaseController implements ContainerInterface
 		else
 		{
 			$priceListMpdf = new PriceListMpdf();
-			$mpdfResult = $priceListMpdf->generatePdf($result);
+			$mpdfResult = $priceListMpdf->generatePdf($request->header(),$result);
 			return $mpdfResult;
 		}
 	}

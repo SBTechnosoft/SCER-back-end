@@ -5,15 +5,22 @@ use Illuminate\Support\Facades\Redirect;
 use Validator;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Route;
+use ERP\Model\Companies\CompanyModel;
+use ERP\Exceptions\ExceptionMessage;
 /**
-  * @author Reema Patel<reema.p@siliconbrain.in>
+  * @author Reema Patel<reema.p@siliconbrain.in> 
   */
-class CompanyValidate
+class CompanyValidate extends CompanyModel
 {
+	/**
+     * validate data for insertion
+     * $param trim request data
+     * @return error messgage/trim request array
+     */	
 	public function validate($request)
 	{
 		$rules = array(
-			'company_name'=> 'between:2,35|regex:/^[a-zA-Z &_`#().\'-]+$/', 
+			'company_name'=> 'between:2,50|regex:/^[a-zA-Z &_`#().\'-]+$/', 
 			'company_display_name'=>'between:2,50|regex:/^[a-zA-Z &_`#().\'-]+$/',
 			'address1'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'address2'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
@@ -24,7 +31,7 @@ class CompanyValidate
 			'service_tax_no'=>'between:1,35|regex:/^([a-zA-Z0-9]{15})+$/',
 			'basic_currency_symbol'=>'max:3|min:3',
 			'formal_name'=>'between:1,35|regex:/^[a-zA-Z &_`#().\'-]+$/',
-			
+			'no_of_decimal_points'=>'regex:/^[0-9]+$/'
 		);
 		$messages = [
 			'company_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
@@ -32,9 +39,9 @@ class CompanyValidate
 			'company_display_name.between' => 'StringLengthException :Enter the :attribute less then 50 character',
 			'company_display_name.regex' => 'company-display-name contains character from "a-zA-Z &_`#().\'-" only',
 			'address1.between' => 'StringLengthException :Enter the :attribute less then 35 character',
-			'address1.regex' => 'address1 contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
+			'address1.regex' => 'address1 contains character from "a-zA-Z0-9* ,- /_`#[]().\" only',
 			'address2.between' => 'StringLengthException :Enter the :attribute less then 35 character',
-			'address2.regex' => 'address2 contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
+			'address2.regex' => 'address2 contains character from "a-zA-Z0-9* ,- /_`#[]().\" only',
 			'pincode.between' => 'NumberFormatException :Enter the :attribute between 6 and 10 character',
 			'pincode.regex' => 'pincode contains numbers only',
 			'pan.max' => 'NumberFormatException :Enter the :attribute number of 10 character',
@@ -53,7 +60,7 @@ class CompanyValidate
 			'basic_currency_symbol.regex' => 'basic currency symbol contains character only',
 			'formal_name.between' => 'StringLengthException :Enter the :attribute less the 35 character',
 			'formal_name.regex' => 'formal-name contains character from "a-zA-Z &_`#().\'-" only',
-			
+			'no_of_decimal_points.regex' => 'decimal-points contains character from "0 to 9" only'
 		];
 		$validator = Validator::make($request,$rules,$messages);
 		if ($validator->fails()) 
@@ -72,10 +79,16 @@ class CompanyValidate
 			return "Success";
 		}
 	}
+	
+	/**
+     * validate data for update
+     * $param trim request data
+     * @return error messgage/trim request array
+     */	
 	public function validateUpdateData($keyName,$value,$request)
 	{
 		$validationArray = array(
-			'company_name'=> 'between:2,35|regex:/^[a-zA-Z &_`#().\'-]+$/', 
+			'company_name'=> 'between:2,50|regex:/^[a-zA-Z &_`#().\'-]+$/', 
 			'company_display_name'=>'between:2,50|regex:/^[a-zA-Z &_`#().\'-]+$/',
 			'address1'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'address2'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
@@ -85,7 +98,8 @@ class CompanyValidate
 			'vat_no'=>'max:11|min:11|regex:/^([a-zA-Z0-9])+$/',
 			'service_tax_no'=>'between:1,35|regex:/^([a-zA-Z0-9]{15})+$/',
 			'basic_currency_symbol'=>'max:3|min:3',
-			'formal_name'=>'between:1,35|regex:/^[a-zA-Z &_`#().\'-]+$/'
+			'formal_name'=>'between:1,35|regex:/^[a-zA-Z &_`#().\'-]+$/',
+			'no_of_decimal_points'=>'regex:/^[0-9]+$/'
 			);
 		$rules =array();
 		foreach ($validationArray as $key => $value) 
@@ -107,9 +121,9 @@ class CompanyValidate
 				'company_display_name.between' => 'StringLengthException :Enter the :attribute less then 50 character',
 				'company_display_name.regex' => 'company-display-name contains character from "a-zA-Z &_`#().\'-" only',
 				'address1.between' => 'StringLengthException :Enter the :attribute less then 35 character',
-				'address1.regex' => 'address1 contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
+				'address1.regex' => 'address1 contains character from "a-zA-Z0-9* ,- /_`#[]().\" only',
 				'address2.between' => 'StringLengthException :Enter the :attribute less then 35 character',
-				'address2.regex' => 'address2 contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
+				'address2.regex' => 'address2 contains character from "a-zA-Z0-9* ,- /_`#[]().\" only',
 				'pincode.between' => 'NumberFormatException :Enter the :attribute between 6 and 10 character',
 				'pincode.regex' => 'pincode contains numbers only',
 				'pan.max' => 'NumberFormatException :Enter the :attribute number of 10 character',
@@ -128,6 +142,7 @@ class CompanyValidate
 				'basic_currency_symbol.regex' => 'basic currency symbol contains character only',
 				'formal_name.between' => 'StringLengthException :Enter the :attribute less the 35 character',
 				'formal_name.regex' => 'formal-name contains character from "a-zA-Z &_`#().\'-" only',
+				'no_of_decimal_points.regex' => 'decimal-points contains character from "0 to 9" only'
 			];
 			$validator = Validator::make($request,$rules,$messages);
 			
@@ -150,6 +165,62 @@ class CompanyValidate
 		else
 		{
 			return "Success";
+		}
+	}
+	
+	/**
+     * validate data for company name
+     * $param trim request data
+     * @return error messgage/trim request array
+     */	
+	public function companyNameValidate($tRequest)
+	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		//get all company-data
+		$companyValidation = new CompanyValidate();
+		$companyResult = $companyValidation->getCompanyName($tRequest['company_name']);
+		
+		if(!is_array($companyResult))
+		{
+			return $tRequest;
+		}
+		else
+		{
+			return $exceptionArray['content'];
+		}
+	}
+	
+	/**
+     * validate data for company name
+     * $param trim request data
+     * @return error messgage/trim request array
+     */	
+	public function companyNameValidateUpdate($tRequest,$companyId)
+	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		//get all company-data
+		$companyValidation = new CompanyValidate();
+		$companyResult = $companyValidation->getCompanyName($tRequest['company_name']);
+		if(!is_array($companyResult))
+		{
+			return $tRequest;
+		}
+		else
+		{
+			if($companyResult[0]->company_id==$companyId)
+			{
+				return $tRequest;
+			}
+			else
+			{
+				return $exceptionArray['content'];
+			}
 		}
 	}
 }

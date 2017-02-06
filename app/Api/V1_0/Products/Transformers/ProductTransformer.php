@@ -32,6 +32,8 @@ class ProductTransformer
 		$vat = $request->input('vat'); 			
 		$mrp = $request->input('mrp'); 			
 		$margin = $request->input('margin'); 			
+		$productDescription = $request->input('productDescription'); 			
+		$additionalTax = $request->input('additionalTax'); 			
 		$companyId = $request->input('companyId'); 			
 		$productCatId = $request->input('productCategoryId'); 			
 		$productGrpId = $request->input('productGroupId'); 			
@@ -47,6 +49,8 @@ class ProductTransformer
 		$tVat = trim($vat);
 		$tMrp = trim($mrp);
 		$tMargin = trim($margin);
+		$tProductDescription = trim($productDescription);
+		$tAdditionalTax = trim($additionalTax);
 		$tCompanyId = trim($companyId);
 		$tProductCatId = trim($productCatId);
 		$tProductGrpId = trim($productGrpId);
@@ -109,6 +113,8 @@ class ProductTransformer
 			$data['vat'] = $tVat;
 			$data['mrp'] = $tMrp;
 			$data['margin'] = $tMargin;
+			$data['product_description'] = $tProductDescription;
+			$data['additional_tax'] = $tAdditionalTax;
 			$data['semi_wholesale_margin'] = $tSemiWholeSaleMargin;
 			$data['company_id'] = $tCompanyId;
 			$data['product_category_id'] = $tProductCatId;

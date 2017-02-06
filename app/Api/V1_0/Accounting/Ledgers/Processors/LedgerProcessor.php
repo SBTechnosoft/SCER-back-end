@@ -57,7 +57,7 @@ class LedgerProcessor extends BaseProcessor
 				$businessResult = array();
 				$buisnessLogic = new BuisnessLogic();
 				$businessResult = $buisnessLogic->validateLedgerData($tRequest);
-				if(strcmp($businessResult,$msgArray['content'])==0)
+				if(!is_array($businessResult))
 				{
 					$tRequest['ledger_name'] = $tRequest['ledger_name'].$tRequest['contact_no'];
 					$businessResult = $tRequest;
@@ -68,7 +68,6 @@ class LedgerProcessor extends BaseProcessor
 				//validation
 				$ledgerValidate = new LedgerValidate();
 				$status = $ledgerValidate->validate($tRequest);
-				
 				if($status=="Success")
 				{
 					foreach ($tRequest as $key => $value)

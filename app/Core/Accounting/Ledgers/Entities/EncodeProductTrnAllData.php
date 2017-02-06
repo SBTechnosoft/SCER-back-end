@@ -18,7 +18,7 @@ class EncodeProductTrnAllData extends ProductService
 		$convertedUpdatedDate =  array();
 		$encodeAllData =  array();
 		$decodedJson = json_decode($status,true);
-		
+	
 		$ledger = new Ledger();
 		for($decodedData=0;$decodedData<count($decodedJson);$decodedData++)
 		{
@@ -53,6 +53,11 @@ class EncodeProductTrnAllData extends ProductService
 			//get the branch detail from database
 			$branchDetail  = new BranchDetail();
 			$getBranchDetails[$decodedData] = $branchDetail->getBranchDetails($branchId[$decodedData]);
+			
+			//convert amount(round) into their company's selected decimal points
+			$price[$decodedData] = round($price[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
+			$discountValue[$decodedData] = round($discountValue[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
+			$tax[$decodedData] = round($tax[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
 			
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
@@ -111,6 +116,8 @@ class EncodeProductTrnAllData extends ProductService
 					'vat' => $productDecodedJson[$jsonData]['vat'],
 					'mrp' => $productDecodedJson[$jsonData]['mrp'],
 					'margin' => $productDecodedJson[$jsonData]['margin'],
+					'productDescription' => $productDecodedJson[$jsonData]['productDescription'],
+					'additionalTax' => $productDecodedJson[$jsonData]['additionalTax'],
 					'createdAt' => $productDecodedJson[$jsonData]['createdAt'],
 					'updatedAt' => $productDecodedJson[$jsonData]['updatedAt'],
 					'productCategoryId' => $productDecodedJson[$jsonData]['productCategory']['productCategoryId'],

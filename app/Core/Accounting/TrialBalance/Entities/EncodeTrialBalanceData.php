@@ -2,7 +2,7 @@
 namespace ERP\Core\Accounting\TrialBalance\Entities;
 
 use ERP\Core\Accounting\Ledgers\Services\LedgerService;
-// use Carbon;
+// use ERP\Core\Companies\Services\CompanyService;
 /**
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -16,6 +16,7 @@ class EncodeTrialBalanceData extends LedgerService
 		$encodeAllData =  array();
 		$decodedLedgerData = array();
 		$decodedJson = json_decode($status,true);
+		$companyService = new CompanyService();
 		for($decodedData=0;$decodedData<count($decodedJson);$decodedData++)
 		{
 			$ledgerId[$decodedData] = $decodedJson[$decodedData]['ledger_id'];
@@ -25,6 +26,12 @@ class EncodeTrialBalanceData extends LedgerService
 			$trialBalanceData = new EncodeTrialBalanceData();
 			$ledgerData[$decodedData]  = $trialBalanceData->getLedgerData($ledgerId[$decodedData]);
 			$decodedLedgerData[$decodedData] = json_decode($ledgerData[$decodedData]);
+			
+			//convert amount(round) into their company's selected decimal points
+			// $companyData[$decodedData] = $companyService->getCompanyData($ledgerDecodedJson[$decodedData]['company']['companyId']);
+			// $companyDecodedData[$decodedData] = json_decode($companyData[$decodedData]);
+				
+			// $amount[$decodedData] = round($amount[$decodedData],);
 		}
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)

@@ -378,6 +378,39 @@ class CompanyModel extends Model
 		}
 	}
 	
+	/**
+	 * get particular company data
+	 * @param $companyName
+	 * returns the status
+	*/
+	public function getCompanyName($companyName)
+	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->select("select 
+		company_id
+		from company_mst 
+		where company_name = '".$companyName."' and 
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(count($raw)==0)
+		{
+			return $exceptionArray['404'];
+		}
+		else
+		{	
+			return $raw;
+		}
+	}
+	
 	//delete
 	public function deleteData($companyId)
 	{

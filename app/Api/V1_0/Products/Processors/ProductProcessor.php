@@ -47,17 +47,23 @@ class ProductProcessor extends BaseProcessor
 		}
 		else
 		{
+			$productValidate = new ProductValidate();
+			
 			// trim an input 
 			$productTransformer = new ProductTransformer();
 			$tRequest = $productTransformer->trimInsertData($this->request);
 			if($tRequest==1)
 			{
 				return $msgArray['content'];
-			}	
+			}
 			else
 			{
 				// validation
-				$productValidate = new ProductValidate();
+				$validationResult = $productValidate->productNameValidate($tRequest);
+			}		
+			if(is_array($validationResult))
+			{
+				// validation
 				$status = $productValidate->validate($tRequest);
 				if($status=="Success")
 				{
@@ -104,6 +110,10 @@ class ProductProcessor extends BaseProcessor
 				{
 					return $status;
 				}
+			}
+			else
+			{
+				return $validationResult;
 			}
 		}
 	}
@@ -219,71 +229,81 @@ class ProductProcessor extends BaseProcessor
 						// get key value from trim array
 						$tKeyValue[$data] = array_keys($tRequest[0])[0];
 						$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
-						
-						// validation
-						$status = $productValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
-						// enter data is valid(one data validate status return)
-						if($status=="Success")
+					
+						if(strcmp($tKeyValue[$data],"product_name")==0)
 						{
-							// check data is string or not
-							if(!is_numeric($tValue[$data]))
+							$validationResult = $productValidate->productNameValidateUpdate($tRequest[0],$productId);
+							if(!is_array($validationResult))
 							{
-								if (strpos($tValue[$data], '\'') !== FALSE)
-								{
-									$productValue[$data] = str_replace("'","\'",$tValue[$data]);
-								}
-								else
-								{
-									$productValue[$data] = $tValue[$data];
-								}
+								return $validationResult;
+							}
+						}
+					}
+					// validation
+					$status = $productValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
+					
+					// enter data is valid(one data validate status return)
+					if($status=="Success")
+					{
+						// check data is string or not
+						if(!is_numeric($tValue[$data]))
+						{
+							if (strpos($tValue[$data], '\'') !== FALSE)
+							{
+								$productValue[$data] = str_replace("'","\'",$tValue[$data]);
 							}
 							else
 							{
 								$productValue[$data] = $tValue[$data];
 							}
-							
-							// flag=0...then data is valid(consider one data at a time)
-							if($flag==0)
-							{
-								$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
-								// make function name dynamically
-								$setFuncName = 'set'.$str;
-								$getFuncName[$data] = 'get'.$str;
-								$productPersistable->$setFuncName($productValue[$data]);
-								
-								$productPersistable->setName($getFuncName[$data]);
-								
-								$productPersistable->setKey($tKeyValue[$data]);
-								$productPersistable->setProductId($productId);
-								
-								$productArray[$data] = array($productPersistable);
-								
-							}
 						}
-						// enter data is not valid
 						else
 						{
-							// if flag==1 then enter data is not valid ..so error return(consider one data at a time)
-							$flag=1;
-							if(!empty($status[0]))
-							{
-								$errorStatus[$errorCount]=$status[0];
-								$errorCount++;
-							}
+							$productValue[$data] = $tValue[$data];
 						}
 						
-						if($data==(count($_POST)-1))
+						// flag=0...then data is valid(consider one data at a time)
+						if($flag==0)
 						{
-							if($flag==1)
-							{
-								return json_encode($errorStatus);
-							}
-							else
-							{
-								return $productArray;
-							}
+							$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
+							// make function name dynamically
+							$setFuncName = 'set'.$str;
+							$getFuncName[$data] = 'get'.$str;
+							$productPersistable->$setFuncName($productValue[$data]);
+							
+							$productPersistable->setName($getFuncName[$data]);
+							
+							$productPersistable->setKey($tKeyValue[$data]);
+							$productPersistable->setProductId($productId);
+							
+							$productArray[$data] = array($productPersistable);
+							
 						}
 					}
+					// enter data is not valid
+					else
+					{
+						// if flag==1 then enter data is not valid ..so error return(consider one data at a time)
+						$flag=1;
+						if(!empty($status[0]))
+						{
+							$errorStatus[$errorCount]=$status[0];
+							$errorCount++;
+						}
+					}
+					if($data==(count($_POST)-1))
+					{
+						if($flag==1)
+						{
+							return json_encode($errorStatus);
+						}
+						else
+						{
+							
+							return $productArray;
+						}
+					}
+					
 				}
 			}
 		}

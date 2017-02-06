@@ -4,6 +4,7 @@ namespace ERP\Core\Accounting\Ledgers\Entities;
 use ERP\Core\Accounting\Ledgers\Entities\Ledger;
 use ERP\Core\Accounting\Ledgers\Services\LedgerService;
 use Carbon;
+use ERP\Core\Companies\Services\CompanyService;
 /**
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -17,7 +18,9 @@ class EncodeTrnAllData extends LedgerService
 		$encodeAllData =  array();
 		$decodedJson = json_decode($status,true);
 		
+		$companyService = new CompanyService();
 		$ledger = new Ledger();
+		
 		for($decodedData=0;$decodedData<count($decodedJson);$decodedData++)
 		{
 			if(array_key_exists($ledgerId[0]->ledger_id.'_id',$decodedJson[$decodedData]))
@@ -39,6 +42,12 @@ class EncodeTrnAllData extends LedgerService
 				$encodeDataClass = new EncodeTrnAllData();
 				$ledgerStatus[$decodedData] = $encodeDataClass->getLedgerData($ledgersId[$decodedData]);
 				$ledgerDecodedJson[$decodedData] = json_decode($ledgerStatus[$decodedData],true);
+				
+				$companyData[$decodedData] = $companyService->getCompanyData($ledgerDecodedJson[$decodedData]['company']['companyId']);
+				$companyDecodedData[$decodedData] = json_decode($companyData[$decodedData]);
+				
+				//convert amount(round) into their company's selected decimal points
+				$amount[$decodedData] = round($amount[$decodedData],$companyDecodedData[$decodedData]->noOfDecimalPoints);
 				
 				// date format conversion
 				$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
@@ -86,6 +95,12 @@ class EncodeTrnAllData extends LedgerService
 				$encodeDataClass = new EncodeTrnAllData();
 				$ledgerStatus[$decodedData] = $encodeDataClass->getLedgerData($ledgersId[$decodedData]);
 				$ledgerDecodedJson[$decodedData] = json_decode($ledgerStatus[$decodedData],true);
+				
+				$companyData[$decodedData] = $companyService->getCompanyData($ledgerDecodedJson[$decodedData]['company']['companyId']);
+				$companyDecodedData[$decodedData] = json_decode($companyData[$decodedData]);
+				
+				//convert amount(round) into their company's selected decimal points
+				$amount[$decodedData] = round($amount[$decodedData],$companyDecodedData[$decodedData]->noOfDecimalPoints);
 				
 				// date format conversion
 				$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');

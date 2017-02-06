@@ -16,7 +16,7 @@ class TokenAuthentication extends AuthenticateService
 	{
 		$tokenFlag=0;
 		$date="";
-		
+	
 		//get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();

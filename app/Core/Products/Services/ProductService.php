@@ -330,32 +330,6 @@ class ProductService extends AbstractService
 	}
 	
 	/**
-     * get product-trn data as per given companyId and headerData and call the model for database selection 	  opertation
-     * @param companyId & productName
-     * @return status
-     */
-	public function getProductTrnData($headerData,$companyId)
-	{
-		//get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
-		
-		$productModel = new ProductModel();
-		$status = $productModel->getProductTrnData($headerData,$companyId);
-		
-		if(strcmp($status,$exceptionArray['404'])==0)
-		{
-			return $exceptionArray['404'];
-		}
-		else
-		{
-			$encodedAllData = new EncodeProductTrnAllData();
-			$encodeData = $encodedAllData->getEncodedAllData($status);
-			return $encodeData;
-		}
-	}
-	
-    /**
      * get the data from persistable object and call the model for database update opertation
      * @param ProductPersistable $persistable
      * @param updateOptions $options [optional]

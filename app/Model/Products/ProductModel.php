@@ -476,6 +476,8 @@ class ProductModel extends Model
 		vat,
 		margin,
 		mrp,
+		product_description,
+		additional_tax,
 		is_display,
 		created_at,
 		updated_at,
@@ -624,6 +626,8 @@ class ProductModel extends Model
 		vat,
 		margin,
 		mrp,
+		product_description,
+		additional_tax,
 		created_at,
 		updated_at,
 		deleted_at,
@@ -670,6 +674,8 @@ class ProductModel extends Model
 		vat,
 		margin,
 		mrp,
+		product_description,
+		additional_tax,
 		created_at,
 		updated_at,
 		deleted_at,
@@ -717,6 +723,8 @@ class ProductModel extends Model
 		vat,
 		margin,
 		mrp,
+		product_description,
+		additional_tax,
 		created_at,
 		updated_at,
 		deleted_at,
@@ -764,6 +772,8 @@ class ProductModel extends Model
 		vat,
 		margin,
 		mrp,
+		product_description,
+		additional_tax,
 		created_at,
 		updated_at,
 		deleted_at,
@@ -824,6 +834,8 @@ class ProductModel extends Model
 		vat,
 		mrp,
 		margin,
+		product_description,
+		additional_tax,
 		created_at,
 		updated_at,
 		deleted_at,
@@ -849,89 +861,42 @@ class ProductModel extends Model
 	}
 	
 	/**
-	 * get data as per given headerData and companyId 
+	 * get product_id as per given companyId and productName
 	 * returns error-message/data
 	*/
-	public function getProductTrnData($headerData,$companyId)
+	public function getProductName($productName,$companyId)
 	{
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
+		DB::beginTransaction();		
+		$raw = DB::connection($databaseName)->select("select 
+		product_id
+		from product_mst 
+		where company_id='".$companyId."' and
+		product_name = '".$productName."' and
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		
-		$productArray = new ProductArray();
-		$arrayData = $productArray->productDataArray();
-		$arrayValue = $productArray->productValueArray();
-		$querySet = "";
-		for($data=0;$data<count($arrayData);$data++)
-		{
-			if(array_key_exists($arrayData[$data],$headerData))
-			{
-				$key[$data] = $arrayValue[$data];
-				$value[$data] = $headerData[$arrayData[$data]][0];
-				$querySet = "".$querySet."p1.".$key[$data]." = '".$value[$data]."' and ";
-			}
-		}
-		DB::beginTransaction();
-		$ledgerId = DB::connection($databaseName)->select("select
-		ledger_id 
-		from ledger_mst 
-		where company_id='".$companyId."' and 
-		ledger_name='".$headerData['salestype'][0]."' and 
-		deleted_at='0000-00-00 00:00:00'");
-		DB::commit();
-		if(count($ledgerId)!=0)
-		{
-			DB::beginTransaction();
-			$productTrnData = DB::connection($databaseName)->select("select
-			p.product_trn_id,
-			p.transaction_date,
-			p.transaction_type,
-			p.qty,
-			p.price,
-			p.discount,
-			p.discount_value,
-			p.discount_type,
-			p.is_display,
-			p.invoice_number,
-			p.bill_number,
-			p.tax,
-			p.updated_at,
-			p.created_at,
-			p.company_id,
-			p.branch_id,
-			p.product_id,			
-			p.jf_id	
-			from product_trn p,".$ledgerId[0]->ledger_id."_ledger_dtl l,product_mst p1
-			where p.jf_id = l.jf_id and
-			p.product_id=p1.product_id and 
-			p.transaction_type = 'Outward' and 
-			p1.company_id='".$companyId."' and
-			p.deleted_at = '0000-00-00 00:00:00' and
-			".$querySet."p1.deleted_at='0000-00-00 00:00:00'
-			group by p.product_trn_id");
-			DB::commit();
-			if(count($productTrnData)!=0)
-			{
-				$enocodedData = json_encode($productTrnData);
-				return $enocodedData;
-			}
-			else
-			{
-				return $exceptionArray['404'];
-			}
-		}
-		else
+		if(count($raw)==0)
 		{
 			return $exceptionArray['404'];
 		}
+		else
+		{
+			return $raw;
+		}
 	}
 	
-	//delete
+	/**
+	 * delete data
+	 * returns error-message/status
+	*/
 	public function deleteData($productId)
 	{
 		//database selection

@@ -3,38 +3,62 @@ namespace ERP\Core\Products\Entities;
 
 use mPDF;
 use ERP\Entities\Constants\ConstantClass;
+
 /**
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
 class PriceListMpdf
 {
-	public function generatePdf($data)
+	public function generatePdf($headerData,$data)
 	{
 		$decodedData = json_decode($data);
-		
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-		
-		$headerPart = '<table border="2">
-						<thead>
-							<tr>
-								<th>product Name</th>
-								<th>Price</th>
-								<th>Vat</th>
-								<th>Final Amount</th>
+		$headerPart = "<table style='border: 1px solid black; width:100%'>
+						<thead style='border: 1px solid black;'>
+							<tr style='border: 1px solid black;'>
+								<th style='border: 1px solid black;'>product Name</th>
+								<th style='border: 1px solid black;'>Price</th>
+								<th style='border: 1px solid black;'>Vat</th>
+								<th style='border: 1px solid black;'>Final Amount</th>
 							</tr>
-						</thead>';
-						
+						</thead><tbody>";
 		$bodyPart = "";
 		for($arrayData=0;$arrayData<count($decodedData);$arrayData++)
 		{
-			$bodyPart = $bodyPart."	<tr><td>".$decodedData[$arrayData]->product->productName."</td>
-									<td>".$decodedData[$arrayData]->price."</td>
-									<td>".$decodedData[$arrayData]->tax."</td>
-									<td>".$decodedData[$arrayData]->price*$decodedData[$arrayData]->qty."</td></tr>";
+			if(strcmp($headerData['salestype'][0],'retail_sales')==0)
+			{
+				if($decodedData[$arrayData]->purchasePrice==0 || $decodedData[$arrayData]->purchasePrice=="")
+				{
+					$decodedData[$arrayData]->purchasePrice = $decodedData[$arrayData]->mrp;
+				}
+				$margin[$arrayData] = ($decodedData[$arrayData]->margin/100)*$decodedData[$arrayData]->purchasePrice;
+				$decodedData[$arrayData]->purchasePrice = $decodedData[$arrayData]->purchasePrice +$margin[$arrayData];
+				$decodedData[$arrayData]->vat = ($decodedData[$arrayData]->vat/100)*$decodedData[$arrayData]->purchasePrice;
+				$totalAmount[$arrayData] = $decodedData[$arrayData]->purchasePrice+$decodedData[$arrayData]->vat;
+			}	
+			else
+			{
+				$wholeSaleMargin[$arrayData] = ($decodedData[$arrayData]->wholesaleMargin/100)*$decodedData[$arrayData]->purchasePrice;
+				$decodedData[$arrayData]->purchasePrice = $decodedData[$arrayData]->purchasePrice +$wholeSaleMargin[$arrayData];
+				$decodedData[$arrayData]->vat = 0;
+				$totalAmount[$arrayData] = $decodedData[$arrayData]->purchasePrice;
+			}
+			
+			//convert amount(round) into their company's selected decimal points
+			$decodedData[$arrayData]->purchasePrice = round($decodedData[$arrayData]->purchasePrice,$decodedData[$arrayData]->company->noOfDecimalPoints);
+			$decodedData[$arrayData]->vat = round($decodedData[$arrayData]->vat,$decodedData[$arrayData]->company->noOfDecimalPoints);
+			$totalAmount[$arrayData] = round($totalAmount[$arrayData],$decodedData[$arrayData]->company->noOfDecimalPoints);
+			
+			$bodyPart = $bodyPart."	<tr style='border: 1px solid black;'>
+									<td style='border: 1px solid black;'>".$decodedData[$arrayData]->productName."</td>
+									<td style='border: 1px solid black;'>".$decodedData[$arrayData]->purchasePrice."</td>
+									<td style='border: 1px solid black;'>".$decodedData[$arrayData]->vat."</td>
+									<td style='border: 1px solid black;'>".$totalAmount[$arrayData]."</td></tr>";
+			
 		}
-		$footerPart = "</table>";
+		$footerPart = "</tbody></table>";
 		$htmlBody = $headerPart.$bodyPart.$footerPart;
 		
 		//generate pdf
@@ -46,7 +70,10 @@ class PriceListMpdf
 		
 		$path = $constantArray['priceList'];
 		$documentPathName = $path.$documentName;
-		$mpdf = new mPDF('c','A4','','' , 0 , 0 , 0 , 0 , 0 , 0);
+		$mpdf = new mPDF('A4','landscape');
+		
+		$mpdf->SetHTMLHeader('<div style="text-align: center; font-weight: bold; font-size:20px;">PriceList</div>');
+		
 		$mpdf->SetDisplayMode('fullpage');
 		$mpdf->WriteHTML($htmlBody);
 		$mpdf->Output($documentPathName,'F');

@@ -18,18 +18,22 @@ class UserValidate
      */
 	public function validate($request)
 	{
-		//emailId,contactNo pending
 		$rules = array(
-			'user_name'=>"between:1,35|regex:/^[a-zA-Z &-]+$/",
+			'user_name'=>"between:1,35|regex:/^[a-zA-Z0-9 &_`#.\'-]*$/",
 			'address'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
+			'email_id'=>'regex:/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,})$/',
+			'contact_no'=>'required|between:10,12|regex:/^[0-9]+$/',
 			'pincode'=>'between:6,10|regex:/^[0-9]+$/'
 		);
 		$messages = [
 			'user_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
-			'user_name.regex' => 'user-name contains character from "a-zA-Z -&" only',
+			'user_name.regex' => 'user-name contains character from "a-zA-Z0-9 &_`#.\'-" only',
 			'address.between' => 'StringLengthException :Enter the :attribute less then 35 character',
 			'address.regex' => 'address contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
+			'email_id.regex' => 'please enter your email-address in proper format',
 			'pincode.between' => 'NumberFormatException :Enter the :attribute between 6 and 10 character',
+			'contact_no.between' => 'StringLengthException :Enter the :attribute between 10-12 character',
+			'contact_no.regex' => 'contact-number contains character from "0-9" only',
 			'pincode.regex' => 'pincode contains numbers only'
 		];
 		
@@ -88,8 +92,10 @@ class UserValidate
 	public function validateUpdateData($keyName,$value,$request)
 	{
 		$validationArray = array(
-			'user_name'=>"between:1,35|regex:/^[a-zA-Z &-]+$/",
+			'user_name'=>"between:1,35|regex:/^[a-zA-Z0-9 &_`#.\'-]*$/",
 			'address'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
+			'email_id'=>'regex:/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,})$/',
+			'contact_no'=>'required|between:10,12|regex:/^[0-9]+$/',
 			'pincode'=>'between:6,10|regex:/^[0-9]+$/'
 		);
 		$rules = array();
@@ -108,11 +114,14 @@ class UserValidate
 			);
 			$messages = [
 				'user_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
-				'user_name.regex' => 'user-name contains character from "a-zA-Z -&" only',
-				'address.between' => 'StringLengthException :Enter the :attribute less then 35 character',
-				'address.regex' => 'address contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
-				'pincode.between' => 'NumberFormatException :Enter the :attribute between 6 and 10 character',
-				'pincode.regex' => 'pincode contains numbers only'
+			'user_name.regex' => 'user-name contains character from "a-zA-Z0-9 &_`#.\'-" only',
+			'address.between' => 'StringLengthException :Enter the :attribute less then 35 character',
+			'address.regex' => 'address contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
+			'email_id.regex' => 'please enter your email-address in proper format',
+			'pincode.between' => 'NumberFormatException :Enter the :attribute between 6 and 10 character',
+			'contact_no.between' => 'StringLengthException :Enter the :attribute between 10-12 character',
+			'contact_no.regex' => 'contact-number contains character from "0-9" only',
+			'pincode.regex' => 'pincode contains numbers only'
 			];
 			$validator = Validator::make($request,$rules,$messages);
 			

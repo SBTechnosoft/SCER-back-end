@@ -72,14 +72,21 @@ class CompanyProcessor extends BaseProcessor
 		//trim an input 
 		$companyTransformer = new CompanyTransformer();
 		$tRequest = $companyTransformer->trimInsertData($this->request);
+		
+		//validation
+		$companyValidate = new CompanyValidate();
 		if($tRequest==1)
 		{
 			return $msgArray['content'];
-		}	
+		}
 		else
 		{
 			//validation
-			$companyValidate = new CompanyValidate();
+			$validateResult = $companyValidate->companyNameValidate($tRequest);
+		}
+		if(is_array($validateResult))
+		{
+			//validation
 			$status = $companyValidate->validate($tRequest);
 			if($status=="Success")
 			{
@@ -133,6 +140,10 @@ class CompanyProcessor extends BaseProcessor
 			{
 				return $status;
 			}
+		}
+		else
+		{
+			return $validateResult;
 		}
 	}
 	
@@ -214,6 +225,14 @@ class CompanyProcessor extends BaseProcessor
 						$tKeyValue[$data] = array_keys($tRequest[0])[0];
 						$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
 						
+						if(strcmp($tKeyValue[$data],"company_name")==0)
+						{
+							$validateResult = $companyValidate->companyNameValidateUpdate($tRequest[0],$companyId);
+							if(!is_array($validateResult))
+							{
+								return $exceptionArray['content'];
+							}
+						}
 						// validation
 						$status = $companyValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
 						

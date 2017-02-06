@@ -53,7 +53,7 @@ class AuthenticateProcessor extends BaseProcessor
 			{
 				//check emailId and password exist or not?
 				$authenticationValidation = new AuthenticateValidate();
-				$validationResult = $authenticationValidation->insertValidate($tRequest);
+				$validationResult = $authenticationValidation->insertValidate($request,$tRequest);
 				if(!is_array($validationResult))
 				{
 					return $validationResult;

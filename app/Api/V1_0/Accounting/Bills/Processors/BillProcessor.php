@@ -68,10 +68,10 @@ class BillProcessor extends BaseProcessor
 				//get contact-number from input data
 				$contactNo = $tRequest['contact_no'];
 				
-				if($contactNo=="" || $contactNo==0)
-				{
-				   	return $msgArray['content'];
-				}
+				// if($contactNo=="" || $contactNo==0)
+				// {
+				   	// return $msgArray['content'];
+				// }
 				//check client is exists by contact-number
 				$clientModel = new ClientModel();
 				$clientData = $clientModel->getClientData($contactNo);			
@@ -142,12 +142,13 @@ class BillProcessor extends BaseProcessor
 			$ledgerArray['balanceFlag']="opening";
 			$ledgerArray['amount']=0;
 			$ledgerArray['amountType']="credit";
-			$ledgerArray['ledgerGroupId']=9;
+			$ledgerArray['ledgerGroupId']=32;
 			$ledgerController = new LedgerController(new Container());
 			$method=$constantArray['postMethod'];
 			$path=$constantArray['ledgerUrl'];
 			$ledgerRequest = Request::create($path,$method,$ledgerArray);
 			$processedData = $ledgerController->store($ledgerRequest);	
+			// print_r($processedData);
 			//|| $processedData[0][0]=='[' error while validation error occur
 			if(strcmp($msgArray['500'],$processedData)==0 || strcmp($msgArray['content'],$processedData)==0)
 			{
@@ -155,6 +156,7 @@ class BillProcessor extends BaseProcessor
 			}
 			$ledgerId = json_decode($processedData)[0]->ledger_id;
 		}
+		
 		// get jf_id
 		$journalController = new JournalController(new Container());
 		$journalMethod=$constantArray['getMethod'];
@@ -199,6 +201,7 @@ class BillProcessor extends BaseProcessor
 			}	
 			$discountTotal = $discount+$discountTotal;
 		}
+		
 		$totalSaleAmount = $tRequest['tax']+$discountTotal+$tRequest['total'];
 		if($discountTotal==0)
 		{
@@ -385,6 +388,7 @@ class BillProcessor extends BaseProcessor
 				}
 			}
 		}
+		
 		//make data array for journal sale entry
 		$journalArray = array();
 		$journalArray= array(
@@ -412,7 +416,18 @@ class BillProcessor extends BaseProcessor
 			$productArray['invoiceNumber']=$tRequest['invoice_number'];
 			$productArray['transactionType']=$constantArray['journalOutward'];
 			$productArray['companyId']=$tRequest['company_id'];
-			$productArray['inventory'] = $tRequest[0];
+	
+			$tInventoryArray = array();
+			for($trimData=0;$trimData<count($request->input()['inventory']);$trimData++)
+			{
+				
+				$tInventoryArray[$trimData] = array();
+				$tInventoryArray[$trimData][5] = trim($request->input()['inventory'][$trimData]['color']);
+				$tInventoryArray[$trimData][6] = trim($request->input()['inventory'][$trimData]['frameNo']);
+				array_push($request->input()['inventory'][$trimData],$tInventoryArray[$trimData]);
+			}
+			
+			$productArray['inventory'] = $request->input()['inventory'];
 			$documentPath = $constantArray['billDocumentUrl'];
 			if(in_array(true,$request->file()))
 			{
@@ -444,7 +459,6 @@ class BillProcessor extends BaseProcessor
 			$billPersistable->setEntryDate($transformEntryDate);
 			$billPersistable->setClientId($clientId);
 			$billPersistable->setCompanyId($tRequest['company_id']);
-			
 			if(strcmp($request->header()['salestype'][0],$salesTypeEnumArray['retailSales'])==0 || strcmp($request->header()['salestype'][0],$salesTypeEnumArray['wholesales'])==0)
 			{
 				$billPersistable->setSalesType($request->header()['salestype'][0]);

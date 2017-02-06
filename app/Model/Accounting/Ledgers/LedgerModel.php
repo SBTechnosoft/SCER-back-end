@@ -5,7 +5,6 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
-use ERP\Core\Accounting\Ledgers\Entities\EncodeTrnAllData;
 use ERP\Core\Accounting\Journals\Entities\EncodeAllData;
 use ERP\Model\Companies\CompanyModel;
 use ERP\Core\Accounting\Ledgers\Entities\ledgerArray;

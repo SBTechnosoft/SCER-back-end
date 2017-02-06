@@ -57,7 +57,6 @@ class BillController extends BaseController implements ContainerInterface
 		//get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-		
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
 			$this->request = $request;

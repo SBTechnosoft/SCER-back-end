@@ -154,18 +154,19 @@ class CompanyController extends BaseController implements ContainerInterface
 			
 			//get exception message
 			$exception = new ExceptionMessage();
-			$fileSizeArray = $exception->messageArrays();
+			$exceptionArray = $exception->messageArrays();
 			
 			//check for company is available in database...
 			$companyModel = new CompanyModel();
 			$result = $companyModel->getData($companyId);
-			if(strcmp($result,$fileSizeArray['404'])==0)
+			if(strcmp($result,$exceptionArray['404'])==0)
 			{	
 				return $result;
 			}
 			else
 			{
 				$companyPersistable = $processor->createPersistableChange($this->request,$companyId);
+			
 				$companyService= new CompanyService();
 				if(is_array($companyPersistable))
 				{

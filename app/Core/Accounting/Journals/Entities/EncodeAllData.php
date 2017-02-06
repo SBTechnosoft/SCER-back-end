@@ -148,7 +148,6 @@ class EncodeAllData extends LedgerService
 			);
 		}
 		$jsonEncodedData = json_encode($data);
-		// print_r($jsonEncodedData);
 		return $jsonEncodedData;
 	}
 }

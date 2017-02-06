@@ -31,6 +31,8 @@ use ERP\Core\Products\Properties\MarginPropertyTrait;
 use ERP\Core\Products\Properties\DiscountValuePropertyTrait;
 use ERP\Core\Products\Properties\FromDatePropertyTrait;
 use ERP\Core\Products\Properties\ToDatePropertyTrait;
+use ERP\Core\Products\Properties\AdditionalTaxPropertyTrait;
+use ERP\Core\Products\Properties\ProductDescriptionPropertyTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -66,4 +68,6 @@ class productPersistable
 	use DiscountValuePropertyTrait;
 	use FromDatePropertyTrait;
 	use ToDatePropertyTrait;
+	use AdditionalTaxPropertyTrait;
+	use ProductDescriptionPropertyTrait;
 }

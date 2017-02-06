@@ -12,11 +12,16 @@ class JournalValidate
 {
 	public function validate($request)
 	{
+		
+		// print_r($request);
+		//amount,entry_date
 		$rules = array(
-			'jf_id'=> 'regex:/^[0-9]*$/' 
+			'jfId'=> 'regex:/^[0-9]+$/',
+			// 'entryDate'=>'regex:/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/',
 		);
 		$messages = [
-			'jf_id.regex' => 'journal folio id contains character from "0-9" only'
+			'jfId.regex' => 'journal folio id contains character from "0-9" only',
+			// 'entryDate.regex' => 'entry-date format is not proper',
 		];
 		$validator = Validator::make($request,$rules,$messages);
 		

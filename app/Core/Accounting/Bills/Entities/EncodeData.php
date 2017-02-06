@@ -42,6 +42,13 @@ class EncodeData extends ClientService
 		$companyDetail = new CompanyDetail();
 		$companyDetails = $companyDetail->getCompanyDetails($companyId);
 		
+		//convert amount(round) into their company's selected decimal points
+		$total = round($total,$companyDetails['noOfDecimalPoints']);
+		$tax = round($tax,$companyDetails['noOfDecimalPoints']);
+		$grandTotal = round($grandTotal,$companyDetails['noOfDecimalPoints']);
+		$advance = round($advance,$companyDetails['noOfDecimalPoints']);
+		$balance = round($balance,$companyDetails['noOfDecimalPoints']);
+		
 		//date format conversion
 		$bill = new Bill();
 		$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt)->format('d-m-Y');
@@ -115,7 +122,8 @@ class EncodeData extends ClientService
 			'serviceTaxNo' => $companyDetails['serviceTaxNo'],
 			'basicCurrencySymbol' => $companyDetails['basicCurrencySymbol'],
 			'formalName' => $companyDetails['formalName'],
-			'noOfDecimalPoints' => $companyDetails['currencySymbol'],	
+			'currencySymbol' => $companyDetails['currencySymbol'],	
+			'noOfDecimalPoints' => $companyDetails['noOfDecimalPoints'],	
 			'logo'=> array(
 				'documentName' => $companyDetails['logo']['documentName'],	
 				'documentUrl' => $companyDetails['logo']['documentUrl'],	

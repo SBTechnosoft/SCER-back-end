@@ -37,8 +37,7 @@ class Product implements RouteRegistrarInterface
 		
 		//delete data delete request
 		Route::delete('Products/Product/{productId}', 'Products\Controllers\ProductController@Destroy');
-			
-    }
+	}
 }
 
 

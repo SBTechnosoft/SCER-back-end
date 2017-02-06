@@ -51,7 +51,14 @@ class EncodeAllData extends ClientService
 			//get the company detail from database
 			$companyDetail  = new CompanyDetail();
 			$getCompanyDetails[$decodedData] = $companyDetail->getCompanyDetails($companyId[$decodedData]);
-
+			
+			//convert amount(round) into their company's selected decimal points
+			$total[$decodedData] = round($total[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
+			$tax[$decodedData] = round($tax[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
+			$grandTotal[$decodedData] = round($grandTotal[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
+			$advance[$decodedData] = round($advance[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
+			$balance[$decodedData] = round($balance[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
+			
 			//date format conversion
 			$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
 			$bill->setCreated_at($convertedCreatedDate);

@@ -85,24 +85,24 @@ class StockManageMpdf
 			$decodedData[$productTrnData]->balance = $balance[$productTrnData];
 		}
 		
-		$headerPart = '<table border="2">
-			<thead>
-				<tr>
-					<th  colspan="4" >Inward/Outward</th>
+		$headerPart = "<table style='border: 1px solid black; width:100%'>
+			<thead style='border: 1px solid black;'>
+				<tr style='border: 1px solid black;'>
+					<th  colspan='4' style='border: 1px solid black;'>Inward/Outward</th>
 					
-					<th  colspan="3" >Balance</th>
+					<th  colspan='3' style='border: 1px solid black;'>Balance</th>
 				</tr>
 				<tr>
-					<th >Dt.</th>
-					<th >Sale/purchase</th>
-					<th>Qty</th>
-					<th >Amount</th>
+					<th style='border: 1px solid black;'>Dt.</th>
+					<th style='border: 1px solid black;'>Sale/purchase</th>
+					<th style='border: 1px solid black;'>Qty</th>
+					<th style='border: 1px solid black;'>Amount</th>
 					
-					<th >Dt.</th>
-					<th>Qty</th>
-					<th >Amount</th>
+					<th style='border: 1px solid black;'>Dt.</th>
+					<th style='border: 1px solid black;'>Qty</th>
+					<th style='border: 1px solid black;'>Amount</th>
 				</tr>
-			</thead>';
+			</thead>";
 			
 		$footerPart = '</table>';
 		$bodyPart="";
@@ -126,28 +126,28 @@ class StockManageMpdf
 			}
 			$bodyPart =
 				"<tbody>
-					<tr style='background-color: white;'>
+					<tr style='background-color: white; border: 1px solid black;'>
 				";
 				
 				if($arrayData==0)
 				{
 					$ifCondition = 
-						"<td rowspan='".$balanceCount."'>".$decodedData[0]->transactionDate."</td>
-						<td rowspan='".$balanceCount."'>".$transactionType."</td>
-						<td rowspan='".$balanceCount."'>".$decodedData[0]->qty."</td>
-						<td rowspan='".$balanceCount."'>".$decodedData[0]->price."</td>";
+						"<td rowspan='".$balanceCount."' style='border: 1px solid black;'>".$decodedData[0]->transactionDate."</td>
+						<td rowspan='".$balanceCount."' style='border: 1px solid black;'>".$transactionType."</td>
+						<td rowspan='".$balanceCount."' style='border: 1px solid black;'>".$decodedData[0]->qty."</td>
+						<td rowspan='".$balanceCount."' style='border: 1px solid black;'>".$decodedData[0]->price."</td>";
 				}
 				else
 				{
 					$ifCondition = 
-						"<td rowspan='".$balanceCount."'>".$decodedData[$arrayData]->transactionDate."</td>
-						<td rowspan='".$balanceCount."'>".$transactionType."</td>
-						<td rowspan='".$balanceCount."'>".$decodedData[$arrayData]->qty."</td>
-						<td rowspan='".$balanceCount."'>".$decodedData[$arrayData]->price."</td>";
+						"<td rowspan='".$balanceCount."' style='border: 1px solid black;'>".$decodedData[$arrayData]->transactionDate."</td>
+						<td rowspan='".$balanceCount."' style='border: 1px solid black;'>".$transactionType."</td>
+						<td rowspan='".$balanceCount."' style='border: 1px solid black;'>".$decodedData[$arrayData]->qty."</td>
+						<td rowspan='".$balanceCount."' style='border: 1px solid black;'>".$decodedData[$arrayData]->price."</td>";
 				}
-				$middleOne = "<td>".$decodedData[$arrayData]->balance[0]->transactionDate."</td>
-						<td>".$decodedData[$arrayData]->balance[0]->qty."</td>
-						<td>".$decodedData[$arrayData]->balance[0]->price."</td></tr>";
+				$middleOne = "<td style='border: 1px solid black;'>".$decodedData[$arrayData]->balance[0]->transactionDate."</td>
+						<td style='border: 1px solid black;'>".$decodedData[$arrayData]->balance[0]->qty."</td>
+						<td style='border: 1px solid black;'>".$decodedData[$arrayData]->balance[0]->price."</td></tr>";
 				
 				
 				
@@ -155,9 +155,9 @@ class StockManageMpdf
 				for($balanceArrayData=1;$balanceArrayData<count($decodedData[$arrayData]->balance);$balanceArrayData++)
 				{
 					$loopPart= $loopPart.
-						"<tr><td>".$decodedData[$arrayData]->balance[$balanceArrayData]->transactionDate."</td>
-						<td>".$decodedData[$arrayData]->balance[$balanceArrayData]->qty."</td>
-						<td>".$decodedData[$arrayData]->balance[$balanceArrayData]->price."</td></tr>";
+						"<tr style='border: 1px solid black;'><td style='border: 1px solid black;'>".$decodedData[$arrayData]->balance[$balanceArrayData]->transactionDate."</td>
+						<td style='border: 1px solid black;'>".$decodedData[$arrayData]->balance[$balanceArrayData]->qty."</td>
+						<td style='border: 1px solid black;'>".$decodedData[$arrayData]->balance[$balanceArrayData]->price."</td></tr>";
 				}
 				$lastOne = "</tbody>";
 				$finalSettle = $bodyPart.$ifCondition.$middleOne.$loopPart.$lastOne;

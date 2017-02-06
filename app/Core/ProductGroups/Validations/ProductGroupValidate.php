@@ -14,10 +14,12 @@ class ProductGroupValidate
 	{
 		$rules = array(
 			'product_group_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 &,\/_`#().\'-]+$/', 
+			'product_group_description'=> 'regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/'
 		);
 		$messages = [
 			'product_group_name.between' => 'StringLengthException :Enter the product group name less then 35 character',
 			'product_group_name.regex' => 'product-group-name contains character from "a-zA-Z0-9 &,\/_`#().\'-" only',
+			'product_group_description.regex' => 'product-group-description contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only'
 		];
 		
 		$validator = Validator::make($request,$rules,$messages);
@@ -41,6 +43,7 @@ class ProductGroupValidate
 	{
 		$validationArray = array(
 			'product_group_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 &,\/_`#().\'-]+$/', 
+			'product_group_description'=> 'regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/' 
 		);
 		$rules = array();
 		foreach ($validationArray as $key => $value) 
@@ -57,8 +60,9 @@ class ProductGroupValidate
 				$key=> $rules[$key]
 			);
 			$messages = [
-				'product_group_name.between' => 'StringLengthException :Enter the product category name less then 35 character',
+				'product_group_name.between' => 'StringLengthException :Enter the product group name less then 35 character',
 				'product_group_name.regex' => 'product-group-name contains character from "a-zA-Z0-9 &,\/_`#().\'-" only',
+				'product_group_description.regex' => 'product-group-description contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only'
 			];
 			$validator = Validator::make($request,$rules,$messages);
 			
