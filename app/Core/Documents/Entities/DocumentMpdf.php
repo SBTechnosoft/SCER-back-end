@@ -1,22 +1,26 @@
 <?php
-namespace ERP\Core\Accounting\Bills\Entities;
+namespace ERP\Core\Documents\Entities;
 
 use mPDF;
 use ERP\Entities\Constants\ConstantClass;
 use ERP\Model\Accounting\Bills\BillModel;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Core\Products\Services\ProductService;
-use ERP\Core\Settings\InvoiceNumbers\Services\InvoiceService;
 use Illuminate\Http\Request;
 use ERP\Http\Requests;
 use Illuminate\Container\Container;
-use ERP\Api\V1_0\Settings\InvoiceNumbers\Controllers\InvoiceController;
-use ERP\Core\Accounting\Bills\Entities\CurrencyToWordConversion;
+use ERP\Core\Documents\Entities\CurrencyToWordConversion;
+use PHPMailer;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class BillMpdf extends CurrencyToWordConversion
+class DocumentMpdf extends CurrencyToWordConversion
 {
+	 /**
+     * pdf generation and mail-sms send
+     * @param template-data and bill data
+     * @return error-message/document-path
+     */
 	public function mpdfGenerate($templateData,$status)
 	{
 		//get exception message
@@ -28,6 +32,7 @@ class BillMpdf extends CurrencyToWordConversion
 		
 		$htmlBody = json_decode($templateData)[0]->template_body;
 		$decodedBillData = json_decode($status);
+		
 		if(is_object($decodedBillData))
 		{
 			$saleId = $decodedBillData->saleId;		
@@ -35,35 +40,22 @@ class BillMpdf extends CurrencyToWordConversion
 		else
 		{
 			$saleId = $decodedBillData[0]->sale_id;
+			$decodedBillData = $decodedBillData[0];
 		}
 		
-		//update invoice data (endAt)
 		$decodedArray = json_decode($decodedBillData->productArray);
 		$productService = new ProductService();
+		
 		$productData = array();
 		$decodedData = array();
 		$index=1;
-		
-		$invoiceService = new InvoiceService();	
-		$invoiceData = $invoiceService->getLatestInvoiceData($decodedBillData->company->companyId);
-		if(strcmp($exceptionArray['204'],$invoiceData)==0)
-		{
-			return $invoiceData;
-		}
-		$endAt = json_decode($invoiceData)->endAt;
-		$invoiceController = new InvoiceController(new Container());
-		$invoiceMethod=$constantArray['postMethod'];
-		$invoicePath=$constantArray['invoiceUrl'];
-		$invoiceDataArray = array();
-		$invoiceDataArray['endAt'] = $endAt+1;
-		
-		$invoiceRequest = Request::create($invoicePath,$invoiceMethod,$invoiceDataArray);
-		$updateResult = $invoiceController->update($invoiceRequest,json_decode($invoiceData)->invoiceId);
+	
 		$output="";
 		$totalAmount =0;
 		$totalVatValue=0;
 		$totalAdditionalTax=0;
 		$totalQty=0;
+		
 		if(strcmp($decodedBillData->salesType,"retail_sales")==0)
 		{
 			for($productArray=0;$productArray<count($decodedArray->inventory);$productArray++)
@@ -71,12 +63,7 @@ class BillMpdf extends CurrencyToWordConversion
 				//get product-data
 				$productData[$productArray] = $productService->getProductData($decodedArray->inventory[$productArray]->productId);
 				$decodedData[$productArray] = json_decode($productData[$productArray]);
-				// $retailValue = $decodedData[$productArray]->purchasePrice;
-				// if($retailValue=="" || $retailValue==0)
-				// {
-					// $retailValue=$decodedData[$productArray]->mrp;
-					// $decodedData[$productArray]->purchasePrice=$decodedData[$productArray]->mrp;
-				// }
+				
 				//calculate margin value
 				$marginValue[$productArray]=($decodedData[$productArray]->margin/100)*$decodedArray->inventory[$productArray]->price;
 				
@@ -105,10 +92,8 @@ class BillMpdf extends CurrencyToWordConversion
 				//calculate additional tax
 				$additionalTaxValue[$productArray] = ($decodedData[$productArray]->additionalTax/100)*$finalVatValue;
 				
-				// convert amount(round) into their company's selected decimal points
-				
+				//convert amount(round) into their company's selected decimal points
 				$additionalTaxValue[$productArray] = round($additionalTaxValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
-				
 				$total[$productArray] =($totalPrice)-$discountValue[$productArray]+$vatValue[$productArray];
 				
 				// convert amount(round) into their company's selected decimal points
@@ -118,7 +103,6 @@ class BillMpdf extends CurrencyToWordConversion
 				{
 					$output =$output.$trClose;
 				}
-				
 				$output =$output."".
 					'<tr class="trhw" style="font-family: Calibri; text-align: left; height: 25px; background-color: transparent;">
 				   <td class="tg-m36b thsrno" style="font-size: 12px; height: 25px; text-align:center; padding:0 0 0 0;">'.$index.'</td>
@@ -138,13 +122,13 @@ class BillMpdf extends CurrencyToWordConversion
 					$output = $output.$trClose;
 				}
 
-				 $index++;
-				 $totalVatValue = $totalVatValue+$vatValue[$productArray];
-				 $totalAdditionalTax=$totalAdditionalTax+$additionalTaxValue[$productArray];
-				 $totalQty=$totalQty+$decodedArray->inventory[$productArray]->qty;
-				 
-				 $totalAmount=$totalAmount+$total[$productArray];
-				 // convert amount(round) into their company's selected decimal points
+			    $index++;
+			    $totalVatValue = $totalVatValue+$vatValue[$productArray];
+			    $totalAdditionalTax=$totalAdditionalTax+$additionalTaxValue[$productArray];
+			    $totalQty=$totalQty+$decodedArray->inventory[$productArray]->qty;
+			 
+			    $totalAmount=$totalAmount+$total[$productArray];
+			    // convert amount(round) into their company's selected decimal points
 				$totalAmount = round($totalAmount,$decodedData[$productArray]->company->noOfDecimalPoints);
 			}
 		}
@@ -213,11 +197,9 @@ class BillMpdf extends CurrencyToWordConversion
 				$totalAmount = round($totalAmount,$decodedData[$productArray]->company->noOfDecimalPoints);
 			}
 		}
-
 		//calculation of currecy to word conversion
-		$currecyToWordConversion = new BillMpdf();
+		$currecyToWordConversion = new DocumentMpdf();
 		$currencyResult = $currecyToWordConversion->conversion($totalAmount);
-	
 		$address = $decodedBillData->client->address1.",".$decodedBillData->client->address2;
 		$billArray = array();
 		$billArray['Description']=$output;
@@ -263,10 +245,60 @@ class BillMpdf extends CurrencyToWordConversion
 		}
 		else
 		{
+			if($decodedBillData->client->emailId!="")
+			{
+				//mail send
+				$result = $this->mailSending($decodedBillData->client->emailId);
+				if(strcmp($result,$exceptionArray['Email'])==0)
+				{
+					return $result;
+				}
+			}
+			$message = "Your Bill Is Generated...";
+			//sms send
+			// $url = "http://login.arihantsms.com/vendorsms/pushsms.aspx?user=siliconbrain&password=demo54321&msisdn=".$decodedBillData->client->contactNo."&sid=COTTSO&msg=".$message."&fl=0&gwid=2";
+			//pdf generate
 			$mpdf->Output($documentPathName,'F');
 			$pathArray = array();
 			$pathArray['documentPath'] = $documentPathName;
 			return $pathArray;
 		}	
+	}
+	
+	 /**
+     * sending message
+     * @param mail-address
+     * @return error-message/status
+     */
+	public function mailSending($emailId)
+	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		$mail = new PHPMailer;
+		$email = $emailId;
+		$message = "Your bill is generated...";
+		$mail->IsSMTP();                                      // Set mailer to use SMTP
+		$mail->Host = 'sg2plcpnl0073.prod.sin2.secureserver.net';                // Specify main and backup server //sg2plcpnl0073.prod.sin2.secureserver.net port=465
+		$mail->Port =  465;                                    // Set the SMTP port
+		$mail->SMTPAuth = true;                               // Enable SMTP authentication
+		
+		// SMTP password
+		$mail->SMTPSecure = 'ssl';                            // Enable encryption, 'ssl' also accepted
+		$mail->Username = 'reema.p@siliconbrain.in';                // SMTP username
+		$mail->Password = 'Abcd@1234'; 
+		$mail->From = 'reema.p@siliconbrain.in';
+		$mail->FromName = 'reema.p@siliconbrain.in';
+		$mail->AddAddress($email);  // Add a recipient
+
+		$mail->IsHTML(true);                                  // Set email format to HTML
+		$mail->Subject = 'Cycle Store';
+		$mail->Body    = $message;
+		$mail->AltBody = 'Your bill is generated...';
+
+		if(!$mail->Send()) {
+		   return $exceptionArray['Email'];
+		}
 	}
 }

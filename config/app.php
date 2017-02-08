@@ -239,7 +239,8 @@ return [
 		'TrialBalance',
 		'Users',
 		'Authenticate',
-		'Logout'
+		'Logout',
+		'Documents'
 	],
 
     /*

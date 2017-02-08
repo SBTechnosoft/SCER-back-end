@@ -14,7 +14,7 @@ class EncodeAllData extends ClientService
 {
 	public function getEncodedAllData($status)
 	{
-		$constantClass = new ConstantClass();
+		$constantClass = new ConstantClass();		
 		$constantArray = $constantClass->constantVariable();
 		$convertedCreatedDate =  array();
 		$convertedUpdatedDate =  array();
@@ -22,7 +22,7 @@ class EncodeAllData extends ClientService
 		$deocodedJsonData = json_decode($decodedJson['salesData']);
 		$decodedDocumentData = json_decode($decodedJson['documentData']);
 		$bill = new Bill();
-
+		
 		for($decodedData=0;$decodedData<count($deocodedJsonData);$decodedData++)
 		{
 			$saleId[$decodedData] = $deocodedJsonData[$decodedData]->sale_id;
@@ -107,9 +107,16 @@ class EncodeAllData extends ClientService
 				$documentUpdatedAt[$decodedData][$documentArray] = $decodedDocumentData[$decodedData][$documentArray]->updated_at;
 			
 				//date format conversion
-				$documentCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $documentCreatedAt[$decodedData][$documentArray])->format('d-m-Y');
-				$bill->setCreated_at($documentCreatedDate);
-				$getDocumentCreatedDate[$decodedData][$documentArray] = $bill->getCreated_at();
+				if(strcmp($documentCreatedAt[$decodedData][$documentArray],'0000-00-00 00:00:00')==0)
+				{
+					$getDocumentCreatedDate[$decodedData][$documentArray] = "00-00-0000";
+				}
+				else
+				{
+					$documentCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $documentCreatedAt[$decodedData][$documentArray])->format('d-m-Y');
+					$bill->setCreated_at($documentCreatedDate);
+					$getDocumentCreatedDate[$decodedData][$documentArray] = $bill->getCreated_at();
+				}
 				if(strcmp($documentUpdatedAt[$decodedData][$documentArray],'0000-00-00 00:00:00')==0)
 				{
 					$getDocumentUpdatedDate[$decodedData][$documentArray] = "00-00-0000";
@@ -128,11 +135,12 @@ class EncodeAllData extends ClientService
 		$data = array();
 		for($jsonData=0;$jsonData<count($deocodedJsonData);$jsonData++)
 		{
+			$arrayData[$jsonData] = array();
 			for($innerArrayData=0;$innerArrayData<count($decodedDocumentData[$jsonData]);$innerArrayData++)
 			{
 				if(strcmp($documentFormat[$jsonData][$innerArrayData],"pdf")==0)
 				{
-					$arrayData[$innerArrayData] = array(
+					$arrayData[$jsonData][$innerArrayData] = array(
 						'documentId'=>$documentId[$jsonData][$innerArrayData],
 						'saleId'=>$documentSaleId[$jsonData][$innerArrayData],
 						'documentName'=>$documentName[$jsonData][$innerArrayData],
@@ -146,7 +154,7 @@ class EncodeAllData extends ClientService
 				}	
 				else
 				{
-					$arrayData[$innerArrayData] = array(
+					$arrayData[$jsonData][$innerArrayData] = array(
 						'documentId'=>$documentId[$jsonData][$innerArrayData],
 						'saleId'=>$documentSaleId[$jsonData][$innerArrayData],
 						'documentName'=>$documentName[$jsonData][$innerArrayData],
@@ -221,7 +229,7 @@ class EncodeAllData extends ClientService
 					'cityId' => $getCompanyDetails[$jsonData]['city']['cityId']	
 				)		
 			);
-			$data[$jsonData]['file'] = $arrayData;
+			$data[$jsonData]['file'] = $arrayData[$jsonData];
 		}
 		$jsonEncodedData = json_encode($data);
 		return $jsonEncodedData;

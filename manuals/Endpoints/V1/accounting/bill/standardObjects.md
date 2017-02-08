@@ -31,9 +31,7 @@
 						{
 							"documentId":int,
 							"saleId":int,
-							"documentName":string,
-							"documentSize":int,
-							"documentFormat":string,
+							...Standard Document Object
 							"documentType":string,
 							"createdAt":timestamp,
 							"updatedAt":datetime
@@ -76,9 +74,7 @@
 					{
 						"documentId":int,
 						"saleId":int,
-						"documentName":string,
-						"documentSize":int,
-						"documentFormat":string,
+						...Standard Document Object
 						"documentType":string,
 						"createdAt":timestamp,
 						"updatedAt":datetime

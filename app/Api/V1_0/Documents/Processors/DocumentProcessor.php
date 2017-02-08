@@ -84,6 +84,19 @@ class DocumentProcessor extends BaseProcessor
 			}
 		}
 		return $persistableArray;
-			
+	}
+	
+	/**
+     * get the form-data and set into the persistable object
+     * $param Request object [Request $request]
+     * @return Document Persistable object
+     */	
+	public function createPersistableData(Request $request)
+	{
+		//trim data
+		$tSaleId = trim($request->input()['saleId']);
+		$trimArray = array();
+		$trimArray['saleId'] = $tSaleId;
+		return $trimArray;
 	}
 }

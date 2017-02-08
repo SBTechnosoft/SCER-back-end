@@ -3,12 +3,12 @@
 ##### `POST /documents/bill`
 + Header
 	- Authentication Token
-
+	
 
 + Body
 
             {
-                ... To Do
+                "saleId":''
             }
 + Error Message
 
@@ -18,5 +18,5 @@
 + Response
 
             {
-                ... HTTP_Status:200
+                "documentPath":''
             }

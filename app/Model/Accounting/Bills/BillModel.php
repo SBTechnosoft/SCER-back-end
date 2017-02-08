@@ -6,6 +6,7 @@ use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Entities\Constants\ConstantClass;
+use stdClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -50,10 +51,33 @@ class BillModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
+			DB::beginTransaction();
 			$saleId = DB::connection($databaseName)->select("SELECT 
 			max(sale_id) sale_id
 			FROM sales_bill where deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
+			
+			DB::beginTransaction();
+			$salesTrnData = DB::connection($databaseName)->statement("insert into sales_bill_trn(
+			product_array,
+			payment_mode,
+			invoice_number,
+			bank_name,
+			check_number,
+			total,
+			tax,
+			grand_total,
+			advance,
+			balance,
+			remark,
+			entry_date,
+			company_id,
+			sales_type,
+			client_id,
+			sale_id) 
+			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$salesType."','".$ClientId."','".$saleId[0]->sale_id."')");
+			DB::commit();
+			
 			if(is_array($saleId))
 			{
 				for($docArray=0;$docArray<count($documentArray);$docArray++)
@@ -153,6 +177,33 @@ class BillModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
+			DB::beginTransaction();
+			$saleId = DB::connection($databaseName)->select("SELECT 
+			max(sale_id) sale_id
+			FROM sales_bill where deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+			
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->statement("insert into sales_bill_trn(
+			product_array,
+			payment_mode,
+			invoice_number,
+			bank_name,
+			check_number,
+			total,
+			tax,
+			grand_total,
+			advance,
+			balance,
+			remark,
+			entry_date,
+			company_id,
+			client_id,
+			sales_type,
+			sale_id) 
+			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$salesType."','".$saleId[0]->sale_id."')");
+			DB::commit();
+		
 			DB::beginTransaction();
 			$billResult = DB::connection($databaseName)->select("select
 			sale_id,
@@ -292,13 +343,74 @@ class BillModel extends Model
 				DB::commit();
 				if(count($documentResult[$saleData])==0)
 				{
-					return $exceptionArray['404'];
+					// return $exceptionArray['404'];
+					$documentResult[$saleData] = array();
+					$documentResult[$saleData][0] = new stdClass();
+					$documentResult[$saleData][0]->document_id = 0;
+					$documentResult[$saleData][0]->sale_id = 0;
+					$documentResult[$saleData][0]->document_name = '';
+					$documentResult[$saleData][0]->document_size = 0;
+					$documentResult[$saleData][0]->document_format = '';
+					$documentResult[$saleData][0]->document_type ='bill';
+					$documentResult[$saleData][0]->created_at = '0000-00-00 00:00:00';
+					$documentResult[$saleData][0]->updated_at = '0000-00-00 00:00:00';
 				}
 			}
 			$salesArrayData = array();
 			$salesArrayData['salesData'] = json_encode($raw);
 			$salesArrayData['documentData'] = json_encode($documentResult);
 			return json_encode($salesArrayData);
+		}
+	}
+	
+	/**
+	 * get bill data
+	 * @param  sale_id
+	 * returns the exception-message/sales data
+	*/
+	public function getSaleIdData($saleId)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->select("select 
+		sale_id,
+		product_array,
+		payment_mode,
+		bank_name,
+		invoice_number,
+		check_number,
+		total,
+		tax,
+		grand_total,
+		advance,
+		balance,
+		remark,
+		entry_date,
+		client_id,
+		sales_type,
+		company_id,
+		created_at,
+		updated_at 
+		from sales_bill 
+		where sale_id='".$saleId."' and 
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		if(count($raw)==0)
+		{
+			return $exceptionArray['404']; 
+		}
+		else
+		{
+			$encodedData = json_encode($raw);
+			return $encodedData;
 		}
 	}
 }

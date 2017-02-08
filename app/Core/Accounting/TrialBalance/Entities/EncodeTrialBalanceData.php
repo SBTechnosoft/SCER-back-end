@@ -16,7 +16,7 @@ class EncodeTrialBalanceData extends LedgerService
 		$encodeAllData =  array();
 		$decodedLedgerData = array();
 		$decodedJson = json_decode($status,true);
-		$companyService = new CompanyService();
+		// $companyService = new CompanyService();
 		for($decodedData=0;$decodedData<count($decodedJson);$decodedData++)
 		{
 			$ledgerId[$decodedData] = $decodedJson[$decodedData]['ledger_id'];

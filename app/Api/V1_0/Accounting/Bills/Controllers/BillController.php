@@ -15,6 +15,10 @@ use ERP\Core\Accounting\Bills\Entities\BillMpdf;
 use ERP\Entities\AuthenticationClass\TokenAuthentication;
 use ERP\Entities\Constants\ConstantClass;
 use ERP\Core\Settings\Templates\Entities\TemplateTypeEnum;
+use ERP\Core\Settings\InvoiceNumbers\Services\InvoiceService;
+use ERP\Api\V1_0\Settings\InvoiceNumbers\Controllers\InvoiceController;
+use Illuminate\Container\Container;
+use ERP\Api\V1_0\Documents\Controllers\DocumentController;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -88,22 +92,33 @@ class BillController extends BaseController implements ContainerInterface
 						}
 						else
 						{
-							$templateType = new TemplateTypeEnum();
-							$templateArray = $templateType->enumArrays();
-							$templateType = $templateArray['invoiceTemplate'];
-							$templateService = new TemplateService();
-							$templateData = $templateService->getSpecificData($request->input()['companyId'],$templateType);
+							$decodedSaleData = json_decode($status);
+							$invoiceService = new InvoiceService();	
+							$invoiceData = $invoiceService->getLatestInvoiceData($decodedSaleData->company->companyId);
+							if(strcmp($msgArray['204'],$invoiceData)==0)
+							{
+								return $invoiceData;
+							}
+							$endAt = json_decode($invoiceData)->endAt;
+							$invoiceController = new InvoiceController(new Container());
+							$invoiceMethod=$constantArray['postMethod'];
+							$invoicePath=$constantArray['invoiceUrl'];
+							$invoiceDataArray = array();
+							$invoiceDataArray['endAt'] = $endAt+1;
 							
-							if(strcmp($templateData,$msgArray['404'])==0)
-							{
-								return $templateData;
-							}
-							else
-							{
-								$billMpdf = new BillMpdf();
-								$billPdf = $billMpdf->mpdfGenerate($templateData,$status);
-								return $billPdf;
-							}
+							$invoiceRequest = Request::create($invoicePath,$invoiceMethod,$invoiceDataArray);
+							$updateResult = $invoiceController->update($invoiceRequest,json_decode($invoiceData)->invoiceId);
+							
+							$saleId = $decodedSaleData->saleId;
+							$saleIdArray = array();
+							$saleIdArray['saleId'] = $saleId;
+							$documentController = new DocumentController(new Container());
+							
+							$method=$constantArray['postMethod'];
+							$path=$constantArray['documentGenerateUrl'];
+							$documentRequest = Request::create($path,$method,$saleIdArray);
+							$processedData = $documentController->getData($documentRequest);
+							return $processedData;
 						}
 					}
 					else

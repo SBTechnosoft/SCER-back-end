@@ -1,11 +1,16 @@
 <?php
 namespace ERP\Core\Documents\Services;
 
-use ERP\Model\Documents\DocumentModel;
+use ERP\Model\Accounting\Bills\BillModel;
+use ERP\Core\Settings\Templates\Entities\TemplateTypeEnum;
+use ERP\Core\Settings\Templates\Services\TemplateService;
+use ERP\Exceptions\ExceptionMessage;
+use ERP\Core\Documents\Entities\DocumentMpdf;
+use ERP\Core\Accounting\Bills\Entities\EncodeData;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class DocumentService extends DocumentModel
+class DocumentService extends BillModel
 {
     /**
      * get all the data and call the model for database selection opertation
@@ -26,28 +31,44 @@ class DocumentService extends DocumentModel
 		 return $simpleArray;
 	 }
 	 
-	// public static function getAllDocumentData()
-	// {
-		// $documentModel = new DocumentModel();
-		// $status = $documentModel->getAllData();
-		// return $status;
-	// }
-	// public static function getDocumentData($companyId)
-	// {
-		// $documentModel = new DocumentModel();
-		// $status = $documentModel->getData($companyId);
-		// return $status;
-	// }
-	// public static function insertDocumentData($documentName,$documentSize,$documentFormat,$status)
-	// {
-		// $documentModel = new DocumentModel();
-		// $status = $documentModel->insertData($documentName,$documentSize,$documentFormat,$status);
-		// return $status;
-	// }
-	// public static function updateDocumentData($documentName,$documentSize,$documentFormat,$companyId)
-	// {
-		// $documentModel = new DocumentModel();
-		// $status = $documentModel->updateData($documentName,$documentSize,$documentFormat,$companyId);
-		// return $status;
-	// }
+	/**
+     * get all the data and call the model for database selection opertation
+     * @return status
+     */
+	public function getSaleData($saleId)
+	{
+		$documentService = new DocumentService();
+		$saleData = $documentService->getSaleIdData($saleId);
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($saleData,$exceptionArray['404'])==0)
+		{
+			return $saleData;
+		}
+		else
+		{
+			$encoded = new EncodeData();
+			$encodeData = $encoded->getEncodedData($saleData);
+			$decodedSaleData = json_decode($encodeData);
+			
+			$templateType = new TemplateTypeEnum();
+			$templateArray = $templateType->enumArrays();
+			$templateType = $templateArray['invoiceTemplate'];
+			$templateService = new TemplateService();
+			$templateData = $templateService->getSpecificData($decodedSaleData->company->companyId,$templateType);
+		
+			if(strcmp($templateData,$exceptionArray['404'])==0)
+			{
+				return $templateData;
+			}
+			else
+			{
+				$documentMpdf = new DocumentMpdf();
+				$documentMpdf = $documentMpdf->mpdfGenerate($templateData,$encodeData);
+				return $documentMpdf;
+			}
+		}
+	}
 }

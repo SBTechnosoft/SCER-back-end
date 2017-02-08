@@ -42,8 +42,8 @@ class PriceListMpdf
 			{
 				$wholeSaleMargin[$arrayData] = ($decodedData[$arrayData]->wholesaleMargin/100)*$decodedData[$arrayData]->purchasePrice;
 				$decodedData[$arrayData]->purchasePrice = $decodedData[$arrayData]->purchasePrice +$wholeSaleMargin[$arrayData];
-				$decodedData[$arrayData]->vat = 0;
-				$totalAmount[$arrayData] = $decodedData[$arrayData]->purchasePrice;
+				$decodedData[$arrayData]->vat = ($decodedData[$arrayData]->vat/100)*$decodedData[$arrayData]->purchasePrice;;
+				$totalAmount[$arrayData] = $decodedData[$arrayData]->purchasePrice+$decodedData[$arrayData]->vat;
 			}
 			
 			//convert amount(round) into their company's selected decimal points
@@ -72,7 +72,7 @@ class PriceListMpdf
 		$documentPathName = $path.$documentName;
 		$mpdf = new mPDF('A4','landscape');
 		
-		$mpdf->SetHTMLHeader('<div style="text-align: center; font-weight: bold; font-size:20px;">PriceList</div>');
+		$mpdf->SetHTMLHeader('<div style="text-align: center; font-weight: bold; font-size:20px;">Price List</div>');
 		
 		$mpdf->SetDisplayMode('fullpage');
 		$mpdf->WriteHTML($htmlBody);

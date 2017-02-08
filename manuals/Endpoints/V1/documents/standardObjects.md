@@ -3,12 +3,10 @@
             {
                 
                 "documentName": string,
-                "documentUrl": string
+                "documentUrl": string,
                 "documentSize": int,
                 "documentFormat": Enum
-				
-				
-            }
+		  }
 
 ##### Standard Document Persistable Object
 
@@ -20,6 +18,6 @@
 
 ##### Document Format Enum
 			{
-				documentFormat: `jpeg | jpg | gif | png `
+				documentFormat: `jpeg | jpg | gif | png | pdf`
 			}
             

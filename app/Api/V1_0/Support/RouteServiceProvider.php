@@ -57,6 +57,7 @@ class RouteServiceProvider extends ServiceProvider
 			$routeArray['users'] = "User";
 			$routeArray['authenticate'] = "Authenticate";
 			$routeArray['logout'] = "Logout";
+			$routeArray['documents'] = "Document";
 			foreach($routeArray as $key => $value)
 			{
 				if($key==$splitUriRoute[1])

@@ -12,7 +12,7 @@
                 "updatedAt":DateTime,
                 "company": {
 					... Standard Company Object
-				},
+				}
 			}
 ##### Amount Type Enum
 			{

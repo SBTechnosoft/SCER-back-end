@@ -17,6 +17,7 @@ class ConstantClass
 		$constantArray['stockUrl']="Storage/StockRegister/";
 		$constantArray['priceList']="Storage/PriceList/";
 		$constantArray['clientUrl']="http://www.scerp1.com/clients";
+		$constantArray['documentGenerateUrl']="http://www.scerp1.com/documents/bill";
 		$constantArray['ledgerUrl']="http://www.scerp1.com/accounting/ledgers";
 		$constantArray['journalUrl']="http://www.scerp1.com/accounting/journals";
 		$constantArray['invoiceUrl']="http://www.scerp1.com/settings/invoice-numbers";
