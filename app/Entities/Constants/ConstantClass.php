@@ -14,6 +14,7 @@ class ConstantClass
 		$constantArray['documentUrl'] = "Storage/Document/";
 		$constantArray['billDocumentUrl'] = "Storage/Bill/Document/";
 		$constantArray['billUrl']="Storage/Bill/";
+		$constantArray['trialBalanceUrl']="Storage/TrialBalance/";
 		$constantArray['stockUrl']="Storage/StockRegister/";
 		$constantArray['priceList']="Storage/PriceList/";
 		$constantArray['clientUrl']="http://www.scerp1.com/clients";

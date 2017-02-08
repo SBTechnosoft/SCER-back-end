@@ -44,3 +44,18 @@
                 ... HTTP_Status:200
             }
 			
+##### `DELETE /accounting/bills/{saleId}`
++ Header
+	- Authentication Token
+
++ Error Message
+
+			{
+				... Error Message
+			}            
++ Response
+
+            {
+                ... HTTP_Status:200
+            }
+			

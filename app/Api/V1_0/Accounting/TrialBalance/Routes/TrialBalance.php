@@ -20,6 +20,7 @@ class TrialBalance implements RouteRegistrarInterface
 		Route::group(['as' => 'get'], function ()
 		{
 			Route::get('Accounting/TrialBalance/TrialBalance/company/{companyId}', 'Accounting\TrialBalance\Controllers\TrialBalanceController@getTrialBalanceData');
+			Route::get('Accounting/TrialBalance/TrialBalance/company/{companyId}/export', 'Accounting\TrialBalance\Controllers\TrialBalanceController@getDocumentpath');
 		});
 		
 	}

@@ -501,6 +501,7 @@ include ('connection.php');
 				// var ledgerId=86;
 				// var jfId=4;
 				// var journalId=327;
+				var saleId = 309;
 				
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/priceList";  //priceList
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/transaction/detail"; //stock-register
@@ -513,9 +514,11 @@ include ('connection.php');
 				// var url = "http://www.scerp1.com/authenticate/users/"+userId;
 				// var url = "http://www.scerp1.com/authenticate";
 				// var url = "http://www.scerp1.com/users/email-address/"+emailId;
-				var url = "http://www.scerp1.com/accounting/trial-balance/company/"+companyId;
-				// var url = "http://api.siliconbrain.co.in/accounting/trial-balance/company/"+companyId;
+				// var url = "http://www.scerp1.com/accounting/trial-balance/company/"+companyId;
+				// var url = "http://www.scerp1.com/accounting/trial-balance/company/"+companyId+"/export";
+			
 				
+				var url = "http://www.scerp1.com/accounting/bills/"+saleId;
 				// var url = "http://www.scerp1.com/accounting/bills";
 				// var url = "http://www.scerp1.com/accounting/bills/company/"+companyId;
 				
@@ -577,23 +580,25 @@ include ('connection.php');
 				$http({
                         url: url,
                         // type:'patch',
+                        // type:'get',
+						 // method: 'get',
 						 // method: 'post',
-						method: 'post',
+						// method: 'post',
 						// method: "PATCH",
-						// method:'delete',
+						method:'delete',
 						processData: false,
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','type':'sales','jfId':64},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productCategoryId':18,'productGroupId':10,'salesType':'retail_sales'},
                         // headers: {'Content-Type': undefined,'type':'sales'},
-                        headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62',
-						'salesType':'retail_sales'},
+                        // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62',
+						// 'salesType':'retail_sales'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','type':'retail_sales','fromDate':'22-10-2015','toDate':'22-10-2015'}
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productId':1,'fromDate':'22-10-2015','toDate':'20-01-2017'},
                         // headers: {'Content-Type': undefined,'type':'sales','jfId':5},
-                        // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
-						 data:formdata
+                        headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
+						 // data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {
