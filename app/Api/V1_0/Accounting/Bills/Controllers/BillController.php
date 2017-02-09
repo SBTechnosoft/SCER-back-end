@@ -99,13 +99,14 @@ class BillController extends BaseController implements ContainerInterface
 							{
 								return $invoiceData;
 							}
+							
 							$endAt = json_decode($invoiceData)->endAt;
 							$invoiceController = new InvoiceController(new Container());
 							$invoiceMethod=$constantArray['postMethod'];
 							$invoicePath=$constantArray['invoiceUrl'];
 							$invoiceDataArray = array();
 							$invoiceDataArray['endAt'] = $endAt+1;
-							
+						
 							$invoiceRequest = Request::create($invoicePath,$invoiceMethod,$invoiceDataArray);
 							$updateResult = $invoiceController->update($invoiceRequest,json_decode($invoiceData)->invoiceId);
 							
@@ -116,6 +117,7 @@ class BillController extends BaseController implements ContainerInterface
 							
 							$method=$constantArray['postMethod'];
 							$path=$constantArray['documentGenerateUrl'];
+							
 							$documentRequest = Request::create($path,$method,$saleIdArray);
 							$processedData = $documentController->getData($documentRequest);
 							return $processedData;
@@ -169,5 +171,15 @@ class BillController extends BaseController implements ContainerInterface
 		{
 			return $authenticationResult;
 		}
+	}
+	
+	/**
+	 * update the specified resource 
+	 * @param  Request object[Request $request]
+	 * method calls the processor for creating persistable object & setting the data
+	*/
+	public function update(Request $request)
+	{
+		print_r($request->input());
 	}
 }

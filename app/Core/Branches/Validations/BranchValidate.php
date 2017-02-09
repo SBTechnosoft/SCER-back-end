@@ -14,16 +14,16 @@ class BranchValidate
 	{
 		$rules = array(
 			'branch_name'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]*$/', 
-			'address1'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
-			'address2'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
+			'address1'=>'between:1,50|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
+			'address2'=>'between:1,50|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'pincode'=>'between:6,10|regex:/^[0-9]+$/',
 		);
 		$messages = [
 			'branch_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
 			'branch_name.regex' => 'branch-name contains character from "a-zA-Z &_`#().\'-" only',
-			'address1.between' => 'StringLengthException :Enter the :attribute less then 35 character',
+			'address1.between' => 'StringLengthException :Enter the :attribute less then 50 character',
 			'address1.regex' => 'address1 contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
-			'address2.between' => 'StringLengthException :Enter the :attribute less then 35 character',
+			'address2.between' => 'StringLengthException :Enter the :attribute less then 50 character',
 			'address2.regex' => 'address2 contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
 			'pincode.between' => 'NumberFormatException :Enter the :attribute between 6 and 10 character',
 			'pincode.regex' => 'pincode contains numbers only',
@@ -47,8 +47,8 @@ class BranchValidate
 	public function validateUpdateData($keyName,$value,$request)
 	{
 		$validationArray = array('branch_name'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]+$/', 
-		'address1'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
-		'address2'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
+		'address1'=>'between:1,50|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
+		'address2'=>'between:1,50|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 		'pincode'=>'between:6,10|regex:/^[0-9]+$/');
 		$rules =array();
 		foreach ($validationArray as $key => $value) 
@@ -67,9 +67,9 @@ class BranchValidate
 			$messages = [
 				'branch_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
 				'branch_name.regex' => 'branch-name contains character from "a-zA-Z &_`#().\'-" only',
-				'address1.between' => 'StringLengthException :Enter the :attribute less then 35 character',
+				'address1.between' => 'StringLengthException :Enter the :attribute less then 50 character',
 				'address1.regex' => 'address1 contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
-				'address2.between' => 'StringLengthException :Enter the :attribute less then 35 character',
+				'address2.between' => 'StringLengthException :Enter the :attribute less then 50 character',
 				'address2.regex' => 'address2 contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
 				'pincode.between' => 'NumberFormatException :Enter the :attribute between 6 and 10 character',
 				'pincode.regex' => 'pincode contains numbers only',

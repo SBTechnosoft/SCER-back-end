@@ -19,7 +19,7 @@ class BillModel extends Model
 	 * @param  array
 	 * returns the status
 	*/
-	public function insertAllData($productArray,$paymentMode,$invoiceNumber,$bankName,$checkNumber,$total,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray)
+	public function insertAllData($productArray,$paymentMode,$invoiceNumber,$bankName,$checkNumber,$total,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray,$jfId)
 	{
 		//database selection
 		$database = "";
@@ -42,8 +42,9 @@ class BillModel extends Model
 		entry_date,
 		company_id,
 		sales_type,
-		client_id) 
-		values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$salesType."','".$ClientId."')");
+		client_id,
+		jf_id) 
+		values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$salesType."','".$ClientId."','".$jfId."')");
 		DB::commit();
 		
 		//get exception message
@@ -74,8 +75,9 @@ class BillModel extends Model
 			company_id,
 			sales_type,
 			client_id,
-			sale_id) 
-			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$salesType."','".$ClientId."','".$saleId[0]->sale_id."')");
+			sale_id,
+			jf_id) 
+			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$salesType."','".$ClientId."','".$saleId[0]->sale_id."','".$jfId."')");
 			DB::commit();
 			
 			if(is_array($saleId))
@@ -115,6 +117,7 @@ class BillModel extends Model
 					sales_type,
 					client_id,
 					company_id,
+					jf_id,
 					created_at,
 					updated_at 
 					from sales_bill where sale_id=(select MAX(sale_id) as sale_id from sales_bill) and deleted_at='0000-00-00 00:00:00'"); 
@@ -145,7 +148,7 @@ class BillModel extends Model
 	 * @param  array
 	 * returns the status
 	*/
-	public function insertData($productArray,$paymentMode,$invoiceNumber,$bankName,$checkNumber,$total,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType)
+	public function insertData($productArray,$paymentMode,$invoiceNumber,$bankName,$checkNumber,$total,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$jfId)
 	{
 		//database selection
 		$database = "";
@@ -168,15 +171,17 @@ class BillModel extends Model
 		entry_date,
 		company_id,
 		client_id,
-		sales_type) 
-		values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$salesType."')");
+		sales_type,
+		jf_id) 
+		values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$salesType."','".$jfId."')");
 		DB::commit();
-		
+		 
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
+			
 			DB::beginTransaction();
 			$saleId = DB::connection($databaseName)->select("SELECT 
 			max(sale_id) sale_id
@@ -200,8 +205,9 @@ class BillModel extends Model
 			company_id,
 			client_id,
 			sales_type,
-			sale_id) 
-			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$salesType."','".$saleId[0]->sale_id."')");
+			sale_id,
+			jf_id) 
+			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$salesType."','".$saleId[0]->sale_id."','".$jfId."')");
 			DB::commit();
 		
 			DB::beginTransaction();
@@ -222,6 +228,7 @@ class BillModel extends Model
 			client_id,
 			sales_type,
 			company_id,
+			jf_id,
 			created_at,
 			updated_at 
 			from sales_bill where sale_id=(select MAX(sale_id) as sale_id from sales_bill) and deleted_at='0000-00-00 00:00:00'"); 
@@ -308,6 +315,7 @@ class BillModel extends Model
 		entry_date,
 		client_id,
 		sales_type,
+		jf_id
 		company_id,
 		created_at,
 		updated_at 
@@ -397,6 +405,7 @@ class BillModel extends Model
 		client_id,
 		sales_type,
 		company_id,
+		jf_id,
 		created_at,
 		updated_at 
 		from sales_bill 

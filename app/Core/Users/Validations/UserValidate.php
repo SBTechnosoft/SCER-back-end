@@ -20,7 +20,7 @@ class UserValidate
 	{
 		$rules = array(
 			'user_name'=>"between:1,35|regex:/^[a-zA-Z0-9 &_`#.\'-]*$/",
-			'address'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
+			'address'=>'between:1,100|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'email_id'=>'regex:/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,})$/',
 			'contact_no'=>'required|between:10,12|regex:/^[0-9]+$/',
 			'pincode'=>'between:6,10|regex:/^[0-9]+$/'
@@ -28,7 +28,7 @@ class UserValidate
 		$messages = [
 			'user_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
 			'user_name.regex' => 'user-name contains character from "a-zA-Z0-9 &_`#.\'-" only',
-			'address.between' => 'StringLengthException :Enter the :attribute less then 35 character',
+			'address.between' => 'StringLengthException :Enter the :attribute less then 100 character',
 			'address.regex' => 'address contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
 			'email_id.regex' => 'please enter your email-address in proper format',
 			'pincode.between' => 'NumberFormatException :Enter the :attribute between 6 and 10 character',
@@ -93,7 +93,7 @@ class UserValidate
 	{
 		$validationArray = array(
 			'user_name'=>"between:1,35|regex:/^[a-zA-Z0-9 &_`#.\'-]*$/",
-			'address'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
+			'address'=>'between:1,100|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'email_id'=>'regex:/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,})$/',
 			'contact_no'=>'required|between:10,12|regex:/^[0-9]+$/',
 			'pincode'=>'between:6,10|regex:/^[0-9]+$/'
@@ -115,7 +115,7 @@ class UserValidate
 			$messages = [
 				'user_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
 			'user_name.regex' => 'user-name contains character from "a-zA-Z0-9 &_`#.\'-" only',
-			'address.between' => 'StringLengthException :Enter the :attribute less then 35 character',
+			'address.between' => 'StringLengthException :Enter the :attribute less then 100 character',
 			'address.regex' => 'address contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
 			'email_id.regex' => 'please enter your email-address in proper format',
 			'pincode.between' => 'NumberFormatException :Enter the :attribute between 6 and 10 character',

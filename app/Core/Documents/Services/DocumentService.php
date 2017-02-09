@@ -49,16 +49,15 @@ class DocumentService extends BillModel
 		}
 		else
 		{
+			
 			$encoded = new EncodeData();
 			$encodeData = $encoded->getEncodedData($saleData);
 			$decodedSaleData = json_decode($encodeData);
-			
 			$templateType = new TemplateTypeEnum();
 			$templateArray = $templateType->enumArrays();
 			$templateType = $templateArray['invoiceTemplate'];
 			$templateService = new TemplateService();
 			$templateData = $templateService->getSpecificData($decodedSaleData->company->companyId,$templateType);
-		
 			if(strcmp($templateData,$exceptionArray['404'])==0)
 			{
 				return $templateData;

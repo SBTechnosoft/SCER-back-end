@@ -39,6 +39,7 @@ class EncodeAllData extends ClientService
 			$remark[$decodedData] = $deocodedJsonData[$decodedData]->remark;
 			$entryDate[$decodedData] = $deocodedJsonData[$decodedData]->entry_date;
 			$clientId[$decodedData] = $deocodedJsonData[$decodedData]->client_id;
+			$jfId[$decodedData] = $deocodedJsonData[$decodedData]->jf_id;
 			$salesType[$decodedData] = $deocodedJsonData[$decodedData]->sales_type;
 			$companyId[$decodedData] = $deocodedJsonData[$decodedData]->company_id;
 			$createdAt[$decodedData] = $deocodedJsonData[$decodedData]->created_at;
@@ -182,6 +183,7 @@ class EncodeAllData extends ClientService
 				'balance'=>$balance[$jsonData],
 				'remark'=>$remark[$jsonData],
 				'salesType'=>$salesType[$jsonData],
+				'jfId'=>$jfId[$decodedData],
 				'createdAt'=>$getCreatedDate[$jsonData],
 				'updatedAt'=>$getUpdatedDate[$jsonData],
 				'entryDate'=>$getEntryDate[$jsonData],

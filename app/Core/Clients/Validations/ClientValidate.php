@@ -18,8 +18,8 @@ class ClientValidate
 			'contact_no'=> 'between:10,12|regex:/^[1-9][0-9]+$/', 
 			'work_no'=> 'between:10,12|regex:/^[1-9][0-9]+$/', 
 			'email_id'=> 'regex:/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,})$/', 
-			'address1'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
-			'address2'=>'between:1,35|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
+			'address1'=>'between:1,50|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
+			'address2'=>'between:1,50|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 		);
 		$messages = [
 			'client_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
@@ -31,9 +31,9 @@ class ClientValidate
 			'work_no.between' => 'StringLengthException :Enter the :attribute between 10-12 number',
 			'work_no.regex' => 'work-no contains character from "0-9" only',
 			'email_id.regex' => 'please enter your email-address in proper format',
-			'address1.between' => 'StringLengthException :Enter the :attribute less then 35 character',
+			'address1.between' => 'StringLengthException :Enter the :attribute less then 50 character',
 			'address1.regex' => 'address1 contains character from "a-zA-Z0-9* ,- /_`#[]().\" only',
-			'address2.between' => 'StringLengthException :Enter the :attribute less then 35 character',
+			'address2.between' => 'StringLengthException :Enter the :attribute less then 50 character',
 			'address2.regex' => 'address2 contains character from "a-zA-Z0-9* ,- /_`#[]().\" only',
 		];
 		$validator = Validator::make($request,$rules,$messages);

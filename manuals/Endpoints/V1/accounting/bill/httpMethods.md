@@ -44,6 +44,26 @@
                 ... HTTP_Status:200
             }
 			
+##### `POST /accounting/bills/{saleId}`
++ Header
+	- Authentication Token
++ Body
+
+            {
+                ... Standard Bill Persistable Object
+            }
+
++ Error Message
+
+			{
+				... Error Message
+			}            
++ Response
+
+            {
+                ... HTTP_Status:200
+            }
+			
 ##### `DELETE /accounting/bills/{saleId}`
 + Header
 	- Authentication Token

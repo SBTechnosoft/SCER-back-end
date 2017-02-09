@@ -69,10 +69,11 @@ class BillService
 			$companyId = $billArray->getCompanyId();
 			$ClientId = $billArray->getClientId();
 			$salesType = $billArray->getSalesType();
+			$jfId= $billArray->getJfId();
 			
 			//data pass to the model object for insert
 			$billModel = new BillModel();
-			$status = $billModel->insertData($productArray,$paymentMode,$invoiceNumber,$bankName,$checkNumber,$total,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType);
+			$status = $billModel->insertData($productArray,$paymentMode,$invoiceNumber,$bankName,$checkNumber,$total,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$jfId);
 			
 			//get exception message
 			$exception = new ExceptionMessage();
@@ -107,13 +108,14 @@ class BillService
 			$companyId = $billArray[count($billArray)-1]->getCompanyId();
 			$ClientId = $billArray[count($billArray)-1]->getClientId();
 			$salesType = $billArray[count($billArray)-1]->getSalesType();
+			$jfId = $billArray[count($billArray)-1]->getJfId();
 			for($doc=0;$doc<(count($billArray)-1);$doc++)
 			{
 				array_push($documentArray,$billArray[$doc]);	
 			}
 			//data pass to the model object for insert
 			$billModel = new BillModel();
-			$status = $billModel->insertAllData($productArray,$paymentMode,$invoiceNumber,$bankName,$checkNumber,$total,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray);
+			$status = $billModel->insertAllData($productArray,$paymentMode,$invoiceNumber,$bankName,$checkNumber,$total,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray,$jfId);
 			
 			//get exception message
 			$exception = new ExceptionMessage();

@@ -17,6 +17,7 @@
 				"entryDate":datetime,
 				"createdAt":timestamp,
 				"updatedAt":datetime,
+				"jf_id":int,
 				"client":{
 					... standard client object
 				}

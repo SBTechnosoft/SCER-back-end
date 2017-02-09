@@ -3,42 +3,61 @@ namespace ERP\Core\Accounting\TrialBalance\Entities;
 
 use mPDF;
 use ERP\Entities\Constants\ConstantClass;
-
+use ERP\Core\Companies\Services\CompanyService;
 /**
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class TrialBalanceMpdf
+class TrialBalanceMpdf extends CompanyService
 {
 	public function generatePdf($data)
 	{
 		$decodedData = json_decode($data);
+		
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
 		$headerPart = "<table style='border: 1px solid black; width:100%'>
-						<thead style='border: 1px solid black;'>
-							<tr style='border: 1px solid black;'>
-								<th style='border: 1px solid black;'>Particular</th>
-								<th style='border: 1px solid black;'>Debit</th>
-								<th style='border: 1px solid black;'>Credit</th>
+						<thead style='border: 1px solid black; width:100%;'>
+							<tr style='border: 1px solid black;width:100%;'>
+								<th style='border: 1px solid black; width:50%;'>Particular</th>
+								<th style='border: 1px solid black;width:25%;'>Debit</th>
+								<th style='border: 1px solid black;width:25%;'>Credit</th>
 							</tr>
 						</thead><tbody>";
 		$bodyPart = "";
+		$creditAmountTotal = 0;
+		$debitAmountTotal = 0;
+		$trialBalance = new TrialBalanceMpdf();
+		$companyDetail = $trialBalance->getCompanyData($decodedData[0]->ledger->companyId);
+		$decodedCompanyData = json_decode($companyDetail);
+		
 		for($arrayData=0;$arrayData<count($decodedData);$arrayData++)
 		{
+			$decodedData[$arrayData]->amount = round($decodedData[$arrayData]->amount,$decodedCompanyData->noOfDecimalPoints);
 			if(strcmp($decodedData[$arrayData]->amountType,"credit")==0)
 			{
 				$bodyPart = $bodyPart."	<tr style='border: 1px solid black;'>
-									<td style='border: 1px solid black;'>".$decodedData[$arrayData]->ledger->ledgerName."</td>
-									<td style='border: 1px solid black; text-align:center;'> - </td>
-									<td style='border: 1px solid black; text-align:center;'>".$decodedData[$arrayData]->amount."</td></tr>";
+									<td style='border: 1px solid black; width:50%;'>".$decodedData[$arrayData]->ledger->ledgerName."</td>
+									<td style='border: 1px solid black;width:25%; text-align:center;'> - </td>
+									<td style='border: 1px solid black; width:25%;text-align:center;'>".$decodedData[$arrayData]->amount."</td></tr>";
+				$creditAmountTotal = $creditAmountTotal+$decodedData[$arrayData]->amount;
 			}
 			else
 			{
 				$bodyPart = $bodyPart."	<tr style='border: 1px solid black;'>
-									<td style='border: 1px solid black;'>".$decodedData[$arrayData]->ledger->ledgerName."</td>
-									<td style='border: 1px solid black; text-align:center;'>".$decodedData[$arrayData]->amount."</td>
-									<td style='border: 1px solid black; text-align:center;'> - </td></tr>";
+									<td style='border: 1px solid black; width:50%;'>".$decodedData[$arrayData]->ledger->ledgerName."</td>
+									<td style='border: 1px solid black;width:25%; text-align:center;'>".$decodedData[$arrayData]->amount."</td>
+									<td style='border: 1px solid black; width:25%;text-align:center;'> - </td></tr>";
+				$debitAmountTotal = $debitAmountTotal+$decodedData[$arrayData]->amount;
+			}
+			if($arrayData == count($decodedData)-1)
+			{
+				$debitAmountTotal = round($debitAmountTotal,$decodedCompanyData->noOfDecimalPoints);
+				$creditAmountTotal = round($creditAmountTotal,$decodedCompanyData->noOfDecimalPoints);
+				$bodyPart = $bodyPart."	<tr style='border: 1px solid black;'>
+									<td style='border: 1px solid black; width:50%;'>Total</td>
+									<td style='border: 1px solid black; width:25%;text-align:center;'>".$debitAmountTotal."</td>
+									<td style='border: 1px solid black;width:25%; text-align:center;'>".$creditAmountTotal."</td></tr>";
 			}
 		}
 		$footerPart = "</tbody></table>";

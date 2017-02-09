@@ -30,6 +30,7 @@ class EncodeData extends ClientService
 		$remark= $decodedJson[0]['remark'];
 		$entryDate= $decodedJson[0]['entry_date'];
 		$clientId= $decodedJson[0]['client_id'];
+		$jfId= $decodedJson[0]['jf_id'];
 		$companyId= $decodedJson[0]['company_id'];
 		$salesType= $decodedJson[0]['sales_type'];
 		
@@ -75,6 +76,7 @@ class EncodeData extends ClientService
 			$bill->setEntryDate($convertedEntryDate);
 			$getEntryDate = $bill->getEntryDate();
 		}
+		
 		//set all data into json array
 		$data = array();
 		$data['saleId'] = $saleId;
@@ -92,6 +94,7 @@ class EncodeData extends ClientService
 		$data['remark'] = $remark;
 		$data['entryDate'] = $getEntryDate;
 		$data['clientId'] = $clientId;
+		$data['jfId'] = $jfId;
 		$data['salesType'] = $salesType;
 		$data['updatedAt'] = $getUpdatedDate;	
 		$data['client']= array(
