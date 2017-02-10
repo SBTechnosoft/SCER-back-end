@@ -6,6 +6,7 @@ use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Entities\Constants\ConstantClass;
+use ERP\Model\Accounting\Journals\JournalModel;
 use stdClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -420,6 +421,202 @@ class BillModel extends Model
 		{
 			$encodedData = json_encode($raw);
 			return $encodedData;
+		}
+	}
+	
+	/**
+	 * update payment bill data
+	 * @param  bill array data
+	 * returns the exception-message/status
+	*/
+	public function updatePaymentData($arrayData)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		$mytime = Carbon\Carbon::now();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		if(strcmp($arrayData->payment_mode,"bank")==0)
+		{
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->statement("update
+			sales_bill set
+			payment_mode = '".$arrayData->payment_mode."',
+			advance = '".$arrayData->advance."',
+			balance = '".$arrayData->balance."'	,
+			bank_name = '".$arrayData->bank_name."'	,
+			check_number = '".$arrayData->check_number."',
+			entry_date = '".$arrayData->entry_date."',
+			updated_at = '".$mytime."'
+			where sale_id = ".$arrayData->sale_id." and
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+		}
+		else
+		{
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->statement("update
+			sales_bill set
+			payment_mode = '".$arrayData->payment_mode."',
+			advance = '".$arrayData->advance."',
+			balance = '".$arrayData->balance."'	,
+			entry_date = '".$arrayData->entry_date."',
+			updated_at = '".$mytime."'
+			where sale_id = ".$arrayData->sale_id." and
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+		}
+		if($raw!=1)
+		{
+			return $exceptionArray['500']; 
+		}
+		$saleIdData = $this->getSaleIdData($arrayData->sale_id);
+		$jsonDecodedSaleData = json_decode($saleIdData);
+		
+		DB::beginTransaction();
+		$saleTrnInsertionResult = DB::connection($databaseName)->statement("insert
+		into sales_bill_trn(
+		sale_id,
+		product_array,
+		payment_mode,
+		bank_name,
+		invoice_number,
+		check_number,
+		total,
+		tax,
+		grand_total,
+		advance,
+		balance,
+		remark,
+		entry_date,
+		client_id,
+		sales_type,
+		company_id,
+		jf_id,
+		created_at,
+		updated_at)
+		values(
+		'".$jsonDecodedSaleData[0]->sale_id."',
+		'".$jsonDecodedSaleData[0]->product_array."',
+		'".$jsonDecodedSaleData[0]->payment_mode."',
+		'".$jsonDecodedSaleData[0]->bank_name."',
+		'".$jsonDecodedSaleData[0]->invoice_number."',
+		'".$jsonDecodedSaleData[0]->check_number."',
+		'".$jsonDecodedSaleData[0]->total."',
+		'".$jsonDecodedSaleData[0]->tax."',
+		'".$jsonDecodedSaleData[0]->grand_total."',
+		'".$jsonDecodedSaleData[0]->advance."',
+		'".$jsonDecodedSaleData[0]->balance."',
+		'".$jsonDecodedSaleData[0]->remark."',
+		'".$jsonDecodedSaleData[0]->entry_date."',
+		'".$jsonDecodedSaleData[0]->client_id."',
+		'".$jsonDecodedSaleData[0]->sales_type."',
+		'".$jsonDecodedSaleData[0]->company_id."',
+		'".$jsonDecodedSaleData[0]->jf_id."',
+		'".$jsonDecodedSaleData[0]->created_at."',
+		'".$jsonDecodedSaleData[0]->updated_at."')");
+		DB::commit();
+		if($saleTrnInsertionResult!=1)
+		{
+			return $exceptionArray['500']; 
+		}
+		else
+		{
+			return $exceptionArray['200'];
+		}
+	}
+	
+	/**
+	 * delete bill data
+	 * @param  sale-id
+	 * returns the exception-message/status
+	*/
+	public function deleteBillData($saleId)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		$saleIdData = $this->getSaleIdData($saleId);
+		$jsonDecodedSaleData = json_decode($saleIdData);
+		if(strcmp($saleIdData,$exceptionArray['404'])==0)
+		{
+			return $exceptionArray['404'];
+		}
+		$mytime = Carbon\Carbon::now();
+		
+		//get ledger id from journal
+		$journalModel = new JournalModel();
+		$journalData = $journalModel->getJfIdArrayData($jsonDecodedSaleData[0]->jf_id);
+		$jsonDecodedJournalData = json_decode($journalData);
+		if(strcmp($journalData,$exceptionArray['404'])!=0)
+		{
+			foreach ($jsonDecodedJournalData as $value)
+			{
+				//delete ledgerId_ledger_dtl data as per given ledgerId and jf_id
+				DB::beginTransaction();
+				$deleteLedgerData = DB::connection($databaseName)->statement("update
+				".$value->ledger_id."_ledger_dtl set
+				deleted_at = '".$mytime."'
+				where jf_id = ".$jsonDecodedSaleData[0]->jf_id." and
+				deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+			}
+		}
+		//delete journal data
+		DB::beginTransaction();
+		$deleteJournalData = DB::connection($databaseName)->statement("update
+		journal_dtl set
+		deleted_at = '".$mytime."'
+		where jf_id = ".$jsonDecodedSaleData[0]->jf_id." and
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+			
+		//delete product_trn data
+		DB::beginTransaction();
+		$deleteProductTrnData = DB::connection($databaseName)->statement("update
+		product_trn set
+		deleted_at = '".$mytime."'
+		where jf_id = ".$jsonDecodedSaleData[0]->jf_id." and
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		//delete bill data 
+		DB::beginTransaction();
+		$deleteBillData = DB::connection($databaseName)->statement("update
+		sales_bill set
+		deleted_at = '".$mytime."'
+		where sale_id = ".$saleId." and
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		//delete bill-transaction data 
+		DB::beginTransaction();
+		$deleteBillData = DB::connection($databaseName)->statement("update
+		sales_bill_trn set
+		deleted_at = '".$mytime."'
+		where sale_id = ".$saleId." and
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		if($deleteJournalData==1 && $deleteProductTrnData==1 && $deleteBillData==1 && $deleteBillData==1)
+		{
+			return $exceptionArray['200'];
+		}
+		else
+		{
+			return $exceptionArray['500'];
 		}
 	}
 }

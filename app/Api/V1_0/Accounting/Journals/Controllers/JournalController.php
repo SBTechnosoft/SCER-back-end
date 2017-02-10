@@ -55,7 +55,8 @@ class JournalController extends BaseController implements ContainerInterface
 		//get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-		if(strcmp($_SERVER['REQUEST_URI'],"/accounting/bills")==0)
+		$RequestUri = explode("/", $_SERVER['REQUEST_URI']);
+		if(strcmp($RequestUri[1],"accounting")==0)
 		{
 			//special journal entry and inventory entry
 			$this->request = $request;
@@ -75,6 +76,7 @@ class JournalController extends BaseController implements ContainerInterface
 				{
 					$journalService= new JournalService();
 					$status = $journalService->insert($journalPersistable);
+					
 					if(count($request->input())>4)
 					{
 						$productService= new ProductService();	
@@ -204,7 +206,8 @@ class JournalController extends BaseController implements ContainerInterface
      */
     public function getData(Request $request)
     {
-		if(strcmp($_SERVER['REQUEST_URI'],"/accounting/bills")==0)
+		$RequestUri = explode("/", $_SERVER['REQUEST_URI']);
+		if(strcmp($RequestUri[1],"accounting")==0)
 		{
 			$journalService = new JournalService();
 			$status = $journalService->getJournalData();

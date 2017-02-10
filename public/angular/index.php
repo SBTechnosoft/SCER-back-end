@@ -379,6 +379,19 @@ include ('connection.php');
 				// $scope.formAdata.saleId = "303";
 				// formdata.append('saleId',$scope.formAdata.saleId);
 				
+				//bill-payment
+				// $scope.formAdata.entryDate = "22-10-2017";
+				// $scope.formAdata.amount = "30";
+				// $scope.formAdata.paymentMode = "bank";
+				// $scope.formAdata.bankName = "abc";
+				// $scope.formAdata.checkNumber = "cashsdas2dsa";
+				// $scope.formAdata.paymentTransaction = "payment";
+				// formdata.append('entryDate',$scope.formAdata.entryDate);
+				// formdata.append('amount',$scope.formAdata.amount);
+				// formdata.append('paymentMode',$scope.formAdata.paymentMode);
+				// formdata.append('bankName',$scope.formAdata.bankName);
+				// formdata.append('checkNumber',$scope.formAdata.checkNumber);
+				// formdata.append('paymentTransaction',$scope.formAdata.paymentTransaction);
 				
 				//Authenticate
 				// $scope.formAdata.email_id = "palak1@gmail.com";
@@ -461,26 +474,27 @@ include ('connection.php');
 				
 				//9875647544
 				//bill
-				$scope.user = [{"billData":[{"companyId":83,"entryDate":"22-10-2015","contactNo":"8224441535",
-				"workNo":"9875647344","isDisplay":"yes","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbrain",
-				"clientName":"palassaaa","invoiceNumber":"INV/2016-12/53","address1":"sfja,sa","address2":"dfsd,ds",
-				"stateAbb":"IN-AG","cityId":1,"total":100,"tax":10,"grandTotal":134,"advance":100,"balance":10,
-				"paymentMode":"cash","bankName":"abc","checkNumber":"abbb34eQ1G","remark":"adsfsf afasf"}]}];
+				// $scope.user = [{"billData":[{"companyId":83,"entryDate":"22-10-2015","contactNo":"8224441535",
+				// "workNo":"9875647344","isDisplay":"yes","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbrain",
+				// "clientName":"palassaaa","invoiceNumber":"INV/2016-12/53","address1":"sfja,sa","address2":"dfsd,ds",
+				// "stateAbb":"IN-AG","cityId":1,"total":100,"tax":10,"grandTotal":134,"advance":100,"balance":10,
+				// "paymentMode":"cash","bankName":"abc","checkNumber":"abbb34eQ1G","remark":"adsfsf afasf"}]}];
 				
-				$scope.inventory=[{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":44,'color':'sss',
-				'frameNo':'fff'},{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":40,'color':'sd',
-				'frameNo':'dsfds'}];
-				angular.forEach($scope.user[0]['billData'][0], function (input,key) {
+				// $scope.inventory=[{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":44,'color':'sss',
+				// 'frameNo':'fff'},{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":40,'color':'sd',
+				// 'frameNo':'dsfds'}];
+				// angular.forEach($scope.user[0]['billData'][0], function (input,key) {
 					
-					formdata.append(key,input);
-				});
-				for(var i=0;i<$scope.inventory.length;i++)
-				{
-					angular.forEach($scope.inventory[i], function (input,key) {
+					// formdata.append(key,input);
+				// });
+				// for(var i=0;i<$scope.inventory.length;i++)
+				// {
+					// angular.forEach($scope.inventory[i], function (input,key) {
 						
-						formdata.append('inventory['+i+']['+key+']',input);
-					});
-				}
+						// formdata.append('inventory['+i+']['+key+']',input);
+					// });
+				// }
+				
 				
 				
 				// var userId=9;
@@ -501,7 +515,7 @@ include ('connection.php');
 				// var ledgerId=86;
 				// var jfId=4;
 				// var journalId=327;
-				// var saleId = 309;
+				// var saleId = 352;
 				
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/priceList";  //priceList
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/transaction/detail"; //stock-register
@@ -518,7 +532,8 @@ include ('connection.php');
 				// var url = "http://www.scerp1.com/accounting/trial-balance/company/"+companyId+"/export";
 			
 				
-				var url = "http://www.scerp1.com/accounting/bills/"+saleId;
+				// var url = "http://www.scerp1.com/accounting/bills/"+saleId;
+				// var url = "http://www.scerp1.com/accounting/bills/"+saleId+"/payment";
 				// var url = "http://www.scerp1.com/accounting/bills";
 				// var url = "http://www.scerp1.com/accounting/bills/company/"+companyId;
 				
@@ -582,23 +597,23 @@ include ('connection.php');
                         // type:'patch',
                         // type:'get',
 						 // method: 'get',
-						 method: 'post',
+						 // method: 'post',
 						// method: 'post',
 						// method: "PATCH",
-						// method:'delete',
+						method:'delete',
 						processData: false,
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','type':'sales','jfId':64},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productCategoryId':18,'productGroupId':10,'salesType':'retail_sales'},
                         // headers: {'Content-Type': undefined,'type':'sales'},
-                        headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62',
-						'salesType':'retail_sales'},
+                        // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62',
+						// 'salesType':'retail_sales'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','type':'retail_sales','fromDate':'22-10-2015','toDate':'22-10-2015'}
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productId':1,'fromDate':'22-10-2015','toDate':'20-01-2017'},
                         // headers: {'Content-Type': undefined,'type':'sales','jfId':5},
-                        // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
-						 data:formdata
+                        headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
+						 // data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

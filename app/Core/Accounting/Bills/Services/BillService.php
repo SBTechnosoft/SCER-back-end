@@ -41,7 +41,7 @@ class BillService
 	 /**
      * get the data from persistable object and call the model for database insertion opertation
      * @param BillPersistable $persistable
-     * @return status
+     * @return status/error message
      */
 	public function insert()
 	{
@@ -136,7 +136,7 @@ class BillService
 	 /**
      * get the data from persistable object and call the model for database get opertation
      * @param BillPersistable $persistable
-     * @return status
+     * @return status/error message
      */
 	public function getData()
 	{
@@ -165,5 +165,23 @@ class BillService
 			$encodingResult = $encodeAllData->getEncodedAllData($billResult);
 			return $encodingResult;
 		}
+	}
+	
+	 /**
+     * update bill data
+     * @param BillPersistable $persistable
+     * @return status/error message
+     */
+	public function updatePaymentData()
+	{
+		$persistableData = func_get_arg(0);
+		$billArray = $persistableData->getBillArray();
+		$decodedBillData = json_decode($billArray);
+		
+		//data pass to the model object for getData
+		$billModel = new BillModel();
+		$billResult = $billModel->updatePaymentData($decodedBillData);
+		return $billResult;
+		// print_r($persistableData);
 	}
 }

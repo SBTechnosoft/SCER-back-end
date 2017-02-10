@@ -145,8 +145,8 @@ class BillTransformer
 	}
 	
 	 /**
-     * @param request header
-	 * trim data -> conversion date -> make an array of transform data
+	 *  trim data -> conversion date -> make an array of transform data
+	 * @param request header
      * @return array/error message
      */
 	public function trimFromToDateData($headerData)
@@ -192,6 +192,63 @@ class BillTransformer
 		else
 		{
 			return $msgArray['content'];
+		}
+	}
+	
+	/**
+     * trim data and check enum data type
+	 * @param request data 
+     * @return array/error message
+     */
+	public function trimPaymentData(Request $request)
+	{
+		$paymentModeFlag=0;
+		$tEntryDate = trim($request->input()['entryDate']);
+		$tAmount = trim($request->input()['amount']);
+		$tPaymentTransaction = trim($request->input()['paymentTransaction']);
+		$tPaymentMode = trim($request->input()['paymentMode']);
+		
+		$paymentModeArray = array();
+		$paymentModeEnum = new PaymentModeEnum();
+		$paymentModeArray = $paymentModeEnum->enumArrays();
+		
+		//check paymentmode enum type
+		foreach ($paymentModeArray as $key => $value)
+		{
+			if(strcmp($value,$tPaymentMode)==0)
+			{
+				$paymentModeFlag=1;
+				break;
+			}
+		}
+		if($paymentModeFlag==0)
+		{
+			return "1";
+		}
+		else
+		{
+			if(strcmp($tPaymentMode,"bank")==0)
+			{
+				$tBankName = trim($request->input()['bankName']);
+				$tCheckNumber = trim($request->input()['checkNumber']);
+			}
+			else
+			{
+				$tBankName="";	
+				$tCheckNumber="";
+				if($tPaymentMode=="")
+				{
+					$tPaymentMode=$paymentModeArray['cashPayment'];
+				}
+			}
+			$trimArray = array();
+			$trimArray['entry_date'] = $tEntryDate;
+			$trimArray['amount'] = $tAmount;
+			$trimArray['payment_transaction'] = $tPaymentTransaction;
+			$trimArray['payment_mode'] = $tPaymentMode;
+			$trimArray['bank_name'] = $tBankName;
+			$trimArray['check_number'] = $tCheckNumber;
+			return $trimArray;
 		}
 	}
 }

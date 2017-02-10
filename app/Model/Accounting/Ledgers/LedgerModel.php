@@ -1117,10 +1117,6 @@ class LedgerModel extends Model
 						array_push($mergeArray,(Object)array_merge((array)$ledgerAllData[$arrayData],(array)((Object)$balanceAmountArray)));
 					}
 				}
-				//else
-				//{
-					//return $exceptionArray['404'];
-				//}
 			}
 			return json_encode($mergeArray);
 		}
@@ -1646,6 +1642,43 @@ class LedgerModel extends Model
 		}
 		$encodedData = json_encode($raw);
 		return $encodedData;
+	}
+	
+	/**
+	 * get data as per given companyId and jfId
+	 * @param: companyId and jfId
+	 * returns the error-message/data
+	*/
+	public function getPersonalAccLedgerId($companyId,$jfId)
+	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		//database selection
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		DB::beginTransaction();
+		
+		$raw = DB::connection($databaseName)->select("select ledger_id 
+		from ledger_mst 
+		where ledger_group_id=32 and
+		ledger_id IN 
+					(select ledger_id from journal_dtl 
+					where company_id='".$companyId."' and 
+					amount_type='debit' and jf_id='".$jfId."' and 
+					deleted_at='0000-00-00 00:00:00') 
+		and deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		if(count($raw)!=0)
+		{
+			$rawData = json_encode($raw);
+			return $rawData;
+		}
+		else
+		{
+			return $exceptionArray['404'];
+		}
 	}
 	
 	/**

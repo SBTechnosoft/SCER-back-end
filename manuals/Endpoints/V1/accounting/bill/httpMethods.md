@@ -44,6 +44,26 @@
                 ... HTTP_Status:200
             }
 			
+##### `POST /accounting/bills/{saleId}/payment`
++ Header
+	- Authentication Token
++ Body
+
+            {
+                ... Standard Payment Persistable Object
+            }
+
++ Error Message
+
+			{
+				... Error Message
+			}            
++ Response
+
+            {
+                ... HTTP_Status:200
+            }
+			
 ##### `POST /accounting/bills/{saleId}`
 + Header
 	- Authentication Token

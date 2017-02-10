@@ -19,6 +19,7 @@ use ERP\Core\Settings\InvoiceNumbers\Services\InvoiceService;
 use ERP\Api\V1_0\Settings\InvoiceNumbers\Controllers\InvoiceController;
 use Illuminate\Container\Container;
 use ERP\Api\V1_0\Documents\Controllers\DocumentController;
+use ERP\Model\Accounting\Bills\BillModel;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -174,6 +175,43 @@ class BillController extends BaseController implements ContainerInterface
 	}
 	
 	/**
+	 * update the specified resource (bill-payment)
+	 * @param  Request object[Request $request]
+	 * method calls the processor for creating persistable object & setting the data
+	*/
+	public function updateBillPayment(Request $request,$saleId)
+	{
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		// get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$processor = new BillProcessor();
+			$billPersistable = new BillPersistable();
+			$billPersistable = $processor->getPersistablePaymentData($request,$saleId);
+			
+			if(is_object($billPersistable))
+			{
+				$billService= new BillService();
+				$status = $billService->updatePaymentData($billPersistable);
+				return $status;
+			}
+			else
+			{
+				return $billPersistable;
+			}
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+	}
+	
+	/**
 	 * update the specified resource 
 	 * @param  Request object[Request $request]
 	 * method calls the processor for creating persistable object & setting the data
@@ -181,5 +219,31 @@ class BillController extends BaseController implements ContainerInterface
 	public function update(Request $request)
 	{
 		print_r($request->input());
+	}
+	
+	/**
+	 * update the specified resource 
+	 * @param  Request object[Request $request]
+	 * method calls the processor for creating persistable object & setting the data
+	*/
+	public function destroy(Request $request,$saleId)
+	{
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		// get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$billModel = new BillModel();
+			$deleteBillResult = $billModel->deleteBillData($saleId);
+			return $deleteBillResult;
+		}
+		else
+		{
+			return $authenticationResult;
+		}
 	}
 }

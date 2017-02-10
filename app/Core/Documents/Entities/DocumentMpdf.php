@@ -103,6 +103,15 @@ class DocumentMpdf extends CurrencyToWordConversion
 				{
 					$output =$output.$trClose;
 				}
+				if(empty($decodedArray->inventory[$productArray]->color))
+				{
+					$decodedArray->inventory[$productArray]->color="";
+				}
+				if(empty($decodedArray->inventory[$productArray]->frameNo))
+				{
+					$decodedArray->inventory[$productArray]->frameNo="";
+				}
+
 				$output =$output."".
 					'<tr class="trhw" style="font-family: Calibri; text-align: left; height: 25px; background-color: transparent;">
 				   <td class="tg-m36b thsrno" style="font-size: 12px; height: 25px; text-align:center; padding:0 0 0 0;">'.$index.'</td>
@@ -172,7 +181,15 @@ class DocumentMpdf extends CurrencyToWordConversion
 				$additionalTaxValue[$productArray] = ($decodedData[$productArray]->additionalTax/100)*$total[$productArray];
 				// convert amount(round) into their company's selected decimal points
 				$additionalTaxValue[$productArray] = round($additionalTaxValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);				
-
+				
+				if(empty($decodedArray->inventory[$productArray]->color))
+				{
+					$decodedArray->inventory[$productArray]->color="";
+				}
+				if(empty($decodedArray->inventory[$productArray]->frameNo))
+				{
+					$decodedArray->inventory[$productArray]->frameNo="";
+				}
 				$output =$output."".
 				'<tr class="trhw" style="font-family: Calibri; height: 50px; background-color: transparent; text-align: left;">
 				<td class="tg-m36b thsrno" style="font-size: 12px; text-align: center; height: 50px;"><span style="color: #000000;">'.$index.'</span></td>

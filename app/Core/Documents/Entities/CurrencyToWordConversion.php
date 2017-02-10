@@ -19,7 +19,6 @@ class CurrencyToWordConversion
 		{
 		     $point = 0;
 		}
-		$point = $number[1];
 		
 		$hundred = null;
 		$digits_1 = strlen($no);

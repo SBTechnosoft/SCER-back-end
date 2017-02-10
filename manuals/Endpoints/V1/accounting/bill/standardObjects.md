@@ -84,6 +84,16 @@
 				}
             }
 
+##### Standard Payment Persistable Object
+			{
+				entryDate:date,
+				amount:decimal,
+				paymentMode:Enum,
+				paymentTrn:string,
+				bankName:string,
+				checkNumber:string
+			}
+		
 ##### Payment Mode Enum
 			{
 				"cashPayment":'cash',
