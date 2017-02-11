@@ -71,6 +71,7 @@ class BillController extends BaseController implements ContainerInterface
 			// get exception message
 			$exception = new ExceptionMessage();
 			$msgArray = $exception->messageArrays();
+			
 			// insert
 			if($requestMethod == 'POST')
 			{
@@ -216,9 +217,46 @@ class BillController extends BaseController implements ContainerInterface
 	 * @param  Request object[Request $request]
 	 * method calls the processor for creating persistable object & setting the data
 	*/
-	public function update(Request $request)
+	public function update(Request $request,$saleId)
 	{
-		print_r($request->input());
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$msgArray = $exception->messageArrays();
+			
+		// get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			//check saleId exist or not?
+			$billModel = new BillModel();
+			$billData = $billModel->getSaleIdData($saleId);
+			if(strcmp($billData,$msgArray['404'])==0)
+			{
+				return $msgArray['404'];
+			}
+			$processor = new BillProcessor();
+			$billPersistable = new BillPersistable();
+			$billPersistable = $processor->createPersistableChange($request,$saleId,$billData);
+			if(is_array($billPersistable))
+			{
+				$billService= new BillService();
+				$status = $billService->updateData($billPersistable);
+				return $status;
+			}
+			else
+			{
+				return $billPersistable;
+			}
+		}
+		else
+		{
+			return $authenticationResult;
+		}
 	}
 	
 	/**

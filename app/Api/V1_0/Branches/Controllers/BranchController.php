@@ -186,8 +186,8 @@ class BranchController extends BaseController implements ContainerInterface
 			
 			//get exception message
 			$exception = new ExceptionMessage();
-			$fileSizeArray = $exception->messageArrays();
-			if(strcmp($result,$fileSizeArray['404'])==0)
+			$exceptionArray = $exception->messageArrays();
+			if(strcmp($result,$exceptionArray['404'])==0)
 			{
 				return $result;
 			}

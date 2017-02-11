@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Route;
   */  
 class BillValidate
 {
+	/**
+	 * validate the specified resource for insertion of data
+	 * @param  Request object[Request $request]
+	 * @return error-message/array
+	*/
 	public function validate($request)
 	{
 		$rules = array(
@@ -61,5 +66,15 @@ class BillValidate
 		else {
 			return "Success";
 		}
+	}
+	
+	/**
+	 * validate the specified resource for update data
+	 * @param  Request object[Request $request]
+	 * @return error-message/array
+	*/
+	public function billUpdateValidate()
+	{
+		
 	}
 }

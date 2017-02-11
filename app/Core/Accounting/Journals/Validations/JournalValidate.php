@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Route;
   */
 class JournalValidate
 {
+	/**
+	 * validate the specified resource for insertion of data
+	 * @param  Request object[Request $request]
+	 * @return error-message/array
+	*/
 	public function validate($request)
 	{
 		
@@ -41,6 +46,11 @@ class JournalValidate
 		}
 	}
 	
+	/**
+	 * validate the specified resource for update data
+	 * @param  Request object[Request $request]
+	 * @return error-message/array
+	*/
 	public function validateUpdateData($keyName,$value,$request)
 	{
 		

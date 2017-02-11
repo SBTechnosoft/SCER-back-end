@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Route;
   */
 class BranchValidate
 {
+	 /**
+     * validate branch insertion data
+     * $param Request object [Request $request]
+     * @return error message/success message
+     */
 	public function validate($request)
 	{
 		$rules = array(
@@ -44,6 +49,12 @@ class BranchValidate
 			return "Success";
 		}
 	}
+	
+	 /**
+     * validate branch data
+     * $param Request object [Request $request]
+     * @return error message/success message
+     */
 	public function validateUpdateData($keyName,$value,$request)
 	{
 		$validationArray = array('branch_name'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]+$/', 

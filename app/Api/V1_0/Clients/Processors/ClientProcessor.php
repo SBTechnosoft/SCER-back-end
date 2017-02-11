@@ -104,4 +104,110 @@ class ClientProcessor extends BaseProcessor
 			}
 		}
 	}
+	
+	 /**
+     * update client data
+     * $param Request object [Request $request] and client-id
+     * @return Client Persistable object/error message
+     */	
+	public function createPersistableChange(Request $request,$clientId)
+	{
+		$clientValue = array();
+		$errorCount=0;
+		$errorStatus=array();
+		$flag=0;
+		$clientPersistable;
+		$clientArray = array();
+		
+		//get exception message 
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		$clientValidate = new ClientValidate();
+		if(count($_POST)==0)
+		{
+			return $exceptionArray['204'];
+		}
+		else
+		{
+			for($data=0;$data<count($request->input());$data++)
+			{
+				//data get from body
+				$clientPersistable = new ClientPersistable();
+				$value[$data] = $request->input()[array_keys($request->input())[$data]];
+				$key[$data] = array_keys($request->input())[$data];
+				
+				//trim an input 
+				$clientTransformer = new ClientTransformer();
+				$tRequest = $clientTransformer->trimUpdateData($key[$data],$value[$data]);
+				if($tRequest==1)
+				{
+					return $exceptionArray['content'];
+				}
+				else
+				{
+					//get data from trim array
+					$tKeyValue[$data] = array_keys($tRequest[0])[0];
+					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
+					
+					//validation
+					$status = $clientValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
+					if($status=="Success")
+					{
+						// check data is string or not
+						if(!is_numeric($tValue[$data]))
+						{
+							if (strpos($tValue[$data], '\'') !== FALSE)
+							{
+								$clientValue[$data] = str_replace("'","\'",$tValue[$data]);
+							}
+							else
+							{
+								$clientValue[$data] = $tValue[$data];
+							}
+						}
+						else
+						{
+							$clientValue[$data] = $tValue[$data];
+						}
+						//flag=0...then data is valid(consider one data at a time)
+						if($flag==0)
+						{
+							$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
+							//make function name dynamically
+							$setFuncName = 'set'.$str;
+							$getFuncName[$data] = 'get'.$str;
+							$clientPersistable->$setFuncName($clientValue[$data]);
+							$clientPersistable->setName($getFuncName[$data]);
+							$clientPersistable->setKey($tKeyValue[$data]);
+							$clientPersistable->setClientId($clientId);
+							$clientArray[$data] = array($clientPersistable);
+						}
+					}
+					//enter data is not valid
+					else
+					{
+						//if flag==1 then enter data is not valid ..so error return(consider one data at a time)
+						$flag=1;
+						if(!empty($status[0]))
+						{
+							$errorStatus[$errorCount]=$status[0];
+							$errorCount++;
+						}
+					}
+					if($data==(count($request->input())-1))
+					{
+						if($flag==1)
+						{
+							return json_encode($errorStatus);
+						}
+						else
+						{
+							return $clientArray;
+						}
+					}
+				}
+			}
+		}
+	}
 }

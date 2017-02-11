@@ -283,16 +283,9 @@ class LedgerController extends BaseController implements ContainerInterface
      * @param  ledger_id
      */
 	public function update(Request $request,$ledgerId)
-    {    
-		//Authentication
-		$tokenAuthentication = new TokenAuthentication();
-		$authenticationResult = $tokenAuthentication->authenticate($request->header());
-		
-		//get constant array
-		$constantClass = new ConstantClass();
-		$constantArray = $constantClass->constantVariable();
-		
-		if(strcmp($constantArray['success'],$authenticationResult)==0)
+    {  
+		$RequestUri = explode("/", $_SERVER['REQUEST_URI']);
+		if(strcmp($RequestUri[1],"accounting")==0)
 		{
 			$this->request = $request;
 			$processor = new LedgerProcessor();
@@ -325,7 +318,49 @@ class LedgerController extends BaseController implements ContainerInterface
 		}
 		else
 		{
-			return $authenticationResult;
+			//Authentication
+			$tokenAuthentication = new TokenAuthentication();
+			$authenticationResult = $tokenAuthentication->authenticate($request->header());
+			
+			//get constant array
+			$constantClass = new ConstantClass();
+			$constantArray = $constantClass->constantVariable();
+			
+			if(strcmp($constantArray['success'],$authenticationResult)==0)
+			{
+				$this->request = $request;
+				$processor = new LedgerProcessor();
+				$ledgerPersistable = new LedgerPersistable();		
+				$ledgerService= new LedgerService();		
+				$ledgerModel = new LedgerModel();
+				$result = $ledgerModel->getData($ledgerId);
+				
+				//get exception message
+				$exception = new ExceptionMessage();
+				$exceptionArray = $exception->messageArrays();
+				if(strcmp($result,$exceptionArray['404'])==0)
+				{
+					return $result;
+				}
+				else
+				{
+					$ledgerPersistable = $processor->createPersistableChange($this->request,$ledgerId);
+					//here two array and string is return at a time
+					if(is_array($ledgerPersistable))
+					{
+						$status = $ledgerService->update($ledgerPersistable);
+						return $status;
+					}
+					else
+					{
+						return $ledgerPersistable;
+					}
+				}
+			}
+			else
+			{
+				return $authenticationResult;
+			}
 		}
 	}
 	

@@ -153,4 +153,26 @@ class ClientController extends BaseController implements ContainerInterface
 			return $authenticationResult;
 		}
 	}
+	
+	/**
+     * update the specified resource
+     * @param  Request $request (request object contains data)
+	 * @return status/exception-message
+     */
+	public function updateData(Request $request,$clientId)
+	{
+		$processor = new ClientProcessor();
+		$clientPersistable = new ClientPersistable();		
+		$clientService= new ClientService();			
+		$clientPersistable = $processor->createPersistableChange($request,$clientId);
+		if(is_array($clientPersistable))
+		{
+			$status = $clientService->update($clientPersistable);
+			return $status;
+		}
+		else
+		{
+			return $clientPersistable;
+		}
+	}
 }

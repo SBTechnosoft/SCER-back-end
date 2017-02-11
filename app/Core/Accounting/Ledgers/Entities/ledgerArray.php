@@ -62,4 +62,17 @@ class ledgerArray
 		$ledgerGeneralArray[15] = 9;
 		return $ledgerGeneralArray;
 	}
+	
+	public function getLedgerArrayData()
+	{
+		$ledgerArray = array();
+		$ledgerArray['ledgerName'] = 'client_name';
+		$ledgerArray['contactNo'] = 'contact_no';
+		$ledgerArray['emailId'] = 'email_id';
+		$ledgerArray['address1'] = 'address1';
+		$ledgerArray['address2'] = 'address2';
+		$ledgerArray['cityId'] = 'city_id';
+		$ledgerArray['stateAbb'] = 'state_abb';
+		return $ledgerArray;
+	}
 }

@@ -23,6 +23,7 @@ class Client implements RouteRegistrarInterface
 		});
 		// insert data post request
 		Route::post('Clients/Client', 'Clients\Controllers\ClientController@store');
+		Route::post('Clients/Client/{clientId}', 'Clients\Controllers\ClientController@updateData');
 	}
 }
 

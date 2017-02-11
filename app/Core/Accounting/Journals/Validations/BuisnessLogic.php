@@ -812,10 +812,12 @@ class BuisnessLogic extends LedgerModel
 		$method=$constantArray['getMethod'];
 		$path=$constantArray['productUrl'];
 		$productId = array();
+	
 		$productRequest = Request::create($path,$method,$productId);
 		$productRequest->headers->set('jfid',$jfId);
 		$processedData = $productController->getData($productRequest);
 		$jsonDecodedProductData = json_decode($processedData);
+		
 		if(array_key_exists("flag",$journalData))
 		{
 			$journalDataArray = $journalData[0];

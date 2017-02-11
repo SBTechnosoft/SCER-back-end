@@ -107,7 +107,7 @@ class BranchTransformer
 	}
 	
 	/**
-     * @param array
+     * @param array of key and value of request data
      * @return array
      */
 	public function trimUpdateData()

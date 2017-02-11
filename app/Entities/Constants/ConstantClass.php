@@ -6,6 +6,10 @@ namespace ERP\Entities\Constants;
  */
 class ConstantClass 
 {
+	/**
+	 * making an array contains constant data 
+	 * @param (no parameter)
+	*/
     public function constantVariable()
 	{
 		$constantArray = array();
@@ -71,6 +75,10 @@ class ConstantClass
 		return $constantArray;
 	}
 	
+	/**
+	 * check the incoming request url and give them respected database name
+	 * @param (no parameter)
+	*/
 	public function constantDatabase()
 	{
 		if(strcmp("www.scerp1.com",$_SERVER['HTTP_HOST'])==0)

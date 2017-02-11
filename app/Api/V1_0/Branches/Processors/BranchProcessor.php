@@ -133,8 +133,7 @@ class BranchProcessor extends BaseProcessor
 			//if data is not available in update request
 			if(count($_POST)==0)
 			{
-				$status = "204: No Content Found For Update";
-				return $status;
+				return $exceptionArray['204'];
 			}
 			//data is avalilable for update
 			else
@@ -149,7 +148,6 @@ class BranchProcessor extends BaseProcessor
 					//trim an input 
 					$branchTransformer = new BranchTransformer();
 					$tRequest = $branchTransformer->trimUpdateData($key[$data],$value[$data]);
-					//get data from trim array
 					
 					if($tRequest==1)
 					{
@@ -157,6 +155,7 @@ class BranchProcessor extends BaseProcessor
 					}
 					else
 					{
+						//get data from trim array
 						$tKeyValue[$data] = array_keys($tRequest[0])[0];
 						$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
 						

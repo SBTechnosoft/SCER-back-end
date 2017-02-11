@@ -136,7 +136,7 @@ class JournalProcessor extends BaseProcessor
 		return $journalPersistable;
 	}
 	
-	public function createPersistableChange($headerData,$journalArray,$jfId)
+	public function createPersistableChange(Request $request,$headerData,$journalArray,$jfId)
 	{
 		$errorCount=0;
 		$errorStatus=array();
@@ -159,7 +159,7 @@ class JournalProcessor extends BaseProcessor
 		if($requestMethod == $constantArray['postMethod'])
 		{
 			//if data is not available in update request
-			if(count($_POST)==0)
+			if(count($request->input())==0)
 			{
 				$status = $exceptionArray['204'];
 				return $status;

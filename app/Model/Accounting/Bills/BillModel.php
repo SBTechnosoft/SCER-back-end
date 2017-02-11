@@ -155,7 +155,6 @@ class BillModel extends Model
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
-		
 		DB::beginTransaction();
 		$raw = DB::connection($databaseName)->statement("insert into sales_bill(
 		product_array,
@@ -533,6 +532,98 @@ class BillModel extends Model
 	}
 	
 	/**
+	 * update bill data
+	 * @param  sale-id and bill-data array
+	 * returns the exception-message/status
+	*/
+	public function updateBillData($billArray,$saleId)
+	{
+		$mytime = Carbon\Carbon::now();
+	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		$keyValueString = "";
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		for($billArrayData=0;$billArrayData<count($billArray);$billArrayData++)
+		{
+			$keyValueString = $keyValueString.array_keys($billArray)[$billArrayData]." = '".$billArray[array_keys($billArray)[$billArrayData]]."',";
+		}
+		// update bill-date
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->statement("update
+		sales_bill set
+		".$keyValueString."
+		updated_at = '".$mytime."'
+		where sale_id = ".$saleId." and
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		if($raw==1)
+		{
+			$saleData = $this->getSaleIdData($saleId);
+			$jsonDecodedSaleData = json_decode($saleData);
+			
+			//insert bill data in bill_trn 
+			DB::beginTransaction();
+			$saleTrnInsertionResult = DB::connection($databaseName)->statement("insert
+			into sales_bill_trn(
+			sale_id,
+			product_array,
+			payment_mode,
+			bank_name,
+			invoice_number,
+			check_number,
+			total,
+			tax,
+			grand_total,
+			advance,
+			balance,
+			remark,
+			entry_date,
+			client_id,
+			sales_type,
+			company_id,
+			jf_id,
+			created_at,
+			updated_at)
+			values(
+			'".$jsonDecodedSaleData[0]->sale_id."',
+			'".$jsonDecodedSaleData[0]->product_array."',
+			'".$jsonDecodedSaleData[0]->payment_mode."',
+			'".$jsonDecodedSaleData[0]->bank_name."',
+			'".$jsonDecodedSaleData[0]->invoice_number."',
+			'".$jsonDecodedSaleData[0]->check_number."',
+			'".$jsonDecodedSaleData[0]->total."',
+			'".$jsonDecodedSaleData[0]->tax."',
+			'".$jsonDecodedSaleData[0]->grand_total."',
+			'".$jsonDecodedSaleData[0]->advance."',
+			'".$jsonDecodedSaleData[0]->balance."',
+			'".$jsonDecodedSaleData[0]->remark."',
+			'".$jsonDecodedSaleData[0]->entry_date."',
+			'".$jsonDecodedSaleData[0]->client_id."',
+			'".$jsonDecodedSaleData[0]->sales_type."',
+			'".$jsonDecodedSaleData[0]->company_id."',
+			'".$jsonDecodedSaleData[0]->jf_id."',
+			'".$jsonDecodedSaleData[0]->created_at."',
+			'".$jsonDecodedSaleData[0]->updated_at."')");
+			DB::commit();
+			if($saleTrnInsertionResult!=1)
+			{
+				return $exceptionArray['500']; 
+			}
+			else
+			{
+				return $exceptionArray['200'];
+			}
+		}
+	}
+	
+	/**
 	 * delete bill data
 	 * @param  sale-id
 	 * returns the exception-message/status
@@ -544,6 +635,8 @@ class BillModel extends Model
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
+		$mytime = Carbon\Carbon::now();
+		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -554,8 +647,6 @@ class BillModel extends Model
 		{
 			return $exceptionArray['404'];
 		}
-		$mytime = Carbon\Carbon::now();
-		
 		//get ledger id from journal
 		$journalModel = new JournalModel();
 		$journalData = $journalModel->getJfIdArrayData($jsonDecodedSaleData[0]->jf_id);

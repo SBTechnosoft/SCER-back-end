@@ -70,7 +70,6 @@ class BillService
 			$ClientId = $billArray->getClientId();
 			$salesType = $billArray->getSalesType();
 			$jfId= $billArray->getJfId();
-			
 			//data pass to the model object for insert
 			$billModel = new BillModel();
 			$status = $billModel->insertData($productArray,$paymentMode,$invoiceNumber,$bankName,$checkNumber,$total,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$jfId);
@@ -113,6 +112,7 @@ class BillService
 			{
 				array_push($documentArray,$billArray[$doc]);	
 			}
+			
 			//data pass to the model object for insert
 			$billModel = new BillModel();
 			$status = $billModel->insertAllData($productArray,$paymentMode,$invoiceNumber,$bankName,$checkNumber,$total,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray,$jfId);
@@ -168,7 +168,7 @@ class BillService
 	}
 	
 	 /**
-     * update bill data
+     * update bill payment data
      * @param BillPersistable $persistable
      * @return status/error message
      */
@@ -183,5 +183,59 @@ class BillService
 		$billResult = $billModel->updatePaymentData($decodedBillData);
 		return $billResult;
 		// print_r($persistableData);
+	}
+	
+	/**
+     * update bill data
+     * @param BillPersistable $persistable
+     * @return status/error message
+     */
+	public function updateData()
+	{
+		$persistableData = func_get_arg(0);
+		$flag=0;
+		$inventoryFlag=0;
+		$dataFlag=0;
+		if(!is_object($persistableData[count($persistableData)-1]))
+		{
+			//inventory is available
+			$flag=1;
+		}
+		$singleData = array();
+		if($flag==1)
+		{
+			$saleId = $persistableData[0]->getSaleId();
+			for($arrayData=0;$arrayData<count($persistableData)-1;$arrayData++)
+			{
+				if($persistableData[$arrayData]->getProductArray())
+				{
+					$inventoryFlag=1;
+					$singleData['product_array'] = $persistableData[$arrayData]->getProductArray();
+				}
+				else
+				{
+					$dataFlag=1;
+					$funcName = $persistableData[$arrayData]->getName();
+					$value = $persistableData[$arrayData]->$funcName();
+					$key = $persistableData[$arrayData]->getKey();
+					$singleData[$key] = $value;
+				}
+			}
+		}
+		else
+		{
+			$saleId = $persistableData[0]->getSaleId();
+			for($arrayData=0;$arrayData<count($persistableData);$arrayData++)
+			{
+				$dataFlag=1;
+				$funcName = $persistableData[$arrayData]->getName();
+				$value = $persistableData[$arrayData]->$funcName();
+				$key = $persistableData[$arrayData]->getKey();
+				$singleData[$key] = $value;
+			}
+		}
+		$billModel = new BillModel();
+		$billUpdateResult = $billModel->updateBillData($singleData,$saleId);
+		return $billUpdateResult;
 	}
 }

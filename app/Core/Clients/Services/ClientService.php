@@ -109,4 +109,27 @@ class ClientService
 			return $encodeAllData;
 		}
 	}
+	
+	/**
+     * get all the data and call the model for database update opertation
+     * @return status/error message
+     */
+	public function update()
+	{
+		$clientArray = array();
+		$getData = array();
+		$funcName = array();
+		$clientArray = func_get_arg(0);
+		for($data=0;$data<count($clientArray);$data++)
+		{
+			$funcName[$data] = $clientArray[$data][0]->getName();
+			$getData[$data] = $clientArray[$data][0]->$funcName[$data]();
+			$keyName[$data] = $clientArray[$data][0]->getkey();
+		}
+		$clientId = $clientArray[0][0]->getClientId();
+		// data pass to the model object for update
+		$clientModel = new ClientModel();
+		$status = $clientModel->updateData($getData,$keyName,$clientId);
+		return $status;
+	}
 }

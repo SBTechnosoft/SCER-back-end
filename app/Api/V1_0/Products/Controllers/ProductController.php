@@ -211,7 +211,8 @@ class ProductController extends BaseController implements ContainerInterface
 			$param = $request->header()['jfid'][0];
 		}
 		$uri = "/accounting/journals/".$param;
-		if(strcmp($_SERVER['REQUEST_URI'],$uri)==0)
+		$RequestUri = explode("/", $_SERVER['REQUEST_URI']);
+		if(strcmp($_SERVER['REQUEST_URI'],$uri)==0 || strcmp($RequestUri[1],"accounting")==0)
 		{
 			if($productId==null)
 			{	

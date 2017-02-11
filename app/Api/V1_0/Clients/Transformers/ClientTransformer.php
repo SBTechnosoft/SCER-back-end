@@ -99,4 +99,63 @@ class ClientTransformer
 			return $data;
 		}
 	}
+	
+	/**
+     * @param key and value of request data
+     * @return array/error message
+     */
+	public function trimUpdateData()
+	{
+		$tClientArray = array();
+		$clientValue;
+		$keyValue = func_get_arg(0);
+		$convertedValue="";
+		$isDisplayFlag=0;
+		for($asciiChar=0;$asciiChar<strlen($keyValue);$asciiChar++)
+		{
+			if(ord($keyValue[$asciiChar])<=90 && ord($keyValue[$asciiChar])>=65) 
+			{
+				$convertedValue1 = "_".chr(ord($keyValue[$asciiChar])+32);
+				$convertedValue=$convertedValue.$convertedValue1;
+			}
+			else
+			{
+				$convertedValue=$convertedValue.$keyValue[$asciiChar];
+			}
+		}
+		$clientValue = func_get_arg(1);
+		for($data=0;$data<count($clientValue);$data++)
+		{
+			$tClientArray[$data]= array($convertedValue=> trim($clientValue));
+			$clientEnumArray = array_keys($tClientArray[$data])[0];
+		}
+		
+		$enumIsDispArray = array();
+		$isDispEnum = new IsDisplayEnum();
+		$enumIsDispArray = $isDispEnum->enumArrays();
+		if(strcmp($clientEnumArray,'is_display')==0)
+		{
+			foreach ($enumIsDispArray as $key => $value)
+			{
+				if(strcmp($tClientArray[0]['is_display'],$value)==0)
+				{
+					$isDisplayFlag=1;
+					break;
+				}
+				else
+				{
+					$isDisplayFlag=2;
+				}
+			}
+		}
+		
+		if($isDisplayFlag==2)
+		{
+			return "1";
+		}
+		else
+		{
+			return $tClientArray;
+		}
+	}
 }

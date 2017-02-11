@@ -7,6 +7,7 @@ use ERP\Core\Accounting\Bills\Entities\PaymentModeEnum;
 use  ERP\Entities\EnumClasses\IsDisplayEnum;
 use Carbon;
 use ERP\Core\Accounting\Bills\Entities\SalesTypeEnum;
+use ERP\Core\Products\Entities\EnumClasses\DiscountTypeEnum;
 use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -20,6 +21,7 @@ class BillTransformer
     public function trimInsertData(Request $request)
     {
 		$paymentModeFlag=0;
+		$isDisplayFlag=0;
 		$billArrayData=array();
 		//data get from body
 		$billArrayData = $request->input(); 
@@ -66,15 +68,29 @@ class BillTransformer
 		{
 			$tRemark ="";
 		}
-
 		$tIsDisplay = trim($billArrayData['isDisplay']);
 		
+		$isDisplayEnum = new IsDisplayEnum();
+		$isDisplayArray = $isDisplayEnum->enumArrays();
 		if($tIsDisplay=="")
 		{
-			$isDisplayEnum = new IsDisplayEnum();
-			$isDisplayArray = $isDisplayEnum->enumArrays();
 			$tIsDisplay=$isDisplayArray['display'];
-			
+		}
+		else
+		{
+			//check is-display enum type
+			foreach ($isDisplayArray as $key => $value)
+			{
+				if(strcmp($value,$tIsDisplay)==0)
+				{
+					$isDisplayFlag=1;
+					break;
+				}
+			}
+			if($isDisplayFlag==0)
+			{
+				return "1";
+			}
 		}
 		$paymentModeArray = array();
 		$paymentModeEnum = new PaymentModeEnum();
@@ -250,5 +266,145 @@ class BillTransformer
 			$trimArray['check_number'] = $tCheckNumber;
 			return $trimArray;
 		}
+	}
+	
+	/**
+     * trim bill update data and check enum data type
+	 * @param request data 
+     * @return array/error message
+     */
+	public function trimBillUpdateData(Request $request)
+	{
+		$convertedValue="";
+		$dataFlag=0;
+		$discountTypeFlag=0;
+		$paymentModeFlag = 0;
+		$isDisplayFlag = 0;
+		$tempArrayFlag=0;
+		$tempArray = array();
+		$tBillArray = array();
+		$billArrayData = $request->input();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(array_key_exists('paymentMode',$billArrayData))
+		{
+			if(strcmp($billArrayData['paymentMode'],'cash')==0 || strcmp($billArrayData['paymentMode'],'card')==0)
+			{
+				$billArrayData['bankName'] = "";
+				$billArrayData['checkNumber'] = "";
+			}
+		}			
+		for($inputArrayData=0;$inputArrayData<count($billArrayData);$inputArrayData++)
+		{
+			if(strcmp(array_keys($billArrayData)[$inputArrayData],'inventory')==0)
+			{
+				$enumDiscountTypeArray = array();
+				$discountTypeEnum = new DiscountTypeEnum();
+				$enumDiscountTypeArray = $discountTypeEnum->enumArrays();
+				for($inventoryArray=0;$inventoryArray<count($billArrayData['inventory']);$inventoryArray++)
+				{
+					$tempArrayFlag=1;
+					$tempArray[$inventoryArray] = array();
+					$tempArray[$inventoryArray]['productId'] = trim($billArrayData['inventory'][$inventoryArray]['productId']);
+					$tempArray[$inventoryArray]['discount'] = trim($billArrayData['inventory'][$inventoryArray]['discount']);
+					$tempArray[$inventoryArray]['discountType'] = trim($billArrayData['inventory'][$inventoryArray]['discountType']);
+					$tempArray[$inventoryArray]['price'] = trim($billArrayData['inventory'][$inventoryArray]['price']);
+					$tempArray[$inventoryArray]['qty'] = trim($billArrayData['inventory'][$inventoryArray]['qty']);
+					$tempArray[$inventoryArray]['color'] = trim($billArrayData['inventory'][$inventoryArray]['color']);
+					$tempArray[$inventoryArray]['frameNo'] = trim($billArrayData['inventory'][$inventoryArray]['frameNo']);
+					foreach ($enumDiscountTypeArray as $key => $value)
+					{
+						if(strcmp($value,$tempArray[$inventoryArray]['discountType'])==0)
+						{
+							$discountTypeFlag=1;
+							break;
+						}
+						else
+						{
+							$discountTypeFlag=0;
+						}
+					}
+					if($discountTypeFlag==0)
+					{
+						return $exceptionArray['content'];
+					}
+				}
+			}
+			else
+			{
+				$dataFlag=1;
+				$key = array_keys($billArrayData)[$inputArrayData];
+				$value = $billArrayData[$key];
+				for($asciiChar=0;$asciiChar<strlen($key);$asciiChar++)
+				{
+					if(ord($key[$asciiChar])<=90 && ord($key[$asciiChar])>=65) 
+					{
+						$convertedValue1 = "_".chr(ord($key[$asciiChar])+32);
+						$convertedValue=$convertedValue.$convertedValue1;
+					}
+					else
+					{
+						$convertedValue=$convertedValue.$key[$asciiChar];
+					}
+				}
+				//check is_display and payment-mode
+				//check enum type of payment-mode
+				if(strcmp('payment_mode',$convertedValue)==0)
+				{
+					$paymentModeArray = array();
+					$paymentModeEnum = new PaymentModeEnum();
+					$paymentModeArray = $paymentModeEnum->enumArrays();
+					
+					$tBillArray[$convertedValue]=trim($value);
+					foreach ($paymentModeArray as $key => $value)
+					{
+						if(strcmp($value,$tBillArray[$convertedValue])==0)
+						{
+							$paymentModeFlag=1;
+							break;
+						}
+					}
+					if($paymentModeFlag==0)
+					{
+						return $exceptionArray['content'];
+					}
+				}
+				else if(strcmp('is_display',$convertedValue)==0)
+				{
+					$isDisplayEnum = new IsDisplayEnum();
+					$isDisplayArray = $isDisplayEnum->enumArrays();
+					
+					$tBillArray[$convertedValue]=trim($value);
+					foreach ($isDisplayArray as $key => $value)
+					{
+						if(strcmp($value,$tBillArray[$convertedValue])==0)
+						{
+							$isDisplayFlag=1;
+							break;
+						}
+					}
+					if($isDisplayFlag==0)
+					{
+						return $exceptionArray['content'];
+					}
+				}
+				else
+				{
+					$tBillArray[$convertedValue]=trim($value);
+				}
+				$convertedValue="";
+			}
+		}
+		if($tempArrayFlag==1 && $dataFlag==1)
+		{
+			$tBillArray['inventory'] = $tempArray;
+		}
+		else if($tempArrayFlag==1)
+		{
+			$tBillArray['inventory'] = $tempArray;
+		}
+		return $tBillArray;
 	}
 }

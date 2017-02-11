@@ -182,7 +182,7 @@ class ClientModel extends Model
 	
 	/**
 	 * get client data 
-	 * @param contact-no,company_id
+	 * @param contact-no
 	 * returns the status
 	*/
 	public function getClientData($contactNo)
@@ -211,6 +211,45 @@ class ClientModel extends Model
 		{
 			$enocodedData = json_encode($raw);
 			return $enocodedData;
+		}
+	}
+	
+	/**
+	 * update client data 
+	 * @param client-data,client key(field-name) and client-id
+	 * returns the status/error-message
+	*/
+	public function updateData($clientData,$key,$clientId)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		$mytime = Carbon\Carbon::now();
+		$keyValueString="";
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		for($data=0;$data<count($clientData);$data++)
+		{
+			$keyValueString=$keyValueString.$key[$data]."='".$clientData[$data]."',";
+		}
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->statement("update client_mst 
+		set ".$keyValueString."updated_at='".$mytime."'
+		where client_id = '".$clientId."' and deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		if($raw==1)
+		{
+			return $exceptionArray['200'];
+		}
+		else
+		{
+			return $exceptionArray['500'];
 		}
 	}
 }

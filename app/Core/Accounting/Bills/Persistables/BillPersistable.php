@@ -20,6 +20,9 @@ use ERP\Core\Accounting\Bills\Properties\FromDatePropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\ToDatePropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\JfIdPropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\BillArrayPropertyTrait;
+use ERP\Core\Accounting\Bills\Properties\KeyArrayPropertyTrait;
+use ERP\Core\Accounting\Bills\Properties\NameArrayPropertyTrait;
+use ERP\Core\Accounting\Bills\Properties\SaleIdArrayPropertyTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -44,4 +47,7 @@ class BillPersistable
 	use ToDatePropertyTrait;
 	use JfIdPropertyTrait;
 	use BillArrayPropertyTrait;
+	use KeyArrayPropertyTrait;
+	use NameArrayPropertyTrait;
+	use SaleIdArrayPropertyTrait;
 }
