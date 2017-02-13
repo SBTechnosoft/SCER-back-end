@@ -65,7 +65,8 @@ class DocumentController extends BaseController implements ContainerInterface
 	*/
 	public function getData(Request $request)
 	{
-		if(strcmp($_SERVER['REQUEST_URI'],"/accounting/bills")==0)
+		$RequestUri = explode("/", $_SERVER['REQUEST_URI']);
+		if(strcmp($RequestUri[1],"accounting")==0)
 		{
 			//get sales data as per given saleId
 			$documentProcessor = new DocumentProcessor();

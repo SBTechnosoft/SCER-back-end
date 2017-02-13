@@ -9,6 +9,11 @@ use ERP\Core\User\Entities\User;
 use ERP\Core\Accounting\Bills\Entities\EncodeData;
 use ERP\Core\Accounting\Bills\Entities\EncodeAllData;
 use ERP\Exceptions\ExceptionMessage;
+use Illuminate\Container\Container;
+use ERP\Http\Requests;
+use Illuminate\Http\Request;
+use ERP\Api\V1_0\Documents\Controllers\DocumentController;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -193,26 +198,102 @@ class BillService
 	public function updateData()
 	{
 		$persistableData = func_get_arg(0);
+		$saleId = func_get_arg(1);
 		$flag=0;
 		$inventoryFlag=0;
 		$dataFlag=0;
-		if(!is_object($persistableData[count($persistableData)-1]))
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		$imageArrayData = array();
+		if(is_array($persistableData[0]))
 		{
-			//inventory is available
-			$flag=1;
-		}
-		$singleData = array();
-		if($flag==1)
-		{
-			$saleId = $persistableData[0]->getSaleId();
-			for($arrayData=0;$arrayData<count($persistableData)-1;$arrayData++)
+			$imageFlag=1;
+			
+			//store image in an array
+			for($imageArray=0;$imageArray<count($persistableData)-1;$imageArray++)
 			{
-				if($persistableData[$arrayData]->getProductArray())
+				$imageArrayData[$imageArray] = $persistableData[$imageArray];
+			}
+			$arrayLength = count($persistableData);
+			$innerArrayLength = count($persistableData[$arrayLength-1]);
+			if(!is_object($persistableData[$arrayLength-1][$innerArrayLength-1]))
+			{
+				// inventory is available
+				$flag=1;
+			}
+			if($flag==1)
+			{
+				$saleId = $persistableData[$arrayLength-1][0]->getSaleId();
+				for($arrayData=0;$arrayData<count($persistableData[$arrayLength-1])-1;$arrayData++)
 				{
-					$inventoryFlag=1;
-					$singleData['product_array'] = $persistableData[$arrayData]->getProductArray();
+					if($persistableData[$arrayLength-1][$arrayData]->getProductArray())
+					{
+						$inventoryFlag=1;
+						$singleData['product_array'] = $persistableData[$arrayLength-1][$arrayData]->getProductArray();
+					}
+					else
+					{
+						$dataFlag=1;
+						$funcName = $persistableData[$arrayLength-1][$arrayData]->getName();
+						$value = $persistableData[$arrayLength-1][$arrayData]->$funcName();
+						$key = $persistableData[$arrayLength-1][$arrayData]->getKey();
+						$singleData[$key] = $value;
+					}
 				}
-				else
+			}
+			else
+			{
+				$saleId = $persistableData[$arrayLength-1][0]->getSaleId();
+				for($arrayData=0;$arrayData<count($persistableData[$arrayLength-1]);$arrayData++)
+				{
+					$dataFlag=1;
+					$funcName = $persistableData[$arrayLength-1][$arrayData]->getName();
+					$value = $persistableData[$arrayLength-1][$arrayData]->$funcName();
+					$key = $persistableData[$arrayLength-1][$arrayData]->getKey();
+					$singleData[$key] = $value;
+				}
+			}
+			$billModel = new BillModel();
+			$billUpdateResult = $billModel->updateBillData($singleData,$saleId,$imageArrayData);
+		}
+		else
+		{
+			if(!is_object($persistableData[count($persistableData)-1]))
+			{
+				//inventory is available
+				$flag=1;
+			}
+			$singleData = array();
+			if($flag==1)
+			{
+				$saleId = $persistableData[0]->getSaleId();
+				for($arrayData=0;$arrayData<count($persistableData)-1;$arrayData++)
+				{
+					if($persistableData[$arrayData]->getProductArray())
+					{
+						$inventoryFlag=1;
+						$singleData['product_array'] = $persistableData[$arrayData]->getProductArray();
+					}
+					else
+					{
+						$dataFlag=1;
+						$funcName = $persistableData[$arrayData]->getName();
+						$value = $persistableData[$arrayData]->$funcName();
+						$key = $persistableData[$arrayData]->getKey();
+						$singleData[$key] = $value;
+					}
+				}
+			}
+			else
+			{
+				$saleId = $persistableData[0]->getSaleId();
+				for($arrayData=0;$arrayData<count($persistableData);$arrayData++)
 				{
 					$dataFlag=1;
 					$funcName = $persistableData[$arrayData]->getName();
@@ -221,21 +302,22 @@ class BillService
 					$singleData[$key] = $value;
 				}
 			}
+			$billModel = new BillModel();
+			$billUpdateResult = $billModel->updateBillData($singleData,$saleId,$imageArrayData);
+			// return $billUpdateResult;
 		}
-		else
+		if(strcmp($billUpdateResult,$exceptionArray['200'])==0)
 		{
-			$saleId = $persistableData[0]->getSaleId();
-			for($arrayData=0;$arrayData<count($persistableData);$arrayData++)
-			{
-				$dataFlag=1;
-				$funcName = $persistableData[$arrayData]->getName();
-				$value = $persistableData[$arrayData]->$funcName();
-				$key = $persistableData[$arrayData]->getKey();
-				$singleData[$key] = $value;
-			}
+			$saleIdArray = array();
+			$saleIdArray['saleId'] = $saleId;
+			$documentController = new DocumentController(new Container());
+			
+			$method=$constantArray['postMethod'];
+			$path=$constantArray['documentGenerateUrl'];
+			
+			$documentRequest = Request::create($path,$method,$saleIdArray);
+			$processedData = $documentController->getData($documentRequest);
+			return $processedData;
 		}
-		$billModel = new BillModel();
-		$billUpdateResult = $billModel->updateBillData($singleData,$saleId);
-		return $billUpdateResult;
 	}
 }

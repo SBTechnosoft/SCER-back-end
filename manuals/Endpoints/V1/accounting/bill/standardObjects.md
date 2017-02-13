@@ -89,7 +89,7 @@
 				entryDate:date,
 				amount:decimal,
 				paymentMode:Enum,
-				paymentTrn:string,
+				paymentTransaction:string,
 				bankName:string,
 				checkNumber:string
 			}

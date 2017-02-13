@@ -315,7 +315,7 @@ class BillModel extends Model
 		entry_date,
 		client_id,
 		sales_type,
-		jf_id
+		jf_id,
 		company_id,
 		created_at,
 		updated_at 
@@ -533,10 +533,10 @@ class BillModel extends Model
 	
 	/**
 	 * update bill data
-	 * @param  sale-id and bill-data array
+	 * @param  sale-id and bill-data array and image Array
 	 * returns the exception-message/status
 	*/
-	public function updateBillData($billArray,$saleId)
+	public function updateBillData($billArray,$saleId,$documentArray)
 	{
 		$mytime = Carbon\Carbon::now();
 	
@@ -549,6 +549,25 @@ class BillModel extends Model
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
+		
+		if(isset($documentArray) && !empty($documentArray))
+		{
+			for($docArray=0;$docArray<count($documentArray);$docArray++)
+			{
+				DB::beginTransaction();
+				$documentResult = DB::connection($databaseName)->statement("insert into sales_bill_doc_dtl(
+				sale_id,
+				document_name,
+				document_size,
+				document_format) 
+				values('".$saleId."','".$documentArray[$docArray][0]."','".$documentArray[$docArray][1]."','".$documentArray[$docArray][2]."')");
+				DB::commit();
+				if($documentResult==0)
+				{
+					return $exceptionArray['500'];
+				}
+			}	
+		}
 		
 		for($billArrayData=0;$billArrayData<count($billArray);$billArrayData++)
 		{

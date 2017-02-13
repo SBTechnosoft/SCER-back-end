@@ -685,7 +685,7 @@ class BillProcessor extends BaseProcessor
 							'jfId' => $nextJfId,
 							'data' => array(
 							),
-							'entryDate' => $tRequest['entry_date'],
+							'entryDate' => $request->input()['entryDate'],
 							'companyId' => $companyId
 						);
 						$journalArray['data']=$dataArray;
@@ -703,7 +703,7 @@ class BillProcessor extends BaseProcessor
 						$billArray['sale_id'] = $saleId;
 						$billArray['payment_mode'] = $tRequest['payment_mode'];
 						$billArray['advance'] = $decodedBillData[0]->advance+$tRequest['amount'];
-						$billArray['balance'] = $decodedBillData[0]->balance+$tRequest['amount'];
+						$billArray['balance'] = $decodedBillData[0]->balance-$tRequest['amount'];
 						$billArray['entry_date'] = $tRequest['entry_date'];
 						
 						if(strcmp($tRequest['payment_mode'],"bank")==0)
@@ -1310,6 +1310,30 @@ class BillProcessor extends BaseProcessor
 		{
 			$billPersistable[count($billPersistable)] = 'flag';
 		}
-		return $billPersistable;
+		$documentPath = $constantArray['billDocumentUrl'];
+		$docFlag=0;
+		if(in_array(true,$request->file()))
+		{
+			$documentController = new DocumentController(new Container());
+			$processedData = $documentController->insertUpdate($request,$documentPath);
+			if(is_array($processedData))
+			{
+				$docFlag=1;
+			}
+			else
+			{
+				return $processedData;
+			}
+		}
+		if($docFlag==1)
+		{
+			$array1 = array();
+			array_push($processedData,$billPersistable);
+			return $processedData;
+		}
+		else
+		{
+			return $billPersistable;
+		}
 	}
 }

@@ -183,7 +183,7 @@ class EncodeAllData extends ClientService
 				'balance'=>$balance[$jsonData],
 				'remark'=>$remark[$jsonData],
 				'salesType'=>$salesType[$jsonData],
-				'jfId'=>$jfId[$decodedData],
+				'jfId'=>$jfId[$jsonData],
 				'createdAt'=>$getCreatedDate[$jsonData],
 				'updatedAt'=>$getUpdatedDate[$jsonData],
 				'entryDate'=>$getEntryDate[$jsonData],

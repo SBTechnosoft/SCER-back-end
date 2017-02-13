@@ -53,6 +53,7 @@ class DocumentService extends BillModel
 			$encoded = new EncodeData();
 			$encodeData = $encoded->getEncodedData($saleData);
 			$decodedSaleData = json_decode($encodeData);
+			
 			$templateType = new TemplateTypeEnum();
 			$templateArray = $templateType->enumArrays();
 			$templateType = $templateArray['invoiceTemplate'];

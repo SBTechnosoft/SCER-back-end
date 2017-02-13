@@ -224,6 +224,9 @@ class BillTransformer
 		$tPaymentTransaction = trim($request->input()['paymentTransaction']);
 		$tPaymentMode = trim($request->input()['paymentMode']);
 		
+		//from-date conversion
+		$tEntryDate = Carbon\Carbon::createFromFormat('d-m-Y', $tEntryDate)->format('Y-m-d');
+		
 		$paymentModeArray = array();
 		$paymentModeEnum = new PaymentModeEnum();
 		$paymentModeArray = $paymentModeEnum->enumArrays();
