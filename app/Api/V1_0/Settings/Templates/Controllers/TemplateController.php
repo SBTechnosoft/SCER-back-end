@@ -141,8 +141,9 @@ class TemplateController extends BaseController implements ContainerInterface
 		
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
+			$templateType="all";
 			$templateService= new TemplateService();
-			$status = $templateService->getSpecificData($companyId);
+			$status = $templateService->getSpecificData($companyId,$templateType);
 			return $status;
 		}
 		else

@@ -67,6 +67,7 @@ class ConstantClass
 		$constantArray['saleType']="sale";
 		$constantArray['salesReturnType']="sales_return";
 		$constantArray['purchaseType']="purchase";
+		$constantArray['invoice']="invoice";
 		$constantArray['paymentType']="payment";
 		$constantArray['refundType']="refund";
 		$constantArray['receiptType']="receipt";

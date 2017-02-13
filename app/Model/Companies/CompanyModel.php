@@ -7,6 +7,7 @@ use Carbon;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Entities\EnumClasses\IsDefaultEnum;
 use ERP\Entities\Constants\ConstantClass;
+use ERP\Core\Settings\Templates\Entities\TemplateDesign;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -77,6 +78,8 @@ class CompanyModel extends Model
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
+		$constantArray = $constantDatabase->constantVariable();
+		
 		$getCompanyData = array();
 		$getCompanyKey = array();
 		$getCompanyData = func_get_arg(0);
@@ -101,11 +104,56 @@ class CompanyModel extends Model
 		values(".$companyData.")");
 		DB::commit();
 		
+		//get latest company_id
+		DB::beginTransaction();
+		$latestCompanyId = DB::connection($databaseName)->select("SELECT 
+		max(company_id) as company_id,
+		company_name
+		FROM `company_mst` 
+		where deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
+			
+			//get Template
+			$templateDesign = new TemplateDesign();
+			$templateArray = $templateDesign->getTemplate();
+			
+			DB::beginTransaction();
+			$invoiceInsertion = DB::connection($databaseName)->statement("insert
+			into template_mst(
+			template_name,
+			template_body,
+			template_type,
+			company_id)
+			values(
+			'".$latestCompanyId[0]->company_name.' Invoice'."',
+			'".$templateArray['invoice']."',
+			'".$constantArray['invoice']."',
+			'".$latestCompanyId[0]->company_id."')");
+			DB::commit();
+			
+			DB::beginTransaction();
+			$paymentInsertion = DB::connection($databaseName)->statement("insert
+			into template_mst(
+			template_name,
+			template_body,
+			template_type,
+			company_id)
+			values(
+			'".$latestCompanyId[0]->company_name.' Payment'."',
+			'".$templateArray['payment']."',
+			'".$constantArray['paymentType']."',
+			'".$latestCompanyId[0]->company_id."')");
+			DB::commit();
+			if($invoiceInsertion!=1 && $paymentInsertion!=1)
+			{
+				return $exceptionArray['500'];
+			}
 			DB::beginTransaction();
 			$companyId = DB::connection($databaseName)->select("select
 			max(company_id) as company_id 

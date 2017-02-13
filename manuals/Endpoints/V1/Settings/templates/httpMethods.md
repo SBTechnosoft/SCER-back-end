@@ -57,7 +57,7 @@
 
 **NOTES:** List all the templates 
 
-##### `GET /settings/templates/{companyId}`
+##### `GET /settings/templates/company/{companyId}`
 + Header 
 	- Authentication Token
 	

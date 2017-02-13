@@ -191,16 +191,39 @@ class TemplateModel extends Model
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
-		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->select("select 
-		template_id,
-		template_body
-		from template_mst 
-		where template_type ='".$templateType."' and 
-		company_id='".$companyId."' and 
-		deleted_at='0000-00-00 00:00:00'");
-		DB::commit();
-		
+		if(strcmp($templateType,"all")==0)
+		{
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->select("select 
+			template_id,
+			template_body,
+			template_name,
+			template_type,
+			created_at,
+			updated_at,
+			company_id
+			from template_mst 
+			where company_id='".$companyId."' and 
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+		}
+		else
+		{
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->select("select 
+			template_id,
+			template_body,
+			template_name,
+			template_type,
+			created_at,
+			updated_at,
+			company_id
+			from template_mst 
+			where template_type ='".$templateType."' and 
+			company_id='".$companyId."' and 
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+		}
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
