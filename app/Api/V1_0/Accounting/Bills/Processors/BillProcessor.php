@@ -644,6 +644,15 @@ class BillProcessor extends BaseProcessor
 				
 				$journalJfIdRequest = Request::create($journalPath,$journalMethod,$journalDataArray);
 				$jfIdData = $journalController->getData($journalJfIdRequest);
+				
+				$ledgerModel = new LedgerModel();
+				$ledgerData = $ledgerModel->getLedgerId($companyId,$tRequest['payment_mode']);
+				$decodedLedgerId = json_decode($ledgerData)[0]->ledger_id;
+				if(strcmp($ledgerData,$msgArray['404'])==0)
+				{
+					return $msgArray['404'];
+				}
+				
 				if(strcmp($jfIdData,$msgArray['404'])!=0)
 				{
 					$nextJfId = json_decode($jfIdData)->nextValue;
@@ -651,22 +660,16 @@ class BillProcessor extends BaseProcessor
 					//process of making a journal entry 
 					if(strcmp($tRequest['payment_transaction'],$constantArray['paymentType'])==0)
 					{
-						// type payment
-						$ledgerModel = new LedgerModel();
-						$ledgerData = $ledgerModel->getLedgerId($companyId,$tRequest['payment_mode']);
-						$decodedLedgerId = json_decode($ledgerData)[0]->ledger_id;
-						if(strcmp($ledgerData,$msgArray['404'])==0)
-						{
-							return $msgArray['404'];
-						}
-						
 						//get personal a/c ledgerId
 						$ledgerPersonalIdData = $ledgerModel->getPersonalAccLedgerId($companyId,$decodedBillData[0]->jf_id);
 						if(strcmp($ledgerPersonalIdData,$msgArray['404'])==0)
 						{
 							return $msgArray['404'];
 						}
-						
+						if($decodedBillData[0]->balance<$tRequest['amount'])
+						{
+							return $msgArray['content'];
+						}
 						$decodedPersonalAccData = json_decode($ledgerPersonalIdData)[0]->ledger_id;
 						$dataArray = array();
 						$journalArray = array();
@@ -704,7 +707,9 @@ class BillProcessor extends BaseProcessor
 						$billArray['payment_mode'] = $tRequest['payment_mode'];
 						$billArray['advance'] = $decodedBillData[0]->advance+$tRequest['amount'];
 						$billArray['balance'] = $decodedBillData[0]->balance-$tRequest['amount'];
+						$billArray['refund'] = 0;
 						$billArray['entry_date'] = $tRequest['entry_date'];
+						$billArray['payment_transaction'] = $tRequest['payment_transaction'];
 						
 						if(strcmp($tRequest['payment_mode'],"bank")==0)
 						{
@@ -719,18 +724,71 @@ class BillProcessor extends BaseProcessor
 					else if(strcmp($tRequest['payment_transaction'],$constantArray['refundType'])==0)
 					{
 						// type refund
+						//get salesReturn ledgerId
+						$salesLedgerData = $ledgerModel->getLedgerId($companyId,$constantArray['salesReturnType']);
+						$decodedSalesLedgerId = json_decode($salesLedgerData)[0]->ledger_id;
+						if(strcmp($salesLedgerData,$msgArray['404'])==0)
+						{
+							return $msgArray['404'];
+						}
+						if($decodedBillData[0]->advance<$tRequest['amount'])
+						{
+							return $msgArray['content'];
+						}
+						$dataArray = array();
+						$journalArray = array();
+						$dataArray[0]=array(
+							"amount"=>$tRequest['amount'],
+							"amountType"=>$amountTypeArray['debitType'],
+							"ledgerId"=>$decodedSalesLedgerId,
+						);
+						$dataArray[1]=array(
+							"amount"=>$tRequest['amount'],
+							"amountType"=>$amountTypeArray['creditType'],
+							"ledgerId"=>$decodedLedgerId,
+						);
 						
+						$journalArray= array(
+							'jfId' => $nextJfId,
+							'data' => array(
+							),
+							'entryDate' => $request->input()['entryDate'],
+							'companyId' => $companyId
+						);
+						$journalArray['data']=$dataArray;
+						$method=$constantArray['postMethod'];
+						$path=$constantArray['journalUrl'];
+						
+						$journalRequest = Request::create($path,$method,$journalArray);
+						$journalRequest->headers->set('type',$constantArray['paymentType']);
+						$processedData = $journalController->store($journalRequest);
+						if(strcmp($processedData,$msgArray['200'])!=0)
+						{
+							return $processedData;
+						}
+						$billArray = array();
+						$billArray['sale_id'] = $saleId;
+						$billArray['payment_mode'] = $tRequest['payment_mode'];
+						$billArray['refund'] = $tRequest['amount']+$decodedBillData[0]->refund;
+						$billArray['advance'] = $decodedBillData[0]->advance;
+						$billArray['balance'] = $decodedBillData[0]->balance+$tRequest['amount'];
+						$billArray['entry_date'] = $tRequest['entry_date'];
+						$billArray['payment_transaction'] = $tRequest['payment_transaction'];
+						
+						if(strcmp($tRequest['payment_mode'],"bank")==0)
+						{
+							$billArray['bank_name'] = $tRequest['bank_name'];
+							$billArray['check_number'] = $tRequest['check_number'];
+						}
+						// set data in persistable object
+						$billPersistable = new BillPersistable();
+						$billPersistable->setBillArray(json_encode($billArray));
+						return $billPersistable;
 					}
 					else
 					{
 						return $msgArray['content'];
 					}
-					// set data in persistable object
-					// $billPersistable = new BillPersistable();
-					// $billPersistable->setSalesType($tRequest['salesType']);
-					// $billPersistable->setFromDate($tRequest['fromDate']);
-					// $billPersistable->setToDate($tRequest['toDate']);
-					// return $billPersistable;4
 				}
 				else
 				{

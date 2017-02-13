@@ -65,6 +65,7 @@ class ConstantClass
 		
 		//for journal-type
 		$constantArray['saleType']="sale";
+		$constantArray['salesReturnType']="sales_return";
 		$constantArray['purchaseType']="purchase";
 		$constantArray['paymentType']="payment";
 		$constantArray['refundType']="refund";

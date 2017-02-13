@@ -8,6 +8,7 @@ use  ERP\Entities\EnumClasses\IsDisplayEnum;
 use Carbon;
 use ERP\Core\Accounting\Bills\Entities\SalesTypeEnum;
 use ERP\Core\Products\Entities\EnumClasses\DiscountTypeEnum;
+use ERP\Core\Accounting\Bills\Entities\PaymentTransactionEnum;
 use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -219,6 +220,7 @@ class BillTransformer
 	public function trimPaymentData(Request $request)
 	{
 		$paymentModeFlag=0;
+		$paymentTrnFlag=0;
 		$tEntryDate = trim($request->input()['entryDate']);
 		$tAmount = trim($request->input()['amount']);
 		$tPaymentTransaction = trim($request->input()['paymentTransaction']);
@@ -226,6 +228,20 @@ class BillTransformer
 		
 		//from-date conversion
 		$tEntryDate = Carbon\Carbon::createFromFormat('d-m-Y', $tEntryDate)->format('Y-m-d');
+		
+		$paymentTrnArray = array();
+		$paymentTrnEnum = new PaymentTransactionEnum();
+		$paymentTrnArray = $paymentTrnEnum->enumArrays();
+		
+		//check paymentmode enum type
+		foreach ($paymentTrnArray as $key => $value)
+		{
+			if(strcmp($value,$tPaymentTransaction)==0)
+			{
+				$paymentTrnFlag=1;
+				break;
+			}
+		}
 		
 		$paymentModeArray = array();
 		$paymentModeEnum = new PaymentModeEnum();
@@ -240,7 +256,7 @@ class BillTransformer
 				break;
 			}
 		}
-		if($paymentModeFlag==0)
+		if($paymentModeFlag==0 || $paymentTrnFlag==0)
 		{
 			return "1";
 		}

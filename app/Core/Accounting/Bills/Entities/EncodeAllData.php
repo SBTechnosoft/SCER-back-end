@@ -37,6 +37,7 @@ class EncodeAllData extends ClientService
 			$advance[$decodedData] = $deocodedJsonData[$decodedData]->advance;
 			$balance[$decodedData] = $deocodedJsonData[$decodedData]->balance;
 			$remark[$decodedData] = $deocodedJsonData[$decodedData]->remark;
+			$refund[$decodedData] = $deocodedJsonData[$decodedData]->refund;
 			$entryDate[$decodedData] = $deocodedJsonData[$decodedData]->entry_date;
 			$clientId[$decodedData] = $deocodedJsonData[$decodedData]->client_id;
 			$jfId[$decodedData] = $deocodedJsonData[$decodedData]->jf_id;
@@ -59,6 +60,7 @@ class EncodeAllData extends ClientService
 			$grandTotal[$decodedData] = round($grandTotal[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
 			$advance[$decodedData] = round($advance[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
 			$balance[$decodedData] = round($balance[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
+			$refund[$decodedData] = round($refund[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
 			
 			//date format conversion
 			$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
@@ -183,6 +185,7 @@ class EncodeAllData extends ClientService
 				'balance'=>$balance[$jsonData],
 				'remark'=>$remark[$jsonData],
 				'salesType'=>$salesType[$jsonData],
+				'refund'=>$refund[$jsonData],
 				'jfId'=>$jfId[$jsonData],
 				'createdAt'=>$getCreatedDate[$jsonData],
 				'updatedAt'=>$getUpdatedDate[$jsonData],

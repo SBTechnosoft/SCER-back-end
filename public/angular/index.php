@@ -380,18 +380,19 @@ include ('connection.php');
 				// formdata.append('saleId',$scope.formAdata.saleId);
 				
 				//bill-payment
-				// $scope.formAdata.entryDate = "22-10-2017";
-				// $scope.formAdata.amount = "30";
-				// $scope.formAdata.paymentMode = "bank";
-				// $scope.formAdata.bankName = "abc";
-				// $scope.formAdata.checkNumber = "cashsdas2dsa";
-				// $scope.formAdata.paymentTransaction = "payment";
-				// formdata.append('entryDate',$scope.formAdata.entryDate);
-				// formdata.append('amount',$scope.formAdata.amount);
-				// formdata.append('paymentMode',$scope.formAdata.paymentMode);
-				// formdata.append('bankName',$scope.formAdata.bankName);
-				// formdata.append('checkNumber',$scope.formAdata.checkNumber);
-				// formdata.append('paymentTransaction',$scope.formAdata.paymentTransaction);
+				$scope.formAdata.entryDate = "22-10-2017";
+				$scope.formAdata.amount = "60";
+				$scope.formAdata.paymentMode = "bank";
+				$scope.formAdata.bankName = "abc";
+				$scope.formAdata.checkNumber = "cashsdas2dsa";
+				$scope.formAdata.paymentTransaction = "refund";
+				
+				formdata.append('entryDate',$scope.formAdata.entryDate);
+				formdata.append('amount',$scope.formAdata.amount);
+				formdata.append('paymentMode',$scope.formAdata.paymentMode);
+				formdata.append('bankName',$scope.formAdata.bankName);
+				formdata.append('checkNumber',$scope.formAdata.checkNumber);
+				formdata.append('paymentTransaction',$scope.formAdata.paymentTransaction);
 				
 				//Authenticate
 				// $scope.formAdata.email_id = "palak1@gmail.com";
@@ -480,23 +481,23 @@ include ('connection.php');
 				// "stateAbb":"IN-AG","cityId":1,"total":100,"tax":10,"grandTotal":134,"advance":100,"balance":10,
 				// "paymentMode":"bank","bankName":"abc","checkNumber":"abbb34eQ1G","remark":"adsfsf afasf"}]}];
 				
-				$scope.user = [{"billData":[{"total":100,"tax":10,"grandTotal":134,"advance":100,"balance":10,
-				"paymentMode":"cash","bankName":"abc","checkNumber":"abbb34eQ1G"}]}];
+				// $scope.user = [{"billData":[{"total":100,"tax":10,"grandTotal":134,"advance":100,"balance":10,
+				// "paymentMode":"cash","bankName":"abc","checkNumber":"abbb34eQ1G"}]}];
 				
-				$scope.inventory=[{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":44,'color':'ddd',
-				'frameNo':'fff'},{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":40,'color':'hh',
-				'frameNo':'dsfds'}];
-				angular.forEach($scope.user[0]['billData'][0], function (input,key) {
+				// $scope.inventory=[{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":44,'color':'ddd',
+				// 'frameNo':'fff'},{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":40,'color':'hh',
+				// 'frameNo':'dsfds'}];
+				// angular.forEach($scope.user[0]['billData'][0], function (input,key) {
 					
-					formdata.append(key,input);
-				});
-				for(var i=0;i<$scope.inventory.length;i++)
-				{
-					angular.forEach($scope.inventory[i], function (input,key) {
+					// formdata.append(key,input);
+				// });
+				// for(var i=0;i<$scope.inventory.length;i++)
+				// {
+					// angular.forEach($scope.inventory[i], function (input,key) {
 						
-						formdata.append('inventory['+i+']['+key+']',input);
-					});
-				}
+						// formdata.append('inventory['+i+']['+key+']',input);
+					// });
+				// }
 				
 				
 				
@@ -535,8 +536,8 @@ include ('connection.php');
 				// var url = "http://www.scerp1.com/accounting/trial-balance/company/"+companyId+"/export";
 			
 				
-				var url = "http://www.scerp1.com/accounting/bills/"+saleId;
-				// var url = "http://www.scerp1.com/accounting/bills/"+saleId+"/payment";
+				// var url = "http://www.scerp1.com/accounting/bills/"+saleId;
+				var url = "http://www.scerp1.com/accounting/bills/"+saleId+"/payment";
 				// var url = "http://www.scerp1.com/accounting/bills";
 				// var url = "http://www.scerp1.com/accounting/bills/company/"+companyId;
 				

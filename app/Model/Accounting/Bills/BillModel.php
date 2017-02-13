@@ -315,6 +315,7 @@ class BillModel extends Model
 		entry_date,
 		client_id,
 		sales_type,
+		refund,
 		jf_id,
 		company_id,
 		created_at,
@@ -404,6 +405,7 @@ class BillModel extends Model
 		entry_date,
 		client_id,
 		sales_type,
+		refund,
 		company_id,
 		jf_id,
 		created_at,
@@ -449,7 +451,8 @@ class BillModel extends Model
 			payment_mode = '".$arrayData->payment_mode."',
 			advance = '".$arrayData->advance."',
 			balance = '".$arrayData->balance."'	,
-			bank_name = '".$arrayData->bank_name."'	,
+			bank_name = '".$arrayData->bank_name."',
+			refund = '".$arrayData->refund."',
 			check_number = '".$arrayData->check_number."',
 			entry_date = '".$arrayData->entry_date."',
 			updated_at = '".$mytime."'
@@ -464,7 +467,8 @@ class BillModel extends Model
 			sales_bill set
 			payment_mode = '".$arrayData->payment_mode."',
 			advance = '".$arrayData->advance."',
-			balance = '".$arrayData->balance."'	,
+			refund = '".$arrayData->refund."',
+			balance = '".$arrayData->balance."',
 			entry_date = '".$arrayData->entry_date."',
 			updated_at = '".$mytime."'
 			where sale_id = ".$arrayData->sale_id." and
@@ -478,6 +482,7 @@ class BillModel extends Model
 		$saleIdData = $this->getSaleIdData($arrayData->sale_id);
 		$jsonDecodedSaleData = json_decode($saleIdData);
 		
+		$paymentTransaction = $arrayData->payment_transaction;
 		DB::beginTransaction();
 		$saleTrnInsertionResult = DB::connection($databaseName)->statement("insert
 		into sales_bill_trn(
@@ -493,6 +498,8 @@ class BillModel extends Model
 		advance,
 		balance,
 		remark,
+		payment_trn,
+		refund,
 		entry_date,
 		client_id,
 		sales_type,
@@ -513,6 +520,8 @@ class BillModel extends Model
 		'".$jsonDecodedSaleData[0]->advance."',
 		'".$jsonDecodedSaleData[0]->balance."',
 		'".$jsonDecodedSaleData[0]->remark."',
+		'".$paymentTransaction."',
+		'".$jsonDecodedSaleData[0]->refund."',
 		'".$jsonDecodedSaleData[0]->entry_date."',
 		'".$jsonDecodedSaleData[0]->client_id."',
 		'".$jsonDecodedSaleData[0]->sales_type."',
