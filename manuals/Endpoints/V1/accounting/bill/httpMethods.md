@@ -81,7 +81,7 @@
 + Response
 
             {
-                ... HTTP_Status:200
+                "documentPath":''
             }
 			
 ##### `DELETE /accounting/bills/{saleId}`
