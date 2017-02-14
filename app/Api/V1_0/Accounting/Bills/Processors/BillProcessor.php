@@ -1259,7 +1259,11 @@ class BillProcessor extends BaseProcessor
 			if(array_key_exists('entry_date',$billTrimData))
 			{
 				$journalArray['entryDate'] = $billTrimData['entry_date'];
-				$journalArray['transactionDate'] = $billTrimData['entry_date'];
+				
+			}
+			if(array_key_exists('transaction_date',$billTrimData))
+			{
+				$journalArray['transactionDate'] = $billTrimData['transaction_date'];
 			}
 			if(array_key_exists('invoiceNumber',$billTrimData))
 			{
@@ -1336,6 +1340,25 @@ class BillProcessor extends BaseProcessor
 		$invFlag=0;
 		//set bill data into persistable object
 		$billPersistable = array();
+		$clientBillArrayData = $clientArray->getBillClientArrayData();
+		
+		//splice data from trim array
+		for($index=0;$index<count($clientBillArrayData);$index++)
+		{
+			for($innerIndex=0;$innerIndex<count($billTrimData);$innerIndex++)
+			{
+				if(strcmp('inventory',array_keys($billTrimData)[$innerIndex])!=0)
+				{
+					if(strcmp(array_keys($billTrimData)[$innerIndex],array_keys($clientBillArrayData)[$index])==0)
+					{
+						array_splice($billTrimData,$innerIndex,1);
+						break;
+					}
+				}
+				
+			}
+		}
+		
 		for($billArrayData=0;$billArrayData<count($billTrimData);$billArrayData++)
 		{
 			// making an object of persistable
@@ -1385,6 +1408,7 @@ class BillProcessor extends BaseProcessor
 		}
 		if($docFlag==1)
 		{
+			
 			$array1 = array();
 			array_push($processedData,$billPersistable);
 			return $processedData;

@@ -7,7 +7,7 @@ use Carbon;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Core\Accounting\Journals\Entities\EncodeAllData;
 use ERP\Model\Companies\CompanyModel;
-use ERP\Core\Accounting\Ledgers\Entities\ledgerArray;
+use ERP\Core\Accounting\Ledgers\Entities\LedgerArray;
 use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -1624,7 +1624,7 @@ class LedgerModel extends Model
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
-		$ledgerArray = new ledgerArray();
+		$ledgerArray = new LedgerArray();
 		$ledgerResult = $ledgerArray->billLedgerArray();
 		for($ledgerDataArray=0;$ledgerDataArray<count($ledgerResult);$ledgerDataArray++)
 		{

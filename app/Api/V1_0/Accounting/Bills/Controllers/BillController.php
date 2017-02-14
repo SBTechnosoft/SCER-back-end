@@ -232,26 +232,34 @@ class BillController extends BaseController implements ContainerInterface
 		$constantArray = $constantClass->constantVariable();
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			//check saleId exist or not?
-			$billModel = new BillModel();
-			$billData = $billModel->getSaleIdData($saleId);
-			if(strcmp($billData,$msgArray['404'])==0)
+			//check the condition for image or data or both available
+			if(empty($request->input()) && in_array(true,$request->file()) || !empty($request->input()))
 			{
-				return $msgArray['404'];
-			}
-			$processor = new BillProcessor();
-			$billPersistable = new BillPersistable();
-			$billPersistable = $processor->createPersistableChange($request,$saleId,$billData);
-			
-			if(is_array($billPersistable))
-			{
-				$billService= new BillService();
-				$status = $billService->updateData($billPersistable,$saleId);
-				return $status;
+				//check saleId exist or not?
+				$billModel = new BillModel();
+				$billData = $billModel->getSaleIdData($saleId);
+				if(strcmp($billData,$msgArray['404'])==0)
+				{
+					return $msgArray['404'];
+				}
+				$processor = new BillProcessor();
+				$billPersistable = new BillPersistable();
+				$billPersistable = $processor->createPersistableChange($request,$saleId,$billData);
+				
+				if(is_array($billPersistable))
+				{
+					$billService= new BillService();
+					$status = $billService->updateData($billPersistable,$saleId);
+					return $status;
+				}
+				else
+				{
+					return $billPersistable;
+				}
 			}
 			else
 			{
-				return $billPersistable;
+				return $msgArray['204'];
 			}
 		}
 		else

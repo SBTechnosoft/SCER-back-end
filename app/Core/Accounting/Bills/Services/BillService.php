@@ -202,6 +202,7 @@ class BillService
 		$flag=0;
 		$inventoryFlag=0;
 		$dataFlag=0;
+		$noDataFlag=0;
 		
 		//get exception message
 		$exception = new ExceptionMessage();
@@ -211,7 +212,11 @@ class BillService
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
 		$imageArrayData = array();
-		if(is_array($persistableData[0]))
+		if(empty($persistableData))
+		{
+			$noDataFlag=1;
+		}
+		else if(is_array($persistableData[0]))
 		{
 			$imageFlag=1;
 			
@@ -222,22 +227,39 @@ class BillService
 			}
 			$arrayLength = count($persistableData);
 			$innerArrayLength = count($persistableData[$arrayLength-1]);
-			if(!is_object($persistableData[$arrayLength-1][$innerArrayLength-1]))
+			
+			
+			if($innerArrayLength!=0)
 			{
-				// inventory is available
-				$flag=1;
-			}
-			if($flag==1)
-			{
-				$saleId = $persistableData[$arrayLength-1][0]->getSaleId();
-				for($arrayData=0;$arrayData<count($persistableData[$arrayLength-1])-1;$arrayData++)
+				if(!is_object($persistableData[$arrayLength-1][$innerArrayLength-1]))
 				{
-					if($persistableData[$arrayLength-1][$arrayData]->getProductArray())
+					// inventory is available
+					$flag=1;
+				}
+				if($flag==1)
+				{
+					$saleId = $persistableData[$arrayLength-1][0]->getSaleId();
+					for($arrayData=0;$arrayData<count($persistableData[$arrayLength-1])-1;$arrayData++)
 					{
-						$inventoryFlag=1;
-						$singleData['product_array'] = $persistableData[$arrayLength-1][$arrayData]->getProductArray();
+						if($persistableData[$arrayLength-1][$arrayData]->getProductArray())
+						{
+							$inventoryFlag=1;
+							$singleData['product_array'] = $persistableData[$arrayLength-1][$arrayData]->getProductArray();
+						}
+						else
+						{
+							$dataFlag=1;
+							$funcName = $persistableData[$arrayLength-1][$arrayData]->getName();
+							$value = $persistableData[$arrayLength-1][$arrayData]->$funcName();
+							$key = $persistableData[$arrayLength-1][$arrayData]->getKey();
+							$singleData[$key] = $value;
+						}
 					}
-					else
+				}
+				else
+				{
+					$saleId = $persistableData[$arrayLength-1][0]->getSaleId();
+					for($arrayData=0;$arrayData<count($persistableData[$arrayLength-1]);$arrayData++)
 					{
 						$dataFlag=1;
 						$funcName = $persistableData[$arrayLength-1][$arrayData]->getName();
@@ -246,21 +268,39 @@ class BillService
 						$singleData[$key] = $value;
 					}
 				}
+				$billModel = new BillModel();
+				$billUpdateResult = $billModel->updateBillData($singleData,$saleId,$imageArrayData);
+				if(strcmp($billUpdateResult,$exceptionArray['200'])==0)
+				{
+					$saleIdArray = array();
+					$saleIdArray['saleId'] = $saleId;
+					$documentController = new DocumentController(new Container());
+					
+					$method=$constantArray['postMethod'];
+					$path=$constantArray['documentGenerateUrl'];
+					$documentRequest = Request::create($path,$method,$saleIdArray);
+					$processedData = $documentController->getData($documentRequest);
+					return $processedData;
+				}
 			}
 			else
 			{
-				$saleId = $persistableData[$arrayLength-1][0]->getSaleId();
-				for($arrayData=0;$arrayData<count($persistableData[$arrayLength-1]);$arrayData++)
+				//only image is available
+				$billModel = new BillModel();
+				$billUpdateResult = $billModel->updateImageData($saleId,$imageArrayData);
+				if(strcmp($billUpdateResult,$exceptionArray['200'])==0)
 				{
-					$dataFlag=1;
-					$funcName = $persistableData[$arrayLength-1][$arrayData]->getName();
-					$value = $persistableData[$arrayLength-1][$arrayData]->$funcName();
-					$key = $persistableData[$arrayLength-1][$arrayData]->getKey();
-					$singleData[$key] = $value;
+					$saleIdArray = array();
+					$saleIdArray['saleId'] = $saleId;
+					$documentController = new DocumentController(new Container());
+					
+					$method=$constantArray['postMethod'];
+					$path=$constantArray['documentGenerateUrl'];
+					$documentRequest = Request::create($path,$method,$saleIdArray);
+					$processedData = $documentController->getData($documentRequest);
+					return $processedData;
 				}
 			}
-			$billModel = new BillModel();
-			$billUpdateResult = $billModel->updateBillData($singleData,$saleId,$imageArrayData);
 		}
 		else
 		{
@@ -304,9 +344,20 @@ class BillService
 			}
 			$billModel = new BillModel();
 			$billUpdateResult = $billModel->updateBillData($singleData,$saleId,$imageArrayData);
-			// return $billUpdateResult;
+			if(strcmp($billUpdateResult,$exceptionArray['200'])==0)
+			{
+				$saleIdArray = array();
+				$saleIdArray['saleId'] = $saleId;
+				$documentController = new DocumentController(new Container());
+				
+				$method=$constantArray['postMethod'];
+				$path=$constantArray['documentGenerateUrl'];
+				$documentRequest = Request::create($path,$method,$saleIdArray);
+				$processedData = $documentController->getData($documentRequest);
+				return $processedData;
+			}
 		}
-		if(strcmp($billUpdateResult,$exceptionArray['200'])==0)
+		if($noDataFlag==1)
 		{
 			$saleIdArray = array();
 			$saleIdArray['saleId'] = $saleId;
@@ -314,7 +365,6 @@ class BillService
 			
 			$method=$constantArray['postMethod'];
 			$path=$constantArray['documentGenerateUrl'];
-			
 			$documentRequest = Request::create($path,$method,$saleIdArray);
 			$processedData = $documentController->getData($documentRequest);
 			return $processedData;

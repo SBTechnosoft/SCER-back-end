@@ -82,47 +82,50 @@ class TemplateDesign
 									</table>
 									<p style=''text-align: left;''>&nbsp;</p>
 									</div>";
-		$templateArray['payment'] = "<table class=''tg'' style=''border-collapse: collapse; border-spacing: 0;'' border=''1''>
+		$templateArray['payment'] = "<div style='background-image: url('http://4.bp.blogspot.com/-J9g2UmC8cJk/UCyoyj24VMI/AAAAAAAAEDg/Q3oUk33685w/s1600/Indian+Flag+Wallpapers-03.jpg'); background-size: 100% 100%;'>
+									<table class='tg' style='border-collapse: collapse; border-spacing: 0;' border='1'>
 									<tbody>
 									<tr>
-									<th style=''width: 100px; height: 150px; font-size: 26px; border: none; padding: 5px;''>[CmpLogo]</th>
-									<th style=''width: 950px; height: 150px; font-size: 26px; border: none;''>
+									<th style='height: 150px; font-size: 26px; border: none; padding: 5px;'>[CmpLogo]</th>
+									<th style='height: 150px; font-size: 26px; border: none;'>
 									<h3>Payment Receipt</h3>
 									</th>
 									</tr>
 									</tbody>
 									</table>
-									<table class=''tg'' style=''border-collapse: collapse; border-spacing: 0;'' border=''1''>
+									<table class='tg' style='border-collapse: collapse; border-spacing: 0;' border='1'>
 									<tbody>
-									<tr style=''height: 50px;''>
-									<td style=''font-size: 16px; padding: 10px; width: 700px;''>Receipt No:[RecNo]</td>
-									<td style=''font-size: 16px; padding: 10px; width: 350px;''>Date:[Date]</td>
+									<tr style='height: 50px;'>
+									<td style='font-size: 16px; padding: 10px;'>Receipt No:[RecNo]</td>
+									<td style='font-size: 16px; padding: 10px;'>Date:[Date]</td>
 									</tr>
-									<tr style=''height: 50px;''>
-									<td style=''font-size: 16px; padding: 10px;'' colspan=''2''>Received With Thanks From:[ClientName]</td>
+									<tr style='height: 50px; background-color: transparent;'>
+									<td style='font-size: 16px; padding: 10px;' colspan='2'>Received With Thanks From:[ClientName]</td>
 									</tr>
-									<tr style=''height: 50px;''>
-									<td style=''font-size: 16px; padding: 10px;'' colspan=''2''>Sum Of Rupees:[Amount]</td>
+									<tr style='height: 50px;'>
+									<td style='font-size: 16px; padding: 10px;' colspan='2'>Sum Of Rupees:[Total]</td>
 									</tr>
-									<tr style=''height: 50px;''>
-									<td style=''font-size: 16px; padding: 10px;'' colspan=''2''>In Words:[AmountWord]</td>
+									<tr style='height: 50px; background-color: transparent;'>
+									<td style='font-size: 16px; padding: 10px;' colspan='2'>In Words:[TotalInWord]</td>
 									</tr>
-									<tr style=''height: 50px;''>
-									<td style=''font-size: 16px; padding: 10px;'' colspan=''2''>By:[TrnType]</td>
+									<tr style='height: 50px;'>
+									<td style='font-size: 16px; padding: 10px;' colspan='2'>By:[TransType]</td>
 									</tr>
-									<tr style=''height: 50px;''>
-									<td style=''font-size: 16px; padding: 10px;''>
+									<tr style='height: 50px; background-color: transparent;'>
+									<td style='font-size: 16px; padding: 10px;'>
 									<p>&nbsp;</p>
 									<p>&nbsp;</p>
 									<p>Prepared By:</p>
 									</td>
-									<td style=''font-size: 16px; padding: 10px;''>
+									<td style='font-size: 16px; padding: 10px;'>
 									<p>&nbsp;</p>
 									<p>&nbsp;</p>
 									<p>Received By:</p>
 									</td>
 									</tr>
-									</tbody>";
+									</tbody>
+									</table>
+									</div>";
 		return $templateArray;
 	}
 }

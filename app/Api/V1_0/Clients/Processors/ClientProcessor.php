@@ -48,14 +48,19 @@ class ClientProcessor extends BaseProcessor
 			$clientTransformer = new ClientTransformer();
 			$tRequest = $clientTransformer->trimInsertData($this->request);
 			
+			$clientValidate = new ClientValidate();
 			if($tRequest==1)
 			{
 				return $msgArray['content'];
 			}	
 			else
 			{
+				// validation
+				$validationResult = $clientValidate->clientNameValidate($tRequest);
+			}
+			if(is_array($validationResult))
+			{
 				//validation
-				$clientValidate = new ClientValidate();
 				$status = $clientValidate->validate($tRequest);
 				if($status=="Success")
 				{
@@ -102,6 +107,10 @@ class ClientProcessor extends BaseProcessor
 					return $status;
 				}
 			}
+			else
+			{
+				return $validationResult;
+			}
 		}
 	}
 	
@@ -146,67 +155,76 @@ class ClientProcessor extends BaseProcessor
 				}
 				else
 				{
-					//get data from trim array
+					// get key value from trim array
 					$tKeyValue[$data] = array_keys($tRequest[0])[0];
 					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
-					
-					//validation
-					$status = $clientValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
-					if($status=="Success")
+				
+					if(strcmp($tKeyValue[$data],"client_name")==0)
 					{
-						// check data is string or not
-						if(!is_numeric($tValue[$data]))
+						$validationResult = $clientValidate->clientNameValidateUpdate($tRequest[0],$clientId);
+						if(!is_array($validationResult))
 						{
-							if (strpos($tValue[$data], '\'') !== FALSE)
-							{
-								$clientValue[$data] = str_replace("'","\'",$tValue[$data]);
-							}
-							else
-							{
-								$clientValue[$data] = $tValue[$data];
-							}
+							return $validationResult;
+						}
+					}
+				}
+				//validation
+				$status = $clientValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
+				if($status=="Success")
+				{
+					// check data is string or not
+					if(!is_numeric($tValue[$data]))
+					{
+						if (strpos($tValue[$data], '\'') !== FALSE)
+						{
+							$clientValue[$data] = str_replace("'","\'",$tValue[$data]);
 						}
 						else
 						{
 							$clientValue[$data] = $tValue[$data];
 						}
-						//flag=0...then data is valid(consider one data at a time)
-						if($flag==0)
-						{
-							$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
-							//make function name dynamically
-							$setFuncName = 'set'.$str;
-							$getFuncName[$data] = 'get'.$str;
-							$clientPersistable->$setFuncName($clientValue[$data]);
-							$clientPersistable->setName($getFuncName[$data]);
-							$clientPersistable->setKey($tKeyValue[$data]);
-							$clientPersistable->setClientId($clientId);
-							$clientArray[$data] = array($clientPersistable);
-						}
 					}
-					//enter data is not valid
 					else
 					{
-						//if flag==1 then enter data is not valid ..so error return(consider one data at a time)
-						$flag=1;
-						if(!empty($status[0]))
-						{
-							$errorStatus[$errorCount]=$status[0];
-							$errorCount++;
-						}
+						$clientValue[$data] = $tValue[$data];
 					}
-					if($data==(count($request->input())-1))
+					//flag=0...then data is valid(consider one data at a time)
+					if($flag==0)
 					{
-						if($flag==1)
-						{
-							return json_encode($errorStatus);
-						}
-						else
-						{
-							return $clientArray;
-						}
+						$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
+						//make function name dynamically
+						$setFuncName = 'set'.$str;
+						$getFuncName[$data] = 'get'.$str;
+						$clientPersistable->$setFuncName($clientValue[$data]);
+						$clientPersistable->setName($getFuncName[$data]);
+						$clientPersistable->setKey($tKeyValue[$data]);
+						$clientPersistable->setClientId($clientId);
+						$clientArray[$data] = array($clientPersistable);
 					}
 				}
+				//enter data is not valid
+				else
+				{
+					//if flag==1 then enter data is not valid ..so error return(consider one data at a time)
+					$flag=1;
+					if(!empty($status[0]))
+					{
+						$errorStatus[$errorCount]=$status[0];
+						$errorCount++;
+					}
+				}
+				if($data==(count($request->input())-1))
+				{
+					if($flag==1)
+					{
+						return json_encode($errorStatus);
+					}
+					else
+					{
+						return $clientArray;
+					}
+				}
+			
 			}
 		}
 	}

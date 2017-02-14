@@ -215,6 +215,39 @@ class ClientModel extends Model
 	}
 	
 	/**
+	 * get client data 
+	 * @param client_name
+	 * returns the status/error-message
+	*/
+	public function getClientName($clientName)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();		
+		$raw = DB::connection($databaseName)->select("select 
+		client_id
+		from client_mst 
+		where deleted_at='0000-00-00 00:00:00' and 
+		client_name='".$clientName."'");
+		DB::commit();
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(count($raw)==0)
+		{
+			return $exceptionArray['404'];
+		}
+		else
+		{
+			return $raw;
+		}
+	}
+	
+	/**
 	 * update client data 
 	 * @param client-data,client key(field-name) and client-id
 	 * returns the status/error-message

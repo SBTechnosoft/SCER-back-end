@@ -23,6 +23,7 @@ class DocumentMpdf extends CurrencyToWordConversion
      */
 	public function mpdfGenerate($templateData,$status)
 	{
+		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -30,7 +31,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
 		
-		$htmlBody = json_decode($templateData)[0]->template_body;
+		$htmlBody = json_decode($templateData)[0]->templateBody;
 		$decodedBillData = json_decode($status);
 		
 		if(is_object($decodedBillData))

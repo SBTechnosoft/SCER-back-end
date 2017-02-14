@@ -5,7 +5,7 @@ namespace ERP\Core\Accounting\Ledgers\Entities;
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class ledgerArray
+class LedgerArray
 {
 	public function ledgerArrays()
 	{

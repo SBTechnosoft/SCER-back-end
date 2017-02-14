@@ -5,10 +5,12 @@ use Illuminate\Support\Facades\Redirect;
 use Validator;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Route;
+use ERP\Exceptions\ExceptionMessage;
+use ERP\Model\Clients\ClientModel;
 /**
   * @author Reema Patel<reema.p@siliconbrain.in>
   */
-class ClientValidate
+class ClientValidate extends ClientModel
 {
 	 /**
      * validate client insertion data
@@ -125,6 +127,65 @@ class ClientValidate
 		else
 		{
 			return "Success";
+		}
+	}
+	
+	/**
+     * validate data for client name
+     * $param trim request data
+     * @return error messgage/trim request array
+     */	
+	public function clientNameValidate($tRequest)
+	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		//get product-data
+		$clientValidation = new ClientValidate();
+		$clientResult = $clientValidation->getClientName($tRequest['client_name']);
+		
+		if(!is_array($clientResult))
+		{
+			return $tRequest;
+		}
+		else
+		{
+			return $exceptionArray['content'];
+		}
+	}
+	
+	/**
+     * validate update data for client name
+     * $param trim request data
+     * @return error messgage/trim request array
+     */	
+	public function clientNameValidateUpdate($tRequest,$clientId)
+	{
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		// get product-data
+		$clientValidation = new ClientValidate();
+		$clientData = $clientValidation->getData($clientId);
+		$decodedClientdata = json_decode($clientData);
+		
+		$clientResult = $clientValidation->getClientName($tRequest['client_name']);
+		if(!is_array($clientResult))
+		{
+			return $tRequest;
+		}
+		else
+		{
+			if($clientResult[0]->client_id==$clientId)
+			{
+				return $tRequest;
+			}
+			else
+			{
+				return $exceptionArray['content'];
+			}
 		}
 	}
 }

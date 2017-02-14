@@ -652,6 +652,47 @@ class BillModel extends Model
 	}
 	
 	/**
+	 * update image data
+	 * @param  image-array and saleId
+	 * returns the exception-message/status
+	*/
+	public function updateImageData($saleId,$documentArray)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		if(isset($documentArray) && !empty($documentArray))
+		{
+			for($docArray=0;$docArray<count($documentArray);$docArray++)
+			{
+				DB::beginTransaction();
+				$documentResult = DB::connection($databaseName)->statement("insert into sales_bill_doc_dtl(
+				sale_id,
+				document_name,
+				document_size,
+				document_format) 
+				values('".$saleId."','".$documentArray[$docArray][0]."','".$documentArray[$docArray][1]."','".$documentArray[$docArray][2]."')");
+				DB::commit();
+				if($documentResult==0)
+				{
+					return $exceptionArray['500'];
+				}
+			}
+			return $exceptionArray['200'];		
+		}
+		else
+		{
+			return $exceptionArray['500'];
+		}
+	}
+	
+	/**
 	 * delete bill data
 	 * @param  sale-id
 	 * returns the exception-message/status
