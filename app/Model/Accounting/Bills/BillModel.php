@@ -438,42 +438,80 @@ class BillModel extends Model
 		$databaseName = $constantDatabase->constantDatabase();
 		
 		$mytime = Carbon\Carbon::now();
-		
+		$paymentTransaction = $arrayData->payment_transaction;
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
 		if(strcmp($arrayData->payment_mode,"bank")==0)
 		{
-			DB::beginTransaction();
-			$raw = DB::connection($databaseName)->statement("update
-			sales_bill set
-			payment_mode = '".$arrayData->payment_mode."',
-			advance = '".$arrayData->advance."',
-			balance = '".$arrayData->balance."'	,
-			bank_name = '".$arrayData->bank_name."',
-			refund = '".$arrayData->refund."',
-			check_number = '".$arrayData->check_number."',
-			entry_date = '".$arrayData->entry_date."',
-			updated_at = '".$mytime."'
-			where sale_id = ".$arrayData->sale_id." and
-			deleted_at='0000-00-00 00:00:00'");
-			DB::commit();
+			if(strcmp($paymentTransaction,"payment")==0)
+			{
+				DB::beginTransaction();
+				$raw = DB::connection($databaseName)->statement("update
+				sales_bill set
+				payment_mode = '".$arrayData->payment_mode."',
+				advance = '".$arrayData->advance."',
+				balance = '".$arrayData->balance."'	,
+				bank_name = '".$arrayData->bank_name."',
+				check_number = '".$arrayData->check_number."',
+				entry_date = '".$arrayData->entry_date."',
+				updated_at = '".$mytime."'
+				where sale_id = ".$arrayData->sale_id." and
+				deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+			}
+			else
+			{
+				DB::beginTransaction();
+				$raw = DB::connection($databaseName)->statement("update
+				sales_bill set
+				payment_mode = '".$arrayData->payment_mode."',
+				advance = '".$arrayData->advance."',
+				balance = '".$arrayData->balance."'	,
+				bank_name = '".$arrayData->bank_name."',
+				refund = '".$arrayData->refund."',
+				check_number = '".$arrayData->check_number."',
+				entry_date = '".$arrayData->entry_date."',
+				updated_at = '".$mytime."'
+				where sale_id = ".$arrayData->sale_id." and
+				deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+			}
+			
 		}
 		else
 		{
-			DB::beginTransaction();
-			$raw = DB::connection($databaseName)->statement("update
-			sales_bill set
-			payment_mode = '".$arrayData->payment_mode."',
-			advance = '".$arrayData->advance."',
-			refund = '".$arrayData->refund."',
-			balance = '".$arrayData->balance."',
-			entry_date = '".$arrayData->entry_date."',
-			updated_at = '".$mytime."'
-			where sale_id = ".$arrayData->sale_id." and
-			deleted_at='0000-00-00 00:00:00'");
-			DB::commit();
+			if(strcmp($paymentTransaction,"payment")==0)
+			{
+				DB::beginTransaction();
+				$raw = DB::connection($databaseName)->statement("update
+				sales_bill set
+				payment_mode = '".$arrayData->payment_mode."',
+				advance = '".$arrayData->advance."',
+				balance = '".$arrayData->balance."',
+				entry_date = '".$arrayData->entry_date."',
+				updated_at = '".$mytime."'
+				where sale_id = ".$arrayData->sale_id." and
+				deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+				
+			}
+			else
+			{
+				DB::beginTransaction();
+				$raw = DB::connection($databaseName)->statement("update
+				sales_bill set
+				payment_mode = '".$arrayData->payment_mode."',
+				advance = '".$arrayData->advance."',
+				refund = '".$arrayData->refund."',
+				balance = '".$arrayData->balance."',
+				entry_date = '".$arrayData->entry_date."',
+				updated_at = '".$mytime."'
+				where sale_id = ".$arrayData->sale_id." and
+				deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+			}
 		}
 		if($raw!=1)
 		{
@@ -482,7 +520,7 @@ class BillModel extends Model
 		$saleIdData = $this->getSaleIdData($arrayData->sale_id);
 		$jsonDecodedSaleData = json_decode($saleIdData);
 		
-		$paymentTransaction = $arrayData->payment_transaction;
+		
 		DB::beginTransaction();
 		$saleTrnInsertionResult = DB::connection($databaseName)->statement("insert
 		into sales_bill_trn(
@@ -689,6 +727,64 @@ class BillModel extends Model
 		else
 		{
 			return $exceptionArray['500'];
+		}
+	}
+	
+	/**
+	 * get last 2 records of transaction data
+	 * @param  saleId
+	 * returns the exception-message/status
+	*/
+	public function getTransactionData($saleId)
+	{
+	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->select("select
+		sale_trn_id,
+		sale_id,
+		product_array,
+		payment_mode,
+		bank_name,
+		invoice_number,
+		check_number,
+		total,
+		tax,
+		grand_total,
+		advance,
+		balance,
+		remark,
+		entry_date,
+		client_id,
+		sales_type,
+		company_id,
+		jf_id,
+		payment_trn,
+		refund,
+		created_at,
+		updated_at
+		from sales_bill_trn 
+		where sale_id='".$saleId."' and 
+		deleted_at='0000-00-00 00:00:00'
+		ORDER BY sale_trn_id DESC
+		limit 2");
+		DB::commit();
+		if(count($raw)==0)
+		{
+			return $exceptionArray['500'];
+		}
+			
+		else
+		{
+			return $raw;
 		}
 	}
 	

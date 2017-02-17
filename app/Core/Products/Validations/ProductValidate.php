@@ -203,6 +203,11 @@ class ProductValidate extends ProductModel
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
+		if (strpos($tRequest['product_name'], '\'') !== FALSE)
+		{
+			$tRequest['product_name']= str_replace("'","\'",$tRequest['product_name']);
+		}
+		
 		//get product-data
 		$productValidation = new ProductValidate();
 		$productResult = $productValidation->getProductName($tRequest['product_name'],$tRequest['company_id']);
@@ -232,6 +237,11 @@ class ProductValidate extends ProductModel
 		$productValidation = new ProductValidate();
 		$productData = $productValidation->getData($productId);
 		$decodedProductdata = json_decode($productData);
+		
+		if (strpos($tRequest['product_name'], '\'') !== FALSE)
+		{
+			$tRequest['product_name'] = str_replace("'","\'",$tRequest['product_name']);
+		}
 		
 		$productResult = $productValidation->getProductName($tRequest['product_name'],$decodedProductdata[0]->company_id);
 		if(!is_array($productResult))

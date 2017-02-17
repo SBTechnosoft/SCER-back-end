@@ -49,14 +49,20 @@ class DocumentService extends BillModel
 		}
 		else
 		{
-			
 			$encoded = new EncodeData();
 			$encodeData = $encoded->getEncodedData($saleData);
 			$decodedSaleData = json_decode($encodeData);
 			
 			$templateType = new TemplateTypeEnum();
 			$templateArray = $templateType->enumArrays();
-			$templateType = $templateArray['invoiceTemplate'];
+			if(strcmp($_SERVER['REQUEST_URI'],"/accounting/bills/".$saleId."/payment")==0)
+			{
+				$templateType = $templateArray['paymentTemplate'];
+			}
+			else
+			{
+				$templateType = $templateArray['invoiceTemplate'];
+			}
 			$templateService = new TemplateService();
 			$templateData = $templateService->getSpecificData($decodedSaleData->company->companyId,$templateType);
 			if(strcmp($templateData,$exceptionArray['404'])==0)
@@ -66,8 +72,16 @@ class DocumentService extends BillModel
 			else
 			{
 				$documentMpdf = new DocumentMpdf();
-				$documentMpdf = $documentMpdf->mpdfGenerate($templateData,$encodeData);
-				return $documentMpdf;
+				if(strcmp($_SERVER['REQUEST_URI'],"/accounting/bills/".$saleId."/payment")==0)
+				{
+					$documentMpdf = $documentMpdf->mpdfPaymentGenerate($templateData,$encodeData);
+					return $documentMpdf;
+				}
+				else
+				{
+					$documentMpdf = $documentMpdf->mpdfGenerate($templateData,$encodeData);
+					return $documentMpdf;
+				}
 			}
 		}
 	}

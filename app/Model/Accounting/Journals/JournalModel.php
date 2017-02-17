@@ -165,6 +165,106 @@ class JournalModel extends Model
 			return $exceptionArray['200'];
 		}
 	}
+	
+	/**
+	 * insert purchase document data 
+	 * @param document data array
+	 * returns the error-message/status
+	*/
+	public function insertPurchaseDocumentData($documentArray,$type)
+	{
+		if(strcmp($type,"sales")==0)
+		{
+			$type = "sale";
+		}
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->select("SELECT  MAX(jf_id) AS jf_id 
+		from journal_dtl
+		where deleted_at='0000-00-00 00:00:00' and 
+		journal_type='".$type."'");
+		DB::commit();
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(count($raw)==0)
+		{
+			return $exceptionArray['404'];
+		}
+		else
+		{
+			for($arrayData=0;$arrayData<count($documentArray);$arrayData++)
+			{
+				DB::beginTransaction();
+				$documentResult = DB::connection($databaseName)->statement("insert 
+				into ".$type."_doc_dtl(
+				document_name,
+				document_size,
+				document_format,
+				jf_id)
+				values(
+				'".$documentArray[$arrayData][0]."',
+				'".$documentArray[$arrayData][1]."',
+				'".$documentArray[$arrayData][2]."',
+				'".$raw[0]->jf_id."')");
+				DB::commit();
+				if($documentResult!=1)
+				{
+					return $exceptionArray['500'];
+				}
+			}
+			return $exceptionArray['200'];
+		}
+	}
+	
+	/**
+	 * insert purchase document data 
+	 * @param document data array and jfId
+	 * returns the error-message/status
+	*/
+	public function updatePurchaseDocumentData($jfId,$documentArray,$type)
+	{
+		if(strcmp($type,"sales")==0)
+		{
+			$type = "sale";
+		}
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+	
+		for($arrayData=0;$arrayData<count($documentArray);$arrayData++)
+		{
+			DB::beginTransaction();
+			$documentResult = DB::connection($databaseName)->statement("insert 
+			into ".$type."_doc_dtl(
+			document_name,
+			document_size,
+			document_format,
+			jf_id)
+			values(
+			'".$documentArray[$arrayData][0]."',
+			'".$documentArray[$arrayData][1]."',
+			'".$documentArray[$arrayData][2]."',
+			'".$jfId."')");
+			DB::commit();
+			if($documentResult!=1)
+			{
+				return $exceptionArray['500'];
+			}
+		}
+		return $exceptionArray['200'];
+	}
+	
 	/**
 	 * get data 
 	 * get next jf id
@@ -587,6 +687,55 @@ class JournalModel extends Model
 				$ledgerTransactionarray = array();
 				$ledgerTransactionarray['journal'] = $encodedResult;
 				$ledgerTransactionarray['productTransaction'] = json_decode($getEncodedData);
+				
+				if(strcmp($journalType,"sales")==0)
+				{
+					//get sale document
+					DB::beginTransaction();
+					$journalDocumentResult = DB::connection($databaseName)->select("SELECT 
+					document_id,
+					document_name,
+					document_size,
+					document_format,
+					jf_id,
+					created_at,
+					updated_at
+					from sale_doc_dtl
+					WHERE deleted_at='0000-00-00 00:00:00' and 
+					jf_id='".$jfId[0]."'");
+					DB::commit();
+				}
+				else
+				{
+					//get sale document
+					DB::beginTransaction();
+					$journalDocumentResult = DB::connection($databaseName)->select("SELECT 
+					document_id,
+					document_name,
+					document_size,
+					document_format,
+					jf_id,
+					created_at,
+					updated_at
+					from purchase_doc_dtl
+					WHERE deleted_at='0000-00-00 00:00:00' and 
+					jf_id='".$jfId[0]."'");
+					DB::commit();
+				}
+				if(!empty($journalDocumentResult))
+				{
+					$documentArray = array();
+					for($arrayData=0;$arrayData<count($journalDocumentResult);$arrayData++)
+					{
+						$documentArray[$arrayData] = array();
+						$documentArray[$arrayData]['documentId'] = $journalDocumentResult[$arrayData]->document_id;
+						$documentArray[$arrayData]['documentName'] = $journalDocumentResult[$arrayData]->document_name;
+						$documentArray[$arrayData]['documentSize'] = $journalDocumentResult[$arrayData]->document_size;
+						$documentArray[$arrayData]['documentFormat'] = $journalDocumentResult[$arrayData]->document_format;
+						$documentArray[$arrayData]['documentUrl'] = $constantArray['journalDocumentUrl'];
+					}
+					$ledgerTransactionarray['document'] = $documentArray;
+				}
 				return json_encode($ledgerTransactionarray);
 			}
 			else

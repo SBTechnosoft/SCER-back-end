@@ -265,7 +265,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 		{
 			if($decodedBillData->client->emailId!="")
 			{
-				//mail send
+				// mail send
 				$result = $this->mailSending($decodedBillData->client->emailId);
 				if(strcmp($result,$exceptionArray['Email'])==0)
 				{
@@ -276,6 +276,106 @@ class DocumentMpdf extends CurrencyToWordConversion
 			//sms send
 			// $url = "http://login.arihantsms.com/vendorsms/pushsms.aspx?user=siliconbrain&password=demo54321&msisdn=".$decodedBillData->client->contactNo."&sid=COTTSO&msg=".$message."&fl=0&gwid=2";
 			//pdf generate
+			$mpdf->Output($documentPathName,'F');
+			$pathArray = array();
+			$pathArray['documentPath'] = $documentPathName;
+			return $pathArray;
+		}	
+	} 
+	
+	/**
+     * pdf generation and mail-sms send
+     * @param template-data and bill data
+     * @return error-message/document-path
+     */
+	public function mpdfPaymentGenerate($templateData,$status)
+	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		$htmlBody = json_decode($templateData)[0]->templateBody;
+		$decodedBillData = json_decode($status);
+		
+		$billModel = new BillModel();
+		if(is_object($decodedBillData))
+		{
+			$saleId = $decodedBillData->saleId;		
+		}
+		else
+		{
+			$saleId = $decodedBillData[0]->sale_id;
+			$decodedBillData = $decodedBillData[0];
+		}
+		
+		//get last 2 records of bill from bill_transaction
+		$transactionResult = $billModel->getTransactionData($saleId);
+		if(strcmp($transactionResult[0]->payment_trn,"refund")==0)
+		{
+			$amount = $transactionResult[0]->refund-$transactionResult[1]->refund;
+		}	
+		else if(strcmp($transactionResult[0]->payment_trn,"payment")==0)
+		{
+			$amount = $transactionResult[0]->advance-$transactionResult[1]->advance;
+		}
+		
+		//calculation of currecy to word conversion
+		$currecyToWordConversion = new DocumentMpdf();
+		$currencyResult = $currecyToWordConversion->conversion($amount);
+		
+		$billArray = array();
+		$billArray['INVID']=$decodedBillData->invoiceNumber;
+		$billArray['ClientName']=$decodedBillData->client->clientName;
+		$billArray['Total']=$amount;
+		$billArray['TotalInWord']=$currencyResult;
+		$billArray['TransType']=$transactionResult[0]->payment_trn;
+		$billArray['Date']=$decodedBillData->entryDate;
+	
+		$mpdf = new mPDF('A4','landscape');
+		$mpdf->SetDisplayMode('fullpage');
+		foreach($billArray as $key => $value)
+		{
+			$htmlBody = str_replace('['.$key.']', $value, $htmlBody);
+		}
+		$mpdf->WriteHTML($htmlBody);
+		$path = $constantArray['billUrl'];
+		
+		// change the name of document-name
+		$dateTime = date("d-m-Y h-i-s");
+		$convertedDateTime = str_replace(" ","-",$dateTime);
+		$splitDateTime = explode("-",$convertedDateTime);
+		$combineDateTime = $splitDateTime[0].$splitDateTime[1].$splitDateTime[2].$splitDateTime[3].$splitDateTime[4].$splitDateTime[5];
+		$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".pdf";
+		$documentPathName = $path.$documentName;
+		$documentFormat="pdf";
+		$documentType ="bill";
+		
+		// insertion bill document data into database
+		
+		$billDocumentStatus = $billModel->billDocumentData($saleId,$documentName,$documentFormat,$documentType);
+		
+		if(strcmp($exceptionArray['500'],$billDocumentStatus)==0)
+		{
+			return $billDocumentStatus;
+		}
+		else
+		{
+			if($decodedBillData->client->emailId!="")
+			{
+				// mail send
+				$result = $this->mailSending($decodedBillData->client->emailId);
+				if(strcmp($result,$exceptionArray['Email'])==0)
+				{
+					return $result;
+				}
+			}
+			$message = "Your Bill Is Generated...";
+			// sms send
+			// $url = "http://login.arihantsms.com/vendorsms/pushsms.aspx?user=siliconbrain&password=demo54321&msisdn=".$decodedBillData->client->contactNo."&sid=COTTSO&msg=".$message."&fl=0&gwid=2";
+			// pdf generate
 			$mpdf->Output($documentPathName,'F');
 			$pathArray = array();
 			$pathArray['documentPath'] = $documentPathName;

@@ -186,6 +186,10 @@ class BillController extends BaseController implements ContainerInterface
 		$tokenAuthentication = new TokenAuthentication();
 		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$msgArray = $exception->messageArrays();
+		
 		// get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
@@ -199,7 +203,18 @@ class BillController extends BaseController implements ContainerInterface
 			{
 				$billService= new BillService();
 				$status = $billService->updatePaymentData($billPersistable);
-				return $status;
+				if(strcmp($status,$msgArray['200'])==0)
+				{
+					$saleIdArray = array();
+					$saleIdArray['saleId'] = $saleId;
+					$documentController = new DocumentController(new Container());
+					
+					$method=$constantArray['postMethod'];
+					$path=$constantArray['documentGenerateUrl'];
+					$documentRequest = Request::create($path,$method,$saleIdArray);
+					$processedData = $documentController->getData($documentRequest);
+					return $processedData;
+				}
 			}
 			else
 			{

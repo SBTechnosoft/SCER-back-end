@@ -414,7 +414,6 @@ class ProductService extends AbstractService
 				}
 				else
 				{
-					
 					$funcName = $productArray[$persistableArray][0]->getName();
 					$value = $productArray[$persistableArray][0]->$funcName();
 					$key = $productArray[$persistableArray][0]->getKey();

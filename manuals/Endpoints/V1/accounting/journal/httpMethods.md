@@ -14,7 +14,7 @@
 					{
 						... Standard Journals Persistable Object,
 						... Standard Inventory Persistable Object
-						
+						... Standard Document Persistable Object
 					}
 				]
 			}
@@ -29,6 +29,7 @@
             {
                 ... HTTP_Status:200
             }
+			
 ##### Gets Journals
 
 ##### `GET /accounting/journals/company/{companyId}`
@@ -63,17 +64,25 @@
 + Response
 
             {
+				'journal':
 				[
 					{
 						... Standard Journal Object
 					},
 					...
 				]
+				'productTransaction':
 				[
 					{
 						... Standard Product Transaction Object
 					},
 					...
+				]
+				'document':
+				[
+					{
+						... Standard Document Object
+					},
 				]
 			}
 **NOTES:** Provide details of the journal and product_trn based on the jornal_folio id

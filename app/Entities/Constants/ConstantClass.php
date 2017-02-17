@@ -17,6 +17,7 @@ class ConstantClass
 		$constantArray['success'] = "success";
 		$constantArray['documentUrl'] = "Storage/Document/";
 		$constantArray['billDocumentUrl'] = "Storage/Bill/Document/";
+		$constantArray['journalDocumentUrl'] = "Storage/Journal/";
 		$constantArray['billUrl']="Storage/Bill/";
 		$constantArray['trialBalanceUrl']="Storage/TrialBalance/";
 		$constantArray['stockUrl']="Storage/StockRegister/";

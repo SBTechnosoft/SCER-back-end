@@ -1,1421 +1,982 @@
 <?php
-namespace ERP\Api\V1_0\Accounting\Bills\Processors;
+namespace ERP\Api\V1_0\Accounting\Journals\Controllers;
 
-use ERP\Api\V1_0\Support\BaseProcessor;
-use ERP\Core\Accounting\Bills\Persistables\BillPersistable;
-use Illuminate\Http\Request;
-use ERP\Http\Requests;
 use Illuminate\Http\Response;
-use ERP\Core\Accounting\Bills\Validations\BillValidate;
-use ERP\Api\V1_0\Accounting\Bills\Transformers\BillTransformer;
-use ERP\Model\Accounting\Ledgers\LedgerModel;
-use ERP\Model\Clients\ClientModel;
-use ERP\Api\V1_0\Accounting\Journals\Controllers\JournalController;
-use Illuminate\Container\Container;
-use ERP\Api\V1_0\Clients\Controllers\ClientController;
-use ERP\Api\V1_0\Accounting\Ledgers\Controllers\LedgerController;
-use ERP\Api\V1_0\Documents\Controllers\DocumentController;
-use ERP\Core\Accounting\Journals\Entities\AmountTypeEnum;
+use Illuminate\Http\Request;
+use ERP\Core\Accounting\Journals\Services\JournalService;
+use ERP\Http\Requests;
+use ERP\Api\V1_0\Support\BaseController;
+use ERP\Api\V1_0\Accounting\Journals\Processors\JournalProcessor;
+use ERP\Core\Accounting\Journals\Persistables\JournalPersistable;
+use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Exceptions\ExceptionMessage;
-use ERP\Entities\Constants\ConstantClass;
-use ERP\Core\Accounting\Bills\Entities\SalesTypeEnum;
-use Carbon;
-use ERP\Model\Accounting\Bills\BillModel;
-use ERP\Core\Clients\Entities\ClientArray;
-use ERP\Core\Accounting\Ledgers\Entities\LedgerArray;
+use Illuminate\Support\Collection;
+use ERP\Api\V1_0\Products\Processors\ProductProcessor;
+use ERP\Core\Products\Services\ProductService;
+use ERP\Core\Products\Persistables\ProductPersistable;
 use ERP\Model\Accounting\Journals\JournalModel;
+use ERP\Entities\Constants\ConstantClass;
+use Illuminate\Container\Container;
+use ERP\Entities\AuthenticationClass\TokenAuthentication;
+use ERP\Api\V1_0\Documents\Controllers\DocumentController;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class BillProcessor extends BaseProcessor
-{	/**
-     * @var billPersistable
-	 * @var request
+class JournalController extends BaseController implements ContainerInterface
+{
+	/**
+     * @var journalService
+     * @var processor
+     * @var request
+     * @var journalPersistable
      */
-	private $billPersistable;
-	private $request;    
-    /**
-     * get the form-data and set into the persistable object
-     * $param Request object [Request $request]
-     * @return Bill Persistable object
-     */	
-    public function createPersistable(Request $request)
-	{	
-		$this->request = $request;
-		// $clientContactFlag=0;
-		$contactFlag=0;
-		$paymentModeFlag=0;
-		$taxFlag=0;
-		$docFlag=0;
-		//get exception message
-		$exception = new ExceptionMessage();
-		$msgArray = $exception->messageArrays();
-
-		//get constant variables array
+	private $journalService;
+	private $processor;
+	private $request;
+	private $journalPersistable;	
+	
+	/**
+	 * get and invoke method is of ContainerInterface method
+	 */		
+    public function get($id,$name)
+	{
+		// echo "get";
+	}
+	public function invoke(callable $method)
+	{
+		// echo "invoke";
+	}
+	
+	/**
+	 * insert the specified resource 
+	 * @param  Request object[Request $request]
+	 * method calls the processor for creating persistable object & setting the data
+	*/
+    public function store(Request $request)
+    {
+		//get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
+		$RequestUri = explode("/", $_SERVER['REQUEST_URI']);
+		if(strcmp($RequestUri[1],"accounting")==0)
+		{
+			// get exception message
+			$exception = new ExceptionMessage();
+			$exceptionArray = $exception->messageArrays();
 		
-		//trim an input 
-		$billTransformer = new BillTransformer();
-		$tRequest = $billTransformer->trimInsertData($this->request);	
-		if($tRequest==1)
-		{
-			return $msgArray['content'];
-		}	
-		else
-		{
-			//validation
-			$billValidate = new BillValidate();
-			$status = $billValidate->validate($tRequest);
-			if($status=="Success")
+			//special journal entry and inventory entry
+			$this->request = $request;
+			$jfId = trim($this->request->input()['jfId']);
+			
+			// check the requested Http method
+			$requestMethod = $_SERVER['REQUEST_METHOD'];
+			
+			// insert
+			if($requestMethod == $constantArray['postMethod'])
 			{
-				//get contact-number from input data
-				$contactNo = $tRequest['contact_no'];
+				$processor = new JournalProcessor();
+				$journalPersistable = new JournalPersistable();
+				$journalPersistable = $processor->createPersistable($this->request);
 				
-				// if($contactNo=="" || $contactNo==0)
-				// {
-				   	// return $msgArray['content'];
-				// }
-				//check client is exists by contact-number
-				$clientModel = new ClientModel();
-				$clientData = $clientModel->getClientData($contactNo);			
-				if(is_array(json_decode($clientData)))
+				if(is_array($journalPersistable))
 				{
-					$encodedClientData = json_decode($clientData);
-					$clientId = $encodedClientData[0]->client_id;				
+					$journalService= new JournalService();
+					$status = $journalService->insert($journalPersistable);
+					
+					if(count($request->input())>4)
+					{
+						$productService= new ProductService();	
+						$productPersistable = new ProductPersistable();
+						if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
+						{
+							$outward = $constantArray['journalOutward'];
+							$productProcessor = new ProductProcessor();
+							$productPersistable = $productProcessor->createPersistableInOutWard($this->request,$outward);
+							if(is_array($productPersistable))
+							{
+								$status = $productService->insertInOutward($productPersistable,$jfId);
+								return $status;
+							}
+							else
+							{
+								return $productPersistable;
+							}
+						}
+						else if(strcmp($request->header()['type'][0],$constantArray['purchase'])==0)
+						{
+							$inward = $constantArray['journalInward'];
+							$productProcessor = new ProductProcessor();
+							$productPersistable = $productProcessor->createPersistableInOutWard($this->request,$inward);
+							if(is_array($productPersistable))
+							{
+								$status = $productService->insertInOutward($productPersistable,$jfId);
+								if(in_array(true,$request->file()) && strcmp($status,$exceptionArray['200'])==0)
+								{
+									$documentPath = $constantArray['journalDocumentUrl'];
+									$documentController =new DocumentController(new Container());
+									$processedData = $documentController->insertUpdate($this->request,$documentPath);
+									if(is_array($processedData))
+									{
+										$journalModel = new JournalModel();
+										$documentResult = $journalModel->insertPurchaseDocumentData($processedData);
+										return $documentResult;
+									}
+									else
+									{
+										return $processedData;
+									}
+								}
+								else
+								{
+									return $status;
+								}
+							}
+							else
+							{
+								return $productPersistable;
+							}
+						}
+					}
+					else
+					{
+						return $status;
+					}
 				}
 				else
 				{
-					$clientArray = array();
-					$clientArray['clientName']=$tRequest['client_name'];
-					$clientArray['companyName']=$tRequest['client_name'];
-					$clientArray['contactNo']=$tRequest['contact_no'];
-					$clientArray['workNo']=$tRequest['work_no'];
-					$clientArray['emailId']=$tRequest['email_id'];
-					$clientArray['address1']=$tRequest['address1'];
-					$clientArray['address2']=$tRequest['address2'];
-					$clientArray['isDisplay']=$tRequest['is_display'];
-					$clientArray['stateAbb']=$tRequest['state_abb'];
-					$clientArray['cityId']=$tRequest['city_id'];
-					$clientController = new ClientController(new Container());
-					$method=$constantArray['postMethod'];
-					$path=$constantArray['clientUrl'];
-					$clientRequest = Request::create($path,$method,$clientArray);
-					$processedData = $clientController->store($clientRequest);
-					$clientId = json_decode($processedData)[0]->client_id;
+					return $journalPersistable;
+				}
+			}
+		}
+		else
+		{
+			//Authentication
+			$tokenAuthentication = new TokenAuthentication();
+			$authenticationResult = $tokenAuthentication->authenticate($request->header());
+			
+			if(strcmp($constantArray['success'],$authenticationResult)==0)
+			{
+				//special journal entry and inventory entry
+				$this->request = $request;
+				$jfId = trim($this->request->input()['jfId']);
+				
+				// check the requested Http method
+				$requestMethod = $_SERVER['REQUEST_METHOD'];
+				
+				// insert
+				if($requestMethod == $constantArray['postMethod'])
+				{
+					$processor = new JournalProcessor();
+					$journalPersistable = new JournalPersistable();
+					$journalPersistable = $processor->createPersistable($this->request);
+					if(is_array($journalPersistable))
+					{
+						$journalService= new JournalService();
+						$status = $journalService->insert($journalPersistable);
+						if(count($request->input())>4)
+						{
+							$productService= new ProductService();	
+							$productPersistable = new ProductPersistable();
+							if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
+							{
+								$outward = $constantArray['journalOutward'];
+								$productProcessor = new ProductProcessor();
+								$productPersistable = $productProcessor->createPersistableInOutWard($this->request,$outward);
+								if(is_array($productPersistable))
+								{
+									$status = $productService->insertInOutward($productPersistable,$jfId);
+									return $status;
+								}
+								else
+								{
+									return $productPersistable;
+								}
+							}
+							else if(strcmp($request->header()['type'][0],$constantArray['purchase'])==0)
+							{
+								$inward = $constantArray['journalInward'];
+								$productProcessor = new ProductProcessor();
+								$productPersistable = $productProcessor->createPersistableInOutWard($this->request,$inward);
+								if(is_array($productPersistable))
+								{
+									$status = $productService->insertInOutward($productPersistable,$jfId);
+									return $status;
+								}
+								else
+								{
+									return $productPersistable;
+								}
+							}
+						}
+						else
+						{
+							return $status;
+						}
+					}
+					else
+					{
+						return $journalPersistable;
+					}
 				}
 			}
 			else
 			{
-				//data is not valid...return validation error message
+				return $authenticationResult;
+			}
+		}
+	}
+	
+	/**
+     * get the next journal folio id
+     */
+    public function getData(Request $request)
+    {
+		$RequestUri = explode("/", $_SERVER['REQUEST_URI']);
+		if(strcmp($RequestUri[1],"accounting")==0)
+		{
+			$journalService = new JournalService();
+			$status = $journalService->getJournalData();
+			return $status;
+		}
+		else
+		{
+			//Authentication
+			$tokenAuthentication = new TokenAuthentication();
+			$authenticationResult = $tokenAuthentication->authenticate($request->header());
+			
+			//get constant array
+			$constantClass = new ConstantClass();
+			$constantArray = $constantClass->constantVariable();
+			
+			if(strcmp($constantArray['success'],$authenticationResult)==0)
+			{
+				$journalService = new JournalService();
+				$status = $journalService->getJournalData();
+				return $status;
+			}
+			else
+			{
+				return $authenticationResult;
+			}
+		}
+	}
+	
+	/**
+     * get the journal data
+     */
+    public function getJournalData(Request $request,$journalId)
+    {
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$journalService = new JournalService();
+			$status = $journalService->getJournalArrayData($journalId);
+			return $status;
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+	}
+	
+	/**
+     * get the specific data between given date or current year data
+     */
+    public function getSpecificData(Request $request,$companyId)
+    {
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			if(array_key_exists("type",$request->header()))
+			{
+				if(strcmp(trim($request->header()['type'][0]),$constantArray['sales'])==0 || strcmp(trim($request->header()['type'][0]),$constantArray['purchase'])==0)
+				{
+					//get journal-data as well as transaction-data for update
+					if(array_key_exists($constantArray['jfId'],$request->header()))
+					{
+						$jfId = $request->header()['jfid'];
+						$journalModel = new JournalModel();
+						$status = $journalModel->getJournalTransactionData($companyId,$request->header()['type'][0],$jfId);
+						if(is_array($status))
+						{
+							$result = json_decode($status);
+							return $status;
+						}
+						else
+						{
+							return $status;
+						}
+					}
+				}
+				else
+				{
+					return $exceptionArray['content'];
+				}
+			}
+			//get the data between fromDate and toDate
+			else if(array_key_exists($constantArray['fromDate'],$request->header()) && array_key_exists($constantArray['toDate'],$request->header()))
+			{
+				$this->request = $request;
+				$processor = new JournalProcessor();
+				$journalPersistable = new JournalPersistable();
+				$journalPersistable = $processor->createPersistableData($this->request);
+				$journalService= new JournalService();
+				$status = $journalService->getJournalDetail($journalPersistable,$companyId);
+				return $status;
+			}
+			//if date is not given..get the data of current year
+			else
+			{
+				$journalModel = new JournalModel();
+				$status = $journalModel->getCurrentYearData($companyId);
 				return $status;
 			}
 		}
-		$paymentMode = $tRequest['payment_mode'];
-		$ledgerModel = new LedgerModel();
-		$ledgerResult = $ledgerModel->getLedgerId($tRequest['company_id'],$paymentMode);
-		if(is_array(json_decode($ledgerResult)))
-		{
-			$paymentLedgerId = json_decode($ledgerResult)[0]->ledger_id;
-		}
-		if($tRequest['balance']!="" && $tRequest['balance']!=0)
-		{
-		   	// get ledger data for checking client is exist in ledger or not by contact-number
-			$ledgerData = $ledgerModel->getDataAsPerContactNo($tRequest['company_id'],$tRequest['contact_no']);
-			if(is_array(json_decode($ledgerData)))
-			{
-				$contactFlag=1;
-				$ledgerId = json_decode($ledgerData)[0]->ledger_id;
-			}
-			else
-			{
-				$contactFlag=2;
-			}
-		}
-		if($contactFlag==2)
-		{
-			$ledgerArray=array();
-			$ledgerArray['ledgerName']=$tRequest['client_name'];
-			$ledgerArray['address1']=$tRequest['address1'];
-			$ledgerArray['address2']=$tRequest['address2'];
-			$ledgerArray['contactNo']=$tRequest['contact_no'];
-			$ledgerArray['emailId']=$tRequest['email_id'];
-			$ledgerArray['stateAbb']=$tRequest['state_abb'];
-			$ledgerArray['cityId']=$tRequest['city_id'];
-			$ledgerArray['companyId']=$tRequest['company_id'];
-			$ledgerArray['balanceFlag']="opening";
-			$ledgerArray['amount']=0;
-			$ledgerArray['amountType']="credit";
-			$ledgerArray['ledgerGroupId']=32;
-			$ledgerController = new LedgerController(new Container());
-			$method=$constantArray['postMethod'];
-			$path=$constantArray['ledgerUrl'];
-			$ledgerRequest = Request::create($path,$method,$ledgerArray);
-			$processedData = $ledgerController->store($ledgerRequest);	
-			// print_r($processedData);
-			//|| $processedData[0][0]=='[' error while validation error occur
-			if(strcmp($msgArray['500'],$processedData)==0 || strcmp($msgArray['content'],$processedData)==0)
-			{
-				return $processedData;
-			}
-			$ledgerId = json_decode($processedData)[0]->ledger_id;
-		}
-		// get jf_id
-		$journalController = new JournalController(new Container());
-		$journalMethod=$constantArray['getMethod'];
-		$journalPath=$constantArray['journalUrl'];
-		$journalDataArray = array();
-		$journalJfIdRequest = Request::create($journalPath,$journalMethod,$journalDataArray);
-		$jfId = $journalController->getData($journalJfIdRequest);
-		$jsonDecodedJfId = json_decode($jfId)->nextValue;
-		
-		//get general ledger array data
-		$generalLedgerData = $ledgerModel->getLedger($tRequest['company_id']);
-		$generalLedgerArray = json_decode($generalLedgerData);
-		$salesTypeEnum = new SalesTypeEnum();
-		
-		$salesTypeEnumArray = $salesTypeEnum->enumArrays();		
-		if(strcmp($request->header()['salestype'][0],$salesTypeEnumArray['retailSales'])==0)
-		{
-			//get ledger-id of retail_sales as per given company_id
-			$ledgerIdData = $ledgerModel->getLedgerId($tRequest['company_id'],$request->header()['salestype'][0]);
-			$decodedLedgerId = json_decode($ledgerIdData);
-		}
 		else
 		{
-			//get ledger-id of whole sales as per given company_id
-			$ledgerIdData = $ledgerModel->getLedgerId($tRequest['company_id'],$request->header()['salestype'][0]);
-			$decodedLedgerId = json_decode($ledgerIdData);
-		}
-		$ledgerTaxAcId = $generalLedgerArray[0][0]->ledger_id;
-		$ledgerSaleAcId = $decodedLedgerId[0]->ledger_id;
-		$ledgerDiscountAcId = $generalLedgerArray[1][0]->ledger_id;
-		
-		$amountTypeEnum = new AmountTypeEnum();
-		$amountTypeArray = $amountTypeEnum->enumArrays();
-		$ledgerAmount = $tRequest['total']-$tRequest['advance'];		
-		$discountTotal=0;
-		for($discountArray=0;$discountArray<count($tRequest[0]);$discountArray++)
-		{
-			if(strcmp($tRequest[0][$discountArray]['discountType'],"flat")==0)
-			{
-				$discount = $tRequest[0][$discountArray]['discount'];
-			}
-			else
-			{
-				$discount = ($tRequest[0][$discountArray]['discount']/100)*$tRequest[0][$discountArray]['price'];
-			}	
-			$discountTotal = $discount+$discountTotal;
-		}
-		
-		$totalSaleAmount = $discountTotal+$tRequest['total'];
-		$totalDebitAmount = $tRequest['tax']+$tRequest['total'];
-		if($discountTotal==0)
-		{
-			//make data array for journal entry
-			if($tRequest['tax']!=0)
-			{
-				if($tRequest['advance']!="" && $tRequest['advance']!=0)
-				{
-					if($ledgerAmount+$tRequest['tax']==0)
-					{
-						$dataArray[0]=array(
-							"amount"=>$tRequest['advance'],
-							"amountType"=>$amountTypeArray['debitType'],
-							"ledgerId"=>$paymentLedgerId,
-						);
-						$dataArray[1]=array(
-							"amount"=>$tRequest['tax'],
-							"amountType"=>$amountTypeArray['creditType'],
-							"ledgerId"=>$ledgerTaxAcId,
-						);
-						$dataArray[2]=array(
-							"amount"=>$totalSaleAmount,
-							"amountType"=>$amountTypeArray['creditType'],
-							"ledgerId"=>$ledgerSaleAcId,
-						);
-					}
-					else
-					{
-						$dataArray[0]=array(
-							"amount"=>$tRequest['advance'],
-							"amountType"=>$amountTypeArray['debitType'],
-							"ledgerId"=>$paymentLedgerId,
-						);
-						$dataArray[1]=array(
-							"amount"=>$ledgerAmount+$tRequest['tax'],
-							"amountType"=>$amountTypeArray['debitType'],
-							"ledgerId"=>$ledgerId,
-						);
-						$dataArray[2]=array(
-							"amount"=>$tRequest['tax'],
-							"amountType"=>$amountTypeArray['creditType'],
-							"ledgerId"=>$ledgerTaxAcId,
-						);
-						$dataArray[3]=array(
-							"amount"=>$totalSaleAmount,
-							"amountType"=>$amountTypeArray['creditType'],
-							"ledgerId"=>$ledgerSaleAcId,
-						);
-					}
-				
-				}
-				else
-				{
-					$dataArray[0]=array(
-						"amount"=>$totalDebitAmount,
-						"amountType"=>$amountTypeArray['debitType'],
-						"ledgerId"=>$ledgerId,
-					);
-					$dataArray[1]=array(
-						"amount"=>$tRequest['tax'],
-						"amountType"=>$amountTypeArray['creditType'],
-						"ledgerId"=>$ledgerTaxAcId,
-					);
-					$dataArray[2]=array(
-						"amount"=>$totalSaleAmount,
-						"amountType"=>$amountTypeArray['creditType'],
-						"ledgerId"=>$ledgerSaleAcId,
-					);
-				}
-			}
-			else
-			{
-				if($tRequest['advance']!="" && $tRequest['advance']!=0)
-				{
-					if($ledgerAmount==0)
-					{
-						$dataArray[0]=array(
-						"amount"=>$tRequest['advance'],
-						"amountType"=>$amountTypeArray['debitType'],
-						"ledgerId"=>$paymentLedgerId,
-						);
-						$dataArray[1]=array(
-							"amount"=>$tRequest['total'],
-							"amountType"=>$amountTypeArray['creditType'],
-							"ledgerId"=>$ledgerSaleAcId,
-						);
-					}
-					else
-					{
-						$dataArray[0]=array(
-						"amount"=>$tRequest['advance'],
-						"amountType"=>$amountTypeArray['debitType'],
-						"ledgerId"=>$paymentLedgerId,
-						);
-						$dataArray[1]=array(
-							"amount"=>$ledgerAmount,
-							"amountType"=>$amountTypeArray['debitType'],
-							"ledgerId"=>$ledgerId,
-						);
-						$dataArray[2]=array(
-							"amount"=>$tRequest['total'],
-							"amountType"=>$amountTypeArray['creditType'],
-							"ledgerId"=>$ledgerSaleAcId,
-						);
-					}
-				}
-				else
-				{
-					$dataArray[0]=array(
-						"amount"=>$tRequest['total'],
-						"amountType"=>$amountTypeArray['debitType'],
-						"ledgerId"=>$ledgerId,
-					);
-					$dataArray[1]=array(
-						"amount"=>$tRequest['total'],
-						"amountType"=>$amountTypeArray['creditType'],
-						"ledgerId"=>$ledgerSaleAcId,
-					);
-				}
-			}
-		}
-		else
-		{
-			//make data array for journal entry
-			if($tRequest['tax']!=0)
-			{
-				if($tRequest['advance']!="" && $tRequest['advance']!=0)
-				{
-					if($ledgerAmount+$tRequest['tax']==0)
-					{
-						$dataArray[0]=array(
-						"amount"=>$tRequest['advance'],
-						"amountType"=>$amountTypeArray['debitType'],
-						"ledgerId"=>$paymentLedgerId,
-						);
-						$dataArray[1]=array(
-							"amount"=>$discountTotal,
-							"amountType"=>$amountTypeArray['debitType'],
-							"ledgerId"=>$ledgerDiscountAcId,
-						);
-						$dataArray[2]=array(
-							"amount"=>$tRequest['tax'],
-							"amountType"=>$amountTypeArray['creditType'],
-							"ledgerId"=>$ledgerTaxAcId,
-						);
-						$dataArray[3]=array(
-							"amount"=>$totalSaleAmount,
-							"amountType"=>$amountTypeArray['creditType'],
-							"ledgerId"=>$ledgerSaleAcId,
-						);
-					}
-					else
-					{
-						$dataArray[0]=array(
-						"amount"=>$tRequest['advance'],
-						"amountType"=>$amountTypeArray['debitType'],
-						"ledgerId"=>$paymentLedgerId,
-						);
-						$dataArray[1]=array(
-							"amount"=>$ledgerAmount+$tRequest['tax'],
-							"amountType"=>$amountTypeArray['debitType'],
-							"ledgerId"=>$ledgerId,
-						);
-						$dataArray[2]=array(
-							"amount"=>$discountTotal,
-							"amountType"=>$amountTypeArray['debitType'],
-							"ledgerId"=>$ledgerDiscountAcId,
-						);
-						$dataArray[3]=array(
-							"amount"=>$tRequest['tax'],
-							"amountType"=>$amountTypeArray['creditType'],
-							"ledgerId"=>$ledgerTaxAcId,
-						);
-						$dataArray[4]=array(
-							"amount"=>$totalSaleAmount,
-							"amountType"=>$amountTypeArray['creditType'],
-							"ledgerId"=>$ledgerSaleAcId,
-						);
-					}
-				}
-				else
-				{
-					$dataArray[0]=array(
-						"amount"=>$tRequest['total']+$tRequest['tax'],
-						"amountType"=>$amountTypeArray['debitType'],
-						"ledgerId"=>$ledgerId,
-					);
-					$dataArray[1]=array(
-						"amount"=>$discountTotal,
-						"amountType"=>$amountTypeArray['debitType'],
-						"ledgerId"=>$ledgerDiscountAcId,
-					);
-					$dataArray[2]=array(
-						"amount"=>$tRequest['tax'],
-						"amountType"=>$amountTypeArray['creditType'],
-						"ledgerId"=>$ledgerTaxAcId,
-					);
-					$dataArray[3]=array(
-						"amount"=>$totalSaleAmount,
-						"amountType"=>$amountTypeArray['creditType'],
-						"ledgerId"=>$ledgerSaleAcId,
-					);
-				}
-			}
-			else
-			{
-				if($tRequest['advance']!="" && $tRequest['advance']!=0)
-				{
-					if($ledgerAmount==0)
-					{
-						$dataArray[0]=array(
-						"amount"=>$tRequest['advance'],
-						"amountType"=>$amountTypeArray['debitType'],
-						"ledgerId"=>$paymentLedgerId,
-						);
-						$dataArray[1]=array(
-							"amount"=>$discountTotal,
-							"amountType"=>$amountTypeArray['debitType'],
-							"ledgerId"=>$ledgerDiscountAcId,
-						);
-						$dataArray[2]=array(
-							"amount"=>$totalSaleAmount,
-							"amountType"=>$amountTypeArray['creditType'],
-							"ledgerId"=>$ledgerSaleAcId,
-						);
-					}
-					else
-					{
-						$dataArray[0]=array(
-						"amount"=>$tRequest['advance'],
-						"amountType"=>$amountTypeArray['debitType'],
-						"ledgerId"=>$paymentLedgerId,
-						);
-						$dataArray[1]=array(
-							"amount"=>$ledgerAmount,
-							"amountType"=>$amountTypeArray['debitType'],
-							"ledgerId"=>$ledgerId,
-						);
-						$dataArray[2]=array(
-							"amount"=>$discountTotal,
-							"amountType"=>$amountTypeArray['debitType'],
-							"ledgerId"=>$ledgerDiscountAcId,
-						);
-						$dataArray[3]=array(
-							"amount"=>$totalSaleAmount,
-							"amountType"=>$amountTypeArray['creditType'],
-							"ledgerId"=>$ledgerSaleAcId,
-						);
-					}
-				}
-				else
-				{
-					$dataArray[0]=array(
-						"amount"=>$tRequest['total'],
-						"amountType"=>$amountTypeArray['debitType'],
-						"ledgerId"=>$ledgerId,
-					);
-					$dataArray[1]=array(
-						"amount"=>$discountTotal,
-						"amountType"=>$amountTypeArray['debitType'],
-						"ledgerId"=>$ledgerDiscountAcId,
-					);
-					$dataArray[2]=array(
-						"amount"=>$totalSaleAmount,
-						"amountType"=>$amountTypeArray['creditType'],
-						"ledgerId"=>$ledgerSaleAcId,
-					);
-				}
-			}
-		}
-		
-		//make data array for journal sale entry
-		$journalArray = array();
-		$journalArray= array(
-			'jfId' => $jsonDecodedJfId,
-			'data' => array(
-			),
-			'entryDate' => $tRequest['entry_date'],
-			'companyId' => $tRequest['company_id'],
-			'inventory' => array(
-			),
-			'transactionDate'=> $tRequest['entry_date'],
-			'tax'=> $tRequest['tax'],
-			'invoiceNumber'=>$tRequest['invoice_number']
-		);
-		$journalArray['data']=$dataArray;
-		$journalArray['inventory']=$tRequest[0];
-		$method=$constantArray['postMethod'];
-		$path=$constantArray['journalUrl'];
-		$journalRequest = Request::create($path,$method,$journalArray);
-		$journalRequest->headers->set('type',$constantArray['sales']);
-		$processedData = $journalController->store($journalRequest);
-		if(strcmp($processedData,$msgArray['200'])==0)
-		{	
-			$productArray = array();
-			$productArray['invoiceNumber']=$tRequest['invoice_number'];
-			$productArray['transactionType']=$constantArray['journalOutward'];
-			$productArray['companyId']=$tRequest['company_id'];
-	
-			$tInventoryArray = array();
-			for($trimData=0;$trimData<count($request->input()['inventory']);$trimData++)
-			{
-				
-				$tInventoryArray[$trimData] = array();
-				$tInventoryArray[$trimData][5] = trim($request->input()['inventory'][$trimData]['color']);
-				$tInventoryArray[$trimData][6] = trim($request->input()['inventory'][$trimData]['frameNo']);
-				array_push($request->input()['inventory'][$trimData],$tInventoryArray[$trimData]);
-			}
-			
-			$productArray['inventory'] = $request->input()['inventory'];
-			$documentPath = $constantArray['billDocumentUrl'];
-			if(in_array(true,$request->file()))
-			{
-				$documentController =new DocumentController(new Container());
-				$processedData = $documentController->insertUpdate($request,$documentPath);
-				if(is_array($processedData))
-				{
-					$docFlag=1;
-				}
-				else
-				{
-					return $processedData;
-				}
-			}
-			//entry date conversion
-			$transformEntryDate = Carbon\Carbon::createFromFormat('d-m-Y', $tRequest['entry_date'])->format('Y-m-d');
-			$billPersistable = new BillPersistable();
-			$billPersistable->setProductArray(json_encode($productArray));
-			$billPersistable->setPaymentMode($tRequest['payment_mode']);
-			$billPersistable->setBankName($tRequest['bank_name']);
-			$billPersistable->setInvoiceNumber($tRequest['invoice_number']);
-			$billPersistable->setCheckNumber($tRequest['check_number']);
-			$billPersistable->setTotal($tRequest['total']);
-			$billPersistable->setTax($tRequest['tax']);
-			$billPersistable->setGrandTotal($tRequest['grand_total']);
-			$billPersistable->setAdvance($tRequest['advance']);
-			$billPersistable->setBalance($tRequest['balance']);
-			$billPersistable->setRemark($tRequest['remark']);
-			$billPersistable->setEntryDate($transformEntryDate);
-			$billPersistable->setClientId($clientId);
-			$billPersistable->setCompanyId($tRequest['company_id']);
-			$billPersistable->setJfId($jsonDecodedJfId);
-			if(strcmp($request->header()['salestype'][0],$salesTypeEnumArray['retailSales'])==0 || strcmp($request->header()['salestype'][0],$salesTypeEnumArray['wholesales'])==0)
-			{
-				$billPersistable->setSalesType($request->header()['salestype'][0]);
-			}
-			else
-			{
-				return $msgArray['content'];
-			}
-			if($docFlag==1)
-			{
-				$array1 = array();
-				array_push($processedData,$billPersistable);
-				return $processedData;
-			}
-			else
-			{
-				return $billPersistable;
-			}
-		}
-		else
-		{
-			return $processedData;
-		}
-	}
-
-	/**
-     * get the fromDate-toDate data and set into the persistable object
-     * $param Request object [Request $request]
-     * @return Bill Persistable object
-     */	
-	public function getPersistableData($requestHeader)
-	{
-		//get exception message
-		$exception = new ExceptionMessage();
-		$msgArray = $exception->messageArrays();
-
-		//trim an input 
-		$billTransformer = new BillTransformer();
-		$tRequest = $billTransformer->trimFromToDateData($requestHeader);
-		if(is_array($tRequest))
-		{
-			// set data in persistable object
-			$billPersistable = new BillPersistable();
-			$billPersistable->setSalesType($tRequest['salesType']);
-			$billPersistable->setFromDate($tRequest['fromDate']);
-			$billPersistable->setToDate($tRequest['toDate']);
-			return $billPersistable;
-		}
-		else
-		{
-			return $tRequest;
+			return $authenticationResult;
 		}
 	}
 	
 	/**
-     * get request data and set into the persistable object
-     * $param Request object [Request $request] and sale-id
-     * @return Bill Persistable object
-     */	
-	public function getPersistablePaymentData(Request $request,$saleId)
+	 * update the specified resource 
+	 * @param  Request object[Request $request] and journal-folio id
+	 * method calls the processor for creating persistable object & setting the data
+	*/
+	public function update(Request $request,$jfId)
 	{
-		//get exception message
-		$exception = new ExceptionMessage();
-		$msgArray = $exception->messageArrays();
-		
-		$amountTypeEnum = new AmountTypeEnum();
-		$amountTypeArray = $amountTypeEnum->enumArrays();
-		
-		//get constant variables array
+		//get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-		
-		//trim an input 
-		$billTransformer = new BillTransformer();
-		$tRequest = $billTransformer->trimPaymentData($request);
-		if(is_array($tRequest))
-		{
-			//get bill data as per given sale-id(get company id)
-			$billModel = new BillModel();
-			$saleIdData = $billModel->getSaleIdData($saleId);
-			if(strcmp($saleIdData,$msgArray['404'])!=0)
+			
+		$RequestUri = explode("/", $_SERVER['REQUEST_URI']);
+		if(strcmp($RequestUri[1],"accounting")==0 && strcmp($RequestUri[2],"bill")==0)
+		{   
+			$this->request = $request;
+			$processor = new JournalProcessor();
+			$journalPersistable = new JournalPersistable();		
+			$journalService= new JournalService();		
+			$journalModel = new JournalModel();
+			$jfIdArrayData = $journalModel->getJfIdArrayData($jfId);
+			$entryDateFlag=0;
+			$companyIdFlag=0;
+			$journalArrayFlag=0;
+			$invoiceNumberFlag=0;
+			$productArrayFlag=0;
+			$transactionDateFlag=0;
+			$billNumberFlag=0;
+			$taxFlag=0;
+			
+			//get exception message
+			$exception = new ExceptionMessage();
+			$exceptionArray = $exception->messageArrays();
+			
+			//check array exists
+			if(array_key_exists($constantArray['data'], $this->request->input()))
 			{
-				$decodedBillData = json_decode($saleIdData);
-				$companyId = $decodedBillData[0]->company_id;
-				
-				//get latest jf-id
-				$journalController = new JournalController(new Container());
-				$journalMethod=$constantArray['getMethod'];
-				$journalPath=$constantArray['journalUrl'];
-				$journalDataArray = array();
-				
-				$journalJfIdRequest = Request::create($journalPath,$journalMethod,$journalDataArray);
-				$jfIdData = $journalController->getData($journalJfIdRequest);
-				
-				$ledgerModel = new LedgerModel();
-				$ledgerData = $ledgerModel->getLedgerId($companyId,$tRequest['payment_mode']);
-				$decodedLedgerId = json_decode($ledgerData)[0]->ledger_id;
-				if(strcmp($ledgerData,$msgArray['404'])==0)
+				$journalData = $this->request->input()['data'];
+				$dataCountOfArray = count($this->request->input()['data']);
+				for($dataArray=0;$dataArray<$dataCountOfArray-1;$dataArray++)
 				{
-					return $msgArray['404'];
-				}
-				
-				if(strcmp($jfIdData,$msgArray['404'])!=0)
-				{
-					$nextJfId = json_decode($jfIdData)->nextValue;
-					
-					//process of making a journal entry 
-					if(strcmp($tRequest['payment_transaction'],$constantArray['paymentType'])==0)
+					if(strcmp($journalData[$dataArray]['ledgerId'],$journalData[$dataArray+1]['ledgerId'])==0)
 					{
-						//get personal a/c ledgerId
-						$ledgerPersonalIdData = $ledgerModel->getPersonalAccLedgerId($companyId,$decodedBillData[0]->jf_id);
-						if(strcmp($ledgerPersonalIdData,$msgArray['404'])==0)
-						{
-							return $msgArray['404'];
-						}
-						if($decodedBillData[0]->balance<$tRequest['amount'])
-						{
-							return $msgArray['content'];
-						}
-						$decodedPersonalAccData = json_decode($ledgerPersonalIdData)[0]->ledger_id;
-						$dataArray = array();
-						$journalArray = array();
-						$dataArray[0]=array(
-							"amount"=>$tRequest['amount'],
-							"amountType"=>$amountTypeArray['debitType'],
-							"ledgerId"=>$decodedLedgerId,
-						);
-						$dataArray[1]=array(
-							"amount"=>$tRequest['amount'],
-							"amountType"=>$amountTypeArray['creditType'],
-							"ledgerId"=>$decodedPersonalAccData,
-						);
-						
-						$journalArray= array(
-							'jfId' => $nextJfId,
-							'data' => array(
-							),
-							'entryDate' => $request->input()['entryDate'],
-							'companyId' => $companyId
-						);
-						$journalArray['data']=$dataArray;
-						$method=$constantArray['postMethod'];
-						$path=$constantArray['journalUrl'];
-						
-						$journalRequest = Request::create($path,$method,$journalArray);
-						$journalRequest->headers->set('type',$constantArray['paymentType']);
-						$processedData = $journalController->store($journalRequest);
-						if(strcmp($processedData,$msgArray['200'])!=0)
-						{
-							return $processedData;
-						}
-						$billArray = array();
-						$billArray['sale_id'] = $saleId;
-						$billArray['payment_mode'] = $tRequest['payment_mode'];
-						$billArray['advance'] = $decodedBillData[0]->advance+$tRequest['amount'];
-						$billArray['balance'] = $decodedBillData[0]->balance-$tRequest['amount'];
-						$billArray['refund'] = 0;
-						$billArray['entry_date'] = $tRequest['entry_date'];
-						$billArray['payment_transaction'] = $tRequest['payment_transaction'];
-						
-						if(strcmp($tRequest['payment_mode'],"bank")==0)
-						{
-							$billArray['bank_name'] = $tRequest['bank_name'];
-							$billArray['check_number'] = $tRequest['check_number'];
-						}
-						// set data in persistable object
-						$billPersistable = new BillPersistable();
-						$billPersistable->setBillArray(json_encode($billArray));
-						return $billPersistable;
+						return $exceptionArray['content'];
 					}
-					else if(strcmp($tRequest['payment_transaction'],$constantArray['refundType'])==0)
+				}
+			}
+			
+			//check journal-data is available in database as per given jf-id
+			if(strcmp($jfIdArrayData,$exceptionArray['404'])==0)
+			{
+				return $exceptionArray['404'];
+			}
+			if(array_key_exists($constantArray['type'],$request->header()))
+			{
+				if(strcmp($request->header()['type'][0],$constantArray['sales'])==0 || strcmp($request->header()['type'][0],$constantArray['purchase'])==0)
+				{
+					$productArray = array();
+					$journalArray = array();
+					$inputArray = $this->request->input();
+					if(array_key_exists($constantArray['entryDate'],$inputArray))
 					{
-						// type refund
-						//get salesReturn ledgerId
-						$salesLedgerData = $ledgerModel->getLedgerId($companyId,$constantArray['salesReturnType']);
-						$decodedSalesLedgerId = json_decode($salesLedgerData)[0]->ledger_id;
-						if(strcmp($salesLedgerData,$msgArray['404'])==0)
+						$entryDateFlag=1;
+						$journalArray['entryDate']=$inputArray['entryDate'];
+					}
+					if(array_key_exists('transactionDate',$inputArray))
+					{
+						$transactionDateFlag=1;
+						$productArray['transactionDate']=$inputArray['transactionDate'];
+					}
+					if(array_key_exists($constantArray['companyId'],$inputArray))
+					{
+						$companyIdFlag=1;
+						$journalArray['companyId']=$inputArray['companyId'];
+						$productArray['companyId'] = $inputArray['companyId'];
+					}
+					if(array_key_exists($constantArray['invoiceNumber'],$inputArray))
+					{
+						$invoiceNumberFlag=1;
+						$productArray['invoiceNumber'] = $inputArray['invoiceNumber'];
+					}
+					if(array_key_exists($constantArray['billNumber'],$inputArray))
+					{
+						$billNumberFlag=1;
+						$productArray['billNumber'] = $inputArray['billNumber'];
+					}
+					if(array_key_exists($constantArray['tax'],$inputArray))
+					{
+						$taxFlag=1;
+						$productArray['tax'] = $inputArray['tax'];
+					}
+					//check array exists in request 
+					if(array_key_exists($constantArray['data'],$this->request->input()))
+					{
+						$journalArrayFlag=1;
+						$journalArray['data']=array();
+						for($arrayData=0;$arrayData<count($this->request->input()['data']);$arrayData++)
 						{
-							return $msgArray['404'];
+							$journalArray['data'][$arrayData]=array();
+							$journalArray['data'][$arrayData]['amount']=$this->request->input()['data'][$arrayData]['amount'];
+							$journalArray['data'][$arrayData]['amountType']=$this->request->input()['data'][$arrayData]['amountType'];
+							$journalArray['data'][$arrayData]['ledgerId']=$this->request->input()['data'][$arrayData]['ledgerId'];
 						}
-						if($decodedBillData[0]->advance<$tRequest['amount'])
+					}
+					//check array is exists in request
+					if(array_key_exists($constantArray['inventory'],$inputArray))
+					{
+						$productArrayFlag=1;
+						$productArray['inventory'] = array();
+						for($inventoryArray=0;$inventoryArray<count($inputArray['inventory']);$inventoryArray++)
 						{
-							return $msgArray['content'];
+							$productArray['inventory'][$inventoryArray] = array();
+							$productArray['inventory'][$inventoryArray]['productId']=$inputArray['inventory'][$inventoryArray]['productId'];
+							$productArray['inventory'][$inventoryArray]['discount']=$inputArray['inventory'][$inventoryArray]['discount'];
+							$productArray['inventory'][$inventoryArray]['discountType']=$inputArray['inventory'][$inventoryArray]['discountType'];
+							$productArray['inventory'][$inventoryArray]['price']=$inputArray['inventory'][$inventoryArray]['price'];
+							$productArray['inventory'][$inventoryArray]['qty']=$inputArray['inventory'][$inventoryArray]['qty'];
 						}
-						$dataArray = array();
-						$journalArray = array();
-						$dataArray[0]=array(
-							"amount"=>$tRequest['amount'],
-							"amountType"=>$amountTypeArray['debitType'],
-							"ledgerId"=>$decodedSalesLedgerId,
-						);
-						$dataArray[1]=array(
-							"amount"=>$tRequest['amount'],
-							"amountType"=>$amountTypeArray['creditType'],
-							"ledgerId"=>$decodedLedgerId,
-						);
-						
-						$journalArray= array(
-							'jfId' => $nextJfId,
-							'data' => array(
-							),
-							'entryDate' => $request->input()['entryDate'],
-							'companyId' => $companyId
-						);
-						$journalArray['data']=$dataArray;
-						$method=$constantArray['postMethod'];
-						$path=$constantArray['journalUrl'];
-						
-						$journalRequest = Request::create($path,$method,$journalArray);
-						$journalRequest->headers->set('type',$constantArray['paymentType']);
-						$processedData = $journalController->store($journalRequest);
-						if(strcmp($processedData,$msgArray['200'])!=0)
+					}
+					//journal data is available in sale/purchase for update
+					if($entryDateFlag==1 || $companyIdFlag==1 || $journalArrayFlag==1)
+					{
+						if($productArrayFlag==1 || $taxFlag==1)
 						{
-							return $processedData;
+							//journal data is processed(trim,validation and set data in object)
+							$journalPersistable = $processor->createPersistableChangeData($request->header(),$productArray,$journalArray,$jfId);
+							if(!is_array($journalPersistable))
+							{
+								return $journalPersistable;
+							}
 						}
-						$billArray = array();
-						$billArray['sale_id'] = $saleId;
-						$billArray['payment_mode'] = $tRequest['payment_mode'];
-						$billArray['refund'] = $tRequest['amount']+$decodedBillData[0]->refund;
-						$billArray['advance'] = $decodedBillData[0]->advance;
-						$billArray['balance'] = $decodedBillData[0]->balance+$tRequest['amount'];
-						$billArray['entry_date'] = $tRequest['entry_date'];
-						$billArray['payment_transaction'] = $tRequest['payment_transaction'];
-						
-						if(strcmp($tRequest['payment_mode'],"bank")==0)
+						else
 						{
-							$billArray['bank_name'] = $tRequest['bank_name'];
-							$billArray['check_number'] = $tRequest['check_number'];
+							//journal data is processed(trim,validation and set data in object)
+							$journalPersistable = $processor->createPersistableChange($request,$request->header(),$journalArray,$jfId);
+							if(!is_array($journalPersistable))
+							{
+								return $journalPersistable;
+							}
 						}
-						// set data in persistable object
-						$billPersistable = new BillPersistable();
-						$billPersistable->setBillArray(json_encode($billArray));
-						return $billPersistable;
+						if(is_array($journalPersistable))
+						{
+							if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
+							{
+								$headerType = $constantArray['saleType'];
+							}
+							else
+							{
+								$headerType = $constantArray['purchaseType'];
+							}
+							$status = $journalService->update($journalPersistable,$jfId,$headerType);
+							//update data in product_transaction
+							if(strcmp($status,$exceptionArray['200'])==0)
+							{
+								//product transaction data is available for update
+								if($productArrayFlag==1 || $invoiceNumberFlag==1 || $entryDateFlag==1 || $companyIdFlag==1 || $billNumberFlag==1 || $transactionDateFlag==1 || $taxFlag==1)
+								{
+									//sale data update
+									if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
+									{ 
+										if($billNumberFlag==1)
+										{
+											//wrong entry
+										}
+										else
+										{
+											$inOutward = $constantArray['journalOutward'];
+										}
+									}
+									else
+									{
+										if($invoiceNumberFlag==1)
+										{
+											//wrong entry
+										}
+										else
+										{
+											$inOutward = $constantArray['journalInward'];
+										}
+									}
+									$productService= new ProductService();	
+									$productPersistable = new ProductPersistable();
+									$productProcessor = new ProductProcessor();
+									$productPersistable = $productProcessor->createPersistableChangeInOutWard($productArray,$inOutward,$jfId);
+									//here two array and string is return at a time
+									if(is_array($productPersistable))
+									{
+										$status = $productService->updateInOutwardData($productPersistable,$jfId,$inOutward);
+										return $status;
+									}
+									else
+									{
+										return $productPersistable;
+									}
+								}
+								else
+								{
+									return $status;
+								}
+								
+							}
+							else
+							{
+								return $journalPersistable;
+							}
+						}
 					}
 					else
 					{
-						return $msgArray['content'];
+						//sale data update
+						if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
+						{
+							if($billNumberFlag==1)
+							{
+								//wrong entry
+							}
+							else
+							{
+								$inOutward = $constantArray['journalOutward'];
+							}
+						}
+						else
+						{
+							if($invoiceNumberFlag==1)
+							{
+								//wrong entry
+							}
+							else
+							{
+								$inOutward = $constantArray['journalInward'];
+							}
+						}
+						$productService= new ProductService();	
+						$productPersistable = new ProductPersistable();
+						$productProcessor = new ProductProcessor();
+						$productPersistable = $productProcessor->createPersistableChangeInOutWard($productArray,$inOutward,$jfId);
+						
+						//here two array and string is return at a time
+						if(is_array($productPersistable))
+						{
+							$status = $productService->updateInOutwardData($productPersistable,$jfId,$inOutward);
+							return $status;
+						}
+						else
+						{
+							return $productPersistable;
+						}
 					}
 				}
+				//payment/receipt
 				else
 				{
-					return $jfIdData;
+					$headerData = $request->header();
+					$journalArray = $this->request->input();
+					if(strcmp($headerData['type'][0],$constantArray['paymentType'])==0)
+					{
+						$headerType = $constantArray['paymentType'];
+					}
+					else
+					{
+						$headerType = $constantArray['receiptType'];
+					}
+					//journal data is processed(trim,validation and set data in object)
+					$journalPersistable = $processor->createPersistableChange($request,$headerData,$journalArray,$jfId);
+					//here two array and string is return at a time
+					if(is_array($journalPersistable))
+					{
+						$status = $journalService->update($journalPersistable,$jfId,$headerType);
+						return $status;
+					}
+					else
+					{
+						return $journalPersistable;
+					}
 				}
 			}
 			else
 			{
-				return $saleIdData;
+				$headerData = $request->header();
+				$headerType = $constantArray['specialJournalType'];
+				$journalArray = $this->request->input();
+				//journal data is processed(trim,validation and set data in object)
+				$journalPersistable = $processor->createPersistableChange($request,$headerData,$journalArray,$jfId);
+				
+				//here two array and string is return at a time
+				if(is_array($journalPersistable))
+				{
+					$status = $journalService->update($journalPersistable,$jfId,$headerType);
+					return $status;
+				}
+				else
+				{
+					return $journalPersistable;
+				}
 			}
 		}
 		else
 		{
-			return $tRequest;
-		}
-	}
-	
-	/**
-     * get request data & sale-id and set into the persistable object
-     * $param Request object [Request $request] and sale-id and billdata
-     * @return Bill Persistable object/error message
-     */
-	public function createPersistableChange(Request $request,$saleId,$billData)
-	{
-		$balanceFlag=0;
-		
-		//get constant variables array
-		$constantClass = new ConstantClass();
-		$constantArray = $constantClass->constantVariable();
-		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$msgArray = $exception->messageArrays();
-		
-		//trim bill data
-		$billTransformer = new BillTransformer();
-		$billTrimData = $billTransformer->trimBillUpdateData($request);
-		
-		$ledgerModel = new LedgerModel();
-		
-		$clientArray = new ClientArray();
-		$clientArrayData = $clientArray->getClientArrayData();
-		$clientData = array();
-		foreach($clientArrayData as $key => $value)
-		{
-			if(array_key_exists($key,$billTrimData))
-			{
-				$clientData[$value] = $billTrimData[$key];
-			}
-		}
-		//get clientId as per given saleId
-		$billData = json_decode($billData);
-		
-		//get client-data as per given client-id for getting client contact_no
-		$clientModel = new ClientModel();
-		$clientIdData = $clientModel->getData($billData[0]->client_id);
-		$decodedClientData = json_decode($clientIdData);
-		
-		//get ledgerId for update ledegerData
-		$getLedgerData = $ledgerModel->getDataAsPerContactNo($billData[0]->company_id,$decodedClientData[0]->contact_no);
-		$decodedLedgerData = json_decode($getLedgerData);
-		$journalController = new JournalController(new Container());
-		if(count($clientData)!=0)
-		{
-			//call controller of client for updating of client data
-			$clientController = new ClientController(new Container());
-			$clientMethod=$constantArray['postMethod'];
-			$clientPath=$constantArray['clientUrl'].'/'.$billData[0]->client_id;
-			$clientRequest = Request::create($clientPath,$clientMethod,$clientData);
-			$clientData = $clientController->updateData($clientRequest,$billData[0]->client_id);
+			//Authentication
+			$tokenAuthentication = new TokenAuthentication();
+			$authenticationResult = $tokenAuthentication->authenticate($request->header());
 			
-			if(strcmp($clientData,$msgArray['200'])==0)
+			if(strcmp($constantArray['success'],$authenticationResult)==0)
 			{
-				//check condition of balance!=0 or not
-				if(array_key_exists('balance',$billTrimData))
-				{
-					if($billTrimData['balance']!=0 && $billTrimData['balance']!="")
-					{
-						$balanceFlag=1;
-					}
-				}
-				else
-				{
-					if($billData[0]->balance!=0 && $billData[0]->balance!="")
-					{
-						$balanceFlag=1;
-					}
-				}
-				if($balanceFlag==1)
-				{
-					$ledgerArray = new LedgerArray();
-					$ledgerArrayData = $ledgerArray->getLedgerArrayData();
-					
-					foreach($ledgerArrayData as $key => $value)
-					{
-						if(array_key_exists($value,$billTrimData))
-						{
-							$ledgerData[$key] = $billTrimData[$value];
-						}
-					}
-					//Now, we can update ledger data
-					$ledgerController = new LedgerController(new Container());
-					$ledgerMethod=$constantArray['postMethod'];
-					$ledgerPath=$constantArray['ledgerUrl'].'/'.$decodedLedgerData[0]->ledger_id;
-					$ledgerRequest = Request::create($ledgerPath,$ledgerMethod,$ledgerData);
-					$ledgerStatus = $ledgerController->update($ledgerRequest,$decodedLedgerData[0]->ledger_id);
-					if(strcmp($ledgerStatus,$msgArray['200'])!=0)
-					{
-						return $ledgerStatus;
-					}
-				}
-			}
-			else
-			{
-				return $clientData;
-			}
-		}
-		
-		if(array_key_exists('inventory',$billTrimData))
-		{
-			if(array_key_exists('payment_mode',$billTrimData))
-			{
-				$paymentMode = $billTrimData['payment_mode'];
-			}
-			else
-			{
-				$paymentMode = $billData[0]->payment_mode;
-			}
-			
-			$ledgerId = $decodedLedgerData[0]->ledger_id;
-			$ledgerResult = $ledgerModel->getLedgerId($billData[0]->company_id,$paymentMode);
-			if(is_array(json_decode($ledgerResult)))
-			{
-				$paymentLedgerId = json_decode($ledgerResult)[0]->ledger_id;
-			}
-			
-			//get jf_id
-			$journalMethod=$constantArray['getMethod'];
-			$journalPath=$constantArray['journalUrl'];
-			$journalDataArray = array();
-			$journalJfIdRequest = Request::create($journalPath,$journalMethod,$journalDataArray);
-			$jfId = $journalController->getData($journalJfIdRequest);
-			$jsonDecodedJfId = json_decode($jfId)->nextValue;
-			
-			//get general ledger array data
-			$generalLedgerData = $ledgerModel->getLedger($billData[0]->company_id);
-			$generalLedgerArray = json_decode($generalLedgerData);
-			$salesTypeEnum = new SalesTypeEnum();
-			
-			$salesTypeEnumArray = $salesTypeEnum->enumArrays();		
-			if(strcmp($billData[0]->sales_type,$salesTypeEnumArray['retailSales'])==0)
-			{
-				//get ledger-id of retail_sales as per given company_id
-				$ledgerIdData = $ledgerModel->getLedgerId($billData[0]->company_id,$salesTypeEnumArray['retailSales']);
-				$decodedLedgerId = json_decode($ledgerIdData);
-			}
-			else
-			{
-				//get ledger-id of whole sales as per given company_id
-				$ledgerIdData = $ledgerModel->getLedgerId($billData[0]->company_id,$salesTypeEnumArray['retailSales']);
-				$decodedLedgerId = json_decode($ledgerIdData);
-			}
-			$ledgerTaxAcId = $generalLedgerArray[0][0]->ledger_id;
-			$ledgerSaleAcId = $decodedLedgerId[0]->ledger_id;
-			$ledgerDiscountAcId = $generalLedgerArray[1][0]->ledger_id;
-			
-			$amountTypeEnum = new AmountTypeEnum();
-			$amountTypeArray = $amountTypeEnum->enumArrays();
-			$ledgerAmount = $billTrimData['total']-$billTrimData['advance'];		
-			$discountTotal=0;
-			$inventoryArray = $billTrimData['inventory'];
-			for($discountArray=0;$discountArray<count($inventoryArray);$discountArray++)
-			{
-				if(strcmp($inventoryArray[$discountArray]['discountType'],"flat")==0)
-				{
-					$discount = $inventoryArray[$discountArray]['discount'];
-				}
-				else
-				{
-					$discount = ($inventoryArray[$discountArray]['discount']/100)*$inventoryArray[$discountArray]['price'];
-				}	
-				$discountTotal = $discount+$discountTotal;
-			}
-			$totalSaleAmount = $discountTotal+$billTrimData['total'];
-			$totalDebitAmount = $billTrimData['tax']+$billTrimData['total'];
-			if($discountTotal==0)
-			{
-				//make data array for journal entry
-				if($billTrimData['tax']!=0)
-				{
-					if($request->input()['advance']!="" && $billTrimData['advance']!=0)
-					{
-						if($ledgerAmount+$billTrimData['tax']==0)
-						{
-							$dataArray[0]=array(
-								"amount"=>$billTrimData['advance'],
-								"amountType"=>$amountTypeArray['debitType'],
-								"ledgerId"=>$paymentLedgerId,
-							);
-							$dataArray[1]=array(
-								"amount"=>$billTrimData['tax'],
-								"amountType"=>$amountTypeArray['creditType'],
-								"ledgerId"=>$ledgerTaxAcId,
-							);
-							$dataArray[2]=array(
-								"amount"=>$totalSaleAmount,
-								"amountType"=>$amountTypeArray['creditType'],
-								"ledgerId"=>$ledgerSaleAcId,
-							);
-						}
-						else
-						{
-							$dataArray[0]=array(
-								"amount"=>$billTrimData['advance'],
-								"amountType"=>$amountTypeArray['debitType'],
-								"ledgerId"=>$paymentLedgerId,
-							);
-							$dataArray[1]=array(
-								"amount"=>$ledgerAmount+$billTrimData['tax'],
-								"amountType"=>$amountTypeArray['debitType'],
-								"ledgerId"=>$ledgerId,
-							);
-							$dataArray[2]=array(
-								"amount"=>$billTrimData['tax'],
-								"amountType"=>$amountTypeArray['creditType'],
-								"ledgerId"=>$ledgerTaxAcId,
-							);
-							$dataArray[3]=array(
-								"amount"=>$totalSaleAmount,
-								"amountType"=>$amountTypeArray['creditType'],
-								"ledgerId"=>$ledgerSaleAcId,
-							);
-						}
-					
-					}
-					else
-					{
-						$dataArray[0]=array(
-							"amount"=>$totalDebitAmount,
-							"amountType"=>$amountTypeArray['debitType'],
-							"ledgerId"=>$ledgerId,
-						);
-						$dataArray[1]=array(
-							"amount"=>$billTrimData['tax'],
-							"amountType"=>$amountTypeArray['creditType'],
-							"ledgerId"=>$ledgerTaxAcId,
-						);
-						$dataArray[2]=array(
-							"amount"=>$totalSaleAmount,
-							"amountType"=>$amountTypeArray['creditType'],
-							"ledgerId"=>$ledgerSaleAcId,
-						);
-					}
-				}
-				else
-				{
-					if($billTrimData['advance']!="" && $billTrimData['advance']!=0)
-					{
-						if($ledgerAmount==0)
-						{
-							$dataArray[0]=array(
-							"amount"=>$billTrimData['advance'],
-							"amountType"=>$amountTypeArray['debitType'],
-							"ledgerId"=>$paymentLedgerId,
-							);
-							$dataArray[1]=array(
-								"amount"=>$billTrimData['total'],
-								"amountType"=>$amountTypeArray['creditType'],
-								"ledgerId"=>$ledgerSaleAcId,
-							);
-						}
-						else
-						{
-							$dataArray[0]=array(
-							"amount"=>$billTrimData['advance'],
-							"amountType"=>$amountTypeArray['debitType'],
-							"ledgerId"=>$paymentLedgerId,
-							);
-							$dataArray[1]=array(
-								"amount"=>$ledgerAmount,
-								"amountType"=>$amountTypeArray['debitType'],
-								"ledgerId"=>$ledgerId,
-							);
-							$dataArray[2]=array(
-								"amount"=>$billTrimData['total'],
-								"amountType"=>$amountTypeArray['creditType'],
-								"ledgerId"=>$ledgerSaleAcId,
-							);
-						}
-					}
-					else
-					{
-						$dataArray[0]=array(
-							"amount"=>$billTrimData['total'],
-							"amountType"=>$amountTypeArray['debitType'],
-							"ledgerId"=>$ledgerId,
-						);
-						$dataArray[1]=array(
-							"amount"=>$billTrimData['total'],
-							"amountType"=>$amountTypeArray['creditType'],
-							"ledgerId"=>$ledgerSaleAcId,
-						);
-					}
-				}
-			}
-			else
-			{
-				
-				//make data array for journal entry
-				if($billTrimData['tax']!=0)
-				{
-					if($billTrimData['advance']!="" && $billTrimData['advance']!=0)
-					{
-						if($ledgerAmount+$billTrimData['tax']==0)
-						{
-							
-							$dataArray[0]=array(
-							"amount"=>$billTrimData['advance'],
-							"amountType"=>$amountTypeArray['debitType'],
-							"ledgerId"=>$paymentLedgerId,
-							);
-							$dataArray[1]=array(
-								"amount"=>$discountTotal,
-								"amountType"=>$amountTypeArray['debitType'],
-								"ledgerId"=>$ledgerDiscountAcId,
-							);
-							$dataArray[2]=array(
-								"amount"=>$billTrimData['tax'],
-								"amountType"=>$amountTypeArray['creditType'],
-								"ledgerId"=>$ledgerTaxAcId,
-							);
-							$dataArray[3]=array(
-								"amount"=>$totalSaleAmount,
-								"amountType"=>$amountTypeArray['creditType'],
-								"ledgerId"=>$ledgerSaleAcId,
-							);
-						}
-						else
-						{
-							
-							$dataArray[0]=array(
-							"amount"=>$billTrimData['advance'],
-							"amountType"=>$amountTypeArray['debitType'],
-							"ledgerId"=>$paymentLedgerId,
-							);
-							
-							$dataArray[1]=array(
-								"amount"=>$ledgerAmount+$billTrimData['tax'],
-								"amountType"=>$amountTypeArray['debitType'],
-								"ledgerId"=>$ledgerId,
-							);
-							$dataArray[2]=array(
-								"amount"=>$discountTotal,
-								"amountType"=>$amountTypeArray['debitType'],
-								"ledgerId"=>$ledgerDiscountAcId,
-							);
-							$dataArray[3]=array(
-								"amount"=>$billTrimData['tax'],
-								"amountType"=>$amountTypeArray['creditType'],
-								"ledgerId"=>$ledgerTaxAcId,
-							);
-							$dataArray[4]=array(
-								"amount"=>$totalSaleAmount,
-								"amountType"=>$amountTypeArray['creditType'],
-								"ledgerId"=>$ledgerSaleAcId,
-							);
-						}
-					}
-					else
-					{
-						$dataArray[0]=array(
-							"amount"=>$billTrimData['total']+$billTrimData['tax'],
-							"amountType"=>$amountTypeArray['debitType'],
-							"ledgerId"=>$ledgerId,
-						);
-						$dataArray[1]=array(
-							"amount"=>$discountTotal,
-							"amountType"=>$amountTypeArray['debitType'],
-							"ledgerId"=>$ledgerDiscountAcId,
-						);
-						$dataArray[2]=array(
-							"amount"=>$billTrimData['tax'],
-							"amountType"=>$amountTypeArray['creditType'],
-							"ledgerId"=>$ledgerTaxAcId,
-						);
-						$dataArray[3]=array(
-							"amount"=>$totalSaleAmount,
-							"amountType"=>$amountTypeArray['creditType'],
-							"ledgerId"=>$ledgerSaleAcId,
-						);
-					}
-				}
-				else
-				{
-					if($billTrimData['advance']!="" && $billTrimData['advance']!=0)
-					{
-						if($ledgerAmount==0)
-						{
-							$dataArray[0]=array(
-							"amount"=>$billTrimData['advance'],
-							"amountType"=>$amountTypeArray['debitType'],
-							"ledgerId"=>$paymentLedgerId,
-							);
-							$dataArray[1]=array(
-								"amount"=>$discountTotal,
-								"amountType"=>$amountTypeArray['debitType'],
-								"ledgerId"=>$ledgerDiscountAcId,
-							);
-							$dataArray[2]=array(
-								"amount"=>$totalSaleAmount,
-								"amountType"=>$amountTypeArray['creditType'],
-								"ledgerId"=>$ledgerSaleAcId,
-							);
-						}
-						else
-						{
-							$dataArray[0]=array(
-							"amount"=>$billTrimData['advance'],
-							"amountType"=>$amountTypeArray['debitType'],
-							"ledgerId"=>$paymentLedgerId,
-							);
-							$dataArray[1]=array(
-								"amount"=>$ledgerAmount,
-								"amountType"=>$amountTypeArray['debitType'],
-								"ledgerId"=>$ledgerId,
-							);
-							$dataArray[2]=array(
-								"amount"=>$discountTotal,
-								"amountType"=>$amountTypeArray['debitType'],
-								"ledgerId"=>$ledgerDiscountAcId,
-							);
-							$dataArray[3]=array(
-								"amount"=>$totalSaleAmount,
-								"amountType"=>$amountTypeArray['creditType'],
-								"ledgerId"=>$ledgerSaleAcId,
-							);
-						}
-					}
-					else
-					{
-						$dataArray[0]=array(
-							"amount"=>$billTrimData['total'],
-							"amountType"=>$amountTypeArray['debitType'],
-							"ledgerId"=>$ledgerId,
-						);
-						$dataArray[1]=array(
-							"amount"=>$discountTotal,
-							"amountType"=>$amountTypeArray['debitType'],
-							"ledgerId"=>$ledgerDiscountAcId,
-						);
-						$dataArray[2]=array(
-							"amount"=>$totalSaleAmount,
-							"amountType"=>$amountTypeArray['creditType'],
-							"ledgerId"=>$ledgerSaleAcId,
-						);
-					}
-				}
-			}
-			//make data array for journal sale entry
-			$journalArray = array();
-			$journalArray= array(
-				'data' => array(
-				),
-				'inventory' => array(
-				),
-				'tax'=> $billTrimData['tax']
-			);
-			if(array_key_exists('entry_date',$billTrimData))
-			{
-				$journalArray['entryDate'] = $billTrimData['entry_date'];
-				
-			}
-			if(array_key_exists('transaction_date',$billTrimData))
-			{
-				$journalArray['transactionDate'] = $billTrimData['transaction_date'];
-			}
-			if(array_key_exists('invoiceNumber',$billTrimData))
-			{
-				$journalArray['invoiceNumber'] = $billTrimData['invoice_number'];
-			}
-			$journalArray['data']=$dataArray;
-			$journalArray['inventory']=$billTrimData['inventory'];
-			$method=$constantArray['postMethod'];
-			$path=$constantArray['journalUrl'].'/'.$billData[0]->jf_id;
-			$journalRequest = Request::create($path,$method,$journalArray);
-			$journalRequest->headers->set('type',$constantArray['sales']);
-			$processedData = $journalController->update($journalRequest,$billData[0]->jf_id);
-			if(strcmp($processedData,$msgArray['200'])!=0)
-			{
-				return $processedData;
-			}
-			
-		}
-		else if(array_key_exists('payment_mode',$billTrimData))
-		{
-			//update journal data
-			if(strcmp($billTrimData['payment_mode'],$billData[0]->payment_mode)!=0)
-			{
-				//get jf_id journal-data
+				$this->request = $request;
+				$processor = new JournalProcessor();
+				$journalPersistable = new JournalPersistable();		
+				$journalService= new JournalService();		
 				$journalModel = new JournalModel();
-				$journalData = $journalModel->getJfIdArrayData($billData[0]->jf_id);
-				$decodedJournalData = json_decode($journalData);
+				$jfIdArrayData = $journalModel->getJfIdArrayData($jfId);
+				$entryDateFlag=0;
+				$companyIdFlag=0;
+				$journalArrayFlag=0;
+				$invoiceNumberFlag=0;
+				$productArrayFlag=0;
+				$transactionDateFlag=0;
+				$billNumberFlag=0;
+				$taxFlag=0;
 				
-				//get payment-id of previous payment-mode
-				$previousLedgerResult = $ledgerModel->getLedgerId($billData[0]->company_id,$billData[0]->payment_mode);
-				if(is_array(json_decode($previousLedgerResult)))
+				//get exception message
+				$exception = new ExceptionMessage();
+				$exceptionArray = $exception->messageArrays();
+				
+				//check array exists
+				if(array_key_exists($constantArray['data'], $this->request->input()))
 				{
-					$previousPaymentLedgerId = json_decode($previousLedgerResult)[0]->ledger_id;
-				}
-				//get payment-id
-				$ledgerResult = $ledgerModel->getLedgerId($billData[0]->company_id,$billTrimData['payment_mode']);
-				if(is_array(json_decode($ledgerResult)))
-				{
-					$paymentLedgerId = json_decode($ledgerResult)[0]->ledger_id;
-				}
-				// $journalArrayData = array();
-				for($arrayData=0;$arrayData<count($decodedJournalData);$arrayData++)
-				{
-					if(strcmp($decodedJournalData[$arrayData]->ledger_id,$previousPaymentLedgerId)==0)
+					$journalData = $this->request->input()['data'];
+					$dataCountOfArray = count($this->request->input()['data']);
+					for($dataArray=0;$dataArray<$dataCountOfArray-1;$dataArray++)
 					{
-						$decodedJournalData[$arrayData]->ledger_id = $paymentLedgerId;
-					}
-					$journalArrayData[$arrayData]=array(
-						'amount'=>$decodedJournalData[$arrayData]->amount,
-						'amountType'=>$decodedJournalData[$arrayData]->amount_type,
-						'ledgerId'=>$decodedJournalData[$arrayData]->ledger_id,
-					);
-				}
-				//make data array for journal sale entry
-				$journalArray = array();
-				$journalArray= array(
-					'data' => array(
-					)
-				);
-				$journalArray['data']=$journalArrayData;
-				$method=$constantArray['postMethod'];
-				$path=$constantArray['journalUrl'].'/'.$billData[0]->jf_id;
-				$journalRequest = Request::create($path,$method,$journalArray);
-				$journalRequest->headers->set('type',$constantArray['sales']);
-				$processedData = $journalController->update($journalRequest,$billData[0]->jf_id);
-				if(strcmp($processedData,$msgArray['200'])!=0)
-				{
-					return $processedData;
-				}
-			}
-		}
-		//validate bill data
-		//........pending
-		$invFlag=0;
-		//set bill data into persistable object
-		$billPersistable = array();
-		$clientBillArrayData = $clientArray->getBillClientArrayData();
-		
-		//splice data from trim array
-		for($index=0;$index<count($clientBillArrayData);$index++)
-		{
-			for($innerIndex=0;$innerIndex<count($billTrimData);$innerIndex++)
-			{
-				if(strcmp('inventory',array_keys($billTrimData)[$innerIndex])!=0)
-				{
-					if(strcmp(array_keys($billTrimData)[$innerIndex],array_keys($clientBillArrayData)[$index])==0)
-					{
-						array_splice($billTrimData,$innerIndex,1);
-						break;
+						if(strcmp($journalData[$dataArray]['ledgerId'],$journalData[$dataArray+1]['ledgerId'])==0)
+						{
+							return $exceptionArray['content'];
+						}
 					}
 				}
-				
-			}
-		}
-		
-		for($billArrayData=0;$billArrayData<count($billTrimData);$billArrayData++)
-		{
-			// making an object of persistable
-			$billPersistable[$billArrayData] = new BillPersistable();
-			if(strcmp('inventory',array_keys($billTrimData)[$billArrayData])!=0)
-			{
-				$str = str_replace(' ', '', ucwords(str_replace('_', ' ', array_keys($billTrimData)[$billArrayData])));	
-				$setFuncName = "set".$str;
-				$getFuncName = "get".$str;
-				$billPersistable[$billArrayData]->$setFuncName($billTrimData[array_keys($billTrimData)[$billArrayData]]);
-				$billPersistable[$billArrayData]->setName($getFuncName);
-				$billPersistable[$billArrayData]->setKey(array_keys($billTrimData)[$billArrayData]);
-				$billPersistable[$billArrayData]->setSaleId($saleId);
+				//check journal-data is available in database as per given jf-id
+				if(strcmp($jfIdArrayData,$exceptionArray['404'])==0)
+				{
+					return $exceptionArray['404'];
+				}
+				if(array_key_exists($constantArray['type'],$request->header()))
+				{
+					if(strcmp($request->header()['type'][0],$constantArray['sales'])==0 || strcmp($request->header()['type'][0],$constantArray['purchase'])==0)
+					{
+						$productArray = array();
+						$journalArray = array();
+						$inputArray = $this->request->input();
+						if(array_key_exists($constantArray['entryDate'],$inputArray))
+						{
+							$entryDateFlag=1;
+							$journalArray['entryDate']=$inputArray['entryDate'];
+						}
+						if(array_key_exists('transactionDate',$inputArray))
+						{
+							$transactionDateFlag=1;
+							$productArray['transactionDate']=$inputArray['transactionDate'];
+						}
+						if(array_key_exists($constantArray['companyId'],$inputArray))
+						{
+							$companyIdFlag=1;
+							$journalArray['companyId']=$inputArray['companyId'];
+							$productArray['companyId'] = $inputArray['companyId'];
+						}
+						if(array_key_exists($constantArray['invoiceNumber'],$inputArray))
+						{
+							$invoiceNumberFlag=1;
+							$productArray['invoiceNumber'] = $inputArray['invoiceNumber'];
+						}
+						if(array_key_exists($constantArray['billNumber'],$inputArray))
+						{
+							$billNumberFlag=1;
+							$productArray['billNumber'] = $inputArray['billNumber'];
+						}
+						if(array_key_exists($constantArray['tax'],$inputArray))
+						{
+							$taxFlag=1;
+							$productArray['tax'] = $inputArray['tax'];
+						}
+						//check array exists in request 
+						if(array_key_exists($constantArray['data'],$this->request->input()))
+						{
+							$journalArrayFlag=1;
+							$journalArray['data']=array();
+							for($arrayData=0;$arrayData<count($this->request->input()['data']);$arrayData++)
+							{
+								$journalArray['data'][$arrayData]=array();
+								$journalArray['data'][$arrayData]['amount']=$this->request->input()['data'][$arrayData]['amount'];
+								$journalArray['data'][$arrayData]['amountType']=$this->request->input()['data'][$arrayData]['amountType'];
+								$journalArray['data'][$arrayData]['ledgerId']=$this->request->input()['data'][$arrayData]['ledgerId'];
+							}
+						}
+						//check array is exists in request
+						if(array_key_exists($constantArray['inventory'],$inputArray))
+						{
+							$productArrayFlag=1;
+							$productArray['inventory'] = array();
+							for($inventoryArray=0;$inventoryArray<count($inputArray['inventory']);$inventoryArray++)
+							{
+								$productArray['inventory'][$inventoryArray] = array();
+								$productArray['inventory'][$inventoryArray]['productId']=$inputArray['inventory'][$inventoryArray]['productId'];
+								$productArray['inventory'][$inventoryArray]['discount']=$inputArray['inventory'][$inventoryArray]['discount'];
+								$productArray['inventory'][$inventoryArray]['discountType']=$inputArray['inventory'][$inventoryArray]['discountType'];
+								$productArray['inventory'][$inventoryArray]['price']=$inputArray['inventory'][$inventoryArray]['price'];
+								$productArray['inventory'][$inventoryArray]['qty']=$inputArray['inventory'][$inventoryArray]['qty'];
+							}
+						}
+						//journal data is available in sale/purchase for update
+						if($entryDateFlag==1 || $companyIdFlag==1 || $journalArrayFlag==1)
+						{
+							if($productArrayFlag==1 || $taxFlag==1)
+							{
+								//journal data is processed(trim,validation and set data in object)
+								$journalPersistable = $processor->createPersistableChangeData($request->header(),$productArray,$journalArray,$jfId);
+								if(!is_array($journalPersistable))
+								{
+									return $journalPersistable;
+								}
+							}
+							else
+							{
+								//journal data is processed(trim,validation and set data in object)
+								$journalPersistable = $processor->createPersistableChange($request->header(),$journalArray,$jfId);
+								if(!is_array($journalPersistable))
+								{
+									return $journalPersistable;
+								}
+							}
+							if(is_array($journalPersistable))
+							{
+								if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
+								{
+									$headerType = $constantArray['saleType'];
+								}
+								else
+								{
+									$headerType = $constantArray['purchaseType'];
+								}
+								$status = $journalService->update($journalPersistable,$jfId,$headerType);
+								//update data in product_transaction
+								if(strcmp($status,$exceptionArray['200'])==0)
+								{
+									//product transaction data is available for update
+									if($productArrayFlag==1 || $invoiceNumberFlag==1 || $entryDateFlag==1 || $companyIdFlag==1 || $billNumberFlag==1 || $transactionDateFlag==1 || $taxFlag==1)
+									{
+										//sale data update
+										if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
+										{ 
+											if($billNumberFlag==1)
+											{
+												//wrong entry
+											}
+											else
+											{
+												$inOutward = $constantArray['journalOutward'];
+											}
+										}
+										else
+										{
+											if($invoiceNumberFlag==1)
+											{
+												//wrong entry
+											}
+											else
+											{
+												$inOutward = $constantArray['journalInward'];
+											}
+										}
+										$productService= new ProductService();	
+										$productPersistable = new ProductPersistable();
+										$productProcessor = new ProductProcessor();
+										$productPersistable = $productProcessor->createPersistableChangeInOutWard($productArray,$inOutward,$jfId);
+										//here two array and string is return at a time
+										if(is_array($productPersistable))
+										{
+											$status = $productService->updateInOutwardData($productPersistable,$jfId,$inOutward);
+											
+											$documentPath = $constantArray['journalDocumentUrl'];
+											//purchase document update
+											if(in_array(true,$request->file()) && strcmp($status,$exceptionArray['200'])==0 && strcmp($request->header()['type'][0],$constantArray['purchase'])==0)
+											{ 
+												$documentController =new DocumentController(new Container());
+												$processedData = $documentController->insertUpdate($request,$documentPath);
+												if(is_array($processedData))
+												{
+													$journalDocumentResult = $journalModel->updatePurchaseDocumentData($jfId,$processedData);
+													return $journalDocumentResult;
+												}
+												else
+												{
+													return $processedData;
+												}
+											}
+											else
+											{
+												return $status;
+											}
+										}
+										else
+										{
+											return $productPersistable;
+										}
+									}
+									else
+									{
+										return $status;
+									}
+									
+								}
+								else
+								{
+									return $journalPersistable;
+								}
+							}
+						}
+						else
+						{
+							//sale data update
+							if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
+							{
+								if($billNumberFlag==1)
+								{
+									//wrong entry
+								}
+								else
+								{
+									$inOutward = $constantArray['journalOutward'];
+								}
+							}
+							else
+							{
+								if($invoiceNumberFlag==1)
+								{
+									//wrong entry
+								}
+								else
+								{
+									$inOutward = $constantArray['journalInward'];
+								}
+							}
+							$productService= new ProductService();	
+							$productPersistable = new ProductPersistable();
+							$productProcessor = new ProductProcessor();
+							$productPersistable = $productProcessor->createPersistableChangeInOutWard($productArray,$inOutward,$jfId);
+							
+							//here two array and string is return at a time
+							if(is_array($productPersistable))
+							{
+								$status = $productService->updateInOutwardData($productPersistable,$jfId,$inOutward);
+								$documentPath = $constantArray['journalDocumentUrl'];
+								if(in_array(true,$request->file()) && strcmp($status,$exceptionArray['200'])==0 && strcmp($request->header()['type'][0],$constantArray['purchase'])==0)
+								{
+									$documentController =new DocumentController(new Container());
+									$processedData = $documentController->insertUpdate($request,$documentPath);
+									if(is_array($processedData))
+									{
+										$journalDocumentResult = $journalModel->updatePurchaseDocumentData($jfId,$processedData);
+										return $journalDocumentResult;
+									}
+									else
+									{
+										return $processedData;
+									}
+								}	
+								else
+								{
+									return $status;
+								}
+							}
+							else
+							{
+								return $productPersistable;
+							}
+						}
+					} 
+					//payment/receipt
+					else
+					{
+						$headerData = $request->header();
+						$journalArray = $this->request->input();
+						if(strcmp($headerData['type'][0],$constantArray['paymentType'])==0)
+						{
+							$headerType = $constantArray['paymentType'];
+						}
+						else
+						{
+							$headerType = $constantArray['receiptType'];
+						}
+						//journal data is processed(trim,validation and set data in object)
+						$journalPersistable = $processor->createPersistableChange($headerData,$journalArray,$jfId);
+						//here two array and string is return at a time
+						if(is_array($journalPersistable))
+						{
+							$status = $journalService->update($journalPersistable,$jfId,$headerType);
+							return $status;
+						}
+						else
+						{
+							return $journalPersistable;
+						}
+					}
+				}
+				else
+				{
+					$headerData = $request->header();
+					$headerType = $constantArray['specialJournalType'];
+					$journalArray = $this->request->input();
+					//journal data is processed(trim,validation and set data in object)
+					$journalPersistable = $processor->createPersistableChange($headerData,$journalArray,$jfId);
+					
+					//here two array and string is return at a time
+					if(is_array($journalPersistable))
+					{
+						$status = $journalService->update($journalPersistable,$jfId,$headerType);
+						return $status;
+					}
+					else
+					{
+						return $journalPersistable;
+					}
+				}
 			}
 			else
 			{
-				$invFlag=1;
-				$decodedProductArrayData = json_decode($billData[0]->product_array);
-				$productArray = array();
-				$productArray['invoiceNumber'] = $decodedProductArrayData->invoiceNumber;
-				$productArray['transactionType'] = $decodedProductArrayData->transactionType;
-				$productArray['companyId'] = $decodedProductArrayData->companyId;
-				$productArray['inventory'] = $billTrimData['inventory'];
-				$billPersistable[$billArrayData]->setProductArray(json_encode($productArray));
-				$billPersistable[$billArrayData]->setSaleId($saleId);
+				return $authenticationResult;
 			}
-		}
-		
-		if($invFlag==1)
-		{
-			$billPersistable[count($billPersistable)] = 'flag';
-		}
-		$documentPath = $constantArray['billDocumentUrl'];
-		$docFlag=0;
-		if(in_array(true,$request->file()))
-		{
-			$documentController = new DocumentController(new Container());
-			$processedData = $documentController->insertUpdate($request,$documentPath);
-			if(is_array($processedData))
-			{
-				$docFlag=1;
-			}
-			else
-			{
-				return $processedData;
-			}
-		}
-		if($docFlag==1)
-		{
-			
-			$array1 = array();
-			array_push($processedData,$billPersistable);
-			return $processedData;
-		}
-		else
-		{
-			return $billPersistable;
 		}
 	}
 }

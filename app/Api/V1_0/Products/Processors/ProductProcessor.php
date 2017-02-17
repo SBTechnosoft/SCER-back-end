@@ -60,7 +60,7 @@ class ProductProcessor extends BaseProcessor
 			{
 				// validation
 				$validationResult = $productValidate->productNameValidate($tRequest);
-			}		
+			}				
 			if(is_array($validationResult))
 			{
 				// validation

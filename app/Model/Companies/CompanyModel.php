@@ -55,10 +55,49 @@ class CompanyModel extends Model
 		if($raw==1)
 		{
 			DB::beginTransaction();
-			$companyId = DB::connection($databaseName)->select("select
-			max(company_id) as company_id 
-			from company_mst where deleted_at='0000-00-00 00:00:00'");
+			$companyId = DB::connection($databaseName)->select("SELECT 
+			company_id,
+			company_name
+			FROM `company_mst` 
+			where deleted_at='0000-00-00 00:00:00'
+			ORDER by company_id DESC limit 1");
 			DB::commit();
+			
+			//get Template
+			$templateDesign = new TemplateDesign();
+			$templateArray = $templateDesign->getTemplate();
+			
+			DB::beginTransaction();
+			$invoiceInsertion = DB::connection($databaseName)->statement("insert
+			into template_mst(
+			template_name,
+			template_body,
+			template_type,
+			company_id)
+			values(
+			'".$companyId[0]->company_name.' Invoice'."',
+			'".$templateArray['invoice']."',
+			'".$constantArray['invoice']."',
+			'".$companyId[0]->company_id."')");
+			DB::commit();
+			
+			DB::beginTransaction();
+			$paymentInsertion = DB::connection($databaseName)->statement("insert
+			into template_mst(
+			template_name,
+			template_body,
+			template_type,
+			company_id)
+			values(
+			'".$companyId[0]->company_name.' Payment'."',
+			'".$templateArray['payment']."',
+			'".$constantArray['paymentType']."',
+			'".$companyId[0]->company_id."')");
+			DB::commit();
+			if($invoiceInsertion!=1 && $paymentInsertion!=1)
+			{
+				return $exceptionArray['500'];
+			}
 			return $companyId;
 		}
 		else
@@ -107,10 +146,11 @@ class CompanyModel extends Model
 		//get latest company_id
 		DB::beginTransaction();
 		$latestCompanyId = DB::connection($databaseName)->select("SELECT 
-		max(company_id) as company_id,
+		company_id,
 		company_name
 		FROM `company_mst` 
-		where deleted_at='0000-00-00 00:00:00'");
+		where deleted_at='0000-00-00 00:00:00'
+      	ORDER by company_id DESC limit 1");
 		DB::commit();
 		
 		// get exception message
@@ -154,12 +194,12 @@ class CompanyModel extends Model
 			{
 				return $exceptionArray['500'];
 			}
-			DB::beginTransaction();
-			$companyId = DB::connection($databaseName)->select("select
-			max(company_id) as company_id 
-			from company_mst where deleted_at='0000-00-00 00:00:00'");
-			DB::commit();
-			return $companyId;
+			// DB::beginTransaction();
+			// $companyId = DB::connection($databaseName)->select("select
+			// max(company_id) as company_id 
+			// from company_mst where deleted_at='0000-00-00 00:00:00'");
+			// DB::commit();
+			return $latestCompanyId;
 		}
 		else
 		{

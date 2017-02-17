@@ -187,7 +187,6 @@ class BillService
 		$billModel = new BillModel();
 		$billResult = $billModel->updatePaymentData($decodedBillData);
 		return $billResult;
-		// print_r($persistableData);
 	}
 	
 	/**

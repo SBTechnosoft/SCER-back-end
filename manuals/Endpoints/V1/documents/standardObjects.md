@@ -1,7 +1,7 @@
 ##### Standard Document Object
 
             {
-                
+                "documentId":int,
                 "documentName": string,
                 "documentUrl": string,
                 "documentSize": int,
@@ -12,8 +12,7 @@
 
             {
                 "document": file
-				
-            }
+			}
 
 
 ##### Document Format Enum
