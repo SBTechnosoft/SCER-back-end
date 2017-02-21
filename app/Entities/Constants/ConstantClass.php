@@ -14,7 +14,7 @@ class ConstantClass
 	{
 		$constantArray = array();
 		$constantArray['token'] = "authenticationToken";
-		$constantArray['success'] = "success";
+		$constantArray['success'] = "Success";
 		$constantArray['documentUrl'] = "Storage/Document/";
 		$constantArray['billDocumentUrl'] = "Storage/Bill/Document/";
 		$constantArray['journalDocumentUrl'] = "Storage/Journal/";
@@ -28,7 +28,8 @@ class ConstantClass
 		$constantArray['journalUrl']="http://www.scerp1.com/accounting/journals";
 		$constantArray['invoiceUrl']="http://www.scerp1.com/settings/invoice-numbers";
 		$constantArray['productUrl']="http://www.scerp1.com/accounting/products";
-		// $constantArray['postMethod']="post";
+		$constantArray['contactNo']="contact_no";
+		$constantArray['openingBalance']="opening";
 		$constantArray['postMethod']="POST";
 		$constantArray['getMethod']="get";
 		$constantArray['deleteMethod']="DELETE";
@@ -37,6 +38,8 @@ class ConstantClass
 		$constantArray['credit']="credit";
 		$constantArray['debit']="debit";
 		$constantArray['percentage']="percentage";
+		$constantArray['ledgerGroupSundryDebitors']="32";
+		$constantArray['Flatdiscount']="flat";
 		
 		//from header data
 		$constantArray['sales']="sales";

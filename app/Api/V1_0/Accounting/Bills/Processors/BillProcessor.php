@@ -68,10 +68,10 @@ class BillProcessor extends BaseProcessor
 			//validation
 			$billValidate = new BillValidate();
 			$status = $billValidate->validate($tRequest);
-			if($status=="Success")
+			if($status==$constantArray['success'])
 			{
 				//get contact-number from input data
-				if(!array_key_exists('contact_no',$tRequest))
+				if(!array_key_exists($constantArray['contactNo'],$tRequest))
 				{
 					$contactNo="";
 				}
@@ -166,7 +166,6 @@ class BillProcessor extends BaseProcessor
 				$contactFlag=2;
 			}
 		}
-		// exit;
 		if($contactFlag==2)
 		{
 			$ledgerArray=array();
@@ -178,10 +177,10 @@ class BillProcessor extends BaseProcessor
 			$ledgerArray['stateAbb']=$tRequest['state_abb'];
 			$ledgerArray['cityId']=$tRequest['city_id'];
 			$ledgerArray['companyId']=$tRequest['company_id'];
-			$ledgerArray['balanceFlag']="opening";
+			$ledgerArray['balanceFlag']=$constantArray['openingBalance'];
 			$ledgerArray['amount']=0;
-			$ledgerArray['amountType']="credit";
-			$ledgerArray['ledgerGroupId']=32;
+			$ledgerArray['amountType']=$constantArray['credit'];
+			$ledgerArray['ledgerGroupId']=$constantArray['ledgerGroupSundryDebitors'];
 			$ledgerController = new LedgerController(new Container());
 			$method=$constantArray['postMethod'];
 			$path=$constantArray['ledgerUrl'];
@@ -232,7 +231,7 @@ class BillProcessor extends BaseProcessor
 		$discountTotal=0;
 		for($discountArray=0;$discountArray<count($tRequest[0]);$discountArray++)
 		{
-			if(strcmp($tRequest[0][$discountArray]['discountType'],"flat")==0)
+			if(strcmp($tRequest[0][$discountArray]['discountType'],$constantArray['Flatdiscount'])==0)
 			{
 				$discount = $tRequest[0][$discountArray]['discount'];
 			}
@@ -471,9 +470,9 @@ class BillProcessor extends BaseProcessor
 					else
 					{
 						$dataArray[0]=array(
-						"amount"=>$tRequest['advance'],
-						"amountType"=>$amountTypeArray['debitType'],
-						"ledgerId"=>$paymentLedgerId,
+							"amount"=>$tRequest['advance'],
+							"amountType"=>$amountTypeArray['debitType'],
+							"ledgerId"=>$paymentLedgerId,
 						);
 						$dataArray[1]=array(
 						"amount"=>$ledgerAmount,
