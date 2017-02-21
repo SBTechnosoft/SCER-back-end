@@ -80,11 +80,9 @@ class ClientController extends BaseController implements ContainerInterface
 			//Authentication
 			$tokenAuthentication = new TokenAuthentication();
 			$authenticationResult = $tokenAuthentication->authenticate($request->header());
-			
 			//get constant array
 			$constantClass = new ConstantClass();
 			$constantArray = $constantClass->constantVariable();
-			
 			if(strcmp($constantArray['success'],$authenticationResult)==0)
 			{
 				$this->request = $request;

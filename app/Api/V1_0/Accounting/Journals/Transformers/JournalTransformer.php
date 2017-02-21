@@ -55,8 +55,10 @@ class JournalTransformer extends LedgerModel
 		{
 			$journalType = $constantArray['specialJournalType'];
 		}
-		//entry date conversion
-		$transformEntryDate = Carbon\Carbon::createFromFormat('d-m-Y', $entryDate)->format('Y-m-d');
+		
+		// entry date conversion
+		$splitedDate = explode("-",$entryDate);
+		$transformEntryDate = $splitedDate[2]."-".$splitedDate[1]."-".$splitedDate[0];
 		
 		//get exception message
 		$exception = new ExceptionMessage();
@@ -126,8 +128,13 @@ class JournalTransformer extends LedgerModel
 		$tToDate = trim($toDate);
 		
 		//date format conversion
-		$transformFromDate = Carbon\Carbon::createFromFormat('d-m-Y', $tFromDate)->format('Y-m-d');
-		$transformToDate = Carbon\Carbon::createFromFormat('d-m-Y', $tToDate)->format('Y-m-d');
+		$splitedFromDate = explode("-",$tFromDate);
+		$transformFromDate = $splitedFromDate[2]."-".$splitedFromDate[1]."-".$splitedFromDate[0];
+		
+		$splitedToDate = explode("-",$tToDate);
+		$transformToDate = $splitedToDate[2]."-".$splitedToDate[1]."-".$splitedToDate[0];
+		// $transformFromDate = Carbon\Carbon::createFromFormat('d-m-Y', $tFromDate)->format('Y-m-d');
+		// $transformToDate = Carbon\Carbon::createFromFormat('d-m-Y', $tToDate)->format('Y-m-d');
 		
 		//put date into an array
 		$trimArray = array();
@@ -212,10 +219,13 @@ class JournalTransformer extends LedgerModel
 						$convertedValue=$convertedValue.$key[$asciiChar];
 					}
 				}
+				// print_r($convertedValue);
+				//conversion of entry_date
 				if(strcmp($convertedValue,$constantArray['entry_date'])==0)
 				{
-					$transformEntryDate = Carbon\Carbon::createFromFormat('d-m-Y', $value)->format('Y-m-d');
-					$tJournalArray[$convertedValue]=trim($transformEntryDate);
+					$transformEntryDate=trim($value);
+					$splitedDate = explode("-",$transformEntryDate);
+					$tJournalArray[$convertedValue] = $splitedDate[2]."-".$splitedDate[1]."-".$splitedDate[0];
 					$convertedValue="";
 				}
 				else

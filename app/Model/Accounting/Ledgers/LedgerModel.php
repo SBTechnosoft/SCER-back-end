@@ -1003,7 +1003,6 @@ class LedgerModel extends Model
 			WHERE (ledger_name='retail_sales' OR 
 			ledger_name='whole_sales') and 
 			company_id='".$companyId."' and 
-			
 			deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
 		}
@@ -1118,7 +1117,14 @@ class LedgerModel extends Model
 					}
 				}
 			}
-			return json_encode($mergeArray);
+			if(empty($mergeArray))
+			{
+				return $exceptionArray['404'];
+			}
+			else
+			{
+				return json_encode($mergeArray);
+			}
 		}
 	}
 	

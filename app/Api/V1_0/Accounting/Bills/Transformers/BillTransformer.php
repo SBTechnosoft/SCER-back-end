@@ -5,7 +5,6 @@ use Illuminate\Http\Request;
 use ERP\Http\Requests;
 use ERP\Core\Accounting\Bills\Entities\PaymentModeEnum;
 use  ERP\Entities\EnumClasses\IsDisplayEnum;
-use Carbon;
 use ERP\Core\Accounting\Bills\Entities\SalesTypeEnum;
 use ERP\Core\Products\Entities\EnumClasses\DiscountTypeEnum;
 use ERP\Core\Accounting\Bills\Entities\PaymentTransactionEnum;
@@ -189,7 +188,8 @@ class BillTransformer
 			else
 			{
 				//from-date conversion
-				$transformFromDate = Carbon\Carbon::createFromFormat('d-m-Y', $fromDate)->format('Y-m-d');
+				$splitedFromDate = explode("-",$fromDate);
+				$transformFromDate = $splitedFromDate[2]."-".$splitedFromDate[1]."-".$splitedFromDate[0];
 			}
 			if(strcmp($toDate,'00-00-0000')==0)
 			{
@@ -198,7 +198,8 @@ class BillTransformer
 			else
 			{
 				//to-date conversion
-				$transformToDate = Carbon\Carbon::createFromFormat('d-m-Y', $toDate)->format('Y-m-d');
+				$splitedToDate = explode("-",$toDate);
+				$transformToDate = $splitedToDate[2]."-".$splitedToDate[1]."-".$splitedToDate[0];
 			}
 			$trimArray = array();	
 			$trimArray['salesType'] = $salesType;	
@@ -226,8 +227,9 @@ class BillTransformer
 		$tPaymentTransaction = trim($request->input()['paymentTransaction']);
 		$tPaymentMode = trim($request->input()['paymentMode']);
 		
-		//from-date conversion
-		$tEntryDate = Carbon\Carbon::createFromFormat('d-m-Y', $tEntryDate)->format('Y-m-d');
+		//entry-date conversion
+		$splitedEntryDate = explode("-",$tEntryDate);
+		$tEntryDate = $splitedEntryDate[2]."-".$splitedEntryDate[1]."-".$splitedEntryDate[0];
 		
 		$paymentTrnArray = array();
 		$paymentTrnEnum = new PaymentTransactionEnum();

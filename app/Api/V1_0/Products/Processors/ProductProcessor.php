@@ -127,6 +127,7 @@ class ProductProcessor extends BaseProcessor
 	{	
 		$this->request = $request;	
 		$data=0;
+		$productValidate = new ProductValidate();
 		
 		// trim an input 
 		$productTransformer = new ProductTransformer();
@@ -142,10 +143,12 @@ class ProductProcessor extends BaseProcessor
 		}	
 		else
 		{
+			if(!preg_match("/^[0-9]{4}-([1-9]|1[0-2]|0[1-9])-([1-9]|0[1-9]|[1-2][0-9]|3[0-1])$/",$tRequest['transactionDate']))
+			{
+				return "transaction-date is not valid";
+			}
 			// validation
-			$productValidate = new ProductValidate();
 			$status = $productValidate->validateInOutward($tRequest);
-			
 			if($status=="Success")
 			{
 				$productPersistable=array();
@@ -355,6 +358,7 @@ class ProductProcessor extends BaseProcessor
 				$productPersistable = array();
 				$productMultipleArray = array();
 				$productSingleArray = array();
+				
 				// trim an input 
 				$productTransformer = new ProductTransformer();
 				$tRequest = $productTransformer->trimUpdateProductData($productArray,$inOutWard);
@@ -376,6 +380,14 @@ class ProductProcessor extends BaseProcessor
 					$journalData = array();
 					if(array_key_exists("tax",$tRequest) || array_key_exists("0",$tRequest))
 					{
+						if(array_key_exists("0",$tRequest))
+						{
+							$validationResult = $productValidate->validateTransactionArrayUpdateData($tRequest);
+							if(strcmp($validationResult,"Success")!=0)
+							{
+								return $validationResult;
+							}
+						}
 						// check accounting Rules
 						$buisnessLogic = new BuisnessLogic();
 						$buisnessResult = $buisnessLogic->validateUpdateProductBuisnessLogic($headerType,$journalData,$tRequest,$jfId);
@@ -404,7 +416,7 @@ class ProductProcessor extends BaseProcessor
 						// array with data
 						if($trimArrayFalg==1)
 						{
-							// validate only single data not an array (pending multiple array data)
+							// validate single data
 							for($multipleArray=0;$multipleArray<count($tRequest[0]);$multipleArray++)
 							{
 								$productPersistable[$multipleArray] = new ProductPersistable();
@@ -422,6 +434,15 @@ class ProductProcessor extends BaseProcessor
 								$tKeyValue = array_keys($tRequest)[$trimResponse];
 								$tValue =$tRequest[array_keys($tRequest)[$trimResponse]];
 								$trimRequest[0] = array($tKeyValue=>$tValue);
+								
+								//validate transaction-date
+								if(array_key_exists('transaction_date',$trimRequest[0]))
+								{
+									if(!preg_match("/^[0-9]{4}-([1-9]|1[0-2]|0[1-9])-([1-9]|0[1-9]|[1-2][0-9]|3[0-1])$/",$trimRequest[0]['transaction_date']))
+									{
+										return "transaction-date is not valid";
+									}
+								}
 								$status = $productValidate->validateTransactionUpdateData($tKeyValue,$tValue,$trimRequest[0]);
 								
 								if(strcmp($status,"Success")!=0)
@@ -451,6 +472,15 @@ class ProductProcessor extends BaseProcessor
 								$tKeyValue = array_keys($tRequest)[$trimResponse];
 								$tValue =$tRequest[array_keys($tRequest)[$trimResponse]];
 								$trimRequest[0] = array($tKeyValue=>$tValue);
+								
+								//validate transaction-date
+								if(array_key_exists('transaction_date',$trimRequest[0]))
+								{
+									if(!preg_match("/^[0-9]{4}-([1-9]|1[0-2]|0[1-9])-([1-9]|0[1-9]|[1-2][0-9]|3[0-1])$/",$trimRequest[0]['transaction_date']))
+									{
+										return "transaction-date is not valid";
+									}
+								}
 								$status = $productValidate->validateTransactionUpdateData($tKeyValue,$tValue,$trimRequest[0]);
 								
 								if(strcmp($status,"Success")!=0)
@@ -522,8 +552,22 @@ class ProductProcessor extends BaseProcessor
 		$toDate = $requestHeader['todate'][0];
 		
 		//date conversion
-		$transformFromDate = Carbon\Carbon::createFromFormat('d-m-Y', $fromDate)->format('Y-m-d');
-		$transformToDate = Carbon\Carbon::createFromFormat('d-m-Y', $toDate)->format('Y-m-d');
+		// from date conversion
+		$splitedFromDate = explode("-",$fromDate);
+		$transformFromDate = $splitedFromDate[2]."-".$splitedFromDate[1]."-".$splitedFromDate[0];
+		// to date conversion
+		$splitedToDate = explode("-",$toDate);
+		$transformToDate = $splitedToDate[2]."-".$splitedToDate[1]."-".$splitedToDate[0];
+	
+		//validate date
+		if(!preg_match("/^[0-9]{4}-([1-9]|1[0-2]|0[1-9])-([1-9]|0[1-9]|[1-2][0-9]|3[0-1])$/",$transformFromDate))
+		{
+			return "from-date is not valid";
+		}
+		if(!preg_match("/^[0-9]{4}-([1-9]|1[0-2]|0[1-9])-([1-9]|0[1-9]|[1-2][0-9]|3[0-1])$/",$transformToDate))
+		{
+			return "to-date is not valid";
+		}
 		$productPersistable = new ProductPersistable();
 		$productPersistable->setFromDate($transformFromDate);
 		$productPersistable->setToDate($transformToDate);

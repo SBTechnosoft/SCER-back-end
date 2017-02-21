@@ -684,6 +684,9 @@ class JournalModel extends Model
 				$enocodedProductData = json_encode($transactionResult);
 				$encodeProductData = new EncodeProductTrnAllData();
 				$getEncodedData = $encodeProductData->getEncodedAllData($enocodedProductData);
+				echo "hh";
+				print_r($getEncodedData);
+				exit;
 				$ledgerTransactionarray = array();
 				$ledgerTransactionarray['journal'] = $encodedResult;
 				$ledgerTransactionarray['productTransaction'] = json_decode($getEncodedData);

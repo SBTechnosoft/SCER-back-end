@@ -12,6 +12,11 @@ use ERP\Model\Products\ProductModel;
   */
 class ProductValidate extends ProductModel
 {
+	/**
+	 * validate data for insert
+     * @param object
+     * @return error-message/success
+     */
 	public function validate($request)
 	{
 		$rules = array(
@@ -52,13 +57,18 @@ class ProductValidate extends ProductModel
 		}
 	}
 	
+	/**
+	 * validate data for insert product_trn data
+     * @param object
+     * @return error-message/success
+     */
 	public function validateInOutward($request)
 	{
 		$rules = array(
-			'company_id'=> 'regex:/^[0-9]*$/' 
+			'tax'=> 'regex:/^[0-9 .]*$/' 
 		);
 		$messages = [
-			'company_id.regex' => 'company id contains character from "0-9" only'
+			'tax.regex' => 'tax contains character from "0-9 ." only'
 		];
 		
 		$validator = Validator::make($request,$rules,$messages);
@@ -75,9 +85,41 @@ class ProductValidate extends ProductModel
 		}
 		else 
 		{
+			for($arrayData=0;$arrayData<count($request[0]);$arrayData++)
+			{
+				$rules = array(
+					'discount'=> 'regex:/^[0-9 .]*$/', 
+					'price'=> 'regex:/^[0-9 .]*$/', 
+					'qty'=> 'regex:/^[0-9]*$/', 
+				);
+				$messages = [
+					'discount.regex' => 'discount contains character from "0-9 ." only',
+					'price.regex' => 'price contains character from "0-9 ." only',
+					'qty.regex' => 'qty contains character from "0-9" only',
+				];
+				
+				$validator = Validator::make($request[0][$arrayData],$rules,$messages);
+				if ($validator->fails()) {
+					$errors = $validator->errors()->toArray();
+					$validate = array();
+					for($data=0;$data<count($errors);$data++)
+					{
+						$detail[$data] = $errors[array_keys($errors)[$data]];
+						$key[$data] = array_keys($errors)[$data];
+						$validate[$data]= array($key[$data]=>$detail[$data][0]);
+					}
+					return json_encode($validate);
+				}
+			}
 			return "Success";
 		}
 	}
+	
+	/**
+	 * validate data for update
+     * @param key, value and object
+     * @return error-message/success
+     */
 	public function validateUpdateData($keyName,$value,$request)
 	{
 		$validationArray = array(
@@ -137,15 +179,16 @@ class ProductValidate extends ProductModel
 			return "Success";
 		}
 	}
+	
+	/**
+	 * validate data for update product_trn data
+     * @param key,value and object
+     * @return error-message/success
+     */
 	public function validateTransactionUpdateData($keyName,$value,$request)
 	{
-		
 		$validationArray = array(
-			'discount'=> 'regex:/^[0-9 .]*$/',
-			'price'=> 'regex:/^[0-9 .]*$/',
 			'tax'=> 'regex:/^[0-9 .]*$/',
-			// 'entry_date'=>'regex:/^[0-9]*$/'
-			//entry-date
 		);
 		$rules =array();
 		foreach ($validationArray as $key => $value) 
@@ -162,10 +205,7 @@ class ProductValidate extends ProductModel
 				$key=> $rules[$key],
 			);
 			$messages = [
-				'discount.regex' => 'discount contains character from "0-9" only',
-				'price.regex' => 'price contains character from "0-9" only',
-				'tax.regex' => 'tax contains character from "0-9" only',
-				// 'entry_date.regex'=>'entry-date contains number and "-" only'
+				'tax.regex' => 'tax contains character from "0-9 ." only',
 			];
 			$validator = Validator::make($request,$rules,$messages);
 			
@@ -190,6 +230,43 @@ class ProductValidate extends ProductModel
 		{
 			return "Success";
 		}
+	}
+	
+	/**
+	 * validate array-data for update product_trn data
+     * @param trim request object
+     * @return error-message/success
+     */
+	public function validateTransactionArrayUpdateData($tRequest)
+	{
+		for($arrayData=0;$arrayData<count($tRequest[0]);$arrayData++)
+		{
+			$rules = array(
+				'discount'=> 'regex:/^[0-9 .]*$/', 
+				'price'=> 'regex:/^[0-9 .]*$/', 
+				'qty'=> 'regex:/^[0-9]*$/', 
+			);
+			$messages = [
+				'discount.regex' => 'discount contains character from "0-9 ." only',
+				'price.regex' => 'price contains character from "0-9 ." only',
+				'qty.regex' => 'qty contains character from "0-9" only',
+			];
+			
+			$validator = Validator::make($tRequest[0][$arrayData],$rules,$messages);
+			if ($validator->fails()) 
+			{
+				$errors = $validator->errors()->toArray();
+				$validate = array();
+				for($data=0;$data<count($errors);$data++)
+				{
+					$detail[$data] = $errors[array_keys($errors)[$data]];
+					$key[$data] = array_keys($errors)[$data];
+					$validate[$data]= array($key[$data]=>$detail[$data][0]);
+				}
+				return json_encode($validate);
+			}
+		}
+		return "Success";
 	}
 	
 	/**

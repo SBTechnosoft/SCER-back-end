@@ -24,7 +24,11 @@ class TokenAuthentication extends AuthenticateService
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		
+		if(!array_key_exists('authenticationtoken',$headerData))
+		{
+			//token not exists
+			return $exceptionArray['NoExists'];
+		}
 		//get active-session data for token validation
 		$authenticationService = new AuthenticateService();
 		$authenticationData = $authenticationService->getAllData();

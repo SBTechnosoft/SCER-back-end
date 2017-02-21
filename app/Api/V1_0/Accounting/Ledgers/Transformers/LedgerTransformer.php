@@ -210,8 +210,11 @@ class LedgerTransformer
 		$tToDate = trim($toDate);
 		
 		//date format conversion
-		$transformFromDate = Carbon\Carbon::createFromFormat('d-m-Y', $tFromDate)->format('Y-m-d');
-		$transformToDate = Carbon\Carbon::createFromFormat('d-m-Y', $tToDate)->format('Y-m-d');
+		$splitedFromDate = explode("-",$tFromDate);
+		$transformFromDate = $splitedFromDate[2]."-".$splitedFromDate[1]."-".$splitedFromDate[0];
+		
+		$splitedToDate = explode("-",$tToDate);
+		$transformToDate = $splitedToDate[2]."-".$splitedToDate[1]."-".$splitedToDate[0];
 		
 		//put date into an array
 		$trimArray = array();

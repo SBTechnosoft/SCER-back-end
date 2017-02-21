@@ -105,7 +105,7 @@ class EncodeData extends LedgerService
 			'basicCurrencySymbol' => $companyDetails['basicCurrencySymbol'],
 			'noOfDecimalPoints' => $companyDetails['noOfDecimalPoints'],
 			'formalName' => $companyDetails['formalName'],
-			'noOfDecimalPoints' => $companyDetails['currencySymbol'],	
+			'currencySymbol' => $companyDetails['currencySymbol'],	
 			'logo'=> array(
 				'documentName' => $companyDetails['logo']['documentName'],	
 				'documentUrl' => $companyDetails['logo']['documentUrl'],	

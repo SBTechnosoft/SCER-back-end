@@ -22,6 +22,7 @@ class ExceptionMessage
 		$msgArray['token'] = "Expired: Token Expired";
 		$msgArray['NoMatch'] = "NoMatch: Token Not Matched";
 		$msgArray['Exists'] = "Exists: Token Already Exists";
+		$msgArray['NoExists'] = "NotExists: Token Not Exists";
 		$msgArray['Email'] = "Message could not be sent";
 		return $msgArray;
 	}

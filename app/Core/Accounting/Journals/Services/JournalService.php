@@ -12,7 +12,7 @@ use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class JournalService 
+class JournalService
 {
     /**
      * @var templateService
@@ -212,21 +212,19 @@ class JournalService
 				}
 			}
 		}
+		$journalModel = new JournalModel();
 		if(count($multipleArray)!=0 && count($singleData)!=0)
 		{
-			$journalModel = new JournalModel();
 			$status = $journalModel->updateArrayData($multipleArray,$singleData,$jfId,$headerType);
 			return $status;
 		}
 		else if(count($multipleArray)!=0)
 		{
-			$journalModel = new JournalModel();
 			$status = $journalModel->updateData($multipleArray,$jfId,$headerType);
 			return $status;
 		}
 		else
 		{
-			$journalModel = new JournalModel();
 			$status = $journalModel->updateData($singleData,$jfId,$headerType);
 			return $status;
 		}

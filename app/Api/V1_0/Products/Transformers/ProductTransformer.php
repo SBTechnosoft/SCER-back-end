@@ -154,7 +154,9 @@ class ProductTransformer
 		}
 		
 		//transaction date conversion
-		$transformEntryDate = Carbon\Carbon::createFromFormat('d-m-Y', $transactionDate)->format('Y-m-d');
+		$splitedDate = explode("-",$transactionDate);
+		$transformTransactionDate = $splitedDate[2]."-".$splitedDate[1]."-".$splitedDate[0];
+		// $transformEntryDate = Carbon\Carbon::createFromFormat('d-m-Y', $transactionDate)->format('Y-m-d');
 		
 		//get exception message
 		$exception = new ExceptionMessage();
@@ -216,7 +218,7 @@ class ProductTransformer
 		{
 			// make an array
 			$simpleArray = array();
-			$simpleArray['transactionDate'] = $transformEntryDate;
+			$simpleArray['transactionDate'] = $transformTransactionDate;
 			$simpleArray['companyId'] = $companyId;
 			$simpleArray['transactionType'] = $inOutWard;
 			$simpleArray['invoiceNumber'] = $invoiceNumber;
@@ -418,9 +420,12 @@ class ProductTransformer
 				}
 				if(strcmp($convertedValue,$constantArray['transactionDate'])==0)
 				{
-					$transformTransactionDate = Carbon\Carbon::createFromFormat('d-m-Y', $value)->format('Y-m-d');
-					$tProductArray[$convertedValue]=trim($transformTransactionDate);
-					$convertedValue="";
+					$transformTransactionDate=trim($value);
+					$splitedDate = explode("-",$transformTransactionDate);
+					$tProductArray[$convertedValue] = $splitedDate[2]."-".$splitedDate[1]."-".$splitedDate[0];
+					// $transformTransactionDate = Carbon\Carbon::createFromFormat('d-m-Y', $value)->format('Y-m-d');
+					// $tProductArray[$convertedValue]=trim($transformTransactionDate);
+					// $convertedValue="";
 				}
 				else
 				{

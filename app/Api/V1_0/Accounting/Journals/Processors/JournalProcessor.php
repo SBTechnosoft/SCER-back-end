@@ -55,68 +55,72 @@ class JournalProcessor extends BaseProcessor
 			}
 			else
 			{
-				//check accounting Rules
-				$buisnessLogic = new BuisnessLogic();
-				$busnessResult = $buisnessLogic->validateBuisnessLogic($tRequest);
-				if(is_array($busnessResult))
-				{
-					if(array_key_exists("type",$request->header()))
-					{
-						//check accounting rules for sales/purchase
-						if(strcmp($request->header()['type'][0],$constantArray['sales'])==0 || strcmp($request->header()['type'][0],$constantArray['purchase'])==0)
-						{
-							if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
-							{
-								$inOutWard = $constantArray['journalOutward'];
-							}
-							else
-							{
-								$inOutWard = $constantArray['journalInward'];
-							}
-							//trim an input 
-							$productTransformer = new ProductTransformer();
-							$trimProductRequest = $productTransformer->trimInsertInOutwardData($this->request,$inOutWard);
-							
-							//check accounting Rules for sale/purchase
-							$busnessValidateResult = $buisnessLogic->validateInsertBuisnessLogic($trimProductRequest,$tRequest,$request->header()['type'][0]);
-							if(!is_array($busnessValidateResult))
-							{
-								return $busnessValidateResult;
-							}
-						}
-					}
-				}
-				else
-				{
-					return $busnessResult;
-				}
-			}
-			if(is_array($busnessResult))
-			{
 				//simple validation
 				$journalValidate = new JournalValidate();
 				$status = $journalValidate->validate($tRequest);
+				if(!preg_match("/^[0-9]{4}-([1-9]|1[0-2]|0[1-9])-([1-9]|0[1-9]|[1-2][0-9]|3[0-1])$/",$tRequest['entryDate']))
+				{
+					return "entry-date is not valid";
+				}
 				if($status=="Success")
 				{
-					$journalPersistable=array();
-					for($data=0;$data<count($tRequest[0]);$data++)
+					//check accounting Rules
+					$buisnessLogic = new BuisnessLogic();
+					$busnessResult = $buisnessLogic->validateBuisnessLogic($tRequest);
+					if(is_array($busnessResult))
 					{
-						$journalPersistable[$data] = new JournalPersistable();
-						$journalPersistable[$data]->setJfId($tRequest['jfId']);
-						$journalPersistable[$data]->setEntryDate($tRequest['entryDate']);
-						$journalPersistable[$data]->setCompanyId($tRequest['companyId']);
-						$journalPersistable[$data]->setJournalType($tRequest['journalType']);
-						
-						$journalPersistable[$data]->setAmount($tRequest[0][$data]['amount']);
-						$journalPersistable[$data]->setAmountType($tRequest[0][$data]['amountType']);
-						$journalPersistable[$data]->setLedgerId($tRequest[0][$data]['ledgerId']);
+						if(array_key_exists("type",$request->header()))
+						{
+							//check accounting rules for sales/purchase
+							if(strcmp($request->header()['type'][0],$constantArray['sales'])==0 || strcmp($request->header()['type'][0],$constantArray['purchase'])==0)
+							{
+								if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
+								{
+									$inOutWard = $constantArray['journalOutward'];
+								}
+								else
+								{
+									$inOutWard = $constantArray['journalInward'];
+								}
+								//trim an input 
+								$productTransformer = new ProductTransformer();
+								$trimProductRequest = $productTransformer->trimInsertInOutwardData($this->request,$inOutWard);
+								
+								//check accounting Rules for sale/purchase
+								$busnessValidateResult = $buisnessLogic->validateInsertBuisnessLogic($trimProductRequest,$tRequest,$request->header()['type'][0]);
+								if(!is_array($busnessValidateResult))
+								{
+									return $busnessValidateResult;
+								}
+							}
+						}
 					}
-					return $journalPersistable;
+					else
+					{
+						return $busnessResult;
+					}
 				}
 				else
 				{
 					return $status;
 				}
+			}
+			if(is_array($busnessResult))
+			{
+				$journalPersistable=array();
+				for($data=0;$data<count($tRequest[0]);$data++)
+				{
+					$journalPersistable[$data] = new JournalPersistable();
+					$journalPersistable[$data]->setJfId($tRequest['jfId']);
+					$journalPersistable[$data]->setEntryDate($tRequest['entryDate']);
+					$journalPersistable[$data]->setCompanyId($tRequest['companyId']);
+					$journalPersistable[$data]->setJournalType($tRequest['journalType']);
+					
+					$journalPersistable[$data]->setAmount($tRequest[0][$data]['amount']);
+					$journalPersistable[$data]->setAmountType($tRequest[0][$data]['amountType']);
+					$journalPersistable[$data]->setLedgerId($tRequest[0][$data]['ledgerId']);
+				}
+				return $journalPersistable;
 			}
 		}
 	}
@@ -129,6 +133,15 @@ class JournalProcessor extends BaseProcessor
 		$journalTransformer = new JournalTransformer();
 		$tRequest = $journalTransformer->trimDateData($this->request);
 		
+		//valiate Date
+		if(!preg_match("/^[0-9]{4}-([1-9]|1[0-2]|0[1-9])-([1-9]|0[1-9]|[1-2][0-9]|3[0-1])$/",$tRequest['fromDate']))
+		{
+			return "from-date is not valid";
+		}
+		if(!preg_match("/^[0-9]{4}-([1-9]|1[0-2]|0[1-9])-([1-9]|0[1-9]|[1-2][0-9]|3[0-1])$/",$tRequest['toDate']))
+		{
+			return "to-date is not valid";
+		}
 		$journalPersistable = new JournalPersistable();
 		$journalPersistable->setFromdate($tRequest['fromDate']);
 		$journalPersistable->setTodate($tRequest['toDate']);
@@ -180,6 +193,11 @@ class JournalProcessor extends BaseProcessor
 				}
 				else
 				{
+					$arrayStatus = $journalValidate->validateArrayData($tRequest);
+					if(strcmp($arrayStatus,"Success")!=0)
+					{
+						return $arrayStatus;
+					}
 					//check accounting Rules
 					$buisnessLogic = new BuisnessLogic();
 					$buisnessResult = $buisnessLogic->validateUpdateBuisnessLogic($tRequest);
@@ -234,14 +252,21 @@ class JournalProcessor extends BaseProcessor
 								$tKeyValue = array_keys($tRequest)[$trimResponse];
 								$tValue =$tRequest[array_keys($tRequest)[$trimResponse]];
 								$trimRequest[0] = array($tKeyValue=>$tValue);
-								$status = $journalValidate->validateUpdateData($tKeyValue,$tValue,$trimRequest[0]);
 								
-								if(strcmp($status,"Success")!=0)
+								// $status = $journalValidate->validateUpdateData($tKeyValue,$tValue,$trimRequest[0]);
+								if(array_key_exists('entry_date',$trimRequest[0]))
 								{
-									return $status;
+									if(!preg_match("/^[0-9]{4}-([1-9]|1[0-2]|0[1-9])-([1-9]|0[1-9]|[1-2][0-9]|3[0-1])$/",$trimRequest[0]['entry_date']))
+									{
+										return "entry-date is not valid";
+									}
 								}
-								else
-								{
+								// if(strcmp($status,"Success")!=0)
+								// {
+									// return $status;
+								// }
+								// else
+								// {
 									$journalPersistable[$trimResponse] = new JournalPersistable();
 									$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue)));
 									$setFuncName = 'set'.$str;
@@ -252,7 +277,7 @@ class JournalProcessor extends BaseProcessor
 									$journalPersistable[$trimResponse]->setJfId($jfId);
 									$journalSingleArray[$trimResponse] = array($journalPersistable[$trimResponse]);
 									
-								}
+								// }
 							}
 							for($multipleArray=0;$multipleArray<count($tRequest[0]);$multipleArray++)
 							{
@@ -368,12 +393,18 @@ class JournalProcessor extends BaseProcessor
 				//trim an input 
 				$productTransformer = new ProductTransformer();
 				$trimProductData = $productTransformer->trimUpdateProductData($productArray,$inOutWard);
+				
 				if($tRequest==1)
 				{
 					return $exceptionArray['content'];
 				}
 				else
 				{
+					$arrayStatus = $journalValidate->validateArrayData($tRequest);
+					if(strcmp($arrayStatus,"Success")!=0)
+					{
+						return $arrayStatus;
+					}
 					//check accounting Rules
 					$buisnessLogic = new BuisnessLogic();
 					$buisnessResult = $buisnessLogic->validateUpdateBuisnessLogic($tRequest);
@@ -406,6 +437,7 @@ class JournalProcessor extends BaseProcessor
 						}
 					}
 				}
+				
 				//get data from trim array
 				if(is_array($tRequest))
 				{
@@ -431,14 +463,20 @@ class JournalProcessor extends BaseProcessor
 								$tKeyValue = array_keys($tRequest)[$trimResponse];
 								$tValue =$tRequest[array_keys($tRequest)[$trimResponse]];
 								$trimRequest[0] = array($tKeyValue=>$tValue);
-								$status = $journalValidate->validateUpdateData($tKeyValue,$tValue,$trimRequest[0]);
-								
-								if(strcmp($status,"Success")!=0)
+								// $status = $journalValidate->validateUpdateData($tKeyValue,$tValue,$trimRequest[0]);
+								if(array_key_exists('entry_date',$trimRequest[0]))
 								{
-									return $status;
+									if(!preg_match("/^[0-9]{4}-(([1-9]|1[0-2]|0[1-9])-([1-9]|0[1-9]|[1-2][0-9]|3[0-1])$/",$trimRequest[0]['entry_date']))
+									{
+										return "entry-date is not valid";
+									}
 								}
-								else
-								{
+								// if(strcmp($status,"Success")!=0)
+								// {
+									// return $status;
+								// }
+								// else
+								// {
 									$journalPersistable[$trimResponse] = new JournalPersistable();
 									$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue)));
 									$setFuncName = 'set'.$str;
@@ -449,7 +487,7 @@ class JournalProcessor extends BaseProcessor
 									$journalPersistable[$trimResponse]->setJfId($jfId);
 									$journalSingleArray[$trimResponse] = array($journalPersistable[$trimResponse]);
 									
-								}
+								// }
 							}
 							for($multipleArray=0;$multipleArray<count($tRequest[0]);$multipleArray++)
 							{
@@ -469,13 +507,20 @@ class JournalProcessor extends BaseProcessor
 								$tKeyValue = array_keys($tRequest)[$trimResponse];
 								$tValue =$tRequest[array_keys($tRequest)[$trimResponse]];
 								$trimRequest[0] = array($tKeyValue=>$tValue);
-								$status = $journalValidate->validateUpdateData($tKeyValue,$tValue,$trimRequest[0]);
-								if(strcmp($status,"Success")!=0)
+								if(array_key_exists('entry_date',$trimRequest[0]))
 								{
-									return $status;
+									if(!preg_match("/^[0-9]{4}-([1-9]|1[0-2]|0[1-9])-([1-9]|0[1-9]|[1-2][0-9]|3[0-1])$/",$trimRequest[0]['entry_date']))
+									{
+										return "entry-date is not valid";
+									}
 								}
-								else
-								{
+								// $status = $journalValidate->validateUpdateData($tKeyValue,$tValue,$trimRequest[0]);
+								// if(strcmp($status,"Success")!=0)
+								// {
+									// return $status;
+								// }
+								// else
+								// {
 									$journalPersistable[$trimResponse] = new JournalPersistable();
 									$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue)));
 									$setFuncName = 'set'.$str;
@@ -485,14 +530,13 @@ class JournalProcessor extends BaseProcessor
 									$journalPersistable[$trimResponse]->setKey($tKeyValue);
 									$journalPersistable[$trimResponse]->setJfId($jfId);
 									$journalSingleArray[$trimResponse] = array($journalPersistable[$trimResponse]);
-								}
+								// }
 							}
 							return $journalSingleArray;
 						}
 					}
 					else
 					{
-						//validation of multiple array is pending
 						for($multipleArray=0;$multipleArray<count($tRequest);$multipleArray++)
 						{
 							$journalPersistable[$multipleArray] = new JournalPersistable();

@@ -97,7 +97,7 @@ class BuisnessLogic extends LedgerModel
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		
+
 		for($journalArray=0;$journalArray<count($trimRequest[0]);$journalArray++)
 		{
 			$amount[$journalArray][0] = $trimRequest[0][$journalArray]['amount'];
@@ -124,6 +124,7 @@ class BuisnessLogic extends LedgerModel
 				}
 			}
 		}
+		
 		$epsilon = 0.00001;
 		if(abs($creditAmountArray-$debitAmountArray)<$epsilon)
 		{

@@ -17,19 +17,13 @@ class JournalValidate
 	*/
 	public function validate($request)
 	{
-		
-		// print_r($request);
-		//amount,entry_date
 		$rules = array(
-			'jfId'=> 'regex:/^[0-9]+$/',
-			// 'entryDate'=>'regex:/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/',
+			'jfId'=> 'regex:/^[0-9]+$/'
 		);
 		$messages = [
-			'jfId.regex' => 'journal folio id contains character from "0-9" only',
-			// 'entryDate.regex' => 'entry-date format is not proper',
+			'jfId.regex' => 'journal folio id contains character from "0-9" only'
 		];
 		$validator = Validator::make($request,$rules,$messages);
-		
 		if ($validator->fails()) {
 			$errors = $validator->errors()->toArray();
 			$validate = array();
@@ -42,8 +36,72 @@ class JournalValidate
 			return json_encode($validate);
 		}
 		else {
+			//validate an array
+			for($arrayData=0;$arrayData<count($request[0]);$arrayData++)
+			{
+				$rules = array(
+				'amount'=> 'regex:/^[0-9 .]+$/'
+				);
+				$messages = [
+					'amount.regex' => 'amount ontains character from "0-9" only'
+				];
+				$validator = Validator::make($request[0][$arrayData],$rules,$messages);
+				if ($validator->fails()) {
+					$errors = $validator->errors()->toArray();
+					$validate = array();
+					for($data=0;$data<count($errors);$data++)
+					{
+						$detail[$data] = $errors[array_keys($errors)[$data]];
+						$key[$data] = array_keys($errors)[$data];
+						$validate[$data]= array($key[$data]=>$detail[$data][0]);
+					}
+					return json_encode($validate);
+				}
+			}
 			return "Success";
+			
 		}
+	}
+	
+	/**
+	 * validate the specified resource for udpate of data(array-data)
+	 * @param  Request object[Request $request]
+	 * @return error-message/success message
+	*/
+	public function validateArrayData($request)
+	{
+		$requestData = $request;
+		if(array_key_exists("flag",$requestData))
+		{
+			if(empty($requestData[0]))
+			{
+				return "Success";
+			}
+			$requestData = $requestData[0];
+		}
+		//validate an array
+		for($arrayData=0;$arrayData<count($requestData);$arrayData++)
+		{
+			$rules = array(
+				'amount'=> 'regex:/^[0-9 .]+$/'
+			);
+			$messages = [
+				'amount.regex' => 'amount ontains character from "0-9" only'
+			];
+			$validator = Validator::make($requestData[$arrayData],$rules,$messages);
+			if ($validator->fails()) {
+				$errors = $validator->errors()->toArray();
+				$validate = array();
+				for($data=0;$data<count($errors);$data++)
+				{
+					$detail[$data] = $errors[array_keys($errors)[$data]];
+					$key[$data] = array_keys($errors)[$data];
+					$validate[$data]= array($key[$data]=>$detail[$data][0]);
+				}
+				return json_encode($validate);
+			}
+		}
+		return "Success";
 	}
 	
 	/**
@@ -53,11 +111,9 @@ class JournalValidate
 	*/
 	public function validateUpdateData($keyName,$value,$request)
 	{
-		
+		echo "journal validate";
 		$validationArray = array(
-			'amount'=> 'regex:/^[0-9]*$/',
-			// 'entry_date'=>'regex:/^[0-9]*$/'
-			//entry-date
+			'amount'=> 'regex:/^[0-9]*$/'
 		);
 		$rules =array();
 		foreach ($validationArray as $key => $value) 
@@ -74,8 +130,7 @@ class JournalValidate
 				$key=> $rules[$key],
 			);
 			$messages = [
-				'amount.regex' => 'amount contains character from "0-9" only',
-				// 'entry_date.regex'=>'entry-date contains number and "-" only'
+				'amount.regex' => 'amount contains character from "0-9" only'
 			];
 			$validator = Validator::make($request,$rules,$messages);
 			

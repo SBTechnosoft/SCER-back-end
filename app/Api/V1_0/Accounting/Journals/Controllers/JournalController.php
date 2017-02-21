@@ -77,7 +77,6 @@ class JournalController extends BaseController implements ContainerInterface
 				$processor = new JournalProcessor();
 				$journalPersistable = new JournalPersistable();
 				$journalPersistable = $processor->createPersistable($this->request);
-				
 				if(is_array($journalPersistable))
 				{
 					$journalService= new JournalService();
@@ -815,7 +814,7 @@ class JournalController extends BaseController implements ContainerInterface
 								else
 								{
 									//journal data is processed(trim,validation and set data in object)
-									$journalPersistable = $processor->createPersistableChange($request->header(),$journalArray,$jfId);
+									$journalPersistable = $processor->createPersistableChange($request,$request->header(),$journalArray,$jfId);
 									if(!is_array($journalPersistable))
 									{
 										return $journalPersistable;
@@ -823,6 +822,7 @@ class JournalController extends BaseController implements ContainerInterface
 								}
 								if(is_array($journalPersistable))
 								{
+									
 									if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
 									{
 										$headerType = $constantArray['saleType'];
@@ -861,9 +861,11 @@ class JournalController extends BaseController implements ContainerInterface
 													$inOutward = $constantArray['journalInward'];
 												}
 											}
+											
 											$productService= new ProductService();	
 											$productPersistable = new ProductPersistable();
 											$productProcessor = new ProductProcessor();
+											
 											$productPersistable = $productProcessor->createPersistableChangeInOutWard($productArray,$inOutward,$jfId);
 											//here two array and string is return at a time
 											if(is_array($productPersistable))
@@ -982,7 +984,7 @@ class JournalController extends BaseController implements ContainerInterface
 								$headerType = $constantArray['receiptType'];
 							}
 							//journal data is processed(trim,validation and set data in object)
-							$journalPersistable = $processor->createPersistableChange($headerData,$journalArray,$jfId);
+							$journalPersistable = $processor->createPersistableChange($request,$headerData,$journalArray,$jfId);
 							//here two array and string is return at a time
 							if(is_array($journalPersistable))
 							{
@@ -1001,7 +1003,7 @@ class JournalController extends BaseController implements ContainerInterface
 						$headerType = $constantArray['specialJournalType'];
 						$journalArray = $this->request->input();
 						//journal data is processed(trim,validation and set data in object)
-						$journalPersistable = $processor->createPersistableChange($headerData,$journalArray,$jfId);
+						$journalPersistable = $processor->createPersistableChange($request,$headerData,$journalArray,$jfId);
 						
 						//here two array and string is return at a time
 						if(is_array($journalPersistable))
