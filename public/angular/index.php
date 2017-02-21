@@ -475,11 +475,11 @@ include ('connection.php');
 				// 
 				//9875647544
 				//bill
-				// $scope.user = [{"billData":[{"companyId":83,"entryDate":"22-12-2015","contactNo":"",
-				// "workNo":"9875647344","isDisplay":"no","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbrain",
-				// "clientName":"palddffa","invoiceNumber":"INV/2016-12/53","address1":"sfja,sa","address2":"dfsd,ds",
-				// "stateAbb":"IN-AG","cityId":1,"total":100,"tax":10,"grandTotal":134,"advance":100,"balance":10,
-				// "paymentMode":"bank","bankName":"abc","checkNumber":"abbb34eQ1G","remark":"adsfsf afasf"}]}];
+				$scope.user = [{"billData":[{"companyId":83,"entryDate":"22-12-2015","contactNo":"",
+				"workNo":"9875647344","isDisplay":"no","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbrain",
+				"clientName":"palddfllddfa","invoiceNumber":"INV/2016-12/53","address1":"sfja,sa","address2":"dfsd,ds",
+				"stateAbb":"IN-AG","cityId":1,"total":100,"tax":10,"grandTotal":134,"advance":100,"balance":10,
+				"paymentMode":"bank","bankName":"abc","checkNumber":"abbb34eQ1G","remark":"adsfsf afasf"}]}];
 				
 				// $scope.user = [{"billData":[{"entryDate":"22-10-2015","contactNo":"8224441535",
 				// "workNo":"9875647344","isDisplay":"no","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbrain",
@@ -490,20 +490,20 @@ include ('connection.php');
 				// $scope.user = [{"billData":[{
 				// "clientName":"palassaaa"}]}];
 				
-				// $scope.inventory=[{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":44,'color':'ddd',
-				// 'frameNo':'fff'},{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":40,'color':'hh',
-				// 'frameNo':'dsfds'}];
-				// angular.forEach($scope.user[0]['billData'][0], function (input,key) {
+				$scope.inventory=[{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":44,'color':'ddd',
+				'frameNo':'fff'},{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":40,'color':'hh',
+				'frameNo':'dsfds'}];
+				angular.forEach($scope.user[0]['billData'][0], function (input,key) {
 					
-					// formdata.append(key,input);
-				// });
-				// for(var i=0;i<$scope.inventory.length;i++)
-				// {
-					// angular.forEach($scope.inventory[i], function (input,key) {
+					formdata.append(key,input);
+				});
+				for(var i=0;i<$scope.inventory.length;i++)
+				{
+					angular.forEach($scope.inventory[i], function (input,key) {
 						
-						// formdata.append('inventory['+i+']['+key+']',input);
-					// });
-				// }
+						formdata.append('inventory['+i+']['+key+']',input);
+					});
+				}
 				
 				
 				
@@ -619,6 +619,7 @@ include ('connection.php');
                         // headers: {'Content-Type': undefined,'type':'sales','authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
                         headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62',
 						'salesType':'retail_sales'},
+						//,'nextSaleId':351
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','type':'retail_sales','fromDate':'22-10-2015','toDate':'22-10-2015'}
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productId':1,'fromDate':'22-10-2015','toDate':'20-01-2017'},
                         // headers: {'Content-Type': undefined},

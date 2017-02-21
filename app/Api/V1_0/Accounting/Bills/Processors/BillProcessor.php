@@ -65,6 +65,7 @@ class BillProcessor extends BaseProcessor
 		}	
 		else
 		{
+			echo "enter";
 			//validation
 			$billValidate = new BillValidate();
 			$status = $billValidate->validate($tRequest);
@@ -81,6 +82,7 @@ class BillProcessor extends BaseProcessor
 				}
 				if($contactNo=="" || $contactNo==0)
 				{
+					
 					$clientArray = array();
 					$clientArray['clientName']=$tRequest['client_name'];
 					$clientArray['companyName']=$tRequest['company_name'];
@@ -107,7 +109,8 @@ class BillProcessor extends BaseProcessor
 				{
 					//check client is exists by contact-number
 					$clientModel = new ClientModel();
-					$clientData = $clientModel->getClientData($contactNo);		
+					$clientData = $clientModel->getClientData($contactNo);
+					
 					if(is_array(json_decode($clientData)))
 					{
 						$encodedClientData = json_decode($clientData);
@@ -145,6 +148,7 @@ class BillProcessor extends BaseProcessor
 				return $status;
 			}
 		}
+		echo "hhh";
 		$paymentMode = $tRequest['payment_mode'];
 		$ledgerModel = new LedgerModel();
 		$ledgerResult = $ledgerModel->getLedgerId($tRequest['company_id'],$paymentMode);
@@ -156,6 +160,7 @@ class BillProcessor extends BaseProcessor
 		{
 		   	// get ledger data for checking client is exist in ledger or not by contact-number
 			$ledgerData = $ledgerModel->getDataAsPerContactNo($tRequest['company_id'],$tRequest['contact_no']);
+			
 			if(is_array(json_decode($ledgerData)))
 			{
 				$contactFlag=1;

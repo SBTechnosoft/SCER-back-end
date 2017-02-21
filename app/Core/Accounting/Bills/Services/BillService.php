@@ -172,6 +172,33 @@ class BillService
 		}
 	}
 	
+   	/**
+     * call the model for database get opertation
+     * @param headerData
+     * @return sale-data/error message
+     */
+	public function getPreviousNextData($headerData)
+	{
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+			
+		// data pass to the model object for getData
+		$billModel = new BillModel();
+		$billResult = $billModel->getPreviousNextData($headerData);
+		
+		if(strcmp($billResult,$exceptionArray['204'])==0)
+		{
+			return $billResult;
+		}
+		else
+		{
+			$encodeAllData = new EncodeAllData();
+			$encodingResult = $encodeAllData->getEncodedAllData($billResult);
+			return $encodingResult;
+		}
+	}
+	
 	 /**
      * update bill payment data
      * @param BillPersistable $persistable

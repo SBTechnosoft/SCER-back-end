@@ -426,6 +426,229 @@ class BillModel extends Model
 	}
 	
 	/**
+	 * get previous-next bill data
+	 * @param  header-data
+	 * returns the exception-message/sales data
+	*/
+	public function getPreviousNextData($headerData)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		if(array_key_exists('previoussaleid',$headerData))
+		{
+			if($headerData['previoussaleid'][0]==0)
+			{
+				DB::beginTransaction();
+				$raw = DB::connection($databaseName)->select("select 
+				sale_id,
+				product_array,
+				payment_mode,
+				bank_name,
+				invoice_number,
+				check_number,
+				total,
+				tax,
+				grand_total,
+				advance,
+				balance,
+				remark,
+				entry_date,
+				client_id,
+				sales_type,
+				refund,
+				company_id,
+				jf_id,
+				created_at,
+				updated_at 
+				from sales_bill 
+				where sales_type='".$headerData['salestype'][0]."'
+				deleted_at='0000-00-00 00:00:00'
+				order by sale_id desc limit 1");
+				DB::commit();
+				if(count($raw)==0)
+				{
+					return $exceptionArray['204'];
+				}
+				else
+				{
+					$saleDataResult = $this->getDocumentData($raw);
+					return $saleDataResult;
+				}
+			}
+			else
+			{
+				$saleId = $headerData['previoussaleid'][0]-1;
+				$result = $this->getSalePreviousNextData($headerData,$saleId);
+				if(count($result)==0)
+				{
+					DB::beginTransaction();
+					$previousAscId = DB::connection($databaseName)->select("select 
+					sale_id
+					from sales_bill 
+					where sales_type='".$headerData['salestype'][0]."' and
+					deleted_at='0000-00-00 00:00:00'
+					order by sale_id asc limit 1");
+					DB::commit();
+					for($arrayData=$saleId+1;$arrayData>=$previousAscId[0]->sale_id;$arrayData--)
+					{
+						$innerResult = $this->getSalePreviousNextData($headerData,$arrayData);
+						if(count($innerResult)!=0)
+						{
+							break;
+						}
+						if($arrayData==$previousAscId[0]->sale_id && count($innerResult)==0)
+						{
+							return $exceptionArray['204'];
+						}
+						$saleId++;
+					}
+					$saleDataResult = $this->getDocumentData($innerResult);
+					return $saleDataResult;
+				}
+				else
+				{
+					$saleDataResult = $this->getDocumentData($result);
+					return $saleDataResult;
+				}
+			}
+		}
+		else
+		{
+			$saleId = $headerData['nextsaleid'][0]+1;
+			$result = $this->getSalePreviousNextData($headerData,$saleId);
+			if(count($result)==0)
+			{
+				DB::beginTransaction();
+				$nextDescId = DB::connection($databaseName)->select("select 
+				sale_id
+				from sales_bill 
+				where sales_type='".$headerData['salestype'][0]."' and
+				deleted_at='0000-00-00 00:00:00'
+				order by sale_id desc limit 1");
+				DB::commit();
+				for($arrayData=$saleId+1;$arrayData<=$nextDescId[0]->sale_id;$arrayData++)
+				{
+					$innerResult = $this->getSalePreviousNextData($headerData,$arrayData);
+					if(count($innerResult)!=0)
+					{
+						break;
+					}
+					if($arrayData==$nextDescId[0]->sale_id && count($innerResult)==0)
+					{
+						return $exceptionArray['204'];
+					}
+					$saleId++;
+				}
+				$saleDataResult = $this->getDocumentData($innerResult);
+				return $saleDataResult;
+			}
+			else
+			{
+				$saleDataResult = $this->getDocumentData($result);
+				return $saleDataResult;
+			}
+		}
+	}
+	
+	/**
+	 * get previous bill data
+	 * @param  header-data
+	 * returns the exception-message/sales data
+	*/
+	public function getSalePreviousNextData($headerData,$saleId)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();
+		$saleData = DB::connection($databaseName)->select("select 
+		sale_id,
+		product_array,
+		payment_mode,
+		bank_name,
+		invoice_number,
+		check_number,
+		total,
+		tax,
+		grand_total,
+		advance,
+		balance,
+		remark,
+		entry_date,
+		client_id,
+		sales_type,
+		refund,
+		company_id,
+		jf_id,
+		created_at,
+		updated_at 
+		from sales_bill 
+		where sales_type='".$headerData['salestype'][0]."' and
+		deleted_at='0000-00-00 00:00:00' and
+		sale_id='".$saleId."'");
+		DB::commit();
+		return $saleData;
+	}
+	
+	/**
+	 * get document bill data(internal call)
+	 * @param  bill-data
+	 * returns the sales-data
+	*/
+	public function getDocumentData($saleArrayData)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		$documentResult = array();
+		for($saleData=0;$saleData<count($saleArrayData);$saleData++)
+		{
+			DB::beginTransaction();
+			$documentResult[$saleData] = DB::connection($databaseName)->select("select
+			document_id,
+			sale_id,
+			document_name,
+			document_size,
+			document_format,
+			document_type,
+			created_at,
+			updated_at
+			from sales_bill_doc_dtl
+			where sale_id='".$saleArrayData[$saleData]->sale_id."' and 
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+			if(count($documentResult[$saleData])==0)
+			{
+				$documentResult[$saleData] = array();
+				$documentResult[$saleData][0] = new stdClass();
+				$documentResult[$saleData][0]->document_id = 0;
+				$documentResult[$saleData][0]->sale_id = 0;
+				$documentResult[$saleData][0]->document_name = '';
+				$documentResult[$saleData][0]->document_size = 0;
+				$documentResult[$saleData][0]->document_format = '';
+				$documentResult[$saleData][0]->document_type ='bill';
+				$documentResult[$saleData][0]->created_at = '0000-00-00 00:00:00';
+				$documentResult[$saleData][0]->updated_at = '0000-00-00 00:00:00';
+			}
+		}
+		$salesArrayData = array();
+		$salesArrayData['salesData'] = json_encode($saleArrayData);
+		$salesArrayData['documentData'] = json_encode($documentResult);
+		return json_encode($salesArrayData);
+	}
+	
+	/**
 	 * update payment bill data
 	 * @param  bill array data
 	 * returns the exception-message/status

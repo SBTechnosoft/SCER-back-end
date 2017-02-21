@@ -18,6 +18,7 @@ class Bill implements RouteRegistrarInterface
     {
 		// get data
 		Route::get('Accounting/Bills/Bill/company/{companyId}', 'Accounting\Bills\Controllers\BillController@getData');
+		Route::get('Accounting/Bills/Bill', 'Accounting\Bills\Controllers\BillController@getPreviosNextData');
 		
 		// insert data post request
 		Route::post('Accounting/Bills/Bill', 'Accounting\Bills\Controllers\BillController@store');

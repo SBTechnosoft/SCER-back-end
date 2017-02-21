@@ -1601,7 +1601,6 @@ class LedgerModel extends Model
 		contact_no='".$contactNo."' and
 		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
-		
 		if(count($raw)==0)
 		{
 			return $exceptionArray['500'];

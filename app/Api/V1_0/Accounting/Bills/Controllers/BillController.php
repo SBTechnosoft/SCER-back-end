@@ -176,6 +176,32 @@ class BillController extends BaseController implements ContainerInterface
 	}
 	
 	/**
+	 * get the Previos-next data
+	 * @param  Request object[Request $request]
+	 * @return array-data/error message
+	*/
+	public function getPreviosNextData(Request $request)
+	{
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		// get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$billService= new BillService();
+			$status = $billService->getPreviousNextData($request->header());
+			return $status;
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+	}
+	
+	/**
 	 * update the specified resource (bill-payment)
 	 * @param  Request object[Request $request]
 	 * method calls the processor for creating persistable object & setting the data
