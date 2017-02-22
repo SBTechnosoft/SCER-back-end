@@ -155,6 +155,7 @@ class BillModel extends Model
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
+		
 		DB::beginTransaction();
 		$raw = DB::connection($databaseName)->statement("insert into sales_bill(
 		product_array,
@@ -175,13 +176,12 @@ class BillModel extends Model
 		jf_id) 
 		values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$salesType."','".$jfId."')");
 		DB::commit();
-		 
+		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			
 			DB::beginTransaction();
 			$saleId = DB::connection($databaseName)->select("SELECT 
 			max(sale_id) sale_id
@@ -260,7 +260,6 @@ class BillModel extends Model
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
-		DB::beginTransaction();
 		$raw = DB::connection($databaseName)->statement("insert into sales_bill_doc_dtl(
 		sale_id,
 		document_name,

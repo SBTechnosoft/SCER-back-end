@@ -60,7 +60,15 @@ class LedgerProcessor extends BaseProcessor
 				if(!is_array($businessResult))
 				{
 					$tRequest['ledger_name'] = $tRequest['ledger_name'].$tRequest['contact_no'];
-					$businessResult = $tRequest;
+					$innerBusinessResult = $buisnessLogic->validateLedgerData($tRequest);
+					if(!is_array($innerBusinessResult))
+					{
+						return $msgArray['content'];
+					}
+					else
+					{
+						$businessResult = $tRequest;
+					}
 				}
 			}
 			if(is_array($businessResult))
@@ -120,7 +128,7 @@ class LedgerProcessor extends BaseProcessor
 			}
 		}
 	}
-	public function createPersistableChange(Request $request,$ledgerId)
+	public function createPersistableChange(Request $request,$ledgerId,$result)
 	{
 		$ledgerValue = array();
 		$errorCount=0;
@@ -171,6 +179,24 @@ class LedgerProcessor extends BaseProcessor
 							$buisnessFlag=1;
 							$buisnessLogic = new BuisnessLogic();
 							$businessResult = $buisnessLogic->validateUpdateLedgerData($tRequest,$ledgerId);
+							if(!is_array($businessResult))
+							{
+								$contactNo = json_decode($result)->contact_no;
+								$tRequest[0]['ledger_name'] = $tRequest[0]['ledger_name'].$contactNo;
+								$innerBusinessResult = $buisnessLogic->validateUpdateLedgerData($tRequest,$ledgerId);
+								if(!is_array($innerBusinessResult))
+								{
+									return $exceptionArray['content'];
+								}
+								else
+								{
+									$businessResult = $tRequest;
+								}
+							}
+							else
+							{
+								$businessResult = $tRequest;
+							}
 						}
 					}
 					if($buisnessFlag==1 && !is_array($businessResult))

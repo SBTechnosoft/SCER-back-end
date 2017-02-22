@@ -303,7 +303,7 @@ class LedgerController extends BaseController implements ContainerInterface
 			}
 			else
 			{
-				$ledgerPersistable = $processor->createPersistableChange($this->request,$ledgerId);
+				$ledgerPersistable = $processor->createPersistableChange($this->request,$ledgerId,$result);
 				//here two array and string is return at a time
 				if(is_array($ledgerPersistable))
 				{
@@ -344,7 +344,7 @@ class LedgerController extends BaseController implements ContainerInterface
 				}
 				else
 				{
-					$ledgerPersistable = $processor->createPersistableChange($this->request,$ledgerId);
+					$ledgerPersistable = $processor->createPersistableChange($this->request,$ledgerId,$result);
 					//here two array and string is return at a time
 					if(is_array($ledgerPersistable))
 					{

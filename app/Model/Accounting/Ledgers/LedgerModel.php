@@ -1621,6 +1621,40 @@ class LedgerModel extends Model
 	}
 	
 	/**
+	 * get data as per invoice-number
+	 * @param: companyId,invoiceNumber
+	 * returns the error-message/data
+	*/
+	public function getDataAsPerInvoiceNumber($companyId,$invoiceNumber)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->select("select ledger_id 
+		from ledger_mst 
+		where company_id='".$companyId."' and 
+		invoice_number='".$invoiceNumber."' and
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		if(count($raw)==0)
+		{
+			return $exceptionArray['500'];
+		}
+		else
+		{
+			$encodedData = json_encode($raw);
+			return $encodedData;
+		}
+	}
+	
+	/**
 	 * get data as per companyId
 	 * @param: companyId
 	 * returns the error-message/data

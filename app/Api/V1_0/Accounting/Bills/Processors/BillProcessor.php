@@ -155,17 +155,24 @@ class BillProcessor extends BaseProcessor
 		}
 		if($tRequest['balance']!="" && $tRequest['balance']!=0)
 		{
-		   	// get ledger data for checking client is exist in ledger or not by contact-number
-			$ledgerData = $ledgerModel->getDataAsPerContactNo($tRequest['company_id'],$tRequest['contact_no']);
-			
-			if(is_array(json_decode($ledgerData)))
+			if($tRequest['contact_no']=="" || $tRequest['contact_no']==0)
 			{
-				$contactFlag=1;
-				$ledgerId = json_decode($ledgerData)[0]->ledger_id;
+				$contactFlag=2;
 			}
 			else
 			{
-				$contactFlag=2;
+				// get ledger data for checking client is exist in ledger or not by contact-number
+				$ledgerData = $ledgerModel->getDataAsPerContactNo($tRequest['company_id'],$tRequest['contact_no']);
+				
+				if(is_array(json_decode($ledgerData)))
+				{
+					$contactFlag=1;
+					$ledgerId = json_decode($ledgerData)[0]->ledger_id;
+				}
+				else
+				{
+					$contactFlag=2;
+				}
 			}
 		}
 		if($contactFlag==2)
@@ -176,6 +183,7 @@ class BillProcessor extends BaseProcessor
 			$ledgerArray['address2']=$tRequest['address2'];
 			$ledgerArray['contactNo']=$tRequest['contact_no'];
 			$ledgerArray['emailId']=$tRequest['email_id'];
+			$ledgerArray['invoiceNumber']=$tRequest['invoice_number'];
 			$ledgerArray['stateAbb']=$tRequest['state_abb'];
 			$ledgerArray['cityId']=$tRequest['city_id'];
 			$ledgerArray['companyId']=$tRequest['company_id'];
@@ -889,9 +897,9 @@ class BillProcessor extends BaseProcessor
 		$clientModel = new ClientModel();
 		$clientIdData = $clientModel->getData($billData[0]->client_id);
 		$decodedClientData = json_decode($clientIdData);
-	
-		//get ledgerId for update ledegerData
-		$getLedgerData = $ledgerModel->getDataAsPerContactNo($billData[0]->company_id,$decodedClientData[0]->contact_no);
+
+		//get ledgerId for update ledegerData 
+		$getLedgerData = $ledgerModel->getDataAsPerInvoiceNumber($billData[0]->company_id,$billData[0]->invoice_number);
 		$decodedLedgerData = json_decode($getLedgerData);
 		$journalController = new JournalController(new Container());
 		if(count($clientData)!=0)
@@ -904,33 +912,18 @@ class BillProcessor extends BaseProcessor
 			$clientData = $clientController->updateData($clientRequest,$billData[0]->client_id);			
 			if(strcmp($clientData,$msgArray['200'])==0)
 			{
-				//check condition of balance!=0 or not
-				if(array_key_exists('balance',$billTrimData))
+				$ledgerArray = new LedgerArray();
+				$ledgerArrayData = $ledgerArray->getLedgerArrayData();
+				
+				foreach($ledgerArrayData as $key => $value)
 				{
-					if($billTrimData['balance']!=0 && $billTrimData['balance']!="")
+					if(array_key_exists($value,$billTrimData))
 					{
-						$balanceFlag=1;
+						$ledgerData[$key] = $billTrimData[$value];
 					}
 				}
-				else
+				if(!empty($decodedLedgerData))
 				{
-					if($billData[0]->balance!=0 && $billData[0]->balance!="")
-					{
-						$balanceFlag=1;
-					}
-				}
-				if($balanceFlag==1)
-				{
-					$ledgerArray = new LedgerArray();
-					$ledgerArrayData = $ledgerArray->getLedgerArrayData();
-					
-					foreach($ledgerArrayData as $key => $value)
-					{
-						if(array_key_exists($value,$billTrimData))
-						{
-							$ledgerData[$key] = $billTrimData[$value];
-						}
-					}
 					//Now, we can update ledger data
 					$ledgerController = new LedgerController(new Container());
 					$ledgerMethod=$constantArray['postMethod'];
@@ -948,7 +941,6 @@ class BillProcessor extends BaseProcessor
 				return $clientData;
 			}
 		}
-				
 		if(array_key_exists('inventory',$billTrimData))
 		{
 			if(array_key_exists('payment_mode',$billTrimData))

@@ -43,7 +43,6 @@ class DocumentMpdf extends CurrencyToWordConversion
 			$saleId = $decodedBillData[0]->sale_id;
 			$decodedBillData = $decodedBillData[0];
 		}
-		
 		$decodedArray = json_decode($decodedBillData->productArray);
 		$productService = new ProductService();
 		
@@ -242,7 +241,6 @@ class DocumentMpdf extends CurrencyToWordConversion
 		}
 		$mpdf->WriteHTML($htmlBody);
 		$path = $constantArray['billUrl'];
-		
 		//change the name of document-name
 		$dateTime = date("d-m-Y h-i-s");
 		$convertedDateTime = str_replace(" ","-",$dateTime);
@@ -276,6 +274,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 			//sms send
 			// $url = "http://login.arihantsms.com/vendorsms/pushsms.aspx?user=siliconbrain&password=demo54321&msisdn=".$decodedBillData->client->contactNo."&sid=COTTSO&msg=".$message."&fl=0&gwid=2";
 			//pdf generate
+			
 			$mpdf->Output($documentPathName,'F');
 			$pathArray = array();
 			$pathArray['documentPath'] = $documentPathName;

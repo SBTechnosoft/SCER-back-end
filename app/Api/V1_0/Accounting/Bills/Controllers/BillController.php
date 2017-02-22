@@ -101,14 +101,13 @@ class BillController extends BaseController implements ContainerInterface
 							{
 								return $invoiceData;
 							}
-							
 							$endAt = json_decode($invoiceData)->endAt;
 							$invoiceController = new InvoiceController(new Container());
 							$invoiceMethod=$constantArray['postMethod'];
 							$invoicePath=$constantArray['invoiceUrl'];
 							$invoiceDataArray = array();
 							$invoiceDataArray['endAt'] = $endAt+1;
-						
+							
 							$invoiceRequest = Request::create($invoicePath,$invoiceMethod,$invoiceDataArray);
 							$updateResult = $invoiceController->update($invoiceRequest,json_decode($invoiceData)->invoiceId);
 							
@@ -116,10 +115,8 @@ class BillController extends BaseController implements ContainerInterface
 							$saleIdArray = array();
 							$saleIdArray['saleId'] = $saleId;
 							$documentController = new DocumentController(new Container());
-							
 							$method=$constantArray['postMethod'];
 							$path=$constantArray['documentGenerateUrl'];
-							
 							$documentRequest = Request::create($path,$method,$saleIdArray);
 							$processedData = $documentController->getData($documentRequest);
 							return $processedData;
