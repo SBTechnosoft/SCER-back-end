@@ -4,6 +4,8 @@
             "productId": int,
             "productName": string,
             "measurementUnit": Enum,
+			"color":string,
+			"size":string,
 			"purchasePrice": decimal,
 			"wholesaleMargin": decimal,
 			"semiWholesaleMargin": decimal,
@@ -34,6 +36,8 @@
         {
             "productName": string,
             "measurementUnit": Enum,
+			"color":string,
+			"size":string,
             "productCategoryId": int,
             "productGroupId": int,
 			"purchasePrice": decimal,

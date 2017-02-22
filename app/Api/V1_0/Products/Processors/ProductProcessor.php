@@ -11,6 +11,9 @@ use ERP\Api\V1_0\Products\Transformers\ProductTransformer;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Core\Accounting\Journals\Validations\BuisnessLogic;
 use ERP\Entities\Constants\ConstantClass;
+use ERP\Model\Companies\CompanyModel;
+use ERP\Model\ProductGroups\ProductGroupModel;
+use ERP\Model\ProductCategories\ProductCategoryModel;
 use Carbon;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -58,10 +61,44 @@ class ProductProcessor extends BaseProcessor
 			}
 			else
 			{
+				//make a product_code and validate it with other codes
+				//get company_name 
+				$companyModel = new CompanyModel();
+				$companyResult = $companyModel->getData($tRequest['company_id']);
+				$decodedCompanyData = json_decode($companyResult);
+				
+				//get product group name
+				$productGroupData = new ProductGroupModel();
+				$groupData = $productGroupData->getData($tRequest['product_group_id']);
+				$decodedGroupData = json_decode($groupData);
+				
+				//get product category name
+				$productCategoryData = new ProductCategoryModel();
+				$categoryData = $productCategoryData->getData($tRequest['product_category_id']);
+				$decodedCategoryData = json_decode($categoryData);
+				
+				$color = preg_replace('/[^A-Za-z0-9\-]/', '', $tRequest['color']);
+				$size = preg_replace('/[^A-Za-z0-9\-]/', '', $tRequest['size']);
+				$product_name = preg_replace('/[^A-Za-z0-9]/', '', $tRequest['product_name']);
+				$company_name = preg_replace('/[^A-Za-z0-9]/', '', $decodedCompanyData[0]->company_name);
+				$group_name = preg_replace('/[^A-Za-z0-9]/', '', $decodedGroupData[0]->product_group_name);
+				$category_name = preg_replace('/[^A-Za-z0-9]/', '', $decodedCategoryData[0]->product_category_name);
+				$convertedCompanyName = substr($company_name,0,3);
+				$convertedCategoryName = substr($category_name,0,3);
+				$convertedGroupName = substr($group_name,0,2);
+				$convertedProductName = substr($product_name,0,8);
+				$convertedColor = substr($color,0,2);
+				$convertedSize = substr($size,0,4);
+				$tRequest['product_code'] = $convertedCompanyName."_".
+											$convertedCategoryName."_".
+											$convertedGroupName."_".
+											$convertedProductName."_".
+											$convertedColor."_".
+											$convertedSize."_";
 				// validation
-				$validationResult = $productValidate->productNameValidate($tRequest);
-			}				
-			if(is_array($validationResult))
+				$validationResult = $productValidate->productCodeValidate($tRequest['company_id'],$tRequest['product_code']);
+			}	
+			if(strcmp($validationResult,$msgArray['200'])==0)
 			{
 				// validation
 				$status = $productValidate->validate($tRequest);

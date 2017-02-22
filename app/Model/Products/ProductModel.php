@@ -864,9 +864,42 @@ class ProductModel extends Model
 	 * get product_id as per given companyId and productName
 	 * returns error-message/data
 	*/
-	public function getProductName($productName,$companyId)
+	// public function getProductName($productName,$companyId)
+	// {
+		// database selection
+		// $database = "";
+		// $constantDatabase = new ConstantClass();
+		// $databaseName = $constantDatabase->constantDatabase();
+		
+		// DB::beginTransaction();		
+		// $raw = DB::connection($databaseName)->select("select 
+		// product_id
+		// from product_mst 
+		// where company_id='".$companyId."' and
+		// product_name = '".$productName."' and
+		// deleted_at='0000-00-00 00:00:00'");
+		// DB::commit();
+		
+		// get exception message
+		// $exception = new ExceptionMessage();
+		// $exceptionArray = $exception->messageArrays();
+		// if(count($raw)==0)
+		// {
+			// return $exceptionArray['404'];
+		// }
+		// else
+		// {
+			// return $raw;
+		// }
+	// }
+	
+	/**
+	 * get product_id as per given companyId and productCode
+	 * returns error-message/status
+	*/
+	public function getProductCode($companyId,$productCode)
 	{
-		//database selection
+		// database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
@@ -876,7 +909,7 @@ class ProductModel extends Model
 		product_id
 		from product_mst 
 		where company_id='".$companyId."' and
-		product_name = '".$productName."' and
+		product_code = '".$productCode."' and
 		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
@@ -885,11 +918,11 @@ class ProductModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
-			return $exceptionArray['404'];
+			return $exceptionArray['200'];
 		}
 		else
 		{
-			return $raw;
+			return $exceptionArray['content'];
 		}
 	}
 	

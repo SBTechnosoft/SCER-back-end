@@ -33,6 +33,9 @@ use ERP\Core\Products\Properties\FromDatePropertyTrait;
 use ERP\Core\Products\Properties\ToDatePropertyTrait;
 use ERP\Core\Products\Properties\AdditionalTaxPropertyTrait;
 use ERP\Core\Products\Properties\ProductDescriptionPropertyTrait;
+use ERP\Core\Products\Properties\ColorPropertyTrait;
+use ERP\Core\Products\Properties\SizePropertyTrait;
+use ERP\Core\Products\Properties\ProductCodePropertyTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -70,4 +73,7 @@ class productPersistable
 	use ToDatePropertyTrait;
 	use AdditionalTaxPropertyTrait;
 	use ProductDescriptionPropertyTrait;
+	use ColorPropertyTrait;
+	use SizePropertyTrait;
+	use ProductCodePropertyTrait;
 }

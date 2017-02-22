@@ -25,6 +25,8 @@ class ProductTransformer
 		//data get from body
 		$productName = $request->input('productName'); 
 		$measurementUnit = $request->input('measurementUnit'); 
+		$color = $request->input('color'); 
+		$size = $request->input('size'); 
 		$isDisplay = $request->input('isDisplay'); 			
 		$purchasePrice = $request->input('purchasePrice'); 			
 		$wholeSaleMargin = $request->input('wholesaleMargin'); 			
@@ -42,6 +44,8 @@ class ProductTransformer
 		//trim an input
 		$tProductName = trim($productName);
 		$tMeasUnit = trim($measurementUnit);
+		$tColor = trim($color);
+		$tSize = trim($size);
 		$tIsDisplay = trim($isDisplay);
 		$tPurchasePrice = trim($purchasePrice);
 		$tWholeSaleMargin = trim($wholeSaleMargin);
@@ -107,6 +111,8 @@ class ProductTransformer
 			$data = array();
 			$data['product_name'] = $tProductName;
 			$data['measurement_unit'] = $tMeasUnit;
+			$data['color'] = $tColor;
+			$data['size'] = $tSize;
 			$data['is_display'] = $tIsDisplay;
 			$data['purchase_price'] = $tPurchasePrice;
 			$data['wholesale_margin'] = $tWholeSaleMargin;

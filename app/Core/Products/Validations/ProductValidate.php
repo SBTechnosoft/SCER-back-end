@@ -274,24 +274,49 @@ class ProductValidate extends ProductModel
      * $param trim request data
      * @return error messgage/trim request array
      */	
-	public function productNameValidate($tRequest)
+	// public function productNameValidate($tRequest)
+	// {
+		// get exception message
+		// $exception = new ExceptionMessage();
+		// $exceptionArray = $exception->messageArrays();
+		
+		// if (strpos($tRequest['product_name'], '\'') !== FALSE)
+		// {
+			// $tRequest['product_name']= str_replace("'","\'",$tRequest['product_name']);
+		// }
+		
+		// get product-data
+		// $productValidation = new ProductValidate();
+		// $productResult = $productValidation->getProductName($tRequest['product_name'],$tRequest['company_id']);
+		
+		// if(!is_array($productResult))
+		// {
+			// return $tRequest;
+		// }
+		// else
+		// {
+			// return $exceptionArray['content'];
+		// }
+	// }
+	
+	/**
+     * validate data for product name
+     * $param trim request data
+     * @return error messgage/trim request array
+     */	
+	public function productCodeValidate($companyId,$productCode)
 	{
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
-		if (strpos($tRequest['product_name'], '\'') !== FALSE)
-		{
-			$tRequest['product_name']= str_replace("'","\'",$tRequest['product_name']);
-		}
-		
 		//get product-data
 		$productValidation = new ProductValidate();
-		$productResult = $productValidation->getProductName($tRequest['product_name'],$tRequest['company_id']);
-		
-		if(!is_array($productResult))
+		$productResult = $productValidation->getProductCode($companyId,$productCode);
+
+		if(strcmp($productResult,$exceptionArray['200'])==0)
 		{
-			return $tRequest;
+			return $exceptionArray['200'];
 		}
 		else
 		{
