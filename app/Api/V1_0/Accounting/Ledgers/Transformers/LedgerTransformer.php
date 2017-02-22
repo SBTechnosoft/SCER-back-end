@@ -29,6 +29,7 @@ class LedgerTransformer
 		$address2 = $request->input('address2'); 
 		$contactNo = $request->input('contactNo'); 
 		$emailId = $request->input('emailId'); 
+		$invoiceNumber = $request->input('invoiceNumber'); 
 		$pan = $request->input('pan'); 
 		$tin = $request->input('tin'); 
 		$gstNo = $request->input('gst'); 		
@@ -48,6 +49,7 @@ class LedgerTransformer
 		$tAddress2 = trim($address2);
 		$tContactNo = trim($contactNo);
 		$tEmailId = trim($emailId);
+		$tInvoiceNumber = trim($invoiceNumber);
 		$tPan = trim($pan);
 		$tTin = trim($tin);
 		$tGstNo = trim($gstNo);
@@ -129,6 +131,7 @@ class LedgerTransformer
 			$data['address2'] = $tAddress2;
 			$data['contact_no'] = $tContactNo;
 			$data['email_id'] = $tEmailId;
+			$data['invoice_number'] = $tInvoiceNumber;
 			$data['pan'] = $tPan;
 			$data['tin'] = $tTin;
 			$data['gst'] = $tGstNo;

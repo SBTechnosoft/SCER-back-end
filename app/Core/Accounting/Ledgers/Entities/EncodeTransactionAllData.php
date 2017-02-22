@@ -300,6 +300,7 @@ class EncodeTransactionAllData extends LedgerService
 					'contactNo' => $ledgerDecodedJson[$jsonData]['contactNo'],
 
 					'emailId' => $ledgerDecodedJson[$jsonData]['emailId'],
+					'invoiceNumber' => $ledgerDecodedJson[$jsonData]['invoiceNumber'],
 
 					'pan' => $ledgerDecodedJson[$jsonData]['pan'],
 

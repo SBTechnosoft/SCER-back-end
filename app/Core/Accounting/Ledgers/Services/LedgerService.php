@@ -57,23 +57,18 @@ class LedgerService extends AbstractService
 		$ledgerData=0;
 		$balanceData=0;
 		$ledgerKeyNameExt = array();
+		
 		for($data=0;$data<count($ledgerArray);$data++)
 		{
 			$funcName[$data] = $ledgerArray[$data][0]->getName();
 			$getData[$data] = $ledgerArray[$data][0]->$funcName[$data]();
 			$keyName[$data] = $ledgerArray[$data][0]->getkey();
-			if($data>=10 && $data<=12)
+			if(strcmp($keyName[$data],"balance_flag")==0 || strcmp($keyName[$data],"amount")==0 || strcmp($keyName[$data],"amount_type")==0)
 			{
-				if($getData[10]=="")
-				{
-				}
-				else
-				{
-					$ledgerFuncNameExt[$balanceData] = $funcName[$data];
-					$ledgerGetDataExt[$balanceData] = $getData[$data];
-					$ledgerKeyNameExt[$balanceData] = $keyName[$data];
-					$balanceData++;
-				}
+				$ledgerFuncNameExt[$balanceData] = $funcName[$data];
+				$ledgerGetDataExt[$balanceData] = $getData[$data];
+				$ledgerKeyNameExt[$balanceData] = $keyName[$data];
+				$balanceData++;
 			}
 			else
 			{

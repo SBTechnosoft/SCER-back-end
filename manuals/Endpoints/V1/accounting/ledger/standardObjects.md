@@ -9,6 +9,7 @@
                 "address2":String,
 				"contactNo":String,
 				"emailId":String,
+				"invoiceNumber":string,
                 "pan":char,
                 "tin":char,
                 "gstNo":String,

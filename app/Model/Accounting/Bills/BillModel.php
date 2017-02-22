@@ -468,7 +468,7 @@ class BillModel extends Model
 				created_at,
 				updated_at 
 				from sales_bill 
-				where sales_type='".$headerData['salestype'][0]."'
+				where sales_type='".$headerData['salestype'][0]."' and
 				deleted_at='0000-00-00 00:00:00'
 				order by sale_id desc limit 1");
 				DB::commit();

@@ -65,7 +65,6 @@ class BillProcessor extends BaseProcessor
 		}	
 		else
 		{
-			echo "enter";
 			//validation
 			$billValidate = new BillValidate();
 			$status = $billValidate->validate($tRequest);
@@ -82,7 +81,6 @@ class BillProcessor extends BaseProcessor
 				}
 				if($contactNo=="" || $contactNo==0)
 				{
-					
 					$clientArray = array();
 					$clientArray['clientName']=$tRequest['client_name'];
 					$clientArray['companyName']=$tRequest['company_name'];
@@ -148,7 +146,6 @@ class BillProcessor extends BaseProcessor
 				return $status;
 			}
 		}
-		echo "hhh";
 		$paymentMode = $tRequest['payment_mode'];
 		$ledgerModel = new LedgerModel();
 		$ledgerResult = $ledgerModel->getLedgerId($tRequest['company_id'],$paymentMode);

@@ -26,6 +26,7 @@ class EncodeData extends StateService
 		$address2= $decodedJson['address2'];
 		$contactNo= $decodedJson['contact_no'];
 		$emailId= $decodedJson['email_id'];
+		$invoiceNumber = $decodedJson['invoice_number'];
 		$panNo = $decodedJson['pan'];
 		$tinNo = $decodedJson['tin'];
 		$gstNo= $decodedJson['gst'];
@@ -81,6 +82,7 @@ class EncodeData extends StateService
 		$data['address2'] = $address2;
 		$data['contactNo'] = $contactNo;
 		$data['emailId'] = $emailId;
+		$data['invoiceNumber'] = $invoiceNumber;
 		$data['pan'] = $panNo;
 		$data['tin'] = $tinNo;
 		$data['gstNo'] = $gstNo;
