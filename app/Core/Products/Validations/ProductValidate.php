@@ -313,8 +313,8 @@ class ProductValidate extends ProductModel
 		//get product-data
 		$productValidation = new ProductValidate();
 		$productResult = $productValidation->getProductCode($companyId,$productCode);
-
-		if(strcmp($productResult,$exceptionArray['200'])==0)
+		
+		if(!is_array($productResult))
 		{
 			return $exceptionArray['200'];
 		}
@@ -329,32 +329,62 @@ class ProductValidate extends ProductModel
      * $param trim request data
      * @return error messgage/trim request array
      */	
-	public function productNameValidateUpdate($tRequest,$productId)
+	// public function productNameValidateUpdate($tRequest,$productId)
+	// {
+		// get exception message
+		// $exception = new ExceptionMessage();
+		// $exceptionArray = $exception->messageArrays();
+		
+		// get product-data
+		// $productValidation = new ProductValidate();
+		// $productData = $productValidation->getData($productId);
+		// $decodedProductdata = json_decode($productData);
+		
+		// if (strpos($tRequest['product_name'], '\'') !== FALSE)
+		// {
+			// $tRequest['product_name'] = str_replace("'","\'",$tRequest['product_name']);
+		// }
+		
+		// $productResult = $productValidation->getProductName($tRequest['product_name'],$decodedProductdata[0]->company_id);
+		// if(!is_array($productResult))
+		// {
+			// return $tRequest;
+		// }
+		// else
+		// {
+			// if($productResult[0]->product_id==$productId)
+			// {
+				// return $tRequest;
+			// }
+			// else
+			// {
+				// return $exceptionArray['content'];
+			// }
+		// }
+	// }
+	
+	/**
+     * validate update data for product code
+     * $param trim request data
+     * @return error messgage/trim request array
+     */	
+	public function productUpdateCodeValidate($companyId,$productCode,$productId)
 	{
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
-		// get product-data
 		$productValidation = new ProductValidate();
-		$productData = $productValidation->getData($productId);
-		$decodedProductdata = json_decode($productData);
-		
-		if (strpos($tRequest['product_name'], '\'') !== FALSE)
-		{
-			$tRequest['product_name'] = str_replace("'","\'",$tRequest['product_name']);
-		}
-		
-		$productResult = $productValidation->getProductName($tRequest['product_name'],$decodedProductdata[0]->company_id);
+		$productResult = $productValidation->getProductCode($companyId,$productCode);
 		if(!is_array($productResult))
 		{
-			return $tRequest;
+			return $productResult;
 		}
 		else
 		{
 			if($productResult[0]->product_id==$productId)
 			{
-				return $tRequest;
+				return $exceptionArray['200'];
 			}
 			else
 			{

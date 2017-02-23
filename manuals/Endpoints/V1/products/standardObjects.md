@@ -8,9 +8,11 @@
 			"size":string,
 			"purchasePrice": decimal,
 			"wholesaleMargin": decimal,
+			"wholesaleMarginFlat": decimal, 
 			"semiWholesaleMargin": decimal,
 			"vat": decimal,
 			"margin": decimal,
+			"marginFlat":decimal,
 			"mrp": decimal,
 			"additionalTax":decimal,
 			"productDescription":string,
@@ -42,9 +44,11 @@
             "productGroupId": int,
 			"purchasePrice": decimal,
 			"wholesaleMargin": decimal,
+			"wholesaleMarginFlat": decimal,
 			"semiWholesaleMargin": decimal,
 			"vat": decimal,
 			"margin": decimal,
+			"marginFlat":decimal,
 			"mrp": decimal,
 			"additionalTax":decimal,
 			"productDescription":string,
@@ -160,3 +164,11 @@
 				"type1":"kilo",
 				"type2":"litre"
 			}
+			
+//marginType			
+
+margin
+
+//wholesaleMarginType
+wholesaleMarginFlat
+wholesaleMargin

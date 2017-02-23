@@ -484,7 +484,7 @@ class ProductController extends BaseController implements ContainerInterface
 			}
 			else
 			{
-				$productPersistable = $processor->createPersistableChange($this->request,$productId);
+				$productPersistable = $processor->createPersistableChange($this->request,$productId,$result);
 				if(is_array($productPersistable))
 				{
 					$status = $productService->update($productPersistable);
@@ -534,9 +534,7 @@ class ProductController extends BaseController implements ContainerInterface
 			}
 			else
 			{		
-				$productPersistable = $processor->createPersistableChange($this->request,$productId);
-				$productService->create($productPersistable);
-				$status = $productService->delete($productPersistable);
+				$status = $productService->delete($productId);
 				return $status;
 			}
 		}

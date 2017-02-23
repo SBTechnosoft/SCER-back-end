@@ -94,7 +94,7 @@ class ProductProcessor extends BaseProcessor
 											$convertedGroupName."_".
 											$convertedProductName."_".
 											$convertedColor."_".
-											$convertedSize."_";
+											$convertedSize;
 				// validation
 				$validationResult = $productValidate->productCodeValidate($tRequest['company_id'],$tRequest['product_code']);
 			}	
@@ -220,7 +220,7 @@ class ProductProcessor extends BaseProcessor
      * $param Request object [Request $request] and product id
      * @return product Persistable object
      */	
-	public function createPersistableChange(Request $request,$productId)
+	public function createPersistableChange(Request $request,$productId,$result)
 	{
 		$errorCount=0;
 		$errorStatus=array();
@@ -238,11 +238,17 @@ class ProductProcessor extends BaseProcessor
 		{
 			$productValue = array();
 			$productPersistable;
+			$companyFlag=0;
+			$categoryFlag=0;
+			$groupFlag=0;
+			$colorFlag=0;
+			$sizeFlag=0;
+			$productNameFlag=0;
 			$productArray = array();
 			$productValidate = new ProductValidate();
 			$status;
 			// if data is not available in update request
-			if(count($_POST)==0)
+			if(count($request->input())==0)
 			{
 				$status = $exceptionArray['204'];
 				return $status;
@@ -250,37 +256,126 @@ class ProductProcessor extends BaseProcessor
 			// data is avalilable for update
 			else
 			{
-				for($data=0;$data<count($_POST);$data++)
+				$productTransformer = new ProductTransformer();
+				$tRequest = $productTransformer->trimUpdateData($request->input());
+				
+				//get product data
+				$decodedProductData = json_decode($result);
+				
+				if(!is_array($tRequest))
+				{
+					return $exceptionArray['content'];
+				}
+				//make a product_code and validate it with other codes
+				$companyModel = new CompanyModel();
+				$productGroupData = new ProductGroupModel();
+				$productCategoryData = new ProductCategoryModel();
+				
+				//get company_name
+				for($arrayData=0;$arrayData<count($tRequest);$arrayData++)
+				{
+					if(array_key_exists('company_id',$tRequest[$arrayData]))
+					{
+						$companyFlag=1;
+						$companyResult = $companyModel->getData($tRequest[$arrayData]['company_id']);
+					}
+					if(array_key_exists('product_group_id',$tRequest[$arrayData]))
+					{
+						$categoryFlag=1;
+						//get product group name
+						$groupData = $productGroupData->getData($tRequest[$arrayData]['product_group_id']);
+					}
+					if(array_key_exists('product_category_id',$tRequest[$arrayData]))
+					{
+						$groupFlag=1;
+						//get product category name
+						$categoryData = $productCategoryData->getData($tRequest[$arrayData]['product_category_id']);
+					}
+					if(array_key_exists('color',$tRequest[$arrayData]))
+					{
+						$colorFlag=1;
+						$color = $tRequest[$arrayData]['color'];
+					}
+					if(array_key_exists('size',$tRequest[$arrayData]))
+					{
+						$sizeFlag=1;
+						$size = $tRequest[$arrayData]['size'];
+					}
+					if(array_key_exists('product_name',$tRequest[$arrayData]))
+					{
+						$productNameFlag=1;
+						$productName = $tRequest[$arrayData]['product_name'];
+					}
+				}
+				
+				if($companyFlag==0)
+				{
+					$companyResult = $companyModel->getData($decodedProductData[0]->company_id);
+					$companyResult = json_decode($companyResult)[0]->company_id;
+				}
+				if($groupFlag==0)
+				{
+					$groupData = $productGroupData->getData($decodedProductData[0]->product_group_id);
+					$groupData = json_decode($groupData)[0]->product_group_id;
+				}
+				if($categoryFlag==0)
+				{
+					$categoryData = $productCategoryData->getData($decodedProductData[0]->product_category_id);
+					$categoryData = json_decode($categoryData)[0]->product_category_id;
+				}
+				if($colorFlag==0)
+				{
+					$color = $decodedProductData[0]->color;
+				}
+				if($sizeFlag==0)
+				{
+					$size = $decodedProductData[0]->size;
+				}
+				if($productNameFlag==0)
+				{
+					$productName = $decodedProductData[0]->product_name;
+				}
+				
+				$decodedCompanyData = json_decode($companyResult);
+				$decodedGroupData = json_decode($groupData);
+				$decodedCategoryData = json_decode($categoryData);
+				
+				$color = preg_replace('/[^A-Za-z0-9]/', '', $color);
+				$size = preg_replace('/[^A-Za-z0-9]/', '', $size);
+				$product_name = preg_replace('/[^A-Za-z0-9]/', '', $productName);
+				$company_name = preg_replace('/[^A-Za-z0-9]/', '', $companyResult);
+				$group_name = preg_replace('/[^A-Za-z0-9]/', '', $groupData);
+				$category_name = preg_replace('/[^A-Za-z0-9]/', '', $categoryData);
+				$convertedCompanyName = substr($company_name,0,3);
+				$convertedCategoryName = substr($category_name,0,3);
+				$convertedGroupName = substr($group_name,0,2);
+				$convertedProductName = substr($product_name,0,8);
+				$convertedColor = substr($color,0,2);
+				$convertedSize = substr($size,0,4);
+				$totalCount = count($tRequest);
+				$tRequest[$totalCount]['product_code']=$convertedCompanyName."_".
+														$convertedCategoryName."_".
+														$convertedGroupName."_".
+														$convertedProductName."_".
+														$convertedColor."_".
+														$convertedSize;
+				// validation
+				$validationResult = $productValidate->productUpdateCodeValidate($companyResult,$tRequest[$totalCount]['product_code'],$productId);
+				if(strcmp($validationResult,$exceptionArray['200'])!=0)
+				{
+					return $validationResult;
+				}
+				for($data=0;$data<count($tRequest);$data++)
 				{
 					// data get from body
 					$productPersistable = new ProductPersistable();
-					$value[$data] = $_POST[array_keys($_POST)[$data]];
-					$key[$data] = array_keys($_POST)[$data];
 					
-					// trim an input 
-					$productTransformer = new ProductTransformer();
-					$tRequest = $productTransformer->trimUpdateData($key[$data],$value[$data]);
-					if($tRequest==1)
-					{
-						return $exceptionArray['content'];
-					}
-					else
-					{
-						// get key value from trim array
-						$tKeyValue[$data] = array_keys($tRequest[0])[0];
-						$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
+					// get key value from trim array
+					$tKeyValue[$data] = array_keys($tRequest[$data])[0];
+					$tValue[$data] = $tRequest[$data][array_keys($tRequest[$data])[0]];
 					
-						if(strcmp($tKeyValue[$data],"product_name")==0)
-						{
-							$validationResult = $productValidate->productNameValidateUpdate($tRequest[0],$productId);
-							if(!is_array($validationResult))
-							{
-								return $validationResult;
-							}
-						}
-					}
 					// validation
-					$status = $productValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
+					$status = $productValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[$data]);
 					
 					// enter data is valid(one data validate status return)
 					if($status=="Success")
@@ -331,7 +426,7 @@ class ProductProcessor extends BaseProcessor
 							$errorCount++;
 						}
 					}
-					if($data==(count($_POST)-1))
+					if($data==(count($request->input())))
 					{
 						if($flag==1)
 						{

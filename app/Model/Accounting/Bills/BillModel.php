@@ -440,6 +440,7 @@ class BillModel extends Model
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
+	
 		if(array_key_exists('previoussaleid',$headerData))
 		{
 			if($headerData['previoussaleid'][0]==0)

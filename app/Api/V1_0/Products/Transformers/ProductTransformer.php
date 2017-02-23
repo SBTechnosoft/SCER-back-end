@@ -252,83 +252,85 @@ class ProductTransformer
      * @param key and value
      * @return array
      */
-	public function trimUpdateData()
+	public function trimUpdateData($arrayData)
 	{
 		$productEnumArray = array();
 		$isDisplayFlag=0;
 		$measurementUnitFlag=0;
 		$tProductArray = array();
 		$productValue;
-		$keyValue = func_get_arg(0);
+		// $keyValue = func_get_arg(0);
 		$convertedValue="";
 		
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-		
-		for($asciiChar=0;$asciiChar<strlen($keyValue);$asciiChar++)
+		$index=0;
+		foreach($arrayData as $keyValue => $value)
 		{
-			if(ord($keyValue[$asciiChar])<=90 && ord($keyValue[$asciiChar])>=65) 
+			$convertedValue = "";
+			for($asciiChar=0;$asciiChar<strlen($keyValue);$asciiChar++)
 			{
-				$convertedValue1 = "_".chr(ord($keyValue[$asciiChar])+32);
-				$convertedValue=$convertedValue.$convertedValue1;
-			}
-			else
-			{
-				$convertedValue=$convertedValue.$keyValue[$asciiChar];
-			}
-		}
-		$productValue = func_get_arg(1);
-		for($data=0;$data<count($productValue);$data++)
-		{
-			$tProductArray[$data]= array($convertedValue=> trim($productValue));
-			$productEnumArray = array_keys($tProductArray[$data])[0];
-		}
-		//check enum data
-		$enumMeasurementUnitArray = array();
-		$measurementUnitEnum = new measurementUnitEnum();
-		$enumMeasurementUnitArray = $measurementUnitEnum->enumArrays();
-		
-		if(strcmp($productEnumArray,$constantArray['measurementUnit'])==0)
-		{
-			foreach ($enumMeasurementUnitArray as $key => $value)
-			{
-				if(strcmp($tProductArray[0]['measurement_unit'],$value)==0)
+				if(ord($keyValue[$asciiChar])<=90 && ord($keyValue[$asciiChar])>=65) 
 				{
-					$measurementUnitFlag=1;
-					break;
+					$convertedValue1 = "_".chr(ord($keyValue[$asciiChar])+32);
+					$convertedValue=$convertedValue.$convertedValue1;
 				}
 				else
 				{
-					$measurementUnitFlag=2;
+					$convertedValue=$convertedValue.$keyValue[$asciiChar];
 				}
 			}
-		}
-		$enumIsDispArray = array();
-		$isDispEnum = new IsDisplayEnum();
-		$enumIsDispArray = $isDispEnum->enumArrays();
-		if(strcmp($productEnumArray,$constantArray['isDisplay'])==0)
-		{
-			foreach ($enumIsDispArray as $key => $value)
+			$productValue[$index] = $value;
+			$tProductArray[$index]= array($convertedValue=> trim($productValue[$index]));
+			$productEnumArray = array_keys($tProductArray[$index])[0];
+			
+			//check enum data
+			$enumMeasurementUnitArray = array();
+			$measurementUnitEnum = new measurementUnitEnum();
+			$enumMeasurementUnitArray = $measurementUnitEnum->enumArrays();
+			
+			if(strcmp($constantArray['measurementUnit'],$productEnumArray)==0)
 			{
-				if(strcmp($tProductArray[0]['is_display'],$value)==0)
+				foreach ($enumMeasurementUnitArray as $innerKey => $innerValue)
 				{
-					$isDisplayFlag=1;
-					break;
-				}
-				else
-				{
-					$isDisplayFlag=2;
+					if(strcmp($tProductArray[$index]['measurement_unit'],$innerValue)==0)
+					{
+						$measurementUnitFlag=1;
+						break;
+					}
+					else
+					{
+						$measurementUnitFlag=2;
+					}
 				}
 			}
+			// echo $measurementUnitFlag;
+			$enumIsDispArray = array();
+			$isDispEnum = new IsDisplayEnum();
+			$enumIsDispArray = $isDispEnum->enumArrays();
+			
+			if(strcmp($constantArray['isDisplay'],$productEnumArray)==0)
+			{
+				foreach ($enumIsDispArray as $innerKey => $innerValue)
+				{
+					if(strcmp($tProductArray[$index]['is_display'],$innerValue)==0)
+					{
+						$isDisplayFlag=1;
+						break;
+					}
+					else
+					{
+						$isDisplayFlag=2;
+					}
+				}
+			}
+			if($isDisplayFlag==2 || $measurementUnitFlag==2)
+			{
+				return "1";
+			}
+			$index++;
 		}
-		if($isDisplayFlag==2 || $measurementUnitFlag==2)
-		{
-			return "1";
-		}
-		else
-		{
-			return $tProductArray;
-		}
+		return $tProductArray;
 	}
 	
 	/**

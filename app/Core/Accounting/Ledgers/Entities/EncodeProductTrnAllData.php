@@ -115,6 +115,8 @@ class EncodeProductTrnAllData extends ProductService
 					'semiWholesaleMargin' => $productDecodedJson[$jsonData]['semiWholesaleMargin'],
 					'vat' => $productDecodedJson[$jsonData]['vat'],
 					'mrp' => $productDecodedJson[$jsonData]['mrp'],
+					'color' => $productDecodedJson[$jsonData]['color'],
+					'size' => $productDecodedJson[$jsonData]['size'],
 					'margin' => $productDecodedJson[$jsonData]['margin'],
 					'productDescription' => $productDecodedJson[$jsonData]['productDescription'],
 					'additionalTax' => $productDecodedJson[$jsonData]['additionalTax'],

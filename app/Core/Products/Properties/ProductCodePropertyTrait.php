@@ -20,7 +20,7 @@ trait ProductCodePropertyTrait
 	/**
 	 * @return productCode
 	 */
-	public function getProductCode()
+	public function getProductCode()	
 	{
 		return $this->productCode;
 	}

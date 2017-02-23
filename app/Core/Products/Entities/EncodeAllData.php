@@ -35,6 +35,8 @@ class EncodeAllData extends ProductCategoryService
 			$vat[$decodedData] = $decodedJson[$decodedData]['vat'];
 			$margin[$decodedData] = $decodedJson[$decodedData]['margin'];
 			$mrp[$decodedData] = $decodedJson[$decodedData]['mrp'];
+			$color[$decodedData] = $decodedJson[$decodedData]['color'];
+			$size[$decodedData] = $decodedJson[$decodedData]['size'];
 			$productDescription[$decodedData] = $decodedJson[$decodedData]['product_description'];
 			$additionalTax[$decodedData] = $decodedJson[$decodedData]['additional_tax'];
 			$productCatId[$decodedData] = $decodedJson[$decodedData]['product_category_id'];
@@ -104,6 +106,8 @@ class EncodeAllData extends ProductCategoryService
 				'vat' => $vat[$jsonData],
 				'margin' => $margin[$jsonData],
 				'mrp' => $mrp[$jsonData],
+				'color' => $color[$jsonData],
+				'size' => $size[$jsonData],
 				'productDescription' => $productDescription[$jsonData],
 				'additionalTax' => $additionalTax[$jsonData],
 				'measurementUnit' => $measurementUnit[$jsonData],

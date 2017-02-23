@@ -28,6 +28,8 @@ class EncodeData extends ProductCategoryService
 		$semiWholeSaleMargin= $decodedJson[0]['semi_wholesale_margin'];
 		$vat= $decodedJson[0]['vat'];
 		$mrp= $decodedJson[0]['mrp'];
+		$color= $decodedJson[0]['color'];
+		$size= $decodedJson[0]['size'];
 		$margin= $decodedJson[0]['margin'];
 		$productDescription= $decodedJson[0]['product_description'];
 		$additionalTax= $decodedJson[0]['additional_tax'];
@@ -95,6 +97,8 @@ class EncodeData extends ProductCategoryService
 		$data['semiWholesaleMargin'] = $semiWholeSaleMargin;
 		$data['vat'] = $vat;
 		$data['mrp'] = $mrp;
+		$data['color'] = $color;
+		$data['size'] = $size;
 		$data['margin'] = $margin;
 		$data['productDescription'] = $productDescription;
 		$data['additionalTax'] = $additionalTax;

@@ -164,6 +164,7 @@ class ProductModel extends Model
 		{
 			$keyValueString=$keyValueString.$key[$data]."='".$productData[$data]."',";
 		}
+		
 		DB::beginTransaction();
 		$raw = DB::connection($databaseName)->statement("update product_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
@@ -476,6 +477,8 @@ class ProductModel extends Model
 		vat,
 		margin,
 		mrp,
+		color,
+		size,
 		product_description,
 		additional_tax,
 		is_display,
@@ -626,6 +629,8 @@ class ProductModel extends Model
 		vat,
 		margin,
 		mrp,
+		color,
+		size,
 		product_description,
 		additional_tax,
 		created_at,
@@ -674,6 +679,8 @@ class ProductModel extends Model
 		vat,
 		margin,
 		mrp,
+		color,
+		size,
 		product_description,
 		additional_tax,
 		created_at,
@@ -723,6 +730,8 @@ class ProductModel extends Model
 		vat,
 		margin,
 		mrp,
+		color,
+		size,
 		product_description,
 		additional_tax,
 		created_at,
@@ -772,6 +781,8 @@ class ProductModel extends Model
 		vat,
 		margin,
 		mrp,
+		color,
+		size,
 		product_description,
 		additional_tax,
 		created_at,
@@ -833,6 +844,8 @@ class ProductModel extends Model
 		semi_wholesale_margin,
 		vat,
 		mrp,
+		color,
+		size,
 		margin,
 		product_description,
 		additional_tax,
@@ -922,7 +935,7 @@ class ProductModel extends Model
 		}
 		else
 		{
-			return $exceptionArray['content'];
+			return $raw;
 		}
 	}
 	

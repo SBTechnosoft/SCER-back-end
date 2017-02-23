@@ -456,9 +456,9 @@ class ProductService extends AbstractService
     /**
      * @param int $id
      */
-    public function delete(ProductPersistable $persistable)
+    public function delete($productId)
     {      
-		$productId = $persistable->getProductId();
+		// $productId = $persistable->getProductId();
         $productModel = new ProductModel();
 		$status = $productModel->deleteData($productId);
 		return $status;

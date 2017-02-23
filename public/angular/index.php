@@ -225,7 +225,7 @@ include ('connection.php');
 				$scope.formAdata.is_display = 'no';
 				$scope.formAdata.product_cat_id='18';
 				$scope.formAdata.measurement_unit='litre';
-				$scope.formAdata.color='black';
+				$scope.formAdata.color='bpack';
 				$scope.formAdata.size='12T';
 				$scope.formAdata.purchase_price='120.09';
 				$scope.formAdata.wholesale_margin='12.00';
@@ -515,7 +515,7 @@ include ('connection.php');
 				
 				// var userId=9;
 				// var clientId=2;
-				// var productId = 7;
+				var productId =10;
 				// var productGrpId = 11;
 				// var productCatId = 16;
 				// var companyId=83;
