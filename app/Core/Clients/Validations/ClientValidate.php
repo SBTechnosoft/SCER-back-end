@@ -162,6 +162,7 @@ class ClientValidate extends ClientModel
      */	
 	public function clientNameValidateUpdate($tRequest,$clientId)
 	{
+		$flag=0;
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -178,13 +179,21 @@ class ClientValidate extends ClientModel
 		}
 		else
 		{
-			if($clientResult[0]->client_id==$clientId)
+			for($arrayData=0;$arrayData<count($clientResult);$arrayData++)
 			{
-				return $tRequest;
+				if($clientResult[$arrayData]->client_id!=$clientId)
+				{
+					$flag=1;
+					break;
+				}
+			}
+			if($flag==1)
+			{
+				return $exceptionArray['content'];
 			}
 			else
 			{
-				return $exceptionArray['content'];
+				return $tRequest;
 			}
 		}
 	}

@@ -30,10 +30,12 @@ class ProductTransformer
 		$isDisplay = $request->input('isDisplay'); 			
 		$purchasePrice = $request->input('purchasePrice'); 			
 		$wholeSaleMargin = $request->input('wholesaleMargin'); 			
+		$wholeSaleMarginFlat = $request->input('wholesaleMarginFlat'); 			
 		$semiWholeSaleMargin = $request->input('semiWholesaleMargin'); 			
 		$vat = $request->input('vat'); 			
 		$mrp = $request->input('mrp'); 			
 		$margin = $request->input('margin'); 			
+		$marginFlat = $request->input('marginFlat'); 			
 		$productDescription = $request->input('productDescription'); 			
 		$additionalTax = $request->input('additionalTax'); 			
 		$companyId = $request->input('companyId'); 			
@@ -49,10 +51,12 @@ class ProductTransformer
 		$tIsDisplay = trim($isDisplay);
 		$tPurchasePrice = trim($purchasePrice);
 		$tWholeSaleMargin = trim($wholeSaleMargin);
+		$tWholeSaleMarginFlat = trim($wholeSaleMarginFlat);
 		$tSemiWholeSaleMargin = trim($semiWholeSaleMargin);
 		$tVat = trim($vat);
 		$tMrp = trim($mrp);
 		$tMargin = trim($margin);
+		$tMarginFlat = trim($marginFlat);
 		$tProductDescription = trim($productDescription);
 		$tAdditionalTax = trim($additionalTax);
 		$tCompanyId = trim($companyId);
@@ -116,9 +120,11 @@ class ProductTransformer
 			$data['is_display'] = $tIsDisplay;
 			$data['purchase_price'] = $tPurchasePrice;
 			$data['wholesale_margin'] = $tWholeSaleMargin;
+			$data['wholesale_margin_flat'] = $tWholeSaleMarginFlat;
 			$data['vat'] = $tVat;
 			$data['mrp'] = $tMrp;
 			$data['margin'] = $tMargin;
+			$data['margin_flat'] = $tMarginFlat;
 			$data['product_description'] = $tProductDescription;
 			$data['additional_tax'] = $tAdditionalTax;
 			$data['semi_wholesale_margin'] = $tSemiWholeSaleMargin;

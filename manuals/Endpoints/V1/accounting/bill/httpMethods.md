@@ -41,9 +41,10 @@
 ##### `GET /accounting/bills`
 + Header
 	- Authentication Token
-	- 'salesType':'retail_sales/whole_sales'
-	- "previousSaleId":"int"
-	- "nextSaleId":"int"
+	- 'salesType':'retail_sales/whole_sales',
+	- "previousSaleId":"int",
+	- "nextSaleId":"int",
+	- "companyId":"int"
 + Error Message
 
 			{

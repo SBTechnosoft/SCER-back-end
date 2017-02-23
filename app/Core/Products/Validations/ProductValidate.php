@@ -370,6 +370,7 @@ class ProductValidate extends ProductModel
      */	
 	public function productUpdateCodeValidate($companyId,$productCode,$productId)
 	{
+		$flag=0;
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -382,14 +383,23 @@ class ProductValidate extends ProductModel
 		}
 		else
 		{
-			if($productResult[0]->product_id==$productId)
+			for($arrayData=0;$arrayData<count($productResult);$arrayData++)
 			{
-				return $exceptionArray['200'];
+				if($productResult[$arrayData]->product_id!=$productId)
+				{
+					$flag=1;
+					break;
+				}
 			}
-			else
+			if($flag==1)
 			{
 				return $exceptionArray['content'];
 			}
+			else
+			{
+				return $exceptionArray['200'];
+			}
+			
 		}
 	}
 }

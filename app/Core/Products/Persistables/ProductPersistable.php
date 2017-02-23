@@ -24,10 +24,12 @@ use ERP\Core\Products\Properties\TaxPropertyTrait;
 use ERP\Core\Products\Properties\JfIdPropertyTrait;
 use ERP\Core\Products\Properties\PurchasePricePropertyTrait;
 use ERP\Core\Products\Properties\WholeSaleMarginPropertyTrait;
+use ERP\Core\Products\Properties\WholeSaleMarginFlatPropertyTrait;
 use ERP\Core\Products\Properties\SemiWholeSaleMarginPropertyTrait;
 use ERP\Core\Products\Properties\VatPropertyTrait;
 use ERP\Core\Products\Properties\MrpPropertyTrait;
 use ERP\Core\Products\Properties\MarginPropertyTrait;
+use ERP\Core\Products\Properties\MarginFlatPropertyTrait;
 use ERP\Core\Products\Properties\DiscountValuePropertyTrait;
 use ERP\Core\Products\Properties\FromDatePropertyTrait;
 use ERP\Core\Products\Properties\ToDatePropertyTrait;
@@ -76,4 +78,6 @@ class productPersistable
 	use ColorPropertyTrait;
 	use SizePropertyTrait;
 	use ProductCodePropertyTrait;
+	use WholeSaleMarginFlatPropertyTrait;
+	use MarginFlatPropertyTrait;
 }

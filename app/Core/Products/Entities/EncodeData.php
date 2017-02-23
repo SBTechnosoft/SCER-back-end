@@ -25,12 +25,14 @@ class EncodeData extends ProductCategoryService
 		$isDisplay= $decodedJson[0]['is_display'];
 		$purchasePrice= $decodedJson[0]['purchase_price'];
 		$wholesaleMargin= $decodedJson[0]['wholesale_margin'];
+		$wholesaleMarginFlat= $decodedJson[0]['wholesale_margin_flat'];
 		$semiWholeSaleMargin= $decodedJson[0]['semi_wholesale_margin'];
 		$vat= $decodedJson[0]['vat'];
 		$mrp= $decodedJson[0]['mrp'];
 		$color= $decodedJson[0]['color'];
 		$size= $decodedJson[0]['size'];
-		$margin= $decodedJson[0]['margin'];
+		$margin = $decodedJson[0]['margin'];
+		$marginFlat= $decodedJson[0]['margin_flat'];
 		$productDescription= $decodedJson[0]['product_description'];
 		$additionalTax= $decodedJson[0]['additional_tax'];
 		$productCatId= $decodedJson[0]['product_category_id'];
@@ -69,6 +71,8 @@ class EncodeData extends ProductCategoryService
 		$mrp= round($mrp,$getCompanyDetails['noOfDecimalPoints']);
 		$margin= round($margin,$getCompanyDetails['noOfDecimalPoints']);
 		$additionalTax = round($additionalTax,$getCompanyDetails['noOfDecimalPoints']);
+		$marginFlat = round($marginFlat,$getCompanyDetails['noOfDecimalPoints']);
+		$wholesaleMarginFlat = round($wholesaleMarginFlat,$getCompanyDetails['noOfDecimalPoints']);
 		
 		//date format conversion['created_at','updated_at'] product
 		$product = new Product();
@@ -94,12 +98,14 @@ class EncodeData extends ProductCategoryService
 		$data['isDisplay'] = $isDisplay;
 		$data['purchasePrice'] = $purchasePrice;
 		$data['wholesaleMargin'] = $wholesaleMargin;
+		$data['wholesaleMarginFlat'] = $wholesaleMarginFlat;
 		$data['semiWholesaleMargin'] = $semiWholeSaleMargin;
 		$data['vat'] = $vat;
 		$data['mrp'] = $mrp;
 		$data['color'] = $color;
 		$data['size'] = $size;
 		$data['margin'] = $margin;
+		$data['marginFlat'] = $marginFlat;
 		$data['productDescription'] = $productDescription;
 		$data['additionalTax'] = $additionalTax;
 		$data['createdAt'] = $getCreatedDate;

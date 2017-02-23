@@ -440,7 +440,6 @@ class BillModel extends Model
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
-	
 		if(array_key_exists('previoussaleid',$headerData))
 		{
 			if($headerData['previoussaleid'][0]==0)
@@ -469,6 +468,7 @@ class BillModel extends Model
 				updated_at 
 				from sales_bill 
 				where sales_type='".$headerData['salestype'][0]."' and
+				company_id = '".$headerData['companyid'][0]."' and
 				deleted_at='0000-00-00 00:00:00'
 				order by sale_id desc limit 1");
 				DB::commit();
@@ -493,24 +493,32 @@ class BillModel extends Model
 					sale_id
 					from sales_bill 
 					where sales_type='".$headerData['salestype'][0]."' and
+					company_id = '".$headerData['companyid'][0]."' and
 					deleted_at='0000-00-00 00:00:00'
 					order by sale_id asc limit 1");
 					DB::commit();
-					for($arrayData=$saleId+1;$arrayData>=$previousAscId[0]->sale_id;$arrayData--)
+					if($saleId<$previousAscId[0]->sale_id)
 					{
-						$innerResult = $this->getSalePreviousNextData($headerData,$arrayData);
-						if(count($innerResult)!=0)
-						{
-							break;
-						}
-						if($arrayData==$previousAscId[0]->sale_id && count($innerResult)==0)
-						{
-							return $exceptionArray['204'];
-						}
-						$saleId++;
+						return $exceptionArray['204'];
 					}
-					$saleDataResult = $this->getDocumentData($innerResult);
-					return $saleDataResult;
+					else
+					{
+						for($arrayData=$saleId-1;$arrayData>=$previousAscId[0]->sale_id;$arrayData--)
+						{
+							$innerResult = $this->getSalePreviousNextData($headerData,$arrayData);
+							if(count($innerResult)!=0)
+							{
+								break;
+							}
+							if($arrayData==$previousAscId[0]->sale_id && count($innerResult)==0)
+							{
+								return $exceptionArray['204'];
+							}
+							$saleId++;
+						}
+						$saleDataResult = $this->getDocumentData($innerResult);
+						return $saleDataResult;
+					}
 				}
 				else
 				{
@@ -530,24 +538,32 @@ class BillModel extends Model
 				sale_id
 				from sales_bill 
 				where sales_type='".$headerData['salestype'][0]."' and
-				deleted_at='0000-00-00 00:00:00'
+				company_id = '".$headerData['companyid'][0]."' and
+				deleted_at='0000-00-00 00:00:00' 
 				order by sale_id desc limit 1");
 				DB::commit();
-				for($arrayData=$saleId+1;$arrayData<=$nextDescId[0]->sale_id;$arrayData++)
+				if($saleId>$nextDescId[0]->sale_id)
 				{
-					$innerResult = $this->getSalePreviousNextData($headerData,$arrayData);
-					if(count($innerResult)!=0)
-					{
-						break;
-					}
-					if($arrayData==$nextDescId[0]->sale_id && count($innerResult)==0)
-					{
-						return $exceptionArray['204'];
-					}
-					$saleId++;
+					return $exceptionArray['204'];
 				}
-				$saleDataResult = $this->getDocumentData($innerResult);
-				return $saleDataResult;
+				else
+				{
+					for($arrayData=$saleId+1;$arrayData<=$nextDescId[0]->sale_id;$arrayData++)
+					{
+						$innerResult = $this->getSalePreviousNextData($headerData,$arrayData);
+						if(count($innerResult)!=0)
+						{
+							break;
+						}
+						if($arrayData==$nextDescId[0]->sale_id && count($innerResult)==0)
+						{
+							return $exceptionArray['204'];
+						}
+						$saleId++;
+					}
+					$saleDataResult = $this->getDocumentData($innerResult);
+					return $saleDataResult;
+				}
 			}
 			else
 			{
@@ -593,6 +609,7 @@ class BillModel extends Model
 		updated_at 
 		from sales_bill 
 		where sales_type='".$headerData['salestype'][0]."' and
+		company_id = '".$headerData['companyid'][0]."' and
 		deleted_at='0000-00-00 00:00:00' and
 		sale_id='".$saleId."'");
 		DB::commit();

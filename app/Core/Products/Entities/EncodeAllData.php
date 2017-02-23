@@ -31,9 +31,11 @@ class EncodeAllData extends ProductCategoryService
 			$isDisplay[$decodedData] = $decodedJson[$decodedData]['is_display'];
 			$purchasePrice[$decodedData] = $decodedJson[$decodedData]['purchase_price'];
 			$wholesaleMargin[$decodedData] = $decodedJson[$decodedData]['wholesale_margin'];
+			$wholesaleMarginFlat[$decodedData] = $decodedJson[$decodedData]['wholesale_margin_flat'];
 			$semiWholesaleMargin[$decodedData] = $decodedJson[$decodedData]['semi_wholesale_margin'];
 			$vat[$decodedData] = $decodedJson[$decodedData]['vat'];
 			$margin[$decodedData] = $decodedJson[$decodedData]['margin'];
+			$marginFlat[$decodedData] = $decodedJson[$decodedData]['margin_flat'];
 			$mrp[$decodedData] = $decodedJson[$decodedData]['mrp'];
 			$color[$decodedData] = $decodedJson[$decodedData]['color'];
 			$size[$decodedData] = $decodedJson[$decodedData]['size'];
@@ -76,6 +78,8 @@ class EncodeAllData extends ProductCategoryService
 			$margin[$decodedData] = round($margin[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
 			$mrp[$decodedData] = round($mrp[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
 			$additionalTax[$decodedData] = round($additionalTax[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
+			$marginFlat[$decodedData] = round($marginFlat[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
+			$wholesaleMarginFlat[$decodedData] = round($wholesaleMarginFlat[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
 			
 			//product date convertion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$createdAt[$decodedData])->format('d-m-Y');
@@ -102,9 +106,11 @@ class EncodeAllData extends ProductCategoryService
 				'isDisplay' => $isDisplay[$jsonData],
 				'purchasePrice' => $purchasePrice[$jsonData],
 				'wholesaleMargin' => $wholesaleMargin[$jsonData],
+				'wholesaleMarginFlat' => $wholesaleMarginFlat[$jsonData],
 				'semiWholesaleMargin' => $semiWholesaleMargin[$jsonData],
 				'vat' => $vat[$jsonData],
 				'margin' => $margin[$jsonData],
+				'marginFlat' => $marginFlat[$jsonData],
 				'mrp' => $mrp[$jsonData],
 				'color' => $color[$jsonData],
 				'size' => $size[$jsonData],

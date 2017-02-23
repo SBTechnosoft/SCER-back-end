@@ -278,18 +278,22 @@ class ProductProcessor extends BaseProcessor
 					{
 						$companyFlag=1;
 						$companyResult = $companyModel->getData($tRequest[$arrayData]['company_id']);
+						$companyId = json_decode($companyResult)[0]->company_id;
+						$companyResult = json_decode($companyResult)[0]->company_name;
 					}
 					if(array_key_exists('product_group_id',$tRequest[$arrayData]))
 					{
 						$categoryFlag=1;
 						//get product group name
 						$groupData = $productGroupData->getData($tRequest[$arrayData]['product_group_id']);
+						$groupData = json_decode($groupData)[0]->product_group_name;
 					}
 					if(array_key_exists('product_category_id',$tRequest[$arrayData]))
 					{
 						$groupFlag=1;
 						//get product category name
 						$categoryData = $productCategoryData->getData($tRequest[$arrayData]['product_category_id']);
+						$categoryData = json_decode($categoryData)[0]->product_category_name;
 					}
 					if(array_key_exists('color',$tRequest[$arrayData]))
 					{
@@ -311,17 +315,18 @@ class ProductProcessor extends BaseProcessor
 				if($companyFlag==0)
 				{
 					$companyResult = $companyModel->getData($decodedProductData[0]->company_id);
-					$companyResult = json_decode($companyResult)[0]->company_id;
+					$companyId = json_decode($companyResult)[0]->company_id;
+					$companyResult = json_decode($companyResult)[0]->company_name;
 				}
 				if($groupFlag==0)
 				{
 					$groupData = $productGroupData->getData($decodedProductData[0]->product_group_id);
-					$groupData = json_decode($groupData)[0]->product_group_id;
+					$groupData = json_decode($groupData)[0]->product_group_name;
 				}
 				if($categoryFlag==0)
 				{
 					$categoryData = $productCategoryData->getData($decodedProductData[0]->product_category_id);
-					$categoryData = json_decode($categoryData)[0]->product_category_id;
+					$categoryData = json_decode($categoryData)[0]->product_category_name;
 				}
 				if($colorFlag==0)
 				{
@@ -360,7 +365,8 @@ class ProductProcessor extends BaseProcessor
 														$convertedColor."_".
 														$convertedSize;
 				// validation
-				$validationResult = $productValidate->productUpdateCodeValidate($companyResult,$tRequest[$totalCount]['product_code'],$productId);
+				$validationResult = $productValidate->productUpdateCodeValidate($companyId,$tRequest[$totalCount]['product_code'],$productId);
+				
 				if(strcmp($validationResult,$exceptionArray['200'])!=0)
 				{
 					return $validationResult;
