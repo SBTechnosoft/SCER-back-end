@@ -555,6 +555,7 @@ class BillProcessor extends BaseProcessor
 				$tInventoryArray[$trimData] = array();
 				$tInventoryArray[$trimData][5] = trim($request->input()['inventory'][$trimData]['color']);
 				$tInventoryArray[$trimData][6] = trim($request->input()['inventory'][$trimData]['frameNo']);
+				$tInventoryArray[$trimData][7] = trim($request->input()['inventory'][$trimData]['size']);
 				array_push($request->input()['inventory'][$trimData],$tInventoryArray[$trimData]);
 			}
 			$productArray['inventory'] = $request->input()['inventory'];

@@ -176,6 +176,7 @@ class ProductGroupModel extends Model
 	//delete
 	public function deleteData($productGrpId)
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -198,20 +199,12 @@ class ProductGroupModel extends Model
 			where product_group_id = '".$productGrpId."'");
 			if($productGrp==1)
 			{
-				DB::beginTransaction();
-				$mytime = Carbon\Carbon::now();
-				$productGrpRaw = DB::connection($databaseName)->statement("update product_group_mst 
-				set deleted_at='".$mytime."'
-				where product_group_parent_id='".$productGrpId."'");
-				DB::commit();
-				if($productGrpRaw==1)
+				$groupId = $this->groupDelete($productGrpId);
+				while(strcmp($groupId,'stop')!=0)
 				{
-					return $exceptionArray['200'];
+					$groupId = $this->groupDelete($groupId);
 				}
-				else
-				{
-					return $exceptionArray['500'];
-				}
+				return $exceptionArray['200'];
 			}
 			else
 			{
@@ -222,6 +215,42 @@ class ProductGroupModel extends Model
 		else
 		{
 			return $exceptionArray['500'];
+		}
+	}
+	
+	public function groupDelete($groupId)
+	{
+		$mytime = Carbon\Carbon::now();
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->select("select product_group_id 
+		from product_group_mst 
+		where product_group_parent_id = '".$groupId."' and
+		deleted_at = '0000-00-00 00:00:00'");
+		DB::commit();
+		
+		if(count($raw)==0)
+		{
+			return "stop";
+		}
+		else
+		{
+			DB::beginTransaction();
+			$productCatRaw = DB::connection($databaseName)->statement("update product_group_mst 
+			set deleted_at='".$mytime."'
+			where product_group_parent_id='".$groupId."'");
+			DB::commit();
+			
+			DB::beginTransaction();
+			$productGrpRaw = DB::connection($databaseName)->statement("update product_mst 
+			set deleted_at='".$mytime."'
+			where product_group_id='".$raw[0]->product_group_id."'");
+			DB::commit();
+			return $raw[0]->product_group_id;
 		}
 	}
 }

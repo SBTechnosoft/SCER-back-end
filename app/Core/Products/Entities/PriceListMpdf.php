@@ -34,6 +34,7 @@ class PriceListMpdf
 					$decodedData[$arrayData]->purchasePrice = $decodedData[$arrayData]->mrp;
 				}
 				$margin[$arrayData] = ($decodedData[$arrayData]->margin/100)*$decodedData[$arrayData]->purchasePrice;
+				$margin[$arrayData] = $margin[$arrayData]+$decodedData[$arrayData]->marginFlat;
 				$decodedData[$arrayData]->purchasePrice = $decodedData[$arrayData]->purchasePrice +$margin[$arrayData];
 				$decodedData[$arrayData]->vat = ($decodedData[$arrayData]->vat/100)*$decodedData[$arrayData]->purchasePrice;
 				$totalAmount[$arrayData] = $decodedData[$arrayData]->purchasePrice+$decodedData[$arrayData]->vat;
@@ -41,6 +42,7 @@ class PriceListMpdf
 			else
 			{
 				$wholeSaleMargin[$arrayData] = ($decodedData[$arrayData]->wholesaleMargin/100)*$decodedData[$arrayData]->purchasePrice;
+				$wholeSaleMargin[$arrayData] = $wholeSaleMargin[$arrayData]+$decodedData[$arrayData]->wholesaleMarginFlat;
 				$decodedData[$arrayData]->purchasePrice = $decodedData[$arrayData]->purchasePrice +$wholeSaleMargin[$arrayData];
 				$decodedData[$arrayData]->vat = ($decodedData[$arrayData]->vat/100)*$decodedData[$arrayData]->purchasePrice;;
 				$totalAmount[$arrayData] = $decodedData[$arrayData]->purchasePrice+$decodedData[$arrayData]->vat;

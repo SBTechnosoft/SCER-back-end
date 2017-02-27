@@ -94,7 +94,7 @@ class EncodeAllData extends StateService
 				'address2' => $address2[$jsonData],
 				'contactNo' => $contactNo[$jsonData],
 				'emailId' => $emailId[$jsonData],
-				'invoiceNumber' => $invoiceNumber[$decodedData],
+				'invoiceNumber' => $invoiceNumber[$jsonData],
 				'pan'=> $panNo[$jsonData],
 				'tin'=> $tinNo[$jsonData],
 				'gstNo'=> $gstNo[$jsonData],

@@ -66,7 +66,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 				
 				//calculate margin value
 				$marginValue[$productArray]=($decodedData[$productArray]->margin/100)*$decodedArray->inventory[$productArray]->price;
-				
+				$marginValue[$productArray] = $marginValue[$productArray]+$decodedData[$productArray]->marginFlat;
 				// convert amount(round) into their company's selected decimal points
 				$marginValue[$productArray] = round($marginValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
 				$totalPrice = $decodedArray->inventory[$productArray]->price*$decodedArray->inventory[$productArray]->qty;
@@ -150,6 +150,8 @@ class DocumentMpdf extends CurrencyToWordConversion
 				$decodedData[$productArray] = json_decode($productData[$productArray]);
 				
 				$marginPrice[$productArray] = ($decodedData[$productArray]->wholesaleMargin/100)*$decodedArray->inventory[$productArray]->price;
+				$marginPrice[$productArray] = $marginPrice[$productArray]+$decodedData[$productArray]->wholesaleMarginFlat;
+				
 				// convert amount(round) into their company's selected decimal points
 				$marginPrice[$productArray] = round($marginPrice[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
 				
@@ -165,20 +167,20 @@ class DocumentMpdf extends CurrencyToWordConversion
 					$discountValue[$productArray] = ($decodedArray->inventory[$productArray]->discount/100)*$totalPrice[$productArray];
 				}
 				
-				$total[$productArray] = $totalPrice[$productArray]-$discountValue[$productArray];
+				$finalVatValue = $totalPrice[$productArray]-$discountValue[$productArray];
 				
 				
 				//calculate vat value;
-				$vatValue[$productArray]=($decodedData[$productArray]->vat/100)*$total[$productArray];
+				$vatValue[$productArray]=($decodedData[$productArray]->vat/100)*$finalVatValue;
 				// convert amount(round) into their company's selected decimal points
 				$vatValue[$productArray] = round($vatValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
 				
-				$total[$productArray] = $total[$productArray]+$vatValue[$productArray];
+				$total[$productArray] = $finalVatValue+$vatValue[$productArray];
 				// convert amount(round) into their company's selected decimal points
 				$total[$productArray] = round($total[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
 				
 				//calculate additional tax
-				$additionalTaxValue[$productArray] = ($decodedData[$productArray]->additionalTax/100)*$total[$productArray];
+				$additionalTaxValue[$productArray] = ($decodedData[$productArray]->additionalTax/100)*$finalVatValue;
 				// convert amount(round) into their company's selected decimal points
 				$additionalTaxValue[$productArray] = round($additionalTaxValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);				
 				

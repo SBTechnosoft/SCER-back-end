@@ -54,11 +54,12 @@ class JournalController extends BaseController implements ContainerInterface
 	*/
     public function store(Request $request)
     {
+		
 		//get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
 		$RequestUri = explode("/", $_SERVER['REQUEST_URI']);
-		if(strcmp($RequestUri[1],"accounting")==0 || strcmp($RequestUri[2],"bills")==0)
+		if(strcmp($RequestUri[1],"accounting")==0 && strcmp($RequestUri[2],"bills")==0)
 		{
 			// get exception message
 			$exception = new ExceptionMessage();
@@ -153,12 +154,10 @@ class JournalController extends BaseController implements ContainerInterface
 					$processor = new JournalProcessor();
 					$journalPersistable = new JournalPersistable();
 					$journalPersistable = $processor->createPersistable($this->request);
-					
 					if(is_array($journalPersistable))
 					{
 						$journalService= new JournalService();
 						$status = $journalService->insert($journalPersistable);
-						
 						if(count($request->input())>4)
 						{
 							$productService= new ProductService();	

@@ -162,7 +162,10 @@
 + Response
 
 			{
-				... Standard Product Transaction Object
+				[
+					... Standard Product Transaction Object
+				]
+				...
 			}
 
 **NOTES:** List the product-transaction data as per given data

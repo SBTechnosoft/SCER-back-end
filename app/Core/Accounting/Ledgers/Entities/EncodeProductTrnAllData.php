@@ -18,7 +18,7 @@ class EncodeProductTrnAllData extends ProductService
 		$convertedUpdatedDate =  array();
 		$encodeAllData =  array();
 		$decodedJson = json_decode($status,true);
-	
+		
 		$ledger = new Ledger();
 		for($decodedData=0;$decodedData<count($decodedJson);$decodedData++)
 		{
@@ -85,6 +85,7 @@ class EncodeProductTrnAllData extends ProductService
 				$getTransactionDate[$decodedData] = $ledger->getTransactionDate();
 			}
 		}
+		
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
 		{
@@ -173,6 +174,7 @@ class EncodeProductTrnAllData extends ProductService
 				)
 			);
 		}
+		
 		$jsonEncodedData = json_encode($data);
 		return $jsonEncodedData;
 	}

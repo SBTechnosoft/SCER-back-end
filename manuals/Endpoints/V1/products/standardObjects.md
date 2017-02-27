@@ -161,8 +161,8 @@
 			}
 #####  Measurement Unit Enum
 			{
-				"type1":"kilo",
-				"type2":"litre"
+				"type1":"piece",
+				"type2":"pair"
 			}
 			
 //marginType			

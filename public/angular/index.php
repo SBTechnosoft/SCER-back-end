@@ -449,10 +449,11 @@ include ('connection.php');
 				// $scope.user = [{"jfId":4,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":1},{"amount":2,"amountType":"credit","ledgerId":1},{"amount":12,"amountType":"debit","ledgerId":1}],"entryDate":"22-10-2015","companyId":14,
 				// "inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"companyId":14,"transactionDate":"22-10-2015","invoiceNumber":23,"billNumber":2}];
 				
-				// formdata.append('jfId',297);
+				// formdata.append('jfId',325);
  				// formdata.append('companyId',83);
 				// formdata.append('entryDate','03-12-2017');
-				// var json=[{"amount":220,"amountType":" credit ","ledgerId":271},{"amount":23,"amountType":"credit","ledgerId":270},{"amount":243,"amountType":"debit","ledgerId":267}];
+				// var json=[{"amount":220,"amountType":" credit ","ledgerId":271},{"amount":23,"amountType":"credit","ledgerId":270},
+				// {"amount":243,"amountType":"debit","ledgerId":267}];
 				
 				// var inventory = [{"productId": 1 ,"discount":100,"discountType":"flat","price":900,"qty":10},{"productId": 1 ,"discount":12,"discountType":"percentage","price":1000,"qty":4}];
 				// formdata.append('transactionDate','30-12-2015');
@@ -485,11 +486,11 @@ include ('connection.php');
 				// 
 				//9875647544
 				// bill
-				$scope.user = [{"billData":[{"companyId":83,"entryDate":"22-12-2015","contactNo":"",
-				"workNo":"9875647344","isDisplay":"no","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbrain",
-				"clientName":"fsdfsadssd","invoiceNumber":"INV/2016-15/30","address1":"sfja,sa","address2":"dfsd,ds",
-				"stateAbb":"IN-AG","cityId":1,"total":100,"tax":10,"grandTotal":134,"advance":100,"balance":10,
-				"paymentMode":"bank","bankName":"abc","checkNumber":"abbb34eQ1G","remark":"adsfsf afasf"}]}];
+				// $scope.user = [{"billData":[{"companyId":83,"entryDate":"22-12-2015","contactNo":"",
+				// "workNo":"9875647344","isDisplay":"no","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbrain",
+				// "clientName":"fsdfsadssd","invoiceNumber":"INV/2016-15/30","address1":"sfja,sa","address2":"dfsd,ds",
+				// "stateAbb":"IN-AG","cityId":1,"total":100,"tax":10,"grandTotal":134,"advance":100,"balance":10,
+				// "paymentMode":"bank","bankName":"abc","checkNumber":"abbb34eQ1G","remark":"adsfsf afasf"}]}];
 				
 				// $scope.user = [{"billData":[{"entryDate":"22-10-2015","contactNo":"8224441535",
 				// "workNo":"9875647344","isDisplay":"no","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbrain",
@@ -500,20 +501,20 @@ include ('connection.php');
 				// $scope.user = [{"billData":[{
 				// "clientName":"reemggga"}]}];
 				
-				$scope.inventory=[{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":44,'color':'ddd',
-				'frameNo':'fff'},{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":40,'color':'hh',
-				'frameNo':'dsfds','size':'12T'}];
-				angular.forEach($scope.user[0]['billData'][0], function (input,key) {
+				// $scope.inventory=[{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":44,'color':'ddd',
+				// 'frameNo':'fff'},{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":40,'color':'hh',
+				// 'frameNo':'dsfds','size':'12T'}];
+				// angular.forEach($scope.user[0]['billData'][0], function (input,key) {
 					
-					formdata.append(key,input);
-				});
-				for(var i=0;i<$scope.inventory.length;i++)
-				{
-					angular.forEach($scope.inventory[i], function (input,key) {
+					// formdata.append(key,input);
+				// });
+				// for(var i=0;i<$scope.inventory.length;i++)
+				// {
+					// angular.forEach($scope.inventory[i], function (input,key) {
 						
-						formdata.append('inventory['+i+']['+key+']',input);
-					});
-				}
+						// formdata.append('inventory['+i+']['+key+']',input);
+					// });
+				// }
 				
 				
 				
@@ -521,8 +522,8 @@ include ('connection.php');
 				// var clientId=2;
 				// var productId =10;
 				// var productGrpId = 11;
-				// var productCatId = 16;
-				// var companyId=83;
+				// var productCatId = 18;
+				var companyId=83;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -533,12 +534,12 @@ include ('connection.php');
 				// var quotationId=3;
 				// var ledgerGrpId=9;
 				// var ledgerId=387;
-				// var jfId=296;
+				// var jfId=325;
 				// var journalId=327;
 				// var saleId = 371;
 				
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/priceList";  //priceList
-				// var url="http://www.scerp1.com/products/company/"+companyId+"/transaction/detail"; //stock-register
+				var url="http://www.scerp1.com/products/company/"+companyId+"/transaction/details"; //stock-register
 			
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/transaction";
 				// var url = "http://www.scerp1.com/logout/user/"+userId;
@@ -554,7 +555,7 @@ include ('connection.php');
 				
 				// var url = "http://www.scerp1.com/accounting/bills/"+saleId;
 				// var url = "http://www.scerp1.com/accounting/bills/"+saleId+"/payment";
-				var url = "http://www.scerp1.com/accounting/bills";
+				// var url = "http://www.scerp1.com/accounting/bills";
 				// var url = "http://www.scerp1.com/accounting/bills/company/"+companyId;
 				
 				// var url = "http://www.scerp1.com/clients/"+clientId;
@@ -616,8 +617,8 @@ include ('connection.php');
                         url: url,
                         // type:'patch',
                         // type:'get',
-						 // method: 'get',
-						 method: 'post',
+						 method: 'get',
+						 // method: 'post',
 						// method: 'post',
 						// method: "PATCH",
 						// method:'delete',
@@ -627,14 +628,14 @@ include ('connection.php');
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productCategoryId':18,'productGroupId':10,'salesType':'retail_sales'},
                         // headers: {'Content-Type': undefined,'type':'sales','authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
-                        headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62',
-						'salesType':'retail_sales'},
+                        // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62',
+						// 'type':'sales'},
 						//,'nextSaleId':351
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','type':'retail_sales','fromDate':'22-10-2015','toDate':'22-10-2015'}
-                        // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productId':1,'fromDate':'22-10-2015','toDate':'20-01-2017'},
+                        headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productId':6,'fromDate':'21-10-2015','toDate':'20-01-2017'},
                         // headers: {'Content-Type': undefined},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
-						 data:formdata
+						 // data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

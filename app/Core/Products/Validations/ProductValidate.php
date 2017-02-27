@@ -239,7 +239,7 @@ class ProductValidate extends ProductModel
      */
 	public function validateTransactionArrayUpdateData($tRequest)
 	{
-		for($arrayData=0;$arrayData<count($tRequest[0]);$arrayData++)
+		for($arrayData=0;$arrayData<count($tRequest);$arrayData++)
 		{
 			$rules = array(
 				'discount'=> 'regex:/^[0-9 .]*$/', 
@@ -252,7 +252,7 @@ class ProductValidate extends ProductModel
 				'qty.regex' => 'qty contains character from "0-9" only',
 			];
 			
-			$validator = Validator::make($tRequest[0][$arrayData],$rules,$messages);
+			$validator = Validator::make($tRequest[$arrayData],$rules,$messages);
 			if ($validator->fails()) 
 			{
 				$errors = $validator->errors()->toArray();

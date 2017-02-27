@@ -29,14 +29,56 @@ class BillTransformer
 		//trim an input
 		$tCompanyId = trim($billArrayData['companyId']);
 		$tEntryDate = trim($billArrayData['entryDate']);
-		$tContactNo = trim($billArrayData['contactNo']);
-		$tWorkNo = trim($billArrayData['workNo']);
-		$tEmailId = trim($billArrayData['emailId']);
-		$tCompanyName = trim($billArrayData['companyName']);
+		if(!array_key_exists('contactNo',$request->input()))
+		{
+			$tContactNo = "";
+		}
+		else
+		{
+			$tContactNo = trim($billArrayData['contactNo']);
+		}
+		if(!array_key_exists('workNo',$request->input()))
+		{
+			$tWorkNo = "";
+		}
+		else
+		{
+			$tWorkNo = trim($billArrayData['workNo']);
+		}
+		if(!array_key_exists('emailId',$request->input()))
+		{
+			$tEmailId = "";
+		}
+		else
+		{
+			$tEmailId = trim($billArrayData['emailId']);
+		}
+		if(!array_key_exists('companyName',$request->input()))
+		{
+			$tCompanyName = "";
+		}
+		else
+		{
+			$tCompanyName = trim($billArrayData['companyName']);
+		}
 		$tClientName = trim($billArrayData['clientName']);
 		$tInvoiceNumber = trim($billArrayData['invoiceNumber']);
-		$tAddress1 = trim($billArrayData['address1']);
-		$tAddress2 = trim($billArrayData['address2']);
+		if(!array_key_exists('address1',$request->input()))
+		{
+			$tAddress1 = "";
+		}
+		else
+		{
+			$tAddress1 = trim($billArrayData['address1']);
+		}
+		if(!array_key_exists('address2',$request->input()))
+		{
+			$tAddress2 = "";
+		}
+		else
+		{
+			$tAddress2 = trim($billArrayData['address2']);
+		}
 		$tStateAbb = trim($billArrayData['stateAbb']);
 		$tCityId = trim($billArrayData['cityId']);
 		$tTotal = trim($billArrayData['total']);
@@ -335,6 +377,7 @@ class BillTransformer
 					$tempArray[$inventoryArray]['qty'] = trim($billArrayData['inventory'][$inventoryArray]['qty']);
 					$tempArray[$inventoryArray]['color'] = trim($billArrayData['inventory'][$inventoryArray]['color']);
 					$tempArray[$inventoryArray]['frameNo'] = trim($billArrayData['inventory'][$inventoryArray]['frameNo']);
+					$tempArray[$inventoryArray]['size'] = trim($billArrayData['inventory'][$inventoryArray]['size']);
 					foreach ($enumDiscountTypeArray as $key => $value)
 					{
 						if(strcmp($value,$tempArray[$inventoryArray]['discountType'])==0)

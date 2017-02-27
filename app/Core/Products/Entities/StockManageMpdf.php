@@ -18,6 +18,7 @@ class StockManageMpdf
 		
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
+		$decodedData = $decodedData[0];
 		
 		for($productTrnData = 0;$productTrnData<count($decodedData);$productTrnData++)
 		{

@@ -283,14 +283,14 @@ class ProductProcessor extends BaseProcessor
 					}
 					if(array_key_exists('product_group_id',$tRequest[$arrayData]))
 					{
-						$categoryFlag=1;
+						$groupFlag=1;
 						//get product group name
 						$groupData = $productGroupData->getData($tRequest[$arrayData]['product_group_id']);
 						$groupData = json_decode($groupData)[0]->product_group_name;
 					}
 					if(array_key_exists('product_category_id',$tRequest[$arrayData]))
 					{
-						$groupFlag=1;
+						$categoryFlag=1;
 						//get product category name
 						$categoryData = $productCategoryData->getData($tRequest[$arrayData]['product_category_id']);
 						$categoryData = json_decode($categoryData)[0]->product_category_name;
@@ -341,9 +341,9 @@ class ProductProcessor extends BaseProcessor
 					$productName = $decodedProductData[0]->product_name;
 				}
 				
-				$decodedCompanyData = json_decode($companyResult);
-				$decodedGroupData = json_decode($groupData);
-				$decodedCategoryData = json_decode($categoryData);
+				// $decodedCompanyData = json_decode($companyResult);
+				// $decodedGroupData = json_decode($groupData);
+				// $decodedCategoryData = json_decode($categoryData);
 				
 				$color = preg_replace('/[^A-Za-z0-9]/', '', $color);
 				$size = preg_replace('/[^A-Za-z0-9]/', '', $size);
@@ -520,6 +520,10 @@ class ProductProcessor extends BaseProcessor
 					{
 						if(array_key_exists("0",$tRequest))
 						{
+							if(array_key_exists('flag',$tRequest))
+							{
+								$tRequest = $tRequest[0];
+							}
 							$validationResult = $productValidate->validateTransactionArrayUpdateData($tRequest);
 							if(strcmp($validationResult,"Success")!=0)
 							{

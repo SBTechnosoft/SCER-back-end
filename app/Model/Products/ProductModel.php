@@ -518,45 +518,96 @@ class ProductModel extends Model
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
-		
-		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->select("select 
-		product_trn_id,
-		transaction_date,
-		transaction_type,
-		qty,
-		price,
-		discount,
-		discount_value,
-		discount_type,
-		is_display,
-		invoice_number,
-		bill_number,
-		tax,
-		updated_at,
-		created_at,
-		company_id,
-		branch_id,
-		product_id,			
-		jf_id	
-		from product_trn 
-		where (transaction_date BETWEEN '".$fromDate."' AND '".$toDate."') and company_id='".$companyId."' and 
-		product_id='".$headerData['productid'][0]."' and 
-		deleted_at='0000-00-00 00:00:00' ORDER BY transaction_date,product_trn_id");
-		DB::commit();
-		
+		$raw = array();
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		if(count($raw)==0)
+		
+		if(array_key_exists('productid',$headerData))
 		{
-			return $exceptionArray['204'];
+			DB::beginTransaction();
+			$raw1 = DB::connection($databaseName)->select("select 
+			product_trn_id,
+			transaction_date,
+			transaction_type,
+			qty,
+			price,
+			discount,
+			discount_value,
+			discount_type,
+			is_display,
+			invoice_number,
+			bill_number,
+			tax,
+			updated_at,
+			created_at,
+			company_id,
+			branch_id,
+			product_id,			
+			jf_id	
+			from product_trn 
+			where (transaction_date BETWEEN '".$fromDate."' AND '".$toDate."') and company_id='".$companyId."' and 
+			product_id='".$headerData['productid'][0]."' and 
+			deleted_at='0000-00-00 00:00:00' ORDER BY transaction_date,product_trn_id");
+			DB::commit();
+			$raw = array();
+			$raw[0] = $raw1;
+			if(count($raw[0])==0)
+			{
+				return $exceptionArray['204'];
+			}
 		}
 		else
 		{
-			$enocodedData = json_encode($raw);
-			return $enocodedData;
+			$keyValueString = "";
+			if(array_key_exists("productcategoryid",$headerData))
+			{
+				$keyValueString = $keyValueString.'product_category_id='.$headerData['productcategoryid'][0].' and ';
+			}
+			if(array_key_exists("productgroupid",$headerData))
+			{
+				$keyValueString = $keyValueString.'product_group_id='.$headerData['productgroupid'][0].' and ';
+			}
+			DB::beginTransaction();
+			$productData = DB::connection($databaseName)->select("select 
+			product_id from product_mst
+			where ".$keyValueString."
+			deleted_at='0000-00-00 00:00:00'");
+			for($arrayData=0;$arrayData<count($productData);$arrayData++)
+			{
+				DB::beginTransaction();
+				$raw[$arrayData] = DB::connection($databaseName)->select("select 
+				product_trn_id,
+				transaction_date,
+				transaction_type,
+				qty,
+				price,
+				discount,
+				discount_value,
+				discount_type,
+				is_display,
+				invoice_number,
+				bill_number,
+				tax,
+				updated_at,
+				created_at,
+				company_id,
+				branch_id,
+				product_id,			
+				jf_id	
+				from product_trn 
+				where (transaction_date BETWEEN '".$fromDate."' AND '".$toDate."') and company_id='".$companyId."' and 
+				product_id='".$productData[$arrayData]->product_id."' and 
+				deleted_at='0000-00-00 00:00:00' ORDER BY transaction_date,product_trn_id");
+				DB::commit();
+				// if(count($raw[$arrayData])==0)
+				// {
+					// return $exceptionArray['204'];
+				// }
+			}
 		}
+		$enocodedData = json_encode($raw);
+		return $enocodedData;
 	}
 	
 	/**

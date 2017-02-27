@@ -182,6 +182,8 @@ class ProductCategoryModel extends Model
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
+		$mytime = Carbon\Carbon::now();
+		
 		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
 		$raw = DB::connection($databaseName)->statement("update product_category_mst 
@@ -199,20 +201,12 @@ class ProductCategoryModel extends Model
 			where product_category_id = '".$productCatId."'");
 			if($product==1)
 			{
-				DB::beginTransaction();
-				$mytime = Carbon\Carbon::now();
-				$productCatRaw = DB::connection($databaseName)->statement("update product_category_mst 
-				set deleted_at='".$mytime."'
-				where product_parent_category_id='".$productCatId."'");
-				DB::commit();
-				if($productCatRaw==1)
+				$categoryId = $this->categoryDelete($productCatId);
+				while(strcmp($categoryId,'stop')!=0)
 				{
-					return $exceptionArray['200'];
+					$categoryId = $this->categoryDelete($categoryId);
 				}
-				else
-				{
-					return $exceptionArray['500'];
-				}
+				return $exceptionArray['200'];
 			}
 			else
 			{
@@ -223,6 +217,42 @@ class ProductCategoryModel extends Model
 		else
 		{
 			return $exceptionArray['500'];
+		}
+	}
+	
+	public function categoryDelete($categoryId)
+	{
+		$mytime = Carbon\Carbon::now();
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->select("select product_category_id 
+		from product_category_mst 
+		where product_parent_category_id = '".$categoryId."' and
+		deleted_at = '0000-00-00 00:00:00'");
+		DB::commit();
+		
+		if(count($raw)==0)
+		{
+			return "stop";
+		}
+		else
+		{
+			DB::beginTransaction();
+			$productCatRaw = DB::connection($databaseName)->statement("update product_category_mst 
+			set deleted_at='".$mytime."'
+			where product_parent_category_id='".$categoryId."'");
+			DB::commit();
+			
+			DB::beginTransaction();
+			$productCatRaww = DB::connection($databaseName)->statement("update product_mst 
+			set deleted_at='".$mytime."'
+			where product_category_id='".$raw[0]->product_category_id."'");
+			DB::commit();
+			return $raw[0]->product_category_id;
 		}
 	}
 }

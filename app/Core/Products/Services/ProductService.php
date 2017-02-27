@@ -169,12 +169,13 @@ class ProductService extends AbstractService
 		$header = func_get_arg(1);
 		$companyId = func_get_arg(2);
 		
+		$arrayResult = array();
+		
 		$fromDate = $persistableObject->getFromDate();
 		$toDate = $persistableObject->getToDate();
 		
 		$productModel = new ProductModel();
 		$status = $productModel->getTransactionData($fromDate,$toDate,$header,$companyId);
-		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -184,9 +185,17 @@ class ProductService extends AbstractService
 		}
 		else
 		{
-			$encoded = new EncodeProductTrnAllData();
-			$encodeData = $encoded->getEncodedAllData($status);
-			return $encodeData;
+			$decodedData = json_decode($status);
+			for($arrayData=0;$arrayData<count($decodedData);$arrayData++)
+			{
+				// $arrayResult[$arrayData] = array();
+				$encodedData = json_encode($decodedData[$arrayData]);
+				$encoded = new EncodeProductTrnAllData();
+				$encodeData = $encoded->getEncodedAllData($encodedData);
+				$encodedJsonData = json_decode($encodeData);
+				array_push($arrayResult,$encodedJsonData);
+			}
+			return json_encode($arrayResult);
 		}
 	}
 	

@@ -111,7 +111,7 @@ class JournalValidate
 	*/
 	public function validateUpdateData($keyName,$value,$request)
 	{
-		echo "journal validate";
+		// echo "journal validate";
 		$validationArray = array(
 			'amount'=> 'regex:/^[0-9]*$/'
 		);

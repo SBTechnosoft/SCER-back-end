@@ -439,7 +439,7 @@ class ProductTransformer
 					$tProductArray[$convertedValue] = $splitedDate[2]."-".$splitedDate[1]."-".$splitedDate[0];
 					// $transformTransactionDate = Carbon\Carbon::createFromFormat('d-m-Y', $value)->format('Y-m-d');
 					// $tProductArray[$convertedValue]=trim($transformTransactionDate);
-					// $convertedValue="";
+					$convertedValue="";
 				}
 				else
 				{

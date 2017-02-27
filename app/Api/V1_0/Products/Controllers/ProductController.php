@@ -372,7 +372,6 @@ class ProductController extends BaseController implements ContainerInterface
     public function getStockDocumentPath(Request $request,$companyId)
     {
 		$result = $this->getProductTransactionData($request,$companyId);
-		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
