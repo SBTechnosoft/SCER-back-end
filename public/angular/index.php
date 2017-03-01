@@ -221,19 +221,19 @@ include ('connection.php');
 				// formdata.append('productGroupParentId',$scope.formAdata.product_group_parent_id);
 				
 				//product
-				// $scope.formAdata.product_name = "f dsf";
+				// $scope.formAdata.product_name = "Spidedddfs";
 				// $scope.formAdata.is_display = 'no';
 				// $scope.formAdata.product_cat_id='18';
-				// $scope.formAdata.measurement_unit='litre';
-				// $scope.formAdata.color='bpack';
-				// $scope.formAdata.size='12T';
+				// $scope.formAdata.measurement_unit='piece';
+				// $scope.formAdata.color='BK.s';
+				// $scope.formAdata.size='12T.()';
 				// $scope.formAdata.purchase_price='120.09';
 				// $scope.formAdata.wholesale_margin='12.00';
-				$scope.formAdata.wholesale_margin_flat='12.00';
+				// $scope.formAdata.wholesale_margin_flat='12.00';
 				// $scope.formAdata.semi_wholesale_margin='10.90';
 				// $scope.formAdata.vat='10.00';
 				// $scope.formAdata.margin='10.00';
-				$scope.formAdata.margin_flat='10.00';
+				// $scope.formAdata.margin_flat='10.00';
 				// $scope.formAdata.mrp='140.00';
 				// $scope.formAdata.productDescription='dfsdfsd';
 				// $scope.formAdata.additionalTax='21.00';
@@ -248,12 +248,12 @@ include ('connection.php');
 				// formdata.append('size',$scope.formAdata.size);
 				// formdata.append('purchasePrice',$scope.formAdata.purchase_price);
 				// formdata.append('wholesaleMargin',$scope.formAdata.wholesale_margin);
-				formdata.append('wholesaleMarginFlat',$scope.formAdata.wholesale_margin_flat);
+				// formdata.append('wholesaleMarginFlat',$scope.formAdata.wholesale_margin_flat);
 				// formdata.append('semiWholesaleMargin',$scope.formAdata.semi_wholesale_margin);
 				// formdata.append('vat',$scope.formAdata.vat);
 				// formdata.append('mrp',$scope.formAdata.mrp);
 				// formdata.append('margin',$scope.formAdata.margin);
-				formdata.append('marginFlat',$scope.formAdata.margin_flat);
+				// formdata.append('marginFlat',$scope.formAdata.margin_flat);
 				// formdata.append('productDescription',$scope.formAdata.productDescription);
 				// formdata.append('additionalTax',$scope.formAdata.additionalTax);
 				// formdata.append('productCategoryId',$scope.formAdata.product_cat_id);
@@ -538,8 +538,8 @@ include ('connection.php');
 				// var journalId=327;
 				// var saleId = 371;
 				
-				// var url="http://www.scerp1.com/products/company/"+companyId+"/priceList";  //priceList
-				var url="http://www.scerp1.com/products/company/"+companyId+"/transaction/details"; //stock-register
+				var url="http://www.scerp1.com/products/company/"+companyId+"/priceList";  //priceList
+				// var url="http://www.scerp1.com/products/company/"+companyId+"/transaction/details"; //stock-register
 			
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/transaction";
 				// var url = "http://www.scerp1.com/logout/user/"+userId;
@@ -626,16 +626,17 @@ include ('connection.php');
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','type':'sales','jfId':64},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
-                        // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productCategoryId':18,'productGroupId':10,'salesType':'retail_sales'},
+                        headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','salesType':'retail_sales'},
                         // headers: {'Content-Type': undefined,'type':'sales','authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62',
 						// 'type':'sales'},
-						//,'nextSaleId':351
+						//,'nextSaleId':351  
+						//,'productCategoryId':18,'productGroupId':10
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','type':'retail_sales','fromDate':'22-10-2015','toDate':'22-10-2015'}
-                        headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productId':6,'fromDate':'21-10-2015','toDate':'20-01-2017'},
+                        // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productId':6,'fromDate':'21-10-2015','toDate':'20-01-2017'},
                         // headers: {'Content-Type': undefined},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
-						 // data:formdata
+						 data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

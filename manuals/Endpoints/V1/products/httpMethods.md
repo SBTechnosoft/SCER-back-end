@@ -107,7 +107,7 @@
 ##### `GET products/company/{companyId}/priceList`
 + Header 
 	- Authentication Token
-	- 'operation':'pdf'
+	- 'operation':'pdf/excel',
 	- 'productCategoryId':''
 	- 'productGroupId':''
 	- 'salesType':'retail_sales/whole_sales'
@@ -127,7 +127,7 @@
 ##### `GET products/company/{companyId}/transaction/details`
 + Header 
 	- Authentication Token
-	- 'operation':'pdf'
+	- 'operation':'pdf/excel'
 	- 'fromDate':''
 	- 'toDate':''
 	- 'productId':''

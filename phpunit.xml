@@ -17,7 +17,7 @@
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./app</directory>
             <exclude>
-                <file>./app/Api/V1_0/Sample/Routes.php</file>
+                <file>./app/Http/routes.php</file>
             </exclude>
         </whitelist>
     </filter>

@@ -1,9 +1,7 @@
 <?php
+
 use Illuminate\Database\Seeder;
-/**
- *
- * @author Reema Patel<reema.p@siliconbrain.in>
- */
+
 class DatabaseSeeder extends Seeder
 {
     /**

@@ -7,10 +7,10 @@
     "require": {
         "php": ">=5.5.9",
         "laravel/framework": "5.2.*",
-        "symphonycms/symphony-2": "^2.6",
         "mpdf/mpdf": "^6.1",
-        "phpmailer/phpmailer": "^5.2"
-		
+        "phpmailer/phpmailer": "^5.2",
+        "tecnickcom/tcpdf": "^6.2",
+        "phpoffice/phpexcel": "^1.8"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -35,7 +35,6 @@
     "scripts": {
         "post-root-package-install": [
             "php -r \"copy('.env.example', '.env');\""
-			
         ],
         "post-create-project-cmd": [
             "php artisan key:generate"
@@ -49,7 +48,7 @@
             "php artisan optimize"
         ]
     },
-	"config": {
+    "config": {
         "preferred-install": "dist"
     }
 }

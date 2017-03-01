@@ -12,6 +12,11 @@
 	
 	- composer dump-autoload
 	
+	- composer update
+	
+	- php artisan app:name ERP
+
+	
 	
 	
 	

@@ -1,6 +1,5 @@
 <?php
 
-
 return [
 
     /*
@@ -13,9 +12,9 @@ return [
     | services your application utilizes. Set this in your ".env" file.
     |
     */
-	
-    'env' => env('APP_ENV', 'local'),
-	
+
+    'env' => env('APP_ENV', 'production'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode
@@ -127,7 +126,7 @@ return [
         /*
          * Laravel Framework Service Providers...
          */
-        Illuminate\Auth\AuthServiceProvider::class,
+         Illuminate\Auth\AuthServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class,
         Illuminate\Bus\BusServiceProvider::class,
         Illuminate\Cache\CacheServiceProvider::class,
@@ -176,7 +175,7 @@ return [
 
     'aliases' => [
 
-        'App' => Illuminate\Support\Facades\App::class,
+       'App' => Illuminate\Support\Facades\App::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,
         'Blade' => Illuminate\Support\Facades\Blade::class,
@@ -209,17 +208,7 @@ return [
         'Carbon' => 'Carbon\Carbon'
 
     ],
-	
-	/*
-    |--------------------------------------------------------------------------
-    | Packages
-    |--------------------------------------------------------------------------
-    |
-    | In order to automate a routine work, it is required to register
-    | all the entity packages in the system here.
-    */
-
-    'packages' => [
+	'packages' => [
         'Companies',
 		'States',
 		'Cities',

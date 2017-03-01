@@ -20,13 +20,15 @@ class ProductValidate extends ProductModel
 	public function validate($request)
 	{
 		$rules = array(
-			'product_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 &,\/_`#().\'-]+$/', 
+			'product_name'=> 'required|between:1,35|regex:/^[a-zA-Z0-9 &,\/_`#().\'-]+$/', 
 			'purchase_price'=> 'regex:/^[0-9 .]+$/', 
 			'wholesale_margin'=> 'regex:/^[0-9 .]+$/', 
 			'semi_wholesale_margin'=> 'regex:/^[0-9 .]+$/', 
 			'margin'=> 'regex:/^[0-9 .]+$/', 
 			'vat'=> 'regex:/^[0-9 .]+$/', 
-			'mrp'=> 'regex:/^[0-9 .]+$/', 
+			'mrp'=> 'required|regex:/^[0-9 .]+$/', 
+			'color'=> 'required|regex:/^[a-zA-Z .\/-]+$/', 
+			'size'=> 'required|regex:/^[a-zA-Z0-9 .()]+$/', 
 		);
 		$messages = [
 			'product_name.between' => 'StringLengthException :Enter the product name less then 35 character',
@@ -37,6 +39,8 @@ class ProductValidate extends ProductModel
 			'margin.regex' => 'margin contains character from "0-9" only',
 			'vat.regex' => 'vat contains character from "0-9" only',
 			'mrp.regex' => 'mrp contains character from "0-9" only',
+			'color.regex' => 'color contains character from "a-zA-Z ./-" only',
+			'size.regex' => 'size contains character from "a-zA-Z0-9 .()" only',
 		];
 		
 		$validator = Validator::make($request,$rules,$messages);
@@ -123,13 +127,15 @@ class ProductValidate extends ProductModel
 	public function validateUpdateData($keyName,$value,$request)
 	{
 		$validationArray = array(
-			'product_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 &,\/_`#().\'-]+$/', 
+			'product_name'=> 'required|between:1,35|regex:/^[a-zA-Z0-9 &,\/_`#().\'-]+$/', 
 			'purchase_price'=> 'regex:/^[0-9 .]+$/', 
 			'wholesale_margin'=> 'regex:/^[0-9 .]+$/', 
 			'semi_wholesale_margin'=> 'regex:/^[0-9 .]+$/', 
 			'margin'=> 'regex:/^[0-9 .]+$/', 
 			'vat'=> 'regex:/^[0-9 .]+$/', 
-			'mrp'=> 'regex:/^[0-9 .]+$/',
+			'mrp'=> 'required|regex:/^[0-9 .]+$/', 
+			'color'=> 'required|regex:/^[a-zA-Z .\/-]+$/', 
+			'size'=> 'required|regex:/^[a-zA-Z0-9 .()]+$/', 
 		);
 		$rules = array();
 		foreach ($validationArray as $key => $value) 
@@ -154,6 +160,8 @@ class ProductValidate extends ProductModel
 				'margin.regex' => 'margin contains character from "0-9" only',
 				'vat.regex' => 'vat contains character from "0-9" only',
 				'mrp.regex' => 'mrp contains character from "0-9" only',
+				'color.regex' => 'color contains character from "a-zA-Z ./-" only',
+				'size.regex' => 'size contains character from "a-zA-Z0-9 .()" only',
 			];
 			
 			$validator = Validator::make($request,$rules,$messages);
