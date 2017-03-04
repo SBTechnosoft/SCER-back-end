@@ -572,7 +572,7 @@ class ProductModel extends Model
 			$productData = DB::connection($databaseName)->select("select 
 			product_id from product_mst
 			where ".$keyValueString."
-			deleted_at='0000-00-00 00:00:00'");
+			deleted_at='0000-00-00 00:00:00' and company_id='".$companyId."'");
 			for($arrayData=0;$arrayData<count($productData);$arrayData++)
 			{
 				DB::beginTransaction();
@@ -919,7 +919,8 @@ class ProductModel extends Model
 		product_group_id,
 		branch_id,
 		company_id	
-		from product_mst where company_id='".$companyId."' and ".$querySet."deleted_at='0000-00-00 00:00:00'");
+		from product_mst where company_id='".$companyId."' and ".$querySet."deleted_at='0000-00-00 00:00:00' 
+		order by product_category_id asc");
 		DB::commit();
 		
 		// get exception message

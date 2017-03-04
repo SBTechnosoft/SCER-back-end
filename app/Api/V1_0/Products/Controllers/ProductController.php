@@ -351,6 +351,7 @@ class ProductController extends BaseController implements ContainerInterface
 		
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
+			
 			//get exception message
 			$exception = new ExceptionMessage();
 			$exceptionArray = $exception->messageArrays();
@@ -381,8 +382,16 @@ class ProductController extends BaseController implements ContainerInterface
 		}
 		else
 		{
+			
 			$stockManageMpdf = new StockManageMpdf();
-			$mpdfResult = $stockManageMpdf->calculateBalance($result);
+			if(strcmp($request->header()['operation'][0],'pdf')==0)
+			{
+				$mpdfResult = $stockManageMpdf->calculateBalance($result);
+			}
+			else
+			{
+				$mpdfResult = $stockManageMpdf->generateExcelFile($result);
+			}
 			return $mpdfResult;
 		}
 	}
@@ -393,6 +402,10 @@ class ProductController extends BaseController implements ContainerInterface
      */
     public function getPriceListDocumentPath(Request $request,$companyId)
     {
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
 		$result = $this->getProductData($request,$companyId);
 		
 		//get exception message
@@ -405,7 +418,14 @@ class ProductController extends BaseController implements ContainerInterface
 		else
 		{
 			$priceListMpdf = new PriceListMpdf();
-			$mpdfResult = $priceListMpdf->generatePdf($request->header(),$result);
+			if(strcmp($constantArray['operation'],$request->header()['operation'][0])==0)
+			{
+				$mpdfResult = $priceListMpdf->generatePdf($request->header(),$result);
+			}
+			else
+			{
+				$mpdfResult = $priceListMpdf->generateExcelFile($request->header(),$result);
+			}
 			return $mpdfResult;
 		}
 	}

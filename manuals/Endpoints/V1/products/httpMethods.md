@@ -84,10 +84,12 @@
 ##### `GET products/company/{companyId}`
 + Header 
 	- Authentication Token
-	- 'productName':''
-	- 'productCategoryId':''
-	- 'productGroupId':''
-	- 'salesType':'retail_sales/whole_sales'
+	- 'productName':'',
+	- 'color':'',
+	- 'size':'',
+	- 'productCategoryId':'',
+	- 'productGroupId':'',
+	- 'salesType':'retail_sales/whole_sales',
 + Error Message
 
 			{
@@ -102,7 +104,7 @@
 				...
 			}
 
-**NOTES:** List the product as per given parameter in header and companyId
+**NOTES:** List the product as per given parameter in header and companyId(searching and price-list)
 
 ##### `GET products/company/{companyId}/priceList`
 + Header 

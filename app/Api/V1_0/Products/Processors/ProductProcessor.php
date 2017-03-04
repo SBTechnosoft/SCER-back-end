@@ -83,20 +83,36 @@ class ProductProcessor extends BaseProcessor
 				$company_name = preg_replace('/[^A-Za-z0-9]/', '', $decodedCompanyData[0]->company_name);
 				$group_name = preg_replace('/[^A-Za-z0-9]/', '', $decodedGroupData[0]->product_group_name);
 				$category_name = preg_replace('/[^A-Za-z0-9]/', '', $decodedCategoryData[0]->product_category_name);
+								
 				$convertedCompanyName = substr($company_name,0,3);
 				$convertedCategoryName = substr($category_name,0,3);
 				$convertedGroupName = substr($group_name,0,2);
-				$convertedProductName = substr($product_name,0,8);
-				$convertedColor = substr($color,0,2);
-				$convertedSize = substr($size,0,4);
+				
+				$productNameLength = strlen($product_name);
+				$productName1 = substr($product_name,0,3);
+				$productName2 = substr($product_name,$productNameLength-3,3);
+				$convertedProductName  = $productName1.$productName2;
+				
+				$colorLength = strlen($color);
+				$color1 = substr($color,0,2);
+				$color2 = substr($color,$colorLength-2,2);
+				$convertedColor = $color1.$color2;
+				
+				$sizeLength = strlen($size);
+				$size1 = substr($size,0,2);
+				$size2 = substr($size,$sizeLength-2,2);
+				$convertedSize = $size1.$size2;
 				$tRequest['product_code'] = $convertedCompanyName."_".
 											$convertedCategoryName."_".
 											$convertedGroupName."_".
 											$convertedProductName."_".
 											$convertedColor."_".
 											$convertedSize;
+				//convert string to upper-case
+				$convertedProductCode = strtoupper($tRequest['product_code']);
+				
 				// validation
-				$validationResult = $productValidate->productCodeValidate($tRequest['company_id'],$tRequest['product_code']);
+				$validationResult = $productValidate->productCodeValidate($tRequest['company_id'],$convertedProductCode);
 			}	
 			if(strcmp($validationResult,$msgArray['200'])==0)
 			{
@@ -226,7 +242,6 @@ class ProductProcessor extends BaseProcessor
 		$errorStatus=array();
 		$flag=0;
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
-		
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
 		
@@ -238,12 +253,6 @@ class ProductProcessor extends BaseProcessor
 		{
 			$productValue = array();
 			$productPersistable;
-			$companyFlag=0;
-			$categoryFlag=0;
-			$groupFlag=0;
-			$colorFlag=0;
-			$sizeFlag=0;
-			$productNameFlag=0;
 			$productArray = array();
 			$productValidate = new ProductValidate();
 			$status;
@@ -266,110 +275,17 @@ class ProductProcessor extends BaseProcessor
 				{
 					return $exceptionArray['content'];
 				}
-				//make a product_code and validate it with other codes
-				$companyModel = new CompanyModel();
-				$productGroupData = new ProductGroupModel();
-				$productCategoryData = new ProductCategoryModel();
-				
-				//get company_name
-				for($arrayData=0;$arrayData<count($tRequest);$arrayData++)
+				//product-code validation
+				if(array_key_exists('companyId',$request->input()) || array_key_exists('productGroupId',$request->input()) || 
+				array_key_exists('productCategoryId',$request->input()) || array_key_exists('color',$request->input()) || 
+				array_key_exists('size',$request->input()) || array_key_exists('productName',$request->input()))
 				{
-					if(array_key_exists('company_id',$tRequest[$arrayData]))
+					$validationResult = $this->productCodeValidation($tRequest,$productId);
+					if(!is_array($validationResult))
 					{
-						$companyFlag=1;
-						$companyResult = $companyModel->getData($tRequest[$arrayData]['company_id']);
-						$companyId = json_decode($companyResult)[0]->company_id;
-						$companyResult = json_decode($companyResult)[0]->company_name;
+						return $validationResult;
 					}
-					if(array_key_exists('product_group_id',$tRequest[$arrayData]))
-					{
-						$groupFlag=1;
-						//get product group name
-						$groupData = $productGroupData->getData($tRequest[$arrayData]['product_group_id']);
-						$groupData = json_decode($groupData)[0]->product_group_name;
-					}
-					if(array_key_exists('product_category_id',$tRequest[$arrayData]))
-					{
-						$categoryFlag=1;
-						//get product category name
-						$categoryData = $productCategoryData->getData($tRequest[$arrayData]['product_category_id']);
-						$categoryData = json_decode($categoryData)[0]->product_category_name;
-					}
-					if(array_key_exists('color',$tRequest[$arrayData]))
-					{
-						$colorFlag=1;
-						$color = $tRequest[$arrayData]['color'];
-					}
-					if(array_key_exists('size',$tRequest[$arrayData]))
-					{
-						$sizeFlag=1;
-						$size = $tRequest[$arrayData]['size'];
-					}
-					if(array_key_exists('product_name',$tRequest[$arrayData]))
-					{
-						$productNameFlag=1;
-						$productName = $tRequest[$arrayData]['product_name'];
-					}
-				}
-				
-				if($companyFlag==0)
-				{
-					$companyResult = $companyModel->getData($decodedProductData[0]->company_id);
-					$companyId = json_decode($companyResult)[0]->company_id;
-					$companyResult = json_decode($companyResult)[0]->company_name;
-				}
-				if($groupFlag==0)
-				{
-					$groupData = $productGroupData->getData($decodedProductData[0]->product_group_id);
-					$groupData = json_decode($groupData)[0]->product_group_name;
-				}
-				if($categoryFlag==0)
-				{
-					$categoryData = $productCategoryData->getData($decodedProductData[0]->product_category_id);
-					$categoryData = json_decode($categoryData)[0]->product_category_name;
-				}
-				if($colorFlag==0)
-				{
-					$color = $decodedProductData[0]->color;
-				}
-				if($sizeFlag==0)
-				{
-					$size = $decodedProductData[0]->size;
-				}
-				if($productNameFlag==0)
-				{
-					$productName = $decodedProductData[0]->product_name;
-				}
-				
-				// $decodedCompanyData = json_decode($companyResult);
-				// $decodedGroupData = json_decode($groupData);
-				// $decodedCategoryData = json_decode($categoryData);
-				
-				$color = preg_replace('/[^A-Za-z0-9]/', '', $color);
-				$size = preg_replace('/[^A-Za-z0-9]/', '', $size);
-				$product_name = preg_replace('/[^A-Za-z0-9]/', '', $productName);
-				$company_name = preg_replace('/[^A-Za-z0-9]/', '', $companyResult);
-				$group_name = preg_replace('/[^A-Za-z0-9]/', '', $groupData);
-				$category_name = preg_replace('/[^A-Za-z0-9]/', '', $categoryData);
-				$convertedCompanyName = substr($company_name,0,3);
-				$convertedCategoryName = substr($category_name,0,3);
-				$convertedGroupName = substr($group_name,0,2);
-				$convertedProductName = substr($product_name,0,8);
-				$convertedColor = substr($color,0,2);
-				$convertedSize = substr($size,0,4);
-				$totalCount = count($tRequest);
-				$tRequest[$totalCount]['product_code']=$convertedCompanyName."_".
-														$convertedCategoryName."_".
-														$convertedGroupName."_".
-														$convertedProductName."_".
-														$convertedColor."_".
-														$convertedSize;
-				// validation
-				$validationResult = $productValidate->productUpdateCodeValidate($companyId,$tRequest[$totalCount]['product_code'],$productId);
-				
-				if(strcmp($validationResult,$exceptionArray['200'])!=0)
-				{
-					return $validationResult;
+					$tRequest = $validationResult;
 				}
 				for($data=0;$data<count($tRequest);$data++)
 				{
@@ -457,6 +373,146 @@ class ProductProcessor extends BaseProcessor
 			return $productPersistable;
 		}
 	}	
+	
+	/**
+     * validate product-code if required
+     * $param trim array and product-id
+     * @return validation-result
+     */
+	public function productCodeValidation($tRequest,$productId)
+	{
+		$companyFlag=0;
+		$categoryFlag=0;
+		$groupFlag=0;
+		$colorFlag=0;
+		$sizeFlag=0;
+		$productNameFlag=0;
+		$productValidate = new ProductValidate();
+		
+		//make a product_code and validate it with other codes
+		$companyModel = new CompanyModel();
+		$productGroupData = new ProductGroupModel();
+		$productCategoryData = new ProductCategoryModel();
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		//get company_name for checking product-code
+		for($arrayData=0;$arrayData<count($tRequest);$arrayData++)
+		{
+			if(array_key_exists('company_id',$tRequest[$arrayData]))
+			{
+				$companyFlag=1;
+				$companyResult = $companyModel->getData($tRequest[$arrayData]['company_id']);
+				$companyId = json_decode($companyResult)[0]->company_id;
+				$companyResult = json_decode($companyResult)[0]->company_name;
+			}
+			if(array_key_exists('product_group_id',$tRequest[$arrayData]))
+			{
+				$groupFlag=1;
+				//get product group name
+				$groupData = $productGroupData->getData($tRequest[$arrayData]['product_group_id']);
+				$groupData = json_decode($groupData)[0]->product_group_name;
+			}
+			if(array_key_exists('product_category_id',$tRequest[$arrayData]))
+			{
+				$categoryFlag=1;
+				//get product category name
+				$categoryData = $productCategoryData->getData($tRequest[$arrayData]['product_category_id']);
+				$categoryData = json_decode($categoryData)[0]->product_category_name;
+			}
+			if(array_key_exists('color',$tRequest[$arrayData]))
+			{
+				$colorFlag=1;
+				$color = $tRequest[$arrayData]['color'];
+			}
+			if(array_key_exists('size',$tRequest[$arrayData]))
+			{
+				$sizeFlag=1;
+				$size = $tRequest[$arrayData]['size'];
+			}
+			if(array_key_exists('product_name',$tRequest[$arrayData]))
+			{
+				$productNameFlag=1;
+				$productName = $tRequest[$arrayData]['product_name'];
+			}
+		}
+		if($companyFlag==0)
+		{
+			$companyResult = $companyModel->getData($decodedProductData[0]->company_id);
+			$companyId = json_decode($companyResult)[0]->company_id;
+			$companyResult = json_decode($companyResult)[0]->company_name;
+		}
+		if($groupFlag==0)
+		{
+			$groupData = $productGroupData->getData($decodedProductData[0]->product_group_id);
+			$groupData = json_decode($groupData)[0]->product_group_name;
+		}
+		if($categoryFlag==0)
+		{
+			$categoryData = $productCategoryData->getData($decodedProductData[0]->product_category_id);
+			$categoryData = json_decode($categoryData)[0]->product_category_name;
+		}
+		if($colorFlag==0)
+		{
+			$color = $decodedProductData[0]->color;
+		}
+		if($sizeFlag==0)
+		{
+			$size = $decodedProductData[0]->size;
+		}
+		if($productNameFlag==0)
+		{
+			$productName = $decodedProductData[0]->product_name;
+		}
+		$color = preg_replace('/[^A-Za-z0-9]/', '', $color);
+		$size = preg_replace('/[^A-Za-z0-9]/', '', $size);
+		$product_name = preg_replace('/[^A-Za-z0-9]/', '', $productName);
+		$company_name = preg_replace('/[^A-Za-z0-9]/', '', $companyResult);
+		$group_name = preg_replace('/[^A-Za-z0-9]/', '', $groupData);
+		$category_name = preg_replace('/[^A-Za-z0-9]/', '', $categoryData);
+		
+		$convertedCompanyName = substr($company_name,0,3);
+		$convertedCategoryName = substr($category_name,0,3);
+		$convertedGroupName = substr($group_name,0,2);
+		
+		$productNameLength = strlen($product_name);
+		$productName1 = substr($product_name,0,3);
+		$productName2 = substr($product_name,$productNameLength-3,3);
+		$convertedProductName  = $productName1.$productName2;
+		
+		$colorLength = strlen($color);
+		$color1 = substr($color,0,2);
+		$color2 = substr($color,$colorLength-2,2);
+		$convertedColor = $color1.$color2;
+		
+		$sizeLength = strlen($size);
+		$size1 = substr($size,0,2);
+		$size2 = substr($size,$sizeLength-2,2);
+		$convertedSize = $size1.$size2;
+		
+		$totalCount = count($tRequest);
+		$tRequest[$totalCount]['product_code']=$convertedCompanyName."_".
+												$convertedCategoryName."_".
+												$convertedGroupName."_".
+												$convertedProductName."_".
+												$convertedColor."_".
+												$convertedSize;
+		//convert string to upper-case
+		$convertedProductCode = strtoupper($tRequest[$totalCount]['product_code']);
+		
+		// validation
+		$validationResult = $productValidate->productUpdateCodeValidate($companyId,$convertedProductCode,$productId);
+		if(strcmp($exceptionArray['200'],$validationResult)==0)
+		{
+			return $tRequest;
+		}
+		else
+		{
+			return $validationResult;
+		}
+	}
 	
 	/**
      * process product-transaction data(sale/purchase)

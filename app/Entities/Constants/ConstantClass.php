@@ -20,8 +20,10 @@ class ConstantClass
 		$constantArray['journalDocumentUrl'] = "Storage/Journal/";
 		$constantArray['billUrl']="Storage/Bill/";
 		$constantArray['trialBalanceUrl']="Storage/TrialBalance/";
-		$constantArray['stockUrl']="Storage/StockRegister/";
-		$constantArray['priceList']="Storage/PriceList/";
+		$constantArray['stockUrlExcel']="Storage/StockRegister/excel/";
+		$constantArray['stockUrlPdf']="Storage/StockRegister/pdf/";
+		$constantArray['priceListExcel']="Storage/PriceList/excel/";
+		$constantArray['priceListPdf']="Storage/PriceList/pdf/";
 		$constantArray['clientUrl']="http://www.scerp1.com/clients";
 		$constantArray['documentGenerateUrl']="http://www.scerp1.com/documents/bill";
 		$constantArray['ledgerUrl']="http://www.scerp1.com/accounting/ledgers";
@@ -40,6 +42,7 @@ class ConstantClass
 		$constantArray['percentage']="percentage";
 		$constantArray['ledgerGroupSundryDebitors']="32";
 		$constantArray['Flatdiscount']="flat";
+		$constantArray['operation']="pdf";
 		
 		//from header data
 		$constantArray['sales']="sales";

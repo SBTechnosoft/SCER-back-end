@@ -21,6 +21,6 @@
 	
 	
 packagist  :	
-	1. pdf = composer require mpdf/mpdf
+	1. pdf = composer require mpdf/mpdf version:1.4
 	2. mail = composer require phpmailer/phpmailer
 	3. barcode generate = composer require tecnickcom/tcpdf

@@ -221,11 +221,11 @@ include ('connection.php');
 				// formdata.append('productGroupParentId',$scope.formAdata.product_group_parent_id);
 				
 				//product
-				// $scope.formAdata.product_name = "Spidedddfs";
+				// $scope.formAdata.product_name = "TUrk";
 				// $scope.formAdata.is_display = 'no';
 				// $scope.formAdata.product_cat_id='18';
 				// $scope.formAdata.measurement_unit='piece';
-				// $scope.formAdata.color='BK.s';
+				// $scope.formAdata.color='BK';
 				// $scope.formAdata.size='12T.()';
 				// $scope.formAdata.purchase_price='120.09';
 				// $scope.formAdata.wholesale_margin='12.00';
@@ -520,7 +520,7 @@ include ('connection.php');
 				
 				// var userId=9;
 				// var clientId=2;
-				// var productId =10;
+				// var productId =20;
 				// var productGrpId = 11;
 				// var productCatId = 18;
 				var companyId=83;
@@ -538,8 +538,8 @@ include ('connection.php');
 				// var journalId=327;
 				// var saleId = 371;
 				
-				var url="http://www.scerp1.com/products/company/"+companyId+"/priceList";  //priceList
-				// var url="http://www.scerp1.com/products/company/"+companyId+"/transaction/details"; //stock-register
+				// var url="http://www.scerp1.com/products/company/"+companyId+"/priceList";  //priceList
+				var url="http://www.scerp1.com/products/company/"+companyId+"/transaction/details"; //stock-register
 			
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/transaction";
 				// var url = "http://www.scerp1.com/logout/user/"+userId;
@@ -611,13 +611,14 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/products/"+productId;
 				// var url="http://www.scerp1.com/products";
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/branch/"+branchId;
+				// var url="http://www.scerp1.com/products/company/"+companyId+"/branch";
 				// var url="http://www.scerp1.com/products/company/"+companyId;
 				
 				$http({
                         url: url,
                         // type:'patch',
-                        // type:'get',
-						 method: 'get',
+                        type:'get',
+						 // method: 'get',
 						 // method: 'post',
 						// method: 'post',
 						// method: "PATCH",
@@ -626,15 +627,16 @@ include ('connection.php');
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','type':'sales','jfId':64},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
-                        headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','salesType':'retail_sales'},
+                        // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','salesType':'retail_sales','operation':'excel'},
                         // headers: {'Content-Type': undefined,'type':'sales','authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62',
 						// 'type':'sales'},
 						//,'nextSaleId':351  
 						//,'productCategoryId':18,'productGroupId':10
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','type':'retail_sales','fromDate':'22-10-2015','toDate':'22-10-2015'}
-                        // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productId':6,'fromDate':'21-10-2015','toDate':'20-01-2017'},
+                        headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productId':6,'fromDate':'21-10-2015','toDate':'20-01-2017','operation':'pdf'},
                         // headers: {'Content-Type': undefined},
+                        // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productName':'Spiderman','color':'BK.s'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
 						 data:formdata
 						// data:$scope.user						
