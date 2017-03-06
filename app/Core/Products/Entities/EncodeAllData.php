@@ -41,6 +41,8 @@ class EncodeAllData extends ProductCategoryService
 			$size[$decodedData] = $decodedJson[$decodedData]['size'];
 			$productDescription[$decodedData] = $decodedJson[$decodedData]['product_description'];
 			$additionalTax[$decodedData] = $decodedJson[$decodedData]['additional_tax'];
+			$documentName[$decodedData] = $decodedJson[$decodedData]['document_name'];
+			$documentFormat[$decodedData] = $decodedJson[$decodedData]['documentFormat'];
 			$productCatId[$decodedData] = $decodedJson[$decodedData]['product_category_id'];
 			$productGrpId[$decodedData] = $decodedJson[$decodedData]['product_group_id'];
 			$companyId[$decodedData] = $decodedJson[$decodedData]['company_id'];
@@ -116,6 +118,8 @@ class EncodeAllData extends ProductCategoryService
 				'size' => $size[$jsonData],
 				'productDescription' => $productDescription[$jsonData],
 				'additionalTax' => $additionalTax[$jsonData],
+				'documentName' => $documentName[$jsonData],
+				'documentFormat' => $documentFormat[$jsonData],
 				'measurementUnit' => $measurementUnit[$jsonData],
 				'createdAt' => $getCreatedDate[$jsonData],
 				'updatedAt' => $getUpdatedDate[$jsonData],

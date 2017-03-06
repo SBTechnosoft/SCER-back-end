@@ -7,8 +7,9 @@ use Carbon;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Entities\Constants\ConstantClass;
 use ERP\Entities\ProductArray;
+use TCPDFBarcode;
 /**
- * @author Reema Patel<reema.p@siliconbrain.in>
+ * @author reema Patel<reema.p@siliconbrain.in>
  */
 class ProductModel extends Model
 {
@@ -26,6 +27,8 @@ class ProductModel extends Model
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
+		$mytime = Carbon\Carbon::now();
+		
 		$getProductData = array();
 		$getproductKey = array();
 		$getProductData = func_get_arg(0);
@@ -34,6 +37,10 @@ class ProductModel extends Model
 		$keyName = "";
 		for($data=0;$data<count($getProductData);$data++)
 		{
+			if(strcmp('product_code',$getProductKey[$data])==0)
+			{
+				$productCode = $getProductData[$data];
+			}
 			if($data == (count($getProductData)-1))
 			{
 				$productData = $productData."'".$getProductData[$data]."'";
@@ -45,6 +52,7 @@ class ProductModel extends Model
 				$keyName =$keyName.$getProductKey[$data].",";
 			}
 		}
+		
 		DB::beginTransaction();
 		$raw = DB::connection($databaseName)->statement("insert into product_mst(".$keyName.") 
 		values(".$productData.")");
@@ -55,6 +63,35 @@ class ProductModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
+			//get constant array
+			$constantArray = $constantDatabase->constantVariable();
+			$path = $constantArray['productBarcode'];
+			
+			//make unique name of barcode svg image
+			$dateTime = date("d-m-Y h-i-s");
+			$convertedDateTime = str_replace(" ","-",$dateTime);
+			$splitDateTime = explode("-",$convertedDateTime);
+			$combineDateTime = $splitDateTime[0].$splitDateTime[1].$splitDateTime[2].$splitDateTime[3].$splitDateTime[4].$splitDateTime[5];
+			$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".svg";
+			$documentPath = $path.$documentName;
+			
+			//insert barcode image
+			$barcodeobj = new TCPDFBarcode($productCode, 'C128');
+			file_put_contents($documentPath,$barcodeobj->getBarcodeSVGcode(0.5 ,20, 'black'));
+			
+			DB::beginTransaction();
+			$productId = DB::connection($databaseName)->select("select 
+			product_id 
+			from product_mst 
+			group by product_id desc limit 1");
+			DB::commit();
+			
+			//update document-data into database
+			DB::beginTransaction();
+			$documentStatus = DB::connection($databaseName)->statement("update
+			product_mst set document_name='".$documentName."', document_format='svg',updated_at='".$mytime."'
+			where deleted_at='0000-00-00 00:00:00' and product_id='".$productId[0]->product_id."'");
+			DB::commit();
 			return $exceptionArray['200'];
 		}
 		else
@@ -162,6 +199,11 @@ class ProductModel extends Model
 		$keyValueString="";
 		for($data=0;$data<count($productData);$data++)
 		{
+			if(strcmp('product_code',$key[$data])==0)
+			{
+				$productCodeFlag=1;
+				$productCode = $productData[$data];
+			}
 			$keyValueString=$keyValueString.$key[$data]."='".$productData[$data]."',";
 		}
 		
@@ -176,6 +218,31 @@ class ProductModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
+			if($productCodeFlag==1)
+			{
+				//get constant array
+				$constantArray = $constantDatabase->constantVariable();
+				$path = $constantArray['productBarcode'];
+				
+				//make unique name of barcode svg image
+				$dateTime = date("d-m-Y h-i-s");
+				$convertedDateTime = str_replace(" ","-",$dateTime);
+				$splitDateTime = explode("-",$convertedDateTime);
+				$combineDateTime = $splitDateTime[0].$splitDateTime[1].$splitDateTime[2].$splitDateTime[3].$splitDateTime[4].$splitDateTime[5];
+				$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".svg";
+				$documentPath = $path.$documentName;
+				
+				//insert barcode image 
+				$barcodeobj = new TCPDFBarcode($productCode, 'C128');
+				file_put_contents($documentPath,$barcodeobj->getBarcodeSVGcode(0.5 ,20, 'black'));
+				
+				//update document-data into database
+				DB::beginTransaction();
+				$documentStatus = DB::connection($databaseName)->statement("update
+				product_mst set document_name='".$documentName."', document_format='svg',updated_at='".$mytime."'
+				where deleted_at='0000-00-00 00:00:00' and product_id='".$productId."'");
+				DB::commit();
+			}
 			return $exceptionArray['200'];
 		}
 		else
@@ -483,6 +550,8 @@ class ProductModel extends Model
 		size,
 		product_description,
 		additional_tax,
+		document_name,
+		document_format,
 		is_display,
 		created_at,
 		updated_at,
@@ -688,6 +757,8 @@ class ProductModel extends Model
 		size,
 		product_description,
 		additional_tax,
+		document_name,
+		document_format,
 		created_at,
 		updated_at,
 		deleted_at,
@@ -740,6 +811,8 @@ class ProductModel extends Model
 		size,
 		product_description,
 		additional_tax,
+		document_name,
+		document_format,
 		created_at,
 		updated_at,
 		deleted_at,
@@ -793,6 +866,8 @@ class ProductModel extends Model
 		size,
 		product_description,
 		additional_tax,
+		document_name,
+		document_format,
 		created_at,
 		updated_at,
 		deleted_at,
@@ -846,6 +921,8 @@ class ProductModel extends Model
 		size,
 		product_description,
 		additional_tax,
+		document_name,
+		document_format,
 		created_at,
 		updated_at,
 		deleted_at,
@@ -912,6 +989,8 @@ class ProductModel extends Model
 		margin_flat,
 		product_description,
 		additional_tax,
+		document_name,
+		document_format,
 		created_at,
 		updated_at,
 		deleted_at,

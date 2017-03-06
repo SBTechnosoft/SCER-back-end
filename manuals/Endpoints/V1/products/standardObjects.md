@@ -15,6 +15,8 @@
 			"marginFlat":decimal,
 			"mrp": decimal,
 			"additionalTax":decimal,
+			"documentName":string,
+			"documentFormat":string,
 			"productDescription":string,
             "productCategory": {
                 ... Standard Products Category Object

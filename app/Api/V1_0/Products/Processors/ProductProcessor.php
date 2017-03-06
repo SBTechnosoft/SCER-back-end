@@ -110,7 +110,7 @@ class ProductProcessor extends BaseProcessor
 											$convertedSize;
 				//convert string to upper-case
 				$convertedProductCode = strtoupper($tRequest['product_code']);
-				
+				$tRequest['product_code'] = $convertedProductCode;
 				// validation
 				$validationResult = $productValidate->productCodeValidate($tRequest['company_id'],$convertedProductCode);
 			}	
@@ -275,12 +275,13 @@ class ProductProcessor extends BaseProcessor
 				{
 					return $exceptionArray['content'];
 				}
+				
 				//product-code validation
 				if(array_key_exists('companyId',$request->input()) || array_key_exists('productGroupId',$request->input()) || 
 				array_key_exists('productCategoryId',$request->input()) || array_key_exists('color',$request->input()) || 
 				array_key_exists('size',$request->input()) || array_key_exists('productName',$request->input()))
 				{
-					$validationResult = $this->productCodeValidation($tRequest,$productId);
+					$validationResult = $this->productCodeValidation($tRequest,$productId,$decodedProductData);
 					if(!is_array($validationResult))
 					{
 						return $validationResult;
@@ -379,7 +380,7 @@ class ProductProcessor extends BaseProcessor
      * $param trim array and product-id
      * @return validation-result
      */
-	public function productCodeValidation($tRequest,$productId)
+	public function productCodeValidation($tRequest,$productId,$decodedProductData)
 	{
 		$companyFlag=0;
 		$categoryFlag=0;
@@ -447,11 +448,13 @@ class ProductProcessor extends BaseProcessor
 		if($groupFlag==0)
 		{
 			$groupData = $productGroupData->getData($decodedProductData[0]->product_group_id);
+			$groupId = json_decode($groupData)[0]->product_group_id;
 			$groupData = json_decode($groupData)[0]->product_group_name;
 		}
 		if($categoryFlag==0)
 		{
 			$categoryData = $productCategoryData->getData($decodedProductData[0]->product_category_id);
+			$categoryId = json_decode($categoryData)[0]->product_category_id;
 			$categoryData = json_decode($categoryData)[0]->product_category_name;
 		}
 		if($colorFlag==0)
@@ -501,7 +504,7 @@ class ProductProcessor extends BaseProcessor
 												$convertedSize;
 		//convert string to upper-case
 		$convertedProductCode = strtoupper($tRequest[$totalCount]['product_code']);
-		
+		$tRequest[$totalCount]['product_code'] = $convertedProductCode;
 		// validation
 		$validationResult = $productValidate->productUpdateCodeValidate($companyId,$convertedProductCode,$productId);
 		if(strcmp($exceptionArray['200'],$validationResult)==0)

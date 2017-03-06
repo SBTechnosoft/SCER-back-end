@@ -15,6 +15,7 @@ class ConstantClass
 		$constantArray = array();
 		$constantArray['token'] = "authenticationToken";
 		$constantArray['success'] = "Success";
+		$constantArray['productBarcode'] = "Storage/Barcode/";
 		$constantArray['documentUrl'] = "Storage/Document/";
 		$constantArray['billDocumentUrl'] = "Storage/Bill/Document/";
 		$constantArray['journalDocumentUrl'] = "Storage/Journal/";

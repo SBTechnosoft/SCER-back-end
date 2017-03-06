@@ -221,7 +221,7 @@ include ('connection.php');
 				// formdata.append('productGroupParentId',$scope.formAdata.product_group_parent_id);
 				
 				//product
-				// $scope.formAdata.product_name = "TUrk";
+				$scope.formAdata.product_name = "Cyclegff";
 				// $scope.formAdata.is_display = 'no';
 				// $scope.formAdata.product_cat_id='18';
 				// $scope.formAdata.measurement_unit='piece';
@@ -241,7 +241,7 @@ include ('connection.php');
 				// $scope.formAdata.company_id='83';
 				// $scope.formAdata.branch_id='6';
 				
-				// formdata.append('productName',$scope.formAdata.product_name);
+				formdata.append('productName',$scope.formAdata.product_name);
 				// formdata.append('isDisplay',$scope.formAdata.is_display);
 				// formdata.append('measurementUnit',$scope.formAdata.measurement_unit);
 				// formdata.append('color',$scope.formAdata.color);
@@ -520,10 +520,10 @@ include ('connection.php');
 				
 				// var userId=9;
 				// var clientId=2;
-				// var productId =20;
+				var productId =6;
 				// var productGrpId = 11;
 				// var productCatId = 18;
-				var companyId=83;
+				// var companyId=83;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -539,7 +539,7 @@ include ('connection.php');
 				// var saleId = 371;
 				
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/priceList";  //priceList
-				var url="http://www.scerp1.com/products/company/"+companyId+"/transaction/details"; //stock-register
+				// var url="http://www.scerp1.com/products/company/"+companyId+"/transaction/details"; //stock-register
 			
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/transaction";
 				// var url = "http://www.scerp1.com/logout/user/"+userId;
@@ -608,7 +608,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/product-categories";
 				// var url="http://www.scerp1.com/product-groups";
 				// var url="http://www.scerp1.com/product-groups/"+productGrpId;
-				// var url="http://www.scerp1.com/products/"+productId;
+				var url="http://www.scerp1.com/products/"+productId;
 				// var url="http://www.scerp1.com/products";
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/branch/"+branchId;
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/branch";
@@ -617,9 +617,9 @@ include ('connection.php');
 				$http({
                         url: url,
                         // type:'patch',
-                        type:'get',
+                        // type:'get',
 						 // method: 'get',
-						 // method: 'post',
+						 method: 'post',
 						// method: 'post',
 						// method: "PATCH",
 						// method:'delete',
@@ -634,10 +634,10 @@ include ('connection.php');
 						//,'nextSaleId':351  
 						//,'productCategoryId':18,'productGroupId':10
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','type':'retail_sales','fromDate':'22-10-2015','toDate':'22-10-2015'}
-                        headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productId':6,'fromDate':'21-10-2015','toDate':'20-01-2017','operation':'pdf'},
+                        // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productId':6,'fromDate':'21-10-2015','toDate':'20-01-2017','operation':'pdf'},
                         // headers: {'Content-Type': undefined},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productName':'Spiderman','color':'BK.s'},
-                        // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
+                        headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
 						 data:formdata
 						// data:$scope.user						
                         

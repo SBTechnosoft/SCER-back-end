@@ -62,6 +62,7 @@
             {
                 ... HTTP_Status:200
             }
+			
 ##### Gets Products           
             
 ##### `GET products/company/{CompanyId?}/branch/{branchId?}`

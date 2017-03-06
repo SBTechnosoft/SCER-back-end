@@ -35,6 +35,8 @@ class EncodeData extends ProductCategoryService
 		$marginFlat= $decodedJson[0]['margin_flat'];
 		$productDescription= $decodedJson[0]['product_description'];
 		$additionalTax= $decodedJson[0]['additional_tax'];
+		$documentName= $decodedJson[0]['document_name'];
+		$documentFormat= $decodedJson[0]['document_format'];
 		$productCatId= $decodedJson[0]['product_category_id'];
 		$productGrpId= $decodedJson[0]['product_group_id'];
 		$companyId= $decodedJson[0]['company_id'];
@@ -108,6 +110,8 @@ class EncodeData extends ProductCategoryService
 		$data['marginFlat'] = $marginFlat;
 		$data['productDescription'] = $productDescription;
 		$data['additionalTax'] = $additionalTax;
+		$data['documentName'] = $documentName;
+		$data['documentFormat'] = $documentFormat;
 		$data['createdAt'] = $getCreatedDate;
 		$data['updatedAt'] = $getUpdatedDate;	
 		
