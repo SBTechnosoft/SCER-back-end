@@ -6,6 +6,7 @@ use ERP\Core\Products\Services\ProductService;
 use ERP\Core\Entities\CompanyDetail;
 use ERP\Core\Entities\BranchDetail;
 use Carbon;
+use ERP\Entities\Constants\ConstantClass;
 /**
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -85,6 +86,8 @@ class EncodeProductTrnAllData extends ProductService
 				$getTransactionDate[$decodedData] = $ledger->getTransactionDate();
 			}
 		}
+		$constantArray = new ConstantClass();
+		$documentPath = $constantArray['productBarcode'];
 		
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
@@ -123,6 +126,10 @@ class EncodeProductTrnAllData extends ProductService
 					'marginFlat' => $productDecodedJson[$jsonData]['marginFlat'],
 					'productDescription' => $productDecodedJson[$jsonData]['productDescription'],
 					'additionalTax' => $productDecodedJson[$jsonData]['additionalTax'],
+					'minimumStockLevel' => $productDecodedJson[$jsonData]['minimumStockLevel'],
+					'documentName' => $productDecodedJson[$jsonData]['documentName'],
+					'documentFormat' => $productDecodedJson[$jsonData]['documentFormat'],
+					'documentPath' => $documentPath,
 					'createdAt' => $productDecodedJson[$jsonData]['createdAt'],
 					'updatedAt' => $productDecodedJson[$jsonData]['updatedAt'],
 					'productCategoryId' => $productDecodedJson[$jsonData]['productCategory']['productCategoryId'],

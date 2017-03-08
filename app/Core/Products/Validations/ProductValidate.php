@@ -29,6 +29,7 @@ class ProductValidate extends ProductModel
 			'mrp'=> 'required|regex:/^[0-9 .]+$/', 
 			'color'=> 'required|regex:/^[a-zA-Z .\/-]+$/', 
 			'size'=> 'required|regex:/^[a-zA-Z0-9 .()]+$/', 
+			'minimum_stock_level'=> 'regex:/^[0-9]+$/', 
 		);
 		$messages = [
 			'product_name.between' => 'StringLengthException :Enter the product name less then 35 character',
@@ -41,6 +42,7 @@ class ProductValidate extends ProductModel
 			'mrp.regex' => 'mrp contains character from "0-9" only',
 			'color.regex' => 'color contains character from "a-zA-Z ./-" only',
 			'size.regex' => 'size contains character from "a-zA-Z0-9 .()" only',
+			'minimum_stock_level.regex' => 'size contains character from "0-9" only',
 		];
 		
 		$validator = Validator::make($request,$rules,$messages);
@@ -136,6 +138,7 @@ class ProductValidate extends ProductModel
 			'mrp'=> 'required|regex:/^[0-9 .]+$/', 
 			'color'=> 'required|regex:/^[a-zA-Z .\/-]+$/', 
 			'size'=> 'required|regex:/^[a-zA-Z0-9 .()]+$/', 
+			'minimum_stock_level'=> 'regex:/^[0-9]+$/',  
 		);
 		$rules = array();
 		foreach ($validationArray as $key => $value) 
@@ -162,6 +165,7 @@ class ProductValidate extends ProductModel
 				'mrp.regex' => 'mrp contains character from "0-9" only',
 				'color.regex' => 'color contains character from "a-zA-Z ./-" only',
 				'size.regex' => 'size contains character from "a-zA-Z0-9 .()" only',
+				'minimum_stock_level.regex' => 'size contains character from "0-9" only',
 			];
 			
 			$validator = Validator::make($request,$rules,$messages);

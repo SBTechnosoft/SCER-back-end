@@ -55,6 +55,7 @@ class ProductProcessor extends BaseProcessor
 			// trim an input 
 			$productTransformer = new ProductTransformer();
 			$tRequest = $productTransformer->trimInsertData($this->request);
+			
 			if($tRequest==1)
 			{
 				return $msgArray['content'];
@@ -118,6 +119,7 @@ class ProductProcessor extends BaseProcessor
 			{
 				// validation
 				$status = $productValidate->validate($tRequest);
+				
 				if($status=="Success")
 				{
 					foreach ($tRequest as $key => $value)

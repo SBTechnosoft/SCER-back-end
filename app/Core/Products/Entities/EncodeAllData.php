@@ -7,6 +7,7 @@ use ERP\Core\Entities\ProductGroupDetail;
 use ERP\Core\Entities\CompanyDetail;
 use ERP\Core\Entities\BranchDetail;
 use Carbon;
+use ERP\Entities\Constants\ConstantClass;
 /**
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -41,6 +42,7 @@ class EncodeAllData extends ProductCategoryService
 			$size[$decodedData] = $decodedJson[$decodedData]['size'];
 			$productDescription[$decodedData] = $decodedJson[$decodedData]['product_description'];
 			$additionalTax[$decodedData] = $decodedJson[$decodedData]['additional_tax'];
+			$minimumStockLevel[$decodedData] = $decodedJson[$decodedData]['minimum_stock_level'];
 			$documentName[$decodedData] = $decodedJson[$decodedData]['document_name'];
 			$documentFormat[$decodedData] = $decodedJson[$decodedData]['document_format'];
 			$productCatId[$decodedData] = $decodedJson[$decodedData]['product_category_id'];
@@ -99,6 +101,8 @@ class EncodeAllData extends ProductCategoryService
 				$getUpdatedDate[$decodedData] = $product->getUpdated_at();
 			}
 		}
+		$constantArray = new ConstantClass();
+		$documentPath = $constantArray['productBarcode'];
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
 		{
@@ -118,8 +122,10 @@ class EncodeAllData extends ProductCategoryService
 				'size' => $size[$jsonData],
 				'productDescription' => $productDescription[$jsonData],
 				'additionalTax' => $additionalTax[$jsonData],
+				'minimumStockLevel' => $minimumStockLevel[$jsonData],
 				'documentName' => $documentName[$jsonData],
 				'documentFormat' => $documentFormat[$jsonData],
+				'documentPath' => $documentPath,
 				'measurementUnit' => $measurementUnit[$jsonData],
 				'createdAt' => $getCreatedDate[$jsonData],
 				'updatedAt' => $getUpdatedDate[$jsonData],

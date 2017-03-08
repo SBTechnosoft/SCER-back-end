@@ -22,6 +22,7 @@ class ProductTransformer
     {
 		$isDisplayFlag=0;
 		$measurementUnitFlag=0;
+		
 		//data get from body
 		$productName = $request->input('productName'); 
 		$measurementUnit = $request->input('measurementUnit'); 
@@ -38,6 +39,7 @@ class ProductTransformer
 		$marginFlat = $request->input('marginFlat'); 			
 		$productDescription = $request->input('productDescription'); 			
 		$additionalTax = $request->input('additionalTax'); 			
+		$minimumStockLevel = $request->input('minimumStockLevel'); 			
 		$companyId = $request->input('companyId'); 			
 		$productCatId = $request->input('productCategoryId'); 			
 		$productGrpId = $request->input('productGroupId'); 			
@@ -59,6 +61,7 @@ class ProductTransformer
 		$tMarginFlat = trim($marginFlat);
 		$tProductDescription = trim($productDescription);
 		$tAdditionalTax = trim($additionalTax);
+		$tMinimumStockLevel = trim($minimumStockLevel);
 		$tCompanyId = trim($companyId);
 		$tProductCatId = trim($productCatId);
 		$tProductGrpId = trim($productGrpId);
@@ -127,6 +130,7 @@ class ProductTransformer
 			$data['margin_flat'] = $tMarginFlat;
 			$data['product_description'] = $tProductDescription;
 			$data['additional_tax'] = $tAdditionalTax;
+			$data['minimum_stock_level'] = $tMinimumStockLevel;
 			$data['semi_wholesale_margin'] = $tSemiWholeSaleMargin;
 			$data['company_id'] = $tCompanyId;
 			$data['product_category_id'] = $tProductCatId;

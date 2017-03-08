@@ -18,6 +18,7 @@
 			"minimumStockLevel":int,
 			"documentName":string,
 			"documentFormat":string,
+			"documentPath":string,
 			"productDescription":string,
             "productCategory": {
                 ... Standard Products Category Object

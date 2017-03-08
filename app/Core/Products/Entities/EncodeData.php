@@ -7,6 +7,7 @@ use ERP\Core\Entities\ProductGroupDetail;
 use ERP\Core\Entities\CompanyDetail;
 use ERP\Core\Entities\BranchDetail;
 use Carbon;
+use ERP\Entities\Constants\ConstantClass;
 /**
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -35,6 +36,7 @@ class EncodeData extends ProductCategoryService
 		$marginFlat= $decodedJson[0]['margin_flat'];
 		$productDescription= $decodedJson[0]['product_description'];
 		$additionalTax= $decodedJson[0]['additional_tax'];
+		$minimumStockLevel= $decodedJson[0]['minimum_stock_level'];
 		$documentName= $decodedJson[0]['document_name'];
 		$documentFormat= $decodedJson[0]['document_format'];
 		$productCatId= $decodedJson[0]['product_category_id'];
@@ -92,6 +94,9 @@ class EncodeData extends ProductCategoryService
 			$product->setUpdated_at($convertedUpdatedDate);
 			$getUpdatedDate = $product->getUpdated_at();
 		}
+		$constantArray = new ConstantClass();
+		$documentPath = $constantArray['productBarcode'];
+		
 		//set all data into json array
 		$data = array();
 		$data['productId'] = $productId;
@@ -110,8 +115,10 @@ class EncodeData extends ProductCategoryService
 		$data['marginFlat'] = $marginFlat;
 		$data['productDescription'] = $productDescription;
 		$data['additionalTax'] = $additionalTax;
+		$data['minimumStockLevel'] = $minimumStockLevel;
 		$data['documentName'] = $documentName;
 		$data['documentFormat'] = $documentFormat;
+		$data['documentPath'] = $documentPath;
 		$data['createdAt'] = $getCreatedDate;
 		$data['updatedAt'] = $getUpdatedDate;	
 		

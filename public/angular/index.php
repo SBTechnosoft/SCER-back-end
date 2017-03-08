@@ -221,7 +221,7 @@ include ('connection.php');
 				// formdata.append('productGroupParentId',$scope.formAdata.product_group_parent_id);
 				
 				//product
-				$scope.formAdata.product_name = "Cyclegff";
+				// $scope.formAdata.product_name = "Cyclegffdsfs";
 				// $scope.formAdata.is_display = 'no';
 				// $scope.formAdata.product_cat_id='18';
 				// $scope.formAdata.measurement_unit='piece';
@@ -237,11 +237,12 @@ include ('connection.php');
 				// $scope.formAdata.mrp='140.00';
 				// $scope.formAdata.productDescription='dfsdfsd';
 				// $scope.formAdata.additionalTax='21.00';
+				// $scope.formAdata.minimumStockLevel='25';
 				// $scope.formAdata.product_group_id='10';
 				// $scope.formAdata.company_id='83';
 				// $scope.formAdata.branch_id='6';
 				
-				formdata.append('productName',$scope.formAdata.product_name);
+				// formdata.append('productName',$scope.formAdata.product_name);
 				// formdata.append('isDisplay',$scope.formAdata.is_display);
 				// formdata.append('measurementUnit',$scope.formAdata.measurement_unit);
 				// formdata.append('color',$scope.formAdata.color);
@@ -256,6 +257,7 @@ include ('connection.php');
 				// formdata.append('marginFlat',$scope.formAdata.margin_flat);
 				// formdata.append('productDescription',$scope.formAdata.productDescription);
 				// formdata.append('additionalTax',$scope.formAdata.additionalTax);
+				// formdata.append('minimumStockLevel',$scope.formAdata.minimumStockLevel);
 				// formdata.append('productCategoryId',$scope.formAdata.product_cat_id);
 				// formdata.append('productGroupId',$scope.formAdata.product_group_id);
 				// formdata.append('companyId',$scope.formAdata.company_id);

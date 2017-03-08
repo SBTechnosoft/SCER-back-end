@@ -38,6 +38,7 @@ use ERP\Core\Products\Properties\ProductDescriptionPropertyTrait;
 use ERP\Core\Products\Properties\ColorPropertyTrait;
 use ERP\Core\Products\Properties\SizePropertyTrait;
 use ERP\Core\Products\Properties\ProductCodePropertyTrait;
+use ERP\Core\Products\Properties\StockLevelPropertyTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -80,4 +81,5 @@ class productPersistable
 	use ProductCodePropertyTrait;
 	use WholeSaleMarginFlatPropertyTrait;
 	use MarginFlatPropertyTrait;
+	use StockLevelPropertyTrait;
 }
