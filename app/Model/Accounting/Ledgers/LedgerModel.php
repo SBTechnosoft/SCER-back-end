@@ -60,7 +60,7 @@ class LedgerModel extends Model
 			$ledgerId = DB::connection($databaseName)->select("SELECT  MAX(ledger_id) AS ledger_id from ledger_mst where deleted_at='0000-00-00 00:00:00'");
 			$result = DB::connection($databaseName)->statement("CREATE TABLE ".$ledgerId[0]->ledger_id."_ledger_dtl (
 			 `".$ledgerId[0]->ledger_id."_id` int(11) NOT NULL AUTO_INCREMENT,
-			 `amount` decimal(10,2) NOT NULL,
+			 `amount` decimal(20,4) NOT NULL,
 			 `amount_type` enum('credit','debit') NOT NULL,
 			 `entry_date` date NOT NULL,
 			 `jf_id` int(11) NOT NULL,
@@ -177,7 +177,7 @@ class LedgerModel extends Model
 			$ledgerId = DB::connection($databaseName)->select("SELECT  MAX(ledger_id) AS ledger_id from ledger_mst where deleted_at='0000-00-00 00:00:00'");
 			$result = DB::connection($databaseName)->statement("CREATE TABLE ".$ledgerId[0]->ledger_id."_ledger_dtl (
 			 `".$ledgerId[0]->ledger_id."_id` int(11) NOT NULL AUTO_INCREMENT,
-			 `amount` decimal(10,2) NOT NULL,
+			 `amount` decimal(20,4) NOT NULL,
 			 `amount_type` enum('credit','debit') NOT NULL,
 			 `entry_date` date NOT NULL,
 			 `jf_id` int(11) NOT NULL,
@@ -310,7 +310,7 @@ class LedgerModel extends Model
 				DB::beginTransaction();
 				$result = DB::connection($databaseName)->statement("CREATE TABLE ".$ledgerIdData[$ledgerIdArray]->ledger_id."_ledger_dtl (
 				 `".$ledgerIdData[$ledgerIdArray]->ledger_id."_id` int(11) NOT NULL AUTO_INCREMENT,
-				 `amount` decimal(10,2) NOT NULL,
+				 `amount` decimal(20,4) NOT NULL,
 				 `amount_type` enum('credit','debit') NOT NULL,
 				 `entry_date` date NOT NULL,
 				 `jf_id` int(11) NOT NULL,

@@ -58,6 +58,8 @@ class RouteServiceProvider extends ServiceProvider
 			$routeArray['authenticate'] = "Authenticate";
 			$routeArray['logout'] = "Logout";
 			$routeArray['documents'] = "Document";
+			$routeArray['settings'] = "Setting";
+			
 			foreach($routeArray as $key => $value)
 			{
 				if($key==$splitUriRoute[1])
@@ -67,11 +69,14 @@ class RouteServiceProvider extends ServiceProvider
 				}
 				else if($splitUriRoute[1]=="settings" || $splitUriRoute[1]=="accounting")
 				{
-					if($key==$splitUriRoute[2])
+					if(count($splitUriRoute)>2)
 					{
-						$urlFlag=1;
-						$routeName = $value;
-						break;
+						if($key==$splitUriRoute[2])
+						{
+							$urlFlag=1;
+							$routeName = $value;
+							break;
+						}
 					}
 				}
 			}
@@ -84,7 +89,7 @@ class RouteServiceProvider extends ServiceProvider
 					{
 						$path = app_path('Api\V1_0\\' . str_replace('\\', '/', $package) .'\\Routes');		
 						$namespace = 'ERP\Api\V1_0\\' . $package ;		
-						
+						$namespace .'\\Routes\\' . $routeName;
 						//go to the register method from particular Route class 
 						$this->app->make($namespace .'\\Routes\\' . $routeName)
 						->register($router);	

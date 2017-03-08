@@ -229,7 +229,8 @@ return [
 		'Users',
 		'Authenticate',
 		'Logout',
-		'Documents'
+		'Documents',
+		'Settings',
 	],
 
     /*
