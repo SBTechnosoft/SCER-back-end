@@ -77,7 +77,7 @@ class ProductModel extends Model
 			
 			//insert barcode image
 			$barcodeobj = new TCPDFBarcode($productCode, 'C128');
-			file_put_contents($documentPath,$barcodeobj->getBarcodeSVGcode(0.5 ,20, 'black'));
+			file_put_contents($documentPath,$barcodeobj->getBarcodeSVGcode(1 ,60, 'black'));
 			
 			DB::beginTransaction();
 			$productId = DB::connection($databaseName)->select("select 
@@ -234,7 +234,7 @@ class ProductModel extends Model
 				
 				//insert barcode image 
 				$barcodeobj = new TCPDFBarcode($productCode, 'C128');
-				file_put_contents($documentPath,$barcodeobj->getBarcodeSVGcode(0.5 ,20, 'black'));
+				file_put_contents($documentPath,$barcodeobj->getBarcodeSVGcode(1 ,60, 'black'));
 				
 				//update document-data into database
 				DB::beginTransaction();

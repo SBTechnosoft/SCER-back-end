@@ -42,7 +42,7 @@ class EncodeAllData extends ProductCategoryService
 			$productDescription[$decodedData] = $decodedJson[$decodedData]['product_description'];
 			$additionalTax[$decodedData] = $decodedJson[$decodedData]['additional_tax'];
 			$documentName[$decodedData] = $decodedJson[$decodedData]['document_name'];
-			$documentFormat[$decodedData] = $decodedJson[$decodedData]['documentFormat'];
+			$documentFormat[$decodedData] = $decodedJson[$decodedData]['document_format'];
 			$productCatId[$decodedData] = $decodedJson[$decodedData]['product_category_id'];
 			$productGrpId[$decodedData] = $decodedJson[$decodedData]['product_group_id'];
 			$companyId[$decodedData] = $decodedJson[$decodedData]['company_id'];
