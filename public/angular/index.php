@@ -406,6 +406,17 @@ include ('connection.php');
 				// formdata.append('checkNumber',$scope.formAdata.checkNumber);
 				// formdata.append('paymentTransaction',$scope.formAdata.paymentTransaction);
 				
+				//Settings
+				$scope.formAdata.barcodeWidth = "1";
+				$scope.formAdata.barcodeHeight = "30";
+				formdata.append('barcodeWidth',$scope.formAdata.barcodeWidth);
+				formdata.append('barcodeHeight',$scope.formAdata.barcodeHeight);
+				
+				// special journal
+				// $scope.user = [{"jfId":100,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":35},{"amount":2,"amountType":"credit","ledgerId":35},{"amount":12,"amountType":"debit","ledgerId":35}],"entryDate":"22-10-2015","companyId":83}];
+				// formdata.append('jfId','100');
+ 				// formdata.append('companyId',83);
+				
 				//Authenticate
 				// $scope.formAdata.email_id = "palak1@gmail.com";
 				// $scope.formAdata.password = "reema";
@@ -522,7 +533,7 @@ include ('connection.php');
 				
 				// var userId=9;
 				// var clientId=2;
-				var productId =6;
+				// var productId =6;
 				// var productGrpId = 11;
 				// var productCatId = 18;
 				// var companyId=83;
@@ -539,6 +550,8 @@ include ('connection.php');
 				// var jfId=325;
 				// var journalId=327;
 				// var saleId = 371;
+				
+				var url="http://www.scerp1.com/settings";
 				
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/priceList";  //priceList
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/transaction/details"; //stock-register
@@ -610,7 +623,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/product-categories";
 				// var url="http://www.scerp1.com/product-groups";
 				// var url="http://www.scerp1.com/product-groups/"+productGrpId;
-				var url="http://www.scerp1.com/products/"+productId;
+				// var url="http://www.scerp1.com/products/"+productId;
 				// var url="http://www.scerp1.com/products";
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/branch/"+branchId;
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/branch";
