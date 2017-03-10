@@ -19,7 +19,25 @@
             {
                ... HTTP_Status:200
             }
-    
+**NOTES:** Insert settings Data    
+
+##### Get Settings
+
+##### `GET /settings/`
++ Header
+	- Authentication Token
+
++ Error Message
+
+			{
+				... Error Message
+			}             
++ Response
+
+            {
+              ... Standard Setting Object
+			}
+**NOTES:** Insert settings Data 
 
 ##### update Settings           
             

@@ -407,10 +407,11 @@ include ('connection.php');
 				// formdata.append('paymentTransaction',$scope.formAdata.paymentTransaction);
 				
 				//Settings
-				$scope.formAdata.barcodeWidth = "1";
+				$scope.formAdata.barcodeWidth = "2";
 				$scope.formAdata.barcodeHeight = "30";
 				formdata.append('barcodeWidth',$scope.formAdata.barcodeWidth);
 				formdata.append('barcodeHeight',$scope.formAdata.barcodeHeight);
+				
 				
 				// special journal
 				// $scope.user = [{"jfId":100,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":35},{"amount":2,"amountType":"credit","ledgerId":35},{"amount":12,"amountType":"debit","ledgerId":35}],"entryDate":"22-10-2015","companyId":83}];
@@ -634,11 +635,15 @@ include ('connection.php');
                         // type:'patch',
                         // type:'get',
 						 // method: 'get',
-						 method: 'post',
+						 // method: 'post',
+						 method: 'patch',
+						// enctype:'multipart/formdata',
+						 // _method: 'patch',
 						// method: 'post',
 						// method: "PATCH",
 						// method:'delete',
 						processData: false,
+						
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','type':'sales','jfId':64},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
@@ -652,7 +657,7 @@ include ('connection.php');
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productId':6,'fromDate':'21-10-2015','toDate':'20-01-2017','operation':'pdf'},
                         // headers: {'Content-Type': undefined},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productName':'Spiderman','color':'BK.s'},
-                        headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
+                        headers: {'Content-Type':undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
 						 data:formdata
 						// data:$scope.user						
                         

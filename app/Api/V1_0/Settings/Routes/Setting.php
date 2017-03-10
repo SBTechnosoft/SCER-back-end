@@ -14,13 +14,17 @@ class Setting implements RouteRegistrarInterface
      * @param RegistrarInterface $registrar
 	 * description : this function is going to the controller page
      */
+	
     public function register(RegistrarInterface $Registrar)
     {
 		// insert data post request
 		Route::post('Settings/Setting', 'Settings\Controllers\SettingController@store');
 		
+		// insert data post request
+		Route::post('Settings/Setting', 'Settings\Controllers\SettingController@store');
+		
 		// update data post request
-		Route::post('Settings/Setting/{settingId}', 'Settings\Controllers\SettingController@update');
+		Route::patch('Settings/Setting', 'Settings\Controllers\SettingController@update');
 	}
 }
 
