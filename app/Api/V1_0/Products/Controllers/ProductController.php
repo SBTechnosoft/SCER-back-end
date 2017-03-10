@@ -247,7 +247,6 @@ class ProductController extends BaseController implements ContainerInterface
 			//Authentication
 			$tokenAuthentication = new TokenAuthentication();
 			$authenticationResult = $tokenAuthentication->authenticate($request->header());
-			
 			if(strcmp($constantArray['success'],$authenticationResult)==0)
 			{
 				if($productId==null)
@@ -261,6 +260,12 @@ class ProductController extends BaseController implements ContainerInterface
 						
 						$productService= new ProductService();
 						$status = $productService->getJfIdProductData($productPersistable);
+						return $status;
+					}
+					else if(array_key_exists($constantArray['productCode'],$request->header()))
+					{
+						$productService= new ProductService();
+						$status = $productService->getProductCodeData($request->header());
 						return $status;
 					}
 					//get all product data

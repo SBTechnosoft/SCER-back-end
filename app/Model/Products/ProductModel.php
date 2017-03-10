@@ -988,6 +988,7 @@ class ProductModel extends Model
 		margin,
 		margin_flat,
 		product_description,
+		minimum_stock_level,
 		additional_tax,
 		document_name,
 		document_format,
@@ -1079,6 +1080,64 @@ class ProductModel extends Model
 		else
 		{
 			return $raw;
+		}
+	}
+	
+	/**
+	 * get product_data as per given productCode
+	 * returns error-message/status
+	*/
+	public function getProductCodeData($productCode)
+	{
+		// database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();		
+		$raw = DB::connection($databaseName)->select("select 
+		product_id,
+		product_name,
+		measurement_unit,
+		is_display,
+		purchase_price,
+		wholesale_margin,
+		wholesale_margin_flat,
+		semi_wholesale_margin,
+		vat,
+		mrp,
+		color,
+		size,
+		margin,
+		margin_flat,
+		product_description,
+		additional_tax,
+		document_name,
+		document_format,
+		minimum_stock_level,
+		product_code,
+		created_at,
+		updated_at,
+		deleted_at,
+		product_category_id,
+		product_group_id,
+		branch_id,
+		company_id	
+		from product_mst 
+		where product_code = '".$productCode['productcode'][0]."' and
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(count($raw)!=0)
+		{
+			return json_encode($raw);
+		}
+		else
+		{
+			return $exceptionArray['404'];
 		}
 	}
 	

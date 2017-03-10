@@ -50,6 +50,7 @@ class ConstantClass
 		$constantArray['sales']="sales";
 		$constantArray['purchase']="purchase";
 		$constantArray['jfId']="jfid";
+		$constantArray['productCode']="productcode";
 		$constantArray['fromDate']="fromdate";
 		$constantArray['toDate']="todate";
 		$constantArray['data']="data";

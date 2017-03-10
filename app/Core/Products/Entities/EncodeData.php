@@ -94,8 +94,10 @@ class EncodeData extends ProductCategoryService
 			$product->setUpdated_at($convertedUpdatedDate);
 			$getUpdatedDate = $product->getUpdated_at();
 		}
+		
 		$constantArray = new ConstantClass();
-		$documentPath = $constantArray['productBarcode'];
+		$constantArrayData = $constantArray->constantVariable();
+		$documentPath = $constantArrayData['productBarcode'];
 		
 		//set all data into json array
 		$data = array();

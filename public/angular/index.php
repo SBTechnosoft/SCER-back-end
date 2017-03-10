@@ -407,10 +407,10 @@ include ('connection.php');
 				// formdata.append('paymentTransaction',$scope.formAdata.paymentTransaction);
 				
 				//Settings
-				$scope.formAdata.barcodeWidth = "3";
-				$scope.formAdata.barcodeHeight = "32";
-				formdata.append('barcodeWidth',$scope.formAdata.barcodeWidth);
-				formdata.append('barcodeHeight',$scope.formAdata.barcodeHeight);
+				// $scope.formAdata.barcodeWidth = "3";
+				// $scope.formAdata.barcodeHeight = "32";
+				// formdata.append('barcodeWidth',$scope.formAdata.barcodeWidth);
+				// formdata.append('barcodeHeight',$scope.formAdata.barcodeHeight);
 				
 				
 				// special journal
@@ -552,7 +552,7 @@ include ('connection.php');
 				// var journalId=327;
 				// var saleId = 371;
 				
-				var url="http://www.scerp1.com/settings";
+				// var url="http://www.scerp1.com/settings";
 				
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/priceList";  //priceList
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/transaction/details"; //stock-register
@@ -625,7 +625,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/product-groups";
 				// var url="http://www.scerp1.com/product-groups/"+productGrpId;
 				// var url="http://www.scerp1.com/products/"+productId;
-				// var url="http://www.scerp1.com/products";
+				var url="http://www.scerp1.com/products";
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/branch/"+branchId;
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/branch";
 				// var url="http://www.scerp1.com/products/company/"+companyId;
@@ -633,10 +633,10 @@ include ('connection.php');
 				$http({
                         url: url,
                         // type:'patch',
-                        // type:'get',
+                        type:'get',
 						 // method: 'get',
 						 // method: 'post',
-						 method: 'patch',
+						 // method: 'patch',
 						// enctype:'multipart/formdata',
 						 // _method: 'patch',
 						// method: 'post',
@@ -657,9 +657,10 @@ include ('connection.php');
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productId':6,'fromDate':'21-10-2015','toDate':'20-01-2017','operation':'pdf'},
                         // headers: {'Content-Type': undefined},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productName':'Spiderman','color':'BK.s'},
+                        headers: {'Content-Type':undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productCode':'ABC_ABC_AB_CYCFDJ_BKBK_122T'},
                         // headers: {'Content-Type':undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
-                        headers: {'Content-Type':'application/x-www-form-urlencoded','authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
-						 data:formdata
+                        // headers: {'Content-Type':'application/x-www-form-urlencoded','authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
+						 // data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

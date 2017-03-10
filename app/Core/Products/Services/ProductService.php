@@ -339,6 +339,32 @@ class ProductService extends AbstractService
 	}
 	
 	/**
+     * get all the data as per given headerData and call the model for database selection opertation
+     * @param headerData(product-code)
+     * @return error-message/array-data
+     */
+	public function getProductCodeData($headerData)
+	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		$productModel = new ProductModel();
+		$status = $productModel->getProductCodeData($headerData);
+		
+		if(strcmp($status,$exceptionArray['404'])==0)
+		{
+			return $exceptionArray['404'];
+		}
+		else
+		{
+			$encodedData = new EncodeData();
+			$encodeData = $encodedData->getEncodedData($status);
+			return $encodeData;
+		}
+	}
+	
+	/**
      * get the data from persistable object and call the model for database update opertation
      * @param ProductPersistable $persistable
      * @param updateOptions $options [optional]
