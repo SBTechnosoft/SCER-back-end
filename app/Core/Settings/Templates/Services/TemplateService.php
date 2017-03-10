@@ -137,7 +137,7 @@ class TemplateService extends AbstractService
 	}
     /**
      * get the data from persistable object and call the model for database update opertation
-     * @param BranchPersistable $persistable
+     * @param SettingPersistable $persistable
      * @param updateOptions $options [optional]
 	 * parameter is in array form.
      * @return status

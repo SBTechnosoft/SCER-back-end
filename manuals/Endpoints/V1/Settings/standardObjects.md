@@ -4,6 +4,8 @@
 				"settingType":string,
 				"barcodeWidth": decimal,
                 "barcodeHeight": decimal,
+				"createdAt":timestamp,
+				"updatedAt":datetime
 			}
 ##### Standard Setting Persistable Object
 			{

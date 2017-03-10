@@ -64,30 +64,43 @@ class SettingModel extends Model
 	
 	/**
 	 * update data 
-	 * @param  template-data,key of template-data,template-id
+	 * @param  setting-data,key of setting-data
 	 * returns the status
 	*/
-	public function updateData($templateData,$key,$templateId)
+	public function updateData($settingData,$key)
 	{
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
+		$barcodeArray = array();
 		date_default_timezone_set("Asia/Calcutta");
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
-		for($data=0;$data<count($templateData);$data++)
+		// print_r($settingData);
+		for($data=0;$data<count($settingData);$data++)
 		{
-			$keyValueString=$keyValueString.$key[$data]."='".$templateData[$data]."',";
+			$explodedSetting = explode('_',$key[$data]);
+			if(strcmp('barcode',$explodedSetting[0])==0)
+			{
+				$barcodeFlag=1;
+				$barcodeArray[$key[$data]] = $settingData[$data];
+			}
 		}
-		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("update template_mst 
-		set ".$keyValueString."updated_at='".$mytime."'
-		where template_id = '".$templateId."' and 
-		deleted_at='0000-00-00 00:00:00'");
-		DB::commit();
-		
+		// print_r($barcodeArray);
+		$constantArray = $constantDatabase->constantVariable();
+		if($barcodeFlag==1)
+		{
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->statement("update
+			setting_mst 
+			set setting_data = '".json_encode($barcodeArray)."',
+			updated_at = '".$mytime."'
+			where setting_type='barcode' and
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+		}
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -98,6 +111,43 @@ class SettingModel extends Model
 		else
 		{
 			return $exceptionArray['500'];
+		}
+	}
+	
+	/**
+	 * get-all data 
+	 * returns error-message/data
+	 */
+	public function getAllData()
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		date_default_timezone_set("Asia/Calcutta");
+		
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->select("select
+		setting_id,
+		setting_type,
+		setting_data,
+		created_at,
+		updated_at
+		from setting_mst
+		where deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(count($raw)!=0)
+		{
+			return json_encode($raw);
+		}
+		else
+		{
+			return $exceptionArray['204'];
 		}
 	}
 }

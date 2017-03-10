@@ -100,4 +100,114 @@ class SettingProcessor extends BaseProcessor
 			
 		}
 	}
+	
+	 /**
+     * update data
+     * $param request-array
+     * @return Setting Array / Error Message Array / Exception Message
+     */
+	public function createPersistableChange($requestData)
+	{
+		$settingValue = array();
+		$errorCount=0;
+		$errorStatus=array();
+		$flag=0;
+		$settingPersistable;
+		$settingArray = array();
+		$settingValidate = new SettingValidate();
+		$status;
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		// update
+		//if data is not available in update request
+		if(count($requestData)==0)
+		{
+			$status = $exceptionArray['204'];
+			return $status;
+		}
+		//data is avalilable for update
+		else
+		{
+			for($data=0;$data<count($requestData);$data++)
+			{
+				//data get from body
+				$settingPersistable = new SettingPersistable();
+				$value[$data] = $requestData[array_keys($requestData)[$data]];
+				$key[$data] = array_keys($requestData)[$data];
+				
+				//trim an input 
+				$settingTransformer = new SettingTransformer();
+				$tRequest = $settingTransformer->trimUpdateData($key[$data],$value[$data]);
+				if($tRequest==1)
+				{
+					return $exceptionArray['content'];
+				}
+				else
+				{
+					//get data from trim array
+					$tKeyValue[$data] = array_keys($tRequest[0])[0];
+					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
+					
+					//validation
+					$status = $settingValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
+					
+					//enter data is valid(one data validate status return)
+					if($status=="Success")
+					{
+						// check data is string or not
+						if(!is_numeric($tValue[$data]))
+						{
+							if (strpos($tValue[$data], '\'') !== FALSE)
+							{
+								$settingValue[$data] = str_replace("'","\'",$tValue[$data]);
+							}
+							else
+							{
+								$settingValue[$data] = $tValue[$data];
+							}
+						}
+						else
+						{
+							$settingValue[$data] = $tValue[$data];
+						}
+						// flag=0...then data is valid(consider one data at a time)
+						if($flag==0)
+						{
+							$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
+							// make function name dynamically
+							$setFuncName = 'set'.$str;
+							$getFuncName[$data] = 'get'.$str;
+							$settingPersistable->$setFuncName($settingValue[$data]);
+							$settingPersistable->setName($getFuncName[$data]);
+							$settingPersistable->setKey($tKeyValue[$data]);
+							$settingArray[$data] = array($settingPersistable);
+						}
+					}
+					//enter data is not valid
+					else
+					{
+						// if flag==1 then enter data is not valid ..so error return(consider one data at a time)
+						$flag=1;
+						if(!empty($status[0]))
+						{
+							$errorStatus[$errorCount]=$status[0];
+							$errorCount++;
+						}
+					}
+					if($data==(count($requestData)-1))
+					{
+						if($flag==1)
+						{
+							return json_encode($errorStatus);
+						}
+						else
+						{
+							return $settingArray;
+						}
+					}
+				}
+			}
+		}
+	}	
 }

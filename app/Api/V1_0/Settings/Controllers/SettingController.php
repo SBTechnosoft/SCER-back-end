@@ -11,8 +11,6 @@ use ERP\Core\Settings\Persistables\SettingPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Entities\AuthenticationClass\TokenAuthentication;
 use ERP\Entities\Constants\ConstantClass;
-use Illuminate\Support\Facades\Input;
-use Symfony\Component\HttpFoundation\ParameterBag;
 use DB;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -49,9 +47,6 @@ class SettingController extends BaseController implements ContainerInterface
 	*/
 	public function store(Request $request)
     {
-		echo "enter";
-		
-		exit;
 		// Authentication
 		$tokenAuthentication = new TokenAuthentication();
 		$authenticationResult = $tokenAuthentication->authenticate($request->header());
@@ -93,35 +88,101 @@ class SettingController extends BaseController implements ContainerInterface
 		}
 	}
 	
+	/**
+	 * update the specified resource 
+	 * @param  Request object[Request $request]
+	 * method calls the processor for creating persistable object & setting the data
+	*/
 	public function update(Request $request)
     {
-		// echo "jj";
-		DB::beginTransaction();
-		$raw = DB::statement("CURSOR cursor_name IS select product_trn_id from product_trn");
-		DB::commit();
-		// echo "hh";
-		print_r($raw);
-		echo "jj";
-		// print_r($request->getPost());
-		exit;
+		// Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
-		// print_r($request->file());
+		// get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$this->request = $request;
+			// check the requested Http method
+			$requestMethod = $_SERVER['REQUEST_METHOD'];
+			// insert
+			if($requestMethod == 'PATCH')
+			{
+				$requestData = $this->getUpdateRequestData();
+				$processor = new SettingProcessor();
+				$settingPersistable = new SettingPersistable();		
+				$settingService= new SettingService();					
+				$settingPersistable = $processor->createPersistableChange($requestData);
+				if($settingPersistable[0][0]=='[')
+				{
+					return $settingPersistable;
+				}
+				else if(is_array($settingPersistable))
+				{
+					$status = $settingService->update($settingPersistable);
+					return $status;
+				}
+				else
+				{
+					return $settingPersistable;
+				}
+			}
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+		
+	}
+	
+	/**
+	 * get all the data
+	 * @param  Request object[Request $request]
+	 * method calls the service for getting the data
+	*/
+	public function getData(Request $request)
+    {
+		// Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		// get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$settingService= new SettingService();
+			$status = $settingService->getData();
+			return $status;
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+	}
+	
+	/**
+	 * get update request data (patch call)
+	*/
+	public function getUpdateRequestData()
+	{
 		$raw_data = file_get_contents('php://input');
-		   $boundary = substr($raw_data, 0, strpos($raw_data, "\r\n"));
-
-		   //./..... My edit --------- /
-			if(empty($boundary)){
+		$boundary = substr($raw_data, 0, strpos($raw_data, "\r\n"));
+		   	if(empty($boundary))
+			{
 				parse_str($raw_data,$data);
 				return $data;
 			}
-		   /// ........... My edit ends ......... /
-			// Fetch each part
+		    // Fetch each part
 			$parts = array_slice(explode($boundary, $raw_data), 1);
-			
 			$data = array();
 			
-			
-		foreach ($parts as $part) {
+		foreach ($parts as $part) 
+		{
 			// If this is the last part, break
 			if ($part == "--\r\n") break; 
 
@@ -138,18 +199,16 @@ class SettingController extends BaseController implements ContainerInterface
 			} 
 
 			// Parse the Content-Disposition to get the field name, etc.
-			if (isset($headers['content-disposition'])) {
+			if (isset($headers['content-disposition'])) 
+			{
 				$filename = null;
-				preg_match(
-					'/^(.+); name="([^"]+)"(; filename="([^"]+)")?/', 
-					$headers['content-disposition'], 
-					$matches
-				);
+				preg_match('/^(.+); name="([^"]+)"(; filename="([^"]+)")?/',$headers['content-disposition'],$matches);
 				list(, $type, $name) = $matches;
 				isset($matches[4]) and $filename = $matches[4]; 
 
 				// handle your fields here
-				switch ($name) {
+				switch ($name) 
+				{
 					// this is a file upload
 					case 'userfile':
 						 file_put_contents($filename, $body);
@@ -157,58 +216,11 @@ class SettingController extends BaseController implements ContainerInterface
 
 					// default for all other files is to populate $data
 					default: 
-						 $data[$name] = substr($body, 0, strlen($body) - 2);
-						 break;
+						$data[$name] = substr($body, 0, strlen($body) - 2);
+						break;
 				} 
 			}
-
 		}
-		
-		print_r($data);
-		
-		
-		
-		
-		
-		
-		// $jsonIterator = new RecursiveIteratorIterator(
-		// new RecursiveArrayIterator(json_decode($request->input(), TRUE)),
-		// RecursiveIteratorIterator::SELF_FIRST);
-		// $abc = $request->input();
-		
-		// print_r($request->body);
-		// echo "First output = ";
-		// print_r($request->input());
-		// print_r($request->body());
-		// $jsonData = $request->input();
-		// print_r($jsonData);
-		// $raw_data = file_get_contents('php://input');
-		// echo "Second output = ";
-		// print_r($raw_data);
-		// $_POST = json_decode(file_get_contents('php://input'), true);
-		$data = file_get_contents("php://input",false,null,-1);
-		// $data = json_decode($data,true);
-		// print_r($data);
-		// $queryString = urlencode($data);
-		// $data1 = array();
-		// parse_str($queryString, $data1);
-		// var_dump($data1);
-		// dd($request->all());
-		// print_r(Input::get());
-		// print_r(parse_str(file_get_contents('php://input'), $request->input()))
-		
-		// $boundary = substr($raw_data, 0, strpos($raw_data, "\r\n"));
-		// print_r($boundary);
-		// print_r(file_get_contents("php://input"),$request->input());
-		// print_r($request->all());
-		// print_r(Input::get());
-		// print_r(Input::all());
-		
-		//----------------------------------------------------------------
-		
-		// $parserSelector = new ParserSelector();
-		// $parser = $parserSelector->getParserForContentType($contentType);
-		// $multipart = $parser->parse($content);
+		return $data;
 	}
-	
 }

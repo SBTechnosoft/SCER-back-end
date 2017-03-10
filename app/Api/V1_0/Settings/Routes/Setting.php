@@ -18,7 +18,7 @@ class Setting implements RouteRegistrarInterface
     public function register(RegistrarInterface $Registrar)
     {
 		// insert data post request
-		Route::post('Settings/Setting', 'Settings\Controllers\SettingController@store');
+		Route::get('Settings/Setting', 'Settings\Controllers\SettingController@getData');
 		
 		// insert data post request
 		Route::post('Settings/Setting', 'Settings\Controllers\SettingController@store');

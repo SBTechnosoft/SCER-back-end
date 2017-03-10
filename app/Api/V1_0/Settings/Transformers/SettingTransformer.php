@@ -27,12 +27,11 @@ class SettingTransformer
      */
    public function trimUpdateData()
 	{
-		$tTemplateArray = array();
-		$templateValue;
+		$tSettingArray = array();
+		$settingValue;
 		$keyValue = func_get_arg(0);
 		$convertedValue="";
-		$templateEnumArray = array();
-		$templateTypeFlag=0;
+		$settingEnumArray = array();
 		for($asciiChar=0;$asciiChar<strlen($keyValue);$asciiChar++)
 		{
 			if(ord($keyValue[$asciiChar])<=90 && ord($keyValue[$asciiChar])>=65) 
@@ -45,38 +44,12 @@ class SettingTransformer
 				$convertedValue=$convertedValue.$keyValue[$asciiChar];
 			}
 		}
-		$templateValue = func_get_arg(1);
-		for($data=0;$data<count($templateValue);$data++)
+		$settingValue = func_get_arg(1);
+		for($data=0;$data<count($settingValue);$data++)
 		{
-			$tTemplateArray[$data]= array($convertedValue=> trim($templateValue));
-			$templateEnumArray = array_keys($tTemplateArray[$data])[0];
+			$tSettingArray[$data]= array($convertedValue=> trim($settingValue));
+			$settingEnumArray = array_keys($tSettingArray[$data])[0];
 		}
-		$enumTemplateTypeArray = array();
-		$templateTypeEnum = new TemplateTypeEnum();
-		$enumTemplateTypeArray = $templateTypeEnum->enumArrays();
-		if(strcmp($templateEnumArray,'template_type')==0)
-		{
-			foreach ($enumTemplateTypeArray as $key => $value)
-			{
-				if(strcmp($tTemplateArray[0]['template_type'],$value)==0)
-				{
-					$templateTypeFlag=1;
-					break;
-				}
-				else
-				{
-					$templateTypeFlag=2;
-				}
-			}
-		}
-		
-		if($templateTypeFlag==2)
-		{
-			return "1";
-		}
-		else
-		{
-			return $tTemplateArray;
-		}
+		return $tSettingArray;
 	}
 }

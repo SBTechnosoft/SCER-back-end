@@ -1,5 +1,5 @@
 <?php
-namespace ERP\Core\Settings\Templates\Entities;
+namespace ERP\Core\Settings\Entities;
 
 use ERP\Core\Shared\Properties\UpdatedAtPropertyTrait;
 use ERP\Core\Shared\Properties\CreatedAtPropertyTrait;
@@ -7,7 +7,7 @@ use ERP\Core\Shared\Properties\CreatedAtPropertyTrait;
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class Template
+class Setting
 {
 	use UpdatedAtPropertyTrait;
 	use CreatedAtPropertyTrait;

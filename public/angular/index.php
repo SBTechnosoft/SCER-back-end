@@ -407,8 +407,8 @@ include ('connection.php');
 				// formdata.append('paymentTransaction',$scope.formAdata.paymentTransaction);
 				
 				//Settings
-				$scope.formAdata.barcodeWidth = "2";
-				$scope.formAdata.barcodeHeight = "30";
+				$scope.formAdata.barcodeWidth = "3";
+				$scope.formAdata.barcodeHeight = "32";
 				formdata.append('barcodeWidth',$scope.formAdata.barcodeWidth);
 				formdata.append('barcodeHeight',$scope.formAdata.barcodeHeight);
 				
@@ -657,7 +657,8 @@ include ('connection.php');
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productId':6,'fromDate':'21-10-2015','toDate':'20-01-2017','operation':'pdf'},
                         // headers: {'Content-Type': undefined},
                         // headers: {'Content-Type': undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62','productName':'Spiderman','color':'BK.s'},
-                        headers: {'Content-Type':undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
+                        // headers: {'Content-Type':undefined,'authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
+                        headers: {'Content-Type':'application/x-www-form-urlencoded','authenticationToken':'8f193a56901542b085390cfbeb3f0d62'},
 						 data:formdata
 						// data:$scope.user						
                         
