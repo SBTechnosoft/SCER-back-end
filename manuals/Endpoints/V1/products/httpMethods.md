@@ -193,7 +193,7 @@
 ##### `GET /products`
 + Header
 	- Authentication Token
-
+	- 'productCode':'String'
 + Error Message
 
 			{
