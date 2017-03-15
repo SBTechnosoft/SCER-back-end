@@ -100,7 +100,9 @@ class TrialBalanceModel extends Model
 		trial_balance_id,
 		amount,
 		amount_type,
-		ledger_id
+		ledger_id,
+		created_at,
+		updated_at
 		from trial_balance_dtl
 		where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();

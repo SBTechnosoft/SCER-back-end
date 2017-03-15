@@ -3,6 +3,8 @@ namespace ERP\Core\Accounting\BalanceSheet\Entities;
 
 use ERP\Core\Accounting\Ledgers\Services\LedgerService;
 use ERP\Core\Companies\Services\CompanyService;
+use ERP\Core\Accounting\BalanceSheet\Entities\BalanceSheet;
+use Carbon;
 /**
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -17,8 +19,11 @@ class EncodeBalanceSheetData extends LedgerService
 		$decodedLedgerData = array();
 		$decodedJson = json_decode($status,true);
 		$companyService = new CompanyService();
+		$balanceSheet = new BalanceSheet();
 		for($decodedData=0;$decodedData<count($decodedJson);$decodedData++)
 		{
+			$createdAt[$decodedData] = $decodedJson[$decodedData]['created_at'];
+			$updatedAt[$decodedData] = $decodedJson[$decodedData]['updated_at'];
 			$ledgerId[$decodedData] = $decodedJson[$decodedData]['ledger_id'];
 			$amount[$decodedData] = $decodedJson[$decodedData]['amount'];
 			$amountType[$decodedData] = $decodedJson[$decodedData]['amount_type'];
@@ -32,6 +37,22 @@ class EncodeBalanceSheetData extends LedgerService
 			
 			//convert amount(round) into their company's selected decimal points
 			$amount[$decodedData] = round($amount[$decodedData],$companyDecodedData[$decodedData]->noOfDecimalPoints);
+			
+			//date format conversion
+			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
+			$balanceSheet->setCreated_at($convertedCreatedDate[$decodedData]);
+			$getCreatedDate[$decodedData] = $balanceSheet->getCreated_at();
+			
+			if(strcmp($updatedAt[$decodedData],'0000-00-00 00:00:00')==0)
+			{
+				$getUpdatedDate[$decodedData] = "00-00-0000";
+			}
+			else
+			{
+				$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
+				$balanceSheet->setUpdated_at($convertedUpdatedDate[$decodedData]);
+				$getUpdatedDate[$decodedData] = $balanceSheet->getUpdated_at();
+			}
 		}
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
@@ -40,6 +61,8 @@ class EncodeBalanceSheetData extends LedgerService
 				'trialBalanceId'=>$balanceSheetId[$jsonData],
 				'amount'=>$amount[$jsonData],
 				'amountType' => $amountType[$jsonData],
+				'createdAt'=>$getCreatedDate[$jsonData],
+				'updatedAt'=>$getUpdatedDate[$jsonData],
 				'ledger' => array(	
 					'ledgerId' => $decodedLedgerData[$jsonData]->ledgerId,
 					'ledgerName' => $decodedLedgerData[$jsonData]->ledgerName,

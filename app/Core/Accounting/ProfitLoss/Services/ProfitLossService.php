@@ -43,7 +43,7 @@ class ProfitLossService extends AbstractService
 	{
 		//get data
 		$profitLossModel = new ProfitLossModel();
-		$result = $profitLossModel->getTrialBalanceData($companyId);
+		$result = $profitLossModel->getProfitLossData($companyId);
 		
 		//get exception message
 		$exception = new ExceptionMessage();

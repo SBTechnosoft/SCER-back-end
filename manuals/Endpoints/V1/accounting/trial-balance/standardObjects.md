@@ -1,13 +1,13 @@
 ##### Standard Trial-Balance Object
 
             {
-                trialBalanceId:int,
+                "trialBalanceId":int,
 				"ledger":
 				{
 					... Standard Ledger Object
 				},
 				"amount":decimal,
-				"amount_type":Enum,
+				"amountType":Enum,
 				"createdAt":TimeStamp,
                 "updatedAt":DateTime,
                 "company": {

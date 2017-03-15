@@ -3,7 +3,6 @@
 ##### `GET /accounting/profit-loss/company/{companyId}/`
 + Header 
 	- Authentication Token
-	
 + Error Message
 
 			{

@@ -1,13 +1,14 @@
 ##### Standard Profit-Loss Object
 
             {
-                profitLossId:int,
+                "profitLossId":int,
 				"ledger":
 				{
 					... Standard Ledger Object
 				},
 				"amount":decimal,
-				"amount_type":Enum,
+				"amountType":Enum,
+				"entryDate":Date,
 				"createdAt":TimeStamp,
                 "updatedAt":DateTime,
                 "company": {

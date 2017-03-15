@@ -1,13 +1,13 @@
 ##### Standard Balance-Sheet Object
 
             {
-                balanceSheetId:int,
+                "balanceSheetId":int,
 				"ledger":
 				{
 					... Standard Ledger Object
 				},
 				"amount":decimal,
-				"amount_type":Enum,
+				"amountType":Enum,
 				"createdAt":TimeStamp,
                 "updatedAt":DateTime
 			}
