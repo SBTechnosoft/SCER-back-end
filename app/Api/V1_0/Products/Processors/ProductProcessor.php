@@ -351,7 +351,7 @@ class ProductProcessor extends BaseProcessor
 							$errorCount++;
 						}
 					}
-					if($data==(count($request->input())))
+					if($data==(count($tRequest)-1))
 					{
 						if($flag==1)
 						{

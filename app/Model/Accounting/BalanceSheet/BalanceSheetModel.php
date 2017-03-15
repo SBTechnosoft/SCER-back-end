@@ -1,5 +1,5 @@
 <?php
-namespace ERP\Model\Accounting\TrialBalance;
+namespace ERP\Model\Accounting\BalanceSheet;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
@@ -9,15 +9,15 @@ use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class TrialBalanceModel extends Model
+class BalanceSheetModel extends Model
 {
-	protected $table = 'trial_balance_dtl';
+	protected $table = 'balance_sheet_dtl';
 	
 	/**
 	 * get data as per given companyId 
 	 * returns the array-data/exception message
 	*/
-	public function getTrialBalanceData($companyId)
+	public function getBalanceSheetData($companyId)
 	{
 		//database selection
 		$database = "";
@@ -30,10 +30,9 @@ class TrialBalanceModel extends Model
 		
 		//truncate table trial-balance
 		DB::beginTransaction();	
-		$truncateTable = DB::connection($databaseName)->statement("truncate table trial_balance_dtl"); 
+		$truncateTable = DB::connection($databaseName)->statement("truncate table balance_sheet_dtl"); 
 		DB::commit();
 		
-		$mytime = Carbon\Carbon::now();
 		//get ledgerId from ledger 
 		DB::beginTransaction();	
 		$ledgerResult = DB::connection($databaseName)->select("select
@@ -42,18 +41,26 @@ class TrialBalanceModel extends Model
 		where company_id='".$companyId."' and deleted_at='0000-00-00 00:00:00'"); 
 		DB::commit();
 		
+		
+		$mytime = Carbon\Carbon::now();
+		
+		$fromYear = $mytime->year-1;
+		$fromDate = $fromYear.'-04-01';
+		$toDate = $mytime->year.'-03-31';
+		
 		for($ledgerData=0;$ledgerData<count($ledgerResult);$ledgerData++)
 		{
 			$flag=0;
 			$balanceType="";
+			
 			// get amount,amount_type from particular ledgerId_ledger_dtl
 			DB::beginTransaction();	
 			$ledgerAmountResult = DB::connection($databaseName)->select("select
 			amount,
 			amount_type
 			from ".$ledgerResult[$ledgerData]->ledger_id."_ledger_dtl
-			where deleted_at='0000-00-00 00:00:00' and
-			('".DATE(entry_date)."' < ".DATE($mytime).")"); 
+			where deleted_at='0000-00-00 00:00:00' and 
+			entry_date BETWEEN '".$fromDate."' AND '".$toDate."'"); 
 			DB::commit();
 			$creditTotal=0;
 			$debitTotal=0;
@@ -68,6 +75,7 @@ class TrialBalanceModel extends Model
 					$debitTotal = $debitTotal+$ledgerAmountResult[$ledgerAmountData]->amount;
 				}
 			}
+			
 			if($creditTotal>$debitTotal)
 			{
 				$totalBalance = $creditTotal-$debitTotal;
@@ -86,7 +94,7 @@ class TrialBalanceModel extends Model
 			{
 				// insert amount,amount_type in trial-balance
 				DB::beginTransaction();	
-				$trialBalanceResult = DB::connection($databaseName)->statement("insert into trial_balance_dtl(
+				$trialBalanceResult = DB::connection($databaseName)->statement("insert into balance_sheet_dtl(
 				amount,
 				amount_type,
 				ledger_id)
@@ -94,24 +102,24 @@ class TrialBalanceModel extends Model
 				DB::commit();
 			}
 		}
+		
 		//get trial-balance data
 		DB::beginTransaction();	
-		$trialBalanceResult = DB::connection($databaseName)->select("select 
-		trial_balance_id,
+		$balanceSheetResult = DB::connection($databaseName)->select("select 
+		balance_sheet_id,
 		amount,
 		amount_type,
 		ledger_id
-		from trial_balance_dtl
+		from balance_sheet_dtl 
 		where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
-		
-		if(count($trialBalanceResult)==0)
+		if(count($balanceSheetResult)==0)
 		{
 			$exceptionArray['404'];
 		}
 		else
 		{
-			$encodedData = json_encode($trialBalanceResult);
+			$encodedData = json_encode($balanceSheetResult);
 			return $encodedData;
 		}
 	}

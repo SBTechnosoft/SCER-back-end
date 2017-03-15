@@ -226,6 +226,8 @@ return [
 		'Clients',
 		'Bills',
 		'TrialBalance',
+		'BalanceSheet',
+		'ProfitLoss',
 		'Users',
 		'Authenticate',
 		'Logout',

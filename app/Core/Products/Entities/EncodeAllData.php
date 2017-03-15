@@ -102,7 +102,8 @@ class EncodeAllData extends ProductCategoryService
 			}
 		}
 		$constantArray = new ConstantClass();
-		$documentPath = $constantArray['productBarcode'];
+		$constantArrayData = $constantArray->constantVariable();
+		$documentPath = $constantArrayData['productBarcode'];
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
 		{

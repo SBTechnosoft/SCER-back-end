@@ -6,7 +6,7 @@ use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Core\Accounting\Journals\Entities\EncodeAllData;
-use ERP\Core\Accounting\Ledgers\Entities\EncodeProductTrnAllData;
+use ERP\Core\Products\Entities\EncodeProductTrnAllData;
 use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>

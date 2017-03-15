@@ -32,6 +32,10 @@ class SettingModel extends Model
 		$barcodeFlag=0;
 		$barcodeArray = array();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
 		for($data=0;$data<count($getSettingData);$data++)
 		{
 			$explodedSetting = explode('_',$getSettingKey[$data]);
@@ -44,14 +48,21 @@ class SettingModel extends Model
 		$constantArray = $constantDatabase->constantVariable();
 		if($barcodeFlag==1)
 		{
+			$settingType = 'barcode';
+			//get setting data
+			$settingData = $this->getParticularTypeData($settingType);
+			$decodedSettingData = json_decode($settingData);
+			
+			if(strcmp($decodedSettingData[0]->setting_type,'barcode')==0)
+			{
+				return $exceptionArray['content'];
+			}
+			
 			DB::beginTransaction();
 			$raw = DB::connection($databaseName)->statement("insert into setting_mst(setting_type,setting_data) 
 			values('".$constantArray['barcodeSetting']."','".json_encode($barcodeArray)."')");
 			DB::commit();
 		}
-		//get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
 			return $exceptionArray['200'];
@@ -136,6 +147,44 @@ class SettingModel extends Model
 		updated_at
 		from setting_mst
 		where deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(count($raw)!=0)
+		{
+			return json_encode($raw);
+		}
+		else
+		{
+			return $exceptionArray['204'];
+		}
+	}
+	
+	/**
+	 * get-particular setting type data 
+	 * returns error-message/data
+	 */
+	public function getParticularTypeData($type)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		date_default_timezone_set("Asia/Calcutta");
+		
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->select("select
+		setting_id,
+		setting_type,
+		setting_data,
+		created_at,
+		updated_at
+		from setting_mst
+		where setting_type='".$type."' and
+		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		//get exception message

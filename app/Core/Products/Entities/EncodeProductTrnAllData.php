@@ -1,5 +1,5 @@
 <?php
-namespace ERP\Core\Accounting\Ledgers\Entities;
+namespace ERP\Core\Products\Entities;
 
 use ERP\Core\Accounting\Ledgers\Entities\Ledger;
 use ERP\Core\Products\Services\ProductService;

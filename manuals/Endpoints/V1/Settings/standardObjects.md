@@ -11,5 +11,6 @@
 			{
                 "barcodeWidth": decimal,
                 "barcodeHeight": decimal,
+				"settingType":string,
             }
 

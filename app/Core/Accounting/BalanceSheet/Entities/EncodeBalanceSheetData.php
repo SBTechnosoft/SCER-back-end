@@ -1,5 +1,5 @@
 <?php
-namespace ERP\Core\Accounting\TrialBalance\Entities;
+namespace ERP\Core\Accounting\BalanceSheet\Entities;
 
 use ERP\Core\Accounting\Ledgers\Services\LedgerService;
 use ERP\Core\Companies\Services\CompanyService;
@@ -7,7 +7,7 @@ use ERP\Core\Companies\Services\CompanyService;
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class EncodeTrialBalanceData extends LedgerService
+class EncodeBalanceSheetData extends LedgerService
 {
 	public function getEncodedAllData($status)
 	{
@@ -22,22 +22,22 @@ class EncodeTrialBalanceData extends LedgerService
 			$ledgerId[$decodedData] = $decodedJson[$decodedData]['ledger_id'];
 			$amount[$decodedData] = $decodedJson[$decodedData]['amount'];
 			$amountType[$decodedData] = $decodedJson[$decodedData]['amount_type'];
-			$trialBalanceId[$decodedData] = $decodedJson[$decodedData]['trial_balance_id'];
-			$trialBalanceData = new EncodeTrialBalanceData();
-			$ledgerData[$decodedData]  = $trialBalanceData->getLedgerData($ledgerId[$decodedData]);
+			$balanceSheetId[$decodedData] = $decodedJson[$decodedData]['balance_sheet_id'];
+			$balanceSheetData = new EncodeBalanceSheetData();
+			$ledgerData[$decodedData]  = $balanceSheetData->getLedgerData($ledgerId[$decodedData]);
 			$decodedLedgerData[$decodedData] = json_decode($ledgerData[$decodedData]);
 			
-			// convert amount(round) into their company's selected decimal points
 			$companyData[$decodedData] = $companyService->getCompanyData($decodedLedgerData[$decodedData]->company->companyId);
 			$companyDecodedData[$decodedData] = json_decode($companyData[$decodedData]);
-				
+			
+			//convert amount(round) into their company's selected decimal points
 			$amount[$decodedData] = round($amount[$decodedData],$companyDecodedData[$decodedData]->noOfDecimalPoints);
 		}
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
 		{
 			$data[$jsonData]= array(
-				'trialBalanceId'=>$trialBalanceId[$jsonData],
+				'trialBalanceId'=>$balanceSheetId[$jsonData],
 				'amount'=>$amount[$jsonData],
 				'amountType' => $amountType[$jsonData],
 				'ledger' => array(	

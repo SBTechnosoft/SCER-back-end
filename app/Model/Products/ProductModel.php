@@ -8,6 +8,7 @@ use ERP\Exceptions\ExceptionMessage;
 use ERP\Entities\Constants\ConstantClass;
 use ERP\Entities\ProductArray;
 use TCPDFBarcode;
+use ERP\Model\Settings\SettingModel;
 /**
  * @author reema Patel<reema.p@siliconbrain.in>
  */
@@ -75,9 +76,27 @@ class ProductModel extends Model
 			$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".svg";
 			$documentPath = $path.$documentName;
 			
+			//get barcode-size
+			$settingType = 'barcode';
+			$settingModel = new SettingModel();
+			$settingData = $settingModel->getParticularTypeData($settingType);
+			$decodedSettingData = json_decode($settingData);
+			if(strcmp($settingData,$exceptionArray['204'])==0)
+			{
+				$width = $constantArray['barcodeWidth'];
+				$height = $constantArray['barcodeHeight'];
+			}
+			else
+			{
+				$decodedSetting = json_decode($decodedSettingData[0]->setting_data);
+				$width = $decodedSetting->barcode_width;
+				$height =$decodedSetting->barcode_height;
+			}
+			
+			
 			//insert barcode image
-			$barcodeobj = new TCPDFBarcode($productCode, 'C128');
-			file_put_contents($documentPath,$barcodeobj->getBarcodeSVGcode(1 ,60, 'black'));
+			$barcodeobj = new TCPDFBarcode($productCode, 'C128','C');
+			file_put_contents($documentPath,$barcodeobj->getBarcodeSVGcode($width ,$height, 'black'));
 			
 			DB::beginTransaction();
 			$productId = DB::connection($databaseName)->select("select 
@@ -232,9 +251,25 @@ class ProductModel extends Model
 				$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".svg";
 				$documentPath = $path.$documentName;
 				
+				//get barcode-size
+				$settingType = 'barcode';
+				$settingModel = new SettingModel();
+				$settingData = $settingModel->getParticularTypeData($settingType);
+				$decodedSettingData = json_decode($settingData);
+				if(strcmp($settingData,$exceptionArray['204'])==0)
+				{
+					$width = $constantArray['barcodeWidth'];
+					$height = $constantArray['barcodeHeight'];
+				}
+				else
+				{
+					$decodedSetting = json_decode($decodedSettingData[0]->setting_data);
+					$width = $decodedSetting->barcode_width;
+					$height =$decodedSetting->barcode_height;
+				}
 				//insert barcode image 
-				$barcodeobj = new TCPDFBarcode($productCode, 'C128');
-				file_put_contents($documentPath,$barcodeobj->getBarcodeSVGcode(1 ,60, 'black'));
+				$barcodeobj = new TCPDFBarcode($productCode, 'C128','C');
+				file_put_contents($documentPath,$barcodeobj->getBarcodeSVGcode($width ,$height, 'black'));
 				
 				//update document-data into database
 				DB::beginTransaction();
@@ -549,6 +584,7 @@ class ProductModel extends Model
 		color,
 		size,
 		product_description,
+		minimum_stock_level,
 		additional_tax,
 		document_name,
 		document_format,
@@ -756,6 +792,7 @@ class ProductModel extends Model
 		color,
 		size,
 		product_description,
+		minimum_stock_level,
 		additional_tax,
 		document_name,
 		document_format,
@@ -810,6 +847,7 @@ class ProductModel extends Model
 		color,
 		size,
 		product_description,
+		minimum_stock_level,
 		additional_tax,
 		document_name,
 		document_format,
@@ -865,6 +903,7 @@ class ProductModel extends Model
 		color,
 		size,
 		product_description,
+		minimum_stock_level,
 		additional_tax,
 		document_name,
 		document_format,
@@ -920,6 +959,7 @@ class ProductModel extends Model
 		color,
 		size,
 		product_description,
+		minimum_stock_level,
 		additional_tax,
 		document_name,
 		document_format,

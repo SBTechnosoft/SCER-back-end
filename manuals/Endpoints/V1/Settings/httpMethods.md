@@ -41,7 +41,7 @@
 
 ##### update Settings           
             
-##### `Post /settings/{settingId}`
+##### `PATCH /settings/`
 + Header 
 	- Authentication Token
 	

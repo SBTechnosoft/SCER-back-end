@@ -10,7 +10,7 @@ use ERP\Core\User\Entities\User;
 use ERP\Core\Products\Entities\EncodeData;
 use ERP\Core\Products\Entities\EncodeAllData;
 use ERP\Exceptions\ExceptionMessage;
-use ERP\Core\Accounting\Ledgers\Entities\EncodeProductTrnAllData;
+use ERP\Core\Products\Entities\EncodeProductTrnAllData;
 use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>

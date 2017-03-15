@@ -1,37 +1,37 @@
 <?php	
-namespace ERP\Core\Accounting\TrialBalance\Services;
-use ERP\Model\Accounting\TrialBalance\TrialBalanceModel;
+namespace ERP\Core\Accounting\BalanceSheet\Services;
+use ERP\Model\Accounting\BalanceSheet\BalanceSheetModel;
 use ERP\Core\Shared\Options\UpdateOptions;
 use ERP\Core\Support\Service\AbstractService;
 use ERP\Core\User\Entities\User;
-use ERP\Core\Accounting\TrialBalance\Entities\EncodeTrialBalanceData;
+use ERP\Core\Accounting\BalanceSheet\Entities\EncodeBalanceSheetData;
 use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class TrialBalanceService extends AbstractService
+class BalanceSheetService extends AbstractService
 {
     /**
-     * @var trialBalanceService
-	 * $var trialBalanceModel
+     * @var balanceSheetService
+	 * $var balanceSheetModel
      */
-    private $trialBalanceService;
-    private $trialBalanceModel;
+    private $balanceSheetService;
+    private $balanceSheetModel;
 	
     /**
-     * @param TrialBalanceService $trialBalanceModel
+     * @param BalanceSheetService $balanceSheetModel
      */
-    public function initialize(TrialBalanceService $trialBalanceModel)
+    public function initialize(BalanceSheetService $balanceSheetModel)
     {		
 		echo "init";
     }
 	
     /**
-     * @param TrialBalancePersistable $persistable
+     * @param BalanceSheetPersistable $persistable
      */
-    public function create(TrialBalancePersistable $persistable)
+    public function create(BalanceSheetPersistable $persistable)
     {
-		return "create method of TrialBalanceService";
+		return "create method of BalanceSheetService";
 		
     }
 	
@@ -42,8 +42,8 @@ class TrialBalanceService extends AbstractService
 	public function getData($companyId)
 	{
 		//get data
-		$trialBalance = new TrialBalanceModel();
-		$result = $trialBalance->getTrialBalanceData($companyId);
+		$balanceSheet = new BalanceSheetModel();
+		$result = $balanceSheet->getBalanceSheetData($companyId);
 		
 		//get exception message
 		$exception = new ExceptionMessage();
@@ -54,7 +54,7 @@ class TrialBalanceService extends AbstractService
 		}
 		else
 		{
-			$encoded = new EncodeTrialBalanceData();
+			$encoded = new EncodeBalanceSheetData();
 			$encodeAllData = $encoded->getEncodedAllData($result);
 			return $encodeAllData;
 		}
