@@ -228,6 +228,7 @@ return [
 		'TrialBalance',
 		'BalanceSheet',
 		'ProfitLoss',
+		'CashFlow',
 		'Users',
 		'Authenticate',
 		'Logout',

@@ -42,6 +42,23 @@ class TrialBalanceModel extends Model
 		where company_id='".$companyId."' and deleted_at='0000-00-00 00:00:00'"); 
 		DB::commit();
 		
+		$mytime = Carbon\Carbon::now();
+		$currentDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $mytime)->format('Y-m-d');
+		$dateTime = $mytime->toDateTimeString();
+		$yearStartDate = $mytime->year.'-04-01 00:00:00';
+		if($dateTime >= $yearStartDate)
+		{
+			$toYear = $mytime->year+1;
+			$fromDate = $mytime->year.'-04-01 00:00:00';
+			$toDate = $toYear.'-03-31 00:00:00';
+		}
+		else
+		{
+			$fromYear = $mytime->year-1;
+			$fromDate = $fromYear.'-04-01 00:00:00';
+			$toDate = $mytime->year.'-03-31 00:00:00';
+		}
+		
 		for($ledgerData=0;$ledgerData<count($ledgerResult);$ledgerData++)
 		{
 			$flag=0;
@@ -53,7 +70,7 @@ class TrialBalanceModel extends Model
 			amount_type
 			from ".$ledgerResult[$ledgerData]->ledger_id."_ledger_dtl
 			where deleted_at='0000-00-00 00:00:00' and
-			('".DATE(entry_date)."' < ".DATE($mytime).")"); 
+			entry_date BETWEEN '".$fromDate."' AND '".$toDate."'"); 
 			DB::commit();
 			$creditTotal=0;
 			$debitTotal=0;

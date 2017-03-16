@@ -1,15 +1,15 @@
 <?php
-namespace ERP\Core\Accounting\ProfitLoss\Entities;
+namespace ERP\Core\Accounting\CashFlow\Entities;
 
 use ERP\Core\Accounting\Ledgers\Services\LedgerService;
 use ERP\Core\Companies\Services\CompanyService;
-use ERP\Core\Accounting\ProfitLoss\Entities\ProfitLoss;
+use ERP\Core\Accounting\CashFlow\Entities\CashFlow;
 use Carbon;
 /**
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class EncodeProfitLossData extends LedgerService
+class EncodeCashFlowData extends LedgerService
 {
 	public function getEncodedAllData($status)
 	{
@@ -19,7 +19,7 @@ class EncodeProfitLossData extends LedgerService
 		$decodedLedgerData = array();
 		$decodedJson = json_decode($status,true);
 		$companyService = new CompanyService();
-		$profitLoss = new ProfitLoss();
+		$cashFlow = new CashFlow();
 		
 		for($decodedData=0;$decodedData<count($decodedJson);$decodedData++)
 		{
@@ -28,9 +28,10 @@ class EncodeProfitLossData extends LedgerService
 			$ledgerId[$decodedData] = $decodedJson[$decodedData]['ledger_id'];
 			$amount[$decodedData] = $decodedJson[$decodedData]['amount'];
 			$amountType[$decodedData] = $decodedJson[$decodedData]['amount_type'];
-			$profitLossId[$decodedData] = $decodedJson[$decodedData]['profit_loss_id'];
-			$profitLossData = new EncodeProfitLossData();
-			$ledgerData[$decodedData]  = $profitLossData->getLedgerData($ledgerId[$decodedData]);
+			$entryDate[$decodedData] = $decodedJson[$decodedData]['entry_date'];
+			$cashFlowId[$decodedData] = $decodedJson[$decodedData]['cash_flow_id'];
+			$cashFlowData = new EncodeCashFlowData();
+			$ledgerData[$decodedData]  = $cashFlowData->getLedgerData($ledgerId[$decodedData]);
 			$decodedLedgerData[$decodedData] = json_decode($ledgerData[$decodedData]);
 			
 			// convert amount(round) into their company's selected decimal points
@@ -41,8 +42,8 @@ class EncodeProfitLossData extends LedgerService
 			
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
-			$profitLoss->setCreated_at($convertedCreatedDate[$decodedData]);
-			$getCreatedDate[$decodedData] = $profitLoss->getCreated_at();
+			$cashFlow->setCreated_at($convertedCreatedDate[$decodedData]);
+			$getCreatedDate[$decodedData] = $cashFlow->getCreated_at();
 			
 			if(strcmp($updatedAt[$decodedData],'0000-00-00 00:00:00')==0)
 			{
@@ -51,17 +52,28 @@ class EncodeProfitLossData extends LedgerService
 			else
 			{
 				$convertedUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
-				$profitLoss->setUpdated_at($convertedUpdatedDate[$decodedData]);
-				$getUpdatedDate[$decodedData] = $profitLoss->getUpdated_at();
+				$cashFlow->setUpdated_at($convertedUpdatedDate[$decodedData]);
+				$getUpdatedDate[$decodedData] = $cashFlow->getUpdated_at();
+			}
+			if(strcmp($entryDate[$decodedData],'0000-00-00 00:00:00')==0)
+			{
+				$getEntryDate[$decodedData] = "00-00-0000";
+			}
+			else
+			{
+				$convertedEntryDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d', $entryDate[$decodedData])->format('d-m-Y');
+				$cashFlow->setEntryDate($convertedEntryDate[$decodedData]);
+				$getEntryDate[$decodedData] = $cashFlow->getEntryDate();
 			}
 		}
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
 		{
 			$data[$jsonData]= array(
-				'profitLossId'=>$profitLossId[$jsonData],
+				'cashFlowId'=>$cashFlowId[$jsonData],
 				'amount'=>$amount[$jsonData],
 				'amountType' => $amountType[$jsonData],
+				'entryDate' => $getEntryDate[$jsonData],
 				'createdAt'=>$getCreatedDate[$jsonData],
 				'updatedAt'=>$getUpdatedDate[$jsonData],
 				'ledger' => array(	

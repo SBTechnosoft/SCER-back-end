@@ -1,13 +1,14 @@
-##### Standard Profit-Loss Object
+##### Standard Cash-Flow Object
 
             {
-                "profitLossId":int,
+                "cashFlowId":int,
 				"ledger":
 				{
 					... Standard Ledger Object
 				},
 				"amount":decimal,
 				"amountType":Enum,
+				"entryDate":Date,
 				"createdAt":TimeStamp,
                 "updatedAt":DateTime,
                 "company": {

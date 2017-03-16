@@ -554,7 +554,13 @@ include ('connection.php');
 				
 				// var url="http://www.scerp1.com/settings";
 				
-				var url="http://www.scerp1.com/accounting/profit-loss/company/"+companyId;  //profit-loss
+				
+				// var url="http://www.scerp1.com/accounting/cash-flow/company/"+companyId+"/export";  //pdf generate
+				// var url="http://www.scerp1.com/accounting/profit-loss/company/"+companyId+"/export";  //pdf generate
+				var url="http://www.scerp1.com/accounting/balance-sheet/company/"+companyId+"/export";  //pdf generate
+				
+				// var url="http://www.scerp1.com/accounting/cash-flow/company/"+companyId;  //cash-flow
+				// var url="http://www.scerp1.com/accounting/profit-loss/company/"+companyId;  //profit-loss
 				// var url="http://www.scerp1.com/accounting/balance-sheet/company/"+companyId;  //balance-sheet
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/priceList";  //priceList
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/transaction/details"; //stock-register
