@@ -39,10 +39,20 @@ class ProfitLossModel extends Model
 		$ledgerResult = DB::connection($databaseName)->select("select
 		ledger_id
 		from ledger_mst
-		where company_id='".$companyId."' and
-		(ledger_name = 'cash' OR ledger_name = 'bank') and 
+		where company_id='".$companyId."' and 
+		(ledger_group_id='16' OR
+		ledger_group_id='17' OR
+		ledger_group_id='19' OR
+		ledger_group_id='20' OR
+		ledger_group_id='26' OR
+		ledger_group_id='28') and
 		deleted_at='0000-00-00 00:00:00'"); 
 		DB::commit();
+		
+		if(count($ledgerResult)==0)
+		{
+			return $exceptionArray['404'];
+		}
 		
 		$currentDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $mytime)->format('Y-m-d');
 		$dateTime = $mytime->toDateTimeString();

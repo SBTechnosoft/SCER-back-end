@@ -268,10 +268,10 @@ class DocumentMpdf extends CurrencyToWordConversion
 			{
 				// mail send
 				$result = $this->mailSending($decodedBillData->client->emailId);
-				if(strcmp($result,$exceptionArray['Email'])==0)
-				{
-					return $result;
-				}
+				//if(strcmp($result,$exceptionArray['Email'])==0)
+				//{
+					//return $result;
+				//}
 			}
 			$message = "Your Bill Is Generated...";
 			//sms send
@@ -369,10 +369,10 @@ class DocumentMpdf extends CurrencyToWordConversion
 			{
 				// mail send
 				$result = $this->mailSending($decodedBillData->client->emailId);
-				if(strcmp($result,$exceptionArray['Email'])==0)
-				{
-					return $result;
-				}
+				//if(strcmp($result,$exceptionArray['Email'])==0)
+				//{
+					//return $result;
+				//}
 			}
 			$message = "Your Bill Is Generated...";
 			// sms send

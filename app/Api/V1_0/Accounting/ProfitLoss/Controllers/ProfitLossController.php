@@ -11,7 +11,7 @@ use ERP\Entities\Constants\ConstantClass;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Model\Accounting\ProfitLoss\ProfitLossModel;
-// use ERP\Core\Accounting\ProfitLoss\Entities\ProfitLossMpdf;
+use ERP\Core\Accounting\ProfitLoss\Entities\ProfitLossOperation;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -61,28 +61,25 @@ class ProfitLossController extends BaseController implements ContainerInterface
 	 * @param  companyId
 	 * method calls the model and get the data
 	*/
-    // public function getDocumentpath(Request $request,$companyId)
-    // {
-		// Authentication
-		// $tokenAuthentication = new TokenAuthentication();
-		// $authenticationResult = $tokenAuthentication->authenticate($request->header());
-		
-		// get constant array
-		// $constantClass = new ConstantClass();
-		// $constantArray = $constantClass->constantVariable();
-		
-		// if(strcmp($constantArray['success'],$authenticationResult)==0)
-		// {
-			// $trialBalance = new TrialBalanceService();
-			// $result = $trialBalance->getData($companyId);
-			
-			// $trialBalanceMpdf = new TrialBalanceMpdf();
-			// $generatedPath = $trialBalanceMpdf->generatePdf($result);
-			// return $generatedPath;
-		// }
-		// else
-		// {
-			// return $authenticationResult;
-		// }
-	// }
+    public function getDocumentpath(Request $request,$companyId)
+    {
+		$profitLossData = $this->getProfitLossData($request,$companyId);
+		if(is_array(json_decode($profitLossData)))
+		{
+			$profitLossOperation = new ProfitLossOperation();
+			if(strcmp($request->header()['operation'][0],'pdf')==0)
+			{
+				$generatedPath = $profitLossOperation->generatePdf($profitLossData);
+			}
+			else
+			{
+				$generatedPath = $profitLossOperation->generateExcel($profitLossData);
+			}
+			return $generatedPath;
+		}
+		else
+		{
+			return $profitLossData;
+		}
+	}
 }

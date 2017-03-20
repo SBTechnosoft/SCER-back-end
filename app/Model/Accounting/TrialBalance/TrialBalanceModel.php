@@ -42,6 +42,11 @@ class TrialBalanceModel extends Model
 		where company_id='".$companyId."' and deleted_at='0000-00-00 00:00:00'"); 
 		DB::commit();
 		
+		if(count($ledgerResult)==0)
+		{
+			return $exceptionArray['404'];
+		}
+		
 		$mytime = Carbon\Carbon::now();
 		$currentDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $mytime)->format('Y-m-d');
 		$dateTime = $mytime->toDateTimeString();
@@ -74,6 +79,7 @@ class TrialBalanceModel extends Model
 			DB::commit();
 			$creditTotal=0;
 			$debitTotal=0;
+		
 			for($ledgerAmountData=0;$ledgerAmountData<count($ledgerAmountResult);$ledgerAmountData++)
 			{
 				if(strcmp($ledgerAmountResult[$ledgerAmountData]->amount_type,"credit")==0)

@@ -36,7 +36,7 @@ class EncodeBalanceSheetData extends LedgerService
 			$companyDecodedData[$decodedData] = json_decode($companyData[$decodedData]);
 			
 			//convert amount(round) into their company's selected decimal points
-			$amount[$decodedData] = round($amount[$decodedData],$companyDecodedData[$decodedData]->noOfDecimalPoints);
+			$amount[$decodedData] = number_format($amount[$decodedData],$companyDecodedData[$decodedData]->noOfDecimalPoints,'.','');
 			
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');

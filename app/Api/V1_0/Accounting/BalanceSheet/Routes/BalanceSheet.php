@@ -20,7 +20,7 @@ class BalanceSheet implements RouteRegistrarInterface
 		Route::group(['as' => 'get'], function ()
 		{
 			Route::get('Accounting/BalanceSheet/BalanceSheet/company/{companyId}', 'Accounting\BalanceSheet\Controllers\BalanceSheetController@getBalanceSheetData');
-			// Route::get('Accounting/BalanceSheet/BalanceSheet/company/{companyId}/export', 'Accounting\BalanceSheet\Controllers\BalanceSheetController@getDocumentpath');
+			Route::get('Accounting/BalanceSheet/BalanceSheet/company/{companyId}/export', 'Accounting\BalanceSheet\Controllers\BalanceSheetController@getDocumentpath');
 		});
 		
 	}

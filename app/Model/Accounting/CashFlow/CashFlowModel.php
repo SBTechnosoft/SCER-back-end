@@ -44,6 +44,11 @@ class CashFlowModel extends Model
 		deleted_at='0000-00-00 00:00:00'"); 
 		DB::commit();
 		
+		if(count($ledgerResult)==0)
+		{
+			return $exceptionArray['404'];
+		}
+		
 		$currentDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $mytime)->format('Y-m-d');
 		$dateTime = $mytime->toDateTimeString();
 		$yearStartDate = $mytime->year.'-04-01 00:00:00';
@@ -73,6 +78,7 @@ class CashFlowModel extends Model
 			$ledgerAmountResult = DB::connection($databaseName)->select("select
 			amount,
 			amount_type,
+			ledger_id,
 			entry_date
 			from ".$ledgerResult[$ledgerData]->ledger_id."_ledger_dtl
 			where deleted_at='0000-00-00 00:00:00' and
@@ -88,7 +94,7 @@ class CashFlowModel extends Model
 				amount_type,
 				entry_date,
 				ledger_id)
-				values('".$ledgerAmountResult[$arrayData]->amount."','".$ledgerAmountResult[$arrayData]->amount_type."','".$ledgerAmountResult[$arrayData]->entry_date."','".$ledgerResult[$ledgerData]->ledger_id."')");
+				values('".$ledgerAmountResult[$arrayData]->amount."','".$ledgerAmountResult[$arrayData]->amount_type."','".$ledgerAmountResult[$arrayData]->entry_date."','".$ledgerAmountResult[$arrayData]->ledger_id."')");
 				DB::commit();
 			}
 		}

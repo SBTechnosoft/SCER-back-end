@@ -11,7 +11,7 @@ use ERP\Entities\Constants\ConstantClass;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Model\Accounting\BalanceSheet\BalanceSheetModel;
-// use ERP\Core\Accounting\BalanceSheet\Entities\TrialBalanceMpdf;
+use ERP\Core\Accounting\BalanceSheet\Entities\BalanceSheetOperation;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -61,28 +61,25 @@ class BalanceSheetController extends BaseController implements ContainerInterfac
 	 * @param  companyId
 	 * method calls the model and get the data
 	*/
-    // public function getDocumentpath(Request $request,$companyId)
-    // {
-		// Authentication
-		// $tokenAuthentication = new TokenAuthentication();
-		// $authenticationResult = $tokenAuthentication->authenticate($request->header());
-		
-		// get constant array
-		// $constantClass = new ConstantClass();
-		// $constantArray = $constantClass->constantVariable();
-		
-		// if(strcmp($constantArray['success'],$authenticationResult)==0)
-		// {
-			// $trialBalance = new TrialBalanceService();
-			// $result = $trialBalance->getData($companyId);
-			
-			// $trialBalanceMpdf = new TrialBalanceMpdf();
-			// $generatedPath = $trialBalanceMpdf->generatePdf($result);
-			// return $generatedPath;
-		// }
-		// else
-		// {
-			// return $authenticationResult;
-		// }
-	// }
+    public function getDocumentpath(Request $request,$companyId)
+    {
+		$balanceData = $this->getBalanceSheetData($request,$companyId);
+		if(is_array(json_decode($balanceData)))
+		{
+			$balanceSheetOperation = new BalanceSheetOperation();
+			if(strcmp($request->header()['operation'][0],'pdf')==0)
+			{
+				$generatedPath = $balanceSheetOperation->generatePdf($balanceData);
+			}
+			else
+			{
+				$generatedPath = $balanceSheetOperation->generateExcel($balanceData);
+			}
+			return $generatedPath;
+		}
+		else
+		{
+			return $balanceData;
+		}
+	}
 }

@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Route;
 use ERP\Core\Users\Services\UserService;
 use ERP\Exceptions\ExceptionMessage;
+use Illuminate\Http\Request;
+use ERP\Http\Requests;
 /**
   * @author Reema Patel<reema.p@siliconbrain.in>
   */
@@ -59,7 +61,7 @@ class UserValidate
      * @param array of trimRequest
      * @return trimRequest/error-message
      */
-	public function emailIdCheck($trimRequest)
+	public function emailIdCheck($trimRequest,$request)
 	{
 		$emailFlag=0;
 		//get exception message
@@ -68,7 +70,7 @@ class UserValidate
 		
 		//get all user data
 		$userService = new UserService();
-		$userData = $userService->getAllUserData();
+		$userData = $userService->getAllUserData($request);
 		$decodedUserData = json_decode($userData);
 		for($arrayData=0;$arrayData<count($decodedUserData);$arrayData++)
 		{

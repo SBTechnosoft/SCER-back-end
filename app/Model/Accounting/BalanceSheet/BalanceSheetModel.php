@@ -41,6 +41,11 @@ class BalanceSheetModel extends Model
 		where company_id='".$companyId."' and deleted_at='0000-00-00 00:00:00'"); 
 		DB::commit();
 		
+		if(count($ledgerResult)==0)
+		{
+			return $exceptionArray['404'];
+		}
+		
 		$mytime = Carbon\Carbon::now();
 		$currentDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $mytime)->format('Y-m-d');
 		$dateTime = $mytime->toDateTimeString();
@@ -57,7 +62,6 @@ class BalanceSheetModel extends Model
 			$fromDate = $fromYear.'-04-01 00:00:00';
 			$toDate = $mytime->year.'-03-31 00:00:00';
 		}
-		
 		for($ledgerData=0;$ledgerData<count($ledgerResult);$ledgerData++)
 		{
 			$flag=0;
@@ -127,7 +131,7 @@ class BalanceSheetModel extends Model
 		DB::commit();
 		if(count($balanceSheetResult)==0)
 		{
-			$exceptionArray['404'];
+			return $exceptionArray['404'];
 		}
 		else
 		{

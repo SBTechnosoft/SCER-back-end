@@ -21,6 +21,8 @@
 ##### `GET /accounting/profit-loss/company/{companyId}/export`
 + Header 
 	- Authentication Token
+	- "operation":'excel',
+	- "operation":'pdf'
 + Error Message
 
 			{

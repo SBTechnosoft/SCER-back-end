@@ -11,7 +11,7 @@ use ERP\Entities\Constants\ConstantClass;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Model\Accounting\TrialBalance\TrialBalanceModel;
-use ERP\Core\Accounting\TrialBalance\Entities\TrialBalanceMpdf;
+use ERP\Core\Accounting\TrialBalance\Entities\TrialBalanceOperation;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -75,9 +75,16 @@ class TrialBalanceController extends BaseController implements ContainerInterfac
 		{
 			$trialBalance = new TrialBalanceService();
 			$result = $trialBalance->getData($companyId);
+			$trialBalanceOperation = new TrialBalanceOperation();
 			
-			$trialBalanceMpdf = new TrialBalanceMpdf();
-			$generatedPath = $trialBalanceMpdf->generatePdf($result);
+			if(strcmp($request->header()['operation'][0],'pdf')==0)
+			{
+				$generatedPath = $trialBalanceOperation->generatePdf($result);
+			}
+			else
+			{
+				$generatedPath = $trialBalanceOperation->generateExcel($result);
+			}
 			return $generatedPath;
 		}
 		else

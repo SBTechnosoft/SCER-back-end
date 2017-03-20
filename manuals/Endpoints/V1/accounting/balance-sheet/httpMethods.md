@@ -22,6 +22,8 @@
 ##### `GET /accounting/balance-sheet/company/{companyId}/export`
 + Header 
 	- Authentication Token
+	- "operation" : "pdf",
+	- "operation" : "excel"
 + Error Message
 
 			{

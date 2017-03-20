@@ -55,7 +55,7 @@ class UserProcessor extends BaseProcessor
 			else
 			{
 				//check emailId is exist or not?
-				$emailIdResult = $userValidate->emailIdCheck($tRequest);
+				$emailIdResult = $userValidate->emailIdCheck($tRequest,$this->request);
 				if(!is_array($emailIdResult))
 				{
 					return $emailIdResult;

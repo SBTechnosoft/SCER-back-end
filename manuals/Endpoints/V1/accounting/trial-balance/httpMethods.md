@@ -22,6 +22,8 @@
 ##### `GET /accounting/trial-balance/company/{companyId}/export`
 + Header 
 	- Authentication Token
+	- "operation":'pdf',
+	- "operation":'excel'
 + Error Message
 
 			{

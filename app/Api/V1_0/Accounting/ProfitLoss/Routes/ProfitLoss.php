@@ -20,7 +20,7 @@ class ProfitLoss implements RouteRegistrarInterface
 		Route::group(['as' => 'get'], function ()
 		{
 			Route::get('Accounting/ProfitLoss/ProfitLoss/company/{companyId}', 'Accounting\ProfitLoss\Controllers\ProfitLossController@getProfitLossData');
-			// Route::get('Accounting/ProfitLoss/ProfitLoss/company/{companyId}/export', 'Accounting\ProfitLoss\Controllers\ProfitLossController@getDocumentpath');
+			Route::get('Accounting/ProfitLoss/ProfitLoss/company/{companyId}/export', 'Accounting\ProfitLoss\Controllers\ProfitLossController@getDocumentpath');
 		});
 		
 	}

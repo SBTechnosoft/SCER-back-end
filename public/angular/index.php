@@ -557,7 +557,7 @@ include ('connection.php');
 				
 				// var url="http://www.scerp1.com/accounting/cash-flow/company/"+companyId+"/export";  //pdf generate
 				// var url="http://www.scerp1.com/accounting/profit-loss/company/"+companyId+"/export";  //pdf generate
-				var url="http://www.scerp1.com/accounting/balance-sheet/company/"+companyId+"/export";  //pdf generate
+				// var url="http://www.scerp1.com/accounting/balance-sheet/company/"+companyId+"/export";  //pdf generate
 				
 				// var url="http://www.scerp1.com/accounting/cash-flow/company/"+companyId;  //cash-flow
 				// var url="http://www.scerp1.com/accounting/profit-loss/company/"+companyId;  //profit-loss
@@ -574,7 +574,7 @@ include ('connection.php');
 				// var url = "http://www.scerp1.com/authenticate";
 				// var url = "http://www.scerp1.com/users/email-address/"+emailId;
 				// var url = "http://www.scerp1.com/accounting/trial-balance/company/"+companyId;
-				// var url = "http://www.scerp1.com/accounting/trial-balance/company/"+companyId+"/export";
+				var url = "http://www.scerp1.com/accounting/trial-balance/company/"+companyId+"/export";
 			
 				
 				// var url = "http://www.scerp1.com/accounting/bills/"+saleId;
@@ -666,7 +666,7 @@ include ('connection.php');
                         // headers: {'Content-Type': undefined},
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','productName':'Spiderman','color':'BK.s'},
                         // headers: {'Content-Type':undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','productCode':'ABC_ABC_AB_CYCFDJ_BKBK_122T'},
-                        headers: {'Content-Type':undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'}
+                        headers: {'Content-Type':undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','operation':'pdf'}
                         // headers: {'Content-Type':'application/x-www-form-urlencoded','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
 						 // data:formdata
 						// data:$scope.user						
