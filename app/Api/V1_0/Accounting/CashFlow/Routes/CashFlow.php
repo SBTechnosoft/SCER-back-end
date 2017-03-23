@@ -20,7 +20,7 @@ class CashFlow implements RouteRegistrarInterface
 		Route::group(['as' => 'get'], function ()
 		{
 			Route::get('Accounting/CashFlow/CashFlow/company/{companyId}', 'Accounting\CashFlow\Controllers\CashFlowController@getCashFlowData');
-			// Route::get('Accounting/CashFlow/CashFlow/company/{companyId}/export', 'Accounting\CashFlow\Controllers\ProfitLossController@getDocumentpath');
+			Route::get('Accounting/CashFlow/CashFlow/company/{companyId}/export', 'Accounting\CashFlow\Controllers\CashFlowController@getDocumentpath');
 		});
 		
 	}

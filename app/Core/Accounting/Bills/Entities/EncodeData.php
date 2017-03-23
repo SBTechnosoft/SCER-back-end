@@ -44,11 +44,11 @@ class EncodeData extends ClientService
 		$companyDetails = $companyDetail->getCompanyDetails($companyId);
 		
 		//convert amount(round) into their company's selected decimal points
-		$total = round($total,$companyDetails['noOfDecimalPoints']);
-		$tax = round($tax,$companyDetails['noOfDecimalPoints']);
-		$grandTotal = round($grandTotal,$companyDetails['noOfDecimalPoints']);
-		$advance = round($advance,$companyDetails['noOfDecimalPoints']);
-		$balance = round($balance,$companyDetails['noOfDecimalPoints']);
+		$total = number_format($total,$companyDetails['noOfDecimalPoints'],'.','');
+		$tax = number_format($tax,$companyDetails['noOfDecimalPoints'],'.','');
+		$grandTotal = number_format($grandTotal,$companyDetails['noOfDecimalPoints'],'.','');
+		$advance = number_format($advance,$companyDetails['noOfDecimalPoints'],'.','');
+		$balance = number_format($balance,$companyDetails['noOfDecimalPoints'],'.','');
 		
 		//date format conversion
 		$bill = new Bill();

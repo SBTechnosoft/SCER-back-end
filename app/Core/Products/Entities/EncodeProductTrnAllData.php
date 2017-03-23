@@ -55,10 +55,10 @@ class EncodeProductTrnAllData extends ProductService
 			$branchDetail  = new BranchDetail();
 			$getBranchDetails[$decodedData] = $branchDetail->getBranchDetails($branchId[$decodedData]);
 			
-			//convert amount(round) into their company's selected decimal points
-			$price[$decodedData] = round($price[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
-			$discountValue[$decodedData] = round($discountValue[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
-			$tax[$decodedData] = round($tax[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
+			//convert amount(number_format) into their company's selected decimal points
+			$price[$decodedData] = number_format($price[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
+			$discountValue[$decodedData] = number_format($discountValue[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
+			$tax[$decodedData] = number_format($tax[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
 			
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');

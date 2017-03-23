@@ -58,16 +58,13 @@ class TrialBalanceOperation extends CompanyService
 									<td style='border: 1px solid black; width:25%;text-align:center;'> - </td></tr>";
 				$debitAmountTotal = $debitAmountTotal+$decodedData[$arrayData]->amount;
 			}
-			if($arrayData == count($decodedData)-1)
-			{
-				$debitAmountTotal = number_format($debitAmountTotal,$decodedCompanyData->noOfDecimalPoints);
-				$creditAmountTotal = number_format($creditAmountTotal,$decodedCompanyData->noOfDecimalPoints);
-				$bodyPart = $bodyPart."	<tr style='border: 1px solid black;'>
+		}
+		$debitAmountTotal = number_format($debitAmountTotal,$decodedCompanyData->noOfDecimalPoints);
+		$creditAmountTotal = number_format($creditAmountTotal,$decodedCompanyData->noOfDecimalPoints);
+		$bodyPart = $bodyPart."	<tr style='border: 1px solid black;'>
 									<td style='border: 1px solid black; width:50%;'>Total</td>
 									<td style='border: 1px solid black; width:25%;text-align:center;'>".$debitAmountTotal."</td>
 									<td style='border: 1px solid black;width:25%; text-align:center;'>".$creditAmountTotal."</td></tr>";
-			}
-		}
 		$footerPart = "</tbody></table>";
 		$htmlBody = $headerPart.$bodyPart.$footerPart;
 		
@@ -145,7 +142,7 @@ class TrialBalanceOperation extends CompanyService
 		$debitAmountTotal = 0;
 		for($arrayData=0;$arrayData<count($decodedData);$arrayData++)
 		{
-			$decodedData[$arrayData]->amount = number_format($decodedData[$arrayData]->amount,$decodedCompanyData->noOfDecimalPoints);
+			// $decodedData[$arrayData]->amount = number_format($decodedData[$arrayData]->amount,$decodedCompanyData->noOfDecimalPoints);
 			if(strcmp($decodedData[$arrayData]->amountType,"credit")==0)
 			{
 				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+3,$decodedData[$arrayData]->ledger->ledgerName);

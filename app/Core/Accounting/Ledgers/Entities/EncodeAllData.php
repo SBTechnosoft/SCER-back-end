@@ -67,6 +67,10 @@ class EncodeAllData extends StateService
 			$companyDetail = new CompanyDetail();
 			$getCompanyDetails[$decodedData] = $companyDetail->getCompanyDetails($companyId[$decodedData]);
 			
+			//convert amount(number_format) into their company's selected decimal points
+			$openingBalance[$decodedData] = number_format($openingBalance[$decodedData],$getCompanyDetails[$decodedData]->noOfDecimalPoints,'.','');
+			$currentBalance[$decodedData] = number_format($currentBalance[$decodedData],$getCompanyDetails[$decodedData]->noOfDecimalPoints,'.','');
+				
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
 			$ledger->setCreated_at($convertedCreatedDate[$decodedData]);

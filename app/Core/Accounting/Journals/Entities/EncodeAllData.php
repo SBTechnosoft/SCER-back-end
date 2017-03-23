@@ -57,8 +57,8 @@ class EncodeAllData extends LedgerService
 			$companyDetail = new CompanyDetail();
 			$getCompanyDetails[$decodedData] = $companyDetail->getCompanyDetails($companyId[$decodedData]);
 			
-			//convert amount(round) into their company's selected decimal points
-			$amount[$decodedData] = round($amount[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
+			//convert amount(number_format) into their company's selected decimal points
+			$amount[$decodedData] = number_format($amount[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
 			
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');

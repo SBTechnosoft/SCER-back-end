@@ -11,7 +11,7 @@ use ERP\Entities\Constants\ConstantClass;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Model\Accounting\CashFlow\CashFlowModel;
-// use ERP\Core\Accounting\ProfitLoss\Entities\CashFlowMpdf;
+use ERP\Core\Accounting\CashFlow\Entities\CashFlowOperation;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -61,28 +61,34 @@ class CashFlowController extends BaseController implements ContainerInterface
 	 * @param  companyId
 	 * method calls the model and get the data
 	*/
-    // public function getDocumentpath(Request $request,$companyId)
-    // {
+    public function getDocumentpath(Request $request,$companyId)
+    {
 		// Authentication
-		// $tokenAuthentication = new TokenAuthentication();
-		// $authenticationResult = $tokenAuthentication->authenticate($request->header());
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
 		// get constant array
-		// $constantClass = new ConstantClass();
-		// $constantArray = $constantClass->constantVariable();
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
 		
-		// if(strcmp($constantArray['success'],$authenticationResult)==0)
-		// {
-			// $trialBalance = new TrialBalanceService();
-			// $result = $trialBalance->getData($companyId);
-			
-			// $trialBalanceMpdf = new TrialBalanceMpdf();
-			// $generatedPath = $trialBalanceMpdf->generatePdf($result);
-			// return $generatedPath;
-		// }
-		// else
-		// {
-			// return $authenticationResult;
-		// }
-	// }
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$cashFlow = new CashFlowService();
+			$result = $cashFlow->getData($companyId);
+			$cashFlowOperation = new CashFlowOperation();
+			if(strcmp($request->header()['operation'][0],'pdf')==0)
+			{
+				$generatedPath = $cashFlowOperation->generatePdf($result);
+			}
+			else
+			{
+				$generatedPath = $cashFlowOperation->generateExcel($result);
+			}
+			return $generatedPath;
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+	}
 }

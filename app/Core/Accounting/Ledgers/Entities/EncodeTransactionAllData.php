@@ -88,9 +88,11 @@ class EncodeTransactionAllData extends LedgerService
 				$companyDecodedData[$decodedData] = json_decode($companyData[$decodedData]);
 
 				
-				//convert amount(round) into their company's selected decimal points
+				//convert amount(number_format) into their company's selected decimal points
 
-				$amount[$decodedData] = round($amount[$decodedData],$companyDecodedData[$decodedData]->noOfDecimalPoints);
+				$amount[$decodedData] = number_format($amount[$decodedData],$companyDecodedData[$decodedData]->noOfDecimalPoints,'.','');
+				$openingBalance[$decodedData] = number_format($openingBalance[$decodedData],$companyDecodedData[$decodedData]->noOfDecimalPoints,'.','');
+				$currentBalance[$decodedData] = number_format($currentBalance[$decodedData],$companyDecodedData[$decodedData]->noOfDecimalPoints,'.','');
 							
 
 				// date format conversion

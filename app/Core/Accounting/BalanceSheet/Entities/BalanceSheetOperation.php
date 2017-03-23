@@ -98,15 +98,15 @@ class BalanceSheetOperation extends ConstantClass
 		$path = $constantArray['balanceSheetPdf'];
 		
 		//delete older files
-		$files = glob($path.'*'); // get all file names
-		foreach($files as $file)
-		{ 
+		// $files = glob($path.'*'); // get all file names
+		// foreach($files as $file)
+		// { 
 			// iterate files
-			if(is_file($file))
-			{
-				unlink($file); // delete file
-			}
-		}
+			// if(is_file($file))
+			// {
+				// unlink($file); // delete file
+			// }
+		// }
 		
 		$documentPathName = $path.$documentName;
 		$mpdf = new mPDF('A4','landscape');

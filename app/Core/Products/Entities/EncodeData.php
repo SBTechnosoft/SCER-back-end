@@ -67,16 +67,16 @@ class EncodeData extends ProductCategoryService
 		$branchDetail  = new BranchDetail();
 		$getBranchDetails = $branchDetail->getBranchDetails($branchId);
 		
-		//convert amount(round) into their company's selected decimal points
-		$purchasePrice = round($purchasePrice,$getCompanyDetails['noOfDecimalPoints']);
-		$wholesaleMargin = round($wholesaleMargin,$getCompanyDetails['noOfDecimalPoints']);
-		$semiWholeSaleMargin = round($semiWholeSaleMargin,$getCompanyDetails['noOfDecimalPoints']);
-		$vat= round($vat,$getCompanyDetails['noOfDecimalPoints']);
-		$mrp= round($mrp,$getCompanyDetails['noOfDecimalPoints']);
-		$margin= round($margin,$getCompanyDetails['noOfDecimalPoints']);
-		$additionalTax = round($additionalTax,$getCompanyDetails['noOfDecimalPoints']);
-		$marginFlat = round($marginFlat,$getCompanyDetails['noOfDecimalPoints']);
-		$wholesaleMarginFlat = round($wholesaleMarginFlat,$getCompanyDetails['noOfDecimalPoints']);
+		//convert amount(number_format) into their company's selected decimal points
+		$purchasePrice = number_format($purchasePrice,$getCompanyDetails['noOfDecimalPoints'],'.','');
+		$wholesaleMargin = number_format($wholesaleMargin,$getCompanyDetails['noOfDecimalPoints'],'.','');
+		$semiWholeSaleMargin = number_format($semiWholeSaleMargin,$getCompanyDetails['noOfDecimalPoints'],'.','');
+		$vat= number_format($vat,$getCompanyDetails['noOfDecimalPoints'],'.','');
+		$mrp= number_format($mrp,$getCompanyDetails['noOfDecimalPoints'],'.','');
+		$margin= number_format($margin,$getCompanyDetails['noOfDecimalPoints'],'.','');
+		$additionalTax = number_format($additionalTax,$getCompanyDetails['noOfDecimalPoints'],'.','');
+		$marginFlat = number_format($marginFlat,$getCompanyDetails['noOfDecimalPoints'],'.','');
+		$wholesaleMarginFlat = number_format($wholesaleMarginFlat,$getCompanyDetails['noOfDecimalPoints'],'.','');
 		
 		//date format conversion['created_at','updated_at'] product
 		$product = new Product();

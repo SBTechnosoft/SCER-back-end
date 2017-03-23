@@ -25,7 +25,8 @@ class ConstantClass
 		$constantArray['billUrl']="Storage/Bill/";
 		$constantArray['profitLossPdf']="Storage/ProfitLoss/Pdf/";
 		$constantArray['profitLossExcel']="Storage/ProfitLoss/Excel/";
-		$constantArray['cashFlowUrl']="Storage/CashFlow/";
+		$constantArray['cashFlowPdf']="Storage/CashFlow/Pdf/";
+		$constantArray['cashFlowExcel']="Storage/CashFlow/Excel/";
 		$constantArray['trialBalancePdf']="Storage/TrialBalance/Pdf/";
 		$constantArray['trialBalanceExcel']="Storage/TrialBalance/Excel/";
 		$constantArray['balanceSheetPdf']="Storage/BalanceSheet/Pdf/";
@@ -101,15 +102,15 @@ class ConstantClass
 	*/
 	public function constantDatabase()
 	{
-		if(strcmp("www.scerp1.com",$_SERVER['HTTP_HOST'])==0)
-		{
+		// if(strcmp("www.scerp1.com",$_SERVER['HTTP_HOST'])==0)
+		// {
 			$database = "mysql";
 			return $database;
-		}
-		else
-		{
-			$database = "mysql_silicon";
-			return $database;
-		}
+		// }
+		// else
+		// {
+			// $database = "mysql_silicon";
+			// return $database;
+		// }
 	}
 }

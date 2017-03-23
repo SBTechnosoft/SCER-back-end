@@ -556,7 +556,7 @@ include ('connection.php');
 				
 				
 				// var url="http://www.scerp1.com/accounting/cash-flow/company/"+companyId+"/export";  //pdf generate
-				// var url="http://www.scerp1.com/accounting/profit-loss/company/"+companyId+"/export";  //pdf generate
+				var url="http://www.scerp1.com/accounting/profit-loss/company/"+companyId+"/export";  //pdf generate
 				// var url="http://www.scerp1.com/accounting/balance-sheet/company/"+companyId+"/export";  //pdf generate
 				
 				// var url="http://www.scerp1.com/accounting/cash-flow/company/"+companyId;  //cash-flow
@@ -574,7 +574,7 @@ include ('connection.php');
 				// var url = "http://www.scerp1.com/authenticate";
 				// var url = "http://www.scerp1.com/users/email-address/"+emailId;
 				// var url = "http://www.scerp1.com/accounting/trial-balance/company/"+companyId;
-				var url = "http://www.scerp1.com/accounting/trial-balance/company/"+companyId+"/export";
+				// var url = "http://www.scerp1.com/accounting/trial-balance/company/"+companyId+"/export";
 			
 				
 				// var url = "http://www.scerp1.com/accounting/bills/"+saleId;

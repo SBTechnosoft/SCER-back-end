@@ -72,6 +72,10 @@ class EncodeData extends StateService
 			$ledger->setUpdated_at($convertedUpdatedDate);
 			$getUpdatedDate = $ledger->getUpdated_at();
 		}
+		//convert amount(number_format) into their company's selected decimal points
+		$openingBalance = number_format($openingBalance,$companyDetails['noOfDecimalPoints'],'.','');
+		$currentBalance = number_format($currentBalance,$companyDetails['noOfDecimalPoints'],'.','');
+				
 		//set all data into json array
 		$data = array();
 		$data['ledgerId'] = $ledgerId;
@@ -127,8 +131,9 @@ class EncodeData extends StateService
 			'vatNo' =>$companyDetails['vatNo'],
 			'serviceTaxNo' => $companyDetails['serviceTaxNo'],
 			'basicCurrencySymbol' => $companyDetails['basicCurrencySymbol'],
+			'noOfDecimalPoints' => $companyDetails['noOfDecimalPoints'],
 			'formalName' => $companyDetails['formalName'],
-			'noOfDecimalPoints' => $companyDetails['currencySymbol'],	
+			'currencySymbol' => $companyDetails['currencySymbol'],	
 			'logo'=> array(
 				'documentName' => $companyDetails['logo']['documentName'],	
 				'documentUrl' => $companyDetails['logo']['documentUrl'],	

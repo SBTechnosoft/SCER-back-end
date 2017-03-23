@@ -55,12 +55,12 @@ class EncodeAllData extends ClientService
 			$getCompanyDetails[$decodedData] = $companyDetail->getCompanyDetails($companyId[$decodedData]);
 			
 			//convert amount(round) into their company's selected decimal points
-			$total[$decodedData] = round($total[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
-			$tax[$decodedData] = round($tax[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
-			$grandTotal[$decodedData] = round($grandTotal[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
-			$advance[$decodedData] = round($advance[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
-			$balance[$decodedData] = round($balance[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
-			$refund[$decodedData] = round($refund[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
+			$total[$decodedData] = number_format($total[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
+			$tax[$decodedData] = number_format($tax[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
+			$grandTotal[$decodedData] = number_format($grandTotal[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
+			$advance[$decodedData] = number_format($advance[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
+			$balance[$decodedData] = number_format($balance[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
+			$refund[$decodedData] = number_format($refund[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
 			
 			//date format conversion
 			$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');

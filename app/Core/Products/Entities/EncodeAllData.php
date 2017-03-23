@@ -74,16 +74,16 @@ class EncodeAllData extends ProductCategoryService
 			$branchDetail  = new BranchDetail();
 			$getBranchDetails[$decodedData] = $branchDetail->getBranchDetails($branchId[$decodedData]);
 			
-			//convert amount(round) into their company's selected decimal points
-			$purchasePrice[$decodedData] = round($purchasePrice[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
-			$wholesaleMargin[$decodedData] = round($wholesaleMargin[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
-			$semiWholesaleMargin[$decodedData] = round($semiWholesaleMargin[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
-			$vat[$decodedData] = round($vat[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
-			$margin[$decodedData] = round($margin[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
-			$mrp[$decodedData] = round($mrp[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
-			$additionalTax[$decodedData] = round($additionalTax[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
-			$marginFlat[$decodedData] = round($marginFlat[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
-			$wholesaleMarginFlat[$decodedData] = round($wholesaleMarginFlat[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints']);
+			//convert amount(number_format) into their company's selected decimal points
+			$purchasePrice[$decodedData] = number_format($purchasePrice[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
+			$wholesaleMargin[$decodedData] = number_format($wholesaleMargin[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
+			$semiWholesaleMargin[$decodedData] = number_format($semiWholesaleMargin[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
+			$vat[$decodedData] = number_format($vat[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
+			$margin[$decodedData] = number_format($margin[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
+			$mrp[$decodedData] = number_format($mrp[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
+			$additionalTax[$decodedData] = number_format($additionalTax[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
+			$marginFlat[$decodedData] = number_format($marginFlat[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
+			$wholesaleMarginFlat[$decodedData] = number_format($wholesaleMarginFlat[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
 			
 			//product date convertion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$createdAt[$decodedData])->format('d-m-Y');

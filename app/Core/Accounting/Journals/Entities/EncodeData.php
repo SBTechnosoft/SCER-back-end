@@ -60,8 +60,8 @@ class EncodeData extends LedgerService
 			$journal->setEntryDate($convertedEntryDate);
 			$getEntryDate = $journal->getEntryDate();
 		}
-		//convert amount(round) into their company's selected decimal points
-		$amount = round($amount,$companyDetails['noOfDecimalPoints']);
+		//convert amount(number_format) into their company's selected decimal points
+		$amount = number_format($amount,$companyDetails['noOfDecimalPoints'],'.','');
 		
 		//set all data into json array
 		$data = array();

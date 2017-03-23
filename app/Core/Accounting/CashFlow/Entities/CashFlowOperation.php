@@ -1,23 +1,21 @@
 <?php
-namespace ERP\Core\Accounting\ProfitLoss\Entities;
+namespace ERP\Core\Accounting\CashFlow\Entities;
 
 use mPDF;
 use ERP\Entities\Constants\ConstantClass;
 use ERP\Core\Companies\Services\CompanyService;
-use stdclass;
 use PHPExcel;
 use PHPExcel_IOFactory;
 use PHPExcel_Style_Fill;
 use PHPExcel_Style_Alignment;
-use PHPExcel_Style_NumberFormat;
 /**
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class ProfitLossOperation extends CompanyService
+class CashFlowOperation extends CompanyService
 {
 	/**
-	 * set Data into the pdf file 
+	 * calculate given data and set it into the pdf file 
 	 * $param database data
 	 * @return the array of document-path/exception message
 	*/
@@ -31,15 +29,15 @@ class ProfitLossOperation extends CompanyService
 						<thead style='border: 1px solid black; width:100%;'>
 							<tr style='border: 1px solid black;width:100%;'>
 								<th style='border: 1px solid black; width:50%;'>Ledger-Name</th>
-								<th style='border: 1px solid black;width:25%;'>Income</th>
-								<th style='border: 1px solid black;width:25%;'>Expense</th>
+								<th style='border: 1px solid black;width:25%;'>Debit</th>
+								<th style='border: 1px solid black;width:25%;'>Credit</th>
 							</tr>
 						</thead><tbody>";
 		$bodyPart = "";
 		$creditAmountTotal = 0;
 		$debitAmountTotal = 0;
-		$profitLoss = new ProfitLossOperation();
-		$companyDetail = $profitLoss->getCompanyData($decodedData[0]->ledger->companyId);
+		$cashFlow = new CashFlowOperation();
+		$companyDetail = $cashFlow->getCompanyData($decodedData[0]->ledger->companyId);
 		$decodedCompanyData = json_decode($companyDetail);
 		
 		for($arrayData=0;$arrayData<count($decodedData);$arrayData++)
@@ -49,16 +47,16 @@ class ProfitLossOperation extends CompanyService
 			{
 				$bodyPart = $bodyPart."	<tr style='border: 1px solid black;'>
 									<td style='border: 1px solid black; width:50%;'>".$decodedData[$arrayData]->ledger->ledgerName."</td>
-									<td style='border: 1px solid black;width:25%; text-align:center;'>".$decodedData[$arrayData]->amount."</td>
-									<td style='border: 1px solid black; width:25%;text-align:center;'> - </td></tr>";
+									<td style='border: 1px solid black;width:25%; text-align:center;'> - </td>
+									<td style='border: 1px solid black; width:25%;text-align:center;'>".$decodedData[$arrayData]->amount."</td></tr>";
 				$creditAmountTotal = $creditAmountTotal+$decodedData[$arrayData]->amount;
 			}
 			else
 			{
 				$bodyPart = $bodyPart."	<tr style='border: 1px solid black;'>
 									<td style='border: 1px solid black; width:50%;'>".$decodedData[$arrayData]->ledger->ledgerName."</td>
-									<td style='border: 1px solid black;width:25%; text-align:center;'> - </td>
-									<td style='border: 1px solid black; width:25%;text-align:center;'>".$decodedData[$arrayData]->amount."</td></tr>";
+									<td style='border: 1px solid black;width:25%; text-align:center;'>".$decodedData[$arrayData]->amount."</td>
+									<td style='border: 1px solid black; width:25%;text-align:center;'> - </td></tr>";
 				$debitAmountTotal = $debitAmountTotal+$decodedData[$arrayData]->amount;
 			}
 		}
@@ -77,12 +75,12 @@ class ProfitLossOperation extends CompanyService
 		
 		$bodyPart = $bodyPart."	<tr style='border: 1px solid black;'>
 							<td style='border: 1px solid black; width:50%;'>Total</td>
-							<td style='border: 1px solid black; width:25%;text-align:center;'>".$creditAmountTotal."</td>
-							<td style='border: 1px solid black;width:25%; text-align:center;'>".$debitAmountTotal."</td></tr>
+							<td style='border: 1px solid black; width:25%;text-align:center;'>".$debitAmountTotal."</td>
+							<td style='border: 1px solid black;width:25%; text-align:center;'>".$creditAmountTotal."</td></tr>
 							<tr style='border: 1px solid black;'>
 							<td style='border: 1px solid black; width:50%;'>Difference</td>
-							<td style='border: 1px solid black; width:25%;text-align:center;'>".$differenceCr."</td>
-							<td style='border: 1px solid black;width:25%; text-align:center;'>".$differenceDr."</td></tr>";
+							<td style='border: 1px solid black; width:25%;text-align:center;'>".$differenceDr."</td>
+							<td style='border: 1px solid black;width:25%; text-align:center;'>".$differenceCr."</td></tr>";
 		$footerPart = "</tbody></table>";
 		$htmlBody = $headerPart.$bodyPart.$footerPart;
 		
@@ -93,7 +91,7 @@ class ProfitLossOperation extends CompanyService
 		$combineDateTime = $splitDateTime[0].$splitDateTime[1].$splitDateTime[2].$splitDateTime[3].$splitDateTime[4].$splitDateTime[5];
 		$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".pdf";
 		
-		$path = $constantArray['profitLossPdf'];
+		$path = $constantArray['cashFlowPdf'];
 		
 		//delete older files
 		// $files = glob($path.'*'); // get all file names
@@ -108,7 +106,7 @@ class ProfitLossOperation extends CompanyService
 		
 		$documentPathName = $path.$documentName;
 		$mpdf = new mPDF('A4','landscape');
-		$mpdf->SetHTMLHeader('<div style="text-align: center; font-weight: bold; font-size:20px;">Profit Loss</div>');
+		$mpdf->SetHTMLHeader('<div style="text-align: center; font-weight: bold; font-size:20px;">Cash Flow</div>');
 		$mpdf->SetDisplayMode('fullpage');
 		$mpdf->WriteHTML($htmlBody);
 		$mpdf->Output($documentPathName,'F');
@@ -118,7 +116,7 @@ class ProfitLossOperation extends CompanyService
 	}
 	
 	/**
-	 * set Data into the excel file 
+	 * calculate given data and set it into the excel file 
 	 * $param database data
 	 * @return the array of document-path/exception message
 	*/
@@ -129,7 +127,7 @@ class ProfitLossOperation extends CompanyService
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
 		
-		$companyService = new ProfitLossOperation();
+		$companyService = new CashFlowOperation();
 		$companyDetail = $companyService->getCompanyData($decodedData[0]->ledger->companyId);
 		$decodedCompanyData = json_decode($companyDetail);
 		
@@ -143,54 +141,54 @@ class ProfitLossOperation extends CompanyService
 						->setDescription("Test doc for Office 2007 XLSX, generated by PHPExcel.")
 						->setKeywords("office 2007 openxml php")
 						->setCategory("Test result file");
-		$objPHPExcel->getActiveSheet()->setTitle('ProfitLoss');
+		$objPHPExcel->getActiveSheet()->setTitle('CashFLow');
 		
 		//heading-start
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,1, 'Profit-Loss');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,1, 'Cash-Flow');
 		
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,2, 'Ledger-Name');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,2, 'Income');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,2, 'Expense');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,2, 'Debit');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,2, 'Credit');
 		//heading-end
 		$creditAmountTotal=0;
 		$debitAmountTotal=0;
 		for($arrayData=0;$arrayData<count($decodedData);$arrayData++)
 		{
-			// $decodedData[$arrayData]->amount = number_format($decodedData[$arrayData]->amount,$decodedCompanyData->noOfDecimalPoints,'.','');
+			$decodedData[$arrayData]->amount = number_format($decodedData[$arrayData]->amount,$decodedCompanyData->noOfDecimalPoints);
 			if(strcmp($decodedData[$arrayData]->amountType,"credit")==0)
 			{
 				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+3,$decodedData[$arrayData]->ledger->ledgerName);
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+3,$decodedData[$arrayData]->amount);
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$arrayData+3,' - ');
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+3,'-');
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$arrayData+3,$decodedData[$arrayData]->amount);
 				$creditAmountTotal = $creditAmountTotal+$decodedData[$arrayData]->amount;
 			}
 			else
 			{
 				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+3,$decodedData[$arrayData]->ledger->ledgerName);
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+3,' - ');
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$arrayData+3,$decodedData[$arrayData]->amount);
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+3,$decodedData[$arrayData]->amount);
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$arrayData+3,'-');
 				$debitAmountTotal = $debitAmountTotal+$decodedData[$arrayData]->amount;
 			}
 		}
-		$debitAmountTotal = number_format($debitAmountTotal,$decodedCompanyData->noOfDecimalPoints,'.','');
-		$creditAmountTotal = number_format($creditAmountTotal,$decodedCompanyData->noOfDecimalPoints,'.','');
+		$debitAmountTotal = number_format($debitAmountTotal,$decodedCompanyData->noOfDecimalPoints);
+		$creditAmountTotal = number_format($creditAmountTotal,$decodedCompanyData->noOfDecimalPoints);
 		if($debitAmountTotal>$creditAmountTotal)
 		{
-			$differenceDr = number_format(($debitAmountTotal-$creditAmountTotal),$decodedCompanyData->noOfDecimalPoints,'.','');
+			$differenceDr = number_format(($debitAmountTotal-$creditAmountTotal),$decodedCompanyData->noOfDecimalPoints);
 			$differenceCr = '';
 		}
 		else
 		{
-			$differenceCr = number_format(($creditAmountTotal-$debitAmountTotal),$decodedCompanyData->noOfDecimalPoints,'.','');
+			$differenceCr = number_format(($creditAmountTotal-$debitAmountTotal),$decodedCompanyData->noOfDecimalPoints);
 			$differenceDr = '';
 		}
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+3,'Total');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+3,$creditAmountTotal);
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+3,$debitAmountTotal);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+3,$debitAmountTotal);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+3,$creditAmountTotal);
 		
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+4,'Difference');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+4,$differenceCr);
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+4,$differenceDr);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+4,$differenceDr);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+4,$differenceCr);
 		
 		// style for header
 		$headerStyleArray = array(
@@ -215,27 +213,27 @@ class ProfitLossOperation extends CompanyService
 		
 		// set title style
 		$objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($titleStyleArray);
-		// $objPHPExcel->getStyle("B3")->getNumberFormat()->setFormatCode('FORMAT_NUMBER_COMMA_SEPARATED2'); 
-		// $objPHPExcel->getActiveSheet()->getStyle('B3')->getNumberFormat()->applyFromArray( 
-			// array('code' => PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE_00)
-		// );
+		
 		// make unique name
 		$dateTime = date("d-m-Y h-i-s");
 		$convertedDateTime = str_replace(" ","-",$dateTime);
 		$splitDateTime = explode("-",$convertedDateTime);
 		$combineDateTime = $splitDateTime[0].$splitDateTime[1].$splitDateTime[2].$splitDateTime[3].$splitDateTime[4].$splitDateTime[5];
 		$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".xls"; //xslx
-		$path = $constantArray['profitLossExcel'];
+		$path = $constantArray['cashFlowExcel'];
 		$documentPathName = $path.$documentName;
 		
 		//delete older files
 		// $files = glob($path.'*'); // get all file names
+		// print_r($files);
 		// foreach($files as $file)
 		// { 
 			// iterate files
 			// if(is_file($file))
 			// {
+				// echo $file;
 				// unlink($file); // delete file
+				// echo "eee";
 			// }
 		// }
 		
