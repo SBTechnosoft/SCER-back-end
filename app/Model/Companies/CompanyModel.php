@@ -24,6 +24,8 @@ class CompanyModel extends Model
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
+		$constantArray = $constantDatabase->constantVariable();
+		
 		$getCompanyData = array();
 		$getCompanyKey = array();
 		$getCompanyData = func_get_arg(0);

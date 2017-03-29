@@ -134,7 +134,10 @@ class AuthenticateModel extends Model
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		
+		if(strcmp($databaseName,'NoAccess')==0)
+		{
+			return $exceptionArray['noAccess'];
+		}
 		DB::beginTransaction();
 		$raw = DB::connection($databaseName)->select("select
 		session_id,

@@ -77,7 +77,7 @@ class JournalController extends BaseController implements ContainerInterface
 			{
 				return $authenticationResult;
 			}
-			if(in_array(true,$request->file()) && strcmp($status,$exceptionArray['200'])==0)
+			if(in_array(true,$request->file()))
 			{
 				$documentPath = $constantArray['journalDocumentUrl'];
 				$documentController =new DocumentController(new Container());

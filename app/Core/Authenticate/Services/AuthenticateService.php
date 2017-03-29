@@ -108,7 +108,7 @@ class AuthenticateService
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		if(strcmp($status,$exceptionArray['404'])==0)
+		if(strcmp($status,$exceptionArray['404'])==0 || strcmp($status,$exceptionArray['noAccess'])==0)
 		{
 			return $status;
 		}

@@ -44,7 +44,7 @@ class ProfitLossOperation extends CompanyService
 		
 		for($arrayData=0;$arrayData<count($decodedData);$arrayData++)
 		{
-			$decodedData[$arrayData]->amount = number_format($decodedData[$arrayData]->amount,$decodedCompanyData->noOfDecimalPoints);
+			
 			if(strcmp($decodedData[$arrayData]->amountType,"credit")==0)
 			{
 				$bodyPart = $bodyPart."	<tr style='border: 1px solid black;'>
@@ -62,8 +62,6 @@ class ProfitLossOperation extends CompanyService
 				$debitAmountTotal = $debitAmountTotal+$decodedData[$arrayData]->amount;
 			}
 		}
-		$debitAmountTotal = number_format($debitAmountTotal,$decodedCompanyData->noOfDecimalPoints);
-		$creditAmountTotal = number_format($creditAmountTotal,$decodedCompanyData->noOfDecimalPoints);
 		if($debitAmountTotal>$creditAmountTotal)
 		{
 			$differenceDr = number_format(($debitAmountTotal-$creditAmountTotal),$decodedCompanyData->noOfDecimalPoints);
@@ -74,6 +72,8 @@ class ProfitLossOperation extends CompanyService
 			$differenceCr = number_format(($creditAmountTotal-$debitAmountTotal),$decodedCompanyData->noOfDecimalPoints);
 			$differenceDr = '';
 		}
+		$debitAmountTotal = number_format($debitAmountTotal,$decodedCompanyData->noOfDecimalPoints);
+		$creditAmountTotal = number_format($creditAmountTotal,$decodedCompanyData->noOfDecimalPoints);
 		
 		$bodyPart = $bodyPart."	<tr style='border: 1px solid black;'>
 							<td style='border: 1px solid black; width:50%;'>Total</td>
@@ -156,7 +156,7 @@ class ProfitLossOperation extends CompanyService
 		$debitAmountTotal=0;
 		for($arrayData=0;$arrayData<count($decodedData);$arrayData++)
 		{
-			// $decodedData[$arrayData]->amount = number_format($decodedData[$arrayData]->amount,$decodedCompanyData->noOfDecimalPoints,'.','');
+			
 			if(strcmp($decodedData[$arrayData]->amountType,"credit")==0)
 			{
 				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+3,$decodedData[$arrayData]->ledger->ledgerName);
@@ -172,8 +172,6 @@ class ProfitLossOperation extends CompanyService
 				$debitAmountTotal = $debitAmountTotal+$decodedData[$arrayData]->amount;
 			}
 		}
-		$debitAmountTotal = number_format($debitAmountTotal,$decodedCompanyData->noOfDecimalPoints,'.','');
-		$creditAmountTotal = number_format($creditAmountTotal,$decodedCompanyData->noOfDecimalPoints,'.','');
 		if($debitAmountTotal>$creditAmountTotal)
 		{
 			$differenceDr = number_format(($debitAmountTotal-$creditAmountTotal),$decodedCompanyData->noOfDecimalPoints,'.','');
@@ -184,6 +182,9 @@ class ProfitLossOperation extends CompanyService
 			$differenceCr = number_format(($creditAmountTotal-$debitAmountTotal),$decodedCompanyData->noOfDecimalPoints,'.','');
 			$differenceDr = '';
 		}
+		$debitAmountTotal = number_format($debitAmountTotal,$decodedCompanyData->noOfDecimalPoints,'.','');
+		$creditAmountTotal = number_format($creditAmountTotal,$decodedCompanyData->noOfDecimalPoints,'.','');
+		
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+3,'Total');
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+3,$creditAmountTotal);
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+3,$debitAmountTotal);

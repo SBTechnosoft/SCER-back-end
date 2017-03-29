@@ -41,7 +41,7 @@ class TrialBalanceOperation extends CompanyService
 		
 		for($arrayData=0;$arrayData<count($decodedData);$arrayData++)
 		{
-			$decodedData[$arrayData]->amount = number_format($decodedData[$arrayData]->amount,$decodedCompanyData->noOfDecimalPoints);
+			
 			if(strcmp($decodedData[$arrayData]->amountType,"credit")==0)
 			{
 				$bodyPart = $bodyPart."	<tr style='border: 1px solid black;'>
@@ -142,7 +142,7 @@ class TrialBalanceOperation extends CompanyService
 		$debitAmountTotal = 0;
 		for($arrayData=0;$arrayData<count($decodedData);$arrayData++)
 		{
-			// $decodedData[$arrayData]->amount = number_format($decodedData[$arrayData]->amount,$decodedCompanyData->noOfDecimalPoints);
+			
 			if(strcmp($decodedData[$arrayData]->amountType,"credit")==0)
 			{
 				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+3,$decodedData[$arrayData]->ledger->ledgerName);

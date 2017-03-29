@@ -24,6 +24,7 @@ class ExceptionMessage
 		$msgArray['Exists'] = "Exists: Token Already Exists";
 		$msgArray['NoExists'] = "NotExists: Token Not Exists";
 		$msgArray['Email'] = "Message could not be sent";
+		$msgArray['noAccess'] = "Don't Have Access Right";
 		return $msgArray;
 	}
 }

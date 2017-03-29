@@ -2,7 +2,6 @@
 
 ##### `POST /authenticate`
 + Header
-	- Authentication Token
 
 
 + Body
