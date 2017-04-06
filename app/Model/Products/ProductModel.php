@@ -161,7 +161,8 @@ class ProductModel extends Model
 			$raw = DB::connection($databaseName)->statement("insert into 
 			product_trn(transaction_date,
 			transaction_type,
-			qty,price,
+			qty,
+			price,
 			discount,
 			discount_value,
 			discount_type,

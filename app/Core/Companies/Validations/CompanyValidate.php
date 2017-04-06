@@ -20,8 +20,8 @@ class CompanyValidate extends CompanyModel
 	public function validate($request)
 	{
 		$rules = array(
-			'company_name'=> 'between:2,50|regex:/^[a-zA-Z &_`#().\'-]+$/', 
-			'company_display_name'=>'between:2,50|regex:/^[a-zA-Z &_`#().\'-]+$/',
+			'company_name'=> 'between:2,50|regex:/^[a-zA-Z0-9 &_`#().\'-]+$/', 
+			'company_display_name'=>'between:2,50|regex:/^[a-zA-Z0-9 &_`#().\'-]+$/',
 			'address1'=>'between:1,50|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'address2'=>'between:1,50|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'pincode'=>'between:6,10|regex:/^[0-9]+$/',
@@ -35,9 +35,9 @@ class CompanyValidate extends CompanyModel
 		);
 		$messages = [
 			'company_name.between' => 'StringLengthException :Enter the :attribute less then 50 character',
-			'company_name.regex' => 'company-name contains character from "a-zA-Z &_`#().\'-" only',
+			'company_name.regex' => 'company-name contains character from "a-zA-Z0-9 &_`#().\'-" only',
 			'company_display_name.between' => 'StringLengthException :Enter the :attribute less then 50 character',
-			'company_display_name.regex' => 'company-display-name contains character from "a-zA-Z &_`#().\'-" only',
+			'company_display_name.regex' => 'company-display-name contains character from "a-zA-Z0-9 &_`#().\'-" only',
 			'address1.between' => 'StringLengthException :Enter the :attribute less then 50 character',
 			'address1.regex' => 'address1 contains character from "a-zA-Z0-9* ,- /_`#[]().\" only',
 			'address2.between' => 'StringLengthException :Enter the :attribute less then 50 character',
@@ -88,8 +88,8 @@ class CompanyValidate extends CompanyModel
 	public function validateUpdateData($keyName,$value,$request)
 	{
 		$validationArray = array(
-			'company_name'=> 'between:2,50|regex:/^[a-zA-Z &_`#().\'-]+$/', 
-			'company_display_name'=>'between:2,50|regex:/^[a-zA-Z &_`#().\'-]+$/',
+			'company_name'=> 'between:2,50|regex:/^[a-zA-Z0-9 &_`#().\'-]+$/', 
+			'company_display_name'=>'between:2,50|regex:/^[a-zA-Z0-9 &_`#().\'-]+$/',
 			'address1'=>'between:1,50|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'address2'=>'between:1,50|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'pincode'=>'between:6,10|regex:/^[0-9]+$/',
@@ -117,9 +117,9 @@ class CompanyValidate extends CompanyModel
 			);
 			$messages = [
 				'company_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
-				'company_name.regex' => 'company-name contains character from "a-zA-Z &_`#().\'-" only',
+				'company_name.regex' => 'company-name contains character from "a-zA-Z0-9 &_`#().\'-" only',
 				'company_display_name.between' => 'StringLengthException :Enter the :attribute less then 50 character',
-				'company_display_name.regex' => 'company-display-name contains character from "a-zA-Z &_`#().\'-" only',
+				'company_display_name.regex' => 'company-display-name contains character from "a-zA-Z0-9 &_`#().\'-" only',
 				'address1.between' => 'StringLengthException :Enter the :attribute less then 50 character',
 				'address1.regex' => 'address1 contains character from "a-zA-Z0-9* ,- /_`#[]().\" only',
 				'address2.between' => 'StringLengthException :Enter the :attribute less then 50 character',

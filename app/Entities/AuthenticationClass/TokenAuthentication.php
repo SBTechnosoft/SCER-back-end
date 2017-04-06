@@ -29,19 +29,18 @@ class TokenAuthentication extends AuthenticateService
 			//token not exists
 			return $exceptionArray['NoExists'];
 		}
+		
 		//get active-session data for token validation
-		$authenticationService = new AuthenticateService();
-		$authenticationData = $authenticationService->getAllData();
-		$decodedData = json_decode($authenticationData);
-		for($arrayData=0;$arrayData<count($decodedData);$arrayData++)
+		$authenticationModel = new AuthenticateModel();
+		$authenticationData = $authenticationModel->checkAuthenticationToken($headerData['authenticationtoken'][0]);
+		
+		if(is_array($authenticationData))
 		{
-			if(strcmp($decodedData[$arrayData]->token,$headerData['authenticationtoken'][0])==0)
-			{
-				$tokenFlag=1;
-				$date = $decodedData[$arrayData]->updatedAt;
-				break;
-			}
+			
+			$date = $authenticationData[0]->updated_at;
+			$tokenFlag =1;
 		}
+		
 		if($tokenFlag==0)
 		{
 			//token not matched
@@ -52,8 +51,9 @@ class TokenAuthentication extends AuthenticateService
 			$mytime = Carbon::now();
 			$currentDateTime = $mytime->toDateTimeString();
 			$convertedDate= Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $currentDateTime)->format('d-m-Y H:i:s');
-			
-			$stringDate = strtotime($date);
+			$convertedUpdateDate= Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $date)->format('d-m-Y H:i:s');
+
+			$stringDate = strtotime($convertedUpdateDate);
 			$stringConvertedDate = strtotime($convertedDate);
 			if($stringConvertedDate>=$stringDate)
 			{
@@ -63,6 +63,7 @@ class TokenAuthentication extends AuthenticateService
 			{
 				$seconds = $stringDate-$stringConvertedDate;
 			}
+			
 			// extract hours
 			$hours = floor($seconds / (60 * 60));
 			
@@ -73,7 +74,6 @@ class TokenAuthentication extends AuthenticateService
 			// extract the remaining seconds
 			$divisor_for_seconds = $divisor_for_minutes % 60;
 			$seconds = ceil($divisor_for_seconds);
-
 			$hourValue = 24;
 			if($hours<$hourValue || $hours==$hourValue && $minutes==0 && $seconds==0)
 			{

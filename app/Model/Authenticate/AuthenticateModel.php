@@ -134,10 +134,7 @@ class AuthenticateModel extends Model
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		if(strcmp($databaseName,'NoAccess')==0)
-		{
-			return $exceptionArray['noAccess'];
-		}
+		
 		DB::beginTransaction();
 		$raw = DB::connection($databaseName)->select("select
 		session_id,
@@ -192,6 +189,41 @@ class AuthenticateModel extends Model
 			return $exceptionArray['content'];
 		}
 	}
+	
+	/**
+	 * get user-type 
+	 * @param header-data
+	 * returns the exception-message/user-type
+	*/
+	public function checkAuthenticationToken($headerData)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->select("select
+		session_id,
+		updated_at
+		from active_session
+		where token='".$headerData."'");
+
+		DB::commit();
+		if(count($raw)!=0)
+		{
+			return $raw;
+		}
+		else
+		{
+			return $exceptionArray['token'];
+		}
+	}
+
 	
 	/**
 	 * change updated_at date

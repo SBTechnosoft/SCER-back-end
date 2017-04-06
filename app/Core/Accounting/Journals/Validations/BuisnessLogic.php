@@ -97,7 +97,6 @@ class BuisnessLogic extends LedgerModel
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-
 		for($journalArray=0;$journalArray<count($trimRequest[0]);$journalArray++)
 		{
 			$amount[$journalArray][0] = $trimRequest[0][$journalArray]['amount'];
@@ -107,6 +106,7 @@ class BuisnessLogic extends LedgerModel
 			//check ledger exists
 			$journalObject = new BuisnessLogic();
 			$ledgerIdResult = $journalObject->getData($ledgerId[$journalArray][2]);
+			
 			if(strcmp($ledgerIdResult,$exceptionArray['404'])==0)
 			{
 				return $exceptionArray['404'];
@@ -124,7 +124,6 @@ class BuisnessLogic extends LedgerModel
 				}
 			}
 		}
-		
 		$epsilon = 0.00001;
 		if(abs($creditAmountArray-$debitAmountArray)<$epsilon)
 		{

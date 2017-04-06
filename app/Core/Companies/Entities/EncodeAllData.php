@@ -38,6 +38,8 @@ class EncodeAllData extends StateService
 			$pan[$decodedData] = $decodedJson[$decodedData]['pan'];
 			$tin[$decodedData] = $decodedJson[$decodedData]['tin'];
 			$vat_no[$decodedData] = $decodedJson[$decodedData]['vat_no'];
+			$cgst[$decodedData] = $decodedJson[$decodedData]['cgst'];
+			$sgst[$decodedData] = $decodedJson[$decodedData]['sgst'];
 			$serviceTaxNo[$decodedData] = $decodedJson[$decodedData]['service_tax_no'];
 			$basicCurrencySymbol[$decodedData] = $decodedJson[$decodedData]['basic_currency_symbol'];
 			$formalName[$decodedData] = $decodedJson[$decodedData]['formal_name'];
@@ -95,6 +97,8 @@ class EncodeAllData extends StateService
 				'pan' => $pan[$jsonData],
 				'tin' => $tin[$jsonData],
 				'vatNo' =>$vat_no[$jsonData],
+				'cgst' =>$cgst[$jsonData],
+				'sgst' =>$sgst[$jsonData],
 				'serviceTaxNo' => $serviceTaxNo[$jsonData],
 				'basicCurrencySymbol' => $basicCurrencySymbol[$jsonData],
 				'formalName' => $formalName[$jsonData],

@@ -62,6 +62,7 @@ class RouteServiceProvider extends ServiceProvider
 			$routeArray['logout'] = "Logout";
 			$routeArray['documents'] = "Document";
 			$routeArray['settings'] = "Setting";
+			$routeArray['taxation'] = "Taxation";
 			
 			foreach($routeArray as $key => $value)
 			{

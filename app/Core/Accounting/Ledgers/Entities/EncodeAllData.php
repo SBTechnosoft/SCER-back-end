@@ -36,7 +36,8 @@ class EncodeAllData extends StateService
 			$invoiceNumber[$decodedData] = $decodedJson[$decodedData]['invoice_number'];
 			$panNo[$decodedData] = $decodedJson[$decodedData]['pan'];
 			$tinNo[$decodedData] = $decodedJson[$decodedData]['tin'];
-			$gstNo[$decodedData] = $decodedJson[$decodedData]['gst'];
+			$cgst[$decodedData] = $decodedJson[$decodedData]['cgst'];
+			$sgst[$decodedData] = $decodedJson[$decodedData]['sgst'];
 			$stateAbb[$decodedData] = $decodedJson[$decodedData]['state_abb'];
 			$cityId[$decodedData] = $decodedJson[$decodedData]['city_id'];
 			$ledgerGrpId[$decodedData] = $decodedJson[$decodedData]['ledger_group_id'];
@@ -101,7 +102,8 @@ class EncodeAllData extends StateService
 				'invoiceNumber' => $invoiceNumber[$jsonData],
 				'pan'=> $panNo[$jsonData],
 				'tin'=> $tinNo[$jsonData],
-				'gstNo'=> $gstNo[$jsonData],
+				'cgst'=> $cgst[$jsonData],
+				'sgst'=> $sgst[$jsonData],
 				'createdAt' => $getCreatedDate[$jsonData],
 				'updatedAt' => $getUpdatedDate[$jsonData],
 				'openingBalance' => $openingBalance[$jsonData],

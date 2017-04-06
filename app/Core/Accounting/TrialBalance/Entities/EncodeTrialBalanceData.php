@@ -28,6 +28,7 @@ class EncodeTrialBalanceData extends LedgerService
 			$amount[$decodedData] = $decodedJson[$decodedData]['amount'];
 			$amountType[$decodedData] = $decodedJson[$decodedData]['amount_type'];
 			$trialBalanceId[$decodedData] = $decodedJson[$decodedData]['trial_balance_id'];
+			
 			$trialBalanceData = new EncodeTrialBalanceData();
 			$ledgerData[$decodedData]  = $trialBalanceData->getLedgerData($ledgerId[$decodedData]);
 			$decodedLedgerData[$decodedData] = json_decode($ledgerData[$decodedData]);

@@ -60,18 +60,18 @@ class LedgerModel extends Model
 			$ledgerId = DB::connection($databaseName)->select("SELECT  MAX(ledger_id) AS ledger_id from ledger_mst where deleted_at='0000-00-00 00:00:00'");
 			$result = DB::connection($databaseName)->statement("CREATE TABLE ".$ledgerId[0]->ledger_id."_ledger_dtl (
 			 `".$ledgerId[0]->ledger_id."_id` int(11) NOT NULL AUTO_INCREMENT,
-			 `amount` decimal(20,4) NOT NULL,
-			 `amount_type` enum('credit','debit') NOT NULL,
-			 `entry_date` date NOT NULL,
+			 `amount` decimal(20,4) NOT NULL DEFAULT '0.0000',
+			 `amount_type` enum('credit','debit') NOT NULL DEFAULT 'credit',
+			 `entry_date` date NOT NULL DEFAULT '0000-00-00',
 			 `jf_id` int(11) NOT NULL,
 			 `balance_flag` enum('','opening','closing') NOT NULL DEFAULT '',
 			 `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-			 `updated_at` datetime NOT NULL,
-			 `deleted_at` datetime NOT NULL,
+			 `updated_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			 `deleted_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 			 `ledger_id` int(11) NOT NULL,
 			 PRIMARY KEY (`".$ledgerId[0]->ledger_id."_id`)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf16");
-			
+
 			if($result==1)
 			{
 				DB::beginTransaction();
@@ -87,7 +87,8 @@ class LedgerModel extends Model
 				invoice_number,
 				pan,
 				tin,
-				gst,
+				cgst,
+				sgst,
 				created_at,
 				updated_at,
 				deleted_at,
@@ -177,18 +178,18 @@ class LedgerModel extends Model
 			$ledgerId = DB::connection($databaseName)->select("SELECT  MAX(ledger_id) AS ledger_id from ledger_mst where deleted_at='0000-00-00 00:00:00'");
 			$result = DB::connection($databaseName)->statement("CREATE TABLE ".$ledgerId[0]->ledger_id."_ledger_dtl (
 			 `".$ledgerId[0]->ledger_id."_id` int(11) NOT NULL AUTO_INCREMENT,
-			 `amount` decimal(20,4) NOT NULL,
-			 `amount_type` enum('credit','debit') NOT NULL,
-			 `entry_date` date NOT NULL,
+			 `amount` decimal(20,4) NOT NULL DEFAULT '0.0000',
+			 `amount_type` enum('credit','debit') NOT NULL DEFAULT 'credit',
+			 `entry_date` date NOT NULL DEFAULT '0000-00-00',
 			 `jf_id` int(11) NOT NULL,
 			 `balance_flag` enum('','opening','closing') NOT NULL  DEFAULT '',
 			 `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-			 `updated_at` datetime NOT NULL,
-			 `deleted_at` datetime NOT NULL,
+			 `updated_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			 `deleted_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 			 `ledger_id` int(11) NOT NULL,
 			 PRIMARY KEY (`".$ledgerId[0]->ledger_id."_id`)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf16");
-			
+
 			if($result==1)
 			{
 				//insertion of balance data in ledger table
@@ -209,7 +210,8 @@ class LedgerModel extends Model
 					invoice_number,
 					pan,
 					tin,
-					gst,
+					cgst,
+					sgst,
 					created_at,
 					updated_at,
 					deleted_at,
@@ -310,14 +312,14 @@ class LedgerModel extends Model
 				DB::beginTransaction();
 				$result = DB::connection($databaseName)->statement("CREATE TABLE ".$ledgerIdData[$ledgerIdArray]->ledger_id."_ledger_dtl (
 				 `".$ledgerIdData[$ledgerIdArray]->ledger_id."_id` int(11) NOT NULL AUTO_INCREMENT,
-				 `amount` decimal(20,4) NOT NULL,
-				 `amount_type` enum('credit','debit') NOT NULL,
-				 `entry_date` date NOT NULL,
+				 `amount` decimal(20,4) NOT NULL DEFAULT '0.0000',
+				 `amount_type` enum('credit','debit') NOT NULL DEFAULT 'credit',
+				 `entry_date` date NOT NULL DEFAULT '0000-00-00',
 				 `jf_id` int(11) NOT NULL,
 				 `balance_flag` enum('','opening','closing') NOT NULL  DEFAULT '',
 				 `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-				 `updated_at` datetime NOT NULL,
-				 `deleted_at` datetime NOT NULL,
+				 `updated_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+				 `deleted_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 				 `ledger_id` int(11) NOT NULL,
 				 PRIMARY KEY (`".$ledgerIdData[$ledgerIdArray]->ledger_id."_id`)
 				) ENGINE=InnoDB DEFAULT CHARSET=utf16");
@@ -430,7 +432,8 @@ class LedgerModel extends Model
 		invoice_number,
 		pan,
 		tin,
-		gst,
+		cgst,
+		sgst,
 		created_at,
 		updated_at,
 		deleted_at,
@@ -551,7 +554,8 @@ class LedgerModel extends Model
 		invoice_number,
 		pan,
 		tin,
-		gst,
+		cgst,
+		sgst,
 		created_at,
 		updated_at,
 		deleted_at,
@@ -665,7 +669,8 @@ class LedgerModel extends Model
 		invoice_number,
 		pan,
 		tin,
-		gst,
+		cgst,
+		sgst,
 		created_at,
 		updated_at,
 		deleted_at,
@@ -783,7 +788,8 @@ class LedgerModel extends Model
 		invoice_number,
 		pan,
 		tin,
-		gst,
+		cgst,
+		sgst,
 		created_at,
 		updated_at,
 		deleted_at,
@@ -1364,7 +1370,8 @@ class LedgerModel extends Model
 			invoice_number,
 			pan,
 			tin,
-			gst,
+			cgst,
+			sgst,
 			created_at,
 			updated_at,
 			deleted_at,
@@ -1496,7 +1503,8 @@ class LedgerModel extends Model
 		invoice_number,
 		pan,
 		tin,
-		gst,
+		cgst,
+		sgst,
 		created_at,
 		updated_at,
 		deleted_at,

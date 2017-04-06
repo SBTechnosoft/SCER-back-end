@@ -78,6 +78,14 @@ class ProductProcessor extends BaseProcessor
 				$categoryData = $productCategoryData->getData($tRequest['product_category_id']);
 				$decodedCategoryData = json_decode($categoryData);
 				
+				if($tRequest['color']=="")
+				{
+					$tRequest['color'] = "XXXX";
+				}
+				if($tRequest['size']=="")
+				{
+					$tRequest['size'] = "ZZZZ";
+				}
 				$color = preg_replace('/[^A-Za-z0-9\-]/', '', $tRequest['color']);
 				$size = preg_replace('/[^A-Za-z0-9\-]/', '', $tRequest['size']);
 				$product_name = preg_replace('/[^A-Za-z0-9]/', '', $tRequest['product_name']);
@@ -428,12 +436,26 @@ class ProductProcessor extends BaseProcessor
 			if(array_key_exists('color',$tRequest[$arrayData]))
 			{
 				$colorFlag=1;
-				$color = $tRequest[$arrayData]['color'];
+				if($tRequest[$arrayData]['color']=="")
+				{
+					$color = "XXXX";
+				}
+				else
+				{
+					$color = $tRequest[$arrayData]['color'];
+				}
 			}
 			if(array_key_exists('size',$tRequest[$arrayData]))
 			{
 				$sizeFlag=1;
-				$size = $tRequest[$arrayData]['size'];
+				if($tRequest[$arrayData]['size']=="")
+				{
+					$tRequest[$arrayData]['size']="ZZZZ";
+				}
+				else
+				{
+					$size = $tRequest[$arrayData]['size'];
+				}
 			}
 			if(array_key_exists('product_name',$tRequest[$arrayData]))
 			{

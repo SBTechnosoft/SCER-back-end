@@ -235,6 +235,8 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$billArray['TotalQty']=$totalQty;
 		$billArray['TotalInWord']=$currencyResult;
 		$billArray['displayNone']='none';
+		$billArray['CMPLOGO']="<img src='".$constantArray['mainLogo']."MainLogo.png' height='100%' width='100%' />";
+
 
 		$mpdf = new mPDF('A4','landscape');
 		$mpdf->SetDisplayMode('fullpage');

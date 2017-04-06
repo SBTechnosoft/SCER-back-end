@@ -142,7 +142,7 @@ class UserModel extends Model
 			branch_id,
 			created_at,
 			updated_at
-			from user_mst where ".$querySet." deleted_at='0000-00-00 00:00:00'");
+			from user_mst where ".$querySet." deleted_at='0000-00-00 00:00:00' ");
 			DB::commit();
 		}
 		else

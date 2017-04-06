@@ -234,6 +234,7 @@ return [
 		'Logout',
 		'Documents',
 		'Settings',
+		'Taxation'
 	],
 
     /*

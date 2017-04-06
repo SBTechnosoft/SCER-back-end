@@ -29,11 +29,9 @@ class LedgerTransformer
 		$address2 = $request->input('address2'); 
 		$contactNo = $request->input('contactNo'); 
 		$emailId = $request->input('emailId'); 
-		$invoiceNumber = $request->input('invoiceNumber'); 
 		$pan = $request->input('pan'); 
 		$tin = $request->input('tin'); 
-		$cgst = $request->input('cgst'); 		
-		$sgst = $request->input('sgst'); 		
+		$gstNo = $request->input('gst'); 		
 		$balanceFlag = $request->input('balanceFlag'); 		
 		$amount = $request->input('amount'); 		
 		$amountType = $request->input('amountType'); 		
@@ -50,11 +48,9 @@ class LedgerTransformer
 		$tAddress2 = trim($address2);
 		$tContactNo = trim($contactNo);
 		$tEmailId = trim($emailId);
-		$tInvoiceNumber = trim($invoiceNumber);
 		$tPan = trim($pan);
 		$tTin = trim($tin);
-		$tCgst = trim($cgst);
-		$tSgst = trim($sgst);
+		$tGstNo = trim($gstNo);
 		$tBalanceFlag = trim($balanceFlag);
 		$tAmount = trim($amount);
 		$tAmountType = trim($amountType);
@@ -133,11 +129,9 @@ class LedgerTransformer
 			$data['address2'] = $tAddress2;
 			$data['contact_no'] = $tContactNo;
 			$data['email_id'] = $tEmailId;
-			$data['invoice_number'] = $tInvoiceNumber;
 			$data['pan'] = $tPan;
 			$data['tin'] = $tTin;
-			$data['cgst'] = $tCgst;
-			$data['sgst'] = $tSgst;
+			$data['gst'] = $tGstNo;
 			$data['balance_flag'] = $tBalanceFlag;
 			$data['amount'] = $tAmount;
 			$data['amount_type'] = $tAmountType;
@@ -216,11 +210,8 @@ class LedgerTransformer
 		$tToDate = trim($toDate);
 		
 		//date format conversion
-		$splitedFromDate = explode("-",$tFromDate);
-		$transformFromDate = $splitedFromDate[2]."-".$splitedFromDate[1]."-".$splitedFromDate[0];
-		
-		$splitedToDate = explode("-",$tToDate);
-		$transformToDate = $splitedToDate[2]."-".$splitedToDate[1]."-".$splitedToDate[0];
+		$transformFromDate = Carbon\Carbon::createFromFormat('d-m-Y', $tFromDate)->format('Y-m-d');
+		$transformToDate = Carbon\Carbon::createFromFormat('d-m-Y', $tToDate)->format('Y-m-d');
 		
 		//put date into an array
 		$trimArray = array();

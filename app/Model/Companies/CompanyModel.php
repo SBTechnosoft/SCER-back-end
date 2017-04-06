@@ -56,13 +56,45 @@ class CompanyModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
+			//branch insertion
 			DB::beginTransaction();
 			$companyId = DB::connection($databaseName)->select("SELECT 
 			company_id,
-			company_name
+			company_name,
+			state_abb,
+			city_id
 			FROM `company_mst` 
 			where deleted_at='0000-00-00 00:00:00'
 			ORDER by company_id DESC limit 1");
+			DB::commit();
+			
+			DB::beginTransaction();
+			$branchInserion = DB::connection($databaseName)->statement("INSERT 
+			into branch_mst(
+			branch_name,
+			address1,
+			address2,
+			pincode, 
+			is_display, 
+			is_default,
+			updated_at,
+			deleted_at,
+			state_abb,
+			city_id, 
+			company_id)
+			VALUES(
+			'MainBranch',
+			'address1',
+			'address2', 
+			'395000', 
+			'yes',
+			'not',
+			'0000-00-00 00:00:00',
+			'0000-00-00 00:00:00',
+			'".$companyId[0]->state_abb."',
+			'".$companyId[0]->city_id."', 
+			'".$companyId[0]->company_id."')
+			");
 			DB::commit();
 			
 			//get Template
@@ -149,7 +181,9 @@ class CompanyModel extends Model
 		DB::beginTransaction();
 		$latestCompanyId = DB::connection($databaseName)->select("SELECT 
 		company_id,
-		company_name
+		company_name,
+		state_abb,
+		city_id
 		FROM `company_mst` 
 		where deleted_at='0000-00-00 00:00:00'
       	ORDER by company_id DESC limit 1");
@@ -161,6 +195,34 @@ class CompanyModel extends Model
 		if($raw==1)
 		{
 			
+			DB::beginTransaction();
+			$branchInsertion = DB::connection($databaseName)->statement("INSERT 
+			into branch_mst(
+			branch_name,
+			address1,
+			address2,
+			pincode, 
+			is_display, 
+			is_default,
+			updated_at,
+			deleted_at,
+			state_abb,
+			city_id, 
+			company_id)
+			VALUES(
+			'MainBranch',
+			'address1',
+			'address2', 
+			'395000', 
+			'yes',
+			'not',
+			'0000-00-00 00:00:00',
+			'0000-00-00 00:00:00',
+			'".$latestCompanyId[0]->state_abb."',
+			'".$latestCompanyId[0]->city_id."', 
+			'".$latestCompanyId[0]->company_id."')
+			");
+			DB::commit();
 			//get Template
 			$templateDesign = new TemplateDesign();
 			$templateArray = $templateDesign->getTemplate();
@@ -380,6 +442,8 @@ class CompanyModel extends Model
 		pan,
 		tin,
 		vat_no,
+		cgst,
+		sgst,
 		service_tax_no,
 		basic_currency_symbol,
 		formal_name,
@@ -436,6 +500,8 @@ class CompanyModel extends Model
 		pan,
 		tin,
 		vat_no,
+		cgst,
+		sgst,
 		service_tax_no,
 		basic_currency_symbol,
 		formal_name,

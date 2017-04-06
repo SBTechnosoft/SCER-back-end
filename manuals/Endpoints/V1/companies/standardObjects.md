@@ -13,9 +13,11 @@
                     ... Standard State Object
                 },
                 "pincode": int,
-				"pan": char,
-				"tin": char,
-				"vatNo": char,
+				"pan": string,
+				"tin": string,
+				"vatNo": string,
+				"sgst":string,
+				"cgst":string,
 				"serviceTaxNo": char,
 				"logo": {
 					... Standard Document Object
@@ -43,6 +45,8 @@
 			"pincode": char,
 			"pan": string,
 			"tin": string,
+			"sgst":string,
+			"cgst":string,
 			"vatNo": string,
 			"serviceTaxNo": string,
 			"file[]":

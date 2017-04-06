@@ -103,7 +103,6 @@ class JournalController extends BaseController implements ContainerInterface
 		
 		// check the requested Http method
 		$requestMethod = $_SERVER['REQUEST_METHOD'];
-		
 		// insert
 		if($requestMethod == $constantArray['postMethod'])
 		{
