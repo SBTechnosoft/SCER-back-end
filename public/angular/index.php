@@ -469,13 +469,13 @@ include ('connection.php');
 				// $scope.user = [{"jfId":4,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":1},{"amount":2,"amountType":"credit","ledgerId":1},{"amount":12,"amountType":"debit","ledgerId":1}],"entryDate":"22-10-2015","companyId":14,
 				// "inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"companyId":14,"transactionDate":"22-10-2015","invoiceNumber":23,"billNumber":2}];
 				
-				// formdata.append('jfId',3);
+				// formdata.append('jfId',4);
  				// formdata.append('companyId',1);
 				// formdata.append('entryDate','14-3-2017');
 				// var json=[{"amount":100,"amountType":" credit ","ledgerId":5},{"amount":100,"amountType":"credit","ledgerId":7},
 				// {"amount":200,"amountType":"debit","ledgerId":11}];
 				
-				// var inventory = [{"productId": 1 ,"discount":'',"discountType":"flat","price":900,"qty":10},{"productId": 1 ,"discount":'',"discountType":"percentage","price":1000,"qty":4}];
+				// var inventory = [{"productId": 1 ,"discount":'0',"discountType":"flat","price":900,"qty":10},{"productId": 1 ,"discount":'0',"discountType":"percentage","price":1000,"qty":4}];
 				// formdata.append('transactionDate','06-04-2017');
 				// formdata.append('tax',100);
 				// formdata.append('invoiceNumber',1);
@@ -543,7 +543,7 @@ include ('connection.php');
 				// var productId =6;
 				// var productGrpId = 11;
 				// var productCatId = 18;
-				// var companyId=11;
+				var companyId=1;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -566,7 +566,7 @@ include ('connection.php');
 				
 				// var url="http://www.scerp1.com/accounting/cash-flow/company/"+companyId+"/export";  //pdf generate
 				// var url="http://www.scerp1.com/accounting/profit-loss/company/"+companyId+"/export";  //pdf generate
-				// var url="http://www.scerp1.com/accounting/balance-sheet/company/"+companyId+"/export";  //pdf generate
+				var url="http://www.scerp1.com/accounting/balance-sheet/company/"+companyId+"/export";  //pdf generate
 				
 				// var url="http://www.scerp1.com/accounting/cash-flow/company/"+companyId;  //cash-flow
 				// var url="http://www.scerp1.com/accounting/profit-loss/company/"+companyId;  //profit-loss
@@ -608,7 +608,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/accounting/ledgers/company/"+companyId;
 				// var url="http://www.scerp1.com/accounting/ledgers/"+ledgerId;
 				// var url="http://www.scerp1.com/accounting/ledgers/ledgerGrp/"+ledgerGrpId;
-				var url="http://www.scerp1.com/accounting/ledgers";
+				// var url="http://www.scerp1.com/accounting/ledgers";
 				
 				// var url="http://www.scerp1.com/accounting/ledger-groups/"+ledgerGrpId;
 				// var url="http://www.scerp1.com/accounting/ledger-groups";
@@ -650,8 +650,8 @@ include ('connection.php');
 				$http({
                         url: url,
                         // type:'patch',
-                        // type:'get',
-						 method: 'get',
+                        type:'get',
+						 // method: 'get',
 						 // method: 'post',
 						 // method: 'patch',
 						// enctype:'multipart/formdata',
@@ -675,7 +675,7 @@ include ('connection.php');
                         // headers: {'Content-Type': undefined},
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','productName':'Spiderman','color':'BK.s'},
                         // headers: {'Content-Type':undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','productCode':'ABC_ABC_AB_CYCFDJ_BKBK_122T'},
-                        headers: {'Content-Type':undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
+                        headers: {'Content-Type':undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','operation':'excel'},
                         // headers: {'Content-Type':'application/x-www-form-urlencoded','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
 						 // data:formdata
 						// data:$scope.user						

@@ -88,6 +88,7 @@ class JournalProcessor extends BaseProcessor
 								
 								//check accounting Rules for sale/purchase
 								$busnessValidateResult = $buisnessLogic->validateInsertBuisnessLogic($trimProductRequest,$tRequest,$request->header()['type'][0]);
+							
 								if(!is_array($busnessValidateResult))
 								{
 									return $busnessValidateResult;

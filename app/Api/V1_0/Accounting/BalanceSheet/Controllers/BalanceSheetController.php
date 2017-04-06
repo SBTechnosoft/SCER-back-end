@@ -67,9 +67,17 @@ class BalanceSheetController extends BaseController implements ContainerInterfac
 		if(is_array(json_decode($balanceData)))
 		{
 			$balanceSheetOperation = new BalanceSheetOperation();
-			if(strcmp($request->header()['operation'][0],'pdf')==0)
+			if(strcmp($request->header()['operation'][0],'twoSidePdf')==0)
+			{
+				$generatedPath = $balanceSheetOperation->generateTwoSidePdf($balanceData);
+			}
+			else if(strcmp($request->header()['operation'][0],'pdf')==0)
 			{
 				$generatedPath = $balanceSheetOperation->generatePdf($balanceData);
+			}
+			else if(strcmp($request->header()['operation'][0],'twoSideExcel')==0)
+			{
+				$generatedPath = $balanceSheetOperation->generateTwoSideExcel($balanceData);
 			}
 			else
 			{

@@ -16,11 +16,15 @@
 
 **NOTES:** Provide details of the Cash-Flow based on the companyId 
 
-##### Gets Cash-Flow pdf-path    
+##### Gets Cash-Flow pdf/excel-path    
             
 ##### `GET /accounting/cash-flow/company/{companyId}/export`
 + Header 
 	- Authentication Token
+	- "operation":'pdf',
+	- "operation":'twoSidePdf',
+	- "operation":'excel',
+	- "operation":'twoSideExcel',
 + Error Message
 
 			{
@@ -32,4 +36,4 @@
 				"documentPath":''
 			}
 
-**NOTES:** get pdf path 
+**NOTES:** get pdf/excel path 

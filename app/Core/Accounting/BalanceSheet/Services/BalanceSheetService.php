@@ -44,7 +44,7 @@ class BalanceSheetService extends AbstractService
 		//get data
 		$balanceSheet = new BalanceSheetModel();
 		$result = $balanceSheet->getBalanceSheetData($companyId);
-		
+
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
