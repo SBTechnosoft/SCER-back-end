@@ -118,6 +118,7 @@ class BillController extends BaseController implements ContainerInterface
 							$method=$constantArray['postMethod'];
 							$path=$constantArray['documentGenerateUrl'];
 							$documentRequest = Request::create($path,$method,$saleIdArray);
+							$documentRequest->headers->set('operation',$request->header()['operation'][0]['preprint']);
 							$processedData = $documentController->getData($documentRequest);
 							return $processedData;
 						}

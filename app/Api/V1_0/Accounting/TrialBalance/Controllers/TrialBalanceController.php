@@ -81,6 +81,14 @@ class TrialBalanceController extends BaseController implements ContainerInterfac
 			{
 				$generatedPath = $trialBalanceOperation->generatePdf($result);
 			}
+			else if(strcmp($request->header()['operation'][0],'twoSidePdf')==0)
+			{
+				$generatedPath = $trialBalanceOperation->generateTwoSidePdf($result);
+			}
+			else if(strcmp($request->header()['operation'][0],'twoSideExcel')==0)
+			{
+				$generatedPath = $trialBalanceOperation->generateTwoSideExcel($result);
+			}
 			else
 			{
 				$generatedPath = $trialBalanceOperation->generateExcel($result);

@@ -11,6 +11,7 @@ use ERP\Http\Requests;
 use Illuminate\Container\Container;
 use ERP\Core\Documents\Entities\CurrencyToWordConversion;
 use PHPMailer;
+use SMTP;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -21,9 +22,8 @@ class DocumentMpdf extends CurrencyToWordConversion
      * @param template-data and bill data
      * @return error-message/document-path
      */
-	public function mpdfGenerate($templateData,$status)
-	{
-		
+	public function mpdfGenerate($templateData,$status,$headerData)
+	{		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -31,8 +31,94 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
 		
-		$htmlBody = json_decode($templateData)[0]->templateBody;
-		$decodedBillData = json_decode($status);
+		if(array_key_exists("operation",$headerData))
+		{
+			if(strcmp($headerData['operation'][0],'preprint')==0)
+			{
+				$htmlBody = "
+
+
+
+<div style='background-size: 100% 100%; height: 28.3cm; width: 20.5cm;'>
+<table style='border-collapse: collapse; border-spacing: 0px; margin-left: auto; margin-right: auto;height: 27.8cm; width: 21.3cm;' border='1' cellspacing='0'>
+<tbody>
+<tr style='height: 6cm;'>
+<th style='height: 6cm; text-align: left;' colspan='12'></th>
+</tr>
+<tr style='background-color: transparent; height: 0.8cm;  text-align: left;'>
+<td style='font-family: Calibri; font-size: 12px; vertical-align: top; height: 0.8cm;width:13.6cm; text-align: left;' colspan='7' rowspan='2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='color: #000000;'><strong>[ClientName]</strong></span> <br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span >[CLIENTADD]</span></td>
+<td style='font-family: Calibri; font-size: 12px; vertical-align: middle; color: #4e4e4e; text-align: left; height: 0.8cm;width:7.7cm;' colspan='5'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='color: #000000;'>[INVID]</span></td>
+</tr>
+<tr class='trhw' style='height: 0.8cm; text-align: left;'>
+
+<td class='tg-vi9z' style='font-family: Calibri; font-size: 12px; vertical-align: middle; color: #4e4e4e; height: 0.8cm;' colspan='12'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span >[OrderDate]</span></td>
+</tr>
+<tr class='trhw' style='background-color: transparent; height: 0.8cm; text-align: left;'>
+<td class='tg-vi9z' style='font-family: Calibri; font-size: 12px; vertical-align: middle; color: #4e4e4e; height: 0.8cm;' colspan='7'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span >[TINNO]</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Mobile No:</strong>&nbsp;&nbsp;<span>[Mobile]</span></td>
+<td class='tg-vi9z' style='font-family: Calibri; font-size: 12px; vertical-align: middle; color: #4e4e4e; height: 0.8cm;' colspan='5'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span >0</span></td>
+</tr>
+<tr class='trhw' style='font-family: Calibri; height: 1.2cm; text-align: left;'>
+<td class='tg-m36b thsrno' style='font-size: 12px; padding: 5px; text-align: center; height: 1.2cm;'><span style='color: #000000;'><strong>Sr.No</strong></span></td>
+<td class='tg-m36b theqp' style='font-size: 12px; padding: 5px; height: 1.2cm; text-align: left;'><span style='color: #000000;'><strong>Particulars</strong></span></td>
+<td class='tg-ullm thsrno' style='font-size: 12px; height: 1.2cm; text-align: center; padding: 5px 2px 5px 2px;'><span style='color: #000000;'><strong>Color | Size</strong></span></td>
+<td class='tg-ullm thsrno' style='font-size: 12px; padding: 5px; height: 1.2cm; text-align: left;'><span style='color: #000000;'><strong>Frame No</strong></span></td>
+<td class='tg-ullm thsrno' style='font-size: 12px; padding: 5px; height: 1.2cm; text-align: center;'><span style='color: #000000;'><strong>Qty</strong></span></td>
+<td class='tg-ullm thsrno' style='font-size: 12px; padding: 5px; height: 1.2cm; text-align: center;'><span style='color: #000000;'><strong>Rate</strong></span></td>
+<td class='tg-ullm thsrno' style='font-size: 12px; padding: 5px; height: 1.2cm; text-align: center;'><span style='color: #000000;'><strong>Discount</strong></span></td>
+<td class='tg-ullm thamt' style='font-size: 12px; padding: 5px; height: 1.2cm; text-align: center;'><span style='color: #000000;'><strong>VAT%</strong></span></td>
+<td class='tg-ullm thamt' style='font-size: 12px; padding: 5px; height: 1.2cm; text-align: center;'><span style='color: #000000;'><strong>VAT</strong></span></td>
+<td class='tg-ullm thamt' style='font-size: 12px; padding: 5px; height: 1.2cm; text-align: center;'><span style='color: #000000;'><strong>A.Vat%</strong></span></td>
+<td class='tg-ullm thamt' style='font-size: 12px; padding: 5px; height: 1.2cm; text-align: center;'><span style='color: #000000;'><strong>A.Vat</strong></span></td>
+<td class='tg-ullm thamt' style='font-size: 12px; padding: 5px; height: 1.2cm; text-align: center;'><span style='color: #000000;'><strong>Amount</strong></span></td>
+</tr>
+
+<tr class='trhw' style='font-family: Calibri; text-align: left; height: 9.8cm; background-color: transparent; display: [displayNone];'>
+	<td class='tg-m36b thsrno' style='font-size: 12px; color: #000000; height: 9.8cm;' colspan='12'>[Description]</td>
+	
+</tr>
+
+
+
+<tr  style='height: 0.7cm; text-align: left;'>
+<td class='tg-jtyd' style='font-size: 10px; padding: 5px; height: 0.7cm; text-align: left;border-top: 1px solid black;border-bottom: 1px solid black;' colspan='4'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='color: #000000;'>[TotalInWord]</span></td>
+<td class='tg-jtyd' style='font-size: 12px; padding: 5px; height: 0.7cm; text-align: left;border-top: 1px solid black;border-bottom: 1px solid black;' colspan='3' ><span style='color: #000000;'><strong>&nbsp;&nbsp;&nbsp;[TotalQty]</strong></span></td>
+
+<td class='tg-jtyd' style='text-align: right; font-size: 12px; padding: 5px; height: 0.7cm;border-top: 1px solid black;border-bottom: 1px solid black;' colspan='2'>&nbsp;</td>
+<td class='tg-jtyd' style='text-align: right; font-size: 12px; padding: 5px; height: 0.7cm;border-top: 1px solid black;border-bottom: 1px solid black;'><strong><span style='color: #000000;'>Total</span></strong></td>
+<td class='tg-jtyd' style='text-align: right; font-size: 12px; padding: 5px; height: 0.7cm;border-top: 1px solid black;border-bottom: 1px solid black;'><span style='color: #000000;'><strong>[TotalTax]</strong>&nbsp;</span></td>
+<td class='tg-3gzm' style='font-size: 12px; padding: 5px; color: #4e4e4e; height: 0.7cm; text-align: center;border-top: 1px solid black;border-bottom: 1px solid black;'><strong>&nbsp;<span style='color: #000000;'>[Total]</span></strong></td>
+</tr>
+<tr style='background-color: transparent; height: 2.85cm; text-align: left;'>
+<td class='tg-3gzm' style='text-align: center; vertical-align: bottom; height: 2.85cm;' colspan='12'></td>
+</tr>
+<tr class='trhw' style='background-color: transparent; height: 2.4cm; text-align: left;'>
+<td class='tg-vi9z' style='padding: 5px; height: 2.4cm; text-align: center; vertical-align: middle;' colspan='4'>
+<p style='visibility: hidden;'>&nbsp;</p>
+<p style='padding-top: 10px;'><span style='color: #000000;font-size: 22px;'><strong> [REMAINAMT]</strong></span></p>
+</td>
+<td class='tg-vi9z' style='padding: 5px; height: 2.4cm; text-align: center; vertical-align: middle;visibility: hidden;' colspan='4'>
+<p></p>
+<p>&nbsp;</p>
+</td>
+<td class='tg-vi9z' style='padding: 5px; height: 2.4cm; text-align: center; vertical-align: middle;' colspan='4'>
+<p style='padding: 0 0 5px 0;visibility: hidden;'>&nbsp;</p>
+<p><span style='color: #000000;'><strong style='padding: 5px;font-size: 22px;'>&nbsp;[Total]</strong></span></p>
+</td>
+</tr>
+<tr style='background-color: transparent; height: 2.2cm; text-align: left;'>
+<td style='padding: 5px; height: 2.2cm; text-align: center; vertical-align: middle;' colspan='12'>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+";
+			}
+		}
+		else
+		{
+			$htmlBody = json_decode($templateData)[0]->templateBody;
+		}		$decodedBillData = json_decode($status);
 		
 		if(is_object($decodedBillData))
 		{
@@ -113,19 +199,19 @@ class DocumentMpdf extends CurrencyToWordConversion
 				}
 
 				$output =$output."".
-					'<tr class="trhw" style="font-family: Calibri; text-align: left; height: 25px; background-color: transparent;">
-				   <td class="tg-m36b thsrno" style="font-size: 12px; height: 25px; text-align:center; padding:0 0 0 0;">'.$index.'</td>
-				   <td class="tg-m36b theqp" style="font-size: 12px;  height: 25px; padding:0 0 0 0;">'. $decodedData[$productArray]->productName.'</td>
-				   <td class="tg-ullm thsrno" style="font-size: 12px;  height: 25px; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->color.'</td>
-				   <td class="tg-ullm thsrno" style="font-size: 12px;  height: 25px; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->frameNo.'</td>
-				   <td class="tg-ullm thsrno" style="font-size: 12px;   height: 25px; text-align: center; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->qty.'</td>
-				   <td class="tg-ullm thsrno" style="font-size: 12px; height: 25px; text-align: center; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->price.'</td>
-				   <td class="tg-ullm thsrno" style="font-size: 12px;  height: 25px; text-align: center; padding:0 0 0 0;">'. $discountValue[$productArray].'</td>
-				   <td class="tg-ullm thamt" style="font-size: 12px;  height: 25px; text-align: center; padding:0 0 0 0;">'. $decodedData[$productArray]->vat.'%</td>
-				   <td class="tg-ullm thamt" style="font-size: 12px; height: 25px; text-align: center; padding:0 0 0 0;">'.$vatValue[$productArray].'</td>
-				   <td class="tg-ullm thamt" style="font-size: 12px;  height: 25px; text-align: center; padding:0 0 0 0;">'.$decodedData[$productArray]->additionalTax.'</td>
-				   <td class="tg-ullm thamt" style="font-size: 12px;   height: 25px; text-align: center; padding:0 0 0 0;">'.$additionalTaxValue[$productArray].'</td>
-				   <td class="tg-ullm thamt" style="font-size: 12px;  height: 25px; text-align: center; padding:0 0 0 0;">'.$total[$productArray];
+					'<tr class="trhw" style="font-family: Calibri; text-align: left; height:  0.7cm; background-color: transparent;">
+				   <td class="tg-m36b thsrno" style="font-size: 12px; height: 0.7cm; text-align:center; padding:0 0 0 0;">'.$index.'</td>
+				   <td class="tg-m36b theqp" style="font-size: 12px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedData[$productArray]->productName.'</td>
+				   <td class="tg-ullm thsrno" style="font-size: 12px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->color.'</td>
+				   <td class="tg-ullm thsrno" style="font-size: 12px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->frameNo.'</td>
+				   <td class="tg-ullm thsrno" style="font-size: 12px;   height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->qty.'</td>
+				   <td class="tg-ullm thsrno" style="font-size: 12px; height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->price.'</td>
+				   <td class="tg-ullm thsrno" style="font-size: 12px;  height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $discountValue[$productArray].'</td>
+				   <td class="tg-ullm thamt" style="font-size: 12px;  height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $decodedData[$productArray]->vat.'%</td>
+				   <td class="tg-ullm thamt" style="font-size: 12px; height: 0.7cm; text-align: center; padding:0 0 0 0;">'.$vatValue[$productArray].'</td>
+				   <td class="tg-ullm thamt" style="font-size: 12px;  height:  0.7cm; text-align: center; padding:0 0 0 0;">'.$decodedData[$productArray]->additionalTax.'</td>
+				   <td class="tg-ullm thamt" style="font-size: 12px;   height:  0.7cm; text-align: center; padding:0 0 0 0;">'.$additionalTaxValue[$productArray].'</td>
+				   <td class="tg-ullm thamt" style="font-size: 12px;  height: 0.7cm; text-align: center; padding:0 0 0 0;">'.$total[$productArray];
 				if($productArray != count($decodedArray->inventory)-1)
 				{
 					$output = $output.$trClose;
@@ -235,10 +321,10 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$billArray['TotalQty']=$totalQty;
 		$billArray['TotalInWord']=$currencyResult;
 		$billArray['displayNone']='none';
-		$billArray['CMPLOGO']="<img src='".$constantArray['mainLogo']."MainLogo.png' height='100%' width='100%' />";
+		$billArray['CMPLOGO']="<img src='".$constantArray['mainLogo']."MainLogo.png'/>";
 
-
-		$mpdf = new mPDF('A4','landscape');
+		//$mpdf = new mPDF('A4','landscape');
+		$mpdf = new mPDF('','A4','','','0','0','0','0','0','0','landscape');
 		$mpdf->SetDisplayMode('fullpage');
 		foreach($billArray as $key => $value)
 		{
@@ -259,7 +345,24 @@ class DocumentMpdf extends CurrencyToWordConversion
 		//insertion bill document data into database
 		$billModel = new BillModel();
 		$billDocumentStatus = $billModel->billDocumentData($saleId,$documentName,$documentFormat,$documentType);
-		
+		if(array_key_exists("operation",$headerData))
+		{
+			if(strcmp($headerData['operation'][0],'preprint')==0)
+			{
+				//change the name of document-name
+				$dateTime = date("d-m-Y h-i-s");
+				$convertedDateTime = str_replace(" ","-",$dateTime);
+				$splitDateTime = explode("-",$convertedDateTime);
+				$combineDateTime = $splitDateTime[0].$splitDateTime[1].$splitDateTime[2].$splitDateTime[3].$splitDateTime[4].$splitDateTime[5];
+				$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".pdf";
+				$documentPreprintPathName = $path.$documentName;
+				$documentFormat="pdf";
+				$documentType ="preprint-bill";
+
+				$preprintBillDocumentStatus = $billModel->billDocumentData($saleId,$documentName,$documentFormat,$documentType);
+
+			}
+		}
 		if(strcmp($exceptionArray['500'],$billDocumentStatus)==0)
 		{
 			return $billDocumentStatus;
@@ -269,21 +372,40 @@ class DocumentMpdf extends CurrencyToWordConversion
 			if($decodedBillData->client->emailId!="")
 			{
 				// mail send
-				$result = $this->mailSending($decodedBillData->client->emailId);
-				//if(strcmp($result,$exceptionArray['Email'])==0)
-				//{
-					//return $result;
-				//}
+				//$result = $this->mailSending($decodedBillData->client->emailId,$documentPathName);
+				 //if(strcmp($result,$exceptionArray['Email'])==0)
+				// {
+					// return $result;
+				// }
 			}
 			$message = "Your Bill Is Generated...";
 			//sms send
 			// $url = "http://login.arihantsms.com/vendorsms/pushsms.aspx?user=siliconbrain&password=demo54321&msisdn=".$decodedBillData->client->contactNo."&sid=COTTSO&msg=".$message."&fl=0&gwid=2";
-			//pdf generate
+			if(array_key_exists("operation",$headerData))
+			{
+				if(strcmp($headerData['operation'][0],'preprint')==0)
+				{
+					//pdf generate
+					$mpdf->Output($documentPathName,'F');
+					$mpdf->Output($documentPreprintPathName,'F');
+
+					$pathArray = array();
+					$pathArray['documentPath'] = $documentPathName;
+					$pathArray['preprintDocumentPath'] = $documentPreprintPathName;
+					return $pathArray;
+				}
+			}
+			else
+			{
+				//pdf generate
+				$mpdf->Output($documentPathName,'F');
+				$pathArray = array();
+				$pathArray['documentPath'] = $documentPathName;
+				return $pathArray;
+
+			}
+
 			
-			$mpdf->Output($documentPathName,'F');
-			$pathArray = array();
-			$pathArray['documentPath'] = $documentPathName;
-			return $pathArray;
 		}	
 	} 
 	
@@ -370,11 +492,11 @@ class DocumentMpdf extends CurrencyToWordConversion
 			if($decodedBillData->client->emailId!="")
 			{
 				// mail send
-				$result = $this->mailSending($decodedBillData->client->emailId);
-				//if(strcmp($result,$exceptionArray['Email'])==0)
-				//{
-					//return $result;
-				//}
+				$result = $this->mailSending($decodedBillData->client->emailId,$documentPathName);
+				// if(strcmp($result,$exceptionArray['Email'])==0)
+				// {
+					// return $result;
+				// }
 			}
 			$message = "Your Bill Is Generated...";
 			// sms send
@@ -392,34 +514,43 @@ class DocumentMpdf extends CurrencyToWordConversion
      * @param mail-address
      * @return error-message/status
      */
-	public function mailSending($emailId)
+	public function mailSending($emailId,$documentPathName)
 	{
+		echo "enter";
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
 		$mail = new PHPMailer;
 		$email = $emailId;
 		$message = "Your bill is generated...";
-		$mail->IsSMTP();                                      // Set mailer to use SMTP
-		$mail->Host = 'sg2plcpnl0073.prod.sin2.secureserver.net';                // Specify main and backup server //sg2plcpnl0073.prod.sin2.secureserver.net port=465
-		$mail->Port =  465;                                    // Set the SMTP port
+		$mail->IsSMTP();  
+		
+              // Set mailer to use SMTP
+		$mail->Host = 'smtp.gmail.com';                // Specify main and backup server //sg2plcpnl0073.prod.sin2.secureserver.net port=465
+		$mail->Port =  465;                                    // Set the SMTP port 465
 		$mail->SMTPAuth = true;                               // Enable SMTP authentication
 		
 		// SMTP password
 		$mail->SMTPSecure = 'ssl';                            // Enable encryption, 'ssl' also accepted
-		$mail->Username = 'reema.p@siliconbrain.in';                // SMTP username
-		$mail->Password = 'Abcd@1234'; 
-		$mail->From = 'reema.p@siliconbrain.in';
-		$mail->FromName = 'reema.p@siliconbrain.in';
+		$mail->Username = 'shaikhfarhan05@gmail.com';                // SMTP username
+		$mail->Password = 'farhanboss420840'; 
+		$mail->From = 'shaikhfarhan05@gmail.com';
+		$mail->FromName = 'shaikhfarhan05@gmail.com';
 		$mail->AddAddress($email);  // Add a recipient
-
+		//$name = "abc";
+		$mail->isHTML(true);
+		//$mail->AddAttachment('http://api.siliconbrain.co.in/'.$documentPathName,$name,$encoding ='base64',$type = 'application/octet-stream');	
 		$mail->IsHTML(true);                                  // Set email format to HTML
 		$mail->Subject = 'Cycle Store';
 		$mail->Body    = $message;
-		$mail->AltBody = 'Your bill is generated...';
-
+		$mail->AltBody = $message;
+		print_r($mail);
 		if(!$mail->Send()) {
+		   print_r($mail->ErrorInfo);	
 		   return $exceptionArray['Email'];
 		}
 	}

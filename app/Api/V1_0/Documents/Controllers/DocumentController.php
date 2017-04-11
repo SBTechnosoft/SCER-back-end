@@ -72,7 +72,7 @@ class DocumentController extends BaseController implements ContainerInterface
 			$documentProcessor = new DocumentProcessor();
 			$documentService= new DocumentService();	
 			$processedData = $documentProcessor->createPersistableData($request);
-			$serviceData = $documentService->getSaleData($processedData['saleId']);
+			$serviceData = $documentService->getSaleData($processedData['saleId'],$request->header());
 			return $serviceData;
 		}
 		else
@@ -91,7 +91,7 @@ class DocumentController extends BaseController implements ContainerInterface
 				$documentProcessor = new DocumentProcessor();
 				$documentService= new DocumentService();	
 				$processedData = $documentProcessor->createPersistableData($request);
-				$serviceData = $documentService->getSaleData($processedData['saleId']);
+				$serviceData = $documentService->getSaleData($processedData['saleId'],$request->header());
 				return $serviceData;
 			}
 			else

@@ -34,7 +34,7 @@ class TaxationController extends BaseController implements ContainerInterface
 	 * @param  Request $request
 	 * method calls the model and get the data
 	*/
-    public function getSaleTaxData(Request $request)
+    public function getSaleTaxData(Request $request,$companyId)
     {
 		//Authentication
 		$tokenAuthentication = new TokenAuthentication();
@@ -47,7 +47,7 @@ class TaxationController extends BaseController implements ContainerInterface
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
 			$taxationService = new TaxationService();
-			$resultData = $taxationService->getSaleTaxData();
+			$resultData = $taxationService->getSaleTaxData($request,$companyId);
 			return $resultData;
 		}
 		else
@@ -61,7 +61,7 @@ class TaxationController extends BaseController implements ContainerInterface
 	 * @param  Request $request
 	 * method calls the model and get the data
 	*/
-    public function getPurchaseTaxData(Request $request)
+    public function getPurchaseTaxData(Request $request,$companyId)
     {
 		//Authentication
 		$tokenAuthentication = new TokenAuthentication();
@@ -74,7 +74,34 @@ class TaxationController extends BaseController implements ContainerInterface
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
 			$taxationService = new TaxationService();
-			$resultData = $taxationService->getPurchaseTaxData();
+			$resultData = $taxationService->getPurchaseTaxData($request,$companyId);
+			return $resultData;
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+	}
+	
+	/**
+	 * get the specified resource 
+	 * @param  Request $request
+	 * method calls the model and get the data
+	*/
+    public function getPurchaseData(Request $request,$companyId)
+    {
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$taxationService = new TaxationService();
+			$resultData = $taxationService->getPurchaseData($request,$companyId);
 			return $resultData;
 		}
 		else

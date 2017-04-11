@@ -22,6 +22,8 @@
 + Header 
 	- Authentication Token
 	- "operation":'excel',
+	- "operation":'twoSideExcel',
+	- "operation":'twoSidePdf',
 	- "operation":'pdf'
 + Error Message
 

@@ -29,7 +29,8 @@ class EncodeLedgerData extends StateService
 		$invoiceNumber= $decodedJson['invoice_number'];
 		$panNo = $decodedJson['pan'];
 		$tinNo = $decodedJson['tin'];
-		$gstNo= $decodedJson['gst'];
+		$cgst= $decodedJson['cgst'];
+		$sgst= $decodedJson['sgst'];
 		$stateAbb= $decodedJson['state_abb'];
 		$cityId= $decodedJson['city_id'];
 		$ledgerGrpId= $decodedJson['ledger_group_id'];
@@ -81,7 +82,8 @@ class EncodeLedgerData extends StateService
 		$data['invoiceNumber'] = $invoiceNumber;
 		$data['pan'] = $panNo;
 		$data['tin'] = $tinNo;
-		$data['gstNo'] = $gstNo;
+		$data['cgst'] = $cgst;
+		$data['sgst'] = $sgst;
 		$data['createdAt'] = $getCreatedDate;
 		$data['updatedAt'] = $getUpdatedDate;	
 		$data['ledgerGroup']= array(

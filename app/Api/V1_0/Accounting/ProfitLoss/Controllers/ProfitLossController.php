@@ -71,6 +71,14 @@ class ProfitLossController extends BaseController implements ContainerInterface
 			{
 				$generatedPath = $profitLossOperation->generatePdf($profitLossData);
 			}
+			else if(strcmp($request->header()['operation'][0],'twoSidePdf')==0)
+			{
+				$generatedPath = $profitLossOperation->generateTwoSidePdf($profitLossData);
+			}
+			else if(strcmp($request->header()['operation'][0],'twoSideExcel')==0)
+			{
+				$generatedPath = $profitLossOperation->generateTwoSideExcel($profitLossData);
+			}
 			else
 			{
 				$generatedPath = $profitLossOperation->generateExcel($profitLossData);

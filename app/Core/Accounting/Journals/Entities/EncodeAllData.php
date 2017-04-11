@@ -45,7 +45,8 @@ class EncodeAllData extends LedgerService
 			$emailId[$decodedData]= $ledgerDecodedJson[$decodedData]['emailId'];
 			$panNo[$decodedData]= $ledgerDecodedJson[$decodedData]['pan'];
 			$tinNo[$decodedData]= $ledgerDecodedJson[$decodedData]['tin'];
-			$gstNo[$decodedData]= $ledgerDecodedJson[$decodedData]['gstNo'];
+			$cgst[$decodedData]= $ledgerDecodedJson[$decodedData]['cgst'];
+			$sgst[$decodedData]= $ledgerDecodedJson[$decodedData]['sgst'];
 			$ledgerCreatedAt[$decodedData]= $ledgerDecodedJson[$decodedData]['createdAt'];
 			$ledgerUpdatedAt[$decodedData]= $ledgerDecodedJson[$decodedData]['updatedAt'];
 			$ledgerGroupId[$decodedData]= $ledgerDecodedJson[$decodedData]['ledgerGroup']['ledgerGroupId'];
@@ -109,7 +110,8 @@ class EncodeAllData extends LedgerService
 					'emailId' => $emailId[$jsonData],
 					'pan'=> $panNo[$jsonData],
 					'tin'=> $tinNo[$jsonData],
-					'gstNo'=> $gstNo[$jsonData],
+					'cgst'=> $cgst[$jsonData],
+					'sgst'=> $sgst[$jsonData],
 					'createdAt' => $ledgerCreatedAt[$jsonData],
 					'updatedAt' => $ledgerUpdatedAt[$jsonData],
 					'ledgerGroupId' => $ledgerGroupId[$jsonData],

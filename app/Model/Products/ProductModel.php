@@ -9,6 +9,7 @@ use ERP\Entities\Constants\ConstantClass;
 use ERP\Entities\ProductArray;
 use TCPDFBarcode;
 use ERP\Model\Settings\SettingModel;
+use stdClass;
 /**
  * @author reema Patel<reema.p@siliconbrain.in>
  */
@@ -131,6 +132,10 @@ class ProductModel extends Model
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
 		$discountArray = array();
 		$discountValueArray = array();
 		$discountTypeArray = array();
@@ -155,9 +160,20 @@ class ProductModel extends Model
 		$jfId = func_get_arg(11);
 		$taxArray = func_get_arg(12);
 		
-		DB::beginTransaction();
+		
+		if(strcmp($transactionTypeArray[0],'Inward')==0)
+		{		
+			$arrayData = array();
+			$arrayData['billNumber'] = $billNumberArray[0];
+			$arrayData['transactionType'] = $transactionTypeArray[0];
+			$arrayData['companyId'] = $companyIdArray[0];
+		}
+		$flag=0;
+		$totalPrice=0;
+		$arrayData['inventory'] = array();
 		for($data=0;$data<count($productIdArray);$data++)
 		{
+			DB::beginTransaction();
 			$raw = DB::connection($databaseName)->statement("insert into 
 			product_trn(transaction_date,
 			transaction_type,
@@ -187,12 +203,87 @@ class ProductModel extends Model
 			'".$billNumberArray[$data]."',
 			'".$jfId."',
 			'".$taxArray[$data]."')");
+			DB::commit();
+			
+			$totalPrice = $totalPrice+$priceArray[$data];
+			
+			if(strcmp($transactionTypeArray[$data],'Inward')==0)
+			{
+				$flag=1;
+				$arrayData['inventory'][$data] = array();
+				$arrayData['inventory'][$data]['productId'] = $productIdArray[$data];
+				$arrayData['inventory'][$data]['discount'] = $discountArray[$data];
+				$arrayData['inventory'][$data]['discountType'] = $discountTypeArray[$data];
+				$arrayData['inventory'][$data]['price'] = $priceArray[$data];
+				$arrayData['inventory'][$data]['qty'] = $qtyArray[$data];
+			}
 		}
-		DB::commit();
-		
-		// get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
+		$grandTotal = $totalPrice+$taxArray[0];
+		if($flag==1)
+		{
+			$encodedJsonArray = json_encode($arrayData);
+			
+			//get purchase type from journal
+			DB::beginTransaction();
+			$journalData = DB::connection($databaseName)->select("select
+			ledger_id,
+			journal_type 
+			from journal_dtl 
+			where deleted_at='0000-00-00 00:00:00' and jf_id='".$jfId."'");
+			DB::commit();
+			$purchaseType = $journalData[0]->journal_type;
+			
+			$ledgerData = array();
+			$clientName="";
+			
+			for($ledgerIdArray=0;$ledgerIdArray<count($journalData);$ledgerIdArray++)
+			{
+				//get ledger-group from ledger
+				DB::beginTransaction();
+				$ledgerData[$ledgerIdArray] = DB::connection($databaseName)->select("select
+				ledger_name,
+				ledger_group_id
+				from ledger_mst
+				where deleted_at='0000-00-00 00:00:00' and ledger_id='".$journalData[$ledgerIdArray]->ledger_id."'");
+				DB::commit();
+				
+				if($ledgerData[$ledgerIdArray][0]->ledger_group_id==31 || $ledgerData[$ledgerIdArray][0]->ledger_group_id==32)
+				{
+					$clientName = $ledgerData[$ledgerIdArray][0]->ledger_name;
+					break;
+				}
+			}
+			
+			DB::beginTransaction();
+			$purchaseBill = DB::connection($databaseName)->statement("insert into 
+			purchase_bill(
+			client_name,
+			product_array,
+			bill_number,
+			total,
+			tax,
+			grand_total,
+			transaction_type,
+			transaction_date,
+			company_id,
+			jf_id) 
+			values(
+			'".$clientName."',
+			'".$encodedJsonArray."',
+			'".$billNumberArray[0]."',
+			'".$totalPrice."',
+			'".$taxArray[0]."',
+			'".$grandTotal."',
+			'".$purchaseType."',
+			'".$transactionDateArray[0]."',
+			'".$companyIdArray[0]."',
+			'".$jfId."')");
+			DB::commit();
+			if($purchaseBill!=1)
+			{
+				return $exceptionArray['500'];
+			}
+		}
 		if($raw==1)
 		{
 			return $exceptionArray['200'];
@@ -293,6 +384,8 @@ class ProductModel extends Model
 	*/
 	public function updateArrayData()
 	{
+		echo "hhhhhhhh";
+		exit;
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -302,7 +395,9 @@ class ProductModel extends Model
 		$singleArray = func_get_arg(1);
 		$jfId = func_get_arg(2);
 		$productData="";
+		$productBillData="";
 		$keyName = "";
+		$billKeyName = "";
 		
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
@@ -338,16 +433,22 @@ class ProductModel extends Model
 		{
 			$productData = $productData."'".$transactionData[0]->transaction_date."',";
 			$keyName =$keyName."transaction_date,";
+			$productBillData = $productBillData."'".$transactionData[0]->transaction_date."',";
+			$billKeyName =$billKeyName."transaction_date,";
 		}
 		if(!array_key_exists($constantArray['company_id'],$singleArray))
 		{
 			$productData = $productData."'".$transactionData[0]->company_id."',";
 			$keyName =$keyName."company_id,";
+			$productBillData = $productBillData."'".$transactionData[0]->company_id."',";
+			$billKeyName =$billKeyName."company_id,";
 		}
 		if(!array_key_exists($constantArray['bill_number'],$singleArray))
 		{
 			$productData = $productData."'".$transactionData[0]->bill_number."',";
 			$keyName =$keyName."bill_number,";
+			$productBillData = $productBillData."'".$transactionData[0]->bill_number."',";
+			$billKeyName = $billKeyName."bill_number,";
 		}
 		if(!array_key_exists($constantArray['invoice_number'],$singleArray))
 		{
@@ -363,6 +464,8 @@ class ProductModel extends Model
 		{
 			$productData = $productData."'".$transactionData[0]->tax."',";
 			$keyName =$keyName."tax,";
+			$productBillData = $productBillData."'".$transactionData[0]->tax."',";
+			$billKeyName =$billKeyName."tax,";
 		}
 		if(!array_key_exists('is_display',$singleArray))
 		{
@@ -371,16 +474,38 @@ class ProductModel extends Model
 		}
 		for($data=0;$data<count($singleArray);$data++)
 		{
+			print_r($singleArray);
+			exit;
 			$productData = $productData."'".$singleArray[array_keys($singleArray)[$data]]."',";
 			$keyName =$keyName.array_keys($singleArray)[$data].",";
+			
+			$productBillData = $productBillData."'".$singleArray[array_keys($singleArray)[$data]]."',";
+			$billKeyName =$billKeyName.array_keys($singleArray)[$data].",";
 		}
-	
+		exit;
 		//delete existing data and then insert new data
 		DB::beginTransaction();
 		$raw = DB::connection($databaseName)->statement("update product_trn 
 		set deleted_at='".$mytime."'
 		where jf_id='".$jfId."'");
 		DB::commit();
+		
+		//delete existing data from purchase bill and then insert new data
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->statement("update purchase_bill 
+		set deleted_at='".$mytime."'
+		where jf_id='".$jfId."'");
+		DB::commit();
+		
+		// if(strcmp($transactionTypeArray[0],'Inward')==0)
+		// {		
+			// $arrayData = array();
+			// $arrayData['billNumber'] = $billNumberArray[0];
+			// $arrayData['transactionType'] = $transactionTypeArray[0];
+			// $arrayData['companyId'] = $companyIdArray[0];
+		// }
+		// $flag=0;
+		// $arrayData['inventory'] = array();
 		if($raw==1)
 		{
 			//insert data
@@ -409,11 +534,23 @@ class ProductModel extends Model
 				'".$jfId."'
 				)");  
 				DB::commit();
+				if(strcmp($transactionTypeArray[$data],'Inward')==0)
+				{
+					$flag=1;
+					$arrayData['inventory'][$data] = array();
+					$arrayData['inventory'][$data]['productId'] = $productIdArray[$data];
+					$arrayData['inventory'][$data]['discount'] = $discountArray[$data];
+					$arrayData['inventory'][$data]['discountType'] = $discountTypeArray[$data];
+					$arrayData['inventory'][$data]['price'] = $priceArray[$data];
+					$arrayData['inventory'][$data]['qty'] = $qtyArray[$data];
+				}
 				if($transactionResult==0)
 				{
 					return $exceptionArray['500'];
 				}
 			}
+			
+			
 			if($transactionResult==1)
 			{
 				return $exceptionArray['200'];
@@ -448,7 +585,6 @@ class ProductModel extends Model
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
-		
 		if(array_key_exists(0,$productTransactionData))
 		{
 			$arrayDataFlag=1;
@@ -481,6 +617,23 @@ class ProductModel extends Model
 			set deleted_at='".$mytime."'
 			where jf_id='".$jfId."'");
 			DB::commit();
+			
+			//delete existing data and then insert new data
+			DB::beginTransaction();
+			$purchaseBillDataResult = DB::connection($databaseName)->statement("update purchase_bill 
+			set deleted_at='".$mytime."'
+			where jf_id='".$jfId."'");
+			DB::commit();
+			
+			if(strcmp($inOutWardData,'Inward')==0)
+			{		
+				$inventoryArrayData = array();
+				$inventoryArrayData['billNumber'] = $transactionData[0]->bill_number;
+				$inventoryArrayData['transactionType'] = $inOutWardData;
+				$inventoryArrayData['companyId'] = $transactionData[0]->company_id;
+			}
+			$flag=0;
+			$inventoryArrayData['inventory'] = array();
 			if($raw==1)
 			{
 				for($arrayData=0;$arrayData<count($productTransactionData);$arrayData++)
@@ -519,7 +672,82 @@ class ProductModel extends Model
 					'".$mytime."',
 					'".$jfId."')");  
 					DB::commit();
+					
+					if(strcmp($inOutWardData,'Inward')==0)
+					{
+						$flag=1;
+						$inventoryArrayData['inventory'][$arrayData] = array();
+						$inventoryArrayData['inventory'][$arrayData]['productId'] = $productTransactionData[$arrayData]['product_id'];
+						$inventoryArrayData['inventory'][$arrayData]['discount'] = $productTransactionData[$arrayData]['discount'];
+						$inventoryArrayData['inventory'][$arrayData]['discountType'] = $productTransactionData[$arrayData]['discount_type'];
+						$inventoryArrayData['inventory'][$arrayData]['price'] = $productTransactionData[$arrayData]['price'];
+						$inventoryArrayData['inventory'][$arrayData]['qty'] = $productTransactionData[$arrayData]['qty'];
+					}
 					if($transactionResult==0)
+					{
+						return $exceptionArray['500'];
+					}
+				}
+				if($flag==1)
+				{
+					$encodedJsonArray = json_encode($inventoryArrayData);
+					
+					//get purchase type from journal
+					DB::beginTransaction();
+					$journalData = DB::connection($databaseName)->select("select
+					ledger_id,
+					journal_type 
+					from journal_dtl 
+					where deleted_at='0000-00-00 00:00:00' and jf_id='".$jfId."'");
+					DB::commit();
+					$purchaseType = $journalData[0]->journal_type;
+					
+					$ledgerData = array();
+					$clientName="";
+					for($ledgerIdArray=0;$ledgerIdArray<count($journalData);$ledgerIdArray++)
+					{
+						//get ledger-group from ledger
+						DB::beginTransaction();
+						$ledgerData[$ledgerIdArray] = DB::connection($databaseName)->select("select
+						ledger_name,
+						ledger_group_id
+						from ledger_mst
+						where deleted_at='0000-00-00 00:00:00' and ledger_id='".$journalData[$ledgerIdArray]->ledger_id."'");
+						DB::commit();
+						
+						if($ledgerData[$ledgerIdArray][0]->ledger_group_id==31 || $ledgerData[$ledgerIdArray][0]->ledger_group_id==32)
+						{
+							$clientName = $ledgerData[$ledgerIdArray][0]->ledger_name;
+							break;
+						}
+					}
+					
+					DB::beginTransaction();
+					$purchaseBill = DB::connection($databaseName)->statement("insert into 
+					purchase_bill(
+					client_name,
+					product_array,
+					bill_number,
+					total,
+					tax,
+					grand_total,
+					transaction_type,
+					transaction_date,
+					company_id,
+					jf_id) 
+					values(
+					'".$clientName."',
+					'".$encodedJsonArray."',
+					'".$transactionData[0]->bill_number."',
+					'100',
+					'".$transactionData[0]->tax."',
+					'200',
+					'".$purchaseType."',
+					'".$transactionData[0]->transaction_date."',
+					'".$transactionData[0]->company_id."',
+					'".$jfId."')");
+					DB::commit();
+					if($purchaseBill!=1)
 					{
 						return $exceptionArray['500'];
 					}
@@ -543,6 +771,13 @@ class ProductModel extends Model
 			
 			DB::beginTransaction();
 			$transactionResult = DB::connection($databaseName)->statement("update product_trn
+			set ".$keyValueString."
+			updated_at='".$mytime."'
+			where jf_id='".$jfId."' and deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+			
+			DB::beginTransaction();
+			$billTransactionResult = DB::connection($databaseName)->statement("update purchase_bill
 			set ".$keyValueString."
 			updated_at='".$mytime."'
 			where jf_id='".$jfId."' and deleted_at='0000-00-00 00:00:00'");

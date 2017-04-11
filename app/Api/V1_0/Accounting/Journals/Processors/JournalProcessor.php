@@ -375,7 +375,6 @@ class JournalProcessor extends BaseProcessor
 			{
 				$journalPersistable = array();
 				$journalMultipleArray = array();
-				//data get from body
 				
 				$journalSingleArray = array();
 				
@@ -467,7 +466,7 @@ class JournalProcessor extends BaseProcessor
 								// $status = $journalValidate->validateUpdateData($tKeyValue,$tValue,$trimRequest[0]);
 								if(array_key_exists('entry_date',$trimRequest[0]))
 								{
-									if(!preg_match("/^[0-9]{4}-(([1-9]|1[0-2]|0[1-9])-([1-9]|0[1-9]|[1-2][0-9]|3[0-1])$/",$trimRequest[0]['entry_date']))
+									if(!preg_match("/^[0-9]{4}-([1-9]|1[0-2]|0[1-9])-([1-9]|0[1-9]|[1-2][0-9]|3[0-1])$/",$trimRequest[0]['entry_date']))
 									{
 										return "entry-date is not valid";
 									}
@@ -492,6 +491,7 @@ class JournalProcessor extends BaseProcessor
 							}
 							for($multipleArray=0;$multipleArray<count($tRequest[0]);$multipleArray++)
 							{
+								
 								$journalPersistable[$multipleArray] = new JournalPersistable();
 								$journalPersistable[$multipleArray]->setAmount($tRequest[0][$multipleArray]['amount']);
 								$journalPersistable[$multipleArray]->setAmountType($tRequest[0][$multipleArray]['amount_type']);

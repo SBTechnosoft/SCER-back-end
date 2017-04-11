@@ -32,7 +32,7 @@ class CashFlowModel extends Model
 		DB::beginTransaction();	
 		$truncateTable = DB::connection($databaseName)->statement("truncate table cash_flow_dtl"); 
 		DB::commit();
-		
+
 		$mytime = Carbon\Carbon::now();
 		//get ledgerId from ledger 
 		DB::beginTransaction();	
@@ -68,7 +68,6 @@ class CashFlowModel extends Model
 		{
 			$toDate = $dateTime;
 		}
-		
 		for($ledgerData=0;$ledgerData<count($ledgerResult);$ledgerData++)
 		{
 			$flag=0;
@@ -98,6 +97,7 @@ class CashFlowModel extends Model
 				DB::commit();
 			}
 		}
+		
 		//get cash-flow data
 		DB::beginTransaction();	
 		$cashFlowResult = DB::connection($databaseName)->select("select 
@@ -112,7 +112,6 @@ class CashFlowModel extends Model
 		where deleted_at='0000-00-00 00:00:00'
 		order by entry_date");
 		DB::commit();
-		
 		if(count($cashFlowResult)==0)
 		{
 			$exceptionArray['404'];

@@ -4,6 +4,7 @@
 + Header
 	- Authentication Token
 	- 'salesType':'retail_sales/whole_sales'
+	- 'operation':'preprint'
 + Body
 
             {

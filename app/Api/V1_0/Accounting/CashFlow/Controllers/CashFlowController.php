@@ -80,6 +80,14 @@ class CashFlowController extends BaseController implements ContainerInterface
 			{
 				$generatedPath = $cashFlowOperation->generatePdf($result);
 			}
+			else if(strcmp($request->header()['operation'][0],'twoSidePdf')==0)
+			{
+				$generatedPath = $cashFlowOperation->generateTwoSidePdf($result);
+			}
+			else if(strcmp($request->header()['operation'][0],'twoSideExcel')==0)
+			{
+				$generatedPath = $cashFlowOperation->generateTwoSideExcel($result);
+			}
 			else
 			{
 				$generatedPath = $cashFlowOperation->generateExcel($result);

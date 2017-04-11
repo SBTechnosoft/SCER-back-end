@@ -469,11 +469,11 @@ include ('connection.php');
 				// $scope.user = [{"jfId":4,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":1},{"amount":2,"amountType":"credit","ledgerId":1},{"amount":12,"amountType":"debit","ledgerId":1}],"entryDate":"22-10-2015","companyId":14,
 				// "inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"companyId":14,"transactionDate":"22-10-2015","invoiceNumber":23,"billNumber":2}];
 				
-				// formdata.append('jfId',4);
+				// formdata.append('jfId',10);
  				// formdata.append('companyId',1);
-				// formdata.append('entryDate','14-3-2017');
-				// var json=[{"amount":100,"amountType":" credit ","ledgerId":5},{"amount":100,"amountType":"credit","ledgerId":7},
-				// {"amount":200,"amountType":"debit","ledgerId":11}];
+				// formdata.append('entryDate','19-4-2017');
+				// var json=[{"amount":100,"amountType":" debit ","ledgerId":5},{"amount":100,"amountType":"debit","ledgerId":8},
+				// {"amount":200,"amountType":"credit","ledgerId":11}];
 				
 				// var inventory = [{"productId": 1 ,"discount":'0',"discountType":"flat","price":900,"qty":10},{"productId": 1 ,"discount":'0',"discountType":"percentage","price":1000,"qty":4}];
 				// formdata.append('transactionDate','06-04-2017');
@@ -543,7 +543,7 @@ include ('connection.php');
 				// var productId =6;
 				// var productGrpId = 11;
 				// var productCatId = 18;
-				var companyId=1;
+				// var companyId=1;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -554,19 +554,20 @@ include ('connection.php');
 				// var quotationId=3;
 				// var ledgerGrpId=9;
 				// var ledgerId=82;
-				// var jfId=325;
+				// var jfId=10;
 				// var journalId=327;
 				// var saleId = 371;
 				
 				// var url="http://www.scerp1.com/settings";
 				
 				
-				// var url="http://www.scerp1.com/accounting/taxation/purchase-tax";  //sale tax
-				// var url="http://www.scerp1.com/accounting/taxation/sale-tax";  //sale tax
+				// var url="http://www.scerp1.com/accounting/taxation/purchase-detail";  //purchase
+				// var url="http://www.scerp1.com/accounting/taxation/purchase-tax";  //purchase tax
+				var url="http://www.scerp1.com/accounting/taxation/sale-tax";  //sale tax
 				
 				// var url="http://www.scerp1.com/accounting/cash-flow/company/"+companyId+"/export";  //pdf generate
 				// var url="http://www.scerp1.com/accounting/profit-loss/company/"+companyId+"/export";  //pdf generate
-				var url="http://www.scerp1.com/accounting/balance-sheet/company/"+companyId+"/export";  //pdf generate
+				// var url="http://www.scerp1.com/accounting/balance-sheet/company/"+companyId+"/export";  //pdf generate
 				
 				// var url="http://www.scerp1.com/accounting/cash-flow/company/"+companyId;  //cash-flow
 				// var url="http://www.scerp1.com/accounting/profit-loss/company/"+companyId;  //profit-loss
@@ -650,8 +651,8 @@ include ('connection.php');
 				$http({
                         url: url,
                         // type:'patch',
-                        type:'get',
-						 // method: 'get',
+                        // type:'get',
+						 method: 'get',
 						 // method: 'post',
 						 // method: 'patch',
 						// enctype:'multipart/formdata',

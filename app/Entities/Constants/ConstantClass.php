@@ -20,6 +20,9 @@ class ConstantClass
 		$constantArray['barcodeSetting'] = "barcode";
 		$constantArray['productBarcode'] = "Storage/Barcode/";
 		$constantArray['documentUrl'] = "Storage/Document/";
+		$constantArray['purchaseTaxationUrl'] = "Storage/Taxation/PurchaseDetail/";
+		$constantArray['purchaseTaxUrl'] = "Storage/Taxation/PurchaseTax/";
+		$constantArray['saleTaxUrl'] = "Storage/Taxation/SaleTax/";
 		$constantArray['mainLogo'] = "Storage/Logo/";
 		$constantArray['billDocumentUrl'] = "Storage/Bill/Document/";
 		$constantArray['journalDocumentUrl'] = "Storage/Journal/";

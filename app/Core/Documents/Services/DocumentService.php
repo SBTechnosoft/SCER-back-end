@@ -35,7 +35,7 @@ class DocumentService extends BillModel
      * get all the data and call the model for database selection opertation
      * @return status
      */
-	public function getSaleData($saleId)
+	public function getSaleData($saleId,$headerData)
 	{
 		$documentService = new DocumentService();
 		$saleData = $documentService->getSaleIdData($saleId);
@@ -79,7 +79,7 @@ class DocumentService extends BillModel
 				}
 				else
 				{
-					$documentMpdf = $documentMpdf->mpdfGenerate($templateData,$encodeData);
+					$documentMpdf = $documentMpdf->mpdfGenerate($templateData,$encodeData,$headerData);
 					return $documentMpdf;
 				}
 			}

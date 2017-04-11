@@ -404,6 +404,7 @@ class JournalController extends BaseController implements ContainerInterface
 							$productArray['inventory'][$inventoryArray]['qty']=$inputArray['inventory'][$inventoryArray]['qty'];
 						}
 					}
+					
 					//journal data is available in sale/purchase for update
 					if($entryDateFlag==1 || $companyIdFlag==1 || $journalArrayFlag==1)
 					{
@@ -436,9 +437,11 @@ class JournalController extends BaseController implements ContainerInterface
 								$headerType = $constantArray['purchaseType'];
 							}
 							$status = $journalService->update($journalPersistable,$jfId,$headerType);
+							
 							//update data in product_transaction
 							if(strcmp($status,$exceptionArray['200'])==0)
 							{
+								
 								//product transaction data is available for update
 								if($productArrayFlag==1 || $invoiceNumberFlag==1 || $entryDateFlag==1 || $companyIdFlag==1 || $billNumberFlag==1 || $transactionDateFlag==1 || $taxFlag==1)
 								{
@@ -732,7 +735,6 @@ class JournalController extends BaseController implements ContainerInterface
 								}
 								if(is_array($journalPersistable))
 								{
-									
 									if(strcmp($request->header()['type'][0],$constantArray['sales'])==0)
 									{
 										$headerType = $constantArray['saleType'];
@@ -771,7 +773,6 @@ class JournalController extends BaseController implements ContainerInterface
 													$inOutward = $constantArray['journalInward'];
 												}
 											}
-											
 											$productService= new ProductService();	
 											$productPersistable = new ProductPersistable();
 											$productProcessor = new ProductProcessor();
