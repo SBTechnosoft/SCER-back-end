@@ -231,7 +231,7 @@ class ProductModel extends Model
 			from journal_dtl 
 			where deleted_at='0000-00-00 00:00:00' and jf_id='".$jfId."'");
 			DB::commit();
-			$purchaseType = $journalData[0]->journal_type;
+			// $purchaseType = $journalData[0]->journal_type;
 			
 			$ledgerData = array();
 			$clientName="";
@@ -250,7 +250,10 @@ class ProductModel extends Model
 				if($ledgerData[$ledgerIdArray][0]->ledger_group_id==31 || $ledgerData[$ledgerIdArray][0]->ledger_group_id==32)
 				{
 					$clientName = $ledgerData[$ledgerIdArray][0]->ledger_name;
-					break;
+				}
+				if($ledgerData[$ledgerIdArray][0]->ledger_group_id==26)
+				{
+					$purchaseType = $ledgerData[$ledgerIdArray][0]->ledger_name;
 				}
 			}
 			

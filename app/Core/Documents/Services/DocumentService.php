@@ -63,8 +63,15 @@ class DocumentService extends BillModel
 			{
 				$templateType = $templateArray['invoiceTemplate'];
 			}
+			$emailTemplateType = $templateArray['emailTemplate'];
+			$blankTemplateType = $templateArray['blankTemplate'];
+			$smsTemplateType = $templateArray['smsTemplate'];
+			
 			$templateService = new TemplateService();
 			$templateData = $templateService->getSpecificData($decodedSaleData->company->companyId,$templateType);
+			$emailTemplateData = $templateService->getSpecificData($decodedSaleData->company->companyId,$emailTemplateType);
+			$blankTemplateData = $templateService->getSpecificData($decodedSaleData->company->companyId,$blankTemplateType);
+			$smsTemplateData = $templateService->getSpecificData($decodedSaleData->company->companyId,$smsTemplateType);
 			if(strcmp($templateData,$exceptionArray['404'])==0)
 			{
 				return $templateData;
@@ -74,12 +81,12 @@ class DocumentService extends BillModel
 				$documentMpdf = new DocumentMpdf();
 				if(strcmp($_SERVER['REQUEST_URI'],"/accounting/bills/".$saleId."/payment")==0)
 				{
-					$documentMpdf = $documentMpdf->mpdfPaymentGenerate($templateData,$encodeData);
+					$documentMpdf = $documentMpdf->mpdfPaymentGenerate($templateData,$encodeData,$emailTemplateData,$blankTemplateData,$smsTemplateData);
 					return $documentMpdf;
 				}
 				else
 				{
-					$documentMpdf = $documentMpdf->mpdfGenerate($templateData,$encodeData,$headerData);
+					$documentMpdf = $documentMpdf->mpdfGenerate($templateData,$encodeData,$headerData,$emailTemplateData,$blankTemplateData,$smsTemplateData);
 					return $documentMpdf;
 				}
 			}

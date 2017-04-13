@@ -160,8 +160,8 @@ include ('connection.php');
 				
 				//company
 				// $scope.formAdata.company_name = "reema2232323222222222222222222222222222222222222";
-				// $scope.formAdata.company_name = " SiliconBrainxxff"; //0-9 not allow(error:allow)
-				// $scope.formAdata.company_display_name = " aaabb ";
+				// $scope.formAdata.company_name = " Swaminarayan Cycle Store"; //0-9 not allow(error:allow)
+				// $scope.formAdata.company_display_name = " SCS ";
 				// $scope.formAdata.company_name = " abfcgfggfdldddhvh";
 				// $scope.formAdata.address1 =" address";
 				// $scope.formAdata.address2 = " address2 ";
@@ -174,7 +174,7 @@ include ('connection.php');
 				// $scope.formAdata.service_tax_no = ' 71j0rg778a22b01 ';
 				// $scope.formAdata.basic_currency_symbol= " ALR ";
 				// $scope.formAdata.formal_name = " qgfrd-&_().\'frtgfrta ";
-				// $scope.formAdata.no_of_decimal_points ='4';
+				// $scope.formAdata.no_of_decimal_points ='4'; 
 				// $scope.formAdata.currency_symbol = ' prefix ';
 				// $scope.formAdata.is_display = ' no ';
 				// $scope.formAdata.is_default = ' ok ';
@@ -543,7 +543,7 @@ include ('connection.php');
 				// var productId =6;
 				// var productGrpId = 11;
 				// var productCatId = 18;
-				// var companyId=1;
+				var companyId=9;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -563,7 +563,7 @@ include ('connection.php');
 				
 				// var url="http://www.scerp1.com/accounting/taxation/purchase-detail";  //purchase
 				// var url="http://www.scerp1.com/accounting/taxation/purchase-tax";  //purchase tax
-				var url="http://www.scerp1.com/accounting/taxation/sale-tax";  //sale tax
+				var url="http://www.scerp1.com/accounting/taxation/sale-tax/company/"+companyId;  //sale tax
 				
 				// var url="http://www.scerp1.com/accounting/cash-flow/company/"+companyId+"/export";  //pdf generate
 				// var url="http://www.scerp1.com/accounting/profit-loss/company/"+companyId+"/export";  //pdf generate
@@ -676,9 +676,9 @@ include ('connection.php');
                         // headers: {'Content-Type': undefined},
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','productName':'Spiderman','color':'BK.s'},
                         // headers: {'Content-Type':undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','productCode':'ABC_ABC_AB_CYCFDJ_BKBK_122T'},
-                        headers: {'Content-Type':undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','operation':'excel'},
+                        headers: {'Content-Type':undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','fromDate':'01/04/2017','toDate':'28/04/2017'},
                         // headers: {'Content-Type':'application/x-www-form-urlencoded','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
-						 // data:formdata
+						 data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

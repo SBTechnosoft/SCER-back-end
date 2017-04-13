@@ -27,6 +27,7 @@ class LedgerArray
 		$ledgerGeneralArray[13] = "retail_sales";
 		$ledgerGeneralArray[14] = "whole_sales";
 		$ledgerGeneralArray[15] = "card";
+		$ledgerGeneralArray[16] = "purchase_tax";
 		return $ledgerGeneralArray;
 	}
 	
@@ -60,6 +61,7 @@ class LedgerArray
 		$ledgerGeneralArray[13] = 28;
 		$ledgerGeneralArray[14] = 28;
 		$ledgerGeneralArray[15] = 9;
+		$ledgerGeneralArray[16] = 26;
 		return $ledgerGeneralArray;
 	}
 	

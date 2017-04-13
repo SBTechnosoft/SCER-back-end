@@ -128,7 +128,50 @@ class CompanyModel extends Model
 			'".$constantArray['paymentType']."',
 			'".$companyId[0]->company_id."')");
 			DB::commit();
-			if($invoiceInsertion!=1 && $paymentInsertion!=1)
+			
+			DB::beginTransaction();
+			$emailInsertion = DB::connection($databaseName)->statement("insert
+			into template_mst(
+			template_name,
+			template_body,
+			template_type,
+			company_id)
+			values(
+			'".$companyId[0]->company_name.' Email'."',
+			'".$templateArray['email']."',
+			'".$constantArray['emailType']."',
+			'".$companyId[0]->company_id."')");
+			DB::commit();
+			
+			DB::beginTransaction();
+			$smsInsertion = DB::connection($databaseName)->statement("insert
+			into template_mst(
+			template_name,
+			template_body,
+			template_type,
+			company_id)
+			values(
+			'".$companyId[0]->company_name.' Sms'."',
+			'".$templateArray['sms']."',
+			'".$constantArray['smsType']."',
+			'".$companyId[0]->company_id."')");
+			DB::commit();
+			
+			DB::beginTransaction();
+			$blankInsertion = DB::connection($databaseName)->statement("insert
+			into template_mst(
+			template_name,
+			template_body,
+			template_type,
+			company_id)
+			values(
+			'".$companyId[0]->company_name.' Blank'."',
+			'".$templateArray['blank']."',
+			'".$constantArray['blankType']."',
+			'".$companyId[0]->company_id."')");
+			DB::commit();
+			
+			if($invoiceInsertion!=1 && $paymentInsertion!=1 && $emailInsertion!=1 && $smsInsertion!=1 && $blankInsertion!=1)
 			{
 				return $exceptionArray['500'];
 			}
@@ -194,7 +237,6 @@ class CompanyModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			
 			DB::beginTransaction();
 			$branchInsertion = DB::connection($databaseName)->statement("INSERT 
 			into branch_mst(
@@ -254,7 +296,50 @@ class CompanyModel extends Model
 			'".$constantArray['paymentType']."',
 			'".$latestCompanyId[0]->company_id."')");
 			DB::commit();
-			if($invoiceInsertion!=1 && $paymentInsertion!=1)
+		
+			DB::beginTransaction();
+			$emailInsertion = DB::connection($databaseName)->statement("insert
+			into template_mst(
+			template_name,
+			template_body,
+			template_type,
+			company_id)
+			values(
+			'".$latestCompanyId[0]->company_name.' Email'."',
+			'".$templateArray['email']."',
+			'".$constantArray['emailType']."',
+			'".$latestCompanyId[0]->company_id."')");
+			DB::commit();
+			
+			DB::beginTransaction();
+			$smsInsertion = DB::connection($databaseName)->statement("insert
+			into template_mst(
+			template_name,
+			template_body,
+			template_type,
+			company_id)
+			values(
+			'".$latestCompanyId[0]->company_name.' Sms'."',
+			'".$templateArray['sms']."',
+			'".$constantArray['smsType']."',
+			'".$latestCompanyId[0]->company_id."')");
+			DB::commit();
+			
+			DB::beginTransaction();
+			$blankInsertion = DB::connection($databaseName)->statement("insert
+			into template_mst(
+			template_name,
+			template_body,
+			template_type,
+			company_id)
+			values(
+			'".$latestCompanyId[0]->company_name.' Blank'."',
+			'".$templateArray['blank']."',
+			'".$constantArray['blankType']."',
+			'".$latestCompanyId[0]->company_id."')");
+			DB::commit();
+			
+			if($invoiceInsertion!=1 && $paymentInsertion!=1 && $emailInsertion!=1 && $smsInsertion!=1 && $blankInsertion!=1)
 			{
 				return $exceptionArray['500'];
 			}

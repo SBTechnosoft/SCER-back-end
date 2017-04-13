@@ -3,7 +3,9 @@
 ##### `GET /accounting/taxation/sale-tax/company/{companyId}`
 + Header
 	- Authentication Token
-	- 'operation':'excel'
+	- 'operation':'excel',
+	- 'fromDate':'',
+	- 'toDate':''
 + Error Message
 
 			{
@@ -21,6 +23,8 @@
 + Header
 	- Authentication Token
 	- 'operation':'excel'
+	- 'fromDate':'',
+	- 'toDate':''
 + Error Message
 
 			{
@@ -39,6 +43,8 @@
 + Header
 	- Authentication Token
 	- 'operation':'excel'
+	- 'fromDate':'',
+	- 'toDate':''
 + Error Message
 
 			{

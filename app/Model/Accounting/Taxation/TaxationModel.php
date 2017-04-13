@@ -16,7 +16,7 @@ class TaxationModel extends Model
 	 * get data
 	 * returns the array-data/exception message
 	*/
-	public function getSaleTaxData($companyId)
+	public function getSaleTaxData($companyId,$headerData)
 	{
 		//database selection
 		$database = "";
@@ -28,6 +28,14 @@ class TaxationModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		
 		$mytime = Carbon\Carbon::now();
+		//date conversion
+		//from-date conversion
+		$splitedFromDate = explode("-",$headerData['fromdate'][0]);
+		$transformFromDate = $splitedFromDate[2]."-".$splitedFromDate[1]."-".$splitedFromDate[0];
+		//from-date conversion
+		$splitedToDate = explode("-",$headerData['todate'][0]);
+		$transformToDate = $splitedToDate[2]."-".$splitedToDate[1]."-".$splitedToDate[0];
+		
 		//get saleTax from sales bill 
 		DB::beginTransaction();	
 		$saleTaxResult = DB::connection($databaseName)->select("select
@@ -45,7 +53,10 @@ class TaxationModel extends Model
 		company_id,
 		jf_id
 		from sales_bill
-		where deleted_at='0000-00-00 00:00:00' and sales_type='whole_sales' and company_id='".$companyId."'"); 
+		where deleted_at='0000-00-00 00:00:00' and 
+		sales_type='whole_sales' and 
+		company_id='".$companyId."' and
+		(entry_date BETWEEN '".$transformFromDate."' AND '".$transformToDate."')"); 
 		DB::commit();
 		
 		if(count($saleTaxResult)!=0)
@@ -62,7 +73,7 @@ class TaxationModel extends Model
 	 * get data
 	 * returns the array-data/exception message
 	*/
-	public function getPurchaseTaxData($companyId)
+	public function getPurchaseTaxData($companyId,$headerData)
 	{
 		//database selection
 		$database = "";
@@ -74,6 +85,13 @@ class TaxationModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		
 		$mytime = Carbon\Carbon::now();
+		//date conversion
+		//from-date conversion
+		$splitedFromDate = explode("-",$headerData['fromdate'][0]);
+		$transformFromDate = $splitedFromDate[2]."-".$splitedFromDate[1]."-".$splitedFromDate[0];
+		//from-date conversion
+		$splitedToDate = explode("-",$headerData['todate'][0]);
+		$transformToDate = $splitedToDate[2]."-".$splitedToDate[1]."-".$splitedToDate[0];
 		
 		//get saleTax from purchase bill 
 		DB::beginTransaction();	
@@ -89,7 +107,10 @@ class TaxationModel extends Model
 		company_id,
 		jf_id
 		from purchase_bill
-		where deleted_at='0000-00-00 00:00:00' and transaction_type='tax_purchase' and company_id='".$companyId."'"); 
+		where deleted_at='0000-00-00 00:00:00' and 
+		transaction_type='purchase_tax' and 
+		company_id='".$companyId."' and
+		(transaction_date BETWEEN '".$transformFromDate."' AND '".$transformToDate."')"); 
 		DB::commit();
 		
 		if(count($purchaseTaxResult)!=0)
@@ -106,7 +127,7 @@ class TaxationModel extends Model
 	 * get data
 	 * returns the array-data/exception message
 	*/
-	public function getPurchaseData($companyId)
+	public function getPurchaseData($companyId,$headerData)
 	{
 		//database selection
 		$database = "";
@@ -118,6 +139,13 @@ class TaxationModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		
 		$mytime = Carbon\Carbon::now();
+		//date conversion
+		//from-date conversion
+		$splitedFromDate = explode("-",$headerData['fromdate'][0]);
+		$transformFromDate = $splitedFromDate[2]."-".$splitedFromDate[1]."-".$splitedFromDate[0];
+		//from-date conversion
+		$splitedToDate = explode("-",$headerData['todate'][0]);
+		$transformToDate = $splitedToDate[2]."-".$splitedToDate[1]."-".$splitedToDate[0];
 		
 		//get saleTax from purchase bill 
 		DB::beginTransaction();	
@@ -133,7 +161,9 @@ class TaxationModel extends Model
 		company_id,
 		jf_id
 		from purchase_bill
-		where deleted_at='0000-00-00 00:00:00' and company_id='".$companyId."'"); 
+		where deleted_at='0000-00-00 00:00:00' 
+		and company_id='".$companyId."' and
+		(transaction_date BETWEEN '".$transformFromDate."' AND '".$transformToDate."')"); 
 		DB::commit();
 		
 		if(count($purchaseTaxResult)!=0)

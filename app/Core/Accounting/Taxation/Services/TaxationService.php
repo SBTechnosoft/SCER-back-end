@@ -46,7 +46,7 @@ class TaxationService extends AbstractService
 	{
 		//get data
 		$saleTaxModel = new TaxationModel();
-		$saleTaxData = $saleTaxModel->getSaleTaxData($companyId);
+		$saleTaxData = $saleTaxModel->getSaleTaxData($companyId,$request->header());
 		
 		//get exception message
 		$exception = new ExceptionMessage();
@@ -71,7 +71,7 @@ class TaxationService extends AbstractService
 	{
 		//get data
 		$purchaseTaxModel = new TaxationModel();
-		$purchaseTaxData = $purchaseTaxModel->getPurchaseTaxData($companyId);
+		$purchaseTaxData = $purchaseTaxModel->getPurchaseTaxData($companyId,$request->header());
 		
 		//get exception message
 		$exception = new ExceptionMessage();
@@ -96,7 +96,7 @@ class TaxationService extends AbstractService
 	{
 		//get data
 		$purchaseTaxModel = new TaxationModel();
-		$purchaseTaxData = $purchaseTaxModel->getPurchaseData($companyId);
+		$purchaseTaxData = $purchaseTaxModel->getPurchaseData($companyId,$request->header());
 		
 		//get exception message
 		$exception = new ExceptionMessage();

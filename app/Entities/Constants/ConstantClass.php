@@ -90,6 +90,9 @@ class ConstantClass
 		$constantArray['saleType']="sale";
 		$constantArray['salesReturnType']="sales_return";
 		$constantArray['purchaseType']="purchase";
+		$constantArray['emailType']="email";
+		$constantArray['smsType']="sms";
+		$constantArray['blankType']="blank";
 		$constantArray['invoice']="invoice";
 		$constantArray['paymentType']="payment";
 		$constantArray['refundType']="refund";
