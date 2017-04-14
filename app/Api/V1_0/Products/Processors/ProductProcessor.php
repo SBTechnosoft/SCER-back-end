@@ -186,6 +186,168 @@ class ProductProcessor extends BaseProcessor
      * $param Request object [Request $request]
      * @return product Persistable object
      */	
+    public function createPersistableBatchData(Request $request)
+	{	
+		$tKeyValue = array();
+		$value = array();
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$msgArray = $exception->messageArrays();
+		if(count($_POST)==0)
+		{
+			return $msgArray['204'];
+		}
+		else
+		{
+			$productValidate = new ProductValidate();
+			
+			// trim an input 
+			$productTransformer = new ProductTransformer();
+			$tRequestData = $productTransformer->trimInsertBatchData($request);
+			
+			if($tRequestData==1)
+			{
+				return $msgArray['content'];
+			}
+			else
+			{
+				$newProductArray = array();
+				for($dataArray=0;$dataArray<count($tRequestData);$dataArray++)
+				{
+					$data=0;
+					$keyName = array();
+					$productValue = array();
+					$tRequest = $tRequestData[$dataArray];
+					// make a product_code and validate it with other codes
+					// get company_name 
+					$companyModel = new CompanyModel();
+					$companyResult = $companyModel->getData($tRequest['company_id']);
+					$decodedCompanyData = json_decode($companyResult);
+					
+					//get product group name
+					$productGroupData = new ProductGroupModel();
+					$groupData = $productGroupData->getData($tRequest['product_group_id']);
+					$decodedGroupData = json_decode($groupData);
+					
+					//get product category name
+					$productCategoryData = new ProductCategoryModel();
+					$categoryData = $productCategoryData->getData($tRequest['product_category_id']);
+					$decodedCategoryData = json_decode($categoryData);
+					
+					if($tRequest['color']=="")
+					{
+						$tRequest['color'] = "XXXX";
+					}
+					if($tRequest['size']=="")
+					{
+						$tRequest['size'] = "ZZZZ";
+					}
+					$color = preg_replace('/[^A-Za-z0-9\-]/', '', $tRequest['color']);
+					$size = preg_replace('/[^A-Za-z0-9\-]/', '', $tRequest['size']);
+					$product_name = preg_replace('/[^A-Za-z0-9]/', '', $tRequest['product_name']);
+					$company_name = preg_replace('/[^A-Za-z0-9]/', '', $decodedCompanyData[0]->company_name);
+					$group_name = preg_replace('/[^A-Za-z0-9]/', '', $decodedGroupData[0]->product_group_name);
+					$category_name = preg_replace('/[^A-Za-z0-9]/', '', $decodedCategoryData[0]->product_category_name);
+									
+					$convertedCompanyName = substr($company_name,0,3);
+					$convertedCategoryName = substr($category_name,0,3);
+					$convertedGroupName = substr($group_name,0,2);
+					
+					$productNameLength = strlen($product_name);
+					$productName1 = substr($product_name,0,3);
+					$productName2 = substr($product_name,$productNameLength-3,3);
+					$convertedProductName  = $productName1.$productName2;
+					
+					$colorLength = strlen($color);
+					$color1 = substr($color,0,2);
+					$color2 = substr($color,$colorLength-2,2);
+					$convertedColor = $color1.$color2;
+					
+					$sizeLength = strlen($size);
+					$size1 = substr($size,0,2);
+					$size2 = substr($size,$sizeLength-2,2);
+					$convertedSize = $size1.$size2;
+					
+					$tRequest['product_code'] = $convertedCompanyName."_".
+											$convertedCategoryName."_".
+											$convertedGroupName."_".
+											$convertedProductName."_".
+											$convertedColor."_".
+											$convertedSize;
+					// convert string to upper-case
+					$convertedProductCode = strtoupper($tRequest['product_code']);
+					$tRequest['product_code'] = $convertedProductCode;
+					// validation
+					$validationResult = $productValidate->productCodeValidate($tRequest['company_id'],$convertedProductCode);
+					
+					if(strcmp($validationResult,$msgArray['200'])==0)
+					{
+						// validation
+						$status = $productValidate->validate($tRequest);
+						
+						if($status=="Success")
+						{
+							foreach ($tRequest as $key => $value)
+							{
+								if(!is_numeric($value))
+								{
+									if (strpos($value, '\'') !== FALSE)
+									{
+										$productValue[$data]= str_replace("'","\'",$value);
+										$keyName[$data] = $key;
+									}
+									else
+									{
+										$productValue[$data] = $value;
+										$keyName[$data] = $key;
+									}
+								}
+								else
+								{
+									$productValue[$data]= $value;
+									$keyName[$data] = $key;
+								}
+								$data++;
+							}
+							$productArray = array();
+							$getFuncName = array();
+							// set data to the persistable object
+							for($data=0;$data<count($productValue);$data++)
+							{
+								// set the data in persistable object
+								$productPersistable = new ProductPersistable();	
+								$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
+								// make function name dynamically
+								$setFuncName = 'set'.$str;
+								$getFuncName[$data] = 'get'.$str;
+								$productPersistable->$setFuncName($productValue[$data]);
+								$productPersistable->setName($getFuncName[$data]);
+								$productPersistable->setKey($keyName[$data]);
+								$productArray[$data] = array($productPersistable);
+							}
+							array_push($newProductArray,$productArray);
+						}
+						else
+						{
+							return $status;
+						}
+					}
+					else
+					{
+						return $validationResult;
+					}
+				}
+				return $newProductArray;
+			}
+		}
+	}
+	
+	/**
+     * get the form-data and set into the persistable object
+     * $param Request object [Request $request]
+     * @return product Persistable object
+     */	
     public function createPersistableInOutWard(Request $request,$inOutWard)
 	{	
 		$this->request = $request;	

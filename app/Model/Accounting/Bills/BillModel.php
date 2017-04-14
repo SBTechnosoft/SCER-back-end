@@ -1099,14 +1099,14 @@ class BillModel extends Model
 		
 		//delete bill-transaction data 
 		DB::beginTransaction();
-		$deleteBillData = DB::connection($databaseName)->statement("update
+		$deleteBillTrnData = DB::connection($databaseName)->statement("update
 		sales_bill_trn set
 		deleted_at = '".$mytime."'
 		where sale_id = ".$saleId." and
 		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
-		if($deleteJournalData==1 && $deleteProductTrnData==1 && $deleteBillData==1 && $deleteBillData==1)
+		if($deleteJournalData==1 && $deleteProductTrnData==1 && $deleteBillData==1 && $deleteBillTrnData==1)
 		{
 			return $exceptionArray['200'];
 		}

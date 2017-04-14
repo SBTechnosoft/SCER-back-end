@@ -20,6 +20,32 @@
             {
                 ... HTTP_Status:200
             }
+			
+##### `POST /product-categories/batch`
++ Header
+	- Authentication Token
+
+
++ Body
+
+            {
+                [	
+					{
+						... Standard Product Category Persistable Object
+					}
+				]
+				...
+            }
++ Error Message
+
+			{
+				... Error Message
+			}            
++ Response
+
+            {
+                ... HTTP_Status:200
+            }
     
 
 ##### Get Products Category           
@@ -57,7 +83,7 @@
 
 ##### Updates a Products Category  
        
-##### `PATCH /product-categories/{productCategoryId}`
+##### `POST /product-categories/{productCategoryId}`
 + Header
 	- Authentication Token
 

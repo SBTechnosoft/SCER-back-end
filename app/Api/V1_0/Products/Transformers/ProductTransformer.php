@@ -141,6 +141,114 @@ class ProductTransformer
 	}
 	
 	/**
+     * @param Request $request
+     * @return array
+     */
+    public function trimInsertBatchData(Request $request)
+    {
+		$inputRequestData = $request->input();
+		$isDisplayFlag=0;
+		$measurementUnitFlag=0;
+	
+		for($arrayData=0;$arrayData<count($inputRequestData);$arrayData++)
+		{
+			//trim an input
+			$tProductName = trim($inputRequestData[$arrayData]['productName']);
+			$tMeasUnit = trim($inputRequestData[$arrayData]['measurementUnit']);
+			$tColor = trim($inputRequestData[$arrayData]['color']);
+			$tSize = trim($inputRequestData[$arrayData]['size']);
+			$tIsDisplay = trim($inputRequestData[$arrayData]['isDisplay']);
+			$tPurchasePrice = trim($inputRequestData[$arrayData]['purchasePrice']);
+			$tWholeSaleMargin = trim($inputRequestData[$arrayData]['wholesaleMargin']);
+			$tWholeSaleMarginFlat = trim($inputRequestData[$arrayData]['wholesaleMarginFlat']);
+			$tSemiWholeSaleMargin = trim($inputRequestData[$arrayData]['semiWholesaleMargin']);
+			$tVat = trim($inputRequestData[$arrayData]['vat']);
+			$tMrp = trim($inputRequestData[$arrayData]['mrp']);
+			$tMargin = trim($inputRequestData[$arrayData]['margin']);
+			$tMarginFlat = trim($inputRequestData[$arrayData]['marginFlat']);
+			$tProductDescription = trim($inputRequestData[$arrayData]['productDescription']);
+			$tAdditionalTax = trim($inputRequestData[$arrayData]['additionalTax']);
+			$tMinimumStockLevel = trim($inputRequestData[$arrayData]['minimumStockLevel']);
+			$tCompanyId = trim($inputRequestData[$arrayData]['companyId']);
+			$tProductCatId = trim($inputRequestData[$arrayData]['productCategoryId']);
+			$tProductGrpId = trim($inputRequestData[$arrayData]['productGroupId']);
+			$tBranchId = trim($inputRequestData[$arrayData]['branchId']);
+			
+			$enumIsDispArray = array();
+			$isDispEnum = new IsDisplayEnum();
+			$enumIsDispArray = $isDispEnum->enumArrays();
+			if($tIsDisplay=="")
+			{
+				$tIsDisplay=$enumIsDispArray['display'];
+			}
+			else
+			{
+				foreach ($enumIsDispArray as $key => $value)
+				{
+					if(strcmp($value,$tIsDisplay)==0)
+					{
+						$isDisplayFlag=1;
+						break;
+					}
+					else
+					{
+						$isDisplayFlag=2;
+					}
+				}
+			}
+			
+			$enumMeasurementUnitArray = array();
+			$measurementUnitEnum = new measurementUnitEnum();
+			$enumMeasurementUnitArray = $measurementUnitEnum->enumArrays();
+			if($tMeasUnit!="")
+			{
+				foreach ($enumMeasurementUnitArray as $key => $value)
+				{
+					if(strcmp($value,$tMeasUnit)==0)
+					{
+						$measurementUnitFlag=1;
+						break;
+					}
+					else
+					{
+						$measurementUnitFlag=2;
+					}
+				}
+			}
+			if($isDisplayFlag==2 || $measurementUnitFlag==2)
+			{
+				return "1";
+			}
+			else
+			{
+				//make an array
+				$data[$arrayData] = array();
+				$data[$arrayData]['product_name'] = $tProductName;
+				$data[$arrayData]['measurement_unit'] = $tMeasUnit;
+				$data[$arrayData]['color'] = $tColor;
+				$data[$arrayData]['size'] = $tSize;
+				$data[$arrayData]['is_display'] = $tIsDisplay;
+				$data[$arrayData]['purchase_price'] = $tPurchasePrice;
+				$data[$arrayData]['wholesale_margin'] = $tWholeSaleMargin;
+				$data[$arrayData]['wholesale_margin_flat'] = $tWholeSaleMarginFlat;
+				$data[$arrayData]['vat'] = $tVat;
+				$data[$arrayData]['mrp'] = $tMrp;
+				$data[$arrayData]['margin'] = $tMargin;
+				$data[$arrayData]['margin_flat'] = $tMarginFlat;
+				$data[$arrayData]['product_description'] = $tProductDescription;
+				$data[$arrayData]['additional_tax'] = $tAdditionalTax;
+				$data[$arrayData]['minimum_stock_level'] = $tMinimumStockLevel;
+				$data[$arrayData]['semi_wholesale_margin'] = $tSemiWholeSaleMargin;
+				$data[$arrayData]['company_id'] = $tCompanyId;
+				$data[$arrayData]['product_category_id'] = $tProductCatId;
+				$data[$arrayData]['product_group_id'] = $tProductGrpId;
+				$data[$arrayData]['branch_id'] = $tBranchId;
+			}
+		}
+		return $data;
+	}
+	
+	/**
      * @param 
      * @return array
      */

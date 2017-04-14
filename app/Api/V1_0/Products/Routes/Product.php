@@ -31,6 +31,7 @@ class Product implements RouteRegistrarInterface
 		Route::post('Products/Product', 'Products\Controllers\ProductController@store');
 		Route::post('Products/Product/inward', 'Products\Controllers\ProductController@inwardStore');
 		Route::post('Products/Product/outward', 'Products\Controllers\ProductController@outwardStore');
+		Route::post('Products/Product/batch', 'Products\Controllers\ProductController@multipleDataStore');
 		
 		// update data post request
 		Route::post('Products/Product/{productId}', 'Products\Controllers\ProductController@update');

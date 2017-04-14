@@ -121,6 +121,109 @@ class ProductModel extends Model
 	}
 	
 	/**
+	 * insert batch data 
+	 * @param  array
+	 * returns the status
+	*/
+	public function insertBatchData()
+	{
+		//database selection
+		$database = "";
+		$productDetail = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		//get constant array
+		$constantArray = $constantDatabase->constantVariable();
+		$path = $constantArray['productBarcode'];
+		
+		//get barcode-size
+		$settingType = 'barcode';
+		$settingModel = new SettingModel();
+		$settingData = $settingModel->getParticularTypeData($settingType);
+		$decodedSettingData = json_decode($settingData);
+		if(strcmp($settingData,$exceptionArray['204'])==0)
+		{
+			$width = $constantArray['barcodeWidth'];
+			$height = $constantArray['barcodeHeight'];
+		}
+		else
+		{
+			$decodedSetting = json_decode($decodedSettingData[0]->setting_data);
+			$width = $decodedSetting->barcode_width;
+			$height =$decodedSetting->barcode_height;
+		}
+		
+		$mytime = Carbon\Carbon::now();
+		$getProductData = array();
+		$getproductKey = array();
+		$getProductData = func_get_arg(0);
+		$getProductKey = func_get_arg(1);
+		$productCode = array();
+		for($dataArray=0;$dataArray<count($getProductData);$dataArray++)
+		{
+			$productData="";
+			$keyName = "";
+			for($data=0;$data<count($getProductData[$dataArray]);$data++)
+			{
+				if(strcmp('product_code',$getProductKey[$dataArray][$data])==0)
+				{
+					$productCode[$dataArray] = $getProductData[$dataArray][$data];
+				}
+				if($data == (count($getProductData[$dataArray])-1))
+				{
+					$productData = $productData."'".$getProductData[$dataArray][$data]."'";
+					$keyName =$keyName.$getProductKey[$dataArray][$data];
+				}
+				else
+				{
+					$productData = $productData."'".$getProductData[$dataArray][$data]."',";
+					$keyName = $keyName.$getProductKey[$dataArray][$data].",";
+				}
+			}
+			//make unique name of barcode svg image
+			$dateTime = date("d-m-Y h-i-s");
+			$convertedDateTime = str_replace(" ","-",$dateTime);
+			$splitDateTime = explode("-",$convertedDateTime);
+			$combineDateTime = $splitDateTime[0].$splitDateTime[1].$dataArray.$splitDateTime[2].$splitDateTime[3].$data.$splitDateTime[4].$splitDateTime[5];
+			$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".svg";
+			$documentPath = $path.$documentName;
+			
+			//insert barcode image
+			$barcodeobj = new TCPDFBarcode($productCode[$dataArray], 'C128','C');
+			file_put_contents($documentPath,$barcodeobj->getBarcodeSVGcode($width ,$height, 'black'));
+			
+			$finalProductData = "(".$productData.",'".$documentName."','svg')";
+			$keyName = $keyName.",document_name,document_format";
+			if($dataArray==count($getProductData)-1)
+			{
+				$productDetail = $productDetail.$finalProductData;
+			}
+			else
+			{
+				$productDetail = $productDetail.$finalProductData.",";
+			}
+		}
+		//insert batch of product data	
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->statement("insert into product_mst(".$keyName.") 
+		values".$productDetail);
+		DB::commit();
+		if($raw==1)
+		{
+			return $exceptionArray['200'];
+		}
+		else
+		{
+			return $exceptionArray['500'];
+		}
+	}
+	
+	/**
 	 * insert data 
 	 * @param  array
 	 * returns the status
@@ -304,6 +407,7 @@ class ProductModel extends Model
 	*/
 	public function updateData($productData,$key,$productId)
 	{
+		$productCodeFlag=0;
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();

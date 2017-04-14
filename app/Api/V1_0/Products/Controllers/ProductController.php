@@ -84,9 +84,54 @@ class ProductController extends BaseController implements ContainerInterface
 					return $productPersistable;
 				}
 			}
-			else
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+	}
+	
+	/**
+	 * insert the specified resource 
+	 * @param  Request object[Request $request]
+	 * method calls the processor for creating persistable object & setting the data
+	*/
+    public function multipleDataStore(Request $request)
+    {
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		// get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$this->request = $request;
+			// check the requested Http method
+			$requestMethod = $_SERVER['REQUEST_METHOD'];
+			// insert
+			if($requestMethod == "POST")
 			{
-				return $status;
+				$processor = new ProductProcessor();
+				$productPersistable = new ProductPersistable();		
+				$productService= new ProductService();					
+				$productPersistable = $processor->createPersistableBatchData($this->request);
+				
+				if($productPersistable[0][0]=='[')
+				{
+					return $productPersistable;
+				}
+				else if(is_array($productPersistable))
+				{
+					$status = $productService->insertBatchData($productPersistable);
+					return $status;
+				}
+				else
+				{
+					return $productPersistable;
+				}
 			}
 		}
 		else

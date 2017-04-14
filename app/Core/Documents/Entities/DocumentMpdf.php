@@ -12,6 +12,7 @@ use Illuminate\Container\Container;
 use ERP\Core\Documents\Entities\CurrencyToWordConversion;
 use PHPMailer;
 use SMTP;
+// use ERP\Core\Documents\Entities\CssStyleMpdf;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -67,8 +68,11 @@ class DocumentMpdf extends CurrencyToWordConversion
 		
 		if(strcmp($decodedBillData->salesType,"retail_sales")==0)
 		{
+			$totalCm = 10.4;
+			
 			for($productArray=0;$productArray<count($decodedArray->inventory);$productArray++)
 			{
+				
 				//get product-data
 				$productData[$productArray] = $productService->getProductData($decodedArray->inventory[$productArray]->productId);
 				$decodedData[$productArray] = json_decode($productData[$productArray]);
@@ -138,9 +142,10 @@ class DocumentMpdf extends CurrencyToWordConversion
 				if($productArray != count($decodedArray->inventory)-1)
 				{
 					$output = $output.$trClose;
+				
 				}
-
-			    $index++;
+				
+			    
 			    $totalVatValue = $totalVatValue+$vatValue[$productArray];
 			    $totalAdditionalTax=$totalAdditionalTax+$additionalTaxValue[$productArray];
 			    $totalQty=$totalQty+$decodedArray->inventory[$productArray]->qty;
@@ -148,6 +153,26 @@ class DocumentMpdf extends CurrencyToWordConversion
 			    $totalAmount=$totalAmount+$total[$productArray];
 			    // convert amount(round) into their company's selected decimal points
 				$totalAmount = round($totalAmount,$decodedData[$productArray]->company->noOfDecimalPoints);
+				if($productArray==(count($decodedArray->inventory)-1))
+				{
+					$totalProductSpace = $index*0.7;	
+					
+					$finalProductBlankSpace = $totalCm-$totalProductSpace;
+					$output =$output."<tr class='trhw' style='font-family: Calibri; text-align: left; height:  ".$finalProductBlankSpace."cm;background-color: transparent;'>
+				   <td class='tg-m36b thsrno' style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;'></td>
+				   <td class='tg-m36b theqp' style='font-size: 12px;  height:  ".$finalProductBlankSpace."cm; padding:0 0 0 0;'></td>
+				   <td class='tg-ullm thsrno' style='font-size: 12px;  height: ".$finalProductBlankSpace."cm; padding:0 0 0 0;'></td>
+				   <td class='tg-ullm thsrno' style='font-size: 12px;  height:  ".$finalProductBlankSpace."cm; padding:0 0 0 0;'></td>
+				   <td class='tg-ullm thsrno' style='font-size: 12px;   height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
+				   <td class='tg-ullm thsrno' style='font-size: 12px; height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
+				   <td class='tg-ullm thsrno' style='font-size: 12px;  height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
+				   <td class='tg-ullm thamt' style='font-size: 12px;  height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
+				   <td class='tg-ullm thamt' style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
+				   <td class='tg-ullm thamt' style='font-size: 12px;  height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
+				   <td class='tg-ullm thamt' style='font-size: 12px;   height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
+				   <td class='tg-ullm thamt' style='font-size: 12px;  height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td></tr>";
+				}
+				$index++;
 			}
 		}
 		else
@@ -226,14 +251,25 @@ class DocumentMpdf extends CurrencyToWordConversion
 				$totalAmount = round($totalAmount,$decodedData[$productArray]->company->noOfDecimalPoints);
 			}
 		}
+
 		//calculation of currecy to word conversion
 		$currecyToWordConversion = new DocumentMpdf();
 		$currencyResult = $currecyToWordConversion->conversion($totalAmount);
 		$address = $decodedBillData->client->address1.",".$decodedBillData->client->address2;
+		$companyAddress = $decodedBillData->company->address1.",".$decodedBillData->company->address2;
+		if(strcmp($decodedBillData->salesType,"retail_sales")==0)
+		{
+			$typeSale = "RETAIL";
+		}
+		else
+		{
+			$typeSale = "TAX";
+
+		}
 		$billArray = array();
 		$billArray['Description']=$output;
 		$billArray['ClientName']=$decodedBillData->client->clientName;
-		$billArray['Company']=$decodedBillData->company->companyName;
+		$billArray['Company']="<span style='font-family: algerian;font-size:22px'>".$decodedBillData->company->companyName."</span>";
 		$billArray['Total']=$totalAmount;
 		$billArray['Mobile']=$decodedBillData->client->contactNo;
 		$billArray['INVID']=$decodedBillData->invoiceNumber;
@@ -245,14 +281,21 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$billArray['TotalInWord']=$currencyResult;
 		$billArray['displayNone']='none';
 		$billArray['CMPLOGO']="<img src='".$constantArray['mainLogo']."MainLogo.png'/>";
-
+		$billArray['CompanyAdd']=$companyAddress;
+		$billArray['CreditCashMemo']="<span style='font-family: algerian;'>CASH</span>";
+		$billArray['RetailOrTax']=$typeSale;
+		
 		//$mpdf = new mPDF('A4','landscape');
-		$mpdf = new mPDF('','A4','','','0','0','0','0','0','0','landscape');
+		$mpdf = new mPDF('','A4','','agency','0','0','0','0','0','0','landscape');
 		$mpdf->SetDisplayMode('fullpage');
 		foreach($billArray as $key => $value)
 		{
 			$htmlBody = str_replace('['.$key.']', $value, $htmlBody);
 		}
+		// $mpdf->SetFont('algerian');
+		// echo "sss";
+		// $cssStyle = file_get_contents('CssStyleMpdf.css');
+		// $mpdf->WriteHTML($cssStyle,1);
 		$mpdf->WriteHTML($htmlBody);
 		$path = $constantArray['billUrl'];
 		//change the name of document-name

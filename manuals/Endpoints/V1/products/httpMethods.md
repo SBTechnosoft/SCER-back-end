@@ -19,6 +19,26 @@
             {
                 ... HTTP_Status:200
             }
+			
+##### `POST /products/batch`
++ Header
+	- Authentication Token
+	
++ Body
+
+            {
+                ... Standard Products Persistable Object
+            }
++ Error Message
+
+			{
+				... Error Message
+			}            
++ Response
+
+            {
+                ... HTTP_Status:200
+            }
 
 ##### `POST /products/inward`
 + Header

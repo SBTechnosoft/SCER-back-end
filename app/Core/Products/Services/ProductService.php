@@ -63,6 +63,38 @@ class ProductService extends AbstractService
 		$productModel = new ProductModel();
 		$status = $productModel->insertData($getData,$keyName);
 		return $status;
+	} 
+	
+	/**
+     * get the data from persistable object and call the model for database insertion opertation
+     * @param ProductPersistable $persistable
+     * @return status
+     */
+	public function insertBatchData()
+	{
+		$getArrayData = array();
+		$keyArrayData = array();
+		$productArray = array();
+		$productArray = func_get_arg(0);
+		
+		for($arrayData=0;$arrayData<count($productArray);$arrayData++)
+		{
+			$funcName = array();
+			$getData = array();
+			$keyName = array();
+			for($data=0;$data<count($productArray[$arrayData]);$data++)
+			{
+				$funcName[$data] = $productArray[$arrayData][$data][0]->getName();
+				$getData[$data] = $productArray[$arrayData][$data][0]->$funcName[$data]();
+				$keyName[$data] = $productArray[$arrayData][$data][0]->getkey();
+			}
+			array_push($getArrayData,$getData);
+			array_push($keyArrayData,$keyName);
+		}
+		//data pass to the model object for insert
+		$productModel = new ProductModel();
+		$status = $productModel->insertBatchData($getArrayData,$keyArrayData);
+		return $status;
 	}
 	
 	/**
