@@ -10,7 +10,7 @@ use ERP\Entities\EnumClasses\IsDisplayEnum;
 class ProductGroupTransformer 
 {
     /**
-     * @param 
+     * @param Request object
      * @return array
      */
     public function trimInsertData(Request $request)
@@ -64,6 +64,69 @@ class ProductGroupTransformer
 			$data['is_display'] = $tIsDisplay;
 			return $data;
 		}
+	}
+	
+	/**
+     * @param Request object
+     * @return array
+     */
+    public function trimInsertBatchData(Request $request)
+    {
+		$data = array();
+		$requestInputData = $request->input();
+		for($arrayData=0;$arrayData<count($requestInputData);$arrayData++)
+		{
+			$isDisplayFlag=0;
+			//data get from body
+			$productGroupName = $requestInputData[$arrayData]['productGroupName']; 
+			$productGroupDesc = $requestInputData[$arrayData]['productGroupDescription']; 
+			$productGroupParentId = $requestInputData[$arrayData]['productGroupParentId']; 
+			$isDisplay = $requestInputData[$arrayData]['isDisplay']; 			
+			
+			//trim an input
+			$tProductGroupName = trim($productGroupName);
+			$tProductGroupDesc = trim($productGroupDesc);
+			$tProductGroupParentId = trim($productGroupParentId);
+			$tIsDisplay = trim($isDisplay);
+			
+			$enumIsDispArray = array();
+			$isDispEnum = new IsDisplayEnum();
+			$enumIsDispArray = $isDispEnum->enumArrays();
+			if($tIsDisplay=="")
+			{
+				$tIsDisplay = $enumIsDispArray['display'];
+			}
+			else
+			{
+				foreach ($enumIsDispArray as $key => $value)
+				{
+					if(strcmp($value,$tIsDisplay)==0)
+					{
+						$isDisplayFlag=1;
+						break;
+					}
+					else
+					{
+						$isDisplayFlag=2;
+					}
+				}
+			}
+			if($isDisplayFlag==2)
+			{
+				return "1";
+			}
+			else
+			{
+				//make an array
+				$data[$arrayData] = array();
+				$data[$arrayData]['product_group_name'] = $tProductGroupName;
+				$data[$arrayData]['product_group_description'] = $tProductGroupDesc;
+				$data[$arrayData]['product_group_parent_id'] = $tProductGroupParentId;
+				$data[$arrayData]['is_display'] = $tIsDisplay;
+				
+			}
+		}
+		return $data;
 	}
 	public function trimUpdateData()
 	{

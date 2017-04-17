@@ -25,9 +25,13 @@
 	- Authentication Token
 	
 + Body
-
-            {
-                ... Standard Products Persistable Object
+			{
+                [	
+					{
+						... Standard Products Persistable Object
+					}
+				]
+				...
             }
 + Error Message
 

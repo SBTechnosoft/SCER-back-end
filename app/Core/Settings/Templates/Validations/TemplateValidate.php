@@ -13,10 +13,11 @@ class TemplateValidate
 	public function validate($request)
 	{
 		$rules = array(
-			'template_name'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]+$/'
+			'template_name'=> 'between:2,50|regex:/^[a-zA-Z0-9 &_`#().\'-]+$/'
 		);
 		$messages = [
 			'template_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
+			'template_name.regex' => 'Template-name contains character from "a-zA-Z0-9 &_`#().\'-" only',
 		];
 		$validator = Validator::make($request,$rules,$messages);
 		if ($validator->fails()) {
@@ -37,7 +38,7 @@ class TemplateValidate
 	
 	public function validateUpdateData($keyName,$value,$request)
 	{
-		$validationArray = array('template_name'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]+$/');
+		$validationArray = array('template_name'=> 'between:2,50|regex:/^[a-zA-Z0-9 &_`#().\'-]+$/');
 		$rules =array();
 		foreach ($validationArray as $key => $value) 
 		{
@@ -54,6 +55,7 @@ class TemplateValidate
 			);
 			$messages = [
 				'template_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
+				'template_name.regex' => 'Template-name contains character from "a-zA-Z0-9 &_`#().\'-" only',
 			];
 			$validator = Validator::make($request,$rules,$messages);
 			

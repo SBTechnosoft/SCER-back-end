@@ -121,6 +121,8 @@ class EncodeData extends ClientService
 			'pincode' => $companyDetails['pincode'],
 			'pan' => $companyDetails['pan'],	
 			'tin' => $companyDetails['tin'],
+			'cgst' => $companyDetails['cgst'],
+			'sgst' => $companyDetails['sgst'],
 			'vatNo' =>$companyDetails['vatNo'],
 			'serviceTaxNo' => $companyDetails['serviceTaxNo'],
 			'basicCurrencySymbol' => $companyDetails['basicCurrencySymbol'],

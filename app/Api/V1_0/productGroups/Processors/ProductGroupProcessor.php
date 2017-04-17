@@ -111,6 +111,100 @@ class ProductGroupProcessor extends BaseProcessor
 			}
 		}
 	}
+	
+	/**
+     * get the form-data and set into the persistable object
+     * $param Request object [Request $request]
+     * @return State Persistable object
+     */	
+    public function createPersistableBatchData(Request $request)
+	{	
+		$this->request = $request;	
+		$tKeyValue = array();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$msgArray = $exception->messageArrays();
+		
+		if(count($_POST)==0)
+		{
+			return $msgArray['204'];
+		}
+		else
+		{
+			//trim an input 
+			$productGroupTransformer = new ProductGroupTransformer();
+			$tRequestData = $productGroupTransformer->trimInsertBatchData($this->request);
+			
+			if($tRequestData==1)
+			{
+				return $msgArray['content'];
+			}	
+			else
+			{
+				$newProductArray = array();
+				for($dataArray=0;$dataArray<count($tRequestData);$dataArray++)
+				{
+					$productGroupValue = array();
+					$keyName = array();
+					$value = array();
+					$data=0;
+					$tRequest = $tRequestData[$dataArray];
+					//validation
+					$productGroupValidate = new ProductGroupValidate();
+					$status = $productGroupValidate->validate($tRequest);
+					
+					if($status=="Success")
+					{
+						foreach ($tRequest as $key => $value)
+						{
+							if(!is_numeric($value))
+							{
+								if (strpos($value, '\'') !== FALSE)
+								{
+									$productGroupValue[$data]= str_replace("'","\'",$value);
+									$keyName[$data] = $key;
+								}
+								else
+								{
+									$productGroupValue[$data] = $value;
+									$keyName[$data] = $key;
+								}
+							}
+							else
+							{
+								$productGroupValue[$data]= $value;
+								$keyName[$data] = $key;
+							}
+							$data++;
+						}
+						$getFuncName = array();
+						// set data to the persistable object
+						for($data=0;$data<count($productGroupValue);$data++)
+						{
+							//set the data in persistable object
+							$productGroupPersistable = new ProductGroupPersistable();	
+							$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
+							//make function name dynamically
+							$setFuncName = 'set'.$str;
+							$getFuncName[$data] = 'get'.$str;
+							$productGroupPersistable->$setFuncName($productGroupValue[$data]);
+							$productGroupPersistable->setName($getFuncName[$data]);
+							$productGroupPersistable->setKey($keyName[$data]);
+							$productGroupArray[$data] = array($productGroupPersistable);
+						}
+						array_push($newProductArray,$productGroupArray);
+					}
+					else
+					{
+						return $status;
+					}
+				}
+				return $newProductArray;
+			}
+		}
+	}
+	
 	public function createPersistableChange(Request $request,$productGrpId)
 	{
 		$productGrpValue = array();

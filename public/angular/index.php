@@ -461,13 +461,34 @@ include ('connection.php');
 				// formdata.append('branchId',$scope.formAdata.branch_id);
 				
 				//multiple inventory insertion
-				 $scope.inventory=[{"productName":"Rangerdd" ,"isDisplay":'no',"productCategoryId":'1',"measurementUnit":'piece',
-				 "size":44,'color':'ddd','purchasePrice':1200,'wholesaleMargin':12,'wholesaleMarginFlat':10,'semiWholesaleMargin':5,
-				 'vat':5,'mrp':5000,'margin':5,'marginFlat':5,'productDescription':'desc','additionalTax':5,'minimumStockLevel':5,
-				 'productGroupId':1,'companyId':9,'branchId':9},{"productName":"RangerDTBgg" ,"isDisplay":'no',"productCategoryId":'1',"measurementUnit":'piece',
-				 "size":44,'color':'ccc','purchasePrice':1200,'wholesaleMargin':12,'wholesaleMarginFlat':10,'semiWholesaleMargin':5,
-				 'vat':5,'mrp':5000,'margin':5,'marginFlat':5,'productDescription':'desc','additionalTax':5,'minimumStockLevel':5,
-				 'productGroupId':1,'companyId':9,'branchId':9}]
+				 // $scope.inventory=[{"productName":"Rangerdd" ,"isDisplay":'no',"productCategoryId":'1',"measurementUnit":'piece',
+				 // "size":44,'color':'ddd','purchasePrice':1200,'wholesaleMargin':12,'wholesaleMarginFlat':10,'semiWholesaleMargin':5,
+				 // 'vat':5,'mrp':5000,'margin':5,'marginFlat':5,'productDescription':'desc','additionalTax':5,'minimumStockLevel':5,
+				 // 'productGroupId':1,'companyId':9,'branchId':9},{"productName":"RangerDTBgg" ,"isDisplay":'no',"productCategoryId":'1',"measurementUnit":'piece',
+				 // "size":44,'color':'ccc','purchasePrice':1200,'wholesaleMargin':12,'wholesaleMarginFlat':10,'semiWholesaleMargin':5,
+				 // 'vat':5,'mrp':5000,'margin':5,'marginFlat':5,'productDescription':'desc','additionalTax':5,'minimumStockLevel':5,
+				 // 'productGroupId':1,'companyId':9,'branchId':9}]
+				// for(var i=0;i<$scope.inventory.length;i++)
+				// {
+					// angular.forEach($scope.inventory[i], function (input,key) {
+						// formdata.append(+i+'['+key+']',input);
+						
+					// });
+				// }
+				//productGroup
+				// $scope.formAdata.product_group_name = "a&b";
+				// $scope.formAdata.product_group_desc = "abcdddd";
+				// $scope.formAdata.is_display = 'yes ';
+				// $scope.formAdata.product_group_parent_id = 0;
+				
+				// formdata.append('productGroupName',$scope.formAdata.product_group_name);
+				// formdata.append('productGroupDescription',$scope.formAdata.product_group_desc);
+				// formdata.append('isDisplay',$scope.formAdata.is_display);
+				// formdata.append('productGroupParentId',$scope.formAdata.product_group_parent_id);
+				//multiple product-group insertion
+				 $scope.inventory=[{"productGroupName":"Raerddd" ,"isDisplay":'no',"productGroupDescription":'1',
+				 "productGroupParentId":'piece'},{"productGroupName":"Ranged" ,"isDisplay":'no',"productGroupDescription":'1',
+				 "productGroupParentId":'piece'}]
 				for(var i=0;i<$scope.inventory.length;i++)
 				{
 					angular.forEach($scope.inventory[i], function (input,key) {
@@ -475,6 +496,19 @@ include ('connection.php');
 						
 					});
 				}
+				
+				//multiple product-category insertion
+				 // $scope.inventory=[{"productCategoryName":"Rangerddd" ,"isDisplay":'no',"productCategoryDescription":'1',
+				 // "productParentCategoryId":'piece'},{"productCategoryName":"Rangerdood" ,"isDisplay":'no',"productCategoryDescription":'1',
+				 // "productParentCategoryId":'piece'}]
+				// for(var i=0;i<$scope.inventory.length;i++)
+				// {
+					// angular.forEach($scope.inventory[i], function (input,key) {
+						// formdata.append(+i+'['+key+']',input);
+						
+					// });
+				// }
+				
 				// console.log(formdata);
 				// special journal
 				// $scope.user = [{"jfId":100,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":35},{"amount":2,"amountType":"credit","ledgerId":35},{"amount":12,"amountType":"debit","ledgerId":35}],"entryDate":"22-10-2015","companyId":83}];
@@ -617,7 +651,9 @@ include ('connection.php');
 				
 				// var url="http://www.scerp1.com/settings";
 				
-				var url="http://www.scerp1.com/products/batch";
+				var url="http://www.scerp1.com/product-groups/batch";
+				// var url="http://www.scerp1.com/product-categories/batch";
+				// var url="http://www.scerp1.com/products/batch";
 				
 				// var url="http://www.scerp1.com/accounting/taxation/purchase-detail";  //purchase
 				// var url="http://www.scerp1.com/accounting/taxation/purchase-tax";  //purchase tax

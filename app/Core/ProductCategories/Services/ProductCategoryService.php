@@ -55,6 +55,38 @@ class ProductCategoryService extends AbstractService
 	}
 	
 	/**
+     * get the data from persistable object and call the model for database insertion opertation
+     * @param array
+     * @return status
+     */
+	public function insertBatchData()
+	{
+		$getArrayData = array();
+		$keyArrayData = array();
+		$productCatArray = array();
+		$productCatArray = func_get_arg(0);
+		for($arrayData=0;$arrayData<count($productCatArray);$arrayData++)
+		{
+			$funcName = array();
+			$getData = array();
+			$keyName = array();
+			for($data=0;$data<count($productCatArray[$arrayData]);$data++)
+			{
+				$funcName[$data] = $productCatArray[$arrayData][$data][0]->getName();
+				$getData[$data] = $productCatArray[$arrayData][$data][0]->$funcName[$data]();
+				$keyName[$data] = $productCatArray[$arrayData][$data][0]->getkey();
+			}
+			array_push($getArrayData,$getData);
+			array_push($keyArrayData,$keyName);
+		}
+		
+		//data pass to the model object for insert
+		$productCatModel = new ProductCategoryModel();
+		$status = $productCatModel->insertBatchData($getArrayData,$keyArrayData);
+		return $status;
+	}
+	
+	/**
      * get all the data as per given id and call the model for database selection opertation
      * @return status
      */

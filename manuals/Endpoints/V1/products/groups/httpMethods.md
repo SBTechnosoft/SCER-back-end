@@ -21,7 +21,32 @@
                 ... HTTP_Status:200
             }
     
+##### `POST /product-groups/batch`
++ Header
+	- Authentication Token
 
+
++ Body
+
+            {
+                [	
+					{
+						... Standard Products Group Persistable Object
+					}
+				]
+				...
+            }
++ Error Message
+
+			{
+				... Error Message
+			}            
++ Response
+
+            {
+                ... HTTP_Status:200
+            }
+			
 ##### Get Products Group           
             
 ##### `GET /product-groups/{productGroupId}/`

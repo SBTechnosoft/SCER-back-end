@@ -127,18 +127,19 @@ class DocumentMpdf extends CurrencyToWordConversion
 
 				$output =$output."".
 					'<tr class="trhw" style="font-family: Calibri; text-align: left; height:  0.7cm; background-color: transparent;">
-				   <td class="tg-m36b thsrno" style="font-size: 12px; height: 0.7cm; text-align:center; padding:0 0 0 0;">'.$index.'</td>
-				   <td class="tg-m36b theqp" style="font-size: 12px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedData[$productArray]->productName.'</td>
-				   <td class="tg-ullm thsrno" style="font-size: 12px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->color.'</td>
-				   <td class="tg-ullm thsrno" style="font-size: 12px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->frameNo.'</td>
-				   <td class="tg-ullm thsrno" style="font-size: 12px;   height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->qty.'</td>
-				   <td class="tg-ullm thsrno" style="font-size: 12px; height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->price.'</td>
-				   <td class="tg-ullm thsrno" style="font-size: 12px;  height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $discountValue[$productArray].'</td>
-				   <td class="tg-ullm thamt" style="font-size: 12px;  height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $decodedData[$productArray]->vat.'%</td>
-				   <td class="tg-ullm thamt" style="font-size: 12px; height: 0.7cm; text-align: center; padding:0 0 0 0;">'.$vatValue[$productArray].'</td>
-				   <td class="tg-ullm thamt" style="font-size: 12px;  height:  0.7cm; text-align: center; padding:0 0 0 0;">'.$decodedData[$productArray]->additionalTax.'</td>
-				   <td class="tg-ullm thamt" style="font-size: 12px;   height:  0.7cm; text-align: center; padding:0 0 0 0;">'.$additionalTaxValue[$productArray].'</td>
-				   <td class="tg-ullm thamt" style="font-size: 12px;  height: 0.7cm; text-align: center; padding:0 0 0 0;">'.$total[$productArray];
+				   <td class="tg-m36b thsrno" style="font-size: 14px; height: 0.7cm; text-align:center; padding:0 0 0 0;">'.$index.'</td>
+				   <td class="tg-m36b theqp" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedData[$productArray]->productName.'</td>
+				   <td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->color.' | '.$decodedArray->inventory[$productArray]->size.'</td>
+				   <td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->frameNo.'</td>
+				   <td class="tg-ullm thsrno" style="font-size: 14px;   height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->qty.'</td>
+				   <td class="tg-ullm thsrno" style="font-size: 14px; height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->price.'</td>
+				   <td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $discountValue[$productArray].'</td>
+				   <td class="tg-ullm thamt" style="font-size: 14px;  height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $decodedData[$productArray]->vat.'%</td>
+				   <td class="tg-ullm thamt" style="font-size: 14px; height: 0.7cm; text-align: center; padding:0 0 0 0;">'.$vatValue[$productArray].'</td>
+				   <td class="tg-ullm thamt" style="font-size: 14px;  height:  0.7cm; text-align: center; padding:0 0 0 0;">'.$decodedData[$productArray]->additionalTax.'</td>
+				   <td class="tg-ullm thamt" style="font-size: 14px;   height:  0.7cm; text-align: center; padding:0 0 0 0;">'.$additionalTaxValue[$productArray].'</td>
+				   <td class="tg-ullm thamt" style="font-size: 14px;  height: 0.7cm; text-align: center; padding:0 0 0 0;">'.$total[$productArray];
+
 				if($productArray != count($decodedArray->inventory)-1)
 				{
 					$output = $output.$trClose;
@@ -171,6 +172,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 				   <td class='tg-ullm thamt' style='font-size: 12px;  height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
 				   <td class='tg-ullm thamt' style='font-size: 12px;   height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
 				   <td class='tg-ullm thamt' style='font-size: 12px;  height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td></tr>";
+
 				}
 				$index++;
 			}
@@ -266,6 +268,11 @@ class DocumentMpdf extends CurrencyToWordConversion
 			$typeSale = "TAX";
 
 		}
+		//add 1 month in entry date for displaying expiry date
+		$date = date_create($decodedBillData->entryDate);
+		date_add($date, date_interval_create_from_date_string('30 days'));
+		$expiryDate = date_format($date, 'd-m-Y');
+		
 		$billArray = array();
 		$billArray['Description']=$output;
 		$billArray['ClientName']=$decodedBillData->client->clientName;
@@ -282,8 +289,13 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$billArray['displayNone']='none';
 		$billArray['CMPLOGO']="<img src='".$constantArray['mainLogo']."MainLogo.png'/>";
 		$billArray['CompanyAdd']=$companyAddress;
-		$billArray['CreditCashMemo']="<span style='font-family: algerian;'>CASH</span>";
+		$billArray['CreditCashMemo']="CASH";
 		$billArray['RetailOrTax']=$typeSale;
+		$billArray['ExpireDate']=$expiryDate;
+		$billArray['CompanySGST']=$decodedBillData->company->sgst;
+		$billArray['CompanyCGST']=$decodedBillData->company->cgst;
+		
+		$billArray['CLIENTTINNO']="";
 		
 		//$mpdf = new mPDF('A4','landscape');
 		$mpdf = new mPDF('','A4','','agency','0','0','0','0','0','0','landscape');
@@ -292,10 +304,6 @@ class DocumentMpdf extends CurrencyToWordConversion
 		{
 			$htmlBody = str_replace('['.$key.']', $value, $htmlBody);
 		}
-		// $mpdf->SetFont('algerian');
-		// echo "sss";
-		// $cssStyle = file_get_contents('CssStyleMpdf.css');
-		// $mpdf->WriteHTML($cssStyle,1);
 		$mpdf->WriteHTML($htmlBody);
 		$path = $constantArray['billUrl'];
 		//change the name of document-name
@@ -534,7 +542,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$message = "Your bill is generated...";
 		$mail->IsSMTP();  
 		
-              // Set mailer to use SMTP
+         // Set mailer to use SMTP
 		$mail->Host = 'smtp.gmail.com';                // Specify main and backup server //sg2plcpnl0073.prod.sin2.secureserver.net port=465
 		$mail->Port =  465;                                    // Set the SMTP port 465
 		$mail->SMTPAuth = true;                               // Enable SMTP authentication

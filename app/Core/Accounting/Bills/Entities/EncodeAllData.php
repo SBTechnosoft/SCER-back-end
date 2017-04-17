@@ -214,6 +214,8 @@ class EncodeAllData extends ClientService
 					'pincode' => $getCompanyDetails[$jsonData]['pincode'],	
 					'pan' => $getCompanyDetails[$jsonData]['pan'],	
 					'tin'=> $getCompanyDetails[$jsonData]['tin'],	
+					'cgst'=> $getCompanyDetails[$jsonData]['cgst'],	
+					'sgst'=> $getCompanyDetails[$jsonData]['sgst'],	
 					'vatNo' => $getCompanyDetails[$jsonData]['vatNo'],	
 					'serviceTaxNo' => $getCompanyDetails[$jsonData]['serviceTaxNo'],	
 					'basicCurrencySymbol' => $getCompanyDetails[$jsonData]['basicCurrencySymbol'],	

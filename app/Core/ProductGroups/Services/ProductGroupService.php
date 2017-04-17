@@ -64,6 +64,37 @@ class ProductGroupService extends AbstractService
 	}
 	
 	/**
+     * get the data from persistable object and call the model for database insertion opertation
+     * @param array
+     * @return status
+     */
+	public function insertBatchData()
+	{
+		$getArrayData = array();
+		$keyArrayData = array();
+		$productGroupArray = array();
+		$productGroupArray = func_get_arg(0);
+		for($arrayData=0;$arrayData<count($productGroupArray);$arrayData++)
+		{
+			$funcName = array();
+			$getData = array();
+			$keyName = array();
+			for($data=0;$data<count($productGroupArray[$arrayData]);$data++)
+			{
+				$funcName[$data] = $productGroupArray[$arrayData][$data][0]->getName();
+				$getData[$data] = $productGroupArray[$arrayData][$data][0]->$funcName[$data]();
+				$keyName[$data] = $productGroupArray[$arrayData][$data][0]->getkey();
+			}
+			array_push($getArrayData,$getData);
+			array_push($keyArrayData,$keyName);
+		}
+		//data pass to the model object for insert
+		$productGrpModel = new ProductGroupModel();
+		$status = $productGrpModel->insertBatchData($getArrayData,$keyArrayData);
+		return $status;
+	}
+	
+	/**
      * get all the data as per given id and call the model for database selection opertation
      * @return status
      */

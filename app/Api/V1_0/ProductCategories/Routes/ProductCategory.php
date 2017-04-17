@@ -24,6 +24,7 @@ class ProductCategory implements RouteRegistrarInterface
 		
 		// insert data post request
 		Route::post('ProductCategories/ProductCategory', 'ProductCategories\Controllers\ProductCategoryController@store');
+		Route::post('ProductCategories/ProductCategory/batch', 'ProductCategories\Controllers\ProductCategoryController@multipleDataStore');
 		
 		// update data post request
 		Route::post('ProductCategories/ProductCategory/{productCategoryId}', 'ProductCategories\Controllers\ProductCategoryController@update');

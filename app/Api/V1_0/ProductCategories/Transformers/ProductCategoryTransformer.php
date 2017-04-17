@@ -64,6 +64,68 @@ class ProductCategoryTransformer
 			return $data;
 		}
 	}
+
+	/**
+     * @param Request $request
+     * @return array
+     */
+    public function trimInsertBatchData(Request $request)
+    {
+		$data = array();
+		$requestInputData = $request->input();
+		for($arrayData=0;$arrayData<count($requestInputData);$arrayData++)
+		{
+			$isDisplayFlag=0;
+			//data get from body
+			$productCatName = $requestInputData[$arrayData]['productCategoryName']; 
+			$productCatDesc = $requestInputData[$arrayData]['productCategoryDescription']; 
+			$isDisplay = $requestInputData[$arrayData]['isDisplay']; 
+			$productParentCatId = $requestInputData[$arrayData]['productParentCategoryId'];  
+			
+			//trim an input
+			$tProductCatName = trim($productCatName);
+			$tProductCatDesc = trim($productCatDesc);
+			$tIsDisplay = trim($isDisplay);
+			$tProductParentCatId= trim($productParentCatId);
+			
+			$enumIsDispArray = array();
+			$isDispEnum = new IsDisplayEnum();
+			$enumIsDispArray = $isDispEnum->enumArrays();
+			if($tIsDisplay=="")
+			{
+				$tIsDisplay = $enumIsDispArray['display'];
+			}
+			else
+			{
+				foreach ($enumIsDispArray as $key => $value)
+				{
+					if(strcmp($value,$tIsDisplay)==0)
+					{
+						$isDisplayFlag=1;
+						break;
+					}
+					else
+					{
+						$isDisplayFlag=2;
+					}
+				}
+			}
+			if($isDisplayFlag==2)
+			{
+				return "1";
+			}
+			else
+			{
+				//make an array
+				$data[$arrayData] = array();
+				$data[$arrayData]['product_category_name'] = $tProductCatName;
+				$data[$arrayData]['product_category_description'] = $tProductCatDesc;
+				$data[$arrayData]['is_display'] = $tIsDisplay;
+				$data[$arrayData]['product_parent_category_id'] = $tProductParentCatId;
+			}
+		}
+		return $data;
+	}
 	
 	/**
      * @param key and value

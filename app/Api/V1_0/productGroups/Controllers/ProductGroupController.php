@@ -95,6 +95,59 @@ class ProductGroupController extends BaseController implements ContainerInterfac
 	}
 	
 	/**
+	 * insert the specified resource 
+	 * @param  Request object[Request $request]
+	 * method calls the processor for creating persistable object & setting the data
+	*/
+    public function multipleDataStore(Request $request)
+    {
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$this->request = $request;
+			// check the requested Http method
+			$requestMethod = $_SERVER['REQUEST_METHOD'];
+			// insert
+			if($requestMethod == 'POST')
+			{
+				$productGroupProcessor = new ProductGroupProcessor();
+				$productGroupPersistable = new ProductGroupPersistable();		
+				$productGroupService= new ProductGroupService();			
+				$productGroupPersistable = $productGroupProcessor->createPersistableBatchData($this->request);
+				
+				if($productGroupPersistable[0][0]=='[')
+				{
+					return $productGroupPersistable;
+				}
+				else if(is_array($productGroupPersistable))
+				{
+					$status = $productGroupService->insertBatchData($productGroupPersistable);
+					return $status;
+				}
+				else
+				{
+					return $productGroupPersistable;
+				}
+			}
+			else
+			{
+				return $status;
+			}
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+	}
+	
+	/**
      * get the specified resource.
      * @param  int  $companyId
      */

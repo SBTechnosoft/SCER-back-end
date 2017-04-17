@@ -16,9 +16,6 @@ class ProductGroup implements RouteRegistrarInterface
      */
     public function register(RegistrarInterface $Registrar)
     {
-		// echo "function ";
-		// print_r($Registrar);
-		// exit;
         // all the possible get request 
 		Route::group(['as' => 'get'], function ()
 		{
@@ -27,6 +24,7 @@ class ProductGroup implements RouteRegistrarInterface
 		
 		// insert data post request
 		Route::post('ProductGroups/ProductGroup', 'ProductGroups\Controllers\ProductGroupController@store');
+		Route::post('ProductGroups/ProductGroup/batch', 'ProductGroups\Controllers\ProductGroupController@multipleDataStore');
 		
 		// update data post request
 		Route::post('ProductGroups/ProductGroup/{productGroupId}', 'ProductGroups\Controllers\ProductGroupController@update');

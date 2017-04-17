@@ -80,11 +80,11 @@ class ProductProcessor extends BaseProcessor
 				
 				if($tRequest['color']=="")
 				{
-					$tRequest['color'] = "XXXX";
+					$tRequest['color'] = "XX";
 				}
 				if($tRequest['size']=="")
 				{
-					$tRequest['size'] = "ZZZZ";
+					$tRequest['size'] = "ZZ";
 				}
 				$color = preg_replace('/[^A-Za-z0-9\-]/', '', $tRequest['color']);
 				$size = preg_replace('/[^A-Za-z0-9\-]/', '', $tRequest['size']);
@@ -93,29 +93,29 @@ class ProductProcessor extends BaseProcessor
 				$group_name = preg_replace('/[^A-Za-z0-9]/', '', $decodedGroupData[0]->product_group_name);
 				$category_name = preg_replace('/[^A-Za-z0-9]/', '', $decodedCategoryData[0]->product_category_name);
 								
-				$convertedCompanyName = substr($company_name,0,3);
-				$convertedCategoryName = substr($category_name,0,3);
+				$convertedCompanyName = substr($company_name,0,2);
+				$convertedCategoryName = substr($category_name,0,2);
 				$convertedGroupName = substr($group_name,0,2);
 				
 				$productNameLength = strlen($product_name);
-				$productName1 = substr($product_name,0,3);
-				$productName2 = substr($product_name,$productNameLength-3,3);
+				$productName1 = substr($product_name,0,2);
+				$productName2 = substr($product_name,$productNameLength-2,2);
 				$convertedProductName  = $productName1.$productName2;
 				
 				$colorLength = strlen($color);
-				$color1 = substr($color,0,2);
-				$color2 = substr($color,$colorLength-2,2);
+				$color1 = substr($color,0,1);
+				$color2 = substr($color,$colorLength-1,1);
 				$convertedColor = $color1.$color2;
 				
 				$sizeLength = strlen($size);
-				$size1 = substr($size,0,2);
-				$size2 = substr($size,$sizeLength-2,2);
+				$size1 = substr($size,0,1);
+				$size2 = substr($size,$sizeLength-1,1);
 				$convertedSize = $size1.$size2;
-				$tRequest['product_code'] = $convertedCompanyName."_".
-											$convertedCategoryName."_".
-											$convertedGroupName."_".
-											$convertedProductName."_".
-											$convertedColor."_".
+				$tRequest['product_code'] = $convertedCompanyName.
+											$convertedCategoryName.
+											$convertedGroupName.
+											$convertedProductName.
+											$convertedColor.
 											$convertedSize;
 				//convert string to upper-case
 				$convertedProductCode = strtoupper($tRequest['product_code']);
@@ -237,11 +237,11 @@ class ProductProcessor extends BaseProcessor
 					
 					if($tRequest['color']=="")
 					{
-						$tRequest['color'] = "XXXX";
+						$tRequest['color'] = "XX";
 					}
 					if($tRequest['size']=="")
 					{
-						$tRequest['size'] = "ZZZZ";
+						$tRequest['size'] = "ZZ";
 					}
 					$color = preg_replace('/[^A-Za-z0-9\-]/', '', $tRequest['color']);
 					$size = preg_replace('/[^A-Za-z0-9\-]/', '', $tRequest['size']);
@@ -250,30 +250,30 @@ class ProductProcessor extends BaseProcessor
 					$group_name = preg_replace('/[^A-Za-z0-9]/', '', $decodedGroupData[0]->product_group_name);
 					$category_name = preg_replace('/[^A-Za-z0-9]/', '', $decodedCategoryData[0]->product_category_name);
 									
-					$convertedCompanyName = substr($company_name,0,3);
-					$convertedCategoryName = substr($category_name,0,3);
+					$convertedCompanyName = substr($company_name,0,2);
+					$convertedCategoryName = substr($category_name,0,2);
 					$convertedGroupName = substr($group_name,0,2);
 					
 					$productNameLength = strlen($product_name);
-					$productName1 = substr($product_name,0,3);
-					$productName2 = substr($product_name,$productNameLength-3,3);
+					$productName1 = substr($product_name,0,2);
+					$productName2 = substr($product_name,$productNameLength-2,2);
 					$convertedProductName  = $productName1.$productName2;
 					
 					$colorLength = strlen($color);
-					$color1 = substr($color,0,2);
-					$color2 = substr($color,$colorLength-2,2);
+					$color1 = substr($color,0,1);
+					$color2 = substr($color,$colorLength-1,1);
 					$convertedColor = $color1.$color2;
 					
 					$sizeLength = strlen($size);
-					$size1 = substr($size,0,2);
-					$size2 = substr($size,$sizeLength-2,2);
+					$size1 = substr($size,0,1);
+					$size2 = substr($size,$sizeLength-1,1);
 					$convertedSize = $size1.$size2;
 					
-					$tRequest['product_code'] = $convertedCompanyName."_".
-											$convertedCategoryName."_".
-											$convertedGroupName."_".
-											$convertedProductName."_".
-											$convertedColor."_".
+					$tRequest['product_code'] = $convertedCompanyName.
+											$convertedCategoryName.
+											$convertedGroupName.
+											$convertedProductName.
+											$convertedColor.
 											$convertedSize;
 					// convert string to upper-case
 					$convertedProductCode = strtoupper($tRequest['product_code']);
@@ -600,7 +600,7 @@ class ProductProcessor extends BaseProcessor
 				$colorFlag=1;
 				if($tRequest[$arrayData]['color']=="")
 				{
-					$color = "XXXX";
+					$color = "XX";
 				}
 				else
 				{
@@ -612,7 +612,7 @@ class ProductProcessor extends BaseProcessor
 				$sizeFlag=1;
 				if($tRequest[$arrayData]['size']=="")
 				{
-					$tRequest[$arrayData]['size']="ZZZZ";
+					$tRequest[$arrayData]['size']="ZZ";
 				}
 				else
 				{
@@ -662,31 +662,31 @@ class ProductProcessor extends BaseProcessor
 		$group_name = preg_replace('/[^A-Za-z0-9]/', '', $groupData);
 		$category_name = preg_replace('/[^A-Za-z0-9]/', '', $categoryData);
 		
-		$convertedCompanyName = substr($company_name,0,3);
-		$convertedCategoryName = substr($category_name,0,3);
+		$convertedCompanyName = substr($company_name,0,2);
+		$convertedCategoryName = substr($category_name,0,2);
 		$convertedGroupName = substr($group_name,0,2);
 		
 		$productNameLength = strlen($product_name);
-		$productName1 = substr($product_name,0,3);
-		$productName2 = substr($product_name,$productNameLength-3,3);
+		$productName1 = substr($product_name,0,2);
+		$productName2 = substr($product_name,$productNameLength-2,2);
 		$convertedProductName  = $productName1.$productName2;
 		
 		$colorLength = strlen($color);
-		$color1 = substr($color,0,2);
-		$color2 = substr($color,$colorLength-2,2);
+		$color1 = substr($color,0,1);
+		$color2 = substr($color,$colorLength-1,1);
 		$convertedColor = $color1.$color2;
 		
 		$sizeLength = strlen($size);
-		$size1 = substr($size,0,2);
-		$size2 = substr($size,$sizeLength-2,2);
+		$size1 = substr($size,0,1);
+		$size2 = substr($size,$sizeLength-1,1);
 		$convertedSize = $size1.$size2;
 		
 		$totalCount = count($tRequest);
-		$tRequest[$totalCount]['product_code']=$convertedCompanyName."_".
-												$convertedCategoryName."_".
-												$convertedGroupName."_".
-												$convertedProductName."_".
-												$convertedColor."_".
+		$tRequest[$totalCount]['product_code']=$convertedCompanyName.
+												$convertedCategoryName.
+												$convertedGroupName.
+												$convertedProductName.
+												$convertedColor.
 												$convertedSize;
 		//convert string to upper-case
 		$convertedProductCode = strtoupper($tRequest[$totalCount]['product_code']);

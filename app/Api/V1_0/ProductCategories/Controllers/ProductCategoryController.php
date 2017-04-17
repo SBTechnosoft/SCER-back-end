@@ -95,6 +95,59 @@ class ProductCategoryController extends BaseController implements ContainerInter
 	}
 	
 	/**
+	 * insert the specified resource 
+	 * @param  Request object[Request $request]
+	 * method calls the processor for creating persistable object & setting the data
+	*/
+    public function multipleDataStore(Request $request)
+    {
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$this->request = $request;
+			// check the requested Http method
+			$requestMethod = $_SERVER['REQUEST_METHOD'];
+			// insert
+			if($requestMethod == 'POST')
+			{
+				$processor = new ProductCategoryProcessor();
+				$productCategoryPersistable = new ProductCategoryPersistable();		
+				$productCategoryService= new ProductCategoryService();			
+				$productCategoryPersistable = $processor->createPersistableBatchData($this->request);
+				
+				if($productCategoryPersistable[0][0]=='[')
+				{
+					return $productCategoryPersistable;
+				}
+				else if(is_array($productCategoryPersistable))
+				{
+					$status = $productCategoryService->insertBatchData($productCategoryPersistable);
+					return $status;
+				}
+				else
+				{
+					return $productCategoryPersistable;
+				}
+			}
+			else
+			{
+				return $status;
+			}
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+	}
+	
+	/**
      * get the specified resource.
      * @param  int  $productCategoryId
      */

@@ -61,6 +61,71 @@ class ProductCategoryModel extends Model
 			return $exceptionArray['500'];
 		}
 	}
+	
+	/**
+	 * insert batch of data 
+	 * @param  array
+	 * returns the status
+	*/
+	public function insertBatchData()
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		$getProductCatData = array();
+		$getProductCatKey = array();
+		$getProductCatData = func_get_arg(0);
+		$getProductCatKey = func_get_arg(1);
+		$productCatDetail = "";
+		
+		for($dataArray=0;$dataArray<count($getProductCatData);$dataArray++)
+		{
+			$productCatData="";
+			$keyName = "";
+			for($data=0;$data<count($getProductCatData[$dataArray]);$data++)
+			{
+				if($data == (count($getProductCatData[$dataArray])-1))
+				{
+					$productCatData = $productCatData."'".$getProductCatData[$dataArray][$data]."'";
+					$keyName =$keyName.$getProductCatKey[$dataArray][$data];
+				}
+				else
+				{
+					$productCatData = $productCatData."'".$getProductCatData[$dataArray][$data]."',";
+					$keyName =$keyName.$getProductCatKey[$dataArray][$data].",";
+				}
+			}
+			
+			$finalProductData = "(".$productCatData.")";
+			$keyName = $keyName;
+			if($dataArray==count($getProductCatData)-1)
+			{
+				$productCatDetail = $productCatDetail.$finalProductData;
+			}
+			else
+			{
+				$productCatDetail = $productCatDetail.$finalProductData.",";
+			}
+		}
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->statement("insert into product_category_mst(".$keyName.") 
+		values".$productCatDetail);
+		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if($raw==1)
+		{
+			return $exceptionArray['200'];
+		}
+		else
+		{
+			return $exceptionArray['500'];
+		}
+	}
 	/**
 	 * update data 
 	 * @param productCatData,$key of productCatData,productCatId

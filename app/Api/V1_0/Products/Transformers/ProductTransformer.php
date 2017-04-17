@@ -147,11 +147,10 @@ class ProductTransformer
     public function trimInsertBatchData(Request $request)
     {
 		$inputRequestData = $request->input();
-		$isDisplayFlag=0;
-		$measurementUnitFlag=0;
-	
 		for($arrayData=0;$arrayData<count($inputRequestData);$arrayData++)
 		{
+			$isDisplayFlag=0;
+			$measurementUnitFlag=0;
 			//trim an input
 			$tProductName = trim($inputRequestData[$arrayData]['productName']);
 			$tMeasUnit = trim($inputRequestData[$arrayData]['measurementUnit']);

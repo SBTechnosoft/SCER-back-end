@@ -61,6 +61,70 @@ class ProductGroupModel extends Model
 			return $exceptionArray['500'];
 		}
 	}
+	
+	/**
+	 * insert batch of data 
+	 * @param  array
+	 * returns the status
+	*/
+	public function insertBatchData()
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		$getProductGrpData = array();
+		$getProductGrpKey = array();
+		$getProductGrpData = func_get_arg(0);
+		$getProductGrpKey = func_get_arg(1);
+		$productGrpDetail = "";
+		for($dataArray=0;$dataArray<count($getProductGrpData);$dataArray++)
+		{
+			$productGrpData="";
+			$keyName = "";
+			for($data=0;$data<count($getProductGrpData[$dataArray]);$data++)
+			{
+				if($data == (count($getProductGrpData[$dataArray])-1))
+				{
+					$productGrpData = $productGrpData."'".$getProductGrpData[$dataArray][$data]."'";
+					$keyName =$keyName.$getProductGrpKey[$dataArray][$data];
+				}
+				else
+				{
+					$productGrpData = $productGrpData."'".$getProductGrpData[$dataArray][$data]."',";
+					$keyName =$keyName.$getProductGrpKey[$dataArray][$data].",";
+				}
+			}
+			$finalProductData = "(".$productGrpData.")";
+			$keyName = $keyName;
+			if($dataArray==count($getProductGrpData)-1)
+			{
+				$productGrpDetail = $productGrpDetail.$finalProductData;
+			}
+			else
+			{
+				$productGrpDetail = $productGrpDetail.$finalProductData.",";
+			}
+		}
+		
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->statement("insert into product_group_mst(".$keyName.") 
+		values".$productGrpDetail);
+		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if($raw==1)
+		{
+			return $exceptionArray['200'];
+		}
+		else
+		{
+			return $exceptionArray['500'];
+		}
+	}
 	/**
 	 * update data 
 	 * @param state_abb,state_nameand is_display
