@@ -16,6 +16,7 @@ class Document implements RouteRegistrarInterface
      */
     public function register(RegistrarInterface $Registrar)
     {
+		ini_set('memory_limit', '256M');
 		//post request 
 		Route::post('Documents/Document/bill', 'Documents\Controllers\DocumentController@getData');
 	}

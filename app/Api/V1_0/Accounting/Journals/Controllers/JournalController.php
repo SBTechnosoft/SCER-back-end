@@ -896,6 +896,7 @@ class JournalController extends BaseController implements ContainerInterface
 							}
 							//journal data is processed(trim,validation and set data in object)
 							$journalPersistable = $processor->createPersistableChange($request,$headerData,$journalArray,$jfId);
+							
 							//here two array and string is return at a time
 							if(is_array($journalPersistable))
 							{

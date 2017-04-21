@@ -259,9 +259,9 @@ class CashFlowOperation extends CompanyService
 		//heading-end
 		$creditAmountTotal=0;
 		$debitAmountTotal=0;
+		
 		for($arrayData=0;$arrayData<count($decodedData);$arrayData++)
 		{
-			
 			if(strcmp($decodedData[$arrayData]->amountType,"credit")==0)
 			{
 				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+3,$decodedData[$arrayData]->ledger->ledgerName);
@@ -279,16 +279,14 @@ class CashFlowOperation extends CompanyService
 		}
 		if($debitAmountTotal>$creditAmountTotal)
 		{
-			$differenceDr = number_format(($debitAmountTotal-$creditAmountTotal),$decodedCompanyData->noOfDecimalPoints);
+			$differenceDr = $debitAmountTotal-$creditAmountTotal;
 			$differenceCr = '';
 		}
 		else
 		{
-			$differenceCr = number_format(($creditAmountTotal-$debitAmountTotal),$decodedCompanyData->noOfDecimalPoints);
+			$differenceCr = $creditAmountTotal-$debitAmountTotal;
 			$differenceDr = '';
 		}
-		$debitAmountTotal = number_format($debitAmountTotal,$decodedCompanyData->noOfDecimalPoints);
-		$creditAmountTotal = number_format($creditAmountTotal,$decodedCompanyData->noOfDecimalPoints);
 		
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+3,'Total');
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+3,$debitAmountTotal);
@@ -319,6 +317,14 @@ class CashFlowOperation extends CompanyService
 		// set header style
 		$objPHPExcel->getActiveSheet()->getStyle('A2:C2')->applyFromArray($headerStyleArray);
 		
+		$decimalPoints = $this->setDecimalPoint($decodedCompanyData->noOfDecimalPoints);
+		
+		$bSaveDynamicRow = "B".(count($decodedData)+4);
+		$cSaveDynamicRow = "C".(count($decodedData)+4);
+		
+		$objPHPExcel->getActiveSheet()->getStyle("B3:".$bSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		$objPHPExcel->getActiveSheet()->getStyle("C3:".$cSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		
 		// set title style
 		$objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($titleStyleArray);
 		
@@ -330,20 +336,6 @@ class CashFlowOperation extends CompanyService
 		$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".xls"; //xslx
 		$path = $constantArray['cashFlowExcel'];
 		$documentPathName = $path.$documentName;
-		
-		//delete older files
-		// $files = glob($path.'*'); // get all file names
-		// print_r($files);
-		// foreach($files as $file)
-		// { 
-			// iterate files
-			// if(is_file($file))
-			// {
-				// echo $file;
-				// unlink($file); // delete file
-				// echo "eee";
-			// }
-		// }
 		
 		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
 		$objWriter->save($documentPathName);
@@ -425,18 +417,14 @@ class CashFlowOperation extends CompanyService
 		}
 		if($calculatedData['totalDebit']>$calculatedData['totalCredit'])
 		{
-			$differenceDr = number_format($calculatedData['totalDebit']-$calculatedData['totalCredit']);
+			$differenceDr = $calculatedData['totalDebit']-$calculatedData['totalCredit'];
 			$differenceCr = "-";
 		}
 		else
 		{
-			$differenceCr = number_format($calculatedData['totalCredit']-$calculatedData['totalDebit']);
+			$differenceCr = $calculatedData['totalCredit']-$calculatedData['totalDebit'];
 			$differenceDr = "-";
 		}
-		
-		$calculatedData['totalDebit'] = number_format($calculatedData['totalDebit'],$decodedCompanyData->noOfDecimalPoints);
-		$calculatedData['totalCredit'] = number_format($calculatedData['totalCredit'],$decodedCompanyData->noOfDecimalPoints);
-		
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+3,'Total');
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+3,$calculatedData['totalDebit']);
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+3,'Total');
@@ -468,6 +456,14 @@ class CashFlowOperation extends CompanyService
 		// set header style
 		$objPHPExcel->getActiveSheet()->getStyle('A2:D2')->applyFromArray($headerStyleArray);
 		
+		$decimalPoints = $this->setDecimalPoint($decodedCompanyData->noOfDecimalPoints);
+		
+		$bSaveDynamicRow = "B".(count($decodedData)+4);
+		$dSaveDynamicRow = "D".(count($decodedData)+4);
+		
+		$objPHPExcel->getActiveSheet()->getStyle("B3:".$bSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		$objPHPExcel->getActiveSheet()->getStyle("D3:".$dSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		
 		// set title style
 		$objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($titleStyleArray);
 		
@@ -479,20 +475,6 @@ class CashFlowOperation extends CompanyService
 		$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".xls"; //xslx
 		$path = $constantArray['cashFlowExcel'];
 		$documentPathName = $path.$documentName;
-		
-		//delete older files
-		// $files = glob($path.'*'); // get all file names
-		// print_r($files);
-		// foreach($files as $file)
-		// { 
-			// iterate files
-			// if(is_file($file))
-			// {
-				// echo $file;
-				// unlink($file); // delete file
-				// echo "eee";
-			// }
-		// }
 		
 		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
 		$objWriter->save($documentPathName);
@@ -592,5 +574,29 @@ class CashFlowOperation extends CompanyService
 		$finalArray['totalDebit'] = $totalDebit;
 		$finalArray['arrayData'] = $trialBalanceArray;
 		return $finalArray;
+	}
+	
+	/**
+	 * calculate the decimal point
+	 * $param decimal-point
+	*/
+	public function setDecimalPoint($decimalPoint)
+	{
+		if($decimalPoint==1)
+		{
+			return "0.0";
+		}
+		else if($decimalPoint==2)
+		{
+			return "0.00";
+		}
+		else if($decimalPoint==3)
+		{
+			return "0.000";
+		}
+		else if($decimalPoint==4)
+		{
+			return "0.0000";
+		}
 	}
 }

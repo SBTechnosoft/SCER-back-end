@@ -560,7 +560,7 @@ class BillProcessor extends BaseProcessor
 			}
 			$productArray['inventory'] = $request->input()['inventory'];
 			$documentPath = $constantArray['billDocumentUrl'];
-			if(in_array(true,$request->file()))
+			if(in_array(true,$request->file()) || array_key_exists('scanFile',$request->input()))
 			{
 				$documentController =new DocumentController(new Container());
 				$processedData = $documentController->insertUpdate($request,$documentPath);

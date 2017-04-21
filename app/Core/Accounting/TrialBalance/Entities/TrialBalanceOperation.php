@@ -336,6 +336,14 @@ class TrialBalanceOperation extends CompanyService
 		// set header style
 		$objPHPExcel->getActiveSheet()->getStyle('A2:D2')->applyFromArray($headerStyleArray);
 		
+		$decimalPoints = $this->setDecimalPoint($decodedCompanyData->noOfDecimalPoints);
+		
+		$bSaveDynamicRow = "B".(count($decodedData)+4);
+		$dSaveDynamicRow = "D".(count($decodedData)+4);
+		
+		$objPHPExcel->getActiveSheet()->getStyle("B3:".$bSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		$objPHPExcel->getActiveSheet()->getStyle("D3:".$dSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		
 		// set title style
 		$objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($titleStyleArray);
 		
@@ -348,19 +356,6 @@ class TrialBalanceOperation extends CompanyService
 		$path = $constantArray['trialBalanceExcel'];
 		$documentPathName = $path.$documentName;
 		
-		//delete older files
-		// $files = glob($path.'*'); // get all file names
-		// print_r($files);
-		// foreach($files as $file)
-		// { 
-			// iterate files
-			// if(is_file($file))
-			// {
-				// echo $file;
-				// unlink($file); // delete file
-				// echo "eee";
-			// }
-		// }
 		
 		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
 		$objWriter->save($documentPathName);
@@ -454,6 +449,14 @@ class TrialBalanceOperation extends CompanyService
 		// set header style
 		$objPHPExcel->getActiveSheet()->getStyle('A2:C2')->applyFromArray($headerStyleArray);
 		
+		$decimalPoints = $this->setDecimalPoint($decodedCompanyData->noOfDecimalPoints);
+		
+		$bSaveDynamicRow = "B".(count($decodedData)+3);
+		$cSaveDynamicRow = "C".(count($decodedData)+3);
+		
+		$objPHPExcel->getActiveSheet()->getStyle("B3:".$bSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		$objPHPExcel->getActiveSheet()->getStyle("C3:".$cSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		
 		// set title style
 		$objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($titleStyleArray);
 		
@@ -465,20 +468,6 @@ class TrialBalanceOperation extends CompanyService
 		$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".xls"; //xslx
 		$path = $constantArray['trialBalanceExcel'];
 		$documentPathName = $path.$documentName;
-		
-		//delete older files
-		// $files = glob($path.'*'); // get all file names
-		// print_r($files);
-		// foreach($files as $file)
-		// { 
-			// iterate files
-			// if(is_file($file))
-			// {
-				// echo $file;
-				// unlink($file); // delete file
-				// echo "eee";
-			// }
-		// }
 		
 		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
 		$objWriter->save($documentPathName);
@@ -577,5 +566,29 @@ class TrialBalanceOperation extends CompanyService
 		$finalArray['totalDebit'] = $totalDebit;
 		$finalArray['arrayData'] = $trialBalanceArray;
 		return $finalArray;
+	}
+	
+	/**
+	 * calculate the decimal point
+	 * $param decimal-point
+	*/
+	public function setDecimalPoint($decimalPoint)
+	{
+		if($decimalPoint==1)
+		{
+			return "0.0";
+		}
+		else if($decimalPoint==2)
+		{
+			return "0.00";
+		}
+		else if($decimalPoint==3)
+		{
+			return "0.000";
+		}
+		else if($decimalPoint==4)
+		{
+			return "0.0000";
+		}
 	}
 }

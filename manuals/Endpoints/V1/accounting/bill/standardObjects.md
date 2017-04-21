@@ -73,12 +73,14 @@
 				"file":
 				{
 					{
-						"documentId":int,
-						"saleId":int,
-						...Standard Document Object
-						"documentType":string,
-						"createdAt":timestamp,
-						"updatedAt":datetime
+						Image Object
+					}
+					...
+				}
+				"scanFile":
+				{
+					{
+						Base64 String
 					}
 					...
 				}

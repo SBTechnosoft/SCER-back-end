@@ -65,14 +65,11 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$totalVatValue=0;
 		$totalAdditionalTax=0;
 		$totalQty=0;
-		
 		if(strcmp($decodedBillData->salesType,"retail_sales")==0)
 		{
 			$totalCm = 10.4;
-			
 			for($productArray=0;$productArray<count($decodedArray->inventory);$productArray++)
 			{
-				
 				//get product-data
 				$productData[$productArray] = $productService->getProductData($decodedArray->inventory[$productArray]->productId);
 				$decodedData[$productArray] = json_decode($productData[$productArray]);
@@ -80,11 +77,8 @@ class DocumentMpdf extends CurrencyToWordConversion
 				//calculate margin value
 				$marginValue[$productArray]=($decodedData[$productArray]->margin/100)*$decodedArray->inventory[$productArray]->price;
 				$marginValue[$productArray] = $marginValue[$productArray]+$decodedData[$productArray]->marginFlat;
-				// convert amount(round) into their company's selected decimal points
-				$marginValue[$productArray] = round($marginValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
-				$totalPrice = $decodedArray->inventory[$productArray]->price*$decodedArray->inventory[$productArray]->qty;
-				$totalPrice = round($totalPrice,$decodedData[$productArray]->company->noOfDecimalPoints);
 				
+				$totalPrice = $decodedArray->inventory[$productArray]->price*$decodedArray->inventory[$productArray]->qty;
 				if(strcmp($decodedArray->inventory[$productArray]->discountType,"flat")==0)
 				{
 					$discountValue[$productArray] = $decodedArray->inventory[$productArray]->discount;
@@ -94,23 +88,16 @@ class DocumentMpdf extends CurrencyToWordConversion
 				{
 					$discountValue[$productArray] = ($decodedArray->inventory[$productArray]->discount/100)*$totalPrice;
 				}
-				
 				$finalVatValue = $totalPrice - $discountValue[$productArray];
 				
 				//calculate vat value;
 				$vatValue[$productArray]=($decodedData[$productArray]->vat/100)*$finalVatValue;
-				// convert amount(round) into their company's selected decimal points
-				$vatValue[$productArray] = round($vatValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
 				
 				//calculate additional tax
 				$additionalTaxValue[$productArray] = ($decodedData[$productArray]->additionalTax/100)*$finalVatValue;
-				
-				//convert amount(round) into their company's selected decimal points
-				$additionalTaxValue[$productArray] = round($additionalTaxValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
 				$total[$productArray] =($totalPrice)-$discountValue[$productArray]+$vatValue[$productArray] +$additionalTaxValue[$productArray];
 				
-				// convert amount(round) into their company's selected decimal points
-				$total[$productArray] = round($total[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
+				$price = number_format($decodedArray->inventory[$productArray]->price,$decodedData[$productArray]->company->noOfDecimalPoints,'.','');
 				$trClose = "</td></tr>";
 				if($productArray==0)
 				{
@@ -124,7 +111,17 @@ class DocumentMpdf extends CurrencyToWordConversion
 				{
 					$decodedArray->inventory[$productArray]->frameNo="";
 				}
-
+				
+				$totalVatValue = $totalVatValue+$vatValue[$productArray];
+			    $totalAdditionalTax=$totalAdditionalTax+$additionalTaxValue[$productArray];
+			    $totalQty=$totalQty+$decodedArray->inventory[$productArray]->qty;
+				$totalAmount=$totalAmount+$total[$productArray];
+				
+				//convert (number_format)as per company's selected decimal points
+				$vatValue[$productArray] = number_format($vatValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
+				$additionalTaxValue[$productArray] = number_format($additionalTaxValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
+				$total[$productArray] = number_format($total[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints,'.','');
+				
 				$output =$output."".
 					'<tr class="trhw" style="font-family: Calibri; text-align: left; height:  0.7cm; background-color: transparent;">
 				   <td class="tg-m36b thsrno" style="font-size: 14px; height: 0.7cm; text-align:center; padding:0 0 0 0;">'.$index.'</td>
@@ -132,7 +129,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 				   <td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->color.' | '.$decodedArray->inventory[$productArray]->size.'</td>
 				   <td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->frameNo.'</td>
 				   <td class="tg-ullm thsrno" style="font-size: 14px;   height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->qty.'</td>
-				   <td class="tg-ullm thsrno" style="font-size: 14px; height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->price.'</td>
+				   <td class="tg-ullm thsrno" style="font-size: 14px; height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $price.'</td>
 				   <td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $discountValue[$productArray].'</td>
 				   <td class="tg-ullm thamt" style="font-size: 14px;  height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $decodedData[$productArray]->vat.'%</td>
 				   <td class="tg-ullm thamt" style="font-size: 14px; height: 0.7cm; text-align: center; padding:0 0 0 0;">'.$vatValue[$productArray].'</td>
@@ -145,15 +142,6 @@ class DocumentMpdf extends CurrencyToWordConversion
 					$output = $output.$trClose;
 				
 				}
-				
-			    
-			    $totalVatValue = $totalVatValue+$vatValue[$productArray];
-			    $totalAdditionalTax=$totalAdditionalTax+$additionalTaxValue[$productArray];
-			    $totalQty=$totalQty+$decodedArray->inventory[$productArray]->qty;
-			 
-			    $totalAmount=$totalAmount+$total[$productArray];
-			    // convert amount(round) into their company's selected decimal points
-				$totalAmount = round($totalAmount,$decodedData[$productArray]->company->noOfDecimalPoints);
 				if($productArray==(count($decodedArray->inventory)-1))
 				{
 					$totalProductSpace = $index*0.7;	
@@ -179,6 +167,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 		}
 		else
 		{
+			$totalCm = 10.4;
 			for($productArray=0;$productArray<count($decodedArray->inventory);$productArray++)
 			{
 				//get product-data
@@ -188,12 +177,8 @@ class DocumentMpdf extends CurrencyToWordConversion
 				$marginPrice[$productArray] = ($decodedData[$productArray]->wholesaleMargin/100)*$decodedArray->inventory[$productArray]->price;
 				$marginPrice[$productArray] = $marginPrice[$productArray]+$decodedData[$productArray]->wholesaleMarginFlat;
 				
-				// convert amount(round) into their company's selected decimal points
-				$marginPrice[$productArray] = round($marginPrice[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
-				
 				$totalPrice[$productArray] = $decodedArray->inventory[$productArray]->price*$decodedArray->inventory[$productArray]->qty;
-				// convert amount(round) into their company's selected decimal points
-				$totalPrice[$productArray] = round($totalPrice[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
+				
 				if(strcmp($decodedArray->inventory[$productArray]->discountType,"flat")==0)
 				{
 					$discountValue[$productArray] = $decodedArray->inventory[$productArray]->discount;
@@ -205,22 +190,18 @@ class DocumentMpdf extends CurrencyToWordConversion
 				
 				$finalVatValue = $totalPrice[$productArray]-$discountValue[$productArray];
 				
-				
 				//calculate vat value;
 				$vatValue[$productArray]=($decodedData[$productArray]->vat/100)*$finalVatValue;
-				// convert amount(round) into their company's selected decimal points
-				$vatValue[$productArray] = round($vatValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
-				
 				
 				//calculate additional tax
 				$additionalTaxValue[$productArray] = ($decodedData[$productArray]->additionalTax/100)*$finalVatValue;
-				// convert amount(round) into their company's selected decimal points
-				$additionalTaxValue[$productArray] = round($additionalTaxValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);				
 				
 				$total[$productArray] = $finalVatValue+$vatValue[$productArray]+$additionalTaxValue[$productArray];
-				// convert amount(round) into their company's selected decimal points
-				$total[$productArray] = round($total[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
-				
+				$trClose = "</td></tr>";
+				if($productArray==0)
+				{
+					$output =$output.$trClose;
+				}
 				if(empty($decodedArray->inventory[$productArray]->color))
 				{
 					$decodedArray->inventory[$productArray]->color="";
@@ -229,31 +210,60 @@ class DocumentMpdf extends CurrencyToWordConversion
 				{
 					$decodedArray->inventory[$productArray]->frameNo="";
 				}
-				$output =$output."".
-				'<tr class="trhw" style="font-family: Calibri; height: 50px; background-color: transparent; text-align: left;">
-				<td class="tg-m36b thsrno" style="font-size: 12px; text-align: center; height: 50px;"><span style="color: #000000;">'.$index.'</span></td>
-				<td class="tg-m36b theqp" style="font-size: 12px;  text-align: center; height: 50px;"><span style="color: #000000;">'. $decodedData[$productArray]->productName.'</span></td>
-				<td class="tg-ullm thsrno" style="font-size: 12px;  text-align: center; height: 50px;"><span style="color: #000000;">'. $decodedArray->inventory[$productArray]->color.'</span></td>
-				<td class="tg-ullm thsrno" style="font-size: 12px; text-align: center; height: 50px;"><span style="color: #000000;">'. $decodedArray->inventory[$productArray]->frameNo.'</span></td>
-				<td class="tg-ullm thsrno" style="font-size: 12px;  text-align: center; height: 50px;"><span style="color: #000000;">'. $decodedArray->inventory[$productArray]->qty.'</span></td>
-				<td class="tg-ullm thsrno" style="font-size: 12px; text-align: center; height: 50px;"><span style="color: #000000;">'. $decodedArray->inventory[$productArray]->price.'</span></td>
-				<td class="tg-ullm thsrno" style="font-size: 12px; text-align: center; height: 50px;"><span style="color: #000000;">'. $discountValue[$productArray].'</span></td>
-				<td class="tg-ullm thamt" style="font-size: 12px; text-align: center; height: 50px;"><span style="color: #000000;">'.$decodedData[$productArray]->vat.'%</span></td>
-				<td class="tg-ullm thamt" style="font-size: 12px;  text-align: center; height: 50px;"><span style="color: #000000;">'.$vatValue[$productArray].'</span></td>
-				<td class="tg-ullm thamt" style="font-size: 12px; text-align: center; height: 50px;"><span style="color: #000000;">'.$decodedData[$productArray]->additionalTax.'</span></td>
-				<td class="tg-ullm thamt" style="font-size: 12px;  text-align: center; height: 50px;"><span style="color: #000000;">'.$additionalTaxValue[$productArray].'</span></td>
-				<td class="tg-ullm thamt" style="font-size: 12px;  text-align: center; height: 50px;"><span style="color: #000000;">'.$total[$productArray].'</span></td>
-				</tr>';
-				 $index++;
-				 $totalAmount=$totalAmount+$total[$productArray];
-				 $totalAdditionalTax=$totalAdditionalTax+$additionalTaxValue[$productArray]+$vatValue[$productArray];
-				 $totalQty=$totalQty+$decodedArray->inventory[$productArray]->qty;
 				
-				// convert amount(round) into their company's selected decimal points
-				$totalAmount = round($totalAmount,$decodedData[$productArray]->company->noOfDecimalPoints);
-			}
-		}
+				$totalAmount=$totalAmount+$total[$productArray];
+				$totalAdditionalTax=$totalAdditionalTax+$additionalTaxValue[$productArray]+$vatValue[$productArray];
+				$totalQty=$totalQty+$decodedArray->inventory[$productArray]->qty;
+				
+				// convert (number_format)as per company's selected decimal points
+				$totalPrice[$productArray] = number_format($totalPrice[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
+				$vatValue[$productArray] = number_format($vatValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
+				$additionalTaxValue[$productArray] = number_format($additionalTaxValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);				
+				$total[$productArray] = number_format($total[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
+				$price = number_format($decodedArray->inventory[$productArray]->price,$decodedData[$productArray]->company->noOfDecimalPoints);
+				
+				$output =$output."".'<tr class="trhw" style="font-family: Calibri; text-align: left; height:  0.7cm; background-color: transparent;">
+				   <td class="tg-m36b thsrno" style="font-size: 14px; height: 0.7cm; text-align:center; padding:0 0 0 0;">'.$index.'</td>
+				   <td class="tg-m36b theqp" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedData[$productArray]->productName.'</td>
+				   <td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->color.' | '.$decodedArray->inventory[$productArray]->size.'</td>
+				   <td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->frameNo.'</td>
+				   <td class="tg-ullm thsrno" style="font-size: 14px;   height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->qty.'</td>
+				   <td class="tg-ullm thsrno" style="font-size: 14px; height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $price.'</td>
+				   <td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $discountValue[$productArray].'</td>
+				   <td class="tg-ullm thamt" style="font-size: 14px;  height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $decodedData[$productArray]->vat.'%</td>
+				   <td class="tg-ullm thamt" style="font-size: 14px; height: 0.7cm; text-align: center; padding:0 0 0 0;">'.$vatValue[$productArray].'</td>
+				   <td class="tg-ullm thamt" style="font-size: 14px;  height:  0.7cm; text-align: center; padding:0 0 0 0;">'.$decodedData[$productArray]->additionalTax.'</td>
+				   <td class="tg-ullm thamt" style="font-size: 14px;   height:  0.7cm; text-align: center; padding:0 0 0 0;">'.$additionalTaxValue[$productArray].'</td>
+				   <td class="tg-ullm thamt" style="font-size: 14px;  height: 0.7cm; text-align: center; padding:0 0 0 0;">'.$total[$productArray];
+                				   
+				if($productArray != count($decodedArray->inventory)-1)
+				{
+					$output = $output.$trClose;
+				
+				}
+				if($productArray==(count($decodedArray->inventory)-1))
+				{
+					$totalProductSpace = $index*0.7;	
+					
+					$finalProductBlankSpace = $totalCm-$totalProductSpace;
+					$output =$output."<tr class='trhw' style='font-family: Calibri; text-align: left; height:  ".$finalProductBlankSpace."cm;background-color: transparent;'>
+				   <td class='tg-m36b thsrno' style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;'></td>
+				   <td class='tg-m36b theqp' style='font-size: 12px;  height:  ".$finalProductBlankSpace."cm; padding:0 0 0 0;'></td>
+				   <td class='tg-ullm thsrno' style='font-size: 12px;  height: ".$finalProductBlankSpace."cm; padding:0 0 0 0;'></td>
+				   <td class='tg-ullm thsrno' style='font-size: 12px;  height:  ".$finalProductBlankSpace."cm; padding:0 0 0 0;'></td>
+				   <td class='tg-ullm thsrno' style='font-size: 12px;   height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
+				   <td class='tg-ullm thsrno' style='font-size: 12px; height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
+				   <td class='tg-ullm thsrno' style='font-size: 12px;  height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
+				   <td class='tg-ullm thamt' style='font-size: 12px;  height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
+				   <td class='tg-ullm thamt' style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
+				   <td class='tg-ullm thamt' style='font-size: 12px;  height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
+				   <td class='tg-ullm thamt' style='font-size: 12px;   height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
+				   <td class='tg-ullm thamt' style='font-size: 12px;  height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td></tr>";
 
+				}
+				$index++;
+		    }    
+		}
 		//calculation of currecy to word conversion
 		$currecyToWordConversion = new DocumentMpdf();
 		$currencyResult = $currecyToWordConversion->conversion($totalAmount);
@@ -272,7 +282,12 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$date = date_create($decodedBillData->entryDate);
 		date_add($date, date_interval_create_from_date_string('30 days'));
 		$expiryDate = date_format($date, 'd-m-Y');
+		$totalTax = $totalVatValue+$totalAdditionalTax;
 		
+		// convert amount(number_format) into their company's selected decimal points
+		$totalTax = number_format($totalTax,$decodedData[0]->company->noOfDecimalPoints,'.','');
+		$totalAmount = number_format($totalAmount,$decodedData[0]->company->noOfDecimalPoints,'.','');
+				
 		$billArray = array();
 		$billArray['Description']=$output;
 		$billArray['ClientName']=$decodedBillData->client->clientName;
@@ -283,7 +298,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$billArray['CLIENTADD']=$address;
 		$billArray['OrderDate']=$decodedBillData->entryDate;
 		$billArray['REMAINAMT']=$decodedBillData->balance;
-		$billArray['TotalTax']=$totalVatValue+$totalAdditionalTax;
+		$billArray['TotalTax']=$totalTax;
 		$billArray['TotalQty']=$totalQty;
 		$billArray['TotalInWord']=$currencyResult;
 		$billArray['displayNone']='none';

@@ -486,16 +486,16 @@ include ('connection.php');
 				// formdata.append('isDisplay',$scope.formAdata.is_display);
 				// formdata.append('productGroupParentId',$scope.formAdata.product_group_parent_id);
 				//multiple product-group insertion
-				 $scope.inventory=[{"productGroupName":"Raerddd" ,"isDisplay":'no',"productGroupDescription":'1',
-				 "productGroupParentId":'piece'},{"productGroupName":"Ranged" ,"isDisplay":'no',"productGroupDescription":'1',
-				 "productGroupParentId":'piece'}]
-				for(var i=0;i<$scope.inventory.length;i++)
-				{
-					angular.forEach($scope.inventory[i], function (input,key) {
-						formdata.append(+i+'['+key+']',input);
+				 // $scope.inventory=[{"productGroupName":"Raerddd" ,"isDisplay":'no',"productGroupDescription":'1',
+				 // "productGroupParentId":'piece'},{"productGroupName":"Ranged" ,"isDisplay":'no',"productGroupDescription":'1',
+				 // "productGroupParentId":'piece'}]
+				// for(var i=0;i<$scope.inventory.length;i++)
+				// {
+					// angular.forEach($scope.inventory[i], function (input,key) {
+						// formdata.append(+i+'['+key+']',input);
 						
-					});
-				}
+					// });
+				// }
 				
 				//multiple product-category insertion
 				 // $scope.inventory=[{"productCategoryName":"Rangerddd" ,"isDisplay":'no',"productCategoryDescription":'1',
@@ -561,10 +561,9 @@ include ('connection.php');
 				// "inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"companyId":14,"transactionDate":"22-10-2015","invoiceNumber":23,"billNumber":2}];
 				
 				// formdata.append('jfId',10);
- 				// formdata.append('companyId',1);
-				// formdata.append('entryDate','19-4-2017');
-				// var json=[{"amount":100,"amountType":" debit ","ledgerId":5},{"amount":100,"amountType":"debit","ledgerId":8},
-				// {"amount":200,"amountType":"credit","ledgerId":11}];
+ 				// formdata.append('companyId',10);
+				formdata.append('entryDate','20-04-2017');
+				var json=[{"amount":100,"amountType":" debit ","ledgerId":90},{"amount":100,"amountType":"credit","ledgerId":78}];
 				
 				// var inventory = [{"productId": 1 ,"discount":'0',"discountType":"flat","price":900,"qty":10},{"productId": 1 ,"discount":'0',"discountType":"percentage","price":1000,"qty":4}];
 				// formdata.append('transactionDate','06-04-2017');
@@ -572,14 +571,14 @@ include ('connection.php');
 				// formdata.append('invoiceNumber',1);
 				// formdata.append('billNumber',3);
 				
-				// for(var i=0;i<json.length;i++){
+				for(var i=0;i<json.length;i++){
    
-  					// angular.forEach(json[i], function (value,key) {
+  					angular.forEach(json[i], function (value,key) {
    						
-   					// formdata.append('data['+i+']['+key+']',value);
-  					// });
+   					formdata.append('data['+i+']['+key+']',value);
+  					});
     
-  				// }
+  				}
 				// for(var i=0;i<inventory.length;i++){
    
   					// angular.forEach(inventory[i], function (value,key) {
@@ -634,7 +633,7 @@ include ('connection.php');
 				// var productId =6;
 				// var productGrpId = 11;
 				// var productCatId = 18;
-				// var companyId=9;
+				// var companyId=10;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -645,13 +644,13 @@ include ('connection.php');
 				// var quotationId=3;
 				// var ledgerGrpId=9;
 				// var ledgerId=82;
-				// var jfId=10;
-				// var journalId=327;
+				var jfId=52;
+				// var journalId=207;
 				// var saleId = 371;
 				
 				// var url="http://www.scerp1.com/settings";
 				
-				var url="http://www.scerp1.com/product-groups/batch";
+				// var url="http://www.scerp1.com/product-groups/batch";
 				// var url="http://www.scerp1.com/product-categories/batch";
 				// var url="http://www.scerp1.com/products/batch";
 				
@@ -694,7 +693,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/products/outward";
 				
 				// var url="http://www.scerp1.com/accounting/journals";
-				// var url="http://www.scerp1.com/accounting/journals/"+jfId;
+				var url="http://www.scerp1.com/accounting/journals/"+jfId;
 				// var url="http://www.scerp1.com/accounting/journals/"+journalId;
 				// var url="http://www.scerp1.com/accounting/journals/company/"+companyId;
 				// var url="http://www.scerp1.com/accounting/journals/next";
@@ -757,7 +756,7 @@ include ('connection.php');
 						processData: false,
 						
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
-                        // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','type':'sales','jfId':64},
+                        headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','type':'payment'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','salesType':'retail_sales','operation':'excel'},
                         // headers: {'Content-Type': undefined,'type':'sales','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
@@ -767,7 +766,7 @@ include ('connection.php');
 						//,'productCategoryId':18,'productGroupId':10
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','type':'retail_sales','fromDate':'22-10-2015','toDate':'22-10-2015'}
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','productId':6,'fromDate':'21-10-2015','toDate':'20-01-2017','operation':'pdf'},
-                        headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372'},
+                        // headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','productName':'Spiderman','color':'BK.s'},
                         // headers: {'Content-Type':undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','productCode':'ABC_ABC_AB_CYCFDJ_BKBK_122T'},
                         // headers: {'Content-Type':undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','fromDate':'01/04/2017','toDate':'28/04/2017'},

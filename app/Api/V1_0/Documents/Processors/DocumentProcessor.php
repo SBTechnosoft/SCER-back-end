@@ -48,39 +48,67 @@ class DocumentProcessor extends BaseProcessor
 		//get constant document-url from document
 		$constDocumentUrl =  new ConstantClass();
 		$documentArray = $constDocumentUrl->constantVariable();
-		
-		$file = $request->file();
-		
-		//get document data and store documents in folder		
-		for($fileArray=0;$fileArray<count($request->file()['file']);$fileArray++)
+		if(in_array(true,$request->file()))
 		{
-			$documentPersistable = array();
-			$documentPersistable[$fileArray] = new DocumentPersistable();
-			
-			$documentUrl[$fileArray] = $documentPath;
-			$documentName[$fileArray] =$combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".".$file['file'][$fileArray]->getClientOriginalExtension();
-			$documentFormat[$fileArray] = $file['file'][$fileArray]->getClientOriginalExtension();
-			$documentSize[$fileArray] = $file['file'][$fileArray]->getClientSize();
-			$file['file'][$fileArray]->move($documentUrl[$fileArray],$documentName[$fileArray]);
-			
-			if($documentFormat[$fileArray]=='jpg' || $documentFormat[$fileArray]=='jpeg' || $documentFormat[$fileArray]=='gif' || $documentFormat[$fileArray]=='png' || $documentFormat[$fileArray]=='pdf')
-			{	
-				if(($documentSize[$fileArray]/1048576)<=5)
-				{
-					$documentPersistable[$fileArray]->setDocumentName($documentName[$fileArray]);
-					$documentPersistable[$fileArray]->setDocumentSize($documentSize[$fileArray]);
-					$documentPersistable[$fileArray]->setDocumentFormat($documentFormat[$fileArray]);
-					$documentPersistable[$fileArray]->setDocumentUrl($documentUrl[$fileArray]);
-					$persistableArray[$fileArray] = $documentPersistable[$fileArray];
+			$countDocument = count($request->file()['file']);
+			$file = $request->file();
+			//get document data and store documents in folder		
+			for($fileArray=0;$fileArray<count($request->file()['file']);$fileArray++)
+			{
+				$documentPersistable = array();
+				$documentPersistable[$fileArray] = new DocumentPersistable();
+				
+				$documentUrl[$fileArray] = $documentPath;
+				$documentFormat[$fileArray] = $file['file'][$fileArray]->getClientOriginalExtension();
+				$documentName[$fileArray] = $combineDateTime.mt_rand(1,9999).$fileArray.mt_rand(1,9999).".".$documentFormat[$fileArray];
+				$documentSize[$fileArray] = $file['file'][$fileArray]->getClientSize();
+				$file['file'][$fileArray]->move($documentUrl[$fileArray],$documentName[$fileArray]);
+				if($documentFormat[$fileArray]=='jpg' || $documentFormat[$fileArray]=='jpeg' || $documentFormat[$fileArray]=='gif' || $documentFormat[$fileArray]=='png' || $documentFormat[$fileArray]=='pdf')
+				{	
+					if(($documentSize[$fileArray]/1048576)<=5)
+					{
+						$documentPersistable[$fileArray]->setDocumentName($documentName[$fileArray]);
+						$documentPersistable[$fileArray]->setDocumentSize($documentSize[$fileArray]);
+						$documentPersistable[$fileArray]->setDocumentFormat($documentFormat[$fileArray]);
+						$documentPersistable[$fileArray]->setDocumentUrl($documentUrl[$fileArray]);
+						$persistableArray[$fileArray] = $documentPersistable[$fileArray];
+					}
+					else
+					{
+						return $msgArray['fileSize'];
+					}
 				}
 				else
 				{
-					return $msgArray['fileSize'];
+					return $msgArray['415'];
 				}
 			}
-			else
+		}
+		else
+		{
+			$countDocument = 0;
+		}
+		if(array_key_exists('scanFile',$request->input()))
+		{
+			$countScanFile = $request->input()['scanFile'];
+			for($scanFileArray=0;$scanFileArray<count($countScanFile);$scanFileArray++)
 			{
-				return $msgArray['415'];
+				$totalCount = $countDocument+$scanFileArray;
+				$documentPersistable = array();
+				$documentPersistable[$scanFileArray] = new DocumentPersistable();
+				
+				$scanDocumentName[$scanFileArray] = $combineDateTime."s".mt_rand(1,9999).$scanFileArray.mt_rand(1,9999)."c.png";
+				$img = str_replace('data:image/png;base64,', '',$request->input()['scanFile'][$scanFileArray]);
+				$decodedFile = base64_decode($img);
+				
+				$openFile = fopen($documentPath.$scanDocumentName[$scanFileArray],'w');
+				fwrite($openFile,$decodedFile);
+				fclose($openFile);
+				$documentPersistable[$scanFileArray]->setDocumentName($scanDocumentName[$scanFileArray]);
+				$documentPersistable[$scanFileArray]->setDocumentSize('0');
+				$documentPersistable[$scanFileArray]->setDocumentFormat('png');
+				$documentPersistable[$scanFileArray]->setDocumentUrl($documentPath);
+				$persistableArray[$totalCount] = $documentPersistable[$scanFileArray];
 			}
 		}
 		return $persistableArray;

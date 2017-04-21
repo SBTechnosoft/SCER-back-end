@@ -274,9 +274,6 @@ class BalanceSheetOperation extends ConstantClass
 				}
 			}
 		}
-		$balanceSheetArrayData['totalCredit'] = number_format($balanceSheetArrayData['totalCredit'],$decodedCompanyData->noOfDecimalPoints);
-		$balanceSheetArrayData['totalDebit'] = number_format($balanceSheetArrayData['totalDebit'],$decodedCompanyData->noOfDecimalPoints);
-		
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($balanceArray)+3,'Total Assets');
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($balanceArray)+3,$balanceSheetArrayData['totalCredit']);
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($balanceArray)+3,'Total Liabilities');
@@ -303,6 +300,14 @@ class BalanceSheetOperation extends ConstantClass
 		// set header style
 		$objPHPExcel->getActiveSheet()->getStyle('A2:D2')->applyFromArray($headerStyleArray);
 		
+		$decimalPoints = $this->setDecimalPoint($decodedCompanyData->noOfDecimalPoints);
+		
+		$bSaveDynamicRow = "B".(count($balanceArray)+3);
+		$dSaveDynamicRow = "D".(count($balanceArray)+3);
+		
+		$objPHPExcel->getActiveSheet()->getStyle("B3:".$bSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		$objPHPExcel->getActiveSheet()->getStyle("D3:".$dSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		
 		// set title style
 		$objPHPExcel->getActiveSheet()->getStyle('B1:C1')->applyFromArray($titleStyleArray);
 		
@@ -314,20 +319,6 @@ class BalanceSheetOperation extends ConstantClass
 		$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".xls"; //xslx
 		$path = $constantArray['balanceSheetExcel'];
 		$documentPathName = $path.$documentName;
-		
-		//delete older files
-		// $files = glob($path.'*'); // get all file names
-		// print_r($files);
-		// foreach($files as $file)
-		// { 
-			// iterate files
-			// if(is_file($file))
-			// {
-				// echo $file;
-				// unlink($file); // delete file
-				// echo "eee";
-			// }
-		// }
 		
 		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
 		$objWriter->save($documentPathName);
@@ -379,7 +370,7 @@ class BalanceSheetOperation extends ConstantClass
 		//set data into excel-sheet
 		for($arrayData=0;$arrayData<count($decodedData);$arrayData++)
 		{
-			if(strcmp($decodedData[0]->amountType,'credit')==0)
+			if(strcmp($decodedData[$arrayData]->amountType,'credit')==0)
 			{
 				array_push($creditArray,$decodedData[$arrayData]);
 			}
@@ -388,6 +379,7 @@ class BalanceSheetOperation extends ConstantClass
 				array_push($debitArray,$decodedData[$arrayData]);
 			}
 		}
+		
 		$creditAmountTotal=0;
 		$debitAmountTotal=0;
 		for($arrayData=0;$arrayData<count($creditArray);$arrayData++)
@@ -398,25 +390,23 @@ class BalanceSheetOperation extends ConstantClass
 			
 			if($arrayData == count($creditArray)-1)
 			{
-				$creditAmountTotal = number_format($creditAmountTotal,$decodedCompanyData->noOfDecimalPoints);
 				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+4,"Total Assets");
 				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+4,$creditAmountTotal);
 			}
 		}
+		$totalCreditRow = count($creditArray);
+		
 		for($arrayData=0;$arrayData<count($debitArray);$arrayData++)
 		{
-			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+3,$debitArray[$arrayData]->ledger->ledgerName);
-			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+3,$debitArray[$arrayData]->amount);
-			$debitAmountTotal = $debitAmountTotal+$creditArray[$arrayData]->amount;
-			
-			if($arrayData == count($creditArray)-1)
+			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$totalCreditRow+$arrayData+3,$debitArray[$arrayData]->ledger->ledgerName);
+			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$totalCreditRow+$arrayData+3,$debitArray[$arrayData]->amount);
+			$debitAmountTotal = $debitAmountTotal+$debitArray[$arrayData]->amount;
+			if($arrayData == count($debitArray)-1)
 			{
-				$debitAmountTotal = number_format($debitAmountTotal,$decodedCompanyData->noOfDecimalPoints);
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+4,"Total Assets");
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+4,$debitAmountTotal);
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$totalCreditRow+$arrayData+4,"Total Assets");
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$totalCreditRow+$arrayData+4,$debitAmountTotal);
 			}
 		}
-		
 		// style for header
 		$headerStyleArray = array(
 		'font'  => array(
@@ -438,6 +428,14 @@ class BalanceSheetOperation extends ConstantClass
 		// set header style
 		$objPHPExcel->getActiveSheet()->getStyle('A2:B2')->applyFromArray($headerStyleArray);
 		
+		$decimalPoints = $this->setDecimalPoint($decodedCompanyData->noOfDecimalPoints);
+		
+		$bSaveDynamicRow = "B".(count($creditArray)+count($debitArray)+2);
+		$cSaveDynamicRow = "C".(count($creditArray)+count($debitArray)+2);
+		
+		$objPHPExcel->getActiveSheet()->getStyle("B3:".$bSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		$objPHPExcel->getActiveSheet()->getStyle("C3:".$cSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		
 		// set title style
 		$objPHPExcel->getActiveSheet()->getStyle('A1:B1')->applyFromArray($titleStyleArray);
 		
@@ -449,20 +447,6 @@ class BalanceSheetOperation extends ConstantClass
 		$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".xls"; //xslx
 		$path = $constantArray['balanceSheetExcel'];
 		$documentPathName = $path.$documentName;
-		
-		//delete older files
-		// $files = glob($path.'*'); // get all file names
-		// print_r($files);
-		// foreach($files as $file)
-		// { 
-			// iterate files
-			// if(is_file($file))
-			// {
-				// echo $file;
-				// unlink($file); // delete file
-				// echo "eee";
-			// }
-		// }
 		
 		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
 		$objWriter->save($documentPathName);
@@ -558,5 +542,29 @@ class BalanceSheetOperation extends ConstantClass
 		$finalArray['totalDebit'] = $totalDebit;
 		$finalArray['arrayData'] = $trialBalanceArray;
 		return $finalArray;
+	}
+	
+	/**
+	 * calculate the decimal point
+	 * $param decimal-point
+	*/
+	public function setDecimalPoint($decimalPoint)
+	{
+		if($decimalPoint==1)
+		{
+			return "0.0";
+		}
+		else if($decimalPoint==2)
+		{
+			return "0.00";
+		}
+		else if($decimalPoint==3)
+		{
+			return "0.000";
+		}
+		else if($decimalPoint==4)
+		{
+			return "0.0000";
+		}
 	}
 }

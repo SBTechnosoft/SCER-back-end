@@ -311,19 +311,14 @@ class ProfitLossOperation extends CompanyService
 		}
 		if($calculatedData['totalDebit']>$calculatedData['totalCredit'])
 		{
-			$differenceDr = number_format($calculatedData['totalDebit']-$calculatedData['totalCredit']);
+			$differenceDr = $calculatedData['totalDebit']-$calculatedData['totalCredit'];
 			$differenceCr = "-";
 		}
 		else
 		{
-			$differenceCr = number_format($calculatedData['totalCredit']-$calculatedData['totalDebit']);
+			$differenceCr = $calculatedData['totalCredit']-$calculatedData['totalDebit'];
 			$differenceDr = "-";
 		}
-		
-		$calculatedData['totalDebit'] = number_format($calculatedData['totalDebit'],$decodedCompanyData->noOfDecimalPoints);
-		$calculatedData['totalCredit'] = number_format($calculatedData['totalCredit'],$decodedCompanyData->noOfDecimalPoints);
-		
-		
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+3,'Total');
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+3,$calculatedData['totalCredit']);
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+3,'Total');
@@ -351,16 +346,20 @@ class ProfitLossOperation extends CompanyService
 			'size'  => 15,
 			'name'  => 'Verdana'
 		));
-		
 		// set header style
 		$objPHPExcel->getActiveSheet()->getStyle('A2:D2')->applyFromArray($headerStyleArray);
 		
+		$decimalPoints = $this->setDecimalPoint($decodedCompanyData->noOfDecimalPoints);
+		
+		$bSaveDynamicRow = "B".(count($decodedData)+4);
+		$dSaveDynamicRow = "D".(count($decodedData)+4);
+		
+		$objPHPExcel->getActiveSheet()->getStyle("B3:".$bSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		$objPHPExcel->getActiveSheet()->getStyle("D3:".$dSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		
 		// set title style
 		$objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($titleStyleArray);
-		// $objPHPExcel->getStyle("B3")->getNumberFormat()->setFormatCode('FORMAT_NUMBER_COMMA_SEPARATED2'); 
-		// $objPHPExcel->getActiveSheet()->getStyle('B3')->getNumberFormat()->applyFromArray( 
-			// array('code' => PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE_00)
-		// );
+		
 		// make unique name
 		$dateTime = date("d-m-Y h-i-s");
 		$convertedDateTime = str_replace(" ","-",$dateTime);
@@ -369,17 +368,6 @@ class ProfitLossOperation extends CompanyService
 		$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".xls"; //xslx
 		$path = $constantArray['profitLossExcel'];
 		$documentPathName = $path.$documentName;
-		
-		//delete older files
-		// $files = glob($path.'*'); // get all file names
-		// foreach($files as $file)
-		// { 
-			// iterate files
-			// if(is_file($file))
-			// {
-				// unlink($file); // delete file
-			// }
-		// }
 		
 		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
 		$objWriter->save($documentPathName);
@@ -446,17 +434,14 @@ class ProfitLossOperation extends CompanyService
 		}
 		if($debitAmountTotal>$creditAmountTotal)
 		{
-			$differenceDr = number_format(($debitAmountTotal-$creditAmountTotal),$decodedCompanyData->noOfDecimalPoints,'.','');
+			$differenceDr = $debitAmountTotal-$creditAmountTotal;
 			$differenceCr = '';
 		}
 		else
 		{
-			$differenceCr = number_format(($creditAmountTotal-$debitAmountTotal),$decodedCompanyData->noOfDecimalPoints,'.','');
+			$differenceCr = $creditAmountTotal-$debitAmountTotal;
 			$differenceDr = '';
 		}
-		$debitAmountTotal = number_format($debitAmountTotal,$decodedCompanyData->noOfDecimalPoints,'.','');
-		$creditAmountTotal = number_format($creditAmountTotal,$decodedCompanyData->noOfDecimalPoints,'.','');
-		
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+3,'Total');
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+3,$creditAmountTotal);
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+3,$debitAmountTotal);
@@ -486,12 +471,17 @@ class ProfitLossOperation extends CompanyService
 		// set header style
 		$objPHPExcel->getActiveSheet()->getStyle('A2:C2')->applyFromArray($headerStyleArray);
 		
+		$decimalPoints = $this->setDecimalPoint($decodedCompanyData->noOfDecimalPoints);
+		
+		$bSaveDynamicRow = "B".(count($decodedData)+4);
+		$cSaveDynamicRow = "C".(count($decodedData)+4);
+		
+		$objPHPExcel->getActiveSheet()->getStyle("B3:".$bSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		$objPHPExcel->getActiveSheet()->getStyle("C3:".$cSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		
 		// set title style
 		$objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($titleStyleArray);
-		// $objPHPExcel->getStyle("B3")->getNumberFormat()->setFormatCode('FORMAT_NUMBER_COMMA_SEPARATED2'); 
-		// $objPHPExcel->getActiveSheet()->getStyle('B3')->getNumberFormat()->applyFromArray( 
-			// array('code' => PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE_00)
-		// );
+
 		// make unique name
 		$dateTime = date("d-m-Y h-i-s");
 		$convertedDateTime = str_replace(" ","-",$dateTime);
@@ -500,17 +490,6 @@ class ProfitLossOperation extends CompanyService
 		$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".xls"; //xslx
 		$path = $constantArray['profitLossExcel'];
 		$documentPathName = $path.$documentName;
-		
-		//delete older files
-		// $files = glob($path.'*'); // get all file names
-		// foreach($files as $file)
-		// { 
-			// iterate files
-			// if(is_file($file))
-			// {
-				// unlink($file); // delete file
-			// }
-		// }
 		
 		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
 		$objWriter->save($documentPathName);
@@ -609,5 +588,29 @@ class ProfitLossOperation extends CompanyService
 		$finalArray['totalDebit'] = $totalDebit;
 		$finalArray['arrayData'] = $trialBalanceArray;
 		return $finalArray;
+	}
+	
+	/**
+	 * calculate the decimal point
+	 * $param decimal-point
+	*/
+	public function setDecimalPoint($decimalPoint)
+	{
+		if($decimalPoint==1)
+		{
+			return "0.0";
+		}
+		else if($decimalPoint==2)
+		{
+			return "0.00";
+		}
+		else if($decimalPoint==3)
+		{
+			return "0.000";
+		}
+		else if($decimalPoint==4)
+		{
+			return "0.0000";
+		}
 	}
 }
