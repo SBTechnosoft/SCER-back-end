@@ -485,6 +485,7 @@ include ('connection.php');
 				// formdata.append('productGroupDescription',$scope.formAdata.product_group_desc);
 				// formdata.append('isDisplay',$scope.formAdata.is_display);
 				// formdata.append('productGroupParentId',$scope.formAdata.product_group_parent_id);
+				
 				//multiple product-group insertion
 				 // $scope.inventory=[{"productGroupName":"Raerddd" ,"isDisplay":'no',"productGroupDescription":'1',
 				 // "productGroupParentId":'piece'},{"productGroupName":"Ranged" ,"isDisplay":'no',"productGroupDescription":'1',
@@ -498,16 +499,28 @@ include ('connection.php');
 				// }
 				
 				//multiple product-category insertion
-				 // $scope.inventory=[{"productCategoryName":"Rangerddd" ,"isDisplay":'no',"productCategoryDescription":'1',
-				 // "productParentCategoryId":'piece'},{"productCategoryName":"Rangerdood" ,"isDisplay":'no',"productCategoryDescription":'1',
-				 // "productParentCategoryId":'piece'}]
-				// for(var i=0;i<$scope.inventory.length;i++)
-				// {
-					// angular.forEach($scope.inventory[i], function (input,key) {
-						// formdata.append(+i+'['+key+']',input);
+				 $scope.inventory=[{"productCategoryDescription":"Ranger@ddd" ,"isDisplay":'no',"productCategoryName":'asd',
+				 "productParentCategoryId":'1'},{"productCategoryDescription":"Rangerdood" ,"isDisplay":'no1',"productCategoryName":'sds',
+				 "productParentCategoryId":'1'},{"productCategoryDescription":"Rangerddood" ,"isDisplay":'no',"productCategoryName":'dsa',
+				 "productParentCategoryId":'1'},{"productCategoryDescription":"Rangerdsod" ,"isDisplay":'no',"productCategoryName":'dsa',
+				 "productParentCategoryId":'1'}]
+				 //multiple product-category insertion
+				 $scope.inventory1=['productCategoryDescription','isDisplay','productCategoryName','productParentCategoryId']
+				
+				for(var i=0;i<$scope.inventory.length;i++)
+				{
+					var j = 0;
+					angular.forEach($scope.inventory[i], function (input,key) {
 						
-					// });
-				// }
+						formdata.append("data["+i+"]["+j+"]",input);
+						j++;
+						
+					});
+				}
+				for(var i=0;i<$scope.inventory1.length;i++)
+				{
+					formdata.append("mapping["+i+"]",$scope.inventory1[i]);
+				}
 				
 				// console.log(formdata);
 				// special journal
@@ -562,8 +575,8 @@ include ('connection.php');
 				
 				// formdata.append('jfId',10);
  				// formdata.append('companyId',10);
-				formdata.append('entryDate','20-04-2017');
-				var json=[{"amount":100,"amountType":" debit ","ledgerId":90},{"amount":100,"amountType":"credit","ledgerId":78}];
+				// formdata.append('entryDate','20-04-2017');
+				// var json=[{"amount":100,"amountType":" debit ","ledgerId":90},{"amount":100,"amountType":"credit","ledgerId":78}];
 				
 				// var inventory = [{"productId": 1 ,"discount":'0',"discountType":"flat","price":900,"qty":10},{"productId": 1 ,"discount":'0',"discountType":"percentage","price":1000,"qty":4}];
 				// formdata.append('transactionDate','06-04-2017');
@@ -571,14 +584,14 @@ include ('connection.php');
 				// formdata.append('invoiceNumber',1);
 				// formdata.append('billNumber',3);
 				
-				for(var i=0;i<json.length;i++){
+				// for(var i=0;i<json.length;i++){
    
-  					angular.forEach(json[i], function (value,key) {
+  					// angular.forEach(json[i], function (value,key) {
    						
-   					formdata.append('data['+i+']['+key+']',value);
-  					});
+   					// formdata.append('data['+i+']['+key+']',value);
+  					// });
     
-  				}
+  				// }
 				// for(var i=0;i<inventory.length;i++){
    
   					// angular.forEach(inventory[i], function (value,key) {
@@ -644,14 +657,14 @@ include ('connection.php');
 				// var quotationId=3;
 				// var ledgerGrpId=9;
 				// var ledgerId=82;
-				var jfId=52;
+				// var jfId=52;
 				// var journalId=207;
 				// var saleId = 371;
 				
 				// var url="http://www.scerp1.com/settings";
 				
 				// var url="http://www.scerp1.com/product-groups/batch";
-				// var url="http://www.scerp1.com/product-categories/batch";
+				var url="http://www.scerp1.com/product-categories/batch";
 				// var url="http://www.scerp1.com/products/batch";
 				
 				// var url="http://www.scerp1.com/accounting/taxation/purchase-detail";  //purchase
@@ -693,7 +706,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/products/outward";
 				
 				// var url="http://www.scerp1.com/accounting/journals";
-				var url="http://www.scerp1.com/accounting/journals/"+jfId;
+				// var url="http://www.scerp1.com/accounting/journals/"+jfId;
 				// var url="http://www.scerp1.com/accounting/journals/"+journalId;
 				// var url="http://www.scerp1.com/accounting/journals/company/"+companyId;
 				// var url="http://www.scerp1.com/accounting/journals/next";
@@ -756,8 +769,8 @@ include ('connection.php');
 						processData: false,
 						
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
-                        headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','type':'payment'},
-                        // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
+                        // headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','type':'payment'},
+                        headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','salesType':'retail_sales','operation':'excel'},
                         // headers: {'Content-Type': undefined,'type':'sales','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6',

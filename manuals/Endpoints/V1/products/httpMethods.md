@@ -26,12 +26,23 @@
 	
 + Body
 			{
-                [	
-					{
-						... Standard Products Persistable Object
-					}
+                "data":
+				[	
+					[0]
+						{
+							[0]=>
+							[1]=>
+							...
+						}
+					...
 				]
-				...
+				"mapping":
+				[
+					[0]=>
+					[1]=>
+					...
+				]
+				
             }
 + Error Message
 
@@ -42,6 +53,16 @@
 
             {
                 ... HTTP_Status:200
+            }
++ Response
+
+            {
+                [
+					{
+						Array of Error With Data
+					}
+					..
+				]
             }
 
 ##### `POST /products/inward`

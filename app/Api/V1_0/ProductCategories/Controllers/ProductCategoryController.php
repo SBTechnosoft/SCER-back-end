@@ -122,11 +122,7 @@ class ProductCategoryController extends BaseController implements ContainerInter
 				$productCategoryService= new ProductCategoryService();			
 				$productCategoryPersistable = $processor->createPersistableBatchData($this->request);
 				
-				if($productCategoryPersistable[0][0]=='[')
-				{
-					return $productCategoryPersistable;
-				}
-				else if(is_array($productCategoryPersistable))
+				if(is_array($productCategoryPersistable))
 				{
 					$status = $productCategoryService->insertBatchData($productCategoryPersistable);
 					return $status;

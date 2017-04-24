@@ -133,16 +133,15 @@ class ProductCategoryProcessor extends BaseProcessor
 		{
 			//trim an input 
 			$productCategoryTransformer = new ProductCategoryTransformer();
-			$tRequestData = $productCategoryTransformer->trimInsertBatchData($this->request);
-			
-			if($tRequestData==1)
+			$trimData = $productCategoryTransformer->trimInsertBatchData($this->request);
+			if(is_array($trimData))
 			{
-				return $msgArray['content'];
-			}	
-			else
-			{
+				$tRequestData = $trimData['dataArray'];
+				$totalErrorArray = count($trimData['errorArray']);
+				$countRequestedData = count($tRequestData);
+				
 				$newProductArray = array();
-				for($dataArray=0;$dataArray<count($tRequestData);$dataArray++)
+				for($dataArray=0;$dataArray<$countRequestedData;$dataArray++)
 				{
 					$productCatValue = array();
 					$keyName = array();
@@ -197,10 +196,28 @@ class ProductCategoryProcessor extends BaseProcessor
 					}
 					else
 					{
-						return $status;
+						$decodedArrayStatus = json_decode($status);
+						//convert object to array
+						$decodedArray = (array)$decodedArrayStatus[0];
+		
+						$trimData['errorArray'][$totalErrorArray][0] = $trimData['dataArray'][$dataArray]['product_category_name'];
+						$trimData['errorArray'][$totalErrorArray][1] = $trimData['dataArray'][$dataArray]['product_category_description'];
+						$trimData['errorArray'][$totalErrorArray][2] = $trimData['dataArray'][$dataArray]['is_display'];
+						$trimData['errorArray'][$totalErrorArray][3] = $trimData['dataArray'][$dataArray]['product_parent_category_id'];
+						$trimData['errorArray'][$totalErrorArray][4] = $decodedArray[array_keys($decodedArray)[0]];
+						$totalErrorArray++;
 					}
 				}
-				return $newProductArray;
+				unset($trimData['dataArray']);
+				$trimData['dataArray'] = $newProductArray;
+				return $trimData;
+			}
+			else
+			{
+				$errorResult = array();
+				$errorResult['mapping_error'] = $trimData;
+				$encodeResult = json_encode($errorResult);
+				return $encodeResult;
 			}
 		}
 	}

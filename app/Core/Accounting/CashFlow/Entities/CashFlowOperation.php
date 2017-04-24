@@ -94,17 +94,6 @@ class CashFlowOperation extends CompanyService
 		
 		$path = $constantArray['cashFlowPdf'];
 		
-		//delete older files
-		// $files = glob($path.'*'); // get all file names
-		// foreach($files as $file)
-		// { 
-			// iterate files
-			// if(is_file($file))
-			// {
-				// unlink($file); // delete file
-			// }
-		// }
-		
 		$documentPathName = $path.$documentName;
 		$mpdf = new mPDF('A4','landscape');
 		$mpdf->SetHTMLHeader('<div style="text-align: center; font-weight: bold; font-size:20px;">Cash Flow</div>');
@@ -177,12 +166,12 @@ class CashFlowOperation extends CompanyService
 		
 		if($calculatedData['totalDebit']>$calculatedData['totalCredit'])
 		{
-			$differenceDr = number_format($calculatedData['totalDebit']-$calculatedData['totalCredit']);
+			$differenceDr = number_format(($calculatedData['totalDebit']-$calculatedData['totalCredit']),$decodedCompanyData->noOfDecimalPoints);
 			$differenceCr = "-";
 		}
 		else
 		{
-			$differenceCr = number_format($calculatedData['totalCredit']-$calculatedData['totalDebit']);
+			$differenceCr = number_format(($calculatedData['totalCredit']-$calculatedData['totalDebit']),$decodedCompanyData->noOfDecimalPoints);
 			$differenceDr = "-";
 		}
 		

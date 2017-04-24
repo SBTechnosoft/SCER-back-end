@@ -78,6 +78,7 @@ class ProductCategoryModel extends Model
 		$getProductCatKey = array();
 		$getProductCatData = func_get_arg(0);
 		$getProductCatKey = func_get_arg(1);
+		$getErrorArray = func_get_arg(2);
 		$productCatDetail = "";
 		
 		for($dataArray=0;$dataArray<count($getProductCatData);$dataArray++)
@@ -119,7 +120,7 @@ class ProductCategoryModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			return $exceptionArray['200'];
+			return json_encode($getErrorArray);
 		}
 		else
 		{

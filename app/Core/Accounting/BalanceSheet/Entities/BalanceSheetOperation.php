@@ -137,7 +137,7 @@ class BalanceSheetOperation extends ConstantClass
 		$debitArray = array();
 		for($arrayData=0;$arrayData<count($decodedData);$arrayData++)
 		{
-			if(strcmp($decodedData[0]->amountType,'credit')==0)
+			if(strcmp($decodedData[$arrayData]->amountType,'credit')==0)
 			{
 				array_push($creditArray,$decodedData[$arrayData]);
 			}
@@ -149,6 +149,7 @@ class BalanceSheetOperation extends ConstantClass
 		$bodyPart="";
 		$creditAmountTotal=0;
 		$debitAmountTotal=0;
+		
 		for($arrayData=0;$arrayData<count($creditArray);$arrayData++)
 		{
 			$bodyPart = $bodyPart."	<tr style='border: 1px solid black;'>
@@ -159,8 +160,8 @@ class BalanceSheetOperation extends ConstantClass
 			{
 				$creditAmountTotal = number_format($creditAmountTotal,$decodedCompanyData->noOfDecimalPoints);
 				$bodyPart = $bodyPart."	<tr style='border: 1px solid black;'> 
-					<td style='border: 1px solid black; width:50%; text-align:center;'>Total Assets</td>
-					<td style='border: 1px solid black;width:25%; text-align:center;'>".$creditAmountTotal."</td>
+					<td style='border: 1px solid black; width:50%; text-align:center;'><b>Total Assets</b></td>
+					<td style='border: 1px solid black;width:25%; text-align:center;'><b>".$creditAmountTotal."</b></td>
 					</tr>";
 			}
 		}
@@ -174,8 +175,8 @@ class BalanceSheetOperation extends ConstantClass
 			{
 				$debitAmountTotal = number_format($debitAmountTotal,$decodedCompanyData->noOfDecimalPoints);
 				$bodyPart = $bodyPart."	<tr style='border: 1px solid black;'> 
-					<td style='border: 1px solid black; width:50%; text-align:center;'>Total Liabilities</td>
-					<td style='border: 1px solid black;width:25%; text-align:center;'>".$debitAmountTotal."</td>
+					<td style='border: 1px solid black; width:50%; text-align:center;'><b>Total Liabilities</b></td>
+					<td style='border: 1px solid black;width:25%; text-align:center;'><b>".$debitAmountTotal."</b></td>
 					</tr>";
 			}
 		}
@@ -379,34 +380,6 @@ class BalanceSheetOperation extends ConstantClass
 				array_push($debitArray,$decodedData[$arrayData]);
 			}
 		}
-		
-		$creditAmountTotal=0;
-		$debitAmountTotal=0;
-		for($arrayData=0;$arrayData<count($creditArray);$arrayData++)
-		{
-			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+3,$creditArray[$arrayData]->ledger->ledgerName);
-			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+3,$creditArray[$arrayData]->amount);
-			$creditAmountTotal = $creditAmountTotal+$creditArray[$arrayData]->amount;
-			
-			if($arrayData == count($creditArray)-1)
-			{
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+4,"Total Assets");
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+4,$creditAmountTotal);
-			}
-		}
-		$totalCreditRow = count($creditArray);
-		
-		for($arrayData=0;$arrayData<count($debitArray);$arrayData++)
-		{
-			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$totalCreditRow+$arrayData+3,$debitArray[$arrayData]->ledger->ledgerName);
-			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$totalCreditRow+$arrayData+3,$debitArray[$arrayData]->amount);
-			$debitAmountTotal = $debitAmountTotal+$debitArray[$arrayData]->amount;
-			if($arrayData == count($debitArray)-1)
-			{
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$totalCreditRow+$arrayData+4,"Total Assets");
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$totalCreditRow+$arrayData+4,$debitAmountTotal);
-			}
-		}
 		// style for header
 		$headerStyleArray = array(
 		'font'  => array(
@@ -424,17 +397,49 @@ class BalanceSheetOperation extends ConstantClass
 			'size'  => 15,
 			'name'  => 'Verdana'
 		));
+		$creditAmountTotal=0;
+		$debitAmountTotal=0;
+		for($arrayData=0;$arrayData<count($creditArray);$arrayData++)
+		{
+			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+3,$creditArray[$arrayData]->ledger->ledgerName);
+			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+3,$creditArray[$arrayData]->amount);
+			$creditAmountTotal = $creditAmountTotal+$creditArray[$arrayData]->amount;
+			
+			if($arrayData == count($creditArray)-1)
+			{
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+4,"Total Assets");
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+4,$creditAmountTotal);
+				$aCount = "A".($arrayData+4);
+				$bCount = "B".($arrayData+4);
+				$objPHPExcel->getActiveSheet()->getStyle($aCount.":".$bCount)->applyFromArray($headerStyleArray);
+			}
+		}
+		$totalCreditRow = count($creditArray)+1;
 		
+		for($arrayData=0;$arrayData<count($debitArray);$arrayData++)
+		{
+			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$totalCreditRow+$arrayData+3,$debitArray[$arrayData]->ledger->ledgerName);
+			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$totalCreditRow+$arrayData+3,$debitArray[$arrayData]->amount);
+			$debitAmountTotal = $debitAmountTotal+$debitArray[$arrayData]->amount;
+			if($arrayData == count($debitArray)-1)
+			{
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$totalCreditRow+$arrayData+4,"Total Liabilities");
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$totalCreditRow+$arrayData+4,$debitAmountTotal);
+				$aCount = "A".($totalCreditRow+$arrayData+4);
+				$bCount = "B".($totalCreditRow+$arrayData+4);
+				$objPHPExcel->getActiveSheet()->getStyle($aCount.":".$bCount)->applyFromArray($headerStyleArray);
+			}
+		}
 		// set header style
 		$objPHPExcel->getActiveSheet()->getStyle('A2:B2')->applyFromArray($headerStyleArray);
 		
 		$decimalPoints = $this->setDecimalPoint($decodedCompanyData->noOfDecimalPoints);
 		
 		$bSaveDynamicRow = "B".(count($creditArray)+count($debitArray)+2);
-		$cSaveDynamicRow = "C".(count($creditArray)+count($debitArray)+2);
+		// $cSaveDynamicRow = "C".(count($creditArray)+count($debitArray)+2);
 		
 		$objPHPExcel->getActiveSheet()->getStyle("B3:".$bSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
-		$objPHPExcel->getActiveSheet()->getStyle("C3:".$cSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		// $objPHPExcel->getActiveSheet()->getStyle("C3:".$cSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
 		
 		// set title style
 		$objPHPExcel->getActiveSheet()->getStyle('A1:B1')->applyFromArray($titleStyleArray);

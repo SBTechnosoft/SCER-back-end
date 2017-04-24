@@ -25,6 +25,9 @@ class ExceptionMessage
 		$msgArray['NoExists'] = "NotExists: Token Not Exists";
 		$msgArray['Email'] = "Message could not be sent";
 		$msgArray['noAccess'] = "Don't Have Access Right";
+		$msgArray['mapping'] = "mapping is not proper";
+		$msgArray['missingField'] = "mapping field is missing";
+		$msgArray['isDisplayEnum'] = "is display value is not proper";
 		return $msgArray;
 	}
 }

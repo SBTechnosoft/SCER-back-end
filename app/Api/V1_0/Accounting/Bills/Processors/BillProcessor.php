@@ -113,6 +113,27 @@ class BillProcessor extends BaseProcessor
 					{
 						$encodedClientData = json_decode($clientData);
 						$clientId = $encodedClientData[0]->client_id;
+						//update client data
+						$clientArray = array();
+						$clientArray['clientName']=$tRequest['client_name'];
+						$clientArray['companyName']=$tRequest['company_name'];
+						$clientArray['companyName']=$tRequest['company_name'];
+						$clientArray['workNo']=$tRequest['work_no'];
+						$clientArray['emailId']=$tRequest['email_id'];
+						$clientArray['contactNo']=$tRequest['contact_no'];
+						$clientArray['address1']=$tRequest['address1'];
+						$clientArray['isDisplay']=$tRequest['is_display'];
+						$clientArray['stateAbb']=$tRequest['state_abb'];
+						$clientArray['cityId']=$tRequest['city_id'];
+						$clientController = new ClientController(new Container());
+						$method=$constantArray['postMethod'];
+						$path=$constantArray['clientUrl'].'/'.$clientId;
+						$clientRequest = Request::create($path,$method,$clientArray);
+						$processedData = $clientController->updateData($clientRequest,$clientId);
+						if(strcmp($processedData,$msgArray['200'])!=0)
+						{
+							return $processedData;
+						}
 					}
 					else
 					{
@@ -168,6 +189,31 @@ class BillProcessor extends BaseProcessor
 				{
 					$contactFlag=1;
 					$ledgerId = json_decode($ledgerData)[0]->ledger_id;
+					
+					//update ledger data
+					$ledgerArray=array();
+					$ledgerArray['ledgerName']=$tRequest['client_name'];
+					$ledgerArray['address1']=$tRequest['address1'];
+					$ledgerArray['address2']=$tRequest['address2'];
+					$ledgerArray['contactNo']=$tRequest['contact_no'];
+					$ledgerArray['emailId']=$tRequest['email_id'];
+					$ledgerArray['invoiceNumber']=$tRequest['invoice_number'];
+					$ledgerArray['stateAbb']=$tRequest['state_abb'];
+					$ledgerArray['cityId']=$tRequest['city_id'];
+					$ledgerArray['companyId']=$tRequest['company_id'];
+					$ledgerArray['balanceFlag']=$constantArray['openingBalance'];
+					$ledgerArray['amount']=0;
+					$ledgerArray['amountType']=$constantArray['credit'];
+					$ledgerArray['ledgerGroupId']=$constantArray['ledgerGroupSundryDebitors'];
+					$ledgerController = new LedgerController(new Container());
+					$method=$constantArray['postMethod'];
+					$path=$constantArray['ledgerUrl'].'/'.$ledgerId;
+					$ledgerRequest = Request::create($path,$method,$ledgerArray);
+					$processedData = $ledgerController->update($ledgerRequest,$ledgerId);
+					if(strcmp($processedData,$msgArray['200'])!=0)
+					{
+						return $processedData;
+					}
 				}
 				else
 				{

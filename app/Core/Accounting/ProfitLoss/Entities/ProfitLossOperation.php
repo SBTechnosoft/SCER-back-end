@@ -182,12 +182,12 @@ class ProfitLossOperation extends CompanyService
 		}
 		if($calculatedData['totalDebit']>$calculatedData['totalCredit'])
 		{
-			$differenceDr = number_format($calculatedData['totalDebit']-$calculatedData['totalCredit']);
+			$differenceDr = number_format(($calculatedData['totalDebit']-$calculatedData['totalCredit']),$decodedCompanyData->noOfDecimalPoints);
 			$differenceCr = "-";
 		}
 		else
 		{
-			$differenceCr = number_format($calculatedData['totalCredit']-$calculatedData['totalDebit']);
+			$differenceCr = number_format(($calculatedData['totalCredit']-$calculatedData['totalDebit']),$decodedCompanyData->noOfDecimalPoints);
 			$differenceDr = "-";
 		}
 		
