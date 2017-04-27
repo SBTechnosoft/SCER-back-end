@@ -13,11 +13,12 @@ class ProductCategoryValidate
 	public function validate($request)
 	{
 		$rules = array(
-			'product_category_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 &,\/_`#().\'-]+$/', 
+			'product_category_name'=> 'required|between:1,35|regex:/^[a-zA-Z0-9 &,\/_`#().\'-]+$/', 
 			'product_category_description'=> 'regex:/^[a-zA-Z0-9 &,\/_`#().\'-]+$/'
 		 );
 		$messages = [
 			'product_category_name.between' => 'StringLengthException :Enter the product category name less then 35 character',
+			'product_category_name.required' => 'product category name is required',
 			'product_category_name.regex' => 'product-category-name contains character from "a-zA-Z0-9 &,/_`#().\'-" only',
 			'product_category_description.regex' => 'product-category-description contains character from "a-zA-Z0-9 &,/_`#().\'-" only'
 		];
@@ -42,7 +43,7 @@ class ProductCategoryValidate
 	public function validateUpdateData($keyName,$value,$request)
 	{
 		$validationArray = array(
-			'product_category_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 &,\/_`#().\'-]+$/', 
+			'product_category_name'=> 'required|between:1,35|regex:/^[a-zA-Z0-9 &,\/_`#().\'-]+$/', 
 			'product_category_description'=> 'regex:/^[a-zA-Z0-9 &,\/_`#().\'-]+$/' 
 		);
 		$rules = array();
@@ -61,6 +62,7 @@ class ProductCategoryValidate
 			);
 			$messages = [
 				'product_category_name.between' => 'StringLengthException :Enter the product category name less then 35 character',
+				'product_category_name.required' => 'product category name is required',
 				'product_category_name.regex' => 'product-category-name contains character from "a-zA-Z0-9 &,/_`#().\'-" only',
 				'product_category_description.regex' => 'product-category-description contains character from "a-zA-Z0-9 &,/_`#().\'-" only'
 			];

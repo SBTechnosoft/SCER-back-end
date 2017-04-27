@@ -74,57 +74,93 @@ class ProductGroupModel extends Model
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+			
 		$getProductGrpData = array();
 		$getProductGrpKey = array();
 		$getProductGrpData = func_get_arg(0);
 		$getProductGrpKey = func_get_arg(1);
+		$getErrorArray = func_get_arg(2);
 		$productGrpDetail = "";
-		for($dataArray=0;$dataArray<count($getProductGrpData);$dataArray++)
+		
+		if(count($getProductGrpData)!=0)
 		{
-			$productGrpData="";
-			$keyName = "";
-			for($data=0;$data<count($getProductGrpData[$dataArray]);$data++)
+			for($dataArray=0;$dataArray<count($getProductGrpData);$dataArray++)
 			{
-				if($data == (count($getProductGrpData[$dataArray])-1))
+				
+				$productGrpData="";
+				$keyName = "";
+				for($data=0;$data<count($getProductGrpData[$dataArray]);$data++)
 				{
-					$productGrpData = $productGrpData."'".$getProductGrpData[$dataArray][$data]."'";
-					$keyName =$keyName.$getProductGrpKey[$dataArray][$data];
+					if($data==3)
+					{
+						//replace group-name with parent-group-id
+						$convertedString = preg_replace('/[^A-Za-z0-9]/', '',$getProductGrpData[$dataArray][$data]);
+						//database selection
+						DB::beginTransaction();
+						$groupIdResult = DB::connection($databaseName)->select("SELECT 
+						product_group_id 
+						from product_group_mst 
+						where REGEXP_REPLACE(product_group_name,'[^a-zA-Z0-9]','')='".$convertedString."' and 
+						deleted_at='0000-00-00 00:00:00'");
+						DB::commit();
+						if(count($groupIdResult)==0)
+						{
+							$getProductGrpData[$dataArray][$data]="";
+						}
+						else
+						{
+							$getProductGrpData[$dataArray][$data] = $groupIdResult[0]->product_group_id;
+						}
+					}
+					if($data == (count($getProductGrpData[$dataArray])-1))
+					{
+						$productGrpData = $productGrpData."'".$getProductGrpData[$dataArray][$data]."'";
+						$keyName =$keyName.$getProductGrpKey[$dataArray][$data];
+					}
+					else
+					{
+						$productGrpData = $productGrpData."'".$getProductGrpData[$dataArray][$data]."',";
+						$keyName =$keyName.$getProductGrpKey[$dataArray][$data].",";
+					}
+				}
+				//database insertion
+				DB::beginTransaction();
+				$groupInsertionResult = DB::connection($databaseName)->statement("insert into product_group_mst(".$keyName.") 
+				values(".$productGrpData.")");
+				DB::commit();
+				if($groupInsertionResult!=1)
+				{
+					return $exceptionArray['500'];
+				}
+			}
+			if($groupInsertionResult==1)
+			{
+				if(count($getErrorArray)==0)
+				{
+					return $exceptionArray['200'];
 				}
 				else
 				{
-					$productGrpData = $productGrpData."'".$getProductGrpData[$dataArray][$data]."',";
-					$keyName =$keyName.$getProductGrpKey[$dataArray][$data].",";
+					return json_encode($getErrorArray);
 				}
 			}
-			$finalProductData = "(".$productGrpData.")";
-			$keyName = $keyName;
-			if($dataArray==count($getProductGrpData)-1)
-			{
-				$productGrpDetail = $productGrpDetail.$finalProductData;
-			}
-			else
-			{
-				$productGrpDetail = $productGrpDetail.$finalProductData.",";
-			}
-		}
-		
-		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into product_group_mst(".$keyName.") 
-		values".$productGrpDetail);
-		DB::commit();
-		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
-		if($raw==1)
-		{
-			return $exceptionArray['200'];
 		}
 		else
 		{
-			return $exceptionArray['500'];
+			if(count($getErrorArray)==0)
+			{
+				return $exceptionArray['500'];
+			}
+			else
+			{
+				return json_encode($getErrorArray);
+			}
 		}
 	}
+
 	/**
 	 * update data 
 	 * @param state_abb,state_nameand is_display
@@ -234,6 +270,39 @@ class ProductGroupModel extends Model
 		{
 			$enocodedData = json_encode($raw,true); 	
 			return $enocodedData;
+		}
+	}
+	
+	/**
+	 * get data as per given product-Group-Name
+	 * @param $productGroupName
+	 * returns the error-message/groupId
+	*/
+	public function getGroupId($productGroupName)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();
+		$groupIdResult = DB::connection($databaseName)->select("SELECT 
+		product_group_id 
+		from product_group_mst 
+		where REGEXP_REPLACE(product_group_name,'[^a-zA-Z0-9]','')='".$productGroupName."' and 
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(count($groupIdResult)==0)
+		{
+			return $exceptionArray['204'];
+		}
+		else
+		{
+			return json_encode($groupIdResult);
 		}
 	}
 	

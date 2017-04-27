@@ -121,7 +121,6 @@ class ProductGroupProcessor extends BaseProcessor
 	{	
 		$this->request = $request;	
 		$tKeyValue = array();
-		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$msgArray = $exception->messageArrays();
@@ -134,16 +133,15 @@ class ProductGroupProcessor extends BaseProcessor
 		{
 			//trim an input 
 			$productGroupTransformer = new ProductGroupTransformer();
-			$tRequestData = $productGroupTransformer->trimInsertBatchData($this->request);
-			
-			if($tRequestData==1)
+			$trimData = $productGroupTransformer->trimInsertBatchData($this->request);
+			if(is_array($trimData))
 			{
-				return $msgArray['content'];
-			}	
-			else
-			{
+				$tRequestData = $trimData['dataArray'];
+				$totalErrorArray = count($trimData['errorArray']);
+				$countRequestedData = count($tRequestData);
+				
 				$newProductArray = array();
-				for($dataArray=0;$dataArray<count($tRequestData);$dataArray++)
+				for($dataArray=0;$dataArray<$countRequestedData;$dataArray++)
 				{
 					$productGroupValue = array();
 					$keyName = array();
@@ -197,11 +195,30 @@ class ProductGroupProcessor extends BaseProcessor
 					}
 					else
 					{
-						return $status;
+						$decodedArrayStatus = json_decode($status);
+						//convert object to array
+						$decodedArray = (array)$decodedArrayStatus[0];
+		
+						$trimData['errorArray'][$totalErrorArray]['productGroupName'] = $trimData['dataArray'][$dataArray]['product_group_name'];
+						$trimData['errorArray'][$totalErrorArray]['productGroupDescription'] = $trimData['dataArray'][$dataArray]['product_group_description'];
+						$trimData['errorArray'][$totalErrorArray]['isDisplay'] = $trimData['dataArray'][$dataArray]['is_display'];
+						$trimData['errorArray'][$totalErrorArray]['productGroupParentId'] = $trimData['dataArray'][$dataArray]['product_group_parent_id'];
+						$trimData['errorArray'][$totalErrorArray]['remark'] = $decodedArray[array_keys($decodedArray)[0]];
+						$totalErrorArray++;
 					}
 				}
-				return $newProductArray;
+				unset($trimData['dataArray']);
+				$trimData['dataArray'] = $newProductArray;
+				return $trimData;
 			}
+			else
+			{
+				$errorResult = array();
+				$errorResult['mapping_error'] = $trimData;
+				$encodeResult = json_encode($errorResult);
+				return $encodeResult;
+			}
+		
 		}
 	}
 	

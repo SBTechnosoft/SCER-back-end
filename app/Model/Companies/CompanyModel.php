@@ -652,6 +652,39 @@ class CompanyModel extends Model
 		}
 	}
 	
+	/**
+	 * get data as per given Comapany-Name
+	 * @param $companyName
+	 * returns the error-message/companyId
+	*/
+	public function getCompanyId($companyName)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();
+		$companyIdResult = DB::connection($databaseName)->select("SELECT 
+		company_id 
+		from company_mst 
+		where REGEXP_REPLACE(company_name,'[^a-zA-Z0-9]','')='".$companyName."' and 
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(count($companyIdResult)==0)
+		{
+			return $exceptionArray['204'];
+		}
+		else
+		{
+			return json_encode($companyIdResult);
+		}
+	}
+	
 	//delete
 	public function deleteData($companyId)
 	{

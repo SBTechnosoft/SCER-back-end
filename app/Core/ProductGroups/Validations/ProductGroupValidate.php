@@ -13,11 +13,12 @@ class ProductGroupValidate
 	public function validate($request)
 	{
 		$rules = array(
-			'product_group_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 &,\/_`#().\'-]+$/', 
+			'product_group_name'=> 'required|between:1,35|regex:/^[a-zA-Z0-9 &,\/_`#().\'-]+$/', 
 			'product_group_description'=> 'regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/'
 		);
 		$messages = [
 			'product_group_name.between' => 'StringLengthException :Enter the product group name less then 35 character',
+			'product_group_name.required' => 'product group name is required',
 			'product_group_name.regex' => 'product-group-name contains character from "a-zA-Z0-9 &,\/_`#().\'-" only',
 			'product_group_description.regex' => 'product-group-description contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only'
 		];
@@ -42,7 +43,7 @@ class ProductGroupValidate
 	public function validateUpdateData($keyName,$value,$request)
 	{
 		$validationArray = array(
-			'product_group_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 &,\/_`#().\'-]+$/', 
+			'product_group_name'=> 'required|between:1,35|regex:/^[a-zA-Z0-9 &,\/_`#().\'-]+$/', 
 			'product_group_description'=> 'regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/' 
 		);
 		$rules = array();
@@ -61,6 +62,7 @@ class ProductGroupValidate
 			);
 			$messages = [
 				'product_group_name.between' => 'StringLengthException :Enter the product group name less then 35 character',
+				'product_group_name.required' => 'product group name is required',
 				'product_group_name.regex' => 'product-group-name contains character from "a-zA-Z0-9 &,\/_`#().\'-" only',
 				'product_group_description.regex' => 'product-group-description contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only'
 			];

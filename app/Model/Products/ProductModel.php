@@ -160,66 +160,144 @@ class ProductModel extends Model
 		
 		$mytime = Carbon\Carbon::now();
 		$getProductData = array();
+		$getErrorArray = array();
 		$getproductKey = array();
 		$getProductData = func_get_arg(0);
 		$getProductKey = func_get_arg(1);
+		$getErrorArray = func_get_arg(2);
 		$productCode = array();
+		$getErrorCount = count($getErrorArray);
 		for($dataArray=0;$dataArray<count($getProductData);$dataArray++)
 		{
-			$productData="";
-			$keyName = "";
-			for($data=0;$data<count($getProductData[$dataArray]);$data++)
+			$dataFlag=0;
+			if($dataArray!=0)
 			{
-				if(strcmp('product_code',$getProductKey[$dataArray][$data])==0)
+				if(strcmp($getProductData[$dataArray-1][20],$getProductData[$dataArray][20])==0)
 				{
-					$productCode[$dataArray] = $getProductData[$dataArray][$data];
-				}
-				if($data == (count($getProductData[$dataArray])-1))
-				{
-					$productData = $productData."'".$getProductData[$dataArray][$data]."'";
-					$keyName =$keyName.$getProductKey[$dataArray][$data];
+					$getErrorArray[$getErrorCount] = array();
+					$getErrorArray[$getErrorCount]['productName'] = $getProductData[$dataArray][0];
+					$getErrorArray[$getErrorCount]['measurementUnit'] = $getProductData[$dataArray][1];
+					$getErrorArray[$getErrorCount]['color'] = $getProductData[$dataArray][2];
+					$getErrorArray[$getErrorCount]['size'] = $getProductData[$dataArray][3];
+					$getErrorArray[$getErrorCount]['isDisplay'] = $getProductData[$dataArray][4];
+					$getErrorArray[$getErrorCount]['purchasePrice'] = $getProductData[$dataArray][5];
+					$getErrorArray[$getErrorCount]['wholesaleMargin'] = $getProductData[$dataArray][6];
+					$getErrorArray[$getErrorCount]['wholesaleMarginFlat'] = $getProductData[$dataArray][7];
+					$getErrorArray[$getErrorCount]['semiWholesaleMargin'] = $getProductData[$dataArray][8];
+					$getErrorArray[$getErrorCount]['vat'] = $getProductData[$dataArray][9];
+					$getErrorArray[$getErrorCount]['mrp'] = $getProductData[$dataArray][10];
+					$getErrorArray[$getErrorCount]['margin'] = $getProductData[$dataArray][11];
+					$getErrorArray[$getErrorCount]['marginFlat'] = $getProductData[$dataArray][12];
+					$getErrorArray[$getErrorCount]['productDescription'] = $getProductData[$dataArray][13];
+					$getErrorArray[$getErrorCount]['additionalTax'] = $getProductData[$dataArray][14];
+					$getErrorArray[$getErrorCount]['minimumStockLevel'] = $getProductData[$dataArray][15];
+					$getErrorArray[$getErrorCount]['companyId'] = $getProductData[$dataArray][16];
+					$getErrorArray[$getErrorCount]['productCategoryId'] = $getProductData[$dataArray][17];
+					$getErrorArray[$getErrorCount]['productGroupId'] = $getProductData[$dataArray][18];
+					$getErrorArray[$getErrorCount]['branchId'] = $getProductData[$dataArray][19]; 
+					$getErrorArray[$getErrorCount]['remark'] = $exceptionArray['invalidProductCode']; 
+					$getErrorCount++;
 				}
 				else
 				{
-					$productData = $productData."'".$getProductData[$dataArray][$data]."',";
-					$keyName = $keyName.$getProductKey[$dataArray][$data].",";
+					$dataFlag=1;
 				}
-			}
-			//make unique name of barcode svg image
-			$dateTime = date("d-m-Y h-i-s");
-			$convertedDateTime = str_replace(" ","-",$dateTime);
-			$splitDateTime = explode("-",$convertedDateTime);
-			$combineDateTime = $splitDateTime[0].$splitDateTime[1].$dataArray.$splitDateTime[2].$splitDateTime[3].$data.$splitDateTime[4].$splitDateTime[5];
-			$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".svg";
-			$documentPath = $path.$documentName;
-			
-			//insert barcode image
-			$barcodeobj = new TCPDFBarcode($productCode[$dataArray], 'C128','C');
-			file_put_contents($documentPath,$barcodeobj->getBarcodeSVGcode($width ,$height, 'black'));
-			
-			$finalProductData = "(".$productData.",'".$documentName."','svg')";
-			$keyName = $keyName.",document_name,document_format";
-			if($dataArray==count($getProductData)-1)
-			{
-				$productDetail = $productDetail.$finalProductData;
 			}
 			else
 			{
-				$productDetail = $productDetail.$finalProductData.",";
+				$dataFlag=1;
+			}
+			if($dataFlag==1)
+			{
+				$productData="";
+				$keyName = "";
+				for($data=0;$data<count($getProductData[$dataArray]);$data++)
+				{
+					if(strcmp('product_code',$getProductKey[$dataArray][$data])==0)
+					{
+						$productCode[$dataArray] = $getProductData[$dataArray][$data];
+					}
+					if($data == (count($getProductData[$dataArray])-1))
+					{
+						$productData = $productData."'".$getProductData[$dataArray][$data]."'";
+						$keyName =$keyName.$getProductKey[$dataArray][$data];
+					}
+					else
+					{
+						$productData = $productData."'".$getProductData[$dataArray][$data]."',";
+						$keyName = $keyName.$getProductKey[$dataArray][$data].",";
+					}
+				}
+				//make unique name of barcode svg image
+				$dateTime = date("d-m-Y h-i-s");
+				$convertedDateTime = str_replace(" ","-",$dateTime);
+				$splitDateTime = explode("-",$convertedDateTime);
+				$combineDateTime = $splitDateTime[0].$splitDateTime[1].$dataArray.$splitDateTime[2].$splitDateTime[3].$data.$splitDateTime[4].$splitDateTime[5];
+				$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".svg";
+				$documentPath = $path.$documentName;
+				
+				//insert barcode image
+				$barcodeobj = new TCPDFBarcode($productCode[$dataArray], 'C128','C');
+				file_put_contents($documentPath,$barcodeobj->getBarcodeSVGcode($width ,$height, 'black'));
+				
+				$finalProductData = "(".$productData.",'".$documentName."','svg')";
+				$keyName = $keyName.",document_name,document_format";
+				if($dataArray==count($getProductData)-1)
+				{
+					$productDetail = $productDetail.$finalProductData;
+				}
+				else
+				{
+					$productDetail = $productDetail.$finalProductData.",";
+				}
 			}
 		}
-		//insert batch of product data	
-		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into product_mst(".$keyName.") 
-		values".$productDetail);
-		DB::commit();
-		if($raw==1)
+		$lastCharacter = substr($productDetail, -1);
+		if(strcmp($lastCharacter,',')==0)
 		{
-			return $exceptionArray['200'];
+			$productDetail = substr_replace($productDetail,"",-1);
+		}
+		if(count($getProductData)!=0)
+		{
+			//insert batch of product data	
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->statement("insert into product_mst(".$keyName.") 
+			values".$productDetail);
+			
+			DB::commit();
+			if($raw==1)
+			{
+				if(count($getErrorArray)==0)
+				{
+					return $exceptionArray['200'];
+				}
+				else
+				{
+					return json_encode($getErrorArray);
+				}
+			}
+			else
+			{
+				if(count($getErrorArray)==0)
+				{
+					return $exceptionArray['500'];
+				}
+				else
+				{
+					return json_encode($getErrorArray);
+				}
+			}
 		}
 		else
 		{
-			return $exceptionArray['500'];
+			if(count($getErrorArray)==0)
+			{
+				return $exceptionArray['500'];
+			}
+			else
+			{
+				return json_encode($getErrorArray);
+			}
 		}
 	}
 	

@@ -245,7 +245,7 @@ include ('connection.php');
 				// $scope.formAdata.product_group_id='1';
 				// $scope.formAdata.company_id='1';
 				// $scope.formAdata.branch_id='1';
-				
+			
 				// formdata.append('productName',$scope.formAdata.product_name);
 				// formdata.append('isDisplay',$scope.formAdata.is_display);
 				// formdata.append('measurementUnit',$scope.formAdata.measurement_unit);
@@ -459,81 +459,84 @@ include ('connection.php');
 				// formdata.append('productGroupId',$scope.formAdata.product_group_id);
 				// formdata.append('companyId',$scope.formAdata.company_id);
 				// formdata.append('branchId',$scope.formAdata.branch_id);
-				
+	//----------------------------------Batch Insertion-----------------------------------------------------------------			
 				//multiple inventory insertion
-				 // $scope.inventory=[{"productName":"Rangerdd" ,"isDisplay":'no',"productCategoryId":'1',"measurementUnit":'piece',
-				 // "size":44,'color':'ddd','purchasePrice':1200,'wholesaleMargin':12,'wholesaleMarginFlat':10,'semiWholesaleMargin':5,
-				 // 'vat':5,'mrp':5000,'margin':5,'marginFlat':5,'productDescription':'desc','additionalTax':5,'minimumStockLevel':5,
-				 // 'productGroupId':1,'companyId':9,'branchId':9},{"productName":"RangerDTBgg" ,"isDisplay":'no',"productCategoryId":'1',"measurementUnit":'piece',
-				 // "size":44,'color':'ccc','purchasePrice':1200,'wholesaleMargin':12,'wholesaleMarginFlat':10,'semiWholesaleMargin':5,
-				 // 'vat':5,'mrp':5000,'margin':5,'marginFlat':5,'productDescription':'desc','additionalTax':5,'minimumStockLevel':5,
-				 // 'productGroupId':1,'companyId':9,'branchId':9}]
-				// for(var i=0;i<$scope.inventory.length;i++)
-				// {
-					// angular.forEach($scope.inventory[i], function (input,key) {
-						// formdata.append(+i+'['+key+']',input);
-						
-					// });
-				// }
-				//productGroup
-				// $scope.formAdata.product_group_name = "a&b";
-				// $scope.formAdata.product_group_desc = "abcdddd";
-				// $scope.formAdata.is_display = 'yes ';
-				// $scope.formAdata.product_group_parent_id = 0;
-				
-				// formdata.append('productGroupName',$scope.formAdata.product_group_name);
-				// formdata.append('productGroupDescription',$scope.formAdata.product_group_desc);
-				// formdata.append('isDisplay',$scope.formAdata.is_display);
-				// formdata.append('productGroupParentId',$scope.formAdata.product_group_parent_id);
-				
-				//multiple product-group insertion
-				 // $scope.inventory=[{"productGroupName":"Raerddd" ,"isDisplay":'no',"productGroupDescription":'1',
-				 // "productGroupParentId":'piece'},{"productGroupName":"Ranged" ,"isDisplay":'no',"productGroupDescription":'1',
-				 // "productGroupParentId":'piece'}]
-				// for(var i=0;i<$scope.inventory.length;i++)
-				// {
-					// angular.forEach($scope.inventory[i], function (input,key) {
-						// formdata.append(+i+'['+key+']',input);
-						
-					// });
-				// }
-				
-				//multiple product-category insertion
-				 $scope.inventory=[{"productCategoryDescription":"Ranger@ddd" ,"isDisplay":'no',"productCategoryName":'asd',
-				 "productParentCategoryId":'1'},{"productCategoryDescription":"Rangerdood" ,"isDisplay":'no1',"productCategoryName":'sds',
-				 "productParentCategoryId":'1'},{"productCategoryDescription":"Rangerddood" ,"isDisplay":'no',"productCategoryName":'dsa',
-				 "productParentCategoryId":'1'},{"productCategoryDescription":"Rangerdsod" ,"isDisplay":'no',"productCategoryName":'dsa',
-				 "productParentCategoryId":'1'}]
-				 //multiple product-category insertion
-				 $scope.inventory1=['productCategoryDescription','isDisplay','productCategoryName','productParentCategoryId']
-				
+				 $scope.inventory=[{"isDisplay":'no',"productName":"Rangerddcd" ,"measurementUnit":'piece',"productCategoryId":'brand1',
+				 "size":45,'color':'red','purchasePrice':1200,'wholesaleMargin':12,'wholesaleMarginFlat':10,'semiWholesaleMargin':5,
+				 'vat':5,'mrp':2000,'margin':5,'marginFlat':5,'productDescription':'desc','additionalTax':5,'minimumStockLevel':5,
+				 'productGroupId':'category1','companyId':'Test','branchId':'MainBranch'},{"isDisplay":'no',"productName":"Rangerddcd",
+				 "measurementUnit":'piece',"productCategoryId":'brand1',
+				 "size":45,'color':'red','purchasePrice':1200,'wholesaleMargin':12,'wholesaleMarginFlat':10,'semiWholesaleMargin':5,
+				 'vat':5,'mrp':100,'margin':5,'marginFlat':10,'productDescription':'desc','additionalTax':5,'minimumStockLevel':5,
+				 'productGroupId':'category1','companyId':'Test','branchId':'MainBranch'}];
+				 
+				 $scope.inventory1=['isDisplay','productName','measurementUnit','productCategoryId','size','color','purchasePrice','wholesaleMargin',
+				 'wholesaleMarginFlat','semiWholesaleMargin','vat','mrp','margin','marginFlat',
+				 'productDescription','additionalTax','minimumStockLevel','productGroupId','companyId','branchId'];
 				for(var i=0;i<$scope.inventory.length;i++)
 				{
 					var j = 0;
 					angular.forEach($scope.inventory[i], function (input,key) {
-						
 						formdata.append("data["+i+"]["+j+"]",input);
 						j++;
-						
 					});
 				}
 				for(var i=0;i<$scope.inventory1.length;i++)
 				{
 					formdata.append("mapping["+i+"]",$scope.inventory1[i]);
 				}
+				//multiple product-group insertion
+				 // $scope.inventory=[{"productGroupName":"Raehyhrddd" ,"isDisplay":'no',"productGroupDescription":'vcx',
+				 // "productGroupParentId":'sd'},{"productGroupName":"Rangertd" ,"isDisplay":'no',"productGroupDescription":'dsf',
+				 // "productGroupParentId":'VCX'},{"productGroupName":"Ranfged" ,"isDisplay":'no',"productGroupDescription":'sd',
+				 // "productGroupParentId":'d/sf'},{"productGroupName":"Rangtged" ,"isDisplay":'no',"productGroupDescription":'dsf',
+				 // "productGroupParentId":'Raehyhrddd'}]
+				 //multiple product-group insertion
+				 // $scope.inventory1=['productGroupDescription','isDisplay','productGroupName','productGroupParentId']
+				// for(var i=0;i<$scope.inventory.length;i++)
+				// {
+					// var j = 0;
+					// angular.forEach($scope.inventory[i], function (input,key) {
+						// formdata.append("data["+i+"]["+j+"]",input);
+						// j++;
+					// });
+				// }
+				// for(var i=0;i<$scope.inventory1.length;i++)
+				// {
+					// formdata.append("mapping["+i+"]",$scope.inventory1[i]);
+				// }
+				//multiple product-category insertion
+				 // $scope.inventory=[{"productCategoryDescription":"Rangerddd" ,"isDisplay":'no',"productCategoryName":'asd',
+				 // "productParentCategoryId":'ds-a'},{"productCategoryDescription":"Rangerdood" ,"isDisplay":'no',"productCategoryName":'sds',
+				 // "productParentCategoryId":'Rangerddood'},{"productCategoryDescription":"Rangerddood" ,"isDisplay":'no',"productCategoryName":'dsa',
+				 // "productParentCategoryId":'sdss'},{"productCategoryDescription":"Rangerdsod" ,"isDisplay":'no',"productCategoryName":'dsa',
+				 // "productParentCategoryId":' 	abce'}]
+				 //multiple product-category insertion
+				 // $scope.inventory1=['productCategoryDescription','isDisplay','productCategoryName','productParentCategoryId']
 				
-				// console.log(formdata);
-				// special journal
-				// $scope.user = [{"jfId":100,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":35},{"amount":2,"amountType":"credit","ledgerId":35},{"amount":12,"amountType":"debit","ledgerId":35}],"entryDate":"22-10-2015","companyId":83}];
-				// formdata.append('jfId','100');
- 				// formdata.append('companyId',83);
+				// for(var i=0;i<$scope.inventory.length;i++)
+				// {
+					// var j = 0;
+					// angular.forEach($scope.inventory[i], function (input,key) {
+						
+						// formdata.append("data["+i+"]["+j+"]",input);
+						// j++;
+						
+					// });
+				// }
+				// for(var i=0;i<$scope.inventory1.length;i++)
+				// {
+					// formdata.append("mapping["+i+"]",$scope.inventory1[i]);
+				// }
+	
+//----------------------------------	Authenticate--------------------------------------------------------------------
 				
 				//Authenticate
 				// $scope.formAdata.email_id = "superadmin@gmail.com";
 				// $scope.formAdata.password = "n4!sJdq0@Adv";
 				// formdata.append('emailId',$scope.formAdata.email_id);
 				// formdata.append('password',$scope.formAdata.password);
-				
+//----------------------------journal insert-update	--------------------------------------------------------------------
 				// special journal
 				// $scope.user = [{"jfId":100,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":35},{"amount":2,"amountType":"credit","ledgerId":35},{"amount":12,"amountType":"debit","ledgerId":35}],"entryDate":"22-10-2015","companyId":83}];
 				// formdata.append('jfId','100');
@@ -639,7 +642,7 @@ include ('connection.php');
 					// });
 				// }
 				
-				
+//--------------------------------------------------OVER---------------------------------------------------------------------
 				
 				// var userId=9;
 				// var clientId=2;
@@ -664,8 +667,8 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/settings";
 				
 				// var url="http://www.scerp1.com/product-groups/batch";
-				var url="http://www.scerp1.com/product-categories/batch";
-				// var url="http://www.scerp1.com/products/batch";
+				// var url="http://www.scerp1.com/product-categories/batch";
+				var url="http://www.scerp1.com/products/batch";
 				
 				// var url="http://www.scerp1.com/accounting/taxation/purchase-detail";  //purchase
 				// var url="http://www.scerp1.com/accounting/taxation/purchase-tax";  //purchase tax

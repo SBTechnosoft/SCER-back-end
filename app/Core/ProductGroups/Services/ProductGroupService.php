@@ -72,8 +72,9 @@ class ProductGroupService extends AbstractService
 	{
 		$getArrayData = array();
 		$keyArrayData = array();
-		$productGroupArray = array();
-		$productGroupArray = func_get_arg(0);
+		$productGroupArrayResult = array();
+		$productGroupArrayResult = func_get_arg(0);
+		$productGroupArray = $productGroupArrayResult['dataArray'];
 		for($arrayData=0;$arrayData<count($productGroupArray);$arrayData++)
 		{
 			$funcName = array();
@@ -90,7 +91,7 @@ class ProductGroupService extends AbstractService
 		}
 		//data pass to the model object for insert
 		$productGrpModel = new ProductGroupModel();
-		$status = $productGrpModel->insertBatchData($getArrayData,$keyArrayData);
+		$status = $productGrpModel->insertBatchData($getArrayData,$keyArrayData,$productGroupArrayResult['errorArray']);
 		return $status;
 	}
 	

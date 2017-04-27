@@ -74,57 +74,88 @@ class ProductCategoryModel extends Model
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+			
 		$getProductCatData = array();
 		$getProductCatKey = array();
 		$getProductCatData = func_get_arg(0);
 		$getProductCatKey = func_get_arg(1);
 		$getErrorArray = func_get_arg(2);
 		$productCatDetail = "";
-		
-		for($dataArray=0;$dataArray<count($getProductCatData);$dataArray++)
+		if(count($getProductCatData)!=0)
 		{
-			$productCatData="";
-			$keyName = "";
-			for($data=0;$data<count($getProductCatData[$dataArray]);$data++)
+			for($dataArray=0;$dataArray<count($getProductCatData);$dataArray++)
 			{
-				if($data == (count($getProductCatData[$dataArray])-1))
+				$productCatData="";
+				$keyName = "";
+				for($data=0;$data<count($getProductCatData[$dataArray]);$data++)
 				{
-					$productCatData = $productCatData."'".$getProductCatData[$dataArray][$data]."'";
-					$keyName =$keyName.$getProductCatKey[$dataArray][$data];
+					if($data==3)
+					{
+						//replace group-name with parent-group-id
+						$convertedString = preg_replace('/[^A-Za-z0-9]/', '',$getProductCatData[$dataArray][$data]);
+						//database selection
+						DB::beginTransaction();
+						$categoryIdResult = DB::connection($databaseName)->select("SELECT 
+						product_category_id 
+						from product_category_mst 
+						where REGEXP_REPLACE(product_category_name,'[^a-zA-Z0-9]','')='".$convertedString."' and 
+						deleted_at='0000-00-00 00:00:00'");
+						DB::commit();
+						if(count($categoryIdResult)==0)
+						{
+							$getProductCatData[$dataArray][$data]="";
+						}
+						else
+						{
+							$getProductCatData[$dataArray][$data] = $categoryIdResult[0]->product_category_id;
+						}
+					}
+					if($data == (count($getProductCatData[$dataArray])-1))
+					{
+						$productCatData = $productCatData."'".$getProductCatData[$dataArray][$data]."'";
+						$keyName =$keyName.$getProductCatKey[$dataArray][$data];
+					}
+					else
+					{
+						$productCatData = $productCatData."'".$getProductCatData[$dataArray][$data]."',";
+						$keyName =$keyName.$getProductCatKey[$dataArray][$data].",";
+					}
+				}
+				//database insertion
+				DB::beginTransaction();
+				$categoryInsertionResult = DB::connection($databaseName)->statement("insert into product_category_mst(".$keyName.") 
+				values(".$productCatData.")");
+				DB::commit();
+				if($categoryInsertionResult!=1)
+				{
+					return $exceptionArray['500'];
+				}
+			}
+			if($categoryInsertionResult==1)
+			{
+				if(count($getErrorArray)==0)
+				{
+					return $exceptionArray['200'];
 				}
 				else
 				{
-					$productCatData = $productCatData."'".$getProductCatData[$dataArray][$data]."',";
-					$keyName =$keyName.$getProductCatKey[$dataArray][$data].",";
+					return json_encode($getErrorArray);
 				}
 			}
-			
-			$finalProductData = "(".$productCatData.")";
-			$keyName = $keyName;
-			if($dataArray==count($getProductCatData)-1)
-			{
-				$productCatDetail = $productCatDetail.$finalProductData;
-			}
-			else
-			{
-				$productCatDetail = $productCatDetail.$finalProductData.",";
-			}
-		}
-		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into product_category_mst(".$keyName.") 
-		values".$productCatDetail);
-		DB::commit();
-		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
-		if($raw==1)
-		{
-			return json_encode($getErrorArray);
 		}
 		else
 		{
-			return $exceptionArray['500'];
+			if(count($getErrorArray)==0)
+			{
+				return $exceptionArray['500'];
+			}
+			else
+			{
+				return json_encode($getErrorArray);
+			}
 		}
 	}
 	/**
@@ -237,6 +268,39 @@ class ProductCategoryModel extends Model
 		{
 			$enocodedData = json_encode($raw,true); 	
 			return $enocodedData;
+		}
+	}
+	
+	/**
+	 * get data as per given product-Category-Name
+	 * @param $productCategoryName
+	 * returns the error-message/categoryId
+	*/
+	public function getCategoryId($convertedCategoryName)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();
+		$categoryIdResult = DB::connection($databaseName)->select("SELECT 
+		product_category_id 
+		from product_category_mst 
+		where REGEXP_REPLACE(product_category_name,'[^a-zA-Z0-9]','')='".$convertedCategoryName."' and 
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(count($categoryIdResult)==0)
+		{
+			return $exceptionArray['204'];
+		}
+		else
+		{
+			return json_encode($categoryIdResult);
 		}
 	}
 	

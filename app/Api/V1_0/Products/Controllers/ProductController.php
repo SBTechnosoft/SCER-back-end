@@ -119,11 +119,7 @@ class ProductController extends BaseController implements ContainerInterface
 				$productService= new ProductService();					
 				$productPersistable = $processor->createPersistableBatchData($this->request);
 				
-				if($productPersistable[0][0]=='[')
-				{
-					return $productPersistable;
-				}
-				else if(is_array($productPersistable))
+				if(is_array($productPersistable))
 				{
 					$status = $productService->insertBatchData($productPersistable);
 					return $status;

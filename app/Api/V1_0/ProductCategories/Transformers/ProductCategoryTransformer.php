@@ -125,11 +125,11 @@ class ProductCategoryTransformer extends ExceptionMessage
 				if($isDisplayFlag==2)
 				{
 					$errorArray[$errorIndex] = array();
-					$errorArray[$errorIndex][0] = $tProductCatName;
-					$errorArray[$errorIndex][1] = $tProductCatDesc;
-					$errorArray[$errorIndex][2] = $tIsDisplay;
-					$errorArray[$errorIndex][3] = $tProductParentCatId;
-					$errorArray[$errorIndex][4] = $exceptionArray['isDisplayEnum'];
+					$errorArray[$errorIndex]['productCategoryName'] = $tProductCatName;
+					$errorArray[$errorIndex]['productCategoryDescription'] = $tProductCatDesc;
+					$errorArray[$errorIndex]['isDisplay'] = $tIsDisplay;
+					$errorArray[$errorIndex]['productParentCategoryId'] = $tProductParentCatId;
+					$errorArray[$errorIndex]['remark'] = $exceptionArray['isDisplayEnum'];
 					$errorIndex++;
 				}
 				else

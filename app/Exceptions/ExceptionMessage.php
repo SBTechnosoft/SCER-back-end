@@ -28,6 +28,12 @@ class ExceptionMessage
 		$msgArray['mapping'] = "mapping is not proper";
 		$msgArray['missingField'] = "mapping field is missing";
 		$msgArray['isDisplayEnum'] = "is display value is not proper";
+		$msgArray['measurementUnitEnum'] = "measurement value is not proper";
+		$msgArray['invalidProductCode'] = "Enter Diffrenet product-name/color/size";
+		$msgArray['invalidCategoryName'] = "Brand-Name is invalid";
+		$msgArray['invalidGroupName'] = "Category-Name is invalid";
+		$msgArray['invalidBranchName'] = "Branch-Name is invalid";
+		$msgArray['invalidCompanyName'] = "Company-Name is invalid";
 		return $msgArray;
 	}
 }

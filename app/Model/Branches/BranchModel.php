@@ -251,6 +251,38 @@ class BranchModel extends Model
 		}
 	}
 	
+	/**
+	 * get data as per given branch-name
+	 * returns the error-message/branchId
+	*/
+	public function getBranchId($convertedBranchName)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();
+		$branchIdResult = DB::connection($databaseName)->select("SELECT 
+		branch_id 
+		from branch_mst 
+		where REGEXP_REPLACE(branch_name,'[^a-zA-Z0-9]','')='".$convertedBranchName."' and 
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(count($branchIdResult)==0)
+		{
+			return $exceptionArray['204'];
+		}
+		else
+		{
+			return json_encode($branchIdResult);
+		}
+	}
+	
 	//delete
 	public function deleteData($branchId)
 	{

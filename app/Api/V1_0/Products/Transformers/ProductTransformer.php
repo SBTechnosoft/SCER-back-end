@@ -9,10 +9,15 @@ use ERP\Core\Products\Entities\EnumClasses\DiscountTypeEnum;
 use ERP\Entities\EnumClasses\IsDisplayEnum;
 use ERP\Core\Products\Entities\EnumClasses\measurementUnitEnum;
 use ERP\Entities\Constants\ConstantClass;
+use stdClass;
+use ERP\Model\ProductCategories\ProductCategoryModel;
+use ERP\Model\ProductGroups\ProductGroupModel;
+use ERP\Model\Branches\BranchModel;
+use ERP\Model\Companies\CompanyModel;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class ProductTransformer
+class ProductTransformer extends ExceptionMessage
 {
     /**
      * @param Request $request
@@ -146,105 +151,323 @@ class ProductTransformer
      */
     public function trimInsertBatchData(Request $request)
     {
-		$inputRequestData = $request->input();
-		for($arrayData=0;$arrayData<count($inputRequestData);$arrayData++)
+		$transformerClass = new ProductTransformer();
+		$exceptionArray = $transformerClass->messageArrays();
+		//data mapping
+		$mappingResult = $this->mappingData($request->input());
+		if(is_array($mappingResult))
 		{
-			$isDisplayFlag=0;
-			$measurementUnitFlag=0;
-			//trim an input
-			$tProductName = trim($inputRequestData[$arrayData]['productName']);
-			$tMeasUnit = trim($inputRequestData[$arrayData]['measurementUnit']);
-			$tColor = trim($inputRequestData[$arrayData]['color']);
-			$tSize = trim($inputRequestData[$arrayData]['size']);
-			$tIsDisplay = trim($inputRequestData[$arrayData]['isDisplay']);
-			$tPurchasePrice = trim($inputRequestData[$arrayData]['purchasePrice']);
-			$tWholeSaleMargin = trim($inputRequestData[$arrayData]['wholesaleMargin']);
-			$tWholeSaleMarginFlat = trim($inputRequestData[$arrayData]['wholesaleMarginFlat']);
-			$tSemiWholeSaleMargin = trim($inputRequestData[$arrayData]['semiWholesaleMargin']);
-			$tVat = trim($inputRequestData[$arrayData]['vat']);
-			$tMrp = trim($inputRequestData[$arrayData]['mrp']);
-			$tMargin = trim($inputRequestData[$arrayData]['margin']);
-			$tMarginFlat = trim($inputRequestData[$arrayData]['marginFlat']);
-			$tProductDescription = trim($inputRequestData[$arrayData]['productDescription']);
-			$tAdditionalTax = trim($inputRequestData[$arrayData]['additionalTax']);
-			$tMinimumStockLevel = trim($inputRequestData[$arrayData]['minimumStockLevel']);
-			$tCompanyId = trim($inputRequestData[$arrayData]['companyId']);
-			$tProductCatId = trim($inputRequestData[$arrayData]['productCategoryId']);
-			$tProductGrpId = trim($inputRequestData[$arrayData]['productGroupId']);
-			$tBranchId = trim($inputRequestData[$arrayData]['branchId']);
-			
-			$enumIsDispArray = array();
-			$isDispEnum = new IsDisplayEnum();
-			$enumIsDispArray = $isDispEnum->enumArrays();
-			if($tIsDisplay=="")
+			$data = array();
+			$errorArray = array();
+			$inputRequestData = $mappingResult;
+			$errorIndex = 0;
+			$dataIndex = 0;
+			for($arrayData=0;$arrayData<count($inputRequestData);$arrayData++)
 			{
-				$tIsDisplay=$enumIsDispArray['display'];
-			}
-			else
-			{
-				foreach ($enumIsDispArray as $key => $value)
+				$isDisplayFlag=0;
+				$measurementUnitFlag=0;
+				//trim an input
+				$tProductName = trim($inputRequestData[$arrayData]['productName']);
+				$tMeasUnit = trim($inputRequestData[$arrayData]['measurementUnit']);
+				$tColor = trim($inputRequestData[$arrayData]['color']);
+				$tSize = trim($inputRequestData[$arrayData]['size']);
+				$tIsDisplay = trim($inputRequestData[$arrayData]['isDisplay']);
+				$tPurchasePrice = trim($inputRequestData[$arrayData]['purchasePrice']);
+				$tWholeSaleMargin = trim($inputRequestData[$arrayData]['wholesaleMargin']);
+				$tWholeSaleMarginFlat = trim($inputRequestData[$arrayData]['wholesaleMarginFlat']);
+				$tSemiWholeSaleMargin = trim($inputRequestData[$arrayData]['semiWholesaleMargin']);
+				$tVat = trim($inputRequestData[$arrayData]['vat']);
+				$tMrp = trim($inputRequestData[$arrayData]['mrp']);
+				$tMargin = trim($inputRequestData[$arrayData]['margin']);
+				$tMarginFlat = trim($inputRequestData[$arrayData]['marginFlat']);
+				$tProductDescription = trim($inputRequestData[$arrayData]['productDescription']);
+				$tAdditionalTax = trim($inputRequestData[$arrayData]['additionalTax']);
+				$tMinimumStockLevel = trim($inputRequestData[$arrayData]['minimumStockLevel']);
+				$tCompanyId = trim($inputRequestData[$arrayData]['companyId']);
+				$tProductCatId = trim($inputRequestData[$arrayData]['productCategoryId']);
+				$tProductGrpId = trim($inputRequestData[$arrayData]['productGroupId']);
+				$tBranchId = trim($inputRequestData[$arrayData]['branchId']);
+				
+				$enumIsDispArray = array();
+				$isDispEnum = new IsDisplayEnum();
+				$enumIsDispArray = $isDispEnum->enumArrays();
+				if($tIsDisplay=="")
 				{
-					if(strcmp($value,$tIsDisplay)==0)
+					$tIsDisplay=$enumIsDispArray['display'];
+				}
+				else
+				{
+					foreach ($enumIsDispArray as $key => $value)
 					{
-						$isDisplayFlag=1;
-						break;
-					}
-					else
-					{
-						$isDisplayFlag=2;
+						if(strcmp($value,$tIsDisplay)==0)
+						{
+							$isDisplayFlag=1;
+							break;
+						}
+						else
+						{
+							$isDisplayFlag=2;
+						}
 					}
 				}
-			}
-			
-			$enumMeasurementUnitArray = array();
-			$measurementUnitEnum = new measurementUnitEnum();
-			$enumMeasurementUnitArray = $measurementUnitEnum->enumArrays();
-			if($tMeasUnit!="")
-			{
-				foreach ($enumMeasurementUnitArray as $key => $value)
+				
+				$enumMeasurementUnitArray = array();
+				$measurementUnitEnum = new measurementUnitEnum();
+				$enumMeasurementUnitArray = $measurementUnitEnum->enumArrays();
+				if($tMeasUnit!="")
 				{
-					if(strcmp($value,$tMeasUnit)==0)
+					foreach ($enumMeasurementUnitArray as $key => $value)
 					{
-						$measurementUnitFlag=1;
-						break;
-					}
-					else
-					{
-						$measurementUnitFlag=2;
+						if(strcmp($value,$tMeasUnit)==0)
+						{
+							$measurementUnitFlag=1;
+							break;
+						}
+						else
+						{
+							$measurementUnitFlag=2;
+						}
 					}
 				}
+				if($isDisplayFlag==2 || $measurementUnitFlag==2)
+				{
+					$errorArray[$errorIndex] = array();
+					$errorArray[$errorIndex]['productName'] = $tProductName;
+					$errorArray[$errorIndex]['measurementUnit'] = $tMeasUnit;
+					$errorArray[$errorIndex]['color'] = $tColor;
+					$errorArray[$errorIndex]['size'] = $tSize;
+					$errorArray[$errorIndex]['isDisplay'] = $tIsDisplay;
+					$errorArray[$errorIndex]['purchasePrice'] = $tPurchasePrice;
+					$errorArray[$errorIndex]['wholesaleMargin'] = $tWholeSaleMargin;
+					$errorArray[$errorIndex]['wholesaleMarginFlat'] = $tWholeSaleMarginFlat;
+					$errorArray[$errorIndex]['semiWholesaleMargin'] = $tSemiWholeSaleMargin;
+					$errorArray[$errorIndex]['vat'] = $tVat;
+					$errorArray[$errorIndex]['mrp'] = $tMrp;
+					$errorArray[$errorIndex]['margin'] = $tMargin;
+					$errorArray[$errorIndex]['marginFlat'] = $tMarginFlat;
+					$errorArray[$errorIndex]['productDescription'] = $tProductDescription;
+					$errorArray[$errorIndex]['additionalTax'] = $tAdditionalTax;
+					$errorArray[$errorIndex]['minimumStockLevel'] = $tMinimumStockLevel;
+					$errorArray[$errorIndex]['companyId'] = $tCompanyId;
+					$errorArray[$errorIndex]['productCategoryId'] = $tProductCatId;
+					$errorArray[$errorIndex]['productGroupId'] = $tProductGrpId;
+					$errorArray[$errorIndex]['branchId'] = $tBranchId;
+					if($isDisplayFlag==2)
+					{
+						$errorArray[$errorIndex]['remark'] = $exceptionArray['isDisplayEnum'];
+					}		
+					else
+					{
+						$errorArray[$errorIndex]['remark'] = $exceptionArray['measurementUnitEnum'];
+					}
+					$errorIndex++;
+				}
+				else
+				{
+					//make an array
+					$data[$dataIndex] = array();
+					$data[$dataIndex]['product_name'] = $tProductName;
+					$data[$dataIndex]['measurement_unit'] = $tMeasUnit;
+					$data[$dataIndex]['color'] = $tColor;
+					$data[$dataIndex]['size'] = $tSize;
+					$data[$dataIndex]['is_display'] = $tIsDisplay;
+					$data[$dataIndex]['purchase_price'] = $tPurchasePrice;
+					$data[$dataIndex]['wholesale_margin'] = $tWholeSaleMargin;
+					$data[$dataIndex]['wholesale_margin_flat'] = $tWholeSaleMarginFlat;
+					$data[$dataIndex]['vat'] = $tVat;
+					$data[$dataIndex]['mrp'] = $tMrp;
+					$data[$dataIndex]['margin'] = $tMargin;
+					$data[$dataIndex]['margin_flat'] = $tMarginFlat;
+					$data[$dataIndex]['product_description'] = $tProductDescription;
+					$data[$dataIndex]['additional_tax'] = $tAdditionalTax;
+					$data[$dataIndex]['minimum_stock_level'] = $tMinimumStockLevel;
+					$data[$dataIndex]['semi_wholesale_margin'] = $tSemiWholeSaleMargin;
+					$data[$dataIndex]['company_id'] = $tCompanyId;
+					$data[$dataIndex]['product_category_id'] = $tProductCatId;
+					$data[$dataIndex]['product_group_id'] = $tProductGrpId;
+					$data[$dataIndex]['branch_id'] = $tBranchId;
+					$dataIndex++;
+				}
 			}
-			if($isDisplayFlag==2 || $measurementUnitFlag==2)
+			$trimArray = array();
+			$trimArray['errorArray']= $errorArray;
+			$trimArray['dataArray'] = $data;
+			return $trimArray;
+		}
+		else
+		{
+			return $mappingResult;
+		}
+	}
+	
+	/**
+     * @param request array
+     * @return array/error-message
+     */
+	public function mappingData()
+	{
+		$transformerClass = new ProductTransformer();
+		$exceptionArray = $transformerClass->messageArrays();
+		
+		$rquestArray = func_get_arg(0);
+		$mappingArray = $rquestArray['mapping'];
+		$dataArray = $rquestArray['data'];
+		
+		$keyNameCount = array_count_values($mappingArray);
+		//searching data in mapping array ..it is duplicate or not?
+		for($index=0;$index<count($keyNameCount);$index++)
+		{
+			$value = $keyNameCount[array_keys($keyNameCount)[$index]];
+			if($value>1 || array_keys($keyNameCount)[$index]=="")
 			{
-				return "1";
-			}
-			else
-			{
-				//make an array
-				$data[$arrayData] = array();
-				$data[$arrayData]['product_name'] = $tProductName;
-				$data[$arrayData]['measurement_unit'] = $tMeasUnit;
-				$data[$arrayData]['color'] = $tColor;
-				$data[$arrayData]['size'] = $tSize;
-				$data[$arrayData]['is_display'] = $tIsDisplay;
-				$data[$arrayData]['purchase_price'] = $tPurchasePrice;
-				$data[$arrayData]['wholesale_margin'] = $tWholeSaleMargin;
-				$data[$arrayData]['wholesale_margin_flat'] = $tWholeSaleMarginFlat;
-				$data[$arrayData]['vat'] = $tVat;
-				$data[$arrayData]['mrp'] = $tMrp;
-				$data[$arrayData]['margin'] = $tMargin;
-				$data[$arrayData]['margin_flat'] = $tMarginFlat;
-				$data[$arrayData]['product_description'] = $tProductDescription;
-				$data[$arrayData]['additional_tax'] = $tAdditionalTax;
-				$data[$arrayData]['minimum_stock_level'] = $tMinimumStockLevel;
-				$data[$arrayData]['semi_wholesale_margin'] = $tSemiWholeSaleMargin;
-				$data[$arrayData]['company_id'] = $tCompanyId;
-				$data[$arrayData]['product_category_id'] = $tProductCatId;
-				$data[$arrayData]['product_group_id'] = $tProductGrpId;
-				$data[$arrayData]['branch_id'] = $tBranchId;
+				return $exceptionArray['mapping'];
 			}
 		}
-		return $data;
+		if(count($mappingArray)!=20)
+		{
+			return $exceptionArray['missingField'];
+		}
+		
+		$requestArray = array();
+		$categoryId = array();
+		//make an requested array
+		for($arrayData=0;$arrayData<count($dataArray);$arrayData++)
+		{
+			$categoryFlag=0;
+			$groupFlag=0;
+			$branchFlag=0;
+			$companyFlag=0;
+			//replace category-name with their id
+			if(in_array("productCategoryId",$mappingArray))
+			{
+				$arrayKey = array_keys($mappingArray,"productCategoryId");
+				
+				//replace category-name with parent-category-id
+				$convertedCatString = preg_replace('/[^A-Za-z0-9]/', '',$dataArray[$arrayData][$arrayKey[0]]);
+				
+				//database selection
+				$categoryModel = new ProductCategoryModel();
+				
+				$categoryResult = $categoryModel->getCategoryId($convertedCatString);
+				$decodedCategory = json_decode($categoryResult);
+				
+				if(strcmp($categoryResult,$exceptionArray['204'])==0)
+				{
+					$categoryFlag=1;
+				}
+				else
+				{
+					$dataArray[$arrayData][$arrayKey[0]] = $decodedCategory[0]->product_category_id;
+				}
+			}
+			
+			//replace group-name with their id
+			if(in_array("productGroupId",$mappingArray))
+			{
+				$arrayKey = array_keys($mappingArray,"productGroupId");
+				// replace group-name with parent-group-id
+				$convertedGrpString = preg_replace('/[^A-Za-z0-9]/', '',$dataArray[$arrayData][$arrayKey[0]]);
+				// database selection
+				$groupModel = new ProductGroupModel();
+				$groupResult = $groupModel->getGroupId($convertedGrpString);
+				$decodedGroup = json_decode($groupResult);
+				if(strcmp($groupResult,$exceptionArray['204'])==0)
+				{
+					$groupFlag=1;
+				}
+				else
+				{
+					$dataArray[$arrayData][$arrayKey[0]] = $decodedGroup[0]->product_group_id;
+				}
+			}
+			
+			//replace branch-name with their id
+			if(in_array("branchId",$mappingArray))
+			{
+				$arrayKey = array_keys($mappingArray,"branchId");
+				// replace group-name with parent-group-id
+				$convertedBranchString = preg_replace('/[^A-Za-z0-9]/', '',$dataArray[$arrayData][$arrayKey[0]]);
+				
+				// database selection
+				$branchModel = new BranchModel();
+				
+				$branchResult = $branchModel->getBranchId($convertedBranchString);
+				$decodedBranch = json_decode($branchResult);
+				if(strcmp($branchResult,$exceptionArray['204'])==0)
+				{
+					$branchFlag=1;
+				}
+				else
+				{
+					$dataArray[$arrayData][$arrayKey[0]] = $decodedBranch[0]->branch_id;
+				}
+			}
+			
+			//replace company-name with their id
+			if(in_array("companyId",$mappingArray))
+			{
+				$arrayKey = array_keys($mappingArray,"companyId");
+				// replace group-name with parent-group-id
+				$convertedCompanyString = preg_replace('/[^A-Za-z0-9]/', '',$dataArray[$arrayData][$arrayKey[0]]);
+				// database selection
+				$companyModel = new CompanyModel();
+				
+				$companyResult = $companyModel->getCompanyId($convertedCompanyString);
+				$decodedCompany = json_decode($companyResult);
+				if(strcmp($companyResult,$exceptionArray['204'])==0)
+				{
+					$companyFlag=1;
+				}
+				else
+				{
+					$dataArray[$arrayData][$arrayKey[0]] = $decodedCompany[0]->company_id;
+				}
+			}
+			if($categoryFlag==1 || $groupFlag==1 || $branchFlag==1 || $companyFlag==1)
+			{
+				if($categoryFlag==1)
+				{
+					return $exceptionArray['invalidCategoryName'];
+				}
+				if($groupFlag==1)
+				{
+					return $exceptionArray['invalidGroupName'];
+				}
+				if($branchFlag==1)
+				{
+					return $exceptionArray['invalidBranchName'];
+				}
+				if($companyFlag==1)
+				{
+					return $exceptionArray['invalidCompanyName'];
+				}
+			}
+			else
+			{
+				$requestArray[$arrayData] = array();
+				$requestArray[$arrayData][array_keys($keyNameCount)[0]] = $dataArray[$arrayData][0];
+				$requestArray[$arrayData][array_keys($keyNameCount)[1]] = $dataArray[$arrayData][1];
+				$requestArray[$arrayData][array_keys($keyNameCount)[2]] = $dataArray[$arrayData][2];
+				$requestArray[$arrayData][array_keys($keyNameCount)[3]] = $dataArray[$arrayData][3];
+				$requestArray[$arrayData][array_keys($keyNameCount)[4]] = $dataArray[$arrayData][4];
+				$requestArray[$arrayData][array_keys($keyNameCount)[5]] = $dataArray[$arrayData][5];
+				$requestArray[$arrayData][array_keys($keyNameCount)[6]] = $dataArray[$arrayData][6];
+				$requestArray[$arrayData][array_keys($keyNameCount)[7]] = $dataArray[$arrayData][7];
+				$requestArray[$arrayData][array_keys($keyNameCount)[8]] = $dataArray[$arrayData][8];
+				$requestArray[$arrayData][array_keys($keyNameCount)[9]] = $dataArray[$arrayData][9];
+				$requestArray[$arrayData][array_keys($keyNameCount)[10]] = $dataArray[$arrayData][10];
+				$requestArray[$arrayData][array_keys($keyNameCount)[11]] = $dataArray[$arrayData][11];
+				$requestArray[$arrayData][array_keys($keyNameCount)[12]] = $dataArray[$arrayData][12];
+				$requestArray[$arrayData][array_keys($keyNameCount)[13]] = $dataArray[$arrayData][13];
+				$requestArray[$arrayData][array_keys($keyNameCount)[14]] = $dataArray[$arrayData][14];
+				$requestArray[$arrayData][array_keys($keyNameCount)[15]] = $dataArray[$arrayData][15];
+				$requestArray[$arrayData][array_keys($keyNameCount)[16]] = $dataArray[$arrayData][16];
+				$requestArray[$arrayData][array_keys($keyNameCount)[17]] = $dataArray[$arrayData][17];
+				$requestArray[$arrayData][array_keys($keyNameCount)[18]] = $dataArray[$arrayData][18];
+				$requestArray[$arrayData][array_keys($keyNameCount)[19]] = $dataArray[$arrayData][19];
+			}
+		}
+		return $requestArray;
 	}
 	
 	/**
@@ -282,7 +505,7 @@ class ProductTransformer
 		// $transformEntryDate = Carbon\Carbon::createFromFormat('d-m-Y', $transactionDate)->format('Y-m-d');
 		
 		//get exception message
-		$exception = new ExceptionMessage();
+		$exception = new ProductTransformer();
 		$exceptionArray = $exception->messageArrays();
 		
 		$enumDiscountTypeArray = array();
@@ -471,7 +694,7 @@ class ProductTransformer
 		$constantArray = $constantClass->constantVariable();
 		
 		//get exception message
-		$exception = new ExceptionMessage();
+		$exception = new ProductTransformer();
 		$exceptionArray = $exception->messageArrays();
 		for($requestArray=0;$requestArray<count($productArray);$requestArray++)
 		{

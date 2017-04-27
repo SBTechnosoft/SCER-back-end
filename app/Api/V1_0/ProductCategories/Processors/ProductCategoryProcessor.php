@@ -200,11 +200,11 @@ class ProductCategoryProcessor extends BaseProcessor
 						//convert object to array
 						$decodedArray = (array)$decodedArrayStatus[0];
 		
-						$trimData['errorArray'][$totalErrorArray][0] = $trimData['dataArray'][$dataArray]['product_category_name'];
-						$trimData['errorArray'][$totalErrorArray][1] = $trimData['dataArray'][$dataArray]['product_category_description'];
-						$trimData['errorArray'][$totalErrorArray][2] = $trimData['dataArray'][$dataArray]['is_display'];
-						$trimData['errorArray'][$totalErrorArray][3] = $trimData['dataArray'][$dataArray]['product_parent_category_id'];
-						$trimData['errorArray'][$totalErrorArray][4] = $decodedArray[array_keys($decodedArray)[0]];
+						$trimData['errorArray'][$totalErrorArray]['productCategoryName'] = $trimData['dataArray'][$dataArray]['product_category_name'];
+						$trimData['errorArray'][$totalErrorArray]['productCategoryDescription'] = $trimData['dataArray'][$dataArray]['product_category_description'];
+						$trimData['errorArray'][$totalErrorArray]['isDisplay'] = $trimData['dataArray'][$dataArray]['is_display'];
+						$trimData['errorArray'][$totalErrorArray]['productParentCategoryId'] = $trimData['dataArray'][$dataArray]['product_parent_category_id'];
+						$trimData['errorArray'][$totalErrorArray]['remark'] = $decodedArray[array_keys($decodedArray)[0]];
 						$totalErrorArray++;
 					}
 				}

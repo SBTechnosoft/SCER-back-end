@@ -55,7 +55,6 @@ class ProductProcessor extends BaseProcessor
 			// trim an input 
 			$productTransformer = new ProductTransformer();
 			$tRequest = $productTransformer->trimInsertData($this->request);
-			
 			if($tRequest==1)
 			{
 				return $msgArray['content'];
@@ -201,17 +200,15 @@ class ProductProcessor extends BaseProcessor
 		else
 		{
 			$productValidate = new ProductValidate();
-			
 			// trim an input 
 			$productTransformer = new ProductTransformer();
-			$tRequestData = $productTransformer->trimInsertBatchData($request);
-			
-			if($tRequestData==1)
+			$trimData = $productTransformer->trimInsertBatchData($request);
+			if(is_array($trimData))
 			{
-				return $msgArray['content'];
-			}
-			else
-			{
+				$tRequestData = $trimData['dataArray'];
+				$totalErrorArray = count($trimData['errorArray']);
+				$countRequestedData = count($tRequestData);
+				
 				$newProductArray = array();
 				for($dataArray=0;$dataArray<count($tRequestData);$dataArray++)
 				{
@@ -330,15 +327,73 @@ class ProductProcessor extends BaseProcessor
 						}
 						else
 						{
-							return $status;
+							$decodedArrayStatus = json_decode($status);
+							//convert object to array
+							$decodedArray = (array)$decodedArrayStatus[0];
+							$totalErrorArray = count($trimData['errorArray']);
+							
+							$trimData['errorArray'][$totalErrorArray]['productName'] = $trimData['dataArray'][$dataArray]['product_name'];
+							$trimData['errorArray'][$totalErrorArray]['measurementUnit'] = $trimData['dataArray'][$dataArray]['measurement_unit'];
+							$trimData['errorArray'][$totalErrorArray]['color'] = $trimData['dataArray'][$dataArray]['color'];
+							$trimData['errorArray'][$totalErrorArray]['size'] = $trimData['dataArray'][$dataArray]['size'];
+							$trimData['errorArray'][$totalErrorArray]['isDisplay'] = $trimData['dataArray'][$dataArray]['is_display'];
+							$trimData['errorArray'][$totalErrorArray]['purchasePrice'] = $trimData['dataArray'][$dataArray]['purchase_price'];
+							$trimData['errorArray'][$totalErrorArray]['wholesaleMargin'] = $trimData['dataArray'][$dataArray]['wholesale_margin'];
+							$trimData['errorArray'][$totalErrorArray]['wholesaleMarginFlat'] = $trimData['dataArray'][$dataArray]['wholesale_margin_flat'];
+							$trimData['errorArray'][$totalErrorArray]['vat'] = $trimData['dataArray'][$dataArray]['vat'];
+							$trimData['errorArray'][$totalErrorArray]['mrp'] = $trimData['dataArray'][$dataArray]['mrp'];
+							$trimData['errorArray'][$totalErrorArray]['margin'] = $trimData['dataArray'][$dataArray]['margin'];
+							$trimData['errorArray'][$totalErrorArray]['marginFlat'] = $trimData['dataArray'][$dataArray]['margin_flat'];
+							$trimData['errorArray'][$totalErrorArray]['productDescription'] = $trimData['dataArray'][$dataArray]['product_description'];
+							$trimData['errorArray'][$totalErrorArray]['additionalTax'] = $trimData['dataArray'][$dataArray]['additional_tax'];
+							$trimData['errorArray'][$totalErrorArray]['minimumStockLevel'] = $trimData['dataArray'][$dataArray]['minimum_stock_level'];
+							$trimData['errorArray'][$totalErrorArray]['semiWholesaleMargin'] = $trimData['dataArray'][$dataArray]['semi_wholesale_margin'];
+							$trimData['errorArray'][$totalErrorArray]['companyId'] = $trimData['dataArray'][$dataArray]['company_id'];
+							$trimData['errorArray'][$totalErrorArray]['productCategoryId'] = $trimData['dataArray'][$dataArray]['product_category_id'];
+							$trimData['errorArray'][$totalErrorArray]['productGroupId'] = $trimData['dataArray'][$dataArray]['product_group_id'];
+							$trimData['errorArray'][$totalErrorArray]['branchId'] = $trimData['dataArray'][$dataArray]['branch_id'];
+							$trimData['errorArray'][$totalErrorArray]['remark'] = $decodedArray[array_keys($decodedArray)[0]];
+							$totalErrorArray++;
 						}
 					}
 					else
 					{
-						return $validationResult;
+						//product-code validation unsuccessfull $validationResult 
+						$totalErrorArray = count($trimData['errorArray']);
+						$trimData['errorArray'][$totalErrorArray]['productName'] = $trimData['dataArray'][$dataArray]['product_name'];
+						$trimData['errorArray'][$totalErrorArray]['measurementUnit'] = $trimData['dataArray'][$dataArray]['measurement_unit'];
+						$trimData['errorArray'][$totalErrorArray]['color'] = $trimData['dataArray'][$dataArray]['color'];
+						$trimData['errorArray'][$totalErrorArray]['size'] = $trimData['dataArray'][$dataArray]['size'];
+						$trimData['errorArray'][$totalErrorArray]['isDisplay'] = $trimData['dataArray'][$dataArray]['is_display'];
+						$trimData['errorArray'][$totalErrorArray]['purchasePrice'] = $trimData['dataArray'][$dataArray]['purchase_price'];
+						$trimData['errorArray'][$totalErrorArray]['wholesaleMargin'] = $trimData['dataArray'][$dataArray]['wholesale_margin'];
+						$trimData['errorArray'][$totalErrorArray]['wholesaleMarginFlat'] = $trimData['dataArray'][$dataArray]['wholesale_margin_flat'];
+						$trimData['errorArray'][$totalErrorArray]['vat'] = $trimData['dataArray'][$dataArray]['vat'];
+						$trimData['errorArray'][$totalErrorArray]['mrp'] = $trimData['dataArray'][$dataArray]['mrp'];
+						$trimData['errorArray'][$totalErrorArray]['margin'] = $trimData['dataArray'][$dataArray]['margin'];
+						$trimData['errorArray'][$totalErrorArray]['marginFlat'] = $trimData['dataArray'][$dataArray]['margin_flat'];
+						$trimData['errorArray'][$totalErrorArray]['productDescription'] = $trimData['dataArray'][$dataArray]['product_description'];
+						$trimData['errorArray'][$totalErrorArray]['additionalTax'] = $trimData['dataArray'][$dataArray]['additional_tax'];
+						$trimData['errorArray'][$totalErrorArray]['minimumStockLevel'] = $trimData['dataArray'][$dataArray]['minimum_stock_level'];
+						$trimData['errorArray'][$totalErrorArray]['semiWholesaleMargin'] = $trimData['dataArray'][$dataArray]['semi_wholesale_margin'];
+						$trimData['errorArray'][$totalErrorArray]['companyId'] = $trimData['dataArray'][$dataArray]['company_id'];
+						$trimData['errorArray'][$totalErrorArray]['productCategoryId'] = $trimData['dataArray'][$dataArray]['product_category_id'];
+						$trimData['errorArray'][$totalErrorArray]['productGroupId'] = $trimData['dataArray'][$dataArray]['product_group_id'];
+						$trimData['errorArray'][$totalErrorArray]['branchId'] = $trimData['dataArray'][$dataArray]['branch_id'];
+						$trimData['errorArray'][$totalErrorArray]['remark'] = $msgArray['invalidProductCode'];
+						$totalErrorArray++;
 					}
 				}
-				return $newProductArray;
+				unset($trimData['dataArray']);
+				$trimData['dataArray'] = $newProductArray;
+				return $trimData;
+			}
+			else
+			{
+				$errorResult = array();
+				$errorResult['mapping_error'] = $trimData;
+				$encodeResult = json_encode($errorResult);
+				return $encodeResult;
 			}
 		}
 	}

@@ -122,11 +122,7 @@ class ProductGroupController extends BaseController implements ContainerInterfac
 				$productGroupService= new ProductGroupService();			
 				$productGroupPersistable = $productGroupProcessor->createPersistableBatchData($this->request);
 				
-				if($productGroupPersistable[0][0]=='[')
-				{
-					return $productGroupPersistable;
-				}
-				else if(is_array($productGroupPersistable))
+				if(is_array($productGroupPersistable))
 				{
 					$status = $productGroupService->insertBatchData($productGroupPersistable);
 					return $status;
