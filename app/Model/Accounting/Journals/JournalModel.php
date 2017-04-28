@@ -307,7 +307,7 @@ class JournalModel extends Model
 	 * get data between given date
 	 * returns the error-message/data
 	*/
-	public function getData($fromDate,$toDate,$companyId)
+	public function getData($fromDate,$toDate,$companyId,$headerType)
 	{
 		//database selection
 		$database = "";
@@ -332,6 +332,7 @@ class JournalModel extends Model
 		FROM journal_dtl
 		WHERE (entry_date BETWEEN '".$fromDate."' AND '".$toDate."') and 
 		company_id='".$companyId."' and 
+		journal_type='".$headerType."' and
 		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		

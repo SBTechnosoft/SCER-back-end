@@ -135,7 +135,7 @@ class JournalService
 		$toDate = $processArray->getToDate();
 		
 		$journalModel = new JournalModel();
-		$status = $journalModel->getData($fromDate,$toDate,$companyId);
+		$status = $journalModel->getData($fromDate,$toDate,$companyId,$headerType);
 		
 		//get exception message
 		$exception = new ExceptionMessage();

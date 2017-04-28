@@ -37,7 +37,9 @@
 	- Authentication Token
 	- "fromDate":"date"
 	- "toDate":"date"
-	
+	- "type":'special_journal',
+	- "type":'payment',
+	- "type":'receipt'
 + Error Message
 
 			{
@@ -90,7 +92,7 @@
 ##### `GET /accounting/journals/{journalId}/`
 + Header
 	- Authentication Token
-	
+	- 
 + Error Message
 
 			{
@@ -130,6 +132,8 @@
 	- Authentication Token
 	- 'type':'sales'
 	- 'type':'purchase'
+	- 'type':'payment'
+	- 'type':'receipt''
 + Body
 
             {

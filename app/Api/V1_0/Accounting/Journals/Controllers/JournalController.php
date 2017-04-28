@@ -264,13 +264,20 @@ class JournalController extends BaseController implements ContainerInterface
 			//get the data between fromDate and toDate
 			else if(array_key_exists($constantArray['fromDate'],$request->header()) && array_key_exists($constantArray['toDate'],$request->header()))
 			{
-				$this->request = $request;
-				$processor = new JournalProcessor();
-				$journalPersistable = new JournalPersistable();
-				$journalPersistable = $processor->createPersistableData($this->request);
-				$journalService= new JournalService();
-				$status = $journalService->getJournalDetail($journalPersistable,$companyId);
-				return $status;
+				if(array_key_exists('type',$request->header()))
+				{
+					$this->request = $request;
+					$processor = new JournalProcessor();
+					$journalPersistable = new JournalPersistable();
+					$journalPersistable = $processor->createPersistableData($this->request);
+					$journalService= new JournalService();
+					$status = $journalService->getJournalDetail($journalPersistable,$companyId,$request->header()['type'][0]);
+					return $status;
+				}
+				else
+				{
+					return $exceptionArray['content'];
+				}
 			}
 			//if date is not given..get the data of current year
 			else
