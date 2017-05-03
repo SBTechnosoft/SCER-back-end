@@ -8,6 +8,7 @@ use PHPExcel;
 use PHPExcel_IOFactory;
 use PHPExcel_Style_Fill;
 use PHPExcel_Style_Alignment;
+use Carbon;
 use stdclass;
 /**
  *
@@ -41,6 +42,22 @@ class CashFlowOperation extends CompanyService
 		$companyDetail = $cashFlow->getCompanyData($decodedData[0]->ledger->companyId);
 		$decodedCompanyData = json_decode($companyDetail);
 		
+		//calculating current accounting-year
+		$mytime = Carbon\Carbon::now();
+		$currentDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $mytime)->format('Y-m-d');
+		$dateTime = $mytime->toDateTimeString();
+		$yearStartDate = $mytime->year.'-04-01 00:00:00';
+		if($dateTime >= $yearStartDate)
+		{
+			$year = $mytime->year+1;
+		}
+		else
+		{
+			$year = $mytime->year+1;
+		}
+		$heading = 	'<div style="text-align: center; font-weight: bold; font-size:20px;">'.$decodedCompanyData->companyName.'</div>
+					<div style="text-align: center; font-weight: bold; font-size:15px;">Statement of Cash Flows</div>
+					<div style="text-align: center; font-weight: bold; font-size:15px;">For the Year Ended March 31,'.$year.'</div>';
 		for($arrayData=0;$arrayData<count($decodedData);$arrayData++)
 		{
 			
@@ -83,7 +100,7 @@ class CashFlowOperation extends CompanyService
 							<td style='border: 1px solid black; width:25%;text-align:center;'>".$differenceDr."</td>
 							<td style='border: 1px solid black;width:25%; text-align:center;'>".$differenceCr."</td></tr>";
 		$footerPart = "</tbody></table>";
-		$htmlBody = $headerPart.$bodyPart.$footerPart;
+		$htmlBody = $heading.$headerPart.$bodyPart.$footerPart;
 		
 		//generate pdf
 		$dateTime = date("d-m-Y h-i-s");
@@ -96,7 +113,7 @@ class CashFlowOperation extends CompanyService
 		
 		$documentPathName = $path.$documentName;
 		$mpdf = new mPDF('A4','landscape');
-		$mpdf->SetHTMLHeader('<div style="text-align: center; font-weight: bold; font-size:20px;">Cash Flow</div>');
+		// $mpdf->SetHTMLHeader('<div style="text-align: center; font-weight: bold; font-size:20px;">Cash Flow</div>');
 		$mpdf->SetDisplayMode('fullpage');
 		$mpdf->WriteHTML($htmlBody);
 		$mpdf->Output($documentPathName,'F');
@@ -133,6 +150,22 @@ class CashFlowOperation extends CompanyService
 		$decodedData = $calculatedData['arrayData'];
 		$bodyPart = "";
 		
+		//calculating current accounting-year
+		$mytime = Carbon\Carbon::now();
+		$currentDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $mytime)->format('Y-m-d');
+		$dateTime = $mytime->toDateTimeString();
+		$yearStartDate = $mytime->year.'-04-01 00:00:00';
+		if($dateTime >= $yearStartDate)
+		{
+			$year = $mytime->year+1;
+		}
+		else
+		{
+			$year = $mytime->year+1;
+		}
+		$heading = 	'<div style="text-align: center; font-weight: bold; font-size:20px;">'.$decodedCompanyData->companyName.'</div>
+					<div style="text-align: center; font-weight: bold; font-size:15px;">Statement of Cash Flows</div>
+					<div style="text-align: center; font-weight: bold; font-size:15px;">For the Year Ended March 31,'.$year.'</div>';
 		for($arrayData=0;$arrayData<count($decodedData);$arrayData++)
 		{
 			if(count($decodedData[$arrayData])==2)
@@ -189,7 +222,7 @@ class CashFlowOperation extends CompanyService
 									<td style='border: 1px solid black; width:25%;text-align:center;'>".$differenceCr."</td></tr>";
 		
 		$footerPart = "</tbody></table>";
-		$htmlBody = $headerPart.$bodyPart.$footerPart;
+		$htmlBody = $heading.$headerPart.$bodyPart.$footerPart;
 		
 		// generate pdf
 		$dateTime = date("d-m-Y h-i-s");
@@ -202,7 +235,7 @@ class CashFlowOperation extends CompanyService
 		
 		$documentPathName = $path.$documentName;
 		$mpdf = new mPDF('A4','landscape');
-		$mpdf->SetHTMLHeader('<div style="text-align: center; font-weight: bold; font-size:20px;">Cash Flow</div>');
+		// $mpdf->SetHTMLHeader('<div style="text-align: center; font-weight: bold; font-size:20px;">Cash Flow</div>');
 		$mpdf->SetDisplayMode('fullpage');
 		$mpdf->WriteHTML($htmlBody);
 		$mpdf->Output($documentPathName,'F');
@@ -239,12 +272,28 @@ class CashFlowOperation extends CompanyService
 						->setCategory("Test result file");
 		$objPHPExcel->getActiveSheet()->setTitle('CashFLow');
 		
+		//calculating current accounting-year
+		$mytime = Carbon\Carbon::now();
+		$currentDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $mytime)->format('Y-m-d');
+		$dateTime = $mytime->toDateTimeString();
+		$yearStartDate = $mytime->year.'-04-01 00:00:00';
+		if($dateTime >= $yearStartDate)
+		{
+			$year = $mytime->year+1;
+		}
+		else
+		{
+			$year = $mytime->year+1;
+		}
+				
 		//heading-start
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,1, 'Cash-Flow');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,1, $decodedCompanyData->companyName);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,2, 'Statement of Cash Flows');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,3, 'For the Year Ended March 31,'.$year);
 		
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,2, 'Ledger-Name');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,2, 'Debit');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,2, 'Credit');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,4, 'Ledger-Name');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,4, 'Debit');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,4, 'Credit');
 		//heading-end
 		$creditAmountTotal=0;
 		$debitAmountTotal=0;
@@ -253,16 +302,16 @@ class CashFlowOperation extends CompanyService
 		{
 			if(strcmp($decodedData[$arrayData]->amountType,"credit")==0)
 			{
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+3,$decodedData[$arrayData]->ledger->ledgerName);
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+3,'-');
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$arrayData+3,$decodedData[$arrayData]->amount);
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+5,$decodedData[$arrayData]->ledger->ledgerName);
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+5,'-');
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$arrayData+5,$decodedData[$arrayData]->amount);
 				$creditAmountTotal = $creditAmountTotal+$decodedData[$arrayData]->amount;
 			}
 			else
 			{
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+3,$decodedData[$arrayData]->ledger->ledgerName);
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+3,$decodedData[$arrayData]->amount);
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$arrayData+3,'-');
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+5,$decodedData[$arrayData]->ledger->ledgerName);
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+5,$decodedData[$arrayData]->amount);
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$arrayData+5,'-');
 				$debitAmountTotal = $debitAmountTotal+$decodedData[$arrayData]->amount;
 			}
 		}
@@ -277,13 +326,13 @@ class CashFlowOperation extends CompanyService
 			$differenceDr = '';
 		}
 		
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+3,'Total');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+3,$debitAmountTotal);
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+3,$creditAmountTotal);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+5,'Total');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+5,$debitAmountTotal);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+5,$creditAmountTotal);
 		
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+4,'Difference');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+4,$differenceDr);
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+4,$differenceCr);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+6,'Difference');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+6,$differenceDr);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+6,$differenceCr);
 		
 		// style for header
 		$headerStyleArray = array(
@@ -298,21 +347,21 @@ class CashFlowOperation extends CompanyService
 		$titleStyleArray = array(
 		'font'  => array(
 			'bold'  => true,
-			'color' => array('rgb' => 'Black'),
-			'size'  => 15,
+			'color' => array('rgb' => '#00000'),
+			'size'  => 13,
 			'name'  => 'Verdana'
 		));
 		
 		// set header style
-		$objPHPExcel->getActiveSheet()->getStyle('A2:C2')->applyFromArray($headerStyleArray);
+		$objPHPExcel->getActiveSheet()->getStyle('A4:C4')->applyFromArray($headerStyleArray);
 		
 		$decimalPoints = $this->setDecimalPoint($decodedCompanyData->noOfDecimalPoints);
 		
-		$bSaveDynamicRow = "B".(count($decodedData)+4);
-		$cSaveDynamicRow = "C".(count($decodedData)+4);
+		$bSaveDynamicRow = "B".(count($decodedData)+6);
+		$cSaveDynamicRow = "C".(count($decodedData)+6);
 		
-		$objPHPExcel->getActiveSheet()->getStyle("B3:".$bSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
-		$objPHPExcel->getActiveSheet()->getStyle("C3:".$cSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		$objPHPExcel->getActiveSheet()->getStyle("B5:".$bSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		$objPHPExcel->getActiveSheet()->getStyle("C5:".$cSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
 		
 		// set title style
 		$objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($titleStyleArray);
@@ -365,15 +414,33 @@ class CashFlowOperation extends CompanyService
 		$calculatedData = $this->getCalculatedData($decodedData);
 		$decodedData = $calculatedData['arrayData'];
 		
+		//calculating current accounting-year
+		$mytime = Carbon\Carbon::now();
+		$currentDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $mytime)->format('Y-m-d');
+		$dateTime = $mytime->toDateTimeString();
+		$yearStartDate = $mytime->year.'-04-01 00:00:00';
+		if($dateTime >= $yearStartDate)
+		{
+			$year = $mytime->year+1;
+		}
+		else
+		{
+			$year = $mytime->year+1;
+		}
+				
 		//heading-start
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,1, 'Cash-Flow');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,1, $decodedCompanyData->companyName);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,2, 'Statement of Cash Flows');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,3, 'For the Year Ended March 31,'.$year);
 		
 		$objPHPExcel->setActiveSheetIndex(0)->mergeCells('B1:C1');
+		$objPHPExcel->setActiveSheetIndex(0)->mergeCells('B2:C2');
+		$objPHPExcel->setActiveSheetIndex(0)->mergeCells('B3:C3');
 		
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,2, 'Ledger-Name');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,2, 'Amount');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,2, 'Ledger-Name');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,2, 'Amount');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,4, 'Ledger-Name');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,4, 'Amount');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,4, 'Ledger-Name');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,4, 'Amount');
 		//heading-end
 		$creditAmountTotal=0;
 		$debitAmountTotal=0;
@@ -381,26 +448,26 @@ class CashFlowOperation extends CompanyService
 		{
 			if(count($decodedData[$arrayData])==2)
 			{
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+3,$decodedData[$arrayData][1]->ledgerName);
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+3,$decodedData[$arrayData][1]->debitAmount);
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$arrayData+3,$decodedData[$arrayData][0]->ledgerName);
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,$arrayData+3,$decodedData[$arrayData][0]->creditAmount);
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+5,$decodedData[$arrayData][1]->ledgerName);
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+5,$decodedData[$arrayData][1]->debitAmount);
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$arrayData+5,$decodedData[$arrayData][0]->ledgerName);
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,$arrayData+5,$decodedData[$arrayData][0]->creditAmount);
 			}
 			else
 			{
 				if(array_key_exists("0",$decodedData[$arrayData]))
 				{
-					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+3,'');
-					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+3,'');
-					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$arrayData+3,$decodedData[$arrayData][0]->ledgerName);
-					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,$arrayData+3,$decodedData[$arrayData][0]->creditAmount);
+					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+5,'');
+					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+5,'');
+					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$arrayData+5,$decodedData[$arrayData][0]->ledgerName);
+					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,$arrayData+5,$decodedData[$arrayData][0]->creditAmount);
 				}
 				else
 				{
-					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+3,$decodedData[$arrayData][1]->ledgerName);
-					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+3,$decodedData[$arrayData][1]->debitAmount);
-					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$arrayData+3,'');
-					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,$arrayData+3,'');
+					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+5,$decodedData[$arrayData][1]->ledgerName);
+					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+5,$decodedData[$arrayData][1]->debitAmount);
+					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$arrayData+5,'');
+					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,$arrayData+5,'');
 				}
 			}
 		}
@@ -414,15 +481,15 @@ class CashFlowOperation extends CompanyService
 			$differenceCr = $calculatedData['totalCredit']-$calculatedData['totalDebit'];
 			$differenceDr = "-";
 		}
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+3,'Total');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+3,$calculatedData['totalDebit']);
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+3,'Total');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,count($decodedData)+3,$calculatedData['totalCredit']);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+5,'Total');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+5,$calculatedData['totalDebit']);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+5,'Total');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,count($decodedData)+5,$calculatedData['totalCredit']);
 		
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+4,'Difference');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+4,$differenceDr);
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+4,'Difference');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,count($decodedData)+4,$differenceCr);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+6,'Difference');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+6,$differenceDr);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+6,'Difference');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,count($decodedData)+6,$differenceCr);
 		
 		// style for header
 		$headerStyleArray = array(
@@ -437,21 +504,21 @@ class CashFlowOperation extends CompanyService
 		$titleStyleArray = array(
 		'font'  => array(
 			'bold'  => true,
-			'color' => array('rgb' => 'Black'),
-			'size'  => 15,
+			'color' => array('rgb' => '#00000'),
+			'size'  => 13,
 			'name'  => 'Verdana'
 		));
 		
 		// set header style
-		$objPHPExcel->getActiveSheet()->getStyle('A2:D2')->applyFromArray($headerStyleArray);
+		$objPHPExcel->getActiveSheet()->getStyle('A4:D4')->applyFromArray($headerStyleArray);
 		
 		$decimalPoints = $this->setDecimalPoint($decodedCompanyData->noOfDecimalPoints);
 		
-		$bSaveDynamicRow = "B".(count($decodedData)+4);
-		$dSaveDynamicRow = "D".(count($decodedData)+4);
+		$bSaveDynamicRow = "B".(count($decodedData)+6);
+		$dSaveDynamicRow = "D".(count($decodedData)+6);
 		
-		$objPHPExcel->getActiveSheet()->getStyle("B3:".$bSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
-		$objPHPExcel->getActiveSheet()->getStyle("D3:".$dSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		$objPHPExcel->getActiveSheet()->getStyle("B5:".$bSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		$objPHPExcel->getActiveSheet()->getStyle("D5:".$dSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
 		
 		// set title style
 		$objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($titleStyleArray);

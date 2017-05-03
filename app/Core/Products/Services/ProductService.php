@@ -12,6 +12,7 @@ use ERP\Core\Products\Entities\EncodeAllData;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Core\Products\Entities\EncodeProductTrnAllData;
 use ERP\Entities\Constants\ConstantClass;
+use ERP\Core\Products\Entities\EncodeAllStockSummaryData;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -118,6 +119,7 @@ class ProductService extends AbstractService
 		$invoiceNumberArray = array();
 		$productArray = func_get_arg(0);
 		$jfId = func_get_arg(1);
+		$clientName = func_get_arg(2);
 		
 		for($data=0;$data<count($productArray);$data++)
 		{
@@ -137,7 +139,7 @@ class ProductService extends AbstractService
 		}
 		// data pass to the model object for insert
 		$productModel = new ProductModel();
-		$status = $productModel->insertInOutwardData($discountArray,$discountValueArray,$discountTypeArray,$productIdArray,$qtyArray,$priceArray,$transactionDateArray,$companyIdArray,$transactionTypeArray,$billNumberArray,$invoiceNumberArray,$jfId,$taxArray);
+		$status = $productModel->insertInOutwardData($discountArray,$discountValueArray,$discountTypeArray,$productIdArray,$qtyArray,$priceArray,$transactionDateArray,$companyIdArray,$transactionTypeArray,$billNumberArray,$invoiceNumberArray,$jfId,$taxArray,$clientName);
 		return $status;
 	}
 	
@@ -392,6 +394,32 @@ class ProductService extends AbstractService
 		{
 			$encodedData = new EncodeData();
 			$encodeData = $encodedData->getEncodedData($status);
+			return $encodeData;
+		}
+	}
+	
+	/**
+     * get all the data as per given company-id and call the model for database selection opertation
+     * @param company-id
+     * @return error-message/array-data
+     */
+	public function getStockSummaryData($companyId)
+	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		$productModel = new ProductModel();
+		$status = $productModel->getStockSummaryData($companyId);
+		
+		if(strcmp($status,$exceptionArray['404'])==0)
+		{
+			return $exceptionArray['404'];
+		}
+		else
+		{
+			$encodedAllData = new EncodeAllStockSummaryData();
+			$encodeData = $encodedAllData->getEncodedStockSummaryData($status);
 			return $encodeData;
 		}
 	}

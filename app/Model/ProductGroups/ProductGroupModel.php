@@ -84,7 +84,7 @@ class ProductGroupModel extends Model
 		$getProductGrpKey = func_get_arg(1);
 		$getErrorArray = func_get_arg(2);
 		$productGrpDetail = "";
-		
+		$errorCount = count($getErrorArray);
 		if(count($getProductGrpData)!=0)
 		{
 			for($dataArray=0;$dataArray<count($getProductGrpData);$dataArray++)
@@ -94,36 +94,57 @@ class ProductGroupModel extends Model
 				$keyName = "";
 				for($data=0;$data<count($getProductGrpData[$dataArray]);$data++)
 				{
+					$flag=1;
 					if($data==3)
 					{
+						$flag=0;
 						//replace group-name with parent-group-id
 						$convertedString = preg_replace('/[^A-Za-z0-9]/', '',$getProductGrpData[$dataArray][$data]);
-						//database selection
-						DB::beginTransaction();
-						$groupIdResult = DB::connection($databaseName)->select("SELECT 
-						product_group_id 
-						from product_group_mst 
-						where REGEXP_REPLACE(product_group_name,'[^a-zA-Z0-9]','')='".$convertedString."' and 
-						deleted_at='0000-00-00 00:00:00'");
-						DB::commit();
-						if(count($groupIdResult)==0)
+						if($convertedString!="")
 						{
-							$getProductGrpData[$dataArray][$data]="";
+							//database selection
+							DB::beginTransaction();
+							$groupIdResult = DB::connection($databaseName)->select("SELECT 
+							product_group_id 
+							from product_group_mst 
+							where REGEXP_REPLACE(product_group_name,'[^a-zA-Z0-9]','')='".$convertedString."' and 
+							deleted_at='0000-00-00 00:00:00'");
+							DB::commit();
+							if(count($groupIdResult)==0)
+							{
+								//error array
+								$getErrorArray[$errorCount] = array();
+								$getErrorArray[$errorCount]['productGroupName'] = $getProductCatData[$dataArray][0];
+								$getErrorArray[$errorCount]['productGroupDescription'] = $getProductCatData[$dataArray][1];
+								$getErrorArray[$errorCount]['isDisplay'] = $getProductCatData[$dataArray][3];
+								$getErrorArray[$errorCount]['productParentGroupId'] = $getProductCatData[$dataArray][4];
+								$getErrorArray[$errorCount]['remark'] = "plz enter proper group-name in parent-group-name";
+								$errorCount++;
+							}
+							else
+							{
+								$flag=1;
+								$getProductGrpData[$dataArray][$data] = $groupIdResult[0]->product_group_id;
+							}
 						}
 						else
 						{
-							$getProductGrpData[$dataArray][$data] = $groupIdResult[0]->product_group_id;
+							$flag=1;
+							$getProductGrpData[$dataArray][$data]="";
 						}
 					}
-					if($data == (count($getProductGrpData[$dataArray])-1))
+					if($flag==1)
 					{
-						$productGrpData = $productGrpData."'".$getProductGrpData[$dataArray][$data]."'";
-						$keyName =$keyName.$getProductGrpKey[$dataArray][$data];
-					}
-					else
-					{
-						$productGrpData = $productGrpData."'".$getProductGrpData[$dataArray][$data]."',";
-						$keyName =$keyName.$getProductGrpKey[$dataArray][$data].",";
+						if($data == (count($getProductGrpData[$dataArray])-1))
+						{
+							$productGrpData = $productGrpData."'".$getProductGrpData[$dataArray][$data]."'";
+							$keyName =$keyName.$getProductGrpKey[$dataArray][$data];
+						}
+						else
+						{
+							$productGrpData = $productGrpData."'".$getProductGrpData[$dataArray][$data]."',";
+							$keyName =$keyName.$getProductGrpKey[$dataArray][$data].",";
+						}
 					}
 				}
 				//database insertion

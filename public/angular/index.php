@@ -461,30 +461,30 @@ include ('connection.php');
 				// formdata.append('branchId',$scope.formAdata.branch_id);
 	//----------------------------------Batch Insertion-----------------------------------------------------------------			
 				//multiple inventory insertion
-				 $scope.inventory=[{"isDisplay":'no',"productName":"Rangerddcd" ,"measurementUnit":'piece',"productCategoryId":'brand1',
-				 "size":45,'color':'red','purchasePrice':1200,'wholesaleMargin':12,'wholesaleMarginFlat':10,'semiWholesaleMargin':5,
-				 'vat':5,'mrp':2000,'margin':5,'marginFlat':5,'productDescription':'desc','additionalTax':5,'minimumStockLevel':5,
-				 'productGroupId':'category1','companyId':'Test','branchId':'MainBranch'},{"isDisplay":'no',"productName":"Rangerddcd",
-				 "measurementUnit":'piece',"productCategoryId":'brand1',
-				 "size":45,'color':'red','purchasePrice':1200,'wholesaleMargin':12,'wholesaleMarginFlat':10,'semiWholesaleMargin':5,
-				 'vat':5,'mrp':100,'margin':5,'marginFlat':10,'productDescription':'desc','additionalTax':5,'minimumStockLevel':5,
-				 'productGroupId':'category1','companyId':'Test','branchId':'MainBranch'}];
+				 // $scope.inventory=[{"isDisplay":'no',"productName":"Rangerddcd" ,"measurementUnit":'piece',"productCategoryId":'brand1',
+				 // "size":45,'color':'red','purchasePrice':1200,'wholesaleMargin':12,'wholesaleMarginFlat':10,'semiWholesaleMargin':5,
+				 // 'vat':5,'mrp':2000,'margin':5,'marginFlat':5,'productDescription':'desc','additionalTax':5,'minimumStockLevel':5,
+				 // 'productGroupId':'category1','companyId':'Test','branchId':'MainBranch'},{"isDisplay":'no',"productName":"Rangerddcd",
+				 // "measurementUnit":'piece',"productCategoryId":'brand1',
+				 // "size":45,'color':'red','purchasePrice':1200,'wholesaleMargin':12,'wholesaleMarginFlat':10,'semiWholesaleMargin':5,
+				 // 'vat':5,'mrp':100,'margin':5,'marginFlat':10,'productDescription':'desc','additionalTax':5,'minimumStockLevel':5,
+				 // 'productGroupId':'category1','companyId':'Test','branchId':'MainBranch'}];
 				 
-				 $scope.inventory1=['isDisplay','productName','measurementUnit','productCategoryId','size','color','purchasePrice','wholesaleMargin',
-				 'wholesaleMarginFlat','semiWholesaleMargin','vat','mrp','margin','marginFlat',
-				 'productDescription','additionalTax','minimumStockLevel','productGroupId','companyId','branchId'];
-				for(var i=0;i<$scope.inventory.length;i++)
-				{
-					var j = 0;
-					angular.forEach($scope.inventory[i], function (input,key) {
-						formdata.append("data["+i+"]["+j+"]",input);
-						j++;
-					});
-				}
-				for(var i=0;i<$scope.inventory1.length;i++)
-				{
-					formdata.append("mapping["+i+"]",$scope.inventory1[i]);
-				}
+				 // $scope.inventory1=['isDisplay','productName','measurementUnit','productCategoryId','size','color','purchasePrice','wholesaleMargin',
+				 // 'wholesaleMarginFlat','semiWholesaleMargin','vat','mrp','margin','marginFlat',
+				 // 'productDescription','additionalTax','minimumStockLevel','productGroupId','companyId','branchId'];
+				// for(var i=0;i<$scope.inventory.length;i++)
+				// {
+					// var j = 0;
+					// angular.forEach($scope.inventory[i], function (input,key) {
+						// formdata.append("data["+i+"]["+j+"]",input);
+						// j++;
+					// });
+				// }
+				// for(var i=0;i<$scope.inventory1.length;i++)
+				// {
+					// formdata.append("mapping["+i+"]",$scope.inventory1[i]);
+				// }
 				//multiple product-group insertion
 				 // $scope.inventory=[{"productGroupName":"Raehyhrddd" ,"isDisplay":'no',"productGroupDescription":'vcx',
 				 // "productGroupParentId":'sd'},{"productGroupName":"Rangertd" ,"isDisplay":'no',"productGroupDescription":'dsf',
@@ -576,10 +576,10 @@ include ('connection.php');
 				// $scope.user = [{"jfId":4,"data":[{"amount": 10 ,"amountType":" credit ","ledgerId":1},{"amount":2,"amountType":"credit","ledgerId":1},{"amount":12,"amountType":"debit","ledgerId":1}],"entryDate":"22-10-2015","companyId":14,
 				// "inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"companyId":14,"transactionDate":"22-10-2015","invoiceNumber":23,"billNumber":2}];
 				
-				// formdata.append('jfId',10);
+				// formdata.append('jfId',80);
  				// formdata.append('companyId',10);
 				// formdata.append('entryDate','20-04-2017');
-				// var json=[{"amount":100,"amountType":" debit ","ledgerId":90},{"amount":100,"amountType":"credit","ledgerId":78}];
+				// var json=[{"amount":100,"amountType":" debit ","ledgerId":77},{"amount":100,"amountType":"credit","ledgerId":83}];
 				
 				// var inventory = [{"productId": 1 ,"discount":'0',"discountType":"flat","price":900,"qty":10},{"productId": 1 ,"discount":'0',"discountType":"percentage","price":1000,"qty":4}];
 				// formdata.append('transactionDate','06-04-2017');
@@ -649,7 +649,7 @@ include ('connection.php');
 				// var productId =6;
 				// var productGrpId = 11;
 				// var productCatId = 18;
-				// var companyId=10;
+				var companyId=10;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -664,11 +664,13 @@ include ('connection.php');
 				// var journalId=207;
 				// var saleId = 371;
 				
+				var url="http://www.scerp1.com/reports/polish-report/company/"+companyId;
+				// var url="http://www.scerp1.com/products/company/"+companyId+"/stock-summary";
 				// var url="http://www.scerp1.com/settings";
 				
 				// var url="http://www.scerp1.com/product-groups/batch";
 				// var url="http://www.scerp1.com/product-categories/batch";
-				var url="http://www.scerp1.com/products/batch";
+				// var url="http://www.scerp1.com/products/batch";
 				
 				// var url="http://www.scerp1.com/accounting/taxation/purchase-detail";  //purchase
 				// var url="http://www.scerp1.com/accounting/taxation/purchase-tax";  //purchase tax
@@ -761,8 +763,8 @@ include ('connection.php');
                         url: url,
                         // type:'patch',
                         // type:'get',
-						 // method: 'get',
-						 method: 'post',
+						 method: 'get',
+						 // method: 'post',
 						 // method: 'patch',
 						// enctype:'multipart/formdata',
 						 // _method: 'patch',
@@ -773,7 +775,7 @@ include ('connection.php');
 						
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','type':'payment'},
-                        headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372'},
+                        // headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','type':'purchase'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','salesType':'retail_sales','operation':'excel'},
                         // headers: {'Content-Type': undefined,'type':'sales','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6',
@@ -782,12 +784,12 @@ include ('connection.php');
 						//,'productCategoryId':18,'productGroupId':10
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','type':'retail_sales','fromDate':'22-10-2015','toDate':'22-10-2015'}
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','productId':6,'fromDate':'21-10-2015','toDate':'20-01-2017','operation':'pdf'},
-                        // headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372'},
+                        headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','fromDate':'01/04/2017','toDate':'03/05/2017','operaton':'pdf'}
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','productName':'Spiderman','color':'BK.s'},
                         // headers: {'Content-Type':undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','productCode':'ABC_ABC_AB_CYCFDJ_BKBK_122T'},
                         // headers: {'Content-Type':undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','fromDate':'01/04/2017','toDate':'28/04/2017'},
                         // headers: {'Content-Type':'application/x-www-form-urlencoded','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
-						 data:formdata
+						 // data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

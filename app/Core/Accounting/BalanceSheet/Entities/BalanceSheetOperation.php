@@ -7,6 +7,7 @@ use PHPExcel;
 use PHPExcel_IOFactory;
 use PHPExcel_Style_Fill;
 use PHPExcel_Style_Alignment;
+use Carbon;
 use ERP\Core\Companies\Services\CompanyService;
 use stdclass;
 /**
@@ -37,6 +38,7 @@ class BalanceSheetOperation extends ConstantClass
 								<th style='border: 1px solid black;width:25%;'>Amount</th>
 							</tr>
 						</thead><tbody>";
+		
 		//calculate data
 		$balanceSheetArrayData = $this->getCalculatedData($decodedData);
 		$balanceArray = $balanceSheetArrayData['arrayData'];
@@ -44,6 +46,12 @@ class BalanceSheetOperation extends ConstantClass
 		$companyService = new CompanyService();
 		$companyDetail = $companyService->getCompanyData($decodedData[0]->ledger->companyId);
 		$decodedCompanyData = json_decode($companyDetail);
+		$mytime = Carbon\Carbon::now();
+		$currentDate = "At ".$mytime->toFormattedDateString();
+		
+		$heading = 	'<div style="text-align: center; font-weight: bold; font-size:20px;">'.$decodedCompanyData->companyName.'</div>
+					<div style="text-align: center; font-weight: bold; font-size:15px;">Balance Sheet</div>
+					<div style="text-align: center; font-weight: bold; font-size:15px;">'.$currentDate.'</div>';
 		
 		//make a table and set data for pdf
 		$bodyPart = "";
@@ -86,7 +94,7 @@ class BalanceSheetOperation extends ConstantClass
 		<td style='border: 1px solid black; width:50%; text-align:center;'>Total Liabilities & Equity</td>
 		<td style='border: 1px solid black;width:25%; text-align:center;'>".$balanceSheetArrayData['totalDebit']."</td></tr>";
 		$footerPart = "</tbody></table>";
-		$htmlBody = $headerPart.$bodyPart.$footerPart;
+		$htmlBody = $heading.$headerPart.$bodyPart.$footerPart;
 		
 		//generate pdf
 		$dateTime = date("d-m-Y h-i-s");
@@ -99,7 +107,7 @@ class BalanceSheetOperation extends ConstantClass
 		
 		$documentPathName = $path.$documentName;
 		$mpdf = new mPDF('A4','landscape');
-		$mpdf->SetHTMLHeader('<div style="text-align: center; font-weight: bold; font-size:20px;">Balance Sheet</div>');
+		// $mpdf->SetHTMLHeader('<div style="text-align: center; font-weight: bold; font-size:20px;">Balance Sheet</div>');
 		$mpdf->SetDisplayMode('fullpage');
 		$mpdf->WriteHTML($htmlBody);
 		$mpdf->Output($documentPathName,'F');
@@ -132,7 +140,12 @@ class BalanceSheetOperation extends ConstantClass
 								<th style='border: 1px solid black;width:25%;'>Amount</th>
 							</tr>
 						</thead><tbody>";
-		// print_r($decodedData);
+		$mytime = Carbon\Carbon::now();
+		$currentDate = "At ".$mytime->toFormattedDateString();
+		
+		$heading = 	'<div style="text-align: center; font-weight: bold; font-size:20px;">'.$decodedCompanyData->companyName.'</div>
+					<div style="text-align: center; font-weight: bold; font-size:15px;">Balance Sheet</div>
+					<div style="text-align: center; font-weight: bold; font-size:15px;">'.$currentDate.'</div>';
 		$creditArray = array();
 		$debitArray = array();
 		for($arrayData=0;$arrayData<count($decodedData);$arrayData++)
@@ -181,7 +194,7 @@ class BalanceSheetOperation extends ConstantClass
 			}
 		}
 		$footerPart = "</tbody></table>";
-		$htmlBody = $headerPart.$bodyPart.$footerPart;
+		$htmlBody = $heading.$headerPart.$bodyPart.$footerPart;
 		
 		//generate pdf
 		$dateTime = date("d-m-Y h-i-s");
@@ -194,7 +207,7 @@ class BalanceSheetOperation extends ConstantClass
 		
 		$documentPathName = $path.$documentName;
 		$mpdf = new mPDF('A4','landscape');
-		$mpdf->SetHTMLHeader('<div style="text-align: center; font-weight: bold; font-size:20px;">Balance Sheet</div>');
+		// $mpdf->SetHTMLHeader('<div style="text-align: center; font-weight: bold; font-size:20px;">Balance Sheet</div>');
 		$mpdf->SetDisplayMode('fullpage');
 		$mpdf->WriteHTML($htmlBody);
 		$mpdf->Output($documentPathName,'F');
@@ -235,15 +248,22 @@ class BalanceSheetOperation extends ConstantClass
 						->setCategory("Test result file");
 		$objPHPExcel->getActiveSheet()->setTitle('BalanceSheet');
 		
+		$mytime = Carbon\Carbon::now();
+		$currentDate = "At ".$mytime->toFormattedDateString();
+	
 		//heading-start
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,1, 'Balance-Sheet');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,1, $decodedCompanyData->companyName);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,2, 'Balance Sheet');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,3, $currentDate);
 		
 		$objPHPExcel->setActiveSheetIndex(0)->mergeCells('B1:C1');
+		$objPHPExcel->setActiveSheetIndex(0)->mergeCells('B2:C2');
+		$objPHPExcel->setActiveSheetIndex(0)->mergeCells('B3:C3');
 		
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,2, 'Assets');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,2, 'Amount');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,2, 'Liabilities');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,2, 'Amount');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,4, 'Assets');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,4, 'Amount');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,4, 'Liabilities');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,4, 'Amount');
 		//heading-end
 		
 		//set data into excel-sheet
@@ -251,34 +271,34 @@ class BalanceSheetOperation extends ConstantClass
 		{
 			if(count($balanceArray[$balanceSheetArray])==2)
 			{
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$balanceSheetArray+3,$balanceArray[$balanceSheetArray][0]->ledgerName);
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$balanceSheetArray+3,$balanceArray[$balanceSheetArray][0]->creditAmount);
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$balanceSheetArray+3,$balanceArray[$balanceSheetArray][1]->ledgerName);
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,$balanceSheetArray+3,$balanceArray[$balanceSheetArray][1]->debitAmount);
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$balanceSheetArray+5,$balanceArray[$balanceSheetArray][0]->ledgerName);
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$balanceSheetArray+5,$balanceArray[$balanceSheetArray][0]->creditAmount);
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$balanceSheetArray+5,$balanceArray[$balanceSheetArray][1]->ledgerName);
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,$balanceSheetArray+5,$balanceArray[$balanceSheetArray][1]->debitAmount);
 			}
 			else
 			{
 				if(array_key_exists('0',$balanceArray[$balanceSheetArray]))
 				{
 					
-					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$balanceSheetArray+3,$balanceArray[$balanceSheetArray][0]->ledgerName);
-					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$balanceSheetArray+3,$balanceArray[$balanceSheetArray][0]->creditAmount);
-					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$balanceSheetArray+3,'');
-					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,$balanceSheetArray+3,'');
+					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$balanceSheetArray+5,$balanceArray[$balanceSheetArray][0]->ledgerName);
+					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$balanceSheetArray+5,$balanceArray[$balanceSheetArray][0]->creditAmount);
+					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$balanceSheetArray+5,'');
+					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,$balanceSheetArray+5,'');
 				}
 				else
 				{
-					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$balanceSheetArray+3,'');
-					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$balanceSheetArray+3,'');
-					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$balanceSheetArray+3,$balanceArray[$balanceSheetArray][1]->ledgerName);
-					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,$balanceSheetArray+3,$balanceArray[$balanceSheetArray][1]->debitAmount);
+					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$balanceSheetArray+5,'');
+					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$balanceSheetArray+5,'');
+					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$balanceSheetArray+5,$balanceArray[$balanceSheetArray][1]->ledgerName);
+					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,$balanceSheetArray+5,$balanceArray[$balanceSheetArray][1]->debitAmount);
 				}
 			}
 		}
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($balanceArray)+3,'Total Assets');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($balanceArray)+3,$balanceSheetArrayData['totalCredit']);
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($balanceArray)+3,'Total Liabilities');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,count($balanceArray)+3,$balanceSheetArrayData['totalDebit']);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($balanceArray)+5,'Total Assets');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($balanceArray)+5,$balanceSheetArrayData['totalCredit']);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($balanceArray)+5,'Total Liabilities');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,count($balanceArray)+5,$balanceSheetArrayData['totalDebit']);
 		
 		// style for header
 		$headerStyleArray = array(
@@ -293,21 +313,21 @@ class BalanceSheetOperation extends ConstantClass
 		$titleStyleArray = array(
 		'font'  => array(
 			'bold'  => true,
-			'color' => array('rgb' => 'Black'),
-			'size'  => 15,
+			'color' => array('rgb' => '#00000'),
+			'size'  => 13,
 			'name'  => 'Verdana'
 		));
 		
 		// set header style
-		$objPHPExcel->getActiveSheet()->getStyle('A2:D2')->applyFromArray($headerStyleArray);
+		$objPHPExcel->getActiveSheet()->getStyle('A4:D4')->applyFromArray($headerStyleArray);
 		
 		$decimalPoints = $this->setDecimalPoint($decodedCompanyData->noOfDecimalPoints);
 		
-		$bSaveDynamicRow = "B".(count($balanceArray)+3);
-		$dSaveDynamicRow = "D".(count($balanceArray)+3);
+		$bSaveDynamicRow = "B".(count($balanceArray)+5);
+		$dSaveDynamicRow = "D".(count($balanceArray)+5);
 		
-		$objPHPExcel->getActiveSheet()->getStyle("B3:".$bSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
-		$objPHPExcel->getActiveSheet()->getStyle("D3:".$dSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		$objPHPExcel->getActiveSheet()->getStyle("B5:".$bSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		$objPHPExcel->getActiveSheet()->getStyle("D5:".$dSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
 		
 		// set title style
 		$objPHPExcel->getActiveSheet()->getStyle('B1:C1')->applyFromArray($titleStyleArray);
@@ -357,13 +377,20 @@ class BalanceSheetOperation extends ConstantClass
 						->setCategory("Test result file");
 		$objPHPExcel->getActiveSheet()->setTitle('BalanceSheet');
 		
+		$mytime = Carbon\Carbon::now();
+		$currentDate = "At ".$mytime->toFormattedDateString();
+					
 		//heading-start
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,1, 'Balance-Sheet');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,1, $decodedCompanyData->companyName);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,2, 'Balance Sheet');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,3, $currentDate);
 		
 		$objPHPExcel->setActiveSheetIndex(0)->mergeCells('A1:B1');
+		$objPHPExcel->setActiveSheetIndex(0)->mergeCells('A2:B2');
+		$objPHPExcel->setActiveSheetIndex(0)->mergeCells('A3:B3');
 		
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,2, 'Assets & Liabilities');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,2, 'Amount');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,4, 'Assets & Liabilities');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,4, 'Amount');
 		//heading-end
 		
 		$creditArray = array();
@@ -393,24 +420,24 @@ class BalanceSheetOperation extends ConstantClass
 		$titleStyleArray = array(
 		'font'  => array(
 			'bold'  => true,
-			'color' => array('rgb' => 'Black'),
-			'size'  => 15,
+			'color' => array('rgb' => '#00000'),
+			'size'  => 13,
 			'name'  => 'Verdana'
 		));
 		$creditAmountTotal=0;
 		$debitAmountTotal=0;
 		for($arrayData=0;$arrayData<count($creditArray);$arrayData++)
 		{
-			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+3,$creditArray[$arrayData]->ledger->ledgerName);
-			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+3,$creditArray[$arrayData]->amount);
+			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+5,$creditArray[$arrayData]->ledger->ledgerName);
+			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+5,$creditArray[$arrayData]->amount);
 			$creditAmountTotal = $creditAmountTotal+$creditArray[$arrayData]->amount;
 			
 			if($arrayData == count($creditArray)-1)
 			{
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+4,"Total Assets");
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+4,$creditAmountTotal);
-				$aCount = "A".($arrayData+4);
-				$bCount = "B".($arrayData+4);
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+6,"Total Assets");
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+6,$creditAmountTotal);
+				$aCount = "A".($arrayData+6);
+				$bCount = "B".($arrayData+6);
 				$objPHPExcel->getActiveSheet()->getStyle($aCount.":".$bCount)->applyFromArray($headerStyleArray);
 			}
 		}
@@ -418,27 +445,27 @@ class BalanceSheetOperation extends ConstantClass
 		
 		for($arrayData=0;$arrayData<count($debitArray);$arrayData++)
 		{
-			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$totalCreditRow+$arrayData+3,$debitArray[$arrayData]->ledger->ledgerName);
-			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$totalCreditRow+$arrayData+3,$debitArray[$arrayData]->amount);
+			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$totalCreditRow+$arrayData+5,$debitArray[$arrayData]->ledger->ledgerName);
+			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$totalCreditRow+$arrayData+5,$debitArray[$arrayData]->amount);
 			$debitAmountTotal = $debitAmountTotal+$debitArray[$arrayData]->amount;
 			if($arrayData == count($debitArray)-1)
 			{
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$totalCreditRow+$arrayData+4,"Total Liabilities");
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$totalCreditRow+$arrayData+4,$debitAmountTotal);
-				$aCount = "A".($totalCreditRow+$arrayData+4);
-				$bCount = "B".($totalCreditRow+$arrayData+4);
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$totalCreditRow+$arrayData+6,"Total Liabilities");
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$totalCreditRow+$arrayData+6,$debitAmountTotal);
+				$aCount = "A".($totalCreditRow+$arrayData+6);
+				$bCount = "B".($totalCreditRow+$arrayData+6);
 				$objPHPExcel->getActiveSheet()->getStyle($aCount.":".$bCount)->applyFromArray($headerStyleArray);
 			}
 		}
 		// set header style
-		$objPHPExcel->getActiveSheet()->getStyle('A2:B2')->applyFromArray($headerStyleArray);
+		$objPHPExcel->getActiveSheet()->getStyle('A4:B4')->applyFromArray($headerStyleArray);
 		
 		$decimalPoints = $this->setDecimalPoint($decodedCompanyData->noOfDecimalPoints);
 		
-		$bSaveDynamicRow = "B".(count($creditArray)+count($debitArray)+2);
+		$bSaveDynamicRow = "B".(count($creditArray)+count($debitArray)+4);
 		// $cSaveDynamicRow = "C".(count($creditArray)+count($debitArray)+2);
 		
-		$objPHPExcel->getActiveSheet()->getStyle("B3:".$bSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		$objPHPExcel->getActiveSheet()->getStyle("B5:".$bSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
 		// $objPHPExcel->getActiveSheet()->getStyle("C3:".$cSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
 		
 		// set title style

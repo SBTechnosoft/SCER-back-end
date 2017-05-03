@@ -194,6 +194,22 @@
 
 **NOTES:** List the product-trn data as per given parameter in header and companyId (stock-register)
 
+##### `GET products/company/{companyId}/stock-summary`
++ Header 
+	- 'authenticationToken':''
++ Error Message
+
+			{
+				... Error Message
+			}
++ Response
+
+			{
+				 ... Standard Product-Trnsaction-Summary Object		
+			}
+
+**NOTES:** List the product-trn-summary data as per given companyId (stock-register-summary)
+
 ##### `GET products/company/{companyId}/transaction`
 + Header 
 	- 'authenticationToken':''
@@ -220,7 +236,7 @@
 
 ##### `GET /products/{productId}`
 + Header
-	- Authentication Token
+	- 'authenticationToken':''
 
 + Error Message
 
@@ -237,7 +253,7 @@
 
 ##### `GET /products`
 + Header
-	- Authentication Token
+	- 'authenticationToken':''
 	- 'productCode':'String'
 + Error Message
 
@@ -254,7 +270,7 @@
 
 ##### `GET /products`
 + Header
-	- Authentication Token,
+	- 'authenticationToken':''
 	- 'jfId':''
 + Error Message
 
@@ -273,7 +289,7 @@
        
 ##### `PATCH /products/{productId}`
 + Header
-	- Authentication Token
+	- 'authenticationToken':''
 
 
 + Body
@@ -294,7 +310,8 @@
 ##### Deletes Products    
        
 ##### `DELETE /products/{productId}`
-
++Header
+	- 'authenticationToken':''
 + Error Message
 
 			{

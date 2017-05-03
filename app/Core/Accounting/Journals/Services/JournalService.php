@@ -131,6 +131,7 @@ class JournalService
 		$processArray = array();
 		$processArray = func_get_arg(0);
 		$companyId = func_get_arg(1);
+		$headerType = func_get_arg(2);
 		$fromDate = $processArray->getFromDate();
 		$toDate = $processArray->getToDate();
 		

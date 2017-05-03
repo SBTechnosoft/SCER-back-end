@@ -34,6 +34,22 @@
 				"entryDate":Date,
                 "companyId":int
 			}
+
+#### Standard Journals Purchase Persistable Object
+			{
+            	"data":
+				[
+					{
+						"amount":decimal,
+						"amountType":Enum,
+						"ledgerId":int,	
+					},
+					...
+				]
+				"entryDate":Date,
+                "companyId":int,
+				"clientName":string
+			}
 			
 ##### Standard Inventory Persistable Object
 			{

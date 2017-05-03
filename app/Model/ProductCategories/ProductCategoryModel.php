@@ -84,6 +84,8 @@ class ProductCategoryModel extends Model
 		$getProductCatKey = func_get_arg(1);
 		$getErrorArray = func_get_arg(2);
 		$productCatDetail = "";
+		
+		$errorCount = count($getErrorArray);
 		if(count($getProductCatData)!=0)
 		{
 			for($dataArray=0;$dataArray<count($getProductCatData);$dataArray++)
@@ -92,36 +94,57 @@ class ProductCategoryModel extends Model
 				$keyName = "";
 				for($data=0;$data<count($getProductCatData[$dataArray]);$data++)
 				{
+					$flag=1;
 					if($data==3)
 					{
+						$flag=0;
 						//replace group-name with parent-group-id
 						$convertedString = preg_replace('/[^A-Za-z0-9]/', '',$getProductCatData[$dataArray][$data]);
-						//database selection
-						DB::beginTransaction();
-						$categoryIdResult = DB::connection($databaseName)->select("SELECT 
-						product_category_id 
-						from product_category_mst 
-						where REGEXP_REPLACE(product_category_name,'[^a-zA-Z0-9]','')='".$convertedString."' and 
-						deleted_at='0000-00-00 00:00:00'");
-						DB::commit();
-						if(count($categoryIdResult)==0)
+						if($convertedString!="")
 						{
-							$getProductCatData[$dataArray][$data]="";
+							//database selection
+							DB::beginTransaction();
+							$categoryIdResult = DB::connection($databaseName)->select("SELECT 
+							product_category_id 
+							from product_category_mst 
+							where REGEXP_REPLACE(product_category_name,'[^a-zA-Z0-9]','')='".$convertedString."' and 
+							deleted_at='0000-00-00 00:00:00'");
+							DB::commit();
+							if(count($categoryIdResult)==0)
+							{
+								$getErrorArray[$errorCount] = array();
+								//through error
+								$getErrorArray[$errorCount]['productCategoryName'] = $getProductCatData[$dataArray][0];
+								$getErrorArray[$errorCount]['productCategoryDescription'] = $getProductCatData[$dataArray][1];
+								$getErrorArray[$errorCount]['isDisplay'] = $getProductCatData[$dataArray][2];
+								$getErrorArray[$errorCount]['productParentCategoryId'] = $getProductCatData[$dataArray][3];
+								$getErrorArray[$errorCount]['remark'] = "plz enter proper category-name in parent-category-name";
+								$errorCount++;
+							}
+							else
+							{
+								$flag=1;
+								$getProductCatData[$dataArray][$data] = $categoryIdResult[0]->product_category_id;
+							}
 						}
 						else
 						{
-							$getProductCatData[$dataArray][$data] = $categoryIdResult[0]->product_category_id;
+							$flag=1;
+							$getProductCatData[$dataArray][$data]="";
 						}
 					}
-					if($data == (count($getProductCatData[$dataArray])-1))
+					if($flag==1)
 					{
-						$productCatData = $productCatData."'".$getProductCatData[$dataArray][$data]."'";
-						$keyName =$keyName.$getProductCatKey[$dataArray][$data];
-					}
-					else
-					{
-						$productCatData = $productCatData."'".$getProductCatData[$dataArray][$data]."',";
-						$keyName =$keyName.$getProductCatKey[$dataArray][$data].",";
+						if($data == (count($getProductCatData[$dataArray])-1))
+						{
+							$productCatData = $productCatData."'".$getProductCatData[$dataArray][$data]."'";
+							$keyName =$keyName.$getProductCatKey[$dataArray][$data];
+						}
+						else
+						{
+							$productCatData = $productCatData."'".$getProductCatData[$dataArray][$data]."',";
+							$keyName =$keyName.$getProductCatKey[$dataArray][$data].",";
+						}
 					}
 				}
 				//database insertion

@@ -19,6 +19,7 @@ use ERP\Entities\Constants\ConstantClass;
 use Illuminate\Container\Container;
 use ERP\Entities\AuthenticationClass\TokenAuthentication;
 use ERP\Api\V1_0\Documents\Controllers\DocumentController;
+use ERP\Model\Products\ProductModel;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -124,7 +125,8 @@ class JournalController extends BaseController implements ContainerInterface
 						$productPersistable = $productProcessor->createPersistableInOutWard($this->request,$outward);
 						if(is_array($productPersistable))
 						{
-							$status = $productService->insertInOutward($productPersistable,$jfId);
+							$clientName = "";
+							$status = $productService->insertInOutward($productPersistable,$jfId,$clientName);
 							return $status;
 						}
 						else
@@ -137,9 +139,10 @@ class JournalController extends BaseController implements ContainerInterface
 						$inward = $constantArray['journalInward'];
 						$productProcessor = new ProductProcessor();
 						$productPersistable = $productProcessor->createPersistableInOutWard($this->request,$inward);
-						if(is_array($productPersistable))
+						$clientName = $productProcessor->processClientName($request->input());
+						if(is_array($productPersistable) && is_array($clientName))
 						{
-							$status = $productService->insertInOutward($productPersistable,$jfId);
+							$status = $productService->insertInOutward($productPersistable,$jfId,$clientName['client_name']);
 							return $status;
 						}
 						else
@@ -264,14 +267,14 @@ class JournalController extends BaseController implements ContainerInterface
 			//get the data between fromDate and toDate
 			else if(array_key_exists($constantArray['fromDate'],$request->header()) && array_key_exists($constantArray['toDate'],$request->header()))
 			{
-				if(array_key_exists('type',$request->header()))
+				if(array_key_exists('journaltype',$request->header()))
 				{
 					$this->request = $request;
 					$processor = new JournalProcessor();
 					$journalPersistable = new JournalPersistable();
 					$journalPersistable = $processor->createPersistableData($this->request);
 					$journalService= new JournalService();
-					$status = $journalService->getJournalDetail($journalPersistable,$companyId,$request->header()['type'][0]);
+					$status = $journalService->getJournalDetail($journalPersistable,$companyId,$request->header()['journaltype'][0]);
 					return $status;
 				}
 				else
@@ -605,6 +608,7 @@ class JournalController extends BaseController implements ContainerInterface
 				$journalService= new JournalService();		
 				$journalModel = new JournalModel();
 				$jfIdArrayData = $journalModel->getJfIdArrayData($jfId);
+				$clientNameFlag=0;
 				$entryDateFlag=0;
 				$companyIdFlag=0;
 				$journalArrayFlag=0;
@@ -665,6 +669,10 @@ class JournalController extends BaseController implements ContainerInterface
 								$entryDateFlag=1;
 								$journalArray['entryDate']=$inputArray['entryDate'];
 							}
+							if(array_key_exists('clientName',$inputArray))
+							{
+								$clientNameFlag=1;
+							}
 							if(array_key_exists('transactionDate',$inputArray))
 							{
 								$transactionDateFlag=1;
@@ -690,6 +698,29 @@ class JournalController extends BaseController implements ContainerInterface
 							{
 								$taxFlag=1;
 								$productArray['tax'] = $inputArray['tax'];
+							}
+							if($clientNameFlag==1)
+							{
+								//update client name
+								$productProcessor = new ProductProcessor();
+								$clientProcessResult = $productProcessor->processClientName($inputArray);
+								if(is_array($clientProcessResult))
+								{
+									$productModel = new ProductModel();
+									$clientUpdateResult = $productModel->updateClientName($clientProcessResult,$jfId);
+									if(strcmp($clientUpdateResult,$exceptionArray['500'])==0)
+									{
+										return $clientUpdateResult;
+									}
+								}
+								else
+								{
+									return $clientProcessResult;
+								}
+								if(count($inputArray)==1)
+								{
+									return $clientUpdateResult;
+								}
 							}
 							//check array exists in request 
 							if(array_key_exists($constantArray['data'],$this->request->input()))

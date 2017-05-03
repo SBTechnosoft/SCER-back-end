@@ -47,6 +47,7 @@ class BalanceSheetModel extends Model
 		}
 		
 		$mytime = Carbon\Carbon::now();
+		
 		$currentDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $mytime)->format('Y-m-d');
 		$dateTime = $mytime->toDateTimeString();
 		$yearStartDate = $mytime->year.'-04-01 00:00:00';
@@ -54,13 +55,15 @@ class BalanceSheetModel extends Model
 		{
 			$toYear = $mytime->year+1;
 			$fromDate = $mytime->year.'-04-01 00:00:00';
-			$toDate = $toYear.'-03-31 00:00:00';
+			$toDate = $mytime;
+			// $toDate = $toYear.'-03-31 00:00:00';
 		}
 		else
 		{
 			$fromYear = $mytime->year-1;
 			$fromDate = $fromYear.'-04-01 00:00:00';
-			$toDate = $mytime->year.'-03-31 00:00:00';
+			$toDate = $mytime;
+			// $toDate = $mytime->year.'-03-31 00:00:00';
 		}
 		for($ledgerData=0;$ledgerData<count($ledgerResult);$ledgerData++)
 		{

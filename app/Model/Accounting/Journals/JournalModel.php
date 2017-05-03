@@ -709,7 +709,7 @@ class JournalModel extends Model
 				}
 				else
 				{
-					//get sale document
+					//get purchase document
 					DB::beginTransaction();
 					$journalDocumentResult = DB::connection($databaseName)->select("SELECT 
 					document_id,
@@ -737,6 +737,19 @@ class JournalModel extends Model
 						$documentArray[$arrayData]['documentUrl'] = $constantArray['journalDocumentUrl'];
 					}
 					$ledgerTransactionarray['document'] = $documentArray;
+				}
+				if(strcmp($journalType,"purchase")==0)
+				{
+					//get clientName from purchase-bill
+					DB::beginTransaction();
+					$clientNameResult = DB::connection($databaseName)->select("SELECT 
+					client_name
+					from purchase_bill
+					WHERE deleted_at='0000-00-00 00:00:00' and 
+					jf_id='".$jfId[0]."'");
+					DB::commit();
+					
+					$ledgerTransactionarray['clientName'] = $clientNameResult[0]->client_name;
 				}
 				return json_encode($ledgerTransactionarray);
 			}

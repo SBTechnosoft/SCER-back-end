@@ -984,6 +984,36 @@ class ProductProcessor extends BaseProcessor
 	}
 	
 	/**
+     * process client name
+     * $param request input
+     * @return clientname
+     */	
+	public function processClientName($requestInput)
+	{
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		$trimclientName = trim($requestInput['clientName']);
+		if($trimclientName=="")
+		{
+			return $exceptionArray['invalidClientName'];
+		}
+		$result =  preg_match("/^[a-zA-Z &_`#().\'-]*$/",$trimclientName);
+		if($result == 1)
+		{
+		  	$dataArray = array();
+			$dataArray['client_name'] = $trimclientName;
+			return $dataArray;
+		}
+		else
+		{
+			return $exceptionArray['invalidClientName'];
+		}
+
+	}
+	
+	/**
      * process header data
      * $param request header
      * @return persistable object of header data

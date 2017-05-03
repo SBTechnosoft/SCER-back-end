@@ -444,7 +444,7 @@ class ProductController extends BaseController implements ContainerInterface
 	
 	/**
      * get the specified resource.
-     * @param $companyId
+     * @param $companyId and request object
      */
     public function getPriceListDocumentPath(Request $request,$companyId)
     {
@@ -478,7 +478,7 @@ class ProductController extends BaseController implements ContainerInterface
 	
 	/**
      * get the specified resource.
-     * @param $productId and $branchId
+     * @param $companyId and request object
      */
     public function getProductTransactionData(Request $request,$companyId)
     {
@@ -510,6 +510,32 @@ class ProductController extends BaseController implements ContainerInterface
 			{
 				return $exceptionArray['content'];
 			}
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+	}
+	
+	/**
+     * get the specified resource.
+     * @param $companyId and request object
+     */
+    public function getStockSummaryData(Request $request,$companyId)
+    {
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$productService= new ProductService();
+			$status = $productService->getStockSummaryData($companyId);
+			return $status;
 		}
 		else
 		{

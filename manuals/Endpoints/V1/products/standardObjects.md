@@ -61,7 +61,23 @@
             "branchId" : int,
 			"isDisplay": Enum,
 		}
-		
+##### Standard Product-Trnsaction-Summary Object
+		{
+			"productTrnSummaryId":int,
+			"qty":int,
+			 "company": {
+                ... Standard Company Object
+            },
+            "branch": {
+                ... Standard Branch Object
+            }
+			"product":{
+				... Standard Products Object
+			}
+			"createdAt":timestamp,
+			"updatedAt":datetime
+			
+		}		
 ##### Standard Product Transaction Persistable Object
 			{
             	"inventory":

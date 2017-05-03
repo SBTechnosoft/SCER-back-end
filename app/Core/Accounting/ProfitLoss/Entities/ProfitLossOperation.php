@@ -10,6 +10,7 @@ use PHPExcel_IOFactory;
 use PHPExcel_Style_Fill;
 use PHPExcel_Style_Alignment;
 use PHPExcel_Style_NumberFormat;
+use Carbon;
 /**
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -42,6 +43,22 @@ class ProfitLossOperation extends CompanyService
 		$companyDetail = $profitLoss->getCompanyData($decodedData[0]->ledger->companyId);
 		$decodedCompanyData = json_decode($companyDetail);
 		
+		//calculating current accounting-year
+		$mytime = Carbon\Carbon::now();
+		$currentDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $mytime)->format('Y-m-d');
+		$dateTime = $mytime->toDateTimeString();
+		$yearStartDate = $mytime->year.'-04-01 00:00:00';
+		if($dateTime >= $yearStartDate)
+		{
+			$year = $mytime->year+1;
+		}
+		else
+		{
+			$year = $mytime->year+1;
+		}
+		$heading = 	'<div style="text-align: center; font-weight: bold; font-size:20px;">'.$decodedCompanyData->companyName.'</div>
+					<div style="text-align: center; font-weight: bold; font-size:15px;">Statement of Profit and Loss</div>
+					<div style="text-align: center; font-weight: bold; font-size:15px;">For the Year Ended March 31,'.$year.'</div>';
 		for($arrayData=0;$arrayData<count($decodedData);$arrayData++)
 		{
 			
@@ -84,7 +101,7 @@ class ProfitLossOperation extends CompanyService
 							<td style='border: 1px solid black; width:25%;text-align:center;'>".$differenceCr."</td>
 							<td style='border: 1px solid black;width:25%; text-align:center;'>".$differenceDr."</td></tr>";
 		$footerPart = "</tbody></table>";
-		$htmlBody = $headerPart.$bodyPart.$footerPart;
+		$htmlBody = $heading.$headerPart.$bodyPart.$footerPart;
 		
 		//generate pdf
 		$dateTime = date("d-m-Y h-i-s");
@@ -95,20 +112,10 @@ class ProfitLossOperation extends CompanyService
 		
 		$path = $constantArray['profitLossPdf'];
 		
-		//delete older files
-		// $files = glob($path.'*'); // get all file names
-		// foreach($files as $file)
-		// { 
-			// iterate files
-			// if(is_file($file))
-			// {
-				// unlink($file); // delete file
-			// }
-		// }
 		
 		$documentPathName = $path.$documentName;
 		$mpdf = new mPDF('A4','landscape');
-		$mpdf->SetHTMLHeader('<div style="text-align: center; font-weight: bold; font-size:20px;">Profit Loss</div>');
+		// $mpdf->SetHTMLHeader('<div style="text-align: center; font-weight: bold; font-size:20px;">Profit Loss</div>');
 		$mpdf->SetDisplayMode('fullpage');
 		$mpdf->WriteHTML($htmlBody);
 		$mpdf->Output($documentPathName,'F');
@@ -145,6 +152,23 @@ class ProfitLossOperation extends CompanyService
 		$companyDetail = $profitLoss->getCompanyData($decodedData[0]->ledger->companyId);
 		$decodedCompanyData = json_decode($companyDetail);
 		
+		//calculating current accounting-year
+		$mytime = Carbon\Carbon::now();
+		$currentDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $mytime)->format('Y-m-d');
+		$dateTime = $mytime->toDateTimeString();
+		$yearStartDate = $mytime->year.'-04-01 00:00:00';
+		if($dateTime >= $yearStartDate)
+		{
+			$year = $mytime->year+1;
+		}
+		else
+		{
+			$year = $mytime->year+1;
+		}
+		$heading = 	'<div style="text-align: center; font-weight: bold; font-size:20px;">'.$decodedCompanyData->companyName.'</div>
+					<div style="text-align: center; font-weight: bold; font-size:15px;">Statement of Profit and Loss</div>
+					<div style="text-align: center; font-weight: bold; font-size:15px;">For the Year Ended March 31,'.$year.'</div>';
+					
 		$calculatedData = $this->getCalculatedData($decodedData);
 		$decodedData = $calculatedData['arrayData'];
 		
@@ -205,7 +229,7 @@ class ProfitLossOperation extends CompanyService
 							<td style='border: 1px solid black;width:25%; text-align:center;'>Difference</td>;
 							<td style='border: 1px solid black;width:25%; text-align:center;'>".$differenceDr."</td></tr>";
 		$footerPart = "</tbody></table>";
-		$htmlBody = $headerPart.$bodyPart.$footerPart;
+		$htmlBody = $heading.$headerPart.$bodyPart.$footerPart;
 		
 		//generate pdf
 		$dateTime = date("d-m-Y h-i-s");
@@ -216,20 +240,9 @@ class ProfitLossOperation extends CompanyService
 		
 		$path = $constantArray['profitLossPdf'];
 		
-		//delete older files
-		// $files = glob($path.'*'); // get all file names
-		// foreach($files as $file)
-		// { 
-			// iterate files
-			// if(is_file($file))
-			// {
-				// unlink($file); // delete file
-			// }
-		// }
-		
 		$documentPathName = $path.$documentName;
 		$mpdf = new mPDF('A4','landscape');
-		$mpdf->SetHTMLHeader('<div style="text-align: center; font-weight: bold; font-size:20px;">Profit Loss</div>');
+		// $mpdf->SetHTMLHeader('<div style="text-align: center; font-weight: bold; font-size:20px;">Profit Loss</div>');
 		$mpdf->SetDisplayMode('fullpage');
 		$mpdf->WriteHTML($htmlBody);
 		$mpdf->Output($documentPathName,'F');
@@ -269,15 +282,31 @@ class ProfitLossOperation extends CompanyService
 		$calculatedData = $this->getCalculatedData($decodedData);
 		$decodedData = $calculatedData['arrayData'];
 		
+		//calculating current accounting-year
+		$mytime = Carbon\Carbon::now();
+		$currentDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $mytime)->format('Y-m-d');
+		$dateTime = $mytime->toDateTimeString();
+		$yearStartDate = $mytime->year.'-04-01 00:00:00';
+		if($dateTime >= $yearStartDate)
+		{
+			$year = $mytime->year+1;
+		}
+		else
+		{
+			$year = $mytime->year+1;
+		}
+				
 		//heading-start
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,1, 'Profit-Loss');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,1, $decodedCompanyData->companyName);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,2, 'Statement of Profit and Loss');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,3, 'For the Year Ended March 31,'.$year);
 		
 		$objPHPExcel->setActiveSheetIndex(0)->mergeCells('B1:C1');
 		
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,2, 'Ledger-Name');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,2, 'Income');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,2, 'Ledger-Name');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,2, 'Expense');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,4, 'Ledger-Name');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,4, 'Income');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,4, 'Ledger-Name');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,4, 'Expense');
 		//heading-end
 		$creditAmountTotal=0;
 		$debitAmountTotal=0;
@@ -285,27 +314,27 @@ class ProfitLossOperation extends CompanyService
 		{
 			if(count($decodedData[$arrayData])==2)
 			{
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+3,$decodedData[$arrayData][0]->ledgerName);
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+3,$decodedData[$arrayData][0]->creditAmount);
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$arrayData+3,$decodedData[$arrayData][1]->ledgerName);
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,$arrayData+3,$decodedData[$arrayData][1]->debitAmount);
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+5,$decodedData[$arrayData][0]->ledgerName);
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+5,$decodedData[$arrayData][0]->creditAmount);
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$arrayData+5,$decodedData[$arrayData][1]->ledgerName);
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,$arrayData+5,$decodedData[$arrayData][1]->debitAmount);
 									
 			}
 			else
 			{
 				if(array_key_exists("0",$decodedData[$arrayData]))
 				{
-					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+3,$decodedData[$arrayData][0]->ledgerName);
-					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+3,$decodedData[$arrayData][0]->creditAmount);
-					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$arrayData+3,'');
-					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,$arrayData+3,'');
+					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+5,$decodedData[$arrayData][0]->ledgerName);
+					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+5,$decodedData[$arrayData][0]->creditAmount);
+					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$arrayData+5,'');
+					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,$arrayData+5,'');
 				}
 				else
 				{
-					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+3,'');
-					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+3,'');
-					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$arrayData+3,$decodedData[$arrayData][1]->ledgerName);
-					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,$arrayData+3,$decodedData[$arrayData][1]->debitAmount);
+					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+5,'');
+					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+5,'');
+					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$arrayData+5,$decodedData[$arrayData][1]->ledgerName);
+					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,$arrayData+5,$decodedData[$arrayData][1]->debitAmount);
 				}
 			}
 		}
@@ -319,15 +348,15 @@ class ProfitLossOperation extends CompanyService
 			$differenceCr = $calculatedData['totalCredit']-$calculatedData['totalDebit'];
 			$differenceDr = "-";
 		}
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+3,'Total');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+3,$calculatedData['totalCredit']);
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+3,'Total');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,count($decodedData)+3,$calculatedData['totalDebit']);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+5,'Total');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+5,$calculatedData['totalCredit']);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+5,'Total');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,count($decodedData)+5,$calculatedData['totalDebit']);
 		
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+4,'Difference');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+4,$differenceCr);
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+4,'Difference');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,count($decodedData)+4,$differenceDr);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+6,'Difference');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+6,$differenceCr);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+6,'Difference');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,count($decodedData)+6,$differenceDr);
 		
 		// style for header
 		$headerStyleArray = array(
@@ -342,20 +371,20 @@ class ProfitLossOperation extends CompanyService
 		$titleStyleArray = array(
 		'font'  => array(
 			'bold'  => true,
-			'color' => array('rgb' => 'Black'),
-			'size'  => 15,
+			'color' => array('rgb' => '#00000'),
+			'size'  => 13,
 			'name'  => 'Verdana'
 		));
 		// set header style
-		$objPHPExcel->getActiveSheet()->getStyle('A2:D2')->applyFromArray($headerStyleArray);
+		$objPHPExcel->getActiveSheet()->getStyle('A4:D4')->applyFromArray($headerStyleArray);
 		
 		$decimalPoints = $this->setDecimalPoint($decodedCompanyData->noOfDecimalPoints);
 		
-		$bSaveDynamicRow = "B".(count($decodedData)+4);
-		$dSaveDynamicRow = "D".(count($decodedData)+4);
+		$bSaveDynamicRow = "B".(count($decodedData)+6);
+		$dSaveDynamicRow = "D".(count($decodedData)+6);
 		
-		$objPHPExcel->getActiveSheet()->getStyle("B3:".$bSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
-		$objPHPExcel->getActiveSheet()->getStyle("D3:".$dSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		$objPHPExcel->getActiveSheet()->getStyle("B5:".$bSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		$objPHPExcel->getActiveSheet()->getStyle("D5:".$dSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
 		
 		// set title style
 		$objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($titleStyleArray);
@@ -405,12 +434,28 @@ class ProfitLossOperation extends CompanyService
 						->setCategory("Test result file");
 		$objPHPExcel->getActiveSheet()->setTitle('ProfitLoss');
 		
+		//calculating current accounting-year
+		$mytime = Carbon\Carbon::now();
+		$currentDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $mytime)->format('Y-m-d');
+		$dateTime = $mytime->toDateTimeString();
+		$yearStartDate = $mytime->year.'-04-01 00:00:00';
+		if($dateTime >= $yearStartDate)
+		{
+			$year = $mytime->year+1;
+		}
+		else
+		{
+			$year = $mytime->year+1;
+		}
+			
 		//heading-start
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,1, 'Profit-Loss');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,1, $decodedCompanyData->companyName);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,2, 'Statement of Profit and Loss');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,3, 'For the Year Ended March 31,'.$year);
 		
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,2, 'Ledger-Name');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,2, 'Income');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,2, 'Expense');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,4, 'Ledger-Name');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,4, 'Income');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,4, 'Expense');
 		//heading-end
 		$creditAmountTotal=0;
 		$debitAmountTotal=0;
@@ -419,16 +464,16 @@ class ProfitLossOperation extends CompanyService
 			
 			if(strcmp($decodedData[$arrayData]->amountType,"credit")==0)
 			{
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+3,$decodedData[$arrayData]->ledger->ledgerName);
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+3,$decodedData[$arrayData]->amount);
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$arrayData+3,' - ');
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+5,$decodedData[$arrayData]->ledger->ledgerName);
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+5,$decodedData[$arrayData]->amount);
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$arrayData+5,' - ');
 				$creditAmountTotal = $creditAmountTotal+$decodedData[$arrayData]->amount;
 			}
 			else
 			{
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+3,$decodedData[$arrayData]->ledger->ledgerName);
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+3,' - ');
-				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$arrayData+3,$decodedData[$arrayData]->amount);
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+5,$decodedData[$arrayData]->ledger->ledgerName);
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$arrayData+5,' - ');
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$arrayData+5,$decodedData[$arrayData]->amount);
 				$debitAmountTotal = $debitAmountTotal+$decodedData[$arrayData]->amount;
 			}
 		}
@@ -442,13 +487,13 @@ class ProfitLossOperation extends CompanyService
 			$differenceCr = $creditAmountTotal-$debitAmountTotal;
 			$differenceDr = '';
 		}
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+3,'Total');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+3,$creditAmountTotal);
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+3,$debitAmountTotal);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+5,'Total');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+5,$creditAmountTotal);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+5,$debitAmountTotal);
 		
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+4,'Difference');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+4,$differenceCr);
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+4,$differenceDr);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+6,'Difference');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+6,$differenceCr);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+6,$differenceDr);
 		
 		// style for header
 		$headerStyleArray = array(
@@ -463,21 +508,21 @@ class ProfitLossOperation extends CompanyService
 		$titleStyleArray = array(
 		'font'  => array(
 			'bold'  => true,
-			'color' => array('rgb' => 'Black'),
-			'size'  => 15,
+			'color' => array('rgb' => '#00000'),
+			'size'  => 13,
 			'name'  => 'Verdana'
 		));
 		
 		// set header style
-		$objPHPExcel->getActiveSheet()->getStyle('A2:C2')->applyFromArray($headerStyleArray);
+		$objPHPExcel->getActiveSheet()->getStyle('A4:C4')->applyFromArray($headerStyleArray);
 		
 		$decimalPoints = $this->setDecimalPoint($decodedCompanyData->noOfDecimalPoints);
 		
-		$bSaveDynamicRow = "B".(count($decodedData)+4);
-		$cSaveDynamicRow = "C".(count($decodedData)+4);
+		$bSaveDynamicRow = "B".(count($decodedData)+6);
+		$cSaveDynamicRow = "C".(count($decodedData)+6);
 		
-		$objPHPExcel->getActiveSheet()->getStyle("B3:".$bSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
-		$objPHPExcel->getActiveSheet()->getStyle("C3:".$cSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		$objPHPExcel->getActiveSheet()->getStyle("B5:".$bSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
+		$objPHPExcel->getActiveSheet()->getStyle("C5:".$cSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
 		
 		// set title style
 		$objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($titleStyleArray);

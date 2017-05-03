@@ -340,7 +340,7 @@ class ProductModel extends Model
 		$invoiceNumberArray = func_get_arg(10);
 		$jfId = func_get_arg(11);
 		$taxArray = func_get_arg(12);
-		
+		$clientName = func_get_arg(13);
 		
 		if(strcmp($transactionTypeArray[0],'Inward')==0)
 		{		
@@ -415,7 +415,7 @@ class ProductModel extends Model
 			// $purchaseType = $journalData[0]->journal_type;
 			
 			$ledgerData = array();
-			$clientName="";
+			// $clientName="";
 			
 			for($ledgerIdArray=0;$ledgerIdArray<count($journalData);$ledgerIdArray++)
 			{
@@ -428,10 +428,10 @@ class ProductModel extends Model
 				where deleted_at='0000-00-00 00:00:00' and ledger_id='".$journalData[$ledgerIdArray]->ledger_id."'");
 				DB::commit();
 				
-				if($ledgerData[$ledgerIdArray][0]->ledger_group_id==31 || $ledgerData[$ledgerIdArray][0]->ledger_group_id==32)
-				{
-					$clientName = $ledgerData[$ledgerIdArray][0]->ledger_name;
-				}
+				// if($ledgerData[$ledgerIdArray][0]->ledger_group_id==31 || $ledgerData[$ledgerIdArray][0]->ledger_group_id==32)
+				// {
+					// $clientName = $ledgerData[$ledgerIdArray][0]->ledger_name;
+				// }
 				if($ledgerData[$ledgerIdArray][0]->ledger_group_id==26)
 				{
 					$purchaseType = $ledgerData[$ledgerIdArray][0]->ledger_name;
@@ -1545,6 +1545,41 @@ class ProductModel extends Model
 	}
 	
 	/**
+	 * update client name
+	 * returns error-message/status
+	*/
+	public function updateClientName($clientNameArray,$jfId)
+	{
+		// database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+	
+		$mytime = Carbon\Carbon::now();
+		
+		DB::beginTransaction();		
+		$raw = DB::connection($databaseName)->statement("update 
+		purchase_bill
+		set client_name='".$clientNameArray['client_name']."',
+		updated_at='".$mytime."'
+		where jf_id='".$jfId."' and
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if($raw==1)
+		{
+			return $exceptionArray['200'];
+		}
+		else
+		{
+			return $exceptionArray['500'];;
+		}
+	}
+	
+	/**
 	 * get product_data as per given productCode
 	 * returns error-message/status
 	*/
@@ -1586,6 +1621,44 @@ class ProductModel extends Model
 		company_id	
 		from product_mst 
 		where product_code = '".$productCode['productcode'][0]."' and
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(count($raw)!=0)
+		{
+			return json_encode($raw);
+		}
+		else
+		{
+			return $exceptionArray['404'];
+		}
+	}
+	
+	/**
+	 * get product_data as per given company-id
+	 * returns error-message/arrayData
+	*/
+	public function getStockSummaryData($companyId)
+	{
+		// database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();		
+		$raw = DB::connection($databaseName)->select("select 
+		product_trn_summary_id,
+		qty,
+		created_at,
+		updated_at,
+		branch_id,
+		company_id,
+		product_id
+		from product_trn_summary
+		where company_id='".$companyId."' and
 		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		

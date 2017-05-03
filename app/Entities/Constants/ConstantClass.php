@@ -102,7 +102,6 @@ class ConstantClass
 		$constantArray['fromDate']="fromdate";
 		$constantArray['toDate']="todate";
 		return $constantArray;
-
 	}
 	
 	/**

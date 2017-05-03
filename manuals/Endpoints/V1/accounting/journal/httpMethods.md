@@ -4,7 +4,6 @@
 + Header
 	- Authentication Token
 	- 'type':'sales'
-	- 'type':'purchase'
 	- 'type':'payment'
 	- 'type':'receipt'
 + Body
@@ -30,6 +29,33 @@
                 ... HTTP_Status:200
             }
 			
+##### `POST /accounting/journals/`
++ Header
+	- Authentication Token
+	- 'type':'purchase'
++ Body
+
+            {
+				[
+					{
+						... Standard Journals Purchase Persistable Object,
+						... Standard Inventory Persistable Object
+						... Standard Document Persistable Object
+					}
+				]
+			}
+
++ Error Message
+
+			{
+				... Error Message
+			}            
++ Response
+
+            {
+                ... HTTP_Status:200
+            }
+			
 ##### Gets Journals
 
 ##### `GET /accounting/journals/company/{companyId}`
@@ -37,9 +63,9 @@
 	- Authentication Token
 	- "fromDate":"date"
 	- "toDate":"date"
-	- "type":'special_journal',
-	- "type":'payment',
-	- "type":'receipt'
+	- "journalType":'special_journal',
+	- "journalType":'payment',
+	- "journalType":'receipt'
 + Error Message
 
 			{
@@ -55,6 +81,42 @@
 + Header
 	- Authentication Token
 	- 'type':'sales'
+	- 'jfId':'int'
+	
++ Error Message
+
+			{
+				... Error Message
+			}            
++ Response
+
+            {
+				'journal':
+				[
+					{
+						... Standard Journal Object
+					},
+					...
+				]
+				'productTransaction':
+				[
+					{
+						... Standard Product Transaction Object
+					},
+					...
+				]
+				'document':
+				[
+					{
+						... Standard Document Object
+					},
+				]
+			}
+**NOTES:** Provide details of the journal and product_trn based on the jornal_folio id
+
+##### `GET /accounting/journals/company/{companyId}`
++ Header
+	- Authentication Token
 	- 'type':'purchase'
 	- 'jfId':'int'
 	
@@ -86,6 +148,7 @@
 						... Standard Document Object
 					},
 				]
+				'clientName':string
 			}
 **NOTES:** Provide details of the journal and product_trn based on the jornal_folio id
 
@@ -131,15 +194,41 @@
 + Header
 	- Authentication Token
 	- 'type':'sales'
-	- 'type':'purchase'
 	- 'type':'payment'
-	- 'type':'receipt''
+	- 'type':'receipt'
 + Body
 
             {
 				[
 					{
 						... Standard Journals Persistable Object,
+						... Standard Inventory Persistable Object
+						
+					}
+				]
+			}
+
++ Error Message
+
+			{
+				... Error Message
+			}            
++ Response
+
+            {
+                ... HTTP_Status:200
+            }
+			
+##### `POST /accounting/journals/{jfId}`
++ Header
+	- Authentication Token
+	- 'type':'purchase'
++ Body
+
+            {
+				[
+					{
+						... Standard Journals Purchase Persistable Object,
 						... Standard Inventory Persistable Object
 						
 					}
