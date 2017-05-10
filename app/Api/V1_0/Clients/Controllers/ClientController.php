@@ -163,6 +163,7 @@ class ClientController extends BaseController implements ContainerInterface
 		$clientPersistable = new ClientPersistable();		
 		$clientService= new ClientService();			
 		$clientPersistable = $processor->createPersistableChange($request,$clientId);
+		
 		if(is_array($clientPersistable))
 		{
 			$status = $clientService->update($clientPersistable);

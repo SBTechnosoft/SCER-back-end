@@ -20,7 +20,7 @@ class BillModel extends Model
 	 * @param  array
 	 * returns the status
 	*/
-	public function insertAllData($productArray,$paymentMode,$invoiceNumber,$bankName,$checkNumber,$total,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray,$jfId)
+	public function insertAllData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray,$jfId)
 	{
 		//database selection
 		$database = "";
@@ -32,6 +32,7 @@ class BillModel extends Model
 		product_array,
 		payment_mode,
 		invoice_number,
+		job_card_number,
 		bank_name,
 		check_number,
 		total,
@@ -45,7 +46,7 @@ class BillModel extends Model
 		sales_type,
 		client_id,
 		jf_id) 
-		values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$salesType."','".$ClientId."','".$jfId."')");
+		values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$salesType."','".$ClientId."','".$jfId."')");
 		DB::commit();
 		
 		//get exception message
@@ -64,6 +65,7 @@ class BillModel extends Model
 			product_array,
 			payment_mode,
 			invoice_number,
+			job_card_number,
 			bank_name,
 			check_number,
 			total,
@@ -78,7 +80,7 @@ class BillModel extends Model
 			client_id,
 			sale_id,
 			jf_id) 
-			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$salesType."','".$ClientId."','".$saleId[0]->sale_id."','".$jfId."')");
+			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$salesType."','".$ClientId."','".$saleId[0]->sale_id."','".$jfId."')");
 			DB::commit();
 			
 			if(is_array($saleId))
@@ -107,6 +109,7 @@ class BillModel extends Model
 					payment_mode,
 					bank_name,
 					invoice_number,
+					job_card_number,
 					check_number,
 					total,
 					tax,
@@ -149,7 +152,7 @@ class BillModel extends Model
 	 * @param  array
 	 * returns the status
 	*/
-	public function insertData($productArray,$paymentMode,$invoiceNumber,$bankName,$checkNumber,$total,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$jfId)
+	public function insertData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$jfId)
 	{
 		//database selection
 		$database = "";
@@ -161,6 +164,7 @@ class BillModel extends Model
 		product_array,
 		payment_mode,
 		invoice_number,
+		job_card_number,
 		bank_name,
 		check_number,
 		total,
@@ -174,9 +178,8 @@ class BillModel extends Model
 		client_id,
 		sales_type,
 		jf_id) 
-		values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$salesType."','".$jfId."')");
+		values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$salesType."','".$jfId."')");
 		DB::commit();
-		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -188,11 +191,13 @@ class BillModel extends Model
 			FROM sales_bill where deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
 			
+			//insertion in sale bill transaction
 			DB::beginTransaction();
 			$raw = DB::connection($databaseName)->statement("insert into sales_bill_trn(
 			product_array,
 			payment_mode,
 			invoice_number,
+			job_card_number,
 			bank_name,
 			check_number,
 			total,
@@ -207,9 +212,10 @@ class BillModel extends Model
 			sales_type,
 			sale_id,
 			jf_id) 
-			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$salesType."','".$saleId[0]->sale_id."','".$jfId."')");
+			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$salesType."','".$saleId[0]->sale_id."','".$jfId."')");
 			DB::commit();
-		
+			
+			//get latest inserted sale bill data
 			DB::beginTransaction();
 			$billResult = DB::connection($databaseName)->select("select
 			sale_id,
@@ -217,6 +223,7 @@ class BillModel extends Model
 			payment_mode,
 			bank_name,
 			invoice_number,
+			job_card_number,
 			check_number,
 			total,
 			tax,
@@ -233,6 +240,7 @@ class BillModel extends Model
 			updated_at 
 			from sales_bill where sale_id=(select MAX(sale_id) as sale_id from sales_bill) and deleted_at='0000-00-00 00:00:00'"); 
 			DB::commit();
+			
 			if(count($billResult)==1)
 			{
 				return json_encode($billResult);
@@ -304,6 +312,7 @@ class BillModel extends Model
 		payment_mode,
 		bank_name,
 		invoice_number,
+		job_card_number,
 		check_number,
 		total,
 		tax,
@@ -394,6 +403,7 @@ class BillModel extends Model
 		payment_mode,
 		bank_name,
 		invoice_number,
+		job_card_number,
 		check_number,
 		total,
 		tax,
@@ -452,6 +462,7 @@ class BillModel extends Model
 				bank_name,
 				invoice_number,
 				check_number,
+				job_card_number,
 				total,
 				tax,
 				grand_total,
@@ -592,6 +603,7 @@ class BillModel extends Model
 		payment_mode,
 		bank_name,
 		invoice_number,
+		job_card_number,
 		check_number,
 		total,
 		tax,
@@ -767,6 +779,7 @@ class BillModel extends Model
 		payment_mode,
 		bank_name,
 		invoice_number,
+		job_card_number,
 		check_number,
 		total,
 		tax,
@@ -789,6 +802,7 @@ class BillModel extends Model
 		'".$jsonDecodedSaleData[0]->payment_mode."',
 		'".$jsonDecodedSaleData[0]->bank_name."',
 		'".$jsonDecodedSaleData[0]->invoice_number."',
+		'".$jsonDecodedSaleData[0]->job_card_number."',
 		'".$jsonDecodedSaleData[0]->check_number."',
 		'".$jsonDecodedSaleData[0]->total."',
 		'".$jsonDecodedSaleData[0]->tax."',
@@ -881,6 +895,7 @@ class BillModel extends Model
 			payment_mode,
 			bank_name,
 			invoice_number,
+			job_card_number,
 			check_number,
 			total,
 			tax,
@@ -901,6 +916,7 @@ class BillModel extends Model
 			'".$jsonDecodedSaleData[0]->payment_mode."',
 			'".$jsonDecodedSaleData[0]->bank_name."',
 			'".$jsonDecodedSaleData[0]->invoice_number."',
+			'".$jsonDecodedSaleData[0]->job_card_number."',
 			'".$jsonDecodedSaleData[0]->check_number."',
 			'".$jsonDecodedSaleData[0]->total."',
 			'".$jsonDecodedSaleData[0]->tax."',
@@ -993,6 +1009,7 @@ class BillModel extends Model
 		payment_mode,
 		bank_name,
 		invoice_number,
+		job_card_number,
 		check_number,
 		total,
 		tax,

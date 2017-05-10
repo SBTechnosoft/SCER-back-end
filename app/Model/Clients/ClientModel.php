@@ -32,15 +32,22 @@ class ClientModel extends Model
 		$getClientKey = func_get_arg(1);
 		$clientData="";
 		$keyName = "";
+		for($index=0;$index<count($getClientKey);$index++)
+		{
+			if(strcmp($getClientKey[$index],'is_display')==0)
+			{
+				$dataIndex = $index;
+				break;
+			}
+		}
 		
 		//set is_display yes(by_default)
 		$isDispEnum = new IsDisplayEnum();
 		$enumIsDispArray = $isDispEnum->enumArrays();
-		if(strcmp($getClientData[7],"")==0)
+		if(strcmp($getClientData[$dataIndex],"")==0)
 		{
-			$getClientData[7]=$enumIsDispArray['display'];
+			$getClientData[$dataIndex]=$enumIsDispArray['display'];
 		}
-		
 		for($data=0;$data<count($getClientData);$data++)
 		{
 			if($data == (count($getClientData)-1))
@@ -71,10 +78,8 @@ class ClientModel extends Model
 			client_name,
 			company_name,
 			contact_no,
-			work_no,
 			email_id,
 			address1,
-			address2,
 			is_display,
 			created_at,
 			updated_at,
@@ -109,10 +114,8 @@ class ClientModel extends Model
 		client_name,
 		company_name,
 		contact_no,
-		work_no,
 		email_id,
 		address1,
-		address2,
 		is_display,
 		created_at,
 		updated_at,
@@ -153,10 +156,8 @@ class ClientModel extends Model
 		client_name,
 		company_name,
 		contact_no,
-		work_no,
 		email_id,
 		address1,
-		address2,
 		is_display,
 		created_at,
 		updated_at,

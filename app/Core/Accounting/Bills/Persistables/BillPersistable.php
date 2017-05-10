@@ -5,6 +5,7 @@ use ERP\Core\Accounting\Bills\Properties\ProductArrayPropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\PaymentModePropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\BankNamePropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\InvoiceNumberPropertyTrait;
+use ERP\Core\Accounting\Bills\Properties\JobCardNumberPropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\CheckNumberPropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\TotalPropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\TaxPropertyTrait;
@@ -50,4 +51,5 @@ class BillPersistable
 	use KeyArrayPropertyTrait;
 	use NameArrayPropertyTrait;
 	use SaleIdArrayPropertyTrait;
+	use JobCardNumberPropertyTrait;
 }

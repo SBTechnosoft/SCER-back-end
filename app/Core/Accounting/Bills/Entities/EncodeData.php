@@ -21,6 +21,7 @@ class EncodeData extends ClientService
 		$paymentMode= $decodedJson[0]['payment_mode'];
 		$bankName= $decodedJson[0]['bank_name'];
 		$invoiceNumber= $decodedJson[0]['invoice_number'];
+		$jobCardNumber= $decodedJson[0]['job_card_number'];
 		$checkNumber= $decodedJson[0]['check_number'];
 		$total= $decodedJson[0]['total'];
 		$tax= $decodedJson[0]['tax'];
@@ -76,7 +77,6 @@ class EncodeData extends ClientService
 			$bill->setEntryDate($convertedEntryDate);
 			$getEntryDate = $bill->getEntryDate();
 		}
-		
 		//set all data into json array
 		$data = array();
 		$data['saleId'] = $saleId;
@@ -84,6 +84,7 @@ class EncodeData extends ClientService
 		$data['paymentMode'] = $paymentMode;
 		$data['bankName'] = $bankName;
 		$data['invoiceNumber'] = $invoiceNumber;
+		$data['jobCardNumber'] = $jobCardNumber;
 		$data['checkNumber'] = $checkNumber;
 		$data['total'] = $total;
 		$data['tax'] = $tax;
@@ -102,10 +103,8 @@ class EncodeData extends ClientService
 			'clientName' => $clientDecodedJson['clientName'],	
 			'companyName' => $clientDecodedJson['companyName'],	
 			'contactNo' => $clientDecodedJson['contactNo'],	
-			'workNo' => $clientDecodedJson['workNo'],	
 			'emailId' => $clientDecodedJson['emailId'],	
-			'address1' => $clientDecodedJson['address1'],	
-			'address2' => $clientDecodedJson['address2'],	
+			'address1' => $clientDecodedJson['address1'],		
 			'isDisplay' => $clientDecodedJson['isDisplay'],	
 			'createdAt' => $clientDecodedJson['createdAt'],	
 			'updatedAt' => $clientDecodedJson['updatedAt'],	

@@ -21,10 +21,8 @@ class ClientTransformer
 		$clientName = $request->input('clientName'); 
 		$companyName = $request->input('companyName'); 
 		$contactNo = $request->input('contactNo'); 
-		$workNo = $request->input('workNo'); 
 		$emailId = $request->input('emailId'); 
 		$address1 = $request->input('address1'); 
-		$address2 = $request->input('address2'); 
 		$isDisplay = $request->input('isDisplay'); 			
 		$stateAbb = $request->input('stateAbb'); 			
 		$cityId = $request->input('cityId'); 			
@@ -33,10 +31,8 @@ class ClientTransformer
 		$tClientName = trim($clientName);
 		$tCompanyName = trim($companyName);
 		$tContactNo = trim($contactNo);
-		$tWorkNo = trim($workNo);
 		$tEmailId = trim($emailId);
 		$tAddress1 = trim($address1);
-		$tAddress2 = trim($address2);
 		$tIsDisplay = trim($isDisplay);
 		$tStateAbb = trim($stateAbb);
 		$tCityId = trim($cityId);
@@ -89,10 +85,8 @@ class ClientTransformer
 			$data['client_name'] = $tClientName;
 			$data['company_name'] = $tCompanyName;
 			$data['contact_no'] = $tContactNo;
-			$data['work_no'] = $tWorkNo;
 			$data['email_id'] = $tEmailId;
 			$data['address1'] = $tAddress1;
-			$data['address2'] = $tAddress2;
 			$data['is_display'] = $tIsDisplay;
 			$data['state_abb'] = $tStateAbb;
 			$data['city_id'] = $tCityId;
@@ -129,7 +123,6 @@ class ClientTransformer
 			$tClientArray[$data]= array($convertedValue=> trim($clientValue));
 			$clientEnumArray = array_keys($tClientArray[$data])[0];
 		}
-		
 		$enumIsDispArray = array();
 		$isDispEnum = new IsDisplayEnum();
 		$enumIsDispArray = $isDispEnum->enumArrays();

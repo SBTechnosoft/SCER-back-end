@@ -4,10 +4,8 @@
                 "clientId": int,
                 "clientName": string,
 				"contactNo": string,
-				"workNo" string,
 				"emailId": string,
 				"address1": string,
-				"address2": string,
 				"isDisplay": Enum,
 				"createdAt": timestamp,
 				"updatedAt": datetime,
@@ -27,10 +25,8 @@
  			{
             	"clientName": string,
 				"contactNo": string,
-				"workNo" string,
 				"emailId": string,
 				"address1": string,
-				"address2": string,
 				"isDisplay": Enum,
 				"cityId":int, 
 				"stateAbb":char

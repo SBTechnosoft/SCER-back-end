@@ -84,11 +84,9 @@ class BillProcessor extends BaseProcessor
 					$clientArray = array();
 					$clientArray['clientName']=$tRequest['client_name'];
 					$clientArray['companyName']=$tRequest['company_name'];
-					$clientArray['workNo']=$tRequest['work_no'];
 					$clientArray['emailId']=$tRequest['email_id'];
 					$clientArray['contactNo']=$tRequest['contact_no'];
 					$clientArray['address1']=$tRequest['address1'];
-					$clientArray['address2']=$tRequest['address2'];
 					$clientArray['isDisplay']=$tRequest['is_display'];
 					$clientArray['stateAbb']=$tRequest['state_abb'];
 					$clientArray['cityId']=$tRequest['city_id'];
@@ -117,8 +115,6 @@ class BillProcessor extends BaseProcessor
 						$clientArray = array();
 						$clientArray['clientName']=$tRequest['client_name'];
 						$clientArray['companyName']=$tRequest['company_name'];
-						$clientArray['companyName']=$tRequest['company_name'];
-						$clientArray['workNo']=$tRequest['work_no'];
 						$clientArray['emailId']=$tRequest['email_id'];
 						$clientArray['contactNo']=$tRequest['contact_no'];
 						$clientArray['address1']=$tRequest['address1'];
@@ -139,12 +135,10 @@ class BillProcessor extends BaseProcessor
 					{
 						$clientArray = array();
 						$clientArray['clientName']=$tRequest['client_name'];
-						$clientArray['companyName']=$tRequest['client_name'];
+						$clientArray['companyName']=$tRequest['company_name'];
 						$clientArray['contactNo']=$tRequest['contact_no'];
-						$clientArray['workNo']=$tRequest['work_no'];
 						$clientArray['emailId']=$tRequest['email_id'];
 						$clientArray['address1']=$tRequest['address1'];
-						$clientArray['address2']=$tRequest['address2'];
 						$clientArray['isDisplay']=$tRequest['is_display'];
 						$clientArray['stateAbb']=$tRequest['state_abb'];
 						$clientArray['cityId']=$tRequest['city_id'];
@@ -167,6 +161,7 @@ class BillProcessor extends BaseProcessor
 				return $status;
 			}
 		}
+		
 		$paymentMode = $tRequest['payment_mode'];
 		$ledgerModel = new LedgerModel();
 		$ledgerResult = $ledgerModel->getLedgerId($tRequest['company_id'],$paymentMode);
@@ -194,7 +189,7 @@ class BillProcessor extends BaseProcessor
 					$ledgerArray=array();
 					$ledgerArray['ledgerName']=$tRequest['client_name'];
 					$ledgerArray['address1']=$tRequest['address1'];
-					$ledgerArray['address2']=$tRequest['address2'];
+					$ledgerArray['address2']='';
 					$ledgerArray['contactNo']=$tRequest['contact_no'];
 					$ledgerArray['emailId']=$tRequest['email_id'];
 					$ledgerArray['invoiceNumber']=$tRequest['invoice_number'];
@@ -226,7 +221,7 @@ class BillProcessor extends BaseProcessor
 			$ledgerArray=array();
 			$ledgerArray['ledgerName']=$tRequest['client_name'];
 			$ledgerArray['address1']=$tRequest['address1'];
-			$ledgerArray['address2']=$tRequest['address2'];
+			$ledgerArray['address2']='';
 			$ledgerArray['contactNo']=$tRequest['contact_no'];
 			$ledgerArray['emailId']=$tRequest['email_id'];
 			$ledgerArray['invoiceNumber']=$tRequest['invoice_number'];
@@ -250,6 +245,7 @@ class BillProcessor extends BaseProcessor
 			}
 			$ledgerId = json_decode($processedData)[0]->ledger_id;
 		}
+		
 		// get jf_id
 		$journalController = new JournalController(new Container());
 		$journalMethod=$constantArray['getMethod'];
@@ -258,12 +254,10 @@ class BillProcessor extends BaseProcessor
 		$journalJfIdRequest = Request::create($journalPath,$journalMethod,$journalDataArray);
 		$jfId = $journalController->getData($journalJfIdRequest);
 		$jsonDecodedJfId = json_decode($jfId)->nextValue;
-	
 		//get general ledger array data
 		$generalLedgerData = $ledgerModel->getLedger($tRequest['company_id']);
 		$generalLedgerArray = json_decode($generalLedgerData);
 		$salesTypeEnum = new SalesTypeEnum();
-		
 		$salesTypeEnumArray = $salesTypeEnum->enumArrays();		
 		if(strcmp($request->header()['salestype'][0],$salesTypeEnumArray['retailSales'])==0)
 		{
@@ -271,7 +265,7 @@ class BillProcessor extends BaseProcessor
 			$ledgerIdData = $ledgerModel->getLedgerId($tRequest['company_id'],$request->header()['salestype'][0]);
 			$decodedLedgerId = json_decode($ledgerIdData);
 		}
-		else
+		else if(strcmp($request->header()['salestype'][0],$salesTypeEnumArray['wholesales'])==0)
 		{
 			//get ledger-id of whole sales as per given company_id
 			$ledgerIdData = $ledgerModel->getLedgerId($tRequest['company_id'],$request->header()['salestype'][0]);
@@ -626,6 +620,7 @@ class BillProcessor extends BaseProcessor
 			$billPersistable->setPaymentMode($tRequest['payment_mode']);
 			$billPersistable->setBankName($tRequest['bank_name']);
 			$billPersistable->setInvoiceNumber($tRequest['invoice_number']);
+			$billPersistable->setJobCardNumber($tRequest['job_card_number']);
 			$billPersistable->setCheckNumber($tRequest['check_number']);
 			$billPersistable->setTotal($tRequest['total']);
 			$billPersistable->setTax($tRequest['tax']);
@@ -1025,10 +1020,10 @@ class BillProcessor extends BaseProcessor
 				$ledgerIdData = $ledgerModel->getLedgerId($billData[0]->company_id,$salesTypeEnumArray['retailSales']);
 				$decodedLedgerId = json_decode($ledgerIdData);
 			}
-			else
+			else if(strcmp($billData[0]->sales_type,$salesTypeEnumArray['wholesales'])==0)
 			{
 				//get ledger-id of whole sales as per given company_id
-				$ledgerIdData = $ledgerModel->getLedgerId($billData[0]->company_id,$salesTypeEnumArray['retailSales']);
+				$ledgerIdData = $ledgerModel->getLedgerId($billData[0]->company_id,$salesTypeEnumArray['wholesales']);
 				$decodedLedgerId = json_decode($ledgerIdData);
 			}
 			$ledgerTaxAcId = $generalLedgerArray[0][0]->ledger_id;

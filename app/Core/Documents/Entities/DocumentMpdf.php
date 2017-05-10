@@ -12,7 +12,6 @@ use Illuminate\Container\Container;
 use ERP\Core\Documents\Entities\CurrencyToWordConversion;
 use PHPMailer;
 use SMTP;
-// use ERP\Core\Documents\Entities\CssStyleMpdf;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -265,10 +264,11 @@ class DocumentMpdf extends CurrencyToWordConversion
 				$index++;
 		    }    
 		}
+		
 		//calculation of currecy to word conversion
 		$currecyToWordConversion = new DocumentMpdf();
 		$currencyResult = $currecyToWordConversion->conversion($totalAmount);
-		$address = $decodedBillData->client->address1.",".$decodedBillData->client->address2;
+		$address = $decodedBillData->client->address1;
 		$companyAddress = $decodedBillData->company->address1.",".$decodedBillData->company->address2;
 		if(strcmp($decodedBillData->salesType,"retail_sales")==0)
 		{

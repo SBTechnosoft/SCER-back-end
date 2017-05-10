@@ -107,10 +107,8 @@ class BillController extends BaseController implements ContainerInterface
 							$invoicePath=$constantArray['invoiceUrl'];
 							$invoiceDataArray = array();
 							$invoiceDataArray['endAt'] = $endAt+1;
-							
 							$invoiceRequest = Request::create($invoicePath,$invoiceMethod,$invoiceDataArray);
 							$updateResult = $invoiceController->update($invoiceRequest,json_decode($invoiceData)->invoiceId);
-							
 							$saleId = $decodedSaleData->saleId;
 							$saleIdArray = array();
 							$saleIdArray['saleId'] = $saleId;

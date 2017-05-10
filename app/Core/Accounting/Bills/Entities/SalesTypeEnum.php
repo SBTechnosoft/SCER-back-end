@@ -12,6 +12,7 @@ class SalesTypeEnum
 		$enumArray = array();
 		$enumArray['retailSales'] = "retail_sales";
 		$enumArray['wholesales'] = "whole_sales";
+		$enumArray['jobCard'] = "job_card";
 		return $enumArray;
 	}
 }

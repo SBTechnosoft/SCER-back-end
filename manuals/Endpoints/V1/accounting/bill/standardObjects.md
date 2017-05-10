@@ -25,6 +25,7 @@
 				},
                 
 				"invoiceNumber":string,	
+				"jobCardNumber":string,
 				"file":
 				{
 					{
@@ -55,7 +56,8 @@
 				"address2":String,
 				"stateAbb":char,
 				"cityId":int,
-				"invoiceNumber":string,	
+				"invoiceNumber":string,
+				"jobCardNumber":string,
 				...Standard Product Transaction Persistable Object,
 				"transactionDate":date,
 				"total":decimal,

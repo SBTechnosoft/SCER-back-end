@@ -37,14 +37,6 @@ class BillTransformer
 		{
 			$tContactNo = trim($billArrayData['contactNo']);
 		}
-		if(!array_key_exists('workNo',$request->input()))
-		{
-			$tWorkNo = "";
-		}
-		else
-		{
-			$tWorkNo = trim($billArrayData['workNo']);
-		}
 		if(!array_key_exists('emailId',$request->input()))
 		{
 			$tEmailId = "";
@@ -61,6 +53,14 @@ class BillTransformer
 		{
 			$tCompanyName = trim($billArrayData['companyName']);
 		}
+		if(!array_key_exists('jobCardNumber',$request->input()))
+		{
+			$tJobCardNumber = "";
+		}
+		else
+		{
+			$tJobCardNumber = trim($billArrayData['jobCardNumber']);
+		}
 		$tClientName = trim($billArrayData['clientName']);
 		$tInvoiceNumber = trim($billArrayData['invoiceNumber']);
 		if(!array_key_exists('address1',$request->input()))
@@ -70,14 +70,6 @@ class BillTransformer
 		else
 		{
 			$tAddress1 = trim($billArrayData['address1']);
-		}
-		if(!array_key_exists('address2',$request->input()))
-		{
-			$tAddress2 = "";
-		}
-		else
-		{
-			$tAddress2 = trim($billArrayData['address2']);
 		}
 		$tStateAbb = trim($billArrayData['stateAbb']);
 		$tCityId = trim($billArrayData['cityId']);
@@ -167,14 +159,13 @@ class BillTransformer
 			$data['company_id'] = $tCompanyId;
 			$data['entry_date'] = $tEntryDate;
 			$data['contact_no'] = $tContactNo;
-			$data['work_no'] = $tWorkNo;
 			$data['email_id'] = $tEmailId;
 			$data['is_display'] = $tIsDisplay;
 			$data['company_name'] = $tCompanyName;
 			$data['client_name'] = $tClientName;
 			$data['invoice_number'] = $tInvoiceNumber;
+			$data['job_card_number'] = $tJobCardNumber;
 			$data['address1'] = $tAddress1;
-			$data['address2'] = $tAddress2;
 			$data['state_abb'] = $tStateAbb;
 			$data['city_id'] = $tCityId;
 			$data['total'] = $tTotal;

@@ -26,10 +26,8 @@ class EncodeAllData extends StateService
 			$clientName[$decodedData] = $decodedJson[$decodedData]['client_name'];
 			$companyName[$decodedData] = $decodedJson[$decodedData]['company_name'];
 			$contactNo[$decodedData] = $decodedJson[$decodedData]['contact_no'];
-			$workNo[$decodedData] = $decodedJson[$decodedData]['work_no'];
 			$emailId[$decodedData] = $decodedJson[$decodedData]['email_id'];
 			$address1[$decodedData] = $decodedJson[$decodedData]['address1'];
-			$address2[$decodedData] = $decodedJson[$decodedData]['address2'];
 			$isDisplay[$decodedData] = $decodedJson[$decodedData]['is_display'];
 			$stateAbb[$decodedData] = $decodedJson[$decodedData]['state_abb'];
 			$cityId[$decodedData] = $decodedJson[$decodedData]['city_id'];
@@ -71,10 +69,8 @@ class EncodeAllData extends StateService
 				'clientName' => $clientName[$jsonData],
 				'companyName' => $companyName[$jsonData],
 				'contactNo' => $contactNo[$jsonData],
-				'workNo' => $workNo[$jsonData],
 				'emailId' => $emailId[$jsonData],
 				'address1' => $address1[$jsonData],
-				'address2' => $address2[$jsonData],
 				'isDisplay' => $isDisplay[$jsonData],
 				'createdAt' => $getCreatedDate[$jsonData],
 				'updatedAt' => $getUpdatedDate[$jsonData],

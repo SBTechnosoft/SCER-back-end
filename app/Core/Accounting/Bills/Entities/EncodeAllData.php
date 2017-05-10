@@ -30,6 +30,7 @@ class EncodeAllData extends ClientService
 			$paymentMode[$decodedData] = $deocodedJsonData[$decodedData]->payment_mode;
 			$bankName[$decodedData] = $deocodedJsonData[$decodedData]->bank_name;
 			$invoiceNumber[$decodedData] = $deocodedJsonData[$decodedData]->invoice_number;
+			$jobCardNumber[$decodedData] = $deocodedJsonData[$decodedData]->job_card_number;
 			$checkNumber[$decodedData] = $deocodedJsonData[$decodedData]->check_number;
 			$total[$decodedData] = $deocodedJsonData[$decodedData]->total;
 			$tax[$decodedData] = $deocodedJsonData[$decodedData]->tax;
@@ -177,6 +178,7 @@ class EncodeAllData extends ClientService
 				'paymentMode'=>$paymentMode[$jsonData],
 				'bankName'=>$bankName[$jsonData],
 				'invoiceNumber'=>$invoiceNumber[$jsonData],
+				'jobCardNumber'=>$jobCardNumber[$jsonData],
 				'checkNumber'=>$checkNumber[$jsonData],
 				'total'=>$total[$jsonData],
 				'tax'=>$tax[$jsonData],
@@ -195,10 +197,8 @@ class EncodeAllData extends ClientService
 					'clientName'=>$clientData->clientName,
 					'companyName'=>$clientData->companyName,
 					'contactNo'=>$clientData->contactNo,
-					'workNo'=>$clientData->workNo,
 					'emailId'=>$clientData->emailId,
 					'address1'=>$clientData->address1,
-					'address2'=>$clientData->address2,
 					'isDisplay'=>$clientData->isDisplay,
 					'createdAt'=>$clientData->createdAt,
 					'updatedAt'=>$clientData->updatedAt,

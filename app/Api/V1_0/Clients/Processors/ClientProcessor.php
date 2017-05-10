@@ -131,7 +131,6 @@ class ClientProcessor extends BaseProcessor
 		//get exception message 
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		
 		$clientValidate = new ClientValidate();
 		if(count($_POST)==0)
 		{
