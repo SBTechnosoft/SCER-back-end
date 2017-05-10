@@ -64,6 +64,7 @@ class RouteServiceProvider extends ServiceProvider
 			$routeArray['settings'] = "Setting";
 			$routeArray['taxation'] = "Taxation";
 			$routeArray['polish-report'] = "PolishReport";
+			$routeArray['job-form'] = "JobForm";
 			foreach($routeArray as $key => $value)
 			{
 				if($key==$splitUriRoute[1])
@@ -71,7 +72,7 @@ class RouteServiceProvider extends ServiceProvider
 					$routeName = $value;
 					break;
 				}
-				else if($splitUriRoute[1]=="settings" || $splitUriRoute[1]=="accounting" || $splitUriRoute[1]=="reports")
+				else if($splitUriRoute[1]=="settings" || $splitUriRoute[1]=="accounting" || $splitUriRoute[1]=="reports" || $splitUriRoute[1]=="crm")
 				{
 					if(count($splitUriRoute)>2)
 					{
@@ -130,6 +131,25 @@ class RouteServiceProvider extends ServiceProvider
 						{
 							$path = app_path('Api\V1_0\\' . str_replace('\\', '/', $package) .'\\Routes');		
 							$namespace = 'ERP\Api\V1_0\\Reports\\' . $package ;		
+							//go to the register method from particular Route class 
+							$this->app->make($namespace .'\\Routes\\' . $routeName)
+							->register($router);	
+							break;
+						}							
+					}
+				}
+				else if($splitUriRoute[1]=="crm")
+				{
+					
+					$convertedString1 = str_replace(' ', '', ucwords(str_replace('-', ' ', $splitUriRoute[2])));
+					foreach ($packages as $package) 
+					{			
+						//condition for going to particular route file as per url	
+						if(!strcmp($package,$convertedString1)) 
+						{
+							$path = app_path('Api\V1_0\\' . str_replace('\\', '/', $package) .'\\Routes');		
+							$namespace = 'ERP\Api\V1_0\\Crm\\' . $package ;	
+							$namespace .'\\Routes\\' . $routeName;
 							//go to the register method from particular Route class 
 							$this->app->make($namespace .'\\Routes\\' . $routeName)
 							->register($router);	

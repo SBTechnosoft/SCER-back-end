@@ -235,7 +235,8 @@ return [
 		'Documents',
 		'Settings',
 		'Taxation',
-		'PolishReport'
+		'PolishReport',
+		'JobForm'
 	],
 
     /*

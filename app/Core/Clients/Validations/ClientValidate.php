@@ -20,16 +20,16 @@ class ClientValidate extends ClientModel
 	public function validate($request)
 	{
 		$rules = array(
-			'client_name'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]*$/', 
+			'client_name'=> 'between:1,100|regex:/^[a-zA-Z &_`#().\'-]*$/', 
 			'company_name'=> 'between:2,50|regex:/^[a-zA-Z &_`#().\'-]+$/', 
 			'contact_no'=> 'between:10,12|regex:/^[1-9][0-9]+$/', 
 			'work_no'=> 'between:10,12|regex:/^[1-9][0-9]+$/', 
 			'email_id'=> 'regex:/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,})$/', 
-			'address1'=>'between:1,50|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
+			'address1'=>'between:1,200|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'address2'=>'between:1,50|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 		);
 		$messages = [
-			'client_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
+			'client_name.between' => 'StringLengthException :Enter the :attribute less then 100 character',
 			'client_name.regex' => 'client-name contains character from "a-zA-Z &_`#().\'-" only','company_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
 			'company_name.regex' => 'company-name contains character from "a-zA-Z &_`#().\'-" only',
 			'contact_no.between' => 'StringLengthException :Enter the :attribute between 10-12 number',
@@ -38,7 +38,7 @@ class ClientValidate extends ClientModel
 			'work_no.between' => 'StringLengthException :Enter the :attribute between 10-12 number',
 			'work_no.regex' => 'work-no contains character from "0-9" only',
 			'email_id.regex' => 'please enter your email-address in proper format',
-			'address1.between' => 'StringLengthException :Enter the :attribute less then 50 character',
+			'address1.between' => 'StringLengthException :Enter the :attribute less then 200 character',
 			'address1.regex' => 'address1 contains character from "a-zA-Z0-9* ,- /_`#[]().\" only',
 			'address2.between' => 'StringLengthException :Enter the :attribute less then 50 character',
 			'address2.regex' => 'address2 contains character from "a-zA-Z0-9* ,- /_`#[]().\" only',
@@ -68,12 +68,12 @@ class ClientValidate extends ClientModel
 	public function validateUpdateData($keyName,$value,$request)
 	{
 		$validationArray = array(
-			'client_name'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]*$/', 
+			'client_name'=> 'between:1,100|regex:/^[a-zA-Z &_`#().\'-]*$/', 
 			'company_name'=> 'between:2,50|regex:/^[a-zA-Z &_`#().\'-]+$/', 
 			'contact_no'=> 'between:10,12|regex:/^[1-9][0-9]+$/', 
 			'work_no'=> 'between:10,12|regex:/^[1-9][0-9]+$/', 
 			'email_id'=> 'regex:/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,})$/', 
-			'address1'=>'between:1,50|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
+			'address1'=>'between:1,200|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'address2'=>'between:1,50|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/'
 		);
 		$rules =array();
@@ -91,7 +91,7 @@ class ClientValidate extends ClientModel
 				$key=> $rules[$key],
 			);
 			$messages = [
-				'client_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
+				'client_name.between' => 'StringLengthException :Enter the :attribute less then 100 character',
 				'client_name.regex' => 'client-name contains character from "a-zA-Z &_`#().\'-" only','company_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
 				'company_name.regex' => 'company-name contains character from "a-zA-Z &_`#().\'-" only',
 				'contact_no.between' => 'StringLengthException :Enter the :attribute between 10-12 number',
@@ -100,7 +100,7 @@ class ClientValidate extends ClientModel
 				'work_no.between' => 'StringLengthException :Enter the :attribute between 10-12 number',
 				'work_no.regex' => 'work-no contains character from "0-9" only',
 				'email_id.regex' => 'please enter your email-address in proper format',
-				'address1.between' => 'StringLengthException :Enter the :attribute less then 50 character',
+				'address1.between' => 'StringLengthException :Enter the :attribute less then 200 character',
 				'address1.regex' => 'address1 contains character from "a-zA-Z0-9* ,- /_`#[]().\" only',
 				'address2.between' => 'StringLengthException :Enter the :attribute less then 50 character',
 				'address2.regex' => 'address2 contains character from "a-zA-Z0-9* ,- /_`#[]().\" only',

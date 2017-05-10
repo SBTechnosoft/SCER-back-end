@@ -664,7 +664,9 @@ include ('connection.php');
 				// var journalId=207;
 				// var saleId = 371;
 				
-				var url="http://www.scerp1.com/reports/polish-report/company/"+companyId;
+				var url="http://www.scerp1.com/crm/job-form";
+				
+				// var url="http://www.scerp1.com/reports/polish-report/company/"+companyId;
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/stock-summary";
 				// var url="http://www.scerp1.com/settings";
 				
@@ -763,8 +765,8 @@ include ('connection.php');
                         url: url,
                         // type:'patch',
                         // type:'get',
-						 method: 'get',
-						 // method: 'post',
+						 // method: 'get',
+						 method: 'post',
 						 // method: 'patch',
 						// enctype:'multipart/formdata',
 						 // _method: 'patch',
@@ -775,7 +777,7 @@ include ('connection.php');
 						
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','type':'payment'},
-                        // headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','type':'purchase'},
+                        headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','salesType':'retail_sales','operation':'excel'},
                         // headers: {'Content-Type': undefined,'type':'sales','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6',
@@ -784,12 +786,12 @@ include ('connection.php');
 						//,'productCategoryId':18,'productGroupId':10
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','type':'retail_sales','fromDate':'22-10-2015','toDate':'22-10-2015'}
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','productId':6,'fromDate':'21-10-2015','toDate':'20-01-2017','operation':'pdf'},
-                        headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','fromDate':'01/04/2017','toDate':'03/05/2017','operaton':'pdf'}
+                        // headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','fromDate':'01-04-2017','toDate':'03-05-2017','operation':'pdf'}
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','productName':'Spiderman','color':'BK.s'},
                         // headers: {'Content-Type':undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','productCode':'ABC_ABC_AB_CYCFDJ_BKBK_122T'},
                         // headers: {'Content-Type':undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','fromDate':'01/04/2017','toDate':'28/04/2017'},
                         // headers: {'Content-Type':'application/x-www-form-urlencoded','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
-						 // data:formdata
+						 data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

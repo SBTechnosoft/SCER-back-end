@@ -735,7 +735,6 @@ class BillModel extends Model
 				where sale_id = ".$arrayData->sale_id." and
 				deleted_at='0000-00-00 00:00:00'");
 				DB::commit();
-				
 			}
 			else
 			{
@@ -759,7 +758,6 @@ class BillModel extends Model
 		}
 		$saleIdData = $this->getSaleIdData($arrayData->sale_id);
 		$jsonDecodedSaleData = json_decode($saleIdData);
-		
 		
 		DB::beginTransaction();
 		$saleTrnInsertionResult = DB::connection($databaseName)->statement("insert

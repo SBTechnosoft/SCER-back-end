@@ -51,10 +51,10 @@ class PolishReportController extends BaseController implements ContainerInterfac
 			if(array_key_exists('fromdate',$request->header()) && array_key_exists('todate',$request->header()))
 			{
 				//from-date conversion
-				$splitedFromDate = explode("/",$request->header()['fromdate'][0]);
+				$splitedFromDate = explode("-",$request->header()['fromdate'][0]);
 				$transformFromDate = $splitedFromDate[2]."-".$splitedFromDate[1]."-".$splitedFromDate[0];
 				//to-date conversion
-				$splitedToDate = explode("/",$request->header()['todate'][0]);
+				$splitedToDate = explode("-",$request->header()['todate'][0]);
 				$transformToDate = $splitedToDate[2]."-".$splitedToDate[1]."-".$splitedToDate[0];
 				if(!preg_match("/^[0-9]{4}-([1-9]|1[0-2]|0[1-9])-([1-9]|0[1-9]|[1-2][0-9]|3[0-1])$/",$transformFromDate))
 				{
@@ -69,7 +69,9 @@ class PolishReportController extends BaseController implements ContainerInterfac
 				if(array_key_exists('operation',$request->header()))
 				{
 					//call for pdf designing
-					
+					$polishReportOperation = new PolishReportOperation();
+					$documentPath = $polishReportOperation->generatePdf($result,$request->header()['fromdate'][0],$request->header()['todate'][0]);
+					return $documentPath;
 				}
 				else
 				{

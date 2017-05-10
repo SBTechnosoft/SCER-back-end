@@ -36,7 +36,8 @@ class DocumentMpdf extends CurrencyToWordConversion
 		{
 			if(strcmp($headerData['operation'][0],'preprint')==0)
 			{
-				$htmlBody = json_decode($blankTemplateData)[0]->templateBody;
+				$printHtmlBody = json_decode($blankTemplateData)[0]->templateBody;
+				$htmlBody = json_decode($templateData)[0]->templateBody;
 			}
 		}
 		else
@@ -309,11 +310,10 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$billArray['ExpireDate']=$expiryDate;
 		$billArray['CompanySGST']=$decodedBillData->company->sgst;
 		$billArray['CompanyCGST']=$decodedBillData->company->cgst;
-		
 		$billArray['CLIENTTINNO']="";
 		
-		//$mpdf = new mPDF('A4','landscape');
-		$mpdf = new mPDF('','A4','','agency','0','0','0','0','0','0','landscape');
+		$mpdf = new mPDF('A4','landscape');
+		// $mpdf = new mPDF('','A4','','agency','0','0','0','0','0','0','landscape');
 		$mpdf->SetDisplayMode('fullpage');
 		foreach($billArray as $key => $value)
 		{
@@ -331,6 +331,9 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$documentFormat="pdf";
 		$documentType ="bill";
 		
+		//pdf generate
+		$mpdf->Output($documentPathName,'F');
+				
 		//insertion bill document data into database
 		$billModel = new BillModel();
 		$billDocumentStatus = $billModel->billDocumentData($saleId,$documentName,$documentFormat,$documentType);
@@ -338,18 +341,28 @@ class DocumentMpdf extends CurrencyToWordConversion
 		{
 			if(strcmp($headerData['operation'][0],'preprint')==0)
 			{
+				$printMpdf = new mPDF('','A4','','agency','0','0','0','0','0','0','landscape');
+				$printMpdf->SetDisplayMode('fullpage');
+				foreach($billArray as $key => $value)
+				{
+					$printHtmlBody = str_replace('['.$key.']', $value, $printHtmlBody);
+				}
+				$printMpdf->WriteHTML($printHtmlBody);
+		
 				//change the name of document-name
 				$dateTime = date("d-m-Y h-i-s");
 				$convertedDateTime = str_replace(" ","-",$dateTime);
 				$splitDateTime = explode("-",$convertedDateTime);
 				$combineDateTime = $splitDateTime[0].$splitDateTime[1].$splitDateTime[2].$splitDateTime[3].$splitDateTime[4].$splitDateTime[5];
-				$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".pdf";
+				$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999)."_preprint.pdf";
 				$documentPreprintPathName = $path.$documentName;
 				$documentFormat="pdf";
 				$documentType ="preprint-bill";
 
 				$preprintBillDocumentStatus = $billModel->billDocumentData($saleId,$documentName,$documentFormat,$documentType);
-
+				
+				//pdf generate
+				$printMpdf->Output($documentPreprintPathName,'F');
 			}
 		}
 		if(strcmp($exceptionArray['500'],$billDocumentStatus)==0)
@@ -361,51 +374,45 @@ class DocumentMpdf extends CurrencyToWordConversion
 			if($decodedBillData->client->emailId!="")
 			{
 				// mail send
-				//$result = $this->mailSending($decodedBillData->client->emailId,$documentPathName);
-				 //if(strcmp($result,$exceptionArray['Email'])==0)
+				// $result = $this->mailSending($decodedBillData->client->emailId,$documentPathName,$emailTemplateData,$decodedBillData->client->clientName,$decodedBillData->company->companyName);
+				// if(strcmp($result,$exceptionArray['Email'])==0)
 				// {
 					// return $result;
 				// }
 			}
 			
-			$message = "Your Bill Is Generated...";
-			
 			//sms send
-			if($decodedBillData->client->contactNo!=0 || $decodedBillData->client->contactNo!="")
-			{
-				if($decodedBillData->company->companyId==9)
-				{
-					$smsTemplateBody = json_decode($smsTemplateData)[0]->templateBody;
-					$smsArray = array();
-					$smsArray['ClientName'] = $decodedBillData->client->clientName;
-					foreach($smsArray as $key => $value)
-					{
-						$smsHtmlBody = str_replace('['.$key.']', $value, $smsTemplateBody);
-					}
-					//replace 'p' tag
-					$smsHtmlBody = str_replace('<p>','', $smsHtmlBody);
-					$smsHtmlBody = str_replace('</p>','', $smsHtmlBody);
-					$data = array(
-						'user' => "siliconbrain",
-						'password' => "demo54321",
-						'msisdn' => $decodedBillData->client->contactNo,
-						'sid' => "ERPJSC",
-						'msg' => $smsHtmlBody,
-						'fl' =>"0",
-						'gwid'=>"2"
-					);
+			// if($decodedBillData->client->contactNo!=0 || $decodedBillData->client->contactNo!="")
+			// {
+				// if($decodedBillData->company->companyId==9)
+				// {
+					// $smsTemplateBody = json_decode($smsTemplateData)[0]->templateBody;
+					// $smsArray = array();
+					// $smsArray['ClientName'] = $decodedBillData->client->clientName;
+					// foreach($smsArray as $key => $value)
+					// {
+						// $smsHtmlBody = str_replace('['.$key.']', $value, $smsTemplateBody);
+					// }
+					// replace 'p' tag
+					// $smsHtmlBody = str_replace('<p>','', $smsHtmlBody);
+					// $smsHtmlBody = str_replace('</p>','', $smsHtmlBody);
+					// $data = array(
+						// 'user' => "siliconbrain",
+						// 'password' => "demo54321",
+						// 'msisdn' => $decodedBillData->client->contactNo,
+						// 'sid' => "ERPJSC",
+						// 'msg' => $smsHtmlBody,
+						// 'fl' =>"0",
+						// 'gwid'=>"2"
+					// );
 					// list($header,$content) = $this->postRequest("http://login.arihantsms.com//vendorsms/pushsms.aspx",$data);
-				}
-			}
+				// }
+			// }
 			// print_r($url);
 			if(array_key_exists("operation",$headerData))
 			{
 				if(strcmp($headerData['operation'][0],'preprint')==0)
 				{
-					//pdf generate
-					$mpdf->Output($documentPathName,'F');
-					$mpdf->Output($documentPreprintPathName,'F');
-
 					$pathArray = array();
 					$pathArray['documentPath'] = $documentPathName;
 					$pathArray['preprintDocumentPath'] = $documentPreprintPathName;
@@ -414,8 +421,6 @@ class DocumentMpdf extends CurrencyToWordConversion
 			}
 			else
 			{
-				//pdf generate
-				$mpdf->Output($documentPathName,'F');
 				$pathArray = array();
 				$pathArray['documentPath'] = $documentPathName;
 				return $pathArray;
@@ -476,7 +481,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$billArray['TotalInWord']=$currencyResult;
 		$billArray['TransType']=$transactionResult[0]->payment_trn;
 		$billArray['Date']=$decodedBillData->entryDate;
-	
+		$companyName = "ABC";
 		$mpdf = new mPDF('A4','landscape');
 		$mpdf->SetDisplayMode('fullpage');
 		foreach($billArray as $key => $value)
@@ -506,17 +511,17 @@ class DocumentMpdf extends CurrencyToWordConversion
 		}
 		else
 		{
+			$mpdf->Output($documentPathName,'F');
 			if($decodedBillData->client->emailId!="")
 			{
 				// mail send
-				$result = $this->mailSending($decodedBillData->client->emailId,$documentPathName);
+				// $result = $this->mailSending($decodedBillData->client->emailId,$documentPathName,$emailTemplateData,$decodedBillData->client->clientName,$companyName);
 				// if(strcmp($result,$exceptionArray['Email'])==0)
 				// {
 					// return $result;
 				// }
 			}
 			// sms send
-			$message = "Your Bill Is Generated...";
 			// $data = array(
 				// 'user' => "siliconbrain",
 				// 'password' => "demo54321",
@@ -530,7 +535,6 @@ class DocumentMpdf extends CurrencyToWordConversion
 			
 			// $url = "http://login.arihantsms.com/vendorsms/pushsms.aspx?user=siliconbrain&password=demo54321&msisdn=".$decodedBillData->client->contactNo."&sid=COTTSO&msg=".$message."&fl=0&gwid=2";
 			// pdf generate
-			$mpdf->Output($documentPathName,'F');
 			$pathArray = array();
 			$pathArray['documentPath'] = $documentPathName;
 			return $pathArray;
@@ -542,45 +546,48 @@ class DocumentMpdf extends CurrencyToWordConversion
      * @param mail-address
      * @return error-message/status
      */
-	public function mailSending($emailId,$documentPathName)
+	public function mailSending($emailId,$documentPathName,$emailTemplate,$clientName,$companyName)
 	{
-		echo "enter";
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-		
+		$htmlBody = json_decode($emailTemplate)[0]->templateBody;
+		$emailArray = array();
+		$emailArray['Company']=$companyName;
+		$emailArray['ClientName']=$clientName;
+		foreach($emailArray as $key => $value)
+		{
+			$htmlBody = str_replace('['.$key.']', $value, $htmlBody);
+		}
 		$mail = new PHPMailer;
 		$email = $emailId;
-		$message = "Your bill is generated...";
+		$message = $htmlBody;
 		$mail->IsSMTP();  
+		$mail->SMTPDebug = 0;
+		$mail->SMTPAuth = true;
+		$mail->SMTPSecure = 'ssl';
 		
-         // Set mailer to use SMTP
-		$mail->Host = 'smtp.gmail.com';                // Specify main and backup server //sg2plcpnl0073.prod.sin2.secureserver.net port=465
+		// Set mailer to use SMTP
+		$mail->Host = 'swaminarayancycles.com';                // Specify main and backup server //sg2plcpnl0073.prod.sin2.secureserver.net port=465
 		$mail->Port =  465;                                    // Set the SMTP port 465
-		$mail->SMTPAuth = true;                               // Enable SMTP authentication
-		
-		// SMTP password
-		$mail->SMTPSecure = 'ssl';                            // Enable encryption, 'ssl' also accepted
-		$mail->Username = 'shaikhfarhan05@gmail.com';                // SMTP username
-		$mail->Password = 'farhanboss420840'; 
-		$mail->From = 'shaikhfarhan05@gmail.com';
-		$mail->FromName = 'shaikhfarhan05@gmail.com';
+		$mail->Username = 'support@swaminarayancycles.com';                // SMTP username
+		$mail->Password = 'Abcd@1234'; 
+		$mail->From = 'support@swaminarayancycles.com';
+		$mail->FromName = 'support@swaminarayancycles.com';
 		$mail->AddAddress($email);  // Add a recipient
-		//$name = "abc";
-		$mail->isHTML(true);
-		//$mail->AddAttachment('http://api.siliconbrain.co.in/'.$documentPathName,$name,$encoding ='base64',$type = 'application/octet-stream');	
-		$mail->IsHTML(true);                                  // Set email format to HTML
+		
+		$mail->AddAttachment($documentPathName); //,"abc",'base8','mime/type'
+		$mail->IsHTML(true);   
 		$mail->Subject = 'Cycle Store';
 		$mail->Body    = $message;
 		$mail->AltBody = $message;
-		print_r($mail);
 		if(!$mail->Send()) {
-		   print_r($mail->ErrorInfo);	
 		   return $exceptionArray['Email'];
 		}
+		
 	}
 	
 	public function postRequest($url,$_data) 

@@ -1,0 +1,99 @@
+<?php
+namespace ERP\Api\V1_0\Crm\JobForm\Controllers;
+
+use Illuminate\Http\Response;
+use Illuminate\Http\Request;
+// use ERP\Core\Crm\JobForm\Services\JobFormService;
+use ERP\Http\Requests;
+use ERP\Api\V1_0\Support\BaseController;
+// use ERP\Api\V1_0\Crm\JobForm\Processors\JobFormProcessor;
+// use ERP\Core\Crm\JobForm\Persistables\JobFormPersistable;
+use ERP\Core\Support\Service\ContainerInterface;
+// use ERP\Core\Crm\JobForm\Validations\JobFormValidate;
+use ERP\Exceptions\ExceptionMessage;
+// use ERP\Model\Crm\JobForm\CompanyModel;
+use ERP\Entities\Constants\ConstantClass;
+use ERP\Entities\AuthenticationClass\TokenAuthentication;
+/**
+ * @author Reema Patel<reema.p@siliconbrain.in>
+ */
+class JobFormController extends BaseController implements ContainerInterface
+{
+	/**
+     * @var jobFormService
+     * @var processor
+     * @var request
+     * @var jobFormPersistable
+     */
+	private $jobFormService;
+	private $processor;
+	private $request;
+	private $jobFormPersistable;	
+	
+	/**
+	 * get and invoke method is of ContainerInterface method
+	 */		
+    public function get($id,$name)
+	{
+		// echo "get";
+	}
+	public function invoke(callable $method)
+	{
+		// echo "invoke";
+	}
+	
+	/**
+	 * insert the specified resource 
+	 * @param  Request object[Request $request]
+	 * method calls the processor for creating persistable object & setting the data
+	*/
+    public function store(Request $request)
+    {
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			echo "controller";
+			// $this->request = $request;
+			// check the requested Http method
+			// $requestMethod = $_SERVER['REQUEST_METHOD'];
+			// insert
+			// if($requestMethod == 'POST')
+			// {
+				// $processor = new CompanyProcessor();
+				// $companyPersistable = new CompanyPersistable();		
+				// $companyService= new CompanyService();		
+						
+				// $companyPersistable = $processor->createPersistable($this->request);
+				
+				//get exception message
+				// $exception = new ExceptionMessage();
+				// $fileSizeArray = $exception->messageArrays();
+				
+				// if($companyPersistable[0][0]=='[')
+				// {
+					// return $companyPersistable;
+				// }
+				// else if(is_array($companyPersistable))
+				// {
+					// $status = $companyService->insert($companyPersistable);
+					// return $status;
+				// }
+				// else
+				// {
+					// return $companyPersistable;
+				// }
+			// }
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+	}
+}

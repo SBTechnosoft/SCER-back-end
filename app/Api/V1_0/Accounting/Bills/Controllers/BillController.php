@@ -295,7 +295,7 @@ class BillController extends BaseController implements ContainerInterface
 				if(is_array($billPersistable))
 				{
 					$billService= new BillService();
-					$status = $billService->updateData($billPersistable,$saleId);
+					$status = $billService->updateData($billPersistable,$saleId,$request->header());
 					return $status;
 				}
 				else

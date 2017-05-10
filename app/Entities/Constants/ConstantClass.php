@@ -12,19 +12,20 @@ class ConstantClass
 	*/
     public function constantVariable()
 	{
-		
 		$constantArray = array();
 		$constantArray['token'] = "authenticationToken";
 		$constantArray['success'] = "Success";
 		$constantArray['barcodeWidth'] = 1;
 		$constantArray['barcodeHeight'] = 60;
 		$constantArray['barcodeSetting'] = "barcode";
+		$constantArray['noImage'] = "Storage/No-Image/no-image.jpg";
 		$constantArray['productBarcode'] = "Storage/Barcode/";
 		$constantArray['documentUrl'] = "Storage/Document/";
 		$constantArray['purchaseTaxationUrl'] = "Storage/Taxation/PurchaseDetail/";
 		$constantArray['purchaseTaxUrl'] = "Storage/Taxation/PurchaseTax/";
 		$constantArray['saleTaxUrl'] = "Storage/Taxation/SaleTax/";
 		$constantArray['mainLogo'] = "Storage/Logo/";
+		$constantArray['polishReportUrl'] = "Storage/Reports/Polish-Report/";
 		$constantArray['billDocumentUrl'] = "Storage/Bill/Document/";
 		$constantArray['journalDocumentUrl'] = "Storage/Journal/";
 		$constantArray['billUrl']="Storage/Bill/";
@@ -40,12 +41,6 @@ class ConstantClass
 		$constantArray['stockUrlPdf']="Storage/StockRegister/Pdf/";
 		$constantArray['priceListExcel']="Storage/PriceList/Excel/";
 		$constantArray['priceListPdf']="Storage/PriceList/Pdf/";
-		$constantArray['clientUrl']="http://www.scerp1.com/clients";
-		$constantArray['documentGenerateUrl']="http://www.scerp1.com/documents/bill";
-		$constantArray['ledgerUrl']="http://www.scerp1.com/accounting/ledgers";
-		$constantArray['journalUrl']="http://www.scerp1.com/accounting/journals";
-		$constantArray['invoiceUrl']="http://www.scerp1.com/settings/invoice-numbers";
-		$constantArray['productUrl']="http://www.scerp1.com/accounting/products";
 		$constantArray['contactNo']="contact_no";
 		$constantArray['openingBalance']="opening";
 		$constantArray['postMethod']="POST";
@@ -101,6 +96,13 @@ class ConstantClass
 		$constantArray['specialJournalType']="special_journal";
 		$constantArray['fromDate']="fromdate";
 		$constantArray['toDate']="todate";
+		
+		$constantArray['clientUrl']="http://www.scerp1.com/clients";
+		$constantArray['documentGenerateUrl']="http://www.scerp1.com/documents/bill";
+		$constantArray['ledgerUrl']="http://www.scerp1.com/accounting/ledgers";
+		$constantArray['journalUrl']="http://www.scerp1.com/accounting/journals";
+		$constantArray['invoiceUrl']="http://www.scerp1.com/settings/invoice-numbers";
+		$constantArray['productUrl']="http://www.scerp1.com/accounting/products";
 		return $constantArray;
 	}
 	

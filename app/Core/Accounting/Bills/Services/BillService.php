@@ -225,6 +225,7 @@ class BillService
 	{
 		$persistableData = func_get_arg(0);
 		$saleId = func_get_arg(1);
+		$headerData = func_get_arg(2);
 		$flag=0;
 		$inventoryFlag=0;
 		$dataFlag=0;
@@ -305,6 +306,14 @@ class BillService
 					$method=$constantArray['postMethod'];
 					$path=$constantArray['documentGenerateUrl'];
 					$documentRequest = Request::create($path,$method,$saleIdArray);
+					if(array_key_exists('operation',$headerData))
+					{
+						$documentRequest->headers->set('operation',$headerData['operation'][0]);
+					}
+					else
+					{
+						$documentRequest->headers->set('key',$request->header());
+					}
 					$processedData = $documentController->getData($documentRequest);
 					return $processedData;
 				}
@@ -323,6 +332,14 @@ class BillService
 					$method=$constantArray['postMethod'];
 					$path=$constantArray['documentGenerateUrl'];
 					$documentRequest = Request::create($path,$method,$saleIdArray);
+					if(array_key_exists('operation',$headerData))
+					{
+						$documentRequest->headers->set('operation',$headerData['operation'][0]);
+					}
+					else
+					{
+						$documentRequest->headers->set('key',$request->header());
+					}
 					$processedData = $documentController->getData($documentRequest);
 					return $processedData;
 				}
@@ -379,6 +396,14 @@ class BillService
 				$method=$constantArray['postMethod'];
 				$path=$constantArray['documentGenerateUrl'];
 				$documentRequest = Request::create($path,$method,$saleIdArray);
+				if(array_key_exists('operation',$headerData))
+				{
+					$documentRequest->headers->set('operation',$headerData['operation'][0]);
+				}
+				else
+				{
+					$documentRequest->headers->set('key',$request->header());
+				}
 				$processedData = $documentController->getData($documentRequest);
 				return $processedData;
 			}
@@ -392,6 +417,14 @@ class BillService
 			$method=$constantArray['postMethod'];
 			$path=$constantArray['documentGenerateUrl'];
 			$documentRequest = Request::create($path,$method,$saleIdArray);
+			if(array_key_exists('operation',$headerData))
+			{
+				$documentRequest->headers->set('operation',$headerData['operation'][0]);
+			}
+			else
+			{
+				$documentRequest->headers->set('key',$request->header());
+			}
 			$processedData = $documentController->getData($documentRequest);
 			return $processedData;
 		}
