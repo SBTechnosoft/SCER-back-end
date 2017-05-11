@@ -461,6 +461,7 @@ include ('connection.php');
 				// formdata.append('branchId',$scope.formAdata.branch_id);
 				
 	//---------------------------------CRM-------------------------------------------------------------------------------
+				//job-form-number
 				// $scope.formAdata.jobCardNumberLabel = "ffff";
 				// $scope.formAdata.jobCardNumberType = 'prefix';
 				// $scope.formAdata.startAt = '1';
@@ -472,6 +473,55 @@ include ('connection.php');
 				// formdata.append('startAt',$scope.formAdata.startAt);
 				// formdata.append('endAt',$scope.formAdata.endAt);
 				// formdata.append('companyId',$scope.formAdata.companyId);
+				
+				//job-form
+				$scope.formAdata.clientName = "abc";
+				$scope.formAdata.contactNo = '8788888888';
+				$scope.formAdata.address = 'address';
+				$scope.formAdata.emailId = 'email@gmail.com';
+				$scope.formAdata.jobCardNo = '3';
+				$scope.formAdata.productInformation = 'information';
+				$scope.formAdata.qty = '2';
+				$scope.formAdata.tax = '10';
+				$scope.formAdata.discountType = 'flat';
+				$scope.formAdata.discount = '4';
+				$scope.formAdata.additionalTax = '12';
+				$scope.formAdata.price = '100';
+				$scope.formAdata.labourCharge = '100';
+				$scope.formAdata.serviceType = 'paid';
+				$scope.formAdata.entryDate = '3-4-2017';
+				$scope.formAdata.deliveryDate = '4-4-2017';
+				$scope.formAdata.advance = '100';
+				$scope.formAdata.total = '400';
+				$scope.formAdata.paymentMode = 'cash';
+				$scope.formAdata.stateAbb = 'IN-AP';
+				$scope.formAdata.cityId = '79';
+				$scope.formAdata.productId = '3';
+				$scope.formAdata.companyId = '9';
+				
+				formdata.append('clientName',$scope.formAdata.clientName);
+				formdata.append('contactNo',$scope.formAdata.contactNo);
+				formdata.append('address',$scope.formAdata.address);
+				formdata.append('emailId',$scope.formAdata.emailId);
+				formdata.append('jobCardNo',$scope.formAdata.jobCardNo);
+				formdata.append('productInformation',$scope.formAdata.productInformation);
+				formdata.append('qty',$scope.formAdata.qty);
+				formdata.append('tax',$scope.formAdata.tax);
+				formdata.append('discountType',$scope.formAdata.discountType);
+				formdata.append('discount',$scope.formAdata.discount);
+				formdata.append('additionalTax',$scope.formAdata.additionalTax);
+				formdata.append('price',$scope.formAdata.price);
+				formdata.append('labourCharge',$scope.formAdata.labourCharge);
+				formdata.append('serviceType',$scope.formAdata.serviceType);
+				formdata.append('entryDate',$scope.formAdata.entryDate);
+				formdata.append('deliveryDate',$scope.formAdata.deliveryDate);
+				formdata.append('advance',$scope.formAdata.advance);
+				formdata.append('total',$scope.formAdata.total);
+				formdata.append('paymentMode',$scope.formAdata.paymentMode);
+				formdata.append('stateAbb',$scope.formAdata.stateAbb);
+				formdata.append('cityId',$scope.formAdata.cityId);
+				formdata.append('productId',$scope.formAdata.productId);
+				formdata.append('companyId',$scope.formAdata.companyId);
 	//----------------------------------Batch Insertion-----------------------------------------------------------------			
 				//multiple inventory insertion
 				 // $scope.inventory=[{"isDisplay":'no',"productName":"Rangerddcd" ,"measurementUnit":'piece',"productCategoryId":'brand1',
@@ -662,7 +712,7 @@ include ('connection.php');
 				// var productId =6;
 				// var productGrpId = 11;
 				// var productCatId = 18;
-				var companyId=1;
+				// var companyId=1;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -677,9 +727,9 @@ include ('connection.php');
 				// var journalId=207;
 				// var saleId = 371;
 				
-				var url="http://www.scerp1.com/crm/job-form-number/company/"+companyId+"/latest";
+				// var url="http://www.scerp1.com/crm/job-form-number/company/"+companyId+"/latest";
 				// var url="http://www.scerp1.com/crm/job-form-number";
-				// var url="http://www.scerp1.com/crm/job-form";
+				var url="http://www.scerp1.com/crm/job-form";
 				
 				// var url="http://www.scerp1.com/reports/polish-report/company/"+companyId;
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/stock-summary";
@@ -780,8 +830,8 @@ include ('connection.php');
                         url: url,
                         // type:'patch',
                         // type:'get',
-						 method: 'get',
-						 // method: 'post',
+						 // method: 'get',
+						 method: 'post',
 						 // method: 'patch',
 						// enctype:'multipart/formdata',
 						 // _method: 'patch',
@@ -806,7 +856,7 @@ include ('connection.php');
                         // headers: {'Content-Type':undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','productCode':'ABC_ABC_AB_CYCFDJ_BKBK_122T'},
                         // headers: {'Content-Type':undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','fromDate':'01/04/2017','toDate':'28/04/2017'},
                         // headers: {'Content-Type':'application/x-www-form-urlencoded','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
-						 // data:formdata
+						 data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

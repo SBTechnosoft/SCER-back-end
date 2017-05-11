@@ -130,8 +130,27 @@ class BillTransformer
 		$paymentModeEnum = new PaymentModeEnum();
 		$paymentModeArray = $paymentModeEnum->enumArrays();
 		
+		$discountFlag=0;
+		$discountTypeEnum = new DiscountTypeEnum();
 		for($trimInventory=0;$trimInventory<count($billArrayData['inventory']);$trimInventory++)
 		{
+			$discountTypeArray = array();
+			$discountTypeArray = $discountTypeEnum->enumArrays();
+			$discountTypeFlag=0;
+			//check discount-type enum
+			foreach ($discountTypeArray as $key => $value)
+			{
+				if(strcmp($value,$billArrayData['inventory'][$trimInventory]['discountType'])==0)
+				{
+					$discountTypeFlag=1;
+					break;
+				}
+			}
+			if($discountTypeFlag==0)
+			{
+				$discountFlag=2;
+				break;
+			}
 			$tInventoryArray[$trimInventory] = array();
 			$tInventoryArray[$trimInventory][0] = trim($billArrayData['inventory'][$trimInventory]['productId']);
 			$tInventoryArray[$trimInventory][1] = trim($billArrayData['inventory'][$trimInventory]['discount']);
@@ -148,7 +167,8 @@ class BillTransformer
 				break;
 			}
 		}
-		if($paymentModeFlag==0)
+		
+		if($paymentModeFlag==0 || $discountFlag==2)
 		{
 			return "1";
 		}

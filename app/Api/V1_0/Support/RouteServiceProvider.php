@@ -23,6 +23,7 @@ class RouteServiceProvider extends ServiceProvider
 	 */
 	protected function define(Router $router)
     {	
+		date_default_timezone_set("Asia/Calcutta");
 		//splitting components from url
 		$splitUri = explode("/", $_SERVER['REQUEST_URI']);
 		$convertedString = str_replace(' ', '', ucwords(str_replace('-', ' ', $splitUri[1])));

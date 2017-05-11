@@ -60,3 +60,9 @@
 			"cityId": int,
 			"companyId":int
 		}
+
+##### Service Type Enum
+			{
+				paidType:'paid',
+				freeType:'free' 
+			}
