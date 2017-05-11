@@ -65,6 +65,7 @@ class RouteServiceProvider extends ServiceProvider
 			$routeArray['taxation'] = "Taxation";
 			$routeArray['polish-report'] = "PolishReport";
 			$routeArray['job-form'] = "JobForm";
+			$routeArray['job-form-number'] = "JobFormNumber";
 			foreach($routeArray as $key => $value)
 			{
 				if($key==$splitUriRoute[1])

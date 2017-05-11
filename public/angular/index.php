@@ -459,6 +459,19 @@ include ('connection.php');
 				// formdata.append('productGroupId',$scope.formAdata.product_group_id);
 				// formdata.append('companyId',$scope.formAdata.company_id);
 				// formdata.append('branchId',$scope.formAdata.branch_id);
+				
+	//---------------------------------CRM-------------------------------------------------------------------------------
+				// $scope.formAdata.jobCardNumberLabel = "ffff";
+				// $scope.formAdata.jobCardNumberType = 'prefix';
+				// $scope.formAdata.startAt = '1';
+				// $scope.formAdata.endAt = '1';
+				// $scope.formAdata.companyId = '1';
+				
+				// formdata.append('jobCardNumberLabel',$scope.formAdata.jobCardNumberLabel);
+				// formdata.append('jobCardNumberType',$scope.formAdata.jobCardNumberType);
+				// formdata.append('startAt',$scope.formAdata.startAt);
+				// formdata.append('endAt',$scope.formAdata.endAt);
+				// formdata.append('companyId',$scope.formAdata.companyId);
 	//----------------------------------Batch Insertion-----------------------------------------------------------------			
 				//multiple inventory insertion
 				 // $scope.inventory=[{"isDisplay":'no',"productName":"Rangerddcd" ,"measurementUnit":'piece',"productCategoryId":'brand1',
@@ -649,7 +662,7 @@ include ('connection.php');
 				// var productId =6;
 				// var productGrpId = 11;
 				// var productCatId = 18;
-				var companyId=10;
+				var companyId=1;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -664,7 +677,9 @@ include ('connection.php');
 				// var journalId=207;
 				// var saleId = 371;
 				
-				var url="http://www.scerp1.com/crm/job-form";
+				var url="http://www.scerp1.com/crm/job-form-number/company/"+companyId+"/latest";
+				// var url="http://www.scerp1.com/crm/job-form-number";
+				// var url="http://www.scerp1.com/crm/job-form";
 				
 				// var url="http://www.scerp1.com/reports/polish-report/company/"+companyId;
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/stock-summary";
@@ -765,8 +780,8 @@ include ('connection.php');
                         url: url,
                         // type:'patch',
                         // type:'get',
-						 // method: 'get',
-						 method: 'post',
+						 method: 'get',
+						 // method: 'post',
 						 // method: 'patch',
 						// enctype:'multipart/formdata',
 						 // _method: 'patch',
@@ -791,7 +806,7 @@ include ('connection.php');
                         // headers: {'Content-Type':undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','productCode':'ABC_ABC_AB_CYCFDJ_BKBK_122T'},
                         // headers: {'Content-Type':undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','fromDate':'01/04/2017','toDate':'28/04/2017'},
                         // headers: {'Content-Type':'application/x-www-form-urlencoded','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
-						 data:formdata
+						 // data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

@@ -13,6 +13,7 @@
 				"salesType":Enum,
 				"refund":decimal,
 				"remark":string,
+				"extraCharges":decimal,
 				"entryDate":datetime,
 				"createdAt":timestamp,
 				"updatedAt":datetime,
