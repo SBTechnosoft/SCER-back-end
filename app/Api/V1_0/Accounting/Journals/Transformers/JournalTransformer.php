@@ -65,6 +65,7 @@ class JournalTransformer extends LedgerModel
 		$exceptionArray = $exception->messageArrays();
 		for($arrayData=0;$arrayData<$numberOfArray;$arrayData++)
 		{
+			$amountTypeFlag=0;
 			$tempArray[$arrayData] = array();
 			$tempArray[$arrayData][0] = trim($request->input()['data'][$arrayData]['amount']);
 			$tempArray[$arrayData][1] = trim($request->input()['data'][$arrayData]['amountType']);

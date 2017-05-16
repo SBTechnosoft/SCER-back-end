@@ -46,21 +46,71 @@ class JobFormService extends AbstractService
      */
 	public function insert()
 	{
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
 		$jobFormArray = array();
 		$getData = array();
 		$keyName = array();
 		$funcName = array();
 		$jobFormArray = func_get_arg(0);
+		$headerArray = func_get_arg(1);
+		
+		$arrayData = array();
+		$arrayData['clientName'] = $jobFormArray[0]->getClientName();
+		$arrayData['address'] = $jobFormArray[0]->getAddress();
+		$arrayData['contactNo'] = $jobFormArray[0]->getContactNo();
+		$arrayData['emailId']= $jobFormArray[0]->getEmailId();
+		$arrayData['jobCardNo'] = $jobFormArray[0]->getJobCardNo();
+		$arrayData['labourCharge'] = $jobFormArray[0]->getLabourCharge();
+		$arrayData['serviceType'] = $jobFormArray[0]->getServiceType();
+		$arrayData['entryDate'] = $jobFormArray[0]->getEntryDate();
+		$arrayData['deliveryDate'] = $jobFormArray[0]->getDeliveryDate();
+		$arrayData['advance'] = $jobFormArray[0]->getAdvance();
+		$arrayData['total']= $jobFormArray[0]->getTotal();
+		$arrayData['paymentMode'] = $jobFormArray[0]->getPaymentMode();
+		$arrayData['stateAbb'] = $jobFormArray[0]->getStateAbb();
+		$arrayData['cityId']= $jobFormArray[0]->getCityId();
+		$arrayData['companyId']= $jobFormArray[0]->getCompanyId();
+		$arrayData['bankName']= $jobFormArray[0]->getBankName();
+		$arrayData['chequeNo']= $jobFormArray[0]->getChequeNo();
+			
+		$inventoryArray = array();
 		for($data=0;$data<count($jobFormArray);$data++)
 		{
-			$funcName[$data] = $jobFormArray[$data][0]->getName();
-			$getData[$data] = $jobFormArray[$data][0]->$funcName[$data]();
-			$keyName[$data] = $jobFormArray[$data][0]->getkey();
+			$inventoryArray[$data] = array();
+			$inventoryArray[$data]['productId'] = $jobFormArray[$data]->getProductId();
+			$inventoryArray[$data]['productName'] = $jobFormArray[$data]->getProductName();
+			$inventoryArray[$data]['productInformation'] = $jobFormArray[$data]->getProductInformation();
+			$inventoryArray[$data]['qty'] = $jobFormArray[$data]->getQty();
+			$inventoryArray[$data]['price'] = $jobFormArray[$data]->getPrice();
+			$inventoryArray[$data]['tax'] = $jobFormArray[$data]->getTax();
+			$inventoryArray[$data]['additionalTax'] = $jobFormArray[$data]->getAdditionalTax();
+			$inventoryArray[$data]['discountType'] = $jobFormArray[$data]->getDiscountType();
+			$inventoryArray[$data]['discount'] = $jobFormArray[$data]->getDiscount();
 		}
-		//data pass to the model object for insert
+		
 		$jobFormModel = new JobFormModel();
-		$status = $jobFormModel->insertData($getData,$keyName);
-		return $status;
+		if(array_key_exists('operation',$headerArray))
+		{
+			if(strcmp($headerArray['operation'][0],'generateBill')==0)
+			{
+				//data pass to the model object for insert
+				$status = $jobFormModel->insertBillJobData($getData,$keyName);
+				return $status;
+			}
+			else
+			{
+				return $exceptionArray['content'];
+			}
+		}
+		else
+		{
+			//data pass to the model object for insert
+			$status = $jobFormModel->insertData($arrayData,$inventoryArray);
+			return $status;
+		}
 	}
 	
 	/**

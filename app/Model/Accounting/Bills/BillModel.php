@@ -27,27 +27,69 @@ class BillModel extends Model
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
+		//get invoice-number for checking invoice-number is exist or not
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into sales_bill(
-		product_array,
-		payment_mode,
-		invoice_number,
-		job_card_number,
-		bank_name,
-		check_number,
-		total,
-		tax,
-		grand_total,
-		advance,
-		balance,
-		remark,
-		entry_date,
-		company_id,
-		sales_type,
-		client_id,
-		jf_id) 
-		values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$salesType."','".$ClientId."','".$jfId."')");
+		$getInvoiceNumber = DB::connection($databaseName)->select("select 
+		invoice_number 
+		from sales_bill 
+		where invoice_number='".$invoiceNumber."' and 
+		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
+		
+		//if invoice-number is exists then update bill data otherwise insert bill data
+		if(count($getInvoiceNumber)==0)
+		{
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->statement("insert into sales_bill(
+			product_array,
+			payment_mode,
+			invoice_number,
+			job_card_number,
+			bank_name,
+			check_number,
+			total,
+			tax,
+			grand_total,
+			advance,
+			balance,
+			remark,
+			entry_date,
+			company_id,
+			sales_type,
+			client_id,
+			jf_id) 
+			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$salesType."','".$ClientId."','".$jfId."')");
+			DB::commit();
+		}
+		else
+		{
+			$mytime = Carbon\Carbon::now();
+			//update bill data
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->statement("update 
+			sales_bill set 
+			product_array='".$productArray."',
+			payment_mode='".$paymentMode."',
+			invoice_number='".$invoiceNumber."',
+			job_card_number='".$jobCardNumber."',
+			bank_name='".$bankName."',
+			check_number='".$checkNumber."',
+			total='".$total."',
+			tax='".$tax."',
+			grand_total='".$grandTotal."',
+			advance='".$advance."',
+			balance='".$balance."',
+			remark='".$remark."',
+			entry_date='".$entryDate."',
+			company_id='".$companyId."',
+			client_id='".$ClientId."',
+			sales_type='".$salesType."',
+			jf_id='".$jfId."',
+			updated_at='".$mytime."' 
+			where invoice_number='".$invoiceNumber."' and
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+		}
 		
 		//get exception message
 		$exception = new ExceptionMessage();
@@ -159,27 +201,70 @@ class BillModel extends Model
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
+		//get invoice-number for checking invoice-number is exist or not
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into sales_bill(
-		product_array,
-		payment_mode,
-		invoice_number,
-		job_card_number,
-		bank_name,
-		check_number,
-		total,
-		tax,
-		grand_total,
-		advance,
-		balance,
-		remark,
-		entry_date,
-		company_id,
-		client_id,
-		sales_type,
-		jf_id) 
-		values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$salesType."','".$jfId."')");
+		$getInvoiceNumber = DB::connection($databaseName)->select("select 
+		invoice_number 
+		from sales_bill 
+		where invoice_number='".$invoiceNumber."' and 
+		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
+		
+		//if invoice-number is exists then update bill data otherwise insert bill data
+		if(count($getInvoiceNumber)==0)
+		{
+			//insert bill data
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->statement("insert into sales_bill(
+			product_array,
+			payment_mode,
+			invoice_number,
+			job_card_number,
+			bank_name,
+			check_number,
+			total,
+			tax,
+			grand_total,
+			advance,
+			balance,
+			remark,
+			entry_date,
+			company_id,
+			client_id,
+			sales_type,
+			jf_id) 
+			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$salesType."','".$jfId."')");
+			DB::commit();
+		}
+		else
+		{
+			$mytime = Carbon\Carbon::now();
+			//update bill data
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->statement("update 
+			sales_bill set 
+			product_array='".$productArray."',
+			payment_mode='".$paymentMode."',
+			invoice_number='".$invoiceNumber."',
+			job_card_number='".$jobCardNumber."',
+			bank_name='".$bankName."',
+			check_number='".$checkNumber."',
+			total='".$total."',
+			tax='".$tax."',
+			grand_total='".$grandTotal."',
+			advance='".$advance."',
+			balance='".$balance."',
+			remark='".$remark."',
+			entry_date='".$entryDate."',
+			company_id='".$companyId."',
+			client_id='".$ClientId."',
+			sales_type='".$salesType."',
+			jf_id='".$jfId."',
+			updated_at='".$mytime."' 
+			where invoice_number='".$invoiceNumber."' and 
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+		}
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();

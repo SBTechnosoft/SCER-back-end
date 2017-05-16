@@ -20,33 +20,75 @@ class JobFormModel extends Model
 	*/
 	public function insertData()
 	{
+		$mytime = Carbon\Carbon::now();
+		
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
-		$getJobFormData = array();
-		$getJobFormKey = array();
-		$getJobFormData = func_get_arg(0);
-		$getJobFormKey = func_get_arg(1);
-		$jobFormData="";
-		$keyName = "";
-		for($data=0;$data<count($getJobFormData);$data++)
-		{
-			if($data == (count($getJobFormData)-1))
-			{
-				$jobFormData = $jobFormData."'".$getJobFormData[$data]."'";
-				$keyName =$keyName.$getJobFormKey[$data];
-			}
-			else
-			{
-				$jobFormData = $jobFormData."'".$getJobFormData[$data]."',";
-				$keyName =$keyName.$getJobFormKey[$data].",";
-			}
-		}
+		$dataArray = func_get_arg(0);
+		$productArray = func_get_arg(1);
+		$encodedArray = json_encode($productArray);
+		
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into job_card_dtl(".$keyName.") 
-		values(".$jobFormData.")");
+		$raw = DB::connection($databaseName)->statement("insert into job_card_dtl(
+		client_name,
+		address,
+		contact_no,
+		email_id,
+		job_card_no,
+		labour_charge,
+		service_type,
+		entry_date,
+		delivery_date,
+		advance,
+		total,
+		payment_mode,
+		state_abb,
+		city_id,
+		company_id,
+		bank_name,
+		cheque_no,
+		product_array) 
+		values(
+		'".$dataArray['clientName']."',
+		'".$dataArray['address']."',
+		'".$dataArray['contactNo']."',
+		'".$dataArray['emailId']."',
+		'".$dataArray['jobCardNo']."',
+		'".$dataArray['labourCharge']."',
+		'".$dataArray['serviceType']."',
+		'".$dataArray['entryDate']."',
+		'".$dataArray['deliveryDate']."',
+		'".$dataArray['advance']."',
+		'".$dataArray['total']."',
+		'".$dataArray['paymentMode']."',
+		'".$dataArray['stateAbb']."',
+		'".$dataArray['cityId']."',
+		'".$dataArray['companyId']."',
+		'".$dataArray['bankName']."',
+		'".$dataArray['chequeNo']."',
+		'".$encodedArray."') on duplicate key update 
+		client_name='".$dataArray['clientName']."',
+		address='".$dataArray['address']."',
+		contact_no='".$dataArray['contactNo']."',
+		email_id='".$dataArray['emailId']."',
+		job_card_no='".$dataArray['jobCardNo']."',
+		labour_charge='".$dataArray['labourCharge']."',
+		service_type='".$dataArray['serviceType']."',
+		entry_date='".$dataArray['entryDate']."',
+		delivery_date='".$dataArray['deliveryDate']."',
+		advance='".$dataArray['advance']."',
+		total='".$dataArray['total']."',
+		payment_mode='".$dataArray['paymentMode']."',
+		state_abb='".$dataArray['stateAbb']."',
+		city_id='".$dataArray['cityId']."',
+		company_id='".$dataArray['companyId']."',
+		bank_name='".$dataArray['bankName']."',
+		cheque_no='".$dataArray['chequeNo']."',
+		product_array='".$encodedArray."',
+		updated_at='".$mytime."'");
 		DB::commit();
 		
 		// get exception message
@@ -61,6 +103,61 @@ class JobFormModel extends Model
 			return $exceptionArray['500'];
 		}
 	}
+	
+	/**
+	 * insert/update job-form data & insert bill data
+	 * @param  array
+	 * returns the status
+	*/
+	public function insertBillJobData()
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		$getJobFormData = array();
+		$getJobFormKey = array();
+		$getJobFormData = func_get_arg(0);
+		$getJobFormKey = func_get_arg(1);
+		$jobFormData="";
+		$keyName = "";
+		$updateString="";
+		for($data=0;$data<count($getJobFormData);$data++)
+		{
+			if($data == (count($getJobFormData)-1))
+			{
+				$jobFormData = $jobFormData."'".$getJobFormData[$data]."'";
+				$keyName =$keyName.$getJobFormKey[$data];
+			}
+			else
+			{
+				$jobFormData = $jobFormData."'".$getJobFormData[$data]."',";
+				$keyName =$keyName.$getJobFormKey[$data].",";
+			}
+			$updateString = $updateString.$getJobFormKey[$data]."='".$getJobFormData[$data]."',";
+		}
+		echo "insert into job_card_dtl(".$keyName.") 
+		values(".$jobFormData.") ON DUPLICATE KEY UPDATE ".$updateString;
+		exit;
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->statement("insert into job_card_dtl(".$keyName.") 
+		values(".$jobFormData.") ON DUPLICATE KEY UPDATE ".$updateString);
+		DB::commit();
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if($raw==1)
+		{
+			return $exceptionArray['200'];
+		}
+		else
+		{
+			return $exceptionArray['500'];
+		}
+	}
+	
 	/**
 	 * update data 
 	 * @param  branch-data,key of branch-data,branch-id

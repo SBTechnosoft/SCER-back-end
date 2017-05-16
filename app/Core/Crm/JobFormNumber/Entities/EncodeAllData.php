@@ -75,9 +75,9 @@ class EncodeAllData extends CompanyService
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
 		{
 			$data[$jsonData]= array(
-				'jobFormNumberId'=>$jobCardNumberId[$jsonData],
-				'jobFormNumberLabel' => $jobCardNumberLabel[$jsonData],
-				'jobFormNumberType' => $jobCardNumberType[$jsonData],
+				'jobCardNumberId'=>$jobCardNumberId[$jsonData],
+				'jobCardNumberLabel' => $jobCardNumberLabel[$jsonData],
+				'jobCardNumberType' => $jobCardNumberType[$jsonData],
 				'startAt' => $startAt[$jsonData],
 				'endAt'=> $endAt[$jsonData],
 				'createdAt' => $getCreatedDate[$jsonData],

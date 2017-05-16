@@ -23,6 +23,9 @@ use ERP\Core\Crm\JobForm\Properties\PaymentModePropertyTrait;
 use ERP\Core\Crm\JobForm\Properties\ProductIdPropertyTrait;
 use ERP\Core\Crm\JobForm\Properties\CompanyIdPropertyTrait;
 use ERP\Core\Crm\JobForm\Properties\AddressPropertyTrait;
+use ERP\Core\Crm\JobForm\Properties\ProductNamePropertyTrait;
+use ERP\Core\Crm\JobForm\Properties\BankNamePropertyTrait;
+use ERP\Core\Crm\JobForm\Properties\chequeNoPropertyTrait;
 use ERP\Core\States\Properties\StateAbbPropertyTrait;
 use ERP\Core\Shared\Properties\IdPropertyTrait;
 use ERP\Core\Shared\Properties\KeyPropertyTrait;
@@ -58,4 +61,7 @@ class JobFormPersistable
 	use IdPropertyTrait;
 	use KeyPropertyTrait;
 	use CityIdPropertyTrait;
+	use ProductNamePropertyTrait;
+	use BankNamePropertyTrait;
+	use chequeNoPropertyTrait;
 }

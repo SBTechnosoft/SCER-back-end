@@ -68,13 +68,9 @@ class JobFormController extends BaseController implements ContainerInterface
 				$jobFormService= new JobFormService();		
 				$jobFormPersistable = $processor->createPersistable($this->request);
 				
-				if($jobFormPersistable[0][0]=='[')
+				if(is_array($jobFormPersistable))
 				{
-					return $jobFormPersistable;
-				}
-				else if(is_array($jobFormPersistable))
-				{
-					$status = $jobFormService->insert($jobFormPersistable);
+					$status = $jobFormService->insert($jobFormPersistable,$this->request->header());
 					return $status;
 				}
 				else

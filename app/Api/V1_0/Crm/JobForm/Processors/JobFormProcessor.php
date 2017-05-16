@@ -47,6 +47,7 @@ class JobFormProcessor extends BaseProcessor
 			//trim an input 
 			$jobFormTransformer = new JobFormTransformer();
 			$tRequest = $jobFormTransformer->trimInsertData($this->request);
+			
 			if($tRequest==1)
 			{
 				return $msgArray['content'];
@@ -56,6 +57,17 @@ class JobFormProcessor extends BaseProcessor
 				//validation
 				$jobFormValidate = new JobFormValidate();
 				$status = $jobFormValidate->validate($tRequest);
+				if(!preg_match("/^[0-9]{4}-([1-9]|1[0-2]|0[1-9])-([1-9]|0[1-9]|[1-2][0-9]|3[0-1])$/",$tRequest['entryDate']))
+				{
+					return $msgArray['invalidEntryDate'];
+				}
+				if(!preg_match("/^[0-9]{4}-([1-9]|1[0-2]|0[1-9])-([1-9]|0[1-9]|[1-2][0-9]|3[0-1])$/",$tRequest['deliveryDate']))
+				{
+					return $msgArray['invalidDeliveryDate'];
+				}
+				$trimRequest = $tRequest;
+				$tRequest= array_splice($tRequest,0,-1);
+				
 				if($status=="Success")
 				{
 					foreach ($tRequest as $key => $value)
@@ -80,22 +92,39 @@ class JobFormProcessor extends BaseProcessor
 						}
 						$data++;
 					}
-					
-					// set data to the persistable object
-					for($data=0;$data<count($jobFormValue);$data++)
+					$jobFormPersistable=array();
+					for($data=0;$data<count($trimRequest[0]);$data++)
 					{
-						//set the data in persistable object
-						$jobFormPersistable = new JobFormPersistable();	
-						$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
-						//make function name dynamically
-						$setFuncName = 'set'.$str;
-						$getFuncName[$data] = 'get'.$str;
-						$jobFormPersistable->$setFuncName($jobFormValue[$data]);
-						$jobFormPersistable->setName($getFuncName[$data]);
-						$jobFormPersistable->setKey($keyName[$data]);
-						$jobFormArray[$data] = array($jobFormPersistable);
+						$jobFormPersistable[$data] = new JobFormPersistable();
+						$jobFormPersistable[$data]->setClientName($trimRequest['clientName']);
+						$jobFormPersistable[$data]->setAddress($trimRequest['address']);
+						$jobFormPersistable[$data]->setContactNo($trimRequest['contactNo']);
+						$jobFormPersistable[$data]->setEmailId($trimRequest['emailId']);
+						$jobFormPersistable[$data]->setJobCardNo($trimRequest['jobCardNo']);
+						$jobFormPersistable[$data]->setLabourCharge($trimRequest['labourCharge']);
+						$jobFormPersistable[$data]->setServiceType($trimRequest['serviceType']);
+						$jobFormPersistable[$data]->setEntryDate($trimRequest['entryDate']);
+						$jobFormPersistable[$data]->setDeliveryDate($trimRequest['deliveryDate']);
+						$jobFormPersistable[$data]->setAdvance($trimRequest['advance']);
+						$jobFormPersistable[$data]->setTotal($trimRequest['total']);
+						$jobFormPersistable[$data]->setPaymentMode($trimRequest['paymentMode']);
+						$jobFormPersistable[$data]->setStateAbb($trimRequest['stateAbb']);
+						$jobFormPersistable[$data]->setCityId($trimRequest['cityId']);
+						$jobFormPersistable[$data]->setCompanyId($trimRequest['companyId']);
+						$jobFormPersistable[$data]->setBankName($trimRequest['bankName']);
+						$jobFormPersistable[$data]->setChequeNo($trimRequest['chequeNo']);
+						
+						$jobFormPersistable[$data]->setProductId($trimRequest[0][$data]['productId']);
+						$jobFormPersistable[$data]->setProductName($trimRequest[0][$data]['productName']);
+						$jobFormPersistable[$data]->setProductInformation($trimRequest[0][$data]['productInformation']);
+						$jobFormPersistable[$data]->setQty($trimRequest[0][$data]['qty']);
+						$jobFormPersistable[$data]->setPrice($trimRequest[0][$data]['price']);
+						$jobFormPersistable[$data]->setTax($trimRequest[0][$data]['tax']);
+						$jobFormPersistable[$data]->setAdditionalTax($trimRequest[0][$data]['additionalTax']);
+						$jobFormPersistable[$data]->setDiscountType($trimRequest[0][$data]['discountType']);
+						$jobFormPersistable[$data]->setDiscount($trimRequest[0][$data]['discount']);
 					}
-					return $jobFormArray;
+					return $jobFormPersistable;
 				}
 				else
 				{

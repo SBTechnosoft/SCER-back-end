@@ -475,42 +475,42 @@ include ('connection.php');
 				// formdata.append('companyId',$scope.formAdata.companyId);
 				
 				//job-form
-				$scope.formAdata.clientName = "abc";
+				$scope.formAdata.clientName = "reema";
 				$scope.formAdata.contactNo = '8788888888';
 				$scope.formAdata.address = 'address';
 				$scope.formAdata.emailId = 'email@gmail.com';
-				$scope.formAdata.jobCardNo = '3';
-				$scope.formAdata.productInformation = 'information';
-				$scope.formAdata.qty = '2';
-				$scope.formAdata.tax = '10';
-				$scope.formAdata.discountType = 'flat';
-				$scope.formAdata.discount = '4';
-				$scope.formAdata.additionalTax = '12';
-				$scope.formAdata.price = '100';
-				$scope.formAdata.labourCharge = '100';
-				$scope.formAdata.serviceType = 'paid';
-				$scope.formAdata.entryDate = '3-4-2017';
-				$scope.formAdata.deliveryDate = '4-4-2017';
-				$scope.formAdata.advance = '100';
-				$scope.formAdata.total = '400';
+				$scope.formAdata.jobCardNo = '4';
+				$scope.formAdata.labourCharge = '200';
+				$scope.formAdata.serviceType = 'free';
+				$scope.formAdata.entryDate = '2-2-2017';
+				$scope.formAdata.deliveryDate = '2-2-2017';
+				$scope.formAdata.advance = '200';
+				$scope.formAdata.total = '200';
 				$scope.formAdata.paymentMode = 'cash';
 				$scope.formAdata.stateAbb = 'IN-AP';
 				$scope.formAdata.cityId = '79';
-				$scope.formAdata.productId = '3';
 				$scope.formAdata.companyId = '9';
+				$scope.formAdata.bankName = 'sdfsd';
+				$scope.formAdata.chequeNo = 'sdfsd';
+				$scope.inventory=[{"productId":3,"productName":"Rangerddcd" ,"productInformation":'info',"qty":'2',
+				 "price":45,'tax':10,'additionalTax':12,'discountType':'flat','discount':10},{"productId":3,"productName":"Rangerddcd" ,"productInformation":'info',"qty":'2',
+				 "price":45,'tax':10,'additionalTax':12,'discountType':'flat','discount':10}];
+				// $scope.formAdata.productInformation = 'information';
+				// $scope.formAdata.qty = '2';
+				// $scope.formAdata.tax = '10';
+				// $scope.formAdata.discountType = 'flat';
+				// $scope.formAdata.discount = '4';
+				// $scope.formAdata.additionalTax = '12';
+				// $scope.formAdata.price = '100';
+				
+				// $scope.formAdata.productId = '3';
+				
 				
 				formdata.append('clientName',$scope.formAdata.clientName);
 				formdata.append('contactNo',$scope.formAdata.contactNo);
 				formdata.append('address',$scope.formAdata.address);
 				formdata.append('emailId',$scope.formAdata.emailId);
 				formdata.append('jobCardNo',$scope.formAdata.jobCardNo);
-				formdata.append('productInformation',$scope.formAdata.productInformation);
-				formdata.append('qty',$scope.formAdata.qty);
-				formdata.append('tax',$scope.formAdata.tax);
-				formdata.append('discountType',$scope.formAdata.discountType);
-				formdata.append('discount',$scope.formAdata.discount);
-				formdata.append('additionalTax',$scope.formAdata.additionalTax);
-				formdata.append('price',$scope.formAdata.price);
 				formdata.append('labourCharge',$scope.formAdata.labourCharge);
 				formdata.append('serviceType',$scope.formAdata.serviceType);
 				formdata.append('entryDate',$scope.formAdata.entryDate);
@@ -520,8 +520,26 @@ include ('connection.php');
 				formdata.append('paymentMode',$scope.formAdata.paymentMode);
 				formdata.append('stateAbb',$scope.formAdata.stateAbb);
 				formdata.append('cityId',$scope.formAdata.cityId);
-				formdata.append('productId',$scope.formAdata.productId);
 				formdata.append('companyId',$scope.formAdata.companyId);
+				for(var i=0;i<$scope.inventory.length;i++){
+   
+  					angular.forEach($scope.inventory[i], function (value,key) {
+   						
+   					formdata.append('product['+i+']['+key+']',value);
+  					});
+				}
+				// formdata.append('productInformation',$scope.formAdata.productInformation);
+				// formdata.append('qty',$scope.formAdata.qty);
+				// formdata.append('tax',$scope.formAdata.tax);
+				// formdata.append('discountType',$scope.formAdata.discountType);
+				// formdata.append('discount',$scope.formAdata.discount);
+				// formdata.append('additionalTax',$scope.formAdata.additionalTax);
+				// formdata.append('price',$scope.formAdata.price);
+				
+				// formdata.append('productId',$scope.formAdata.productId);
+				
+				
+				// insert into job_card_dtl(client_name,company_id,product_id,state_abb,city_id) values('fff',9,3,'IN-AP',79) on duplicate key update client_name='ggg'
 	//----------------------------------Batch Insertion-----------------------------------------------------------------			
 				//multiple inventory insertion
 				 // $scope.inventory=[{"isDisplay":'no',"productName":"Rangerddcd" ,"measurementUnit":'piece',"productCategoryId":'brand1',

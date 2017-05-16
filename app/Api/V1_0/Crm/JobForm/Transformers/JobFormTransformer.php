@@ -26,13 +26,6 @@ class JobFormTransformer
 		$tContactNo = trim($request->input('contactNo'));
 		$tEmailId = trim($request->input('emailId'));
 		$tJobCardNo = trim($request->input('jobCardNo'));
-		$tProductInformation = trim($request->input('productInformation'));
-		$tQty = trim($request->input('qty'));
-		$tTax = trim($request->input('tax'));
-		$tDiscountType = trim($request->input('discountType'));
-		$tDiscount = trim($request->input('discount'));
-		$tAdditionalTax = trim($request->input('additionalTax'));
-		$tPrice = trim($request->input('price'));
 		$tLabourCharge = trim($request->input('labourCharge'));
 		$tServiceType = trim($request->input('serviceType'));
 		$tEntryDate = trim($request->input('entryDate'));
@@ -42,9 +35,18 @@ class JobFormTransformer
 		$tPaymentMode = trim($request->input('paymentMode'));
 		$tStateAbb = trim($request->input('stateAbb'));
 		$tCityId = trim($request->input('cityId'));
-		$tProductId = trim($request->input('productId'));
 		$tCompanyId = trim($request->input('companyId'));
 		
+		if(strcmp($tPaymentMode,'bank')==0)
+		{
+			$tBankName = trim($request->input('bankName'));
+			$tChequeNo = trim($request->input('chequeNo'));
+		}
+		else
+		{
+			$tBankName = "";
+			$tChequeNo = "";
+		}
 		$enumServiceTypeArray = array();
 		$serviceTypeEnum = new ServiceTypeEnum();
 		$enumServiceTypeArray = $serviceTypeEnum->enumArrays();
@@ -76,7 +78,51 @@ class JobFormTransformer
 				$paymentModeFlag=2;
 			}
 		}
+		//entry date conversion
+		$splitedDate = explode("-",$tEntryDate);
+		$transformEntryDate = $splitedDate[2]."-".$splitedDate[1]."-".$splitedDate[0];
 		
+		//delivery date conversion
+		$splitedDeliveryDate = explode("-",$tDeliveryDate);
+		$transformDeliveryDate = $splitedDeliveryDate[2]."-".$splitedDeliveryDate[1]."-".$splitedDeliveryDate[0];
+		
+		$numberOfArray = count($request->input('product'));
+		$tempArray = array();
+		for($arrayData=0;$arrayData<$numberOfArray;$arrayData++)
+		{
+			$discountTypeFlag=0;
+			$tempArray[$arrayData] = array();
+			$tempArray[$arrayData][0] = trim($request->input()['product'][$arrayData]['productId']);
+			$tempArray[$arrayData][1] = trim($request->input()['product'][$arrayData]['productName']);
+			$tempArray[$arrayData][2] = trim($request->input()['product'][$arrayData]['productInformation']);
+			$tempArray[$arrayData][3] = trim($request->input()['product'][$arrayData]['qty']);
+			$tempArray[$arrayData][4] = trim($request->input()['product'][$arrayData]['price']);
+			$tempArray[$arrayData][5] = trim($request->input()['product'][$arrayData]['tax']);
+			$tempArray[$arrayData][6] = trim($request->input()['product'][$arrayData]['additionalTax']);
+			$tempArray[$arrayData][7] = trim($request->input()['product'][$arrayData]['discountType']);
+			$tempArray[$arrayData][8] = trim($request->input()['product'][$arrayData]['discount']);
+			
+			//check enum type[amount-type]
+			$enumDiscountTypeArray = array();
+			$discountTypeEnum = new DiscountTypeEnum();
+			$enumDiscountTypeArray = $discountTypeEnum->enumArrays();
+			foreach ($enumDiscountTypeArray as $key => $value)
+			{
+				if(strcmp($value,$tempArray[$arrayData][7])==0)
+				{
+					$discountTypeFlag=1;
+					break;
+				}
+				else
+				{
+					$discountTypeFlag=0;
+				}
+			}
+			if($discountTypeFlag==0)
+			{
+				return "1";
+			}
+		}
 		if($serviceTypeFlag==2 || $paymentModeFlag==2)
 		{
 			return "1";
@@ -85,29 +131,39 @@ class JobFormTransformer
 		{
 			// make an array
 			$data = array();
-			$data['client_name'] = $tClientName;
+			$data['clientName'] = $tClientName;
 			$data['address'] = $tAddress;
-			$data['contact_no'] = $tContactNo;
-			$data['email_id'] = $tEmailId;
-			$data['job_card_no'] = $tJobCardNo;
-			$data['product_information'] = $tProductInformation;
-			$data['qty'] = $tQty;
-			$data['tax'] = $tTax;
-			$data['discount_type'] = $tDiscountType;
-			$data['discount'] = $tDiscount;
-			$data['additional_tax'] = $tAdditionalTax;
-			$data['price'] = $tPrice;
-			$data['labour_charge'] = $tLabourCharge;
-			$data['service_type'] = $tServiceType;
-			$data['entry_date'] = $tEntryDate;
-			$data['delivery_date'] = $tDeliveryDate;
+			$data['contactNo'] = $tContactNo;
+			$data['emailId'] = $tEmailId;
+			$data['jobCardNo'] = $tJobCardNo;
+			$data['labourCharge'] = $tLabourCharge;
+			$data['serviceType'] = $tServiceType;
+			$data['entryDate'] = $transformEntryDate;
+			$data['deliveryDate'] = $transformDeliveryDate;
 			$data['advance'] = $tAdvance;
 			$data['total'] = $tTotal;
-			$data['payment_mode'] = $tPaymentMode;
-			$data['state_abb'] = $tStateAbb;
-			$data['city_id'] = $tCityId;
-			$data['product_id'] = $tProductId;
-			$data['company_id'] = $tCompanyId;
+			$data['paymentMode'] = $tPaymentMode;
+			$data['stateAbb'] = $tStateAbb;
+			$data['cityId'] = $tCityId;
+			$data['companyId'] = $tCompanyId;
+			$data['bankName'] = $tBankName;
+			$data['chequeNo'] = $tChequeNo;
+			$trimArray = array();
+			for($arrayData=0;$arrayData<$numberOfArray;$arrayData++)
+			{
+				$trimArray[$arrayData]= array(
+					'productId' => $tempArray[$arrayData][0],
+					'productName' => $tempArray[$arrayData][1],
+					'productInformation' => $tempArray[$arrayData][2],
+					'qty' => $tempArray[$arrayData][3],
+					'price' => $tempArray[$arrayData][4],
+					'tax' => $tempArray[$arrayData][5],
+					'additionalTax' => $tempArray[$arrayData][6],
+					'discountType' => $tempArray[$arrayData][7],
+					'discount' => $tempArray[$arrayData][8]
+				);
+			}
+			array_push($data,$trimArray);
 			return $data;
 		}
 	}

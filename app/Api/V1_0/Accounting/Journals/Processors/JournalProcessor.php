@@ -60,7 +60,7 @@ class JournalProcessor extends BaseProcessor
 				$status = $journalValidate->validate($tRequest);
 				if(!preg_match("/^[0-9]{4}-([1-9]|1[0-2]|0[1-9])-([1-9]|0[1-9]|[1-2][0-9]|3[0-1])$/",$tRequest['entryDate']))
 				{
-					return "entry-date is not valid";
+					return $msgArray['invalidEntryDate'];
 				}
 				if($status=="Success")
 				{

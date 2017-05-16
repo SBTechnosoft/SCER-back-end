@@ -41,14 +41,23 @@
 			"emailId": string,
 			"address":string,
 			"jobCardNo": string,
-			"productId": int,
-			"productInformation": string,
-			"Qty": decimal,
-			"tax": decimal,
-			"discountType":enum,
-			"discount": decimal,
-			"additionalTax": string,
-			"price":decimal,
+			"product":
+			[
+				{
+					"productId": int,
+					"productName":string
+					"productInformation": string,
+					"Qty": decimal,
+					"tax": decimal,
+					"additionalTax": string,
+					"discountType":enum,
+					"discount": decimal,
+					"price":decimal,
+				}
+				...
+			]			
+			"bankName":string,
+			"chequeNo":string,
 			"labourCharge":decimal,
 			"serviceType": enum,
 			"entryDate": date,
