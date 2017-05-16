@@ -623,6 +623,7 @@ class BillProcessor extends BaseProcessor
 			$billPersistable->setJobCardNumber($tRequest['job_card_number']);
 			$billPersistable->setCheckNumber($tRequest['check_number']);
 			$billPersistable->setTotal($tRequest['total']);
+			$billPersistable->setExtraCharge($tRequest['extra_charge']);
 			$billPersistable->setTax($tRequest['tax']);
 			$billPersistable->setGrandTotal($tRequest['grand_total']);
 			$billPersistable->setAdvance($tRequest['advance']);

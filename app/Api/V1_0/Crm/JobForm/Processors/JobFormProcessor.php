@@ -107,6 +107,7 @@ class JobFormProcessor extends BaseProcessor
 						$jobFormPersistable[$data]->setDeliveryDate($trimRequest['deliveryDate']);
 						$jobFormPersistable[$data]->setAdvance($trimRequest['advance']);
 						$jobFormPersistable[$data]->setTotal($trimRequest['total']);
+						$jobFormPersistable[$data]->setTax($trimRequest['tax']);
 						$jobFormPersistable[$data]->setPaymentMode($trimRequest['paymentMode']);
 						$jobFormPersistable[$data]->setStateAbb($trimRequest['stateAbb']);
 						$jobFormPersistable[$data]->setCityId($trimRequest['cityId']);
@@ -119,8 +120,6 @@ class JobFormProcessor extends BaseProcessor
 						$jobFormPersistable[$data]->setProductInformation($trimRequest[0][$data]['productInformation']);
 						$jobFormPersistable[$data]->setQty($trimRequest[0][$data]['qty']);
 						$jobFormPersistable[$data]->setPrice($trimRequest[0][$data]['price']);
-						$jobFormPersistable[$data]->setTax($trimRequest[0][$data]['tax']);
-						$jobFormPersistable[$data]->setAdditionalTax($trimRequest[0][$data]['additionalTax']);
 						$jobFormPersistable[$data]->setDiscountType($trimRequest[0][$data]['discountType']);
 						$jobFormPersistable[$data]->setDiscount($trimRequest[0][$data]['discount']);
 					}

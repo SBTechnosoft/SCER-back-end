@@ -66,6 +66,7 @@ class BillService
 			$bankName = $billArray->getBankName();
 			$checkNumber = $billArray->getCheckNumber();
 			$total = $billArray->getTotal();
+			$extraCharge = $billArray->getExtraCharge();
 			$tax = $billArray->getTax();
 			$grandTotal = $billArray->getGrandTotal();
 			$advance = $billArray->getAdvance();
@@ -78,7 +79,7 @@ class BillService
 			$jfId= $billArray->getJfId();
 			//data pass to the model object for insert
 			$billModel = new BillModel();
-			$status = $billModel->insertData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$jfId);
+			$status = $billModel->insertData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$jfId);
 			
 			//get exception message
 			$exception = new ExceptionMessage();
@@ -106,6 +107,7 @@ class BillService
 			$bankName = $billArray[count($billArray)-1]->getBankName();
 			$checkNumber = $billArray[count($billArray)-1]->getCheckNumber();
 			$total = $billArray[count($billArray)-1]->getTotal();
+			$extraCharge = $billArray[count($billArray)-1]->getExtraCharge();
 			$tax = $billArray[count($billArray)-1]->getTax();
 			$grandTotal = $billArray[count($billArray)-1]->getGrandTotal();
 			$advance = $billArray[count($billArray)-1]->getAdvance();
@@ -123,7 +125,7 @@ class BillService
 			
 			//data pass to the model object for insert
 			$billModel = new BillModel();
-			$status = $billModel->insertAllData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray,$jfId);
+			$status = $billModel->insertAllData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray,$jfId);
 			
 			//get exception message
 			$exception = new ExceptionMessage();

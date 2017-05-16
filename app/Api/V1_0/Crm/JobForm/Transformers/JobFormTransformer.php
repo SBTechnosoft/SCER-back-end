@@ -32,6 +32,7 @@ class JobFormTransformer
 		$tDeliveryDate = trim($request->input('deliveryDate'));
 		$tAdvance = trim($request->input('advance'));
 		$tTotal = trim($request->input('total'));
+		$tTax = trim($request->input('tax'));
 		$tPaymentMode = trim($request->input('paymentMode'));
 		$tStateAbb = trim($request->input('stateAbb'));
 		$tCityId = trim($request->input('cityId'));
@@ -97,10 +98,8 @@ class JobFormTransformer
 			$tempArray[$arrayData][2] = trim($request->input()['product'][$arrayData]['productInformation']);
 			$tempArray[$arrayData][3] = trim($request->input()['product'][$arrayData]['qty']);
 			$tempArray[$arrayData][4] = trim($request->input()['product'][$arrayData]['price']);
-			$tempArray[$arrayData][5] = trim($request->input()['product'][$arrayData]['tax']);
-			$tempArray[$arrayData][6] = trim($request->input()['product'][$arrayData]['additionalTax']);
-			$tempArray[$arrayData][7] = trim($request->input()['product'][$arrayData]['discountType']);
-			$tempArray[$arrayData][8] = trim($request->input()['product'][$arrayData]['discount']);
+			$tempArray[$arrayData][5] = trim($request->input()['product'][$arrayData]['discountType']);
+			$tempArray[$arrayData][6] = trim($request->input()['product'][$arrayData]['discount']);
 			
 			//check enum type[amount-type]
 			$enumDiscountTypeArray = array();
@@ -142,6 +141,7 @@ class JobFormTransformer
 			$data['deliveryDate'] = $transformDeliveryDate;
 			$data['advance'] = $tAdvance;
 			$data['total'] = $tTotal;
+			$data['tax'] = $tTax;
 			$data['paymentMode'] = $tPaymentMode;
 			$data['stateAbb'] = $tStateAbb;
 			$data['cityId'] = $tCityId;
@@ -157,10 +157,8 @@ class JobFormTransformer
 					'productInformation' => $tempArray[$arrayData][2],
 					'qty' => $tempArray[$arrayData][3],
 					'price' => $tempArray[$arrayData][4],
-					'tax' => $tempArray[$arrayData][5],
-					'additionalTax' => $tempArray[$arrayData][6],
-					'discountType' => $tempArray[$arrayData][7],
-					'discount' => $tempArray[$arrayData][8]
+					'discountType' => $tempArray[$arrayData][5],
+					'discount' => $tempArray[$arrayData][6]
 				);
 			}
 			array_push($data,$trimArray);

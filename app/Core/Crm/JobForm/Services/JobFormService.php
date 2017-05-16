@@ -69,6 +69,7 @@ class JobFormService extends AbstractService
 		$arrayData['deliveryDate'] = $jobFormArray[0]->getDeliveryDate();
 		$arrayData['advance'] = $jobFormArray[0]->getAdvance();
 		$arrayData['total']= $jobFormArray[0]->getTotal();
+		$arrayData['tax']= $jobFormArray[0]->getTax();
 		$arrayData['paymentMode'] = $jobFormArray[0]->getPaymentMode();
 		$arrayData['stateAbb'] = $jobFormArray[0]->getStateAbb();
 		$arrayData['cityId']= $jobFormArray[0]->getCityId();
@@ -85,8 +86,6 @@ class JobFormService extends AbstractService
 			$inventoryArray[$data]['productInformation'] = $jobFormArray[$data]->getProductInformation();
 			$inventoryArray[$data]['qty'] = $jobFormArray[$data]->getQty();
 			$inventoryArray[$data]['price'] = $jobFormArray[$data]->getPrice();
-			$inventoryArray[$data]['tax'] = $jobFormArray[$data]->getTax();
-			$inventoryArray[$data]['additionalTax'] = $jobFormArray[$data]->getAdditionalTax();
 			$inventoryArray[$data]['discountType'] = $jobFormArray[$data]->getDiscountType();
 			$inventoryArray[$data]['discount'] = $jobFormArray[$data]->getDiscount();
 		}

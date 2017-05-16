@@ -33,6 +33,7 @@ class EncodeAllData extends ClientService
 			$jobCardNumber[$decodedData] = $deocodedJsonData[$decodedData]->job_card_number;
 			$checkNumber[$decodedData] = $deocodedJsonData[$decodedData]->check_number;
 			$total[$decodedData] = $deocodedJsonData[$decodedData]->total;
+			$extraCharge[$decodedData] = $deocodedJsonData[$decodedData]->extra_charge;
 			$tax[$decodedData] = $deocodedJsonData[$decodedData]->tax;
 			$grandTotal[$decodedData] = $deocodedJsonData[$decodedData]->grand_total;
 			$advance[$decodedData] = $deocodedJsonData[$decodedData]->advance;
@@ -181,6 +182,7 @@ class EncodeAllData extends ClientService
 				'jobCardNumber'=>$jobCardNumber[$jsonData],
 				'checkNumber'=>$checkNumber[$jsonData],
 				'total'=>$total[$jsonData],
+				'extraCharge'=>$extraCharge[$jsonData],
 				'tax'=>$tax[$jsonData],
 				'grandTotal'=>$grandTotal[$jsonData],
 				'advance'=>$advance[$jsonData],

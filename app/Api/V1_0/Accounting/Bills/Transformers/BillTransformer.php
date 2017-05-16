@@ -74,9 +74,18 @@ class BillTransformer
 		$tStateAbb = trim($billArrayData['stateAbb']);
 		$tCityId = trim($billArrayData['cityId']);
 		$tTotal = trim($billArrayData['total']);
+		if(!array_key_exists('extraCharge',$request->input()))
+		{
+			$tExtraCharge = 0;
+		}
+		else
+		{
+			$tExtraCharge = trim($billArrayData['extraCharge']);
+		}
 		$tTax = trim($billArrayData['tax']);
 		$tGrandTotal = trim($billArrayData['grandTotal']);
 		$tAdvance = trim($billArrayData['advance']);
+		
 		$tBalance = trim($billArrayData['balance']);
 		$tPaymentMode = trim($billArrayData['paymentMode']);
 		if(strcmp($tPaymentMode,"bank")==0)
@@ -189,6 +198,7 @@ class BillTransformer
 			$data['state_abb'] = $tStateAbb;
 			$data['city_id'] = $tCityId;
 			$data['total'] = $tTotal;
+			$data['extra_charge'] = $tExtraCharge;
 			$data['tax'] = $tTax;
 			$data['grand_total'] = $tGrandTotal;
 			$data['advance'] = $tAdvance;

@@ -24,6 +24,7 @@ use ERP\Core\Accounting\Bills\Properties\BillArrayPropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\KeyArrayPropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\NameArrayPropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\SaleIdArrayPropertyTrait;
+use ERP\Core\Accounting\Bills\Properties\ExtraChargePropertyTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -52,4 +53,5 @@ class BillPersistable
 	use NameArrayPropertyTrait;
 	use SaleIdArrayPropertyTrait;
 	use JobCardNumberPropertyTrait;
+	use ExtraChargePropertyTrait;
 }
