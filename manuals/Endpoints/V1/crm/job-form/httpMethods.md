@@ -20,23 +20,21 @@
                 ... HTTP_Status:200
             }
 			
-##### `POST crm/job-form`
-+ Header
+##### Gets Job-Form Data           
+            
+##### `GET crm/job-form`
++ Header 
 	- Authentication Token
-	- "operation":'generateBill'
-	
-+ Body
 
-            {
-                ... Standard Job-Form Persistable Object
-            }
 + Error Message
 
 			{
 				... Error Message
-			}             
+			} 
 + Response
 
-            {
-                "documentPath":''
-            }
+			{
+				... Standard Job-Form Object
+			}
+
+**NOTES:** List all the Job-Form data

@@ -84,4 +84,29 @@ class JobFormController extends BaseController implements ContainerInterface
 			return $authenticationResult;
 		}
 	}
+	
+	/**
+	 * get all the data
+	 * @param  Request object[Request $request]
+	*/
+	public function getAllData(Request $request)
+	{
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$jobFormService= new JobFormService();
+			$status = $jobFormService->getAllData();
+			return $status;
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+	}
 }

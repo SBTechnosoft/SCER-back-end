@@ -111,8 +111,14 @@ class BillTransformer
 		{
 			$tRemark ="";
 		}
-		$tIsDisplay = trim($billArrayData['isDisplay']);
-		
+		if(array_key_exists('isDisplay',$request->input()))
+		{
+			$tIsDisplay = trim($billArrayData['isDisplay']);
+		}
+		else
+		{
+			$tIsDisplay="yes";
+		}
 		$isDisplayEnum = new IsDisplayEnum();
 		$isDisplayArray = $isDisplayEnum->enumArrays();
 		if($tIsDisplay=="")

@@ -486,6 +486,7 @@ include ('connection.php');
 				$scope.formAdata.deliveryDate = '2-2-2017';
 				$scope.formAdata.advance = '200';
 				$scope.formAdata.total = '200';
+				$scope.formAdata.tax = '200';
 				$scope.formAdata.paymentMode = 'cash';
 				$scope.formAdata.stateAbb = 'IN-AP';
 				$scope.formAdata.cityId = '79';
@@ -493,8 +494,8 @@ include ('connection.php');
 				$scope.formAdata.bankName = 'sdfsd';
 				$scope.formAdata.chequeNo = 'sdfsd';
 				$scope.inventory=[{"productId":3,"productName":"Rangerddcd" ,"productInformation":'info',"qty":'2',
-				 "price":45,'tax':10,'additionalTax':12,'discountType':'flat','discount':10},{"productId":3,"productName":"Rangerddcd" ,"productInformation":'info',"qty":'2',
-				 "price":45,'tax':10,'additionalTax':12,'discountType':'flat','discount':10}];
+				 "price":45,'discountType':'flat','discount':10},{"productId":3,"productName":"Rangerddcd" ,"productInformation":'info',"qty":'2',
+				 "price":45,'discountType':'flat','discount':10}];
 				// $scope.formAdata.productInformation = 'information';
 				// $scope.formAdata.qty = '2';
 				// $scope.formAdata.tax = '10';
@@ -517,6 +518,7 @@ include ('connection.php');
 				formdata.append('deliveryDate',$scope.formAdata.deliveryDate);
 				formdata.append('advance',$scope.formAdata.advance);
 				formdata.append('total',$scope.formAdata.total);
+				formdata.append('tax',$scope.formAdata.tax);
 				formdata.append('paymentMode',$scope.formAdata.paymentMode);
 				formdata.append('stateAbb',$scope.formAdata.stateAbb);
 				formdata.append('cityId',$scope.formAdata.cityId);
@@ -848,8 +850,8 @@ include ('connection.php');
                         url: url,
                         // type:'patch',
                         // type:'get',
-						 // method: 'get',
-						 method: 'post',
+						 method: 'get',
+						 // method: 'post',
 						 // method: 'patch',
 						// enctype:'multipart/formdata',
 						 // _method: 'patch',
@@ -874,7 +876,7 @@ include ('connection.php');
                         // headers: {'Content-Type':undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','productCode':'ABC_ABC_AB_CYCFDJ_BKBK_122T'},
                         // headers: {'Content-Type':undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','fromDate':'01/04/2017','toDate':'28/04/2017'},
                         // headers: {'Content-Type':'application/x-www-form-urlencoded','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
-						 data:formdata
+						 // data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

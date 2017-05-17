@@ -25,7 +25,6 @@ class JobFormNumberModel extends Model
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
-		date_default_timezone_set("Asia/Calcutta");
 		$getJobFormNumberData = array();
 		$getJobFormNumberKey = array();
 		$getJobFormNumberData = func_get_arg(0);
@@ -140,6 +139,41 @@ class JobFormNumberModel extends Model
 		{
 			$enocodedData = json_encode($raw);
 			return $enocodedData;
+		}
+	}
+	
+	/**
+	 * update job-card-no
+	 * returns the error-message/status
+	*/
+	public function updateJobCardNo($companyId,$endAt)
+	{
+		$mytime = Carbon\Carbon::now();
+		
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();	
+		$raw = DB::connection($databaseName)->statement("update
+		job_card_number_dtl
+		set end_at='".$endAt."',
+		updated_at='".$mytime."' 
+		where company_id='".$companyId."' and 
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if($raw!=1)
+		{
+			return $exceptionArray['204'];
+		}
+		else
+		{
+			return $exceptionArray['200'];
 		}
 	}
 }

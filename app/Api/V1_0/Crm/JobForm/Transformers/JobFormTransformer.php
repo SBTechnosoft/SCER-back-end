@@ -107,7 +107,7 @@ class JobFormTransformer
 			$enumDiscountTypeArray = $discountTypeEnum->enumArrays();
 			foreach ($enumDiscountTypeArray as $key => $value)
 			{
-				if(strcmp($value,$tempArray[$arrayData][7])==0)
+				if(strcmp($value,$tempArray[$arrayData][5])==0)
 				{
 					$discountTypeFlag=1;
 					break;

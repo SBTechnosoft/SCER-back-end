@@ -1,5 +1,5 @@
 <?php
-namespace ERP\Core\Branches\Entities;
+namespace ERP\Core\Crm\JobForm\Entities;
 
 use ERP\Core\Shared\Properties\CreatedAtPropertyTrait;
 use ERP\Core\Shared\Properties\UpdatedAtPropertyTrait;
@@ -7,7 +7,7 @@ use ERP\Core\Shared\Properties\UpdatedAtPropertyTrait;
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class Branch
+class JobForm
 {
 	use CreatedAtPropertyTrait;
     use UpdatedAtPropertyTrait;

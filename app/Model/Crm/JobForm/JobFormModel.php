@@ -2,6 +2,7 @@
 namespace ERP\Model\Crm\JobForm;
 
 use Illuminate\Database\Eloquent\Model;
+use ERP\Model\Crm\JobFormNumber\JobFormNumberModel;
 use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
@@ -30,6 +31,10 @@ class JobFormModel extends Model
 		$dataArray = func_get_arg(0);
 		$productArray = func_get_arg(1);
 		$encodedArray = json_encode($productArray);
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
 		
 		DB::beginTransaction();
 		$raw = DB::connection($databaseName)->statement("insert into job_card_dtl(
@@ -94,9 +99,25 @@ class JobFormModel extends Model
 		updated_at='".$mytime."'");
 		DB::commit();
 		
-		// get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
+		//if insertion is performed job-form-number should be updated...otherwise not
+		// for updating job-form-number,get updated_at time
+		DB::beginTransaction();	
+		$getLatestJobCardData = DB::connection($databaseName)->select("SELECT
+		updated_at	
+		FROM job_card_dtl
+		where deleted_at='0000-00-00 00:00:00' 
+		group by job_card_no desc limit 1");
+		DB::commit();
+		if(strcmp($getLatestJobCardData[0]->updated_at,'0000-00-00 00:00:00')==0)
+		{
+			//update job-form-number
+			$jobFormNumberModel = new JobFormNumberModel();
+			$latestJobFormNumber = $jobFormNumberModel->getLatestJobFormNumberData($dataArray['companyId']);
+			$decodedJobFormNumber = json_decode($latestJobFormNumber);
+			$endAt = $decodedJobFormNumber[0]->end_at+1;
+			$updateResult = $jobFormNumberModel->updateJobCardNo($dataArray['companyId'],$endAt);
+		}
+		
 		if($raw==1)
 		{
 			return $exceptionArray['200'];
@@ -104,6 +125,57 @@ class JobFormModel extends Model
 		else
 		{
 			return $exceptionArray['500'];
+		}
+	}
+	
+	/**
+	 * get all data 
+	 * returns the status/array-data
+	*/
+	public function getAllData()
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();		
+		$raw = DB::connection($databaseName)->select("select 
+		job_card_id,
+		client_name,
+		address,
+		contact_no,
+		email_id,
+		job_card_no,
+		labour_charge,
+		service_type,
+		entry_date,
+		delivery_date,
+		advance,
+		total,
+		tax,
+		payment_mode,
+		state_abb,
+		city_id,
+		company_id,
+		bank_name,
+		cheque_no,
+		product_array,
+		created_at,
+		updated_at
+		from job_card_dtl where deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(count($raw)==0)
+		{
+			return $exceptionArray['204'];
+		}
+		else
+		{
+			return json_encode($raw);
 		}
 	}
 }
