@@ -746,10 +746,12 @@ include ('connection.php');
 				// var jfId=52;
 				// var journalId=207;
 				// var saleId = 371;
+				var jobCardNo = 3;
 				
 				// var url="http://www.scerp1.com/crm/job-form-number/company/"+companyId+"/latest";
 				// var url="http://www.scerp1.com/crm/job-form-number";
-				var url="http://www.scerp1.com/crm/job-form";
+				var url="http://www.scerp1.com/crm/job-form/"+jobCardNo;
+				// var url="http://www.scerp1.com/crm/job-form";
 				
 				// var url="http://www.scerp1.com/reports/polish-report/company/"+companyId;
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/stock-summary";

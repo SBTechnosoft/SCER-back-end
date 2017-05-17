@@ -1,7 +1,7 @@
 <?php
-namespace ERP\Core\Branches\Entities;
+namespace ERP\Core\Crm\JobForm\Entities;
 
-use ERP\Core\Branches\Entities\Branch;
+use ERP\Core\Crm\JobForm\Entities\JobForm;
 use ERP\Core\States\Services\StateService;
 use ERP\Core\Entities\CompanyDetail;
 use ERP\Core\Entities\CityDetail;
@@ -17,13 +17,23 @@ class EncodeData extends StateService
 		$decodedJson = json_decode($status,true);
 		$createdAt = $decodedJson[0]['created_at'];
 		$updatedAt= $decodedJson[0]['updated_at'];
-		$branchId= $decodedJson[0]['branch_id'];
-		$branchName= $decodedJson[0]['branch_name'];
-		$address1= $decodedJson[0]['address1'];
-		$address2= $decodedJson[0]['address2'];
-		$pincode = $decodedJson[0]['pincode'];
-		$isDisplay= $decodedJson[0]['is_display'];
-		$isDefault= $decodedJson[0]['is_default'];
+		$entryDate= $decodedJson[0]['entry_date'];
+		$deliveryDate= $decodedJson[0]['delivery_date'];
+		$jobCardId= $decodedJson[0]['job_card_id'];
+		$clientName= $decodedJson[0]['client_name'];
+		$address= $decodedJson[0]['address'];
+		$contactNo= $decodedJson[0]['contact_no'];
+		$emailId = $decodedJson[0]['email_id'];
+		$jobCardNo= $decodedJson[0]['job_card_no'];
+		$labourCharge= $decodedJson[0]['labour_charge'];
+		$serviceType= $decodedJson[0]['service_type'];
+		$advance= $decodedJson[0]['advance'];
+		$total= $decodedJson[0]['total'];
+		$tax= $decodedJson[0]['tax'];
+		$paymentMode= $decodedJson[0]['payment_mode'];
+		$bankName= $decodedJson[0]['bank_name'];
+		$chequeNo= $decodedJson[0]['cheque_no'];
+		$productArray= $decodedJson[0]['product_array'];
 		$stateAbb= $decodedJson[0]['state_abb'];
 		$cityId= $decodedJson[0]['city_id'];
 		$companyId= $decodedJson[0]['company_id'];
@@ -41,11 +51,17 @@ class EncodeData extends StateService
 		$companyDetail = new CompanyDetail();
 		$companyDetails = $companyDetail->getCompanyDetails($companyId);
 		
+		//convert amount(number_format) into their company's selected decimal points
+		$advance = number_format($advance,$companyDetails['noOfDecimalPoints'],'.','');
+		$total = number_format($total,$companyDetails['noOfDecimalPoints'],'.','');
+		$tax = number_format($tax,$companyDetails['noOfDecimalPoints'],'.','');
+		$labourCharge = number_format($labourCharge,$companyDetails['noOfDecimalPoints'],'.','');
+			
 		// date format conversion
-		$branch = new Branch();
+		$jobForm = new JobForm();
 		$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt)->format('d-m-Y');
-		$branch->setCreated_at($convertedCreatedDate);
-		$getCreatedDate = $branch->getCreated_at();
+		$jobForm->setCreated_at($convertedCreatedDate);
+		$getCreatedDate = $jobForm->getCreated_at();
 		
 		if(strcmp($updatedAt,'0000-00-00 00:00:00')==0)
 		{
@@ -54,20 +70,48 @@ class EncodeData extends StateService
 		else
 		{
 			$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
-			$branch->setUpdated_at($convertedUpdatedDate);
-			$getUpdatedDate = $branch->getUpdated_at();
+			$jobForm->setUpdated_at($convertedUpdatedDate);
+			$getUpdatedDate = $jobForm->getUpdated_at();
 		}
+		if(strcmp($entryDate,'0000-00-00')==0)
+		{
+			$getEntryDate = "00-00-0000";
+		}
+		else
+		{
+			$getEntryDate = Carbon\Carbon::createFromFormat('Y-m-d', $entryDate)->format('d-m-Y');
+			
+		}
+		if(strcmp($deliveryDate,'0000-00-00')==0)
+		{
+			$getDeliveryDate = "00-00-0000";
+		}
+		else
+		{
+			$getDeliveryDate = Carbon\Carbon::createFromFormat('Y-m-d', $deliveryDate)->format('d-m-Y');
+		}
+		
 		// set all data into json array
 		$data = array();
-		$data['branchId'] = $branchId;
-		$data['branchName'] = $branchName;
-		$data['address1'] = $address1;
-		$data['address2'] = $address2;
-		$data['pincode'] = $pincode;
-		$data['isDisplay'] = $isDisplay;
-		$data['isDefault'] = $isDefault;
-		$data['createdAt'] = $getCreatedDate;
-		$data['updatedAt'] = $getUpdatedDate;	
+		$data['jobCardNo']=$jobCardNo;
+		$data['clientName'] = $clientName;
+		$data['address']= $address;
+		$data['jobCardId']= $jobCardId;
+		$data['contactNo']= $contactNo;
+		$data['emailId']= $emailId;
+		$data['labourCharge']= $labourCharge;
+		$data['serviceType']= $serviceType;
+		$data['advance']= $advance;
+		$data['total']= $total;
+		$data['tax']= $tax;
+		$data['paymentMode']= $paymentMode;
+		$data['bankName']= $bankName;
+		$data['chequeNo']= $chequeNo;
+		$data['productArray']= $productArray;
+		$data['entryDate']= $getEntryDate;
+		$data['deliveryDate']= $getDeliveryDate;
+		$data['createdAt']= $getCreatedDate;
+		$data['updatedAt']= $getUpdatedDate;
 		
 		$data['company']= array(
 			'companyId' => $companyDetails['companyId'],

@@ -38,3 +38,22 @@
 			}
 
 **NOTES:** List all the Job-Form data
+
+##### Gets Job-Form Data           
+            
+##### `GET crm/job-form/{jobCardNo}`
++ Header 
+	- Authentication Token
+
++ Error Message
+
+			{
+				... Error Message
+			} 
++ Response
+
+			{
+				... Standard Job-Form Object
+			}
+
+**NOTES:** List the Job-Form data as per given job-card-id

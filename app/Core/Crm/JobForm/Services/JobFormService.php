@@ -2,12 +2,11 @@
 namespace ERP\Core\Crm\JobForm\Services;
 
 use ERP\Core\Crm\JobForm\Persistables\JobFormPersistable;
-// use ERP\Core\Crm\JobForm\Entities\Branch;
 use ERP\Model\Crm\JobForm\JobFormModel;
 use ERP\Core\Shared\Options\UpdateOptions;
 use ERP\Core\Support\Service\AbstractService;
 use ERP\Core\User\Entities\User;
-// use ERP\Core\Crm\JobForm\Entities\EncodeData;
+use ERP\Core\Crm\JobForm\Entities\EncodeData;
 use ERP\Core\Crm\JobForm\Entities\EncodeAllData;
 use ERP\Exceptions\ExceptionMessage;
 /**
@@ -135,6 +134,31 @@ class JobFormService extends AbstractService
 			return $encodeAllData;
 		}
 	}
+	
+	/**
+     * get specific data as per given job-card-id
+     * @param int $id,$name
+     */
+	public function getData($jobCardId)
+	{
+		$jobFormModel = new JobFormModel();
+		$status = $jobFormModel->getData($jobCardId);
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($status,$exceptionArray['204'])==0)
+		{
+			return $status;
+		}
+		else
+		{
+			$encoded = new EncodeData();
+			$encodeData = $encoded->getEncodedData($status);
+			return $encodeData;
+		}
+	}
+	
     /**
      * get and invoke method is of Container Interface method
      * @param int $id,$name

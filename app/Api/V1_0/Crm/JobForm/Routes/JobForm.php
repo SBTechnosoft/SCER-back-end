@@ -19,7 +19,7 @@ class JobForm implements RouteRegistrarInterface
 		// all the possible get request 
 		Route::group(['as' => 'get'], function ()
 		{
-			Route::get('Crm/JobForm/JobForm', 'Crm\JobForm\Controllers\JobFormController@getAllData');
+			Route::get('Crm/JobForm/JobForm/{jobCardNo?}', 'Crm\JobForm\Controllers\JobFormController@getAllData');
 		});
 		
 		// insert data post request

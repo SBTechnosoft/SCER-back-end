@@ -178,4 +178,57 @@ class JobFormModel extends Model
 			return json_encode($raw);
 		}
 	}
+	
+	/**
+	 * get specific data as per given job-card-no 
+	 * returns the status/array-data
+	*/
+	public function getData($jobCardNo)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();		
+		$raw = DB::connection($databaseName)->select("select 
+		job_card_id,
+		client_name,
+		address,
+		contact_no,
+		email_id,
+		job_card_no,
+		labour_charge,
+		service_type,
+		entry_date,
+		delivery_date,
+		advance,
+		total,
+		tax,
+		payment_mode,
+		state_abb,
+		city_id,
+		company_id,
+		bank_name,
+		cheque_no,
+		product_array,
+		created_at,
+		updated_at
+		from job_card_dtl 
+		where deleted_at='0000-00-00 00:00:00' and
+		job_card_no='".$jobCardNo."'");
+		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(count($raw)==0)
+		{
+			return $exceptionArray['204'];
+		}
+		else
+		{
+			return json_encode($raw);
+		}
+	}
 }
