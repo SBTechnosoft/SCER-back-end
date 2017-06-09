@@ -25,7 +25,7 @@ class JobFormTransformer
 		$tAddress = trim($request->input('address'));
 		$tContactNo = trim($request->input('contactNo'));
 		$tEmailId = trim($request->input('emailId'));
-		$tJobCardNo = trim($request->input('jobCardNo'));
+		$tJobCardNo = trim($request->input('jobCardNumber'));
 		$tLabourCharge = trim($request->input('labourCharge'));
 		$tServiceType = trim($request->input('serviceType'));
 		$tEntryDate = trim($request->input('entryDate'));

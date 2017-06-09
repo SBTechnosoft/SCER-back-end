@@ -10,6 +10,7 @@ use PHPExcel_Style_Fill;
 use PHPExcel_Style_Alignment;
 use Carbon;
 use stdclass;
+use ERP\Core\Entities\Css\ExcelSheetCss;
 /**
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -290,17 +291,17 @@ class TrialBalanceOperation extends CompanyService
 		}
 		if($calculatedData['totalDebit']>$calculatedData['totalCredit'])
 		{
-			$differenceDr = number_format($calculatedData['totalDebit']-$calculatedData['totalCredit']);
+			$differenceDr = $calculatedData['totalDebit']-$calculatedData['totalCredit'];
 			$differenceCr = "-";
 		}
 		else
 		{
-			$differenceCr = number_format($calculatedData['totalCredit']-$calculatedData['totalDebit']);
+			$differenceCr = $calculatedData['totalCredit']-$calculatedData['totalDebit'];
 			$differenceDr = "-";
 		}
 		
-		$calculatedData['totalDebit'] = number_format($calculatedData['totalDebit'],$decodedCompanyData->noOfDecimalPoints);
-		$calculatedData['totalCredit'] = number_format($calculatedData['totalCredit'],$decodedCompanyData->noOfDecimalPoints);
+		// $calculatedData['totalDebit'] = number_format($calculatedData['totalDebit'],$decodedCompanyData->noOfDecimalPoints);
+		// $calculatedData['totalCredit'] = number_format($calculatedData['totalCredit'],$decodedCompanyData->noOfDecimalPoints);
 		
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+3,'Total');
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+3,$calculatedData['totalDebit']);
@@ -329,6 +330,13 @@ class TrialBalanceOperation extends CompanyService
 			'size'  => 13,
 			'name'  => 'Verdana'
 		));
+		
+		//style for text in center alignment
+		$alignmentCenter = array(
+			'alignment' => array(
+				'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+			)
+		);
 		// set header style
 		$objPHPExcel->getActiveSheet()->getStyle('A4:D4')->applyFromArray($headerStyleArray);
 		
@@ -342,6 +350,7 @@ class TrialBalanceOperation extends CompanyService
 		
 		// set title style
 		$objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($titleStyleArray);
+		$objPHPExcel->getActiveSheet()->getStyle('B1:B3')->applyFromArray($alignmentCenter);
 		
 		// make unique name
 		$dateTime = date("d-m-Y h-i-s");
@@ -407,7 +416,6 @@ class TrialBalanceOperation extends CompanyService
 		$debitAmountTotal = 0;
 		for($arrayData=0;$arrayData<count($decodedData);$arrayData++)
 		{
-			
 			if(strcmp($decodedData[$arrayData]->amountType,"credit")==0)
 			{
 				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$arrayData+5,$decodedData[$arrayData]->ledger->ledgerName);
@@ -423,32 +431,39 @@ class TrialBalanceOperation extends CompanyService
 				$debitAmountTotal = $debitAmountTotal+$decodedData[$arrayData]->amount;
 			}
 		}
-		$debitAmountTotal = number_format($debitAmountTotal,$decodedCompanyData->noOfDecimalPoints);
-		$creditAmountTotal = number_format($creditAmountTotal,$decodedCompanyData->noOfDecimalPoints);
-		
+		if($debitAmountTotal>$creditAmountTotal)
+		{
+			$differenceDr = number_format($debitAmountTotal-$creditAmountTotal,$decodedCompanyData->noOfDecimalPoints);
+			$differenceCr = "-";
+		}
+		else
+		{
+			$differenceCr = number_format($creditAmountTotal-$debitAmountTotal,$decodedCompanyData->noOfDecimalPoints);
+			$differenceDr = "-";
+		}
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+5,'Total');
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+5,$debitAmountTotal);
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+5,$creditAmountTotal);
 		
-		// style for header
-		$headerStyleArray = array(
-		'font'  => array(
-			'bold'  => true,
-			'color' => array('rgb' => '#00000'),
-			'size'  => 10,
-			'name'  => 'Verdana'
-		));
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,count($decodedData)+6,'Difference');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,count($decodedData)+6,$differenceDr);
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,count($decodedData)+6,$differenceCr);
 		
-		// style for Title
-		$titleStyleArray = array(
-		'font'  => array(
-			'bold'  => true,
-			'color' => array('rgb' => '#00000'),
-			'size'  => 13,
-			'name'  => 'Verdana'
-		));
+		$footTStyleA = "A".(count($decodedData)+5);
+		$footTStyleB = "B".(count($decodedData)+5);
+		$footDStyleA = "A".(count($decodedData)+6);
+		$footDStyleB = "B".(count($decodedData)+6);
+		$footDStyleC = "C".(count($decodedData)+6);
+		
+		$excelSheetCss = new ExcelSheetCss();
+		$cssResult = $excelSheetCss->getCss();
 		// set header style
-		$objPHPExcel->getActiveSheet()->getStyle('A4:C4')->applyFromArray($headerStyleArray);
+		$objPHPExcel->getActiveSheet()->getStyle('A2:C4')->applyFromArray($cssResult->headerStyleArray);
+		$objPHPExcel->getActiveSheet()->getStyle($footTStyleA.':'.$footDStyleA)->applyFromArray($cssResult->headerStyleArray);
+		$objPHPExcel->getActiveSheet()->getStyle($footTStyleB.':'.$footDStyleC)->applyFromArray($cssResult->boldResultArray);
+		
+		// set title style
+		$objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($cssResult->titleStyleArray);
 		
 		$decimalPoints = $this->setDecimalPoint($decodedCompanyData->noOfDecimalPoints);
 		
@@ -458,8 +473,11 @@ class TrialBalanceOperation extends CompanyService
 		$objPHPExcel->getActiveSheet()->getStyle("B5:".$bSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
 		$objPHPExcel->getActiveSheet()->getStyle("C5:".$cSaveDynamicRow)->getNumberFormat()->setFormatCode($decimalPoints);
 		
-		// set title style
-		$objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($titleStyleArray);
+		//alignment
+		$objPHPExcel->getActiveSheet()->getStyle("B5:".$bSaveDynamicRow)->applyFromArray($cssResult->alignmentRight);
+		$objPHPExcel->getActiveSheet()->getStyle("C5:".$cSaveDynamicRow)->applyFromArray($cssResult->alignmentRight);
+		$objPHPExcel->getActiveSheet()->getStyle('B1:B3')->applyFromArray($cssResult->alignmentCenter);
+		$objPHPExcel->getActiveSheet()->getStyle($footDStyleB.':'.$footDStyleC)->applyFromArray($cssResult->alignmentRight);
 		
 		// make unique name
 		$dateTime = date("d-m-Y h-i-s");

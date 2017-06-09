@@ -33,8 +33,8 @@ class PriceListMpdf extends ConstantClass
 								<th style='border: 1px solid black;'>product-Name</th>
 								<th style='border: 1px solid black;'>product-Group</th>
 								<th style='border: 1px solid black;'>Price</th>
-								<th style='border: 1px solid black;'>Vat</th>
-								<th style='border: 1px solid black;'>A.Vat</th>
+								<th style='border: 1px solid black;'>cgst</th>
+								<th style='border: 1px solid black;'>sgst</th>
 								<th style='border: 1px solid black;'>Final Amount</th>
 							</tr>
 						</thead><tbody>";
@@ -158,8 +158,8 @@ class PriceListMpdf extends ConstantClass
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,3, 'Product-Name');
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,3, 'Group-Name');
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,3, 'Purchase-Price');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(4,3, 'Vat');
-		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(5,3, 'A.Vat');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(4,3, 'cgst');
+		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(5,3, 'sgst');
 		$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(6,3, 'Total');
 		
 		$productCatId = array();

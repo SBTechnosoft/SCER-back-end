@@ -89,7 +89,7 @@ class JobFormController extends BaseController implements ContainerInterface
 	 * get all the data/particular data as per job-card-number
 	 * @param  Request object[Request $request]
 	*/
-	public function getAllData(Request $request,$jobCardNo)
+	public function getAllData(Request $request,$jobCardNo=null)
 	{
 		//Authentication
 		$tokenAuthentication = new TokenAuthentication();
@@ -101,7 +101,7 @@ class JobFormController extends BaseController implements ContainerInterface
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
 			$jobFormService= new JobFormService();
-			if($jobCardNo=="" || $jobCardNo==0)
+			if($jobCardNo==null)
 			{
 				$status = $jobFormService->getAllData();
 				return $status;

@@ -5,7 +5,7 @@
             "contactNo": string,
 			"emailId": string,
 			"address":string,
-			"jobCardNo": string,
+			"jobCardNumber": string,
 			"product":
 			[
 				{
@@ -47,7 +47,7 @@
             "contactNo": string,
 			"emailId": string,
 			"address":string,
-			"jobCardNo": string,
+			"jobCardNumber": string,
 			"product":
 			[
 				{

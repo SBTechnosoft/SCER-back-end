@@ -14,6 +14,7 @@
                 "tin":string,
                 "cgst":String,
                 "sgst":String,
+				"isDealer":enum,
 				"city":  {
 					... Standard City Object
 				},
@@ -47,6 +48,7 @@
                 "tin":string,
 				"cgst":String,
                 "sgst":String,
+				"isDealer":enum,
 				"balanceFlag":Enum,
 				"amount":decimal,
 				"amountType":Enum,
@@ -81,4 +83,9 @@
 			{
 				openingBalance:'opening',
 				closingBalance:'closing'
+			}
+##### Is Dealer Enum
+			{
+				IsDealer:'y',
+				IsNotDealer:'n'
 			}

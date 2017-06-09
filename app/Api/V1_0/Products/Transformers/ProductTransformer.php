@@ -153,8 +153,10 @@ class ProductTransformer extends ExceptionMessage
     {
 		$transformerClass = new ProductTransformer();
 		$exceptionArray = $transformerClass->messageArrays();
+		
 		//data mapping
 		$mappingResult = $this->mappingData($request->input());
+		
 		if(is_array($mappingResult))
 		{
 			$data = array();
@@ -164,6 +166,7 @@ class ProductTransformer extends ExceptionMessage
 			$dataIndex = 0;
 			for($arrayData=0;$arrayData<count($inputRequestData);$arrayData++)
 			{
+				$tIsDisplay='';
 				$isDisplayFlag=0;
 				$measurementUnitFlag=0;
 				//trim an input
@@ -171,7 +174,7 @@ class ProductTransformer extends ExceptionMessage
 				$tMeasUnit = trim($inputRequestData[$arrayData]['measurementUnit']);
 				$tColor = trim($inputRequestData[$arrayData]['color']);
 				$tSize = trim($inputRequestData[$arrayData]['size']);
-				$tIsDisplay = trim($inputRequestData[$arrayData]['isDisplay']);
+				// $tIsDisplay = trim($inputRequestData[$arrayData]['isDisplay']);
 				$tPurchasePrice = trim($inputRequestData[$arrayData]['purchasePrice']);
 				$tWholeSaleMargin = trim($inputRequestData[$arrayData]['wholesaleMargin']);
 				$tWholeSaleMarginFlat = trim($inputRequestData[$arrayData]['wholesaleMarginFlat']);
@@ -187,6 +190,8 @@ class ProductTransformer extends ExceptionMessage
 				$tProductCatId = trim($inputRequestData[$arrayData]['productCategoryId']);
 				$tProductGrpId = trim($inputRequestData[$arrayData]['productGroupId']);
 				$tBranchId = trim($inputRequestData[$arrayData]['branchId']);
+				
+				$tProductName = preg_replace('/[^a-zA-Z0-9 &,\/_`#().\'-]/', '',$tProductName);
 				
 				$enumIsDispArray = array();
 				$isDispEnum = new IsDisplayEnum();
@@ -323,7 +328,8 @@ class ProductTransformer extends ExceptionMessage
 				return $exceptionArray['mapping'];
 			}
 		}
-		if(count($mappingArray)!=20)
+		
+		if(count($mappingArray)!=19)
 		{
 			return $exceptionArray['missingField'];
 		}
@@ -347,17 +353,15 @@ class ProductTransformer extends ExceptionMessage
 				
 				//database selection
 				$categoryModel = new ProductCategoryModel();
-				
+				$convertedCatString = strtoupper($convertedCatString);
 				$categoryResult = $categoryModel->getCategoryId($convertedCatString);
-				$decodedCategory = json_decode($categoryResult);
-				
 				if(strcmp($categoryResult,$exceptionArray['204'])==0)
 				{
 					$categoryFlag=1;
 				}
 				else
 				{
-					$dataArray[$arrayData][$arrayKey[0]] = $decodedCategory[0]->product_category_id;
+					$dataArray[$arrayData][$arrayKey[0]] = $categoryResult;
 				}
 			}
 			
@@ -367,17 +371,18 @@ class ProductTransformer extends ExceptionMessage
 				$arrayKey = array_keys($mappingArray,"productGroupId");
 				// replace group-name with parent-group-id
 				$convertedGrpString = preg_replace('/[^A-Za-z0-9]/', '',$dataArray[$arrayData][$arrayKey[0]]);
+				$convertedGrpString = strtoupper($convertedGrpString);
 				// database selection
 				$groupModel = new ProductGroupModel();
 				$groupResult = $groupModel->getGroupId($convertedGrpString);
-				$decodedGroup = json_decode($groupResult);
+				
 				if(strcmp($groupResult,$exceptionArray['204'])==0)
 				{
 					$groupFlag=1;
 				}
 				else
 				{
-					$dataArray[$arrayData][$arrayKey[0]] = $decodedGroup[0]->product_group_id;
+					$dataArray[$arrayData][$arrayKey[0]] = $groupResult;
 				}
 			}
 			
@@ -387,19 +392,18 @@ class ProductTransformer extends ExceptionMessage
 				$arrayKey = array_keys($mappingArray,"branchId");
 				// replace group-name with parent-group-id
 				$convertedBranchString = preg_replace('/[^A-Za-z0-9]/', '',$dataArray[$arrayData][$arrayKey[0]]);
-				
+				$convertedBranchString = strtoupper($convertedBranchString);
 				// database selection
 				$branchModel = new BranchModel();
 				
 				$branchResult = $branchModel->getBranchId($convertedBranchString);
-				$decodedBranch = json_decode($branchResult);
 				if(strcmp($branchResult,$exceptionArray['204'])==0)
 				{
 					$branchFlag=1;
 				}
 				else
 				{
-					$dataArray[$arrayData][$arrayKey[0]] = $decodedBranch[0]->branch_id;
+					$dataArray[$arrayData][$arrayKey[0]] = $branchResult;
 				}
 			}
 			
@@ -409,20 +413,22 @@ class ProductTransformer extends ExceptionMessage
 				$arrayKey = array_keys($mappingArray,"companyId");
 				// replace group-name with parent-group-id
 				$convertedCompanyString = preg_replace('/[^A-Za-z0-9]/', '',$dataArray[$arrayData][$arrayKey[0]]);
+				$convertedCompanyString = strtoupper($convertedCompanyString);
 				// database selection
 				$companyModel = new CompanyModel();
 				
 				$companyResult = $companyModel->getCompanyId($convertedCompanyString);
-				$decodedCompany = json_decode($companyResult);
+				
 				if(strcmp($companyResult,$exceptionArray['204'])==0)
 				{
 					$companyFlag=1;
 				}
 				else
 				{
-					$dataArray[$arrayData][$arrayKey[0]] = $decodedCompany[0]->company_id;
+					$dataArray[$arrayData][$arrayKey[0]] = $companyResult;
 				}
 			}
+			
 			if($categoryFlag==1 || $groupFlag==1 || $branchFlag==1 || $companyFlag==1)
 			{
 				if($categoryFlag==1)
@@ -464,7 +470,6 @@ class ProductTransformer extends ExceptionMessage
 				$requestArray[$arrayData][array_keys($keyNameCount)[16]] = $dataArray[$arrayData][16];
 				$requestArray[$arrayData][array_keys($keyNameCount)[17]] = $dataArray[$arrayData][17];
 				$requestArray[$arrayData][array_keys($keyNameCount)[18]] = $dataArray[$arrayData][18];
-				$requestArray[$arrayData][array_keys($keyNameCount)[19]] = $dataArray[$arrayData][19];
 			}
 		}
 		return $requestArray;

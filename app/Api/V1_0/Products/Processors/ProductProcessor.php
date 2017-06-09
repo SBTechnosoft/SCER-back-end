@@ -119,10 +119,19 @@ class ProductProcessor extends BaseProcessor
 				//convert string to upper-case
 				$convertedProductCode = strtoupper($tRequest['product_code']);
 				$tRequest['product_code'] = $convertedProductCode;
+				
 				// validation
 				$validationResult = $productValidate->productCodeValidate($tRequest['company_id'],$convertedProductCode);
+				$indexNumber=1;
+				if(strcmp($validationResult,$msgArray['200'])!=0)
+				{
+					$productCode = $convertedProductCode.$indexNumber;
+					$result = $this->batchRepeatProductCodeValidate($productCode,$tRequest['company_id'],$indexNumber);
+					$tRequest['product_code'] = $result;
+					$codeFlag=1;
+				}
 			}	
-			if(strcmp($validationResult,$msgArray['200'])==0)
+			if(strcmp($validationResult,$msgArray['200'])==0 || $codeFlag==1)
 			{
 				// validation
 				$status = $productValidate->validate($tRequest);
@@ -200,6 +209,7 @@ class ProductProcessor extends BaseProcessor
 		else
 		{
 			$productValidate = new ProductValidate();
+			
 			// trim an input 
 			$productTransformer = new ProductTransformer();
 			$trimData = $productTransformer->trimInsertBatchData($request);
@@ -209,10 +219,12 @@ class ProductProcessor extends BaseProcessor
 				$totalErrorArray = count($trimData['errorArray']);
 				$countRequestedData = count($tRequestData);
 				
+				$productCodeArray = array();
 				$newProductArray = array();
 				for($dataArray=0;$dataArray<count($tRequestData);$dataArray++)
 				{
 					$data=0;
+					$codeFlag=0;
 					$keyName = array();
 					$productValue = array();
 					$tRequest = $tRequestData[$dataArray];
@@ -265,7 +277,6 @@ class ProductProcessor extends BaseProcessor
 					$size1 = substr($size,0,1);
 					$size2 = substr($size,$sizeLength-1,1);
 					$convertedSize = $size1.$size2;
-					
 					$tRequest['product_code'] = $convertedCompanyName.
 											$convertedCategoryName.
 											$convertedGroupName.
@@ -275,10 +286,30 @@ class ProductProcessor extends BaseProcessor
 					// convert string to upper-case
 					$convertedProductCode = strtoupper($tRequest['product_code']);
 					$tRequest['product_code'] = $convertedProductCode;
+					$indexNumber=1;
+					$productCodeFlag=0;
 					// validation
 					$validationResult = $productValidate->productCodeValidate($tRequest['company_id'],$convertedProductCode);
-					
-					if(strcmp($validationResult,$msgArray['200'])==0)
+					if(strcmp($validationResult,$msgArray['200'])!=0)
+					{
+						$productCode = $convertedProductCode.$indexNumber;
+						$productCodeFlag=1;
+						$result = $this->batchRepeatDbProductCodeValidate($productCode,$tRequest['company_id'],$indexNumber,$productCodeArray,$dataArray,$productCodeFlag);
+						$tRequest['product_code'] = $result;
+						$codeFlag=1;
+					}
+					else
+					{
+						$productCodeFlag=2;
+						$internalResult = $this->batchRepeatInternalProductCodeValidate($convertedProductCode,$tRequest['company_id'],$indexNumber,$productCodeArray,$dataArray,$productCodeFlag);
+						$tRequest['product_code'] = $internalResult;
+						$codeFlag=1;
+					}
+					array_push($productCodeArray,$tRequest['product_code']);
+					echo " array \n";
+					print_r($productCodeArray);
+					echo "array end \n";
+					if(strcmp($validationResult,$msgArray['200'])==0 || $codeFlag==1)
 					{
 						// validation
 						$status = $productValidate->validate($tRequest);
@@ -356,34 +387,9 @@ class ProductProcessor extends BaseProcessor
 							$totalErrorArray++;
 						}
 					}
-					else
-					{
-						//product-code validation unsuccessfull $validationResult 
-						$totalErrorArray = count($trimData['errorArray']);
-						$trimData['errorArray'][$totalErrorArray]['productName'] = $trimData['dataArray'][$dataArray]['product_name'];
-						$trimData['errorArray'][$totalErrorArray]['measurementUnit'] = $trimData['dataArray'][$dataArray]['measurement_unit'];
-						$trimData['errorArray'][$totalErrorArray]['color'] = $trimData['dataArray'][$dataArray]['color'];
-						$trimData['errorArray'][$totalErrorArray]['size'] = $trimData['dataArray'][$dataArray]['size'];
-						$trimData['errorArray'][$totalErrorArray]['isDisplay'] = $trimData['dataArray'][$dataArray]['is_display'];
-						$trimData['errorArray'][$totalErrorArray]['purchasePrice'] = $trimData['dataArray'][$dataArray]['purchase_price'];
-						$trimData['errorArray'][$totalErrorArray]['wholesaleMargin'] = $trimData['dataArray'][$dataArray]['wholesale_margin'];
-						$trimData['errorArray'][$totalErrorArray]['wholesaleMarginFlat'] = $trimData['dataArray'][$dataArray]['wholesale_margin_flat'];
-						$trimData['errorArray'][$totalErrorArray]['vat'] = $trimData['dataArray'][$dataArray]['vat'];
-						$trimData['errorArray'][$totalErrorArray]['mrp'] = $trimData['dataArray'][$dataArray]['mrp'];
-						$trimData['errorArray'][$totalErrorArray]['margin'] = $trimData['dataArray'][$dataArray]['margin'];
-						$trimData['errorArray'][$totalErrorArray]['marginFlat'] = $trimData['dataArray'][$dataArray]['margin_flat'];
-						$trimData['errorArray'][$totalErrorArray]['productDescription'] = $trimData['dataArray'][$dataArray]['product_description'];
-						$trimData['errorArray'][$totalErrorArray]['additionalTax'] = $trimData['dataArray'][$dataArray]['additional_tax'];
-						$trimData['errorArray'][$totalErrorArray]['minimumStockLevel'] = $trimData['dataArray'][$dataArray]['minimum_stock_level'];
-						$trimData['errorArray'][$totalErrorArray]['semiWholesaleMargin'] = $trimData['dataArray'][$dataArray]['semi_wholesale_margin'];
-						$trimData['errorArray'][$totalErrorArray]['companyId'] = $trimData['dataArray'][$dataArray]['company_id'];
-						$trimData['errorArray'][$totalErrorArray]['productCategoryId'] = $trimData['dataArray'][$dataArray]['product_category_id'];
-						$trimData['errorArray'][$totalErrorArray]['productGroupId'] = $trimData['dataArray'][$dataArray]['product_group_id'];
-						$trimData['errorArray'][$totalErrorArray]['branchId'] = $trimData['dataArray'][$dataArray]['branch_id'];
-						$trimData['errorArray'][$totalErrorArray]['remark'] = $msgArray['invalidProductCode'];
-						$totalErrorArray++;
-					}
 				}
+				echo "end";
+				exit;
 				unset($trimData['dataArray']);
 				$trimData['dataArray'] = $newProductArray;
 				return $trimData;
@@ -395,6 +401,115 @@ class ProductProcessor extends BaseProcessor
 				$encodeResult = json_encode($errorResult);
 				return $encodeResult;
 			}
+		}
+	}
+	
+	/**
+     * repeat batch-data product-code validation
+     * product-code,company-id and index-number
+     * @return status 200:ok
+     */	
+	public function batchRepeatDbProductCodeValidate($productCode,$companyId,$indexNumber,$productCodeArray,$dataArray,$productCodeFlag)
+	{
+		echo "- db func -";
+		$productCodeFlag=1;
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		$productValidate = new ProductValidate();
+		$validationResult = $productValidate->productCodeValidate($companyId,$productCode);
+		
+		if(strcmp($validationResult,$exceptionArray['200'])!=0)
+		{
+			echo "- db in \n";
+			$indexNumber= $indexNumber+1;
+			$productCode = substr_replace($productCode,'', -1);
+			$newProductCode = $productCode.$indexNumber;
+			//match product-code with database
+			$result = $this->batchRepeatDbProductCodeValidate($newProductCode,$companyId,$indexNumber,$productCodeArray,$dataArray,$productCodeFlag);
+			
+			//match product code with their internal product-code
+			$internalResult = $this->batchRepeatInternalProductCodeValidate($newProductCode,$companyId,$indexNumber,$productCodeArray,$dataArray,$productCodeFlag);
+			return $internalResult;
+		}
+		else
+		{
+			return $productCode;
+		}
+	}
+	
+	/**
+     * repeat internal product-code validation 
+     * product-code,company-id and index-number
+     * @return status 200:ok
+     */	
+	public function batchRepeatInternalProductCodeValidate($newProductCode,$companyId,$indexNumber,$productCodeArray,$dataArray,$productCodeFlag)
+	{
+		echo "in";
+		if($dataArray!=0)
+		{
+			echo "dataArray = ".$dataArray;
+			for($innerArray=0;$innerArray<$dataArray;$innerArray++)
+			{
+				echo " for \n";
+				print_r($productCodeArray);
+				if(strcmp($productCodeArray[$innerArray],$newProductCode)==0)
+				{
+					echo "inIf \n";
+					echo $indexNumber;
+					if($productCodeFlag==1)
+					{
+						echo "ee";
+						$newProductCode = substr_replace($newProductCode,'', -1);
+						$indexNumber=$indexNumber+1;
+						$newProductCode = $newProductCode.$indexNumber;
+						
+					}
+					else
+					{
+						echo "ss";
+						$newProductCode = $newProductCode.$indexNumber;
+						$productCodeFlag=1;
+					}
+					
+					//internal product-code changed.so, check product-code in db
+					$validationResult = $this->batchRepeatDbProductCodeValidate($newProductCode,$companyId,$indexNumber,$productCodeArray,$dataArray,$productCodeFlag);
+					
+				}
+			}
+			return $validationResult;
+		}
+		else
+		{
+			return $newProductCode;
+		}
+	}
+	
+	/**
+     * repeat product-code validation with database 
+     * product-code,company-id and index-number
+     * @return status 200:ok
+     */	
+	public function batchRepeatProductCodeValidate($productCode,$companyId,$indexNumber)
+	{
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		$productValidate = new ProductValidate();
+		$validationResult = $productValidate->productCodeValidate($companyId,$productCode);
+		if(strcmp($validationResult,$exceptionArray['200'])!=0)
+		{
+			$indexNumber= $indexNumber+1;
+			$productCode = substr_replace($productCode,'', -1);
+			$newProductCode = $productCode.$indexNumber;
+			$result = $this->batchRepeatProductCodeValidate($newProductCode,$companyId,$indexNumber);
+			return $result;
+		}
+		else
+		{
+			return $productCode;
 		}
 	}
 	

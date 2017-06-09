@@ -225,47 +225,47 @@ include ('connection.php');
 				// formdata.append('productGroupParentId',$scope.formAdata.product_group_parent_id);
 				
 				//product
-				// $scope.formAdata.product_name = "Ranger";
-				// $scope.formAdata.is_display = 'no';
-				// $scope.formAdata.product_cat_id='1';
-				// $scope.formAdata.measurement_unit='piece';
-				// $scope.formAdata.color='RD';
-				// $scope.formAdata.size='12T.()';
-				// $scope.formAdata.purchase_price='120.09';
-				// $scope.formAdata.wholesale_margin='12.00';
-				// $scope.formAdata.wholesale_margin_flat='12.00';
-				// $scope.formAdata.semi_wholesale_margin='10.90';
-				// $scope.formAdata.vat='10.00';
-				// $scope.formAdata.margin='10.00';
-				// $scope.formAdata.margin_flat='10.00';
-				// $scope.formAdata.mrp='140.00';
-				// $scope.formAdata.productDescription='dfsdfsd';
-				// $scope.formAdata.additionalTax='21.00';
-				// $scope.formAdata.minimumStockLevel='25';
-				// $scope.formAdata.product_group_id='1';
-				// $scope.formAdata.company_id='1';
-				// $scope.formAdata.branch_id='1';
+				$scope.formAdata.product_name = 'SPYKER 26" M/S D/S';
+				$scope.formAdata.is_display = 'no';
+				$scope.formAdata.product_cat_id='1';
+				$scope.formAdata.measurement_unit='piece';
+				$scope.formAdata.color='RD';
+				$scope.formAdata.size='12T.()';
+				$scope.formAdata.purchase_price='120.09';
+				$scope.formAdata.wholesale_margin='12.00';
+				$scope.formAdata.wholesale_margin_flat='12.00';
+				$scope.formAdata.semi_wholesale_margin='10.90';
+				$scope.formAdata.vat='10.00';
+				$scope.formAdata.margin='10.00';
+				$scope.formAdata.margin_flat='10.00';
+				$scope.formAdata.mrp='140.00';
+				$scope.formAdata.productDescription='dfsdfsd';
+				$scope.formAdata.additionalTax='21.00';
+				$scope.formAdata.minimumStockLevel='25';
+				$scope.formAdata.product_group_id='1';
+				$scope.formAdata.company_id='1';
+				$scope.formAdata.branch_id='1';
 			
-				// formdata.append('productName',$scope.formAdata.product_name);
-				// formdata.append('isDisplay',$scope.formAdata.is_display);
-				// formdata.append('measurementUnit',$scope.formAdata.measurement_unit);
-				// formdata.append('color',$scope.formAdata.color);
-				// formdata.append('size',$scope.formAdata.size);
-				// formdata.append('purchasePrice',$scope.formAdata.purchase_price);
-				// formdata.append('wholesaleMargin',$scope.formAdata.wholesale_margin);
-				// formdata.append('wholesaleMarginFlat',$scope.formAdata.wholesale_margin_flat);
-				// formdata.append('semiWholesaleMargin',$scope.formAdata.semi_wholesale_margin);
-				// formdata.append('vat',$scope.formAdata.vat);
-				// formdata.append('mrp',$scope.formAdata.mrp);
-				// formdata.append('margin',$scope.formAdata.margin);
-				// formdata.append('marginFlat',$scope.formAdata.margin_flat);
-				// formdata.append('productDescription',$scope.formAdata.productDescription);
-				// formdata.append('additionalTax',$scope.formAdata.additionalTax);
-				// formdata.append('minimumStockLevel',$scope.formAdata.minimumStockLevel);
-				// formdata.append('productCategoryId',$scope.formAdata.product_cat_id);
-				// formdata.append('productGroupId',$scope.formAdata.product_group_id);
-				// formdata.append('companyId',$scope.formAdata.company_id);
-				// formdata.append('branchId',$scope.formAdata.branch_id);
+				formdata.append('productName',$scope.formAdata.product_name);
+				formdata.append('isDisplay',$scope.formAdata.is_display);
+				formdata.append('measurementUnit',$scope.formAdata.measurement_unit);
+				formdata.append('color',$scope.formAdata.color);
+				formdata.append('size',$scope.formAdata.size);
+				formdata.append('purchasePrice',$scope.formAdata.purchase_price);
+				formdata.append('wholesaleMargin',$scope.formAdata.wholesale_margin);
+				formdata.append('wholesaleMarginFlat',$scope.formAdata.wholesale_margin_flat);
+				formdata.append('semiWholesaleMargin',$scope.formAdata.semi_wholesale_margin);
+				formdata.append('vat',$scope.formAdata.vat);
+				formdata.append('mrp',$scope.formAdata.mrp);
+				formdata.append('margin',$scope.formAdata.margin);
+				formdata.append('marginFlat',$scope.formAdata.margin_flat);
+				formdata.append('productDescription',$scope.formAdata.productDescription);
+				formdata.append('additionalTax',$scope.formAdata.additionalTax);
+				formdata.append('minimumStockLevel',$scope.formAdata.minimumStockLevel);
+				formdata.append('productCategoryId',$scope.formAdata.product_cat_id);
+				formdata.append('productGroupId',$scope.formAdata.product_group_id);
+				formdata.append('companyId',$scope.formAdata.company_id);
+				formdata.append('branchId',$scope.formAdata.branch_id);
 				
 				//template
 				// $scope.formAdata.template_name = " abcffd ";
@@ -475,27 +475,27 @@ include ('connection.php');
 				// formdata.append('companyId',$scope.formAdata.companyId);
 				
 				//job-form
-				$scope.formAdata.clientName = "reema";
-				$scope.formAdata.contactNo = '8788888888';
-				$scope.formAdata.address = 'address';
-				$scope.formAdata.emailId = 'email@gmail.com';
-				$scope.formAdata.jobCardNo = '4';
-				$scope.formAdata.labourCharge = '200';
-				$scope.formAdata.serviceType = 'free';
-				$scope.formAdata.entryDate = '2-2-2017';
-				$scope.formAdata.deliveryDate = '2-2-2017';
-				$scope.formAdata.advance = '200';
-				$scope.formAdata.total = '200';
-				$scope.formAdata.tax = '200';
-				$scope.formAdata.paymentMode = 'cash';
-				$scope.formAdata.stateAbb = 'IN-AP';
-				$scope.formAdata.cityId = '79';
-				$scope.formAdata.companyId = '9';
-				$scope.formAdata.bankName = 'sdfsd';
-				$scope.formAdata.chequeNo = 'sdfsd';
-				$scope.inventory=[{"productId":3,"productName":"Rangerddcd" ,"productInformation":'info',"qty":'2',
-				 "price":45,'discountType':'flat','discount':10},{"productId":3,"productName":"Rangerddcd" ,"productInformation":'info',"qty":'2',
-				 "price":45,'discountType':'flat','discount':10}];
+				// $scope.formAdata.clientName = "reema";
+				// $scope.formAdata.contactNo = '8788888888';
+				// $scope.formAdata.address = 'address';
+				// $scope.formAdata.emailId = 'email@gmail.com';
+				// $scope.formAdata.jobCardNo = '4';
+				// $scope.formAdata.labourCharge = '200';
+				// $scope.formAdata.serviceType = 'free';
+				// $scope.formAdata.entryDate = '2-2-2017';
+				// $scope.formAdata.deliveryDate = '2-2-2017';
+				// $scope.formAdata.advance = '200';
+				// $scope.formAdata.total = '200';
+				// $scope.formAdata.tax = '200';
+				// $scope.formAdata.paymentMode = 'cash';
+				// $scope.formAdata.stateAbb = 'IN-AP';
+				// $scope.formAdata.cityId = '79';
+				// $scope.formAdata.companyId = '9';
+				// $scope.formAdata.bankName = 'sdfsd';
+				// $scope.formAdata.chequeNo = 'sdfsd';
+				// $scope.inventory=[{"productId":3,"productName":"Rangerddcd" ,"productInformation":'info',"qty":'2',
+				 // "price":45,'discountType':'flat','discount':10},{"productId":3,"productName":"Rangerddcd" ,"productInformation":'info',"qty":'2',
+				 // "price":45,'discountType':'flat','discount':10}];
 				// $scope.formAdata.productInformation = 'information';
 				// $scope.formAdata.qty = '2';
 				// $scope.formAdata.tax = '10';
@@ -507,29 +507,29 @@ include ('connection.php');
 				// $scope.formAdata.productId = '3';
 				
 				
-				formdata.append('clientName',$scope.formAdata.clientName);
-				formdata.append('contactNo',$scope.formAdata.contactNo);
-				formdata.append('address',$scope.formAdata.address);
-				formdata.append('emailId',$scope.formAdata.emailId);
-				formdata.append('jobCardNo',$scope.formAdata.jobCardNo);
-				formdata.append('labourCharge',$scope.formAdata.labourCharge);
-				formdata.append('serviceType',$scope.formAdata.serviceType);
-				formdata.append('entryDate',$scope.formAdata.entryDate);
-				formdata.append('deliveryDate',$scope.formAdata.deliveryDate);
-				formdata.append('advance',$scope.formAdata.advance);
-				formdata.append('total',$scope.formAdata.total);
-				formdata.append('tax',$scope.formAdata.tax);
-				formdata.append('paymentMode',$scope.formAdata.paymentMode);
-				formdata.append('stateAbb',$scope.formAdata.stateAbb);
-				formdata.append('cityId',$scope.formAdata.cityId);
-				formdata.append('companyId',$scope.formAdata.companyId);
-				for(var i=0;i<$scope.inventory.length;i++){
+				// formdata.append('clientName',$scope.formAdata.clientName);
+				// formdata.append('contactNo',$scope.formAdata.contactNo);
+				// formdata.append('address',$scope.formAdata.address);
+				// formdata.append('emailId',$scope.formAdata.emailId);
+				// formdata.append('jobCardNo',$scope.formAdata.jobCardNo);
+				// formdata.append('labourCharge',$scope.formAdata.labourCharge);
+				// formdata.append('serviceType',$scope.formAdata.serviceType);
+				// formdata.append('entryDate',$scope.formAdata.entryDate);
+				// formdata.append('deliveryDate',$scope.formAdata.deliveryDate);
+				// formdata.append('advance',$scope.formAdata.advance);
+				// formdata.append('total',$scope.formAdata.total);
+				// formdata.append('tax',$scope.formAdata.tax);
+				// formdata.append('paymentMode',$scope.formAdata.paymentMode);
+				// formdata.append('stateAbb',$scope.formAdata.stateAbb);
+				// formdata.append('cityId',$scope.formAdata.cityId);
+				// formdata.append('companyId',$scope.formAdata.companyId);
+				// for(var i=0;i<$scope.inventory.length;i++){
    
-  					angular.forEach($scope.inventory[i], function (value,key) {
+  					// angular.forEach($scope.inventory[i], function (value,key) {
    						
-   					formdata.append('product['+i+']['+key+']',value);
-  					});
-				}
+   					// formdata.append('product['+i+']['+key+']',value);
+  					// });
+				// }
 				// formdata.append('productInformation',$scope.formAdata.productInformation);
 				// formdata.append('qty',$scope.formAdata.qty);
 				// formdata.append('tax',$scope.formAdata.tax);
@@ -544,16 +544,20 @@ include ('connection.php');
 				// insert into job_card_dtl(client_name,company_id,product_id,state_abb,city_id) values('fff',9,3,'IN-AP',79) on duplicate key update client_name='ggg'
 	//----------------------------------Batch Insertion-----------------------------------------------------------------			
 				//multiple inventory insertion
-				 // $scope.inventory=[{"isDisplay":'no',"productName":"Rangerddcd" ,"measurementUnit":'piece',"productCategoryId":'brand1',
-				 // "size":45,'color':'red','purchasePrice':1200,'wholesaleMargin':12,'wholesaleMarginFlat':10,'semiWholesaleMargin':5,
+				 // $scope.inventory=[{"productName":"Rangerddhuuuuuuuuccg" ,"measurementUnit":'piece',"productCategoryId":'Brand1',
+				 // "size":45,'color':'redi','purchasePrice':1200,'wholesaleMargin':12,'wholesaleMarginFlat':10,'semiWholesaleMargin':5,
 				 // 'vat':5,'mrp':2000,'margin':5,'marginFlat':5,'productDescription':'desc','additionalTax':5,'minimumStockLevel':5,
-				 // 'productGroupId':'category1','companyId':'Test','branchId':'MainBranch'},{"isDisplay":'no',"productName":"Rangerddcd",
-				 // "measurementUnit":'piece',"productCategoryId":'brand1',
-				 // "size":45,'color':'red','purchasePrice':1200,'wholesaleMargin':12,'wholesaleMarginFlat':10,'semiWholesaleMargin':5,
+				 // 'productGroupId':'category1','companyId':'Test','branchId':'MainBranch'},
+				 // {"productName":"dfsdgdttttttttyyeezq" ,"measurementUnit":'piece',"productCategoryId":'brand1',
+				 // "size":45,'color':'redi','purchasePrice':1200,'wholesaleMargin':12,'wholesaleMarginFlat':10,'semiWholesaleMargin':5,
+				 // 'vat':5,'mrp':2000,'margin':5,'marginFlat':5,'productDescription':'desc','additionalTax':5,'minimumStockLevel':5,
+				 // 'productGroupId':'category1','companyId':'Test','branchId':'MainBranch'},
+				 // {"productName":"Rangeryyyyyyyyyyykkkkpo","measurementUnit":'piece',"productCategoryId":'bRand1',
+				 // "size":45,'color':'redi','purchasePrice':1200,'wholesaleMargin':12,'wholesaleMarginFlat':10,'semiWholesaleMargin':5,
 				 // 'vat':5,'mrp':100,'margin':5,'marginFlat':10,'productDescription':'desc','additionalTax':5,'minimumStockLevel':5,
 				 // 'productGroupId':'category1','companyId':'Test','branchId':'MainBranch'}];
 				 
-				 // $scope.inventory1=['isDisplay','productName','measurementUnit','productCategoryId','size','color','purchasePrice','wholesaleMargin',
+				 // $scope.inventory1=['productName','measurementUnit','productCategoryId','size','color','purchasePrice','wholesaleMargin',
 				 // 'wholesaleMarginFlat','semiWholesaleMargin','vat','mrp','margin','marginFlat',
 				 // 'productDescription','additionalTax','minimumStockLevel','productGroupId','companyId','branchId'];
 				// for(var i=0;i<$scope.inventory.length;i++)
@@ -746,11 +750,11 @@ include ('connection.php');
 				// var jfId=52;
 				// var journalId=207;
 				// var saleId = 371;
-				var jobCardNo = 3;
+				// var jobCardNo = 3;
 				
 				// var url="http://www.scerp1.com/crm/job-form-number/company/"+companyId+"/latest";
 				// var url="http://www.scerp1.com/crm/job-form-number";
-				var url="http://www.scerp1.com/crm/job-form/"+jobCardNo;
+				// var url="http://www.scerp1.com/crm/job-form/"+jobCardNo;
 				// var url="http://www.scerp1.com/crm/job-form";
 				
 				// var url="http://www.scerp1.com/reports/polish-report/company/"+companyId;
@@ -843,7 +847,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/product-groups";
 				// var url="http://www.scerp1.com/product-groups/"+productGrpId;
 				// var url="http://www.scerp1.com/products/"+productId;
-				// var url="http://www.scerp1.com/products";
+				var url="http://www.scerp1.com/products";
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/branch/"+branchId;
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/branch";
 				// var url="http://www.scerp1.com/products/company/"+companyId;
@@ -852,8 +856,8 @@ include ('connection.php');
                         url: url,
                         // type:'patch',
                         // type:'get',
-						 method: 'get',
-						 // method: 'post',
+						 // method: 'get',
+						 method: 'post',
 						 // method: 'patch',
 						// enctype:'multipart/formdata',
 						 // _method: 'patch',
@@ -878,7 +882,7 @@ include ('connection.php');
                         // headers: {'Content-Type':undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','productCode':'ABC_ABC_AB_CYCFDJ_BKBK_122T'},
                         // headers: {'Content-Type':undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','fromDate':'01/04/2017','toDate':'28/04/2017'},
                         // headers: {'Content-Type':'application/x-www-form-urlencoded','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
-						 // data:formdata
+						 data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

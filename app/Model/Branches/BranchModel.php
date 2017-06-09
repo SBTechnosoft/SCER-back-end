@@ -257,29 +257,41 @@ class BranchModel extends Model
 	*/
 	public function getBranchId($convertedBranchName)
 	{
+		$flag=0;
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
 		DB::beginTransaction();
-		$branchIdResult = DB::connection($databaseName)->select("SELECT 
-		branch_id 
+		$branchResult = DB::connection($databaseName)->select("SELECT 
+		branch_id,
+		branch_name
 		from branch_mst 
-		where REGEXP_REPLACE(branch_name,'[^a-zA-Z0-9]','')='".$convertedBranchName."' and 
-		deleted_at='0000-00-00 00:00:00'");
+		where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
-		
+		for($dataArray=0;$dataArray<count($branchResult);$dataArray++)
+		{
+			$convertedBranchString = strtoupper($branchResult[$dataArray]->branch_name);
+			//replace string of db group-name
+			$convertedDbBrachString = preg_replace('/[^A-Za-z0-9]/', '',$convertedBranchString);
+			if(strcmp($convertedDbBrachString,$convertedBranchName)==0)
+			{
+				$flag=1;
+				$branchId = $branchResult[$dataArray]->branch_id;
+				break;
+			}
+		}
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		if(count($branchIdResult)==0)
+		if($flag==0)
 		{
 			return $exceptionArray['204'];
 		}
 		else
 		{
-			return json_encode($branchIdResult);
+			return $branchId;
 		}
 	}
 	

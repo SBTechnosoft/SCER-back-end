@@ -7,6 +7,12 @@ use Carbon;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Entities\Constants\ConstantClass;
 use ERP\Model\Accounting\Journals\JournalModel;
+use ERP\Core\Settings\InvoiceNumbers\Services\InvoiceService;
+use ERP\Api\V1_0\Settings\InvoiceNumbers\Controllers\InvoiceController;
+use Illuminate\Container\Container;
+use ERP\Http\Requests;
+use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 use stdClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -27,17 +33,28 @@ class BillModel extends Model
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
-		//get invoice-number for checking invoice-number is exist or not
-		DB::beginTransaction();
-		$getInvoiceNumber = DB::connection($databaseName)->select("select 
-		invoice_number 
-		from sales_bill 
-		where invoice_number='".$invoiceNumber."' and 
-		deleted_at='0000-00-00 00:00:00'");
-		DB::commit();
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
 		
-		//if invoice-number is exists then update bill data otherwise insert bill data
-		if(count($getInvoiceNumber)==0)
+		if($jobCardNumber!="")
+		{
+			//get job-card-number for checking job-card-number is exist or not
+			DB::beginTransaction();
+			$getJobCardNumber = DB::connection($databaseName)->select("select
+			job_card_number 
+			from sales_bill 
+			where job_card_number='".$jobCardNumber."' and 
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+		}
+		else
+		{
+			$getJobCardNumber = array();
+			$getJobCardNumber['key']="value";
+		}
+		//if job-card-number is exists then update bill data otherwise insert bill data
+		if(count($getJobCardNumber)==0)
 		{
 			DB::beginTransaction();
 			$raw = DB::connection($databaseName)->statement("insert into sales_bill(
@@ -61,6 +78,13 @@ class BillModel extends Model
 			jf_id) 
 			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$salesType."','".$ClientId."','".$jfId."')");
 			DB::commit();
+			
+			//update invoice-number
+			$invoiceResult = $this->updateInvoiceNumber($companyId);
+			if(strcmp($invoiceResult,$exceptionArray['200'])!=0)
+			{
+				return $invoiceResult;
+			}
 		}
 		else
 		{
@@ -71,7 +95,6 @@ class BillModel extends Model
 			sales_bill set 
 			product_array='".$productArray."',
 			payment_mode='".$paymentMode."',
-			invoice_number='".$invoiceNumber."',
 			job_card_number='".$jobCardNumber."',
 			bank_name='".$bankName."',
 			check_number='".$checkNumber."',
@@ -88,14 +111,10 @@ class BillModel extends Model
 			sales_type='".$salesType."',
 			jf_id='".$jfId."',
 			updated_at='".$mytime."' 
-			where invoice_number='".$invoiceNumber."' and
+			where job_card_number='".$jobCardNumber."' and
 			deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
 		}
-		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
 			DB::beginTransaction();
@@ -205,17 +224,28 @@ class BillModel extends Model
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
-		//get invoice-number for checking invoice-number is exist or not
-		DB::beginTransaction();
-		$getInvoiceNumber = DB::connection($databaseName)->select("select 
-		invoice_number 
-		from sales_bill 
-		where invoice_number='".$invoiceNumber."' and 
-		deleted_at='0000-00-00 00:00:00'");
-		DB::commit();
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
 		
-		//if invoice-number is exists then update bill data otherwise insert bill data
-		if(count($getInvoiceNumber)==0)
+		if($jobCardNumber!="")
+		{
+			//get job-card-number for checking job-card-number is exist or not
+			DB::beginTransaction();
+			$getJobCardNumber = DB::connection($databaseName)->select("select
+			job_card_number 
+			from sales_bill 
+			where job_card_number='".$jobCardNumber."' and 
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+		}
+		else
+		{
+			$getJobCardNumber = array();
+		}
+		
+		//if job-card-number is exists then update bill data otherwise insert bill data
+		if(count($getJobCardNumber)==0)
 		{
 			//insert bill data
 			DB::beginTransaction();
@@ -240,6 +270,13 @@ class BillModel extends Model
 			jf_id) 
 			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$salesType."','".$jfId."')");
 			DB::commit();
+			
+			//update invoice-number
+			$invoiceResult = $this->updateInvoiceNumber($companyId);
+			if(strcmp($invoiceResult,$exceptionArray['200'])!=0)
+			{
+				return $invoiceResult;
+			}
 		}
 		else
 		{
@@ -250,7 +287,6 @@ class BillModel extends Model
 			sales_bill set 
 			product_array='".$productArray."',
 			payment_mode='".$paymentMode."',
-			invoice_number='".$invoiceNumber."',
 			job_card_number='".$jobCardNumber."',
 			bank_name='".$bankName."',
 			check_number='".$checkNumber."',
@@ -267,13 +303,10 @@ class BillModel extends Model
 			sales_type='".$salesType."',
 			jf_id='".$jfId."',
 			updated_at='".$mytime."' 
-			where invoice_number='".$invoiceNumber."' and 
+			where job_card_number='".$jobCardNumber."' and 
 			deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
 		}
-		//get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
 			DB::beginTransaction();
@@ -347,6 +380,38 @@ class BillModel extends Model
 		{
 			return $exceptionArray['500'];
 		}
+	}
+	
+	/**
+	 * after insertion bill data update invoice-number
+	 * @param  compant-id
+	 * returns the exception-message
+	*/
+	public function updateInvoiceNumber($companyId)
+	{
+		//get constants from constant class
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		$invoiceService = new InvoiceService();	
+		$invoiceData = $invoiceService->getLatestInvoiceData($companyId);
+		if(strcmp($exceptionArray['204'],$invoiceData)==0)
+		{
+			return $invoiceData;
+		}
+		$endAt = json_decode($invoiceData)->endAt;
+		$invoiceController = new InvoiceController(new Container());
+		$invoiceMethod=$constantArray['postMethod'];
+		$invoicePath=$constantArray['invoiceUrl'];
+		$invoiceDataArray = array();
+		
+		$invoiceDataArray['endAt'] = $endAt+1;
+		$invoiceRequest = Request::create($invoicePath,$invoiceMethod,$invoiceDataArray);
+		$updateResult = $invoiceController->update($invoiceRequest,json_decode($invoiceData)->invoiceId);
+		return $updateResult;
 	}
 	
 	/**

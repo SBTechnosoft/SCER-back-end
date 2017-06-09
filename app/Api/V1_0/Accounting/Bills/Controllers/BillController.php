@@ -95,20 +95,6 @@ class BillController extends BaseController implements ContainerInterface
 						else
 						{
 							$decodedSaleData = json_decode($status);
-							$invoiceService = new InvoiceService();	
-							$invoiceData = $invoiceService->getLatestInvoiceData($decodedSaleData->company->companyId);
-							if(strcmp($msgArray['204'],$invoiceData)==0)
-							{
-								return $invoiceData;
-							}
-							$endAt = json_decode($invoiceData)->endAt;
-							$invoiceController = new InvoiceController(new Container());
-							$invoiceMethod=$constantArray['postMethod'];
-							$invoicePath=$constantArray['invoiceUrl'];
-							$invoiceDataArray = array();
-							$invoiceDataArray['endAt'] = $endAt+1;
-							$invoiceRequest = Request::create($invoicePath,$invoiceMethod,$invoiceDataArray);
-							$updateResult = $invoiceController->update($invoiceRequest,json_decode($invoiceData)->invoiceId);
 							$saleId = $decodedSaleData->saleId;
 							$saleIdArray = array();
 							$saleIdArray['saleId'] = $saleId;

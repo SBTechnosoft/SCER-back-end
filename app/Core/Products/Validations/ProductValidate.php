@@ -20,7 +20,7 @@ class ProductValidate extends ProductModel
 	public function validate($request)
 	{
 		$rules = array(
-			'product_name'=> 'required|between:1,35|regex:/^[a-zA-Z0-9 &,\/_`#().\'-]+$/', 
+			'product_name'=> 'required|between:1,100|regex:/^[a-zA-Z0-9 &,\/_`#().\'-]+$/', 
 			'purchase_price'=> 'regex:/^[0-9 .]+$/', 
 			'wholesale_margin'=> 'regex:/^[0-9 .]+$/', 
 			'semi_wholesale_margin'=> 'regex:/^[0-9 .]+$/', 
@@ -32,7 +32,7 @@ class ProductValidate extends ProductModel
 			'minimum_stock_level'=> 'regex:/^[0-9]+$/', 
 		);
 		$messages = [
-			'product_name.between' => 'StringLengthException :Enter the product name less then 35 character',
+			'product_name.between' => 'StringLengthException :Enter the product name less then 100 character',
 			'product_name.regex' => 'product-name contains character from "a-zA-Z0-9 &,\/_`#().\'-" only',
 			'purchase_price.regex' => 'purchase-price contains character from "0-9" only',
 			'wholesale_margin.regex' => 'wholesale-margin contains character from "0-9" only',
@@ -129,7 +129,7 @@ class ProductValidate extends ProductModel
 	public function validateUpdateData($keyName,$value,$request)
 	{
 		$validationArray = array(
-			'product_name'=> 'required|between:1,35|regex:/^[a-zA-Z0-9 &,\/_`#().\'-]+$/', 
+			'product_name'=> 'required|between:1,100|regex:/^[a-zA-Z0-9 &,\/_`#().\'-]+$/', 
 			'purchase_price'=> 'regex:/^[0-9 .]+$/', 
 			'wholesale_margin'=> 'regex:/^[0-9 .]+$/', 
 			'semi_wholesale_margin'=> 'regex:/^[0-9 .]+$/', 
@@ -155,7 +155,7 @@ class ProductValidate extends ProductModel
 				$key=> $rules[$key]
 			);
 			$messages = [
-				'product_name.between' => 'StringLengthException :Enter the product name less then 35 character',
+				'product_name.between' => 'StringLengthException :Enter the product name less then 100 character',
 				'product_name.regex' => 'product-name contains character from "a-zA-Z0-9 &,\/_`#().\'-" only',
 				'purchase_price.regex' => 'purchase-price contains character from "0-9" only',
 				'wholesale_margin.regex' => 'wholesale-margin contains character from "0-9" only',

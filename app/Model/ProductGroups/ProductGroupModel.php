@@ -301,29 +301,43 @@ class ProductGroupModel extends Model
 	*/
 	public function getGroupId($productGroupName)
 	{
+		$flag=0;
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
 		DB::beginTransaction();
-		$groupIdResult = DB::connection($databaseName)->select("SELECT 
-		product_group_id 
+		$groupResult = DB::connection($databaseName)->select("SELECT 
+		product_group_id,
+		product_group_name
 		from product_group_mst 
-		where REGEXP_REPLACE(product_group_name,'[^a-zA-Z0-9]','')='".$productGroupName."' and 
-		deleted_at='0000-00-00 00:00:00'");
+		where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
+		
+		for($dataArray=0;$dataArray<count($groupResult);$dataArray++)
+		{
+			$convertedGrpString = strtoupper($groupResult[$dataArray]->product_group_name);
+			//replace string of db group-name
+			$convertedDbGrpString = preg_replace('/[^A-Za-z0-9]/', '',$convertedGrpString);
+			if(strcmp($convertedDbGrpString,$productGroupName)==0)
+			{
+				$flag=1;
+				$groupId = $groupResult[$dataArray]->product_group_id;
+				break;
+			}
+		}
 		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		if(count($groupIdResult)==0)
+		if($flag==0)
 		{
 			return $exceptionArray['204'];
 		}
 		else
 		{
-			return json_encode($groupIdResult);
+			return $groupId;
 		}
 	}
 	

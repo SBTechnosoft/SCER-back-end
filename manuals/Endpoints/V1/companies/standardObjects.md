@@ -6,6 +6,8 @@
 				"companyDisplayName": string,
                 "address1": string,
                 "address2": string,
+				"emailId":string,
+				"customerCare":"string",
                 "city":  {
 					... Standard City Object
 				},
@@ -40,6 +42,8 @@
 			"companyDisplayName": string,
 			"address1": string,
 			"address2": string,
+			"emailId":string,
+			"customerCare":"string",
 			"cityId": int,
 			"stateAbb": char,
 			"pincode": char,

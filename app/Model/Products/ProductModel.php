@@ -10,6 +10,7 @@ use ERP\Entities\ProductArray;
 use TCPDFBarcode;
 use ERP\Model\Settings\SettingModel;
 use stdClass;
+use ERP\Core\Products\Validations\ProductValidate;
 /**
  * @author reema Patel<reema.p@siliconbrain.in>
  */
@@ -165,91 +166,51 @@ class ProductModel extends Model
 		$getProductData = func_get_arg(0);
 		$getProductKey = func_get_arg(1);
 		$getErrorArray = func_get_arg(2);
+		
 		$productCode = array();
 		$getErrorCount = count($getErrorArray);
 		for($dataArray=0;$dataArray<count($getProductData);$dataArray++)
 		{
-			$dataFlag=0;
-			if($dataArray!=0)
+			$productData="";
+			$keyName = "";
+			for($data=0;$data<count($getProductData[$dataArray]);$data++)
 			{
-				if(strcmp($getProductData[$dataArray-1][20],$getProductData[$dataArray][20])==0)
+				if(strcmp('product_code',$getProductKey[$dataArray][$data])==0)
 				{
-					$getErrorArray[$getErrorCount] = array();
-					$getErrorArray[$getErrorCount]['productName'] = $getProductData[$dataArray][0];
-					$getErrorArray[$getErrorCount]['measurementUnit'] = $getProductData[$dataArray][1];
-					$getErrorArray[$getErrorCount]['color'] = $getProductData[$dataArray][2];
-					$getErrorArray[$getErrorCount]['size'] = $getProductData[$dataArray][3];
-					$getErrorArray[$getErrorCount]['isDisplay'] = $getProductData[$dataArray][4];
-					$getErrorArray[$getErrorCount]['purchasePrice'] = $getProductData[$dataArray][5];
-					$getErrorArray[$getErrorCount]['wholesaleMargin'] = $getProductData[$dataArray][6];
-					$getErrorArray[$getErrorCount]['wholesaleMarginFlat'] = $getProductData[$dataArray][7];
-					$getErrorArray[$getErrorCount]['semiWholesaleMargin'] = $getProductData[$dataArray][8];
-					$getErrorArray[$getErrorCount]['vat'] = $getProductData[$dataArray][9];
-					$getErrorArray[$getErrorCount]['mrp'] = $getProductData[$dataArray][10];
-					$getErrorArray[$getErrorCount]['margin'] = $getProductData[$dataArray][11];
-					$getErrorArray[$getErrorCount]['marginFlat'] = $getProductData[$dataArray][12];
-					$getErrorArray[$getErrorCount]['productDescription'] = $getProductData[$dataArray][13];
-					$getErrorArray[$getErrorCount]['additionalTax'] = $getProductData[$dataArray][14];
-					$getErrorArray[$getErrorCount]['minimumStockLevel'] = $getProductData[$dataArray][15];
-					$getErrorArray[$getErrorCount]['companyId'] = $getProductData[$dataArray][16];
-					$getErrorArray[$getErrorCount]['productCategoryId'] = $getProductData[$dataArray][17];
-					$getErrorArray[$getErrorCount]['productGroupId'] = $getProductData[$dataArray][18];
-					$getErrorArray[$getErrorCount]['branchId'] = $getProductData[$dataArray][19]; 
-					$getErrorArray[$getErrorCount]['remark'] = $exceptionArray['invalidProductCode']; 
-					$getErrorCount++;
+					$productCode[$dataArray] = $getProductData[$dataArray][$data];
+				}
+				if($data == (count($getProductData[$dataArray])-1))
+				{
+					$productData = $productData."'".$getProductData[$dataArray][$data]."'";
+					$keyName =$keyName.$getProductKey[$dataArray][$data];
 				}
 				else
 				{
-					$dataFlag=1;
+					$productData = $productData."'".$getProductData[$dataArray][$data]."',";
+					$keyName = $keyName.$getProductKey[$dataArray][$data].",";
 				}
+			}
+			//make unique name of barcode svg image
+			$dateTime = date("d-m-Y h-i-s");
+			$convertedDateTime = str_replace(" ","-",$dateTime);
+			$splitDateTime = explode("-",$convertedDateTime);
+			$combineDateTime = $splitDateTime[0].$splitDateTime[1].$dataArray.$splitDateTime[2].$splitDateTime[3].$data.$splitDateTime[4].$splitDateTime[5];
+			$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".svg";
+			$documentPath = $path.$documentName;
+			
+			//insert barcode image
+			$barcodeobj = new TCPDFBarcode($productCode[$dataArray], 'C128','C');
+			file_put_contents($documentPath,$barcodeobj->getBarcodeSVGcode($width ,$height, 'black'));
+			
+			$finalProductData = "(".$productData.",'".$documentName."','svg')";
+			$keyName = $keyName.",document_name,document_format";
+			if($dataArray==count($getProductData)-1)
+			{
+				$productDetail = $productDetail.$finalProductData;
 			}
 			else
 			{
-				$dataFlag=1;
-			}
-			if($dataFlag==1)
-			{
-				$productData="";
-				$keyName = "";
-				for($data=0;$data<count($getProductData[$dataArray]);$data++)
-				{
-					if(strcmp('product_code',$getProductKey[$dataArray][$data])==0)
-					{
-						$productCode[$dataArray] = $getProductData[$dataArray][$data];
-					}
-					if($data == (count($getProductData[$dataArray])-1))
-					{
-						$productData = $productData."'".$getProductData[$dataArray][$data]."'";
-						$keyName =$keyName.$getProductKey[$dataArray][$data];
-					}
-					else
-					{
-						$productData = $productData."'".$getProductData[$dataArray][$data]."',";
-						$keyName = $keyName.$getProductKey[$dataArray][$data].",";
-					}
-				}
-				//make unique name of barcode svg image
-				$dateTime = date("d-m-Y h-i-s");
-				$convertedDateTime = str_replace(" ","-",$dateTime);
-				$splitDateTime = explode("-",$convertedDateTime);
-				$combineDateTime = $splitDateTime[0].$splitDateTime[1].$dataArray.$splitDateTime[2].$splitDateTime[3].$data.$splitDateTime[4].$splitDateTime[5];
-				$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999).".svg";
-				$documentPath = $path.$documentName;
-				
-				//insert barcode image
-				$barcodeobj = new TCPDFBarcode($productCode[$dataArray], 'C128','C');
-				file_put_contents($documentPath,$barcodeobj->getBarcodeSVGcode($width ,$height, 'black'));
-				
-				$finalProductData = "(".$productData.",'".$documentName."','svg')";
-				$keyName = $keyName.",document_name,document_format";
-				if($dataArray==count($getProductData)-1)
-				{
-					$productDetail = $productDetail.$finalProductData;
-				}
-				else
-				{
-					$productDetail = $productDetail.$finalProductData.",";
-				}
+				$productDetail = $productDetail.$finalProductData.",";
 			}
 		}
 		$lastCharacter = substr($productDetail, -1);
@@ -300,6 +261,41 @@ class ProductModel extends Model
 			}
 		}
 	}
+	
+	/**
+	 * validate batch product data(in-in) 
+	 * @param  array
+	 * returns the status
+	
+	public function batchProductCodeValidate($getProductData,$dataArray,$indexNumber)
+	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		for($innerArray=0;$innerArray<$dataArray;$innerArray++)
+		{
+			if(strcmp($getProductData[$innerArray][20],$getProductData[$dataArray][20])==0)
+			{
+				$getProductData[$dataArray][20] = substr_replace($getProductData[$dataArray][20],'', -1);
+				$indexNumber=$indexNumber+1;
+				$getProductData[$dataArray][20] = $getProductData[$dataArray][20].$indexNumber;
+				
+				$productValidate = new ProductValidate();
+				$validationResult = $productValidate->productCodeValidate($getProductData[$dataArray][16],$getProductData[$dataArray][20]);
+				
+				$dbResult = $this->batchProductDbValidate();
+				// if(strcmp($validationResult,$exceptionArray['200'])!=0)
+				// {
+					// $getProductData[$dataArray][20] = substr_replace($getProductData[$dataArray][20],'', -1);
+					// $indexNumber=$indexNumber+1;
+					// $getProductData[$dataArray][20] = $getProductData[$dataArray][20].$indexNumber;
+				// }
+				$result = $this->batchProductCodeValidate($getProductData,$dataArray,$indexNumber);
+				return $result;
+			}
+		}
+		return $getProductData[$dataArray][20];
+	}*/
 	
 	/**
 	 * insert data 

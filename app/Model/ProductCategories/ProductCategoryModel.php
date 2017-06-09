@@ -301,29 +301,43 @@ class ProductCategoryModel extends Model
 	*/
 	public function getCategoryId($convertedCategoryName)
 	{
+		$flag=0;
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
 		DB::beginTransaction();
-		$categoryIdResult = DB::connection($databaseName)->select("SELECT 
-		product_category_id 
+		$categoryResult = DB::connection($databaseName)->select("SELECT 
+		product_category_id,
+		product_category_name 
 		from product_category_mst 
-		where REGEXP_REPLACE(product_category_name,'[^a-zA-Z0-9]','')='".$convertedCategoryName."' and 
-		deleted_at='0000-00-00 00:00:00'");
+		where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
+		
+		for($dataArray=0;$dataArray<count($categoryResult);$dataArray++)
+		{
+			$convertedCatString = strtoupper($categoryResult[$dataArray]->product_category_name);
+			//replace string of db category-name
+			$convertedDbCatString = preg_replace('/[^A-Za-z0-9]/', '',$convertedCatString);
+			if(strcmp($convertedDbCatString,$convertedCategoryName)==0)
+			{
+				$flag=1;
+				$categoryId = $categoryResult[$dataArray]->product_category_id;
+				break;
+			}
+		}
 		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		if(count($categoryIdResult)==0)
+		if($flag==0)
 		{
 			return $exceptionArray['204'];
 		}
 		else
 		{
-			return json_encode($categoryIdResult);
+			return $categoryId;
 		}
 	}
 	
