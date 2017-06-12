@@ -20,6 +20,7 @@
 				"vatNo": string,
 				"sgst":string,
 				"cgst":string,
+				"cess":decimal,
 				"serviceTaxNo": char,
 				"logo": {
 					... Standard Document Object
@@ -51,6 +52,7 @@
 			"tin": string,
 			"sgst":string,
 			"cgst":string,
+			"cess":decimal,
 			"vatNo": string,
 			"serviceTaxNo": string,
 			"file[]":
