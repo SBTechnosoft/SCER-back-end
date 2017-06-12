@@ -1,0 +1,31 @@
+##### Standard Bill Persistable Object
+		{
+			"companyId":String,
+			"entryDate":date,
+			"contactNo":string,
+			"emailId":string,
+			"companyName":string,
+			"clientName":string,
+			"workno":string,
+			"address1":String,
+			"address2":String,
+			"stateAbb":char,
+			"cityId":int,
+			"quotationNumber":string,
+			"transactionDate":date,
+			"total":decimal,
+			"extraCharge":decimal,
+			"tax":decimal,
+			"color":string,
+			"frameNo":string,
+			"size":string,
+			"grandTotal":decimal,
+			"remark":string,
+			"file":
+			{
+				{
+					Image Object
+				}
+				...
+			}
+		}

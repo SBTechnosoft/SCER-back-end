@@ -36,6 +36,7 @@ class EncodeData extends StateService
 		$vat_no= $decodedJson[0]['vat_no'];
 		$cgst= $decodedJson[0]['cgst'];
 		$sgst= $decodedJson[0]['sgst'];
+		$cess= $decodedJson[0]['cess'];
 		$serviceTaxNo= $decodedJson[0]['service_tax_no'];
 		$basicCurrencySymbol = $decodedJson[0]['basic_currency_symbol'];
 		$formalName= $decodedJson[0]['formal_name'];
@@ -90,6 +91,7 @@ class EncodeData extends StateService
 		$data['vatNo'] = $vat_no;
 		$data['sgst'] = $sgst;
 		$data['cgst'] = $cgst;
+		$data['cess'] = $cess;
 		$data['serviceTaxNo'] = $serviceTaxNo;
 		$data['basicCurrencySymbol'] = $basicCurrencySymbol;
 		$data['formalName'] = $formalName;

@@ -39,7 +39,6 @@ class EncodeAllData extends ProductCategoryService
 			$marginFlat[$decodedData] = $decodedJson[$decodedData]['margin_flat'];
 			$mrp[$decodedData] = $decodedJson[$decodedData]['mrp'];
 			$igst[$decodedData] = $decodedJson[$decodedData]['igst'];
-			$cess[$decodedData] = $decodedJson[$decodedData]['cess'];
 			$hsn[$decodedData] = $decodedJson[$decodedData]['hsn'];
 			$color[$decodedData] = $decodedJson[$decodedData]['color'];
 			$size[$decodedData] = $decodedJson[$decodedData]['size'];
@@ -123,7 +122,6 @@ class EncodeAllData extends ProductCategoryService
 				'marginFlat' => $marginFlat[$jsonData],
 				'mrp' => $mrp[$jsonData],
 				'igst' => $igst[$jsonData],
-				'cess' => $cess[$jsonData],
 				'hsn' => $hsn[$jsonData],
 				'color' => $color[$jsonData],
 				'size' => $size[$jsonData],
@@ -168,6 +166,9 @@ class EncodeAllData extends ProductCategoryService
 					'pan' => $getCompanyDetails[$jsonData]['pan'],	
 					'tin'=> $getCompanyDetails[$jsonData]['tin'],	
 					'vatNo' => $getCompanyDetails[$jsonData]['vatNo'],	
+					'cgst' => $getCompanyDetails[$jsonData]['cgst'],	
+					'sgst' => $getCompanyDetails[$jsonData]['sgst'],	
+					'cess' => $getCompanyDetails[$jsonData]['cess'],	
 					'serviceTaxNo' => $getCompanyDetails[$jsonData]['serviceTaxNo'],	
 					'basicCurrencySymbol' => $getCompanyDetails[$jsonData]['basicCurrencySymbol'],	
 					'formalName' => $getCompanyDetails[$jsonData]['formalName'],	

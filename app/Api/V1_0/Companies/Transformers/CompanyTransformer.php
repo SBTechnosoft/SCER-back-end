@@ -31,6 +31,7 @@ class CompanyTransformer
 		$vatNo = $request->input('vatNo'); 
 		$sgst = $request->input('sgst'); 
 		$cgst = $request->input('cgst'); 
+		$cess = $request->input('cess'); 
 		$serviceTaxNo = $request->input('serviceTaxNo'); 
 		$basicCurrencySymbol = $request->input('basicCurrencySymbol'); 			
 		$formalName = $request->input('formalName'); 			
@@ -54,6 +55,7 @@ class CompanyTransformer
 		$tVatNo = trim($vatNo);
 		$tSgst = trim($sgst);
 		$tCgst = trim($cgst);
+		$tCess = trim($cess);
 		$tServiceTaxNo = trim($serviceTaxNo);
 		$tBasicCurrencySymbol = trim($basicCurrencySymbol);
 		$tFormalName = trim($formalName);
@@ -128,6 +130,7 @@ class CompanyTransformer
 			$data['vat_no'] = $tVatNo;
 			$data['sgst'] = $tSgst;
 			$data['cgst'] = $tCgst;
+			$data['cess'] = $tCess;
 			$data['service_tax_no'] = $tServiceTaxNo;
 			$data['basic_currency_symbol'] = $tBasicCurrencySymbol;
 			$data['formal_name'] = $tFormalName;

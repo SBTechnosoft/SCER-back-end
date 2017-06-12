@@ -31,7 +31,6 @@ class EncodeData extends ProductCategoryService
 		$vat= $decodedJson[0]['vat'];
 		$mrp= $decodedJson[0]['mrp'];
 		$igst= $decodedJson[0]['igst'];
-		$cess= $decodedJson[0]['cess'];
 		$hsn= $decodedJson[0]['hsn'];
 		$color= $decodedJson[0]['color'];
 		$size= $decodedJson[0]['size'];
@@ -115,7 +114,6 @@ class EncodeData extends ProductCategoryService
 		$data['vat'] = $vat;
 		$data['mrp'] = $mrp;
 		$data['igst'] = $igst;
-		$data['cess'] = $cess;
 		$data['hsn'] = $hsn;
 		$data['color'] = $color;
 		$data['size'] = $size;
@@ -160,6 +158,9 @@ class EncodeData extends ProductCategoryService
 			'pan' => $getCompanyDetails['pan'],	
 			'tin' => $getCompanyDetails['tin'],	
 			'vatNo' => $getCompanyDetails['vatNo'],	
+			'cgst' => $getCompanyDetails['cgst'],	
+			'sgst' => $getCompanyDetails['sgst'],	
+			'cess' => $getCompanyDetails['cess'],	
 			'serviceTaxNo' => $getCompanyDetails['serviceTaxNo'],	
 			'basicCurrencySymbol' => $getCompanyDetails['basicCurrencySymbol'],
 			'formalName' => $getCompanyDetails['formalName'],	

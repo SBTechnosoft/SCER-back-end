@@ -1,5 +1,5 @@
 <?php
-namespace ERP\Core\Products\Properties;
+namespace ERP\Core\Companies\Properties;
 
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -11,7 +11,7 @@ trait CessPropertyTrait
      */
     private $cess;
 	/**
-	 * @param float $cess
+	 * @param int $cess
 	 */
 	public function setCess($cess)
 	{
