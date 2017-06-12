@@ -47,7 +47,7 @@ class ClientController extends BaseController implements ContainerInterface
 	*/
     public function store(Request $request)
     {
-		if(strcmp($_SERVER['REQUEST_URI'],"/accounting/bills")==0)
+		if(strcmp($_SERVER['REQUEST_URI'],"/accounting/bills")==0 || strcmp($_SERVER['REQUEST_URI'],"/accounting/quotations")==0)
 		{
 			$this->request = $request;
 			// check the requested Http method

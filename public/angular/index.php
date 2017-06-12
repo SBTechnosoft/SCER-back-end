@@ -698,7 +698,28 @@ include ('connection.php');
 				// $scope.user = [{"billData":[{"companyId":14,"entryDate":"22-10-2015","contactNo":"  	8765463456","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbraine","clientName":"abce","invoiceNumber":"INV/2016-12/54","billNumber":2,"address1":"sfja,sa","address2":"dfsd,ds","stateAbb":"IN-AG","cityId":1,"inventory":[{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44},{"productId": 10 ,"discount":12,"discountType":"flat","price":1300,"qty":44}],"total":100,"tax":10,"grandTotal":232,"advance":100,"balance":232,"paymentMode":"cash","bankName":"abc","checkNumber":"abbb34eQ1G","remark":"adsfsf afasf"}]}];
 				// 
 				//9875647544
-				// bill
+	//------------------------------------------------Quotation-Bill ---------------------------------------------------//
+				$scope.user = [{"billData":[{"companyId":10,"entryDate":"22-12-2015","contactNo":"8768667676",
+				"workNo":"9875647344","isDisplay":"no","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbrain",
+				"clientName":"kgjkbk","quotationNumber":"INV/2016-15/30","address1":"sfja,sa","address2":"dfsd,ds",
+				"stateAbb":"IN-AG","cityId":1,"total":100,"tax":10,"grandTotal":134,"remark":"adsfsf afasf"}]}];
+				
+				$scope.inventory=[{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":44,'color':'ddd',
+				'frameNo':'fff','size':'12T'},{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":40,'color':'hh',
+				'frameNo':'dsfds','size':'12T'}];
+				
+				angular.forEach($scope.user[0]['billData'][0], function (input,key) {
+					
+					formdata.append(key,input);
+				});
+				for(var i=0;i<$scope.inventory.length;i++)
+				{
+					angular.forEach($scope.inventory[i], function (input,key) {
+						
+						formdata.append('inventory['+i+']['+key+']',input);
+					});
+				}
+	//----------------------------------------------- bill -------------------------------------------------------------//
 				// $scope.user = [{"billData":[{"companyId":83,"entryDate":"22-12-2015","contactNo":"",
 				// "workNo":"9875647344","isDisplay":"no","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbrain",
 				// "clientName":"fsdfsadssd","invoiceNumber":"INV/2016-15/30","address1":"sfja,sa","address2":"dfsd,ds",
@@ -751,6 +772,8 @@ include ('connection.php');
 				// var journalId=207;
 				// var saleId = 371;
 				// var jobCardNo = 3;
+				
+				var url="http://www.scerp1.com/accounting/quotations";
 				
 				// var url="http://www.scerp1.com/crm/job-form-number/company/"+companyId+"/latest";
 				// var url="http://www.scerp1.com/crm/job-form-number";

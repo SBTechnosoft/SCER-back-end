@@ -68,11 +68,12 @@ class DocumentController extends BaseController implements ContainerInterface
 		$RequestUri = explode("/", $_SERVER['REQUEST_URI']);
 		if(strcmp($RequestUri[1],"accounting")==0 || strcmp($RequestUri[2],"bills")==0)
 		{
+			
 			//get sales data as per given saleId
 			$documentProcessor = new DocumentProcessor();
 			$documentService= new DocumentService();	
 			$processedData = $documentProcessor->createPersistableData($request);
-			$serviceData = $documentService->getSaleData($processedData['saleId'],$request->header());
+			$serviceData = $documentService->getSaleData($processedData[array_keys($request->input())[0]],$request->header());
 			return $serviceData;
 		}
 		else
@@ -98,6 +99,25 @@ class DocumentController extends BaseController implements ContainerInterface
 			{
 				return $authenticationResult;
 			}
+		}
+	}
+	
+	/**
+	 * get data with specified resource 
+	 * @param  Request object[Request $request]
+	 * method calls the processor for creating persistable object & setting the data
+	*/
+	public function getQuotationData(Request $request)
+	{
+		$RequestUri = explode("/", $_SERVER['REQUEST_URI']);
+		if(strcmp($RequestUri[1],"accounting")==0 || strcmp($RequestUri[2],"quotations")==0)
+		{
+			//get quotations data as per given quotationBillId
+			$documentProcessor = new DocumentProcessor();
+			$documentService= new DocumentService();	
+			$processedData = $documentProcessor->createPersistableData($request);
+			$serviceData = $documentService->getQuotationData($processedData[array_keys($request->input())[0]],$request->input()['companyId'],$request->input()['quotationData']);
+			return $serviceData;
 		}
 	}
 }

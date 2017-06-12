@@ -12,16 +12,17 @@ use Illuminate\Container\Container;
 use ERP\Core\Documents\Entities\CurrencyToWordConversion;
 use PHPMailer;
 use SMTP;
+use ERP\Model\Accounting\Quotations\QuotationModel;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
 class DocumentMpdf extends CurrencyToWordConversion
 {
-	 /**
-     * pdf generation and mail-sms send
-     * @param template-data and bill data
-     * @return error-message/document-path
-     */
+	/**
+	* pdf generation and mail-sms send
+	* @param template-data and bill data
+	* @return error-message/document-path
+	*/
 	public function mpdfGenerate($templateData,$status,$headerData,$emailTemplateData,$blankTemplateData,$smsTemplateData)
 	{		
 		//get exception message
@@ -636,5 +637,184 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$content = isset($result[1]) ? $result[1] : '';
 		// return as array:
 		return array($header, $content);
+	}
+	
+	/**
+	* pdf generation
+	* @param template-data and quotation data
+	* @return error-message/document-path
+	*/
+	public function quotationMpdfGenerate($templateData,$quotationData)
+	{		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		$htmlBody = json_decode($templateData)[0]->templateBody;
+		
+		$quotationBillId = $quotationData->quotationBillId;
+		
+		$decodedArray = json_decode($quotationData->productArray);
+		$productService = new ProductService();
+		$productData = array();
+		$decodedData = array();
+		$index=1;
+	
+		$output="";
+		$totalAmount =0;
+		$totalVatValue=0;
+		$totalAdditionalTax=0;
+		$totalQty=0;
+		
+		$totalCm = 10.4;
+		for($productArray=0;$productArray<count($decodedArray->inventory);$productArray++)
+		{
+			//get product-data
+			$productData[$productArray] = $productService->getProductData($decodedArray->inventory[$productArray]->productId);
+			$decodedData[$productArray] = json_decode($productData[$productArray]);
+			
+			//calculate margin value
+			$marginValue[$productArray]=($decodedData[$productArray]->margin/100)*$decodedArray->inventory[$productArray]->price;
+			$marginValue[$productArray] = $marginValue[$productArray]+$decodedData[$productArray]->marginFlat;
+			
+			$totalPrice = $decodedArray->inventory[$productArray]->price*$decodedArray->inventory[$productArray]->qty;
+			if(strcmp($decodedArray->inventory[$productArray]->discountType,"flat")==0)
+			{
+				$discountValue[$productArray] = $decodedArray->inventory[$productArray]->discount;
+
+			}
+			else
+			{
+				$discountValue[$productArray] = ($decodedArray->inventory[$productArray]->discount/100)*$totalPrice;
+			}
+			$finalVatValue = $totalPrice - $discountValue[$productArray];
+			
+			//calculate vat value;
+			$vatValue[$productArray]=($decodedData[$productArray]->vat/100)*$finalVatValue;
+			
+			//calculate additional tax
+			$additionalTaxValue[$productArray] = ($decodedData[$productArray]->additionalTax/100)*$finalVatValue;
+			$total[$productArray] =($totalPrice)-$discountValue[$productArray]+$vatValue[$productArray] +$additionalTaxValue[$productArray];
+			
+			$price = number_format($decodedArray->inventory[$productArray]->price,$decodedData[$productArray]->company->noOfDecimalPoints,'.','');
+			$trClose = "</td></tr>";
+			if($productArray==0)
+			{
+				$output =$output.$trClose;
+			}
+			if(empty($decodedArray->inventory[$productArray]->color))
+			{
+				$decodedArray->inventory[$productArray]->color="";
+			}
+			if(empty($decodedArray->inventory[$productArray]->frameNo))
+			{
+				$decodedArray->inventory[$productArray]->frameNo="";
+			}
+			
+			$totalVatValue = $totalVatValue+$vatValue[$productArray];
+			$totalAdditionalTax=$totalAdditionalTax+$additionalTaxValue[$productArray];
+			$totalQty=$totalQty+$decodedArray->inventory[$productArray]->qty;
+			$totalAmount=$totalAmount+$total[$productArray];
+			
+			//convert (number_format)as per company's selected decimal points
+			$vatValue[$productArray] = number_format($vatValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
+			$additionalTaxValue[$productArray] = number_format($additionalTaxValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
+			$total[$productArray] = number_format($total[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints,'.','');
+			
+			$output =$output."".
+				'<tr class="trhw" style="font-family: Calibri; text-align: left; height:  0.7cm; background-color: transparent;">
+			   <td class="tg-m36b thsrno" style="font-size: 14px; height: 0.7cm; text-align:center; padding:0 0 0 0;">'.$index.'</td>
+			   <td colspan="3" class="tg-m36b theqp" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedData[$productArray]->productName.'</td>
+			   <td colspan="2" class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->color.' | '.$decodedArray->inventory[$productArray]->size.'</td>
+			   <td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->frameNo.'</td>
+			   <td class="tg-ullm thsrno" style="font-size: 14px;   height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->qty.'</td>
+			   <td class="tg-ullm thsrno" style="font-size: 14px; height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $price.'</td>
+				<td colspan="2" class="tg-ullm thamt" style="font-size: 14px;   height:  0.7cm; text-align: center; padding:0 0 0 0;">PCS</td>
+			   <td class="tg-ullm thamt" style="font-size: 14px;  height: 0.7cm; text-align: center; padding:0 0 0 0;">'.$total[$productArray];
+
+			if($productArray != count($decodedArray->inventory)-1)
+			{
+				$output = $output.$trClose;
+			
+			}
+			if($productArray==(count($decodedArray->inventory)-1))
+			{
+				$totalProductSpace = $index*0.7;	
+				
+				$finalProductBlankSpace = $totalCm-$totalProductSpace;
+				$output =$output."<tr class='trhw' style='font-family: Calibri; text-align: left; height:  ".$finalProductBlankSpace."cm;background-color: transparent;'>
+			   <td colspan='12' class='tg-m36b thsrno' style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;'></td></tr>";
+			}
+			$index++;
+		}
+		//calculation of currecy to word conversion
+		$currecyToWordConversion = new DocumentMpdf();
+		$currencyResult = $currecyToWordConversion->conversion($totalAmount);
+		$address = $quotationData->client->address1;
+		$companyAddress = $quotationData->company->address1.",".$quotationData->company->address2;
+		//add 1 month in entry date for displaying expiry date
+		$date = date_create($quotationData->entryDate);
+		date_add($date, date_interval_create_from_date_string('30 days'));
+		$expiryDate = date_format($date, 'd-m-Y');
+		$totalTax = $totalVatValue+$totalAdditionalTax;
+		// convert amount(number_format) into their company's selected decimal points
+		$totalTax = number_format($totalTax,$decodedData[0]->company->noOfDecimalPoints,'.','');
+		$totalAmount = number_format($totalAmount,$decodedData[0]->company->noOfDecimalPoints,'.','');
+		
+		$billArray = array();
+		$billArray['Description']=$output;
+		$billArray['ClientName']=$quotationData->client->clientName;
+		$billArray['Company']="<span style='font-family: algerian;font-size:22px'>".$quotationData->company->companyName."</span>";
+		$billArray['Total']=$totalAmount;
+		$billArray['Mobile']=$quotationData->client->contactNo;
+		$billArray['QuotationNo']=$quotationData->quotationNumber;
+		$billArray['CLIENTADD']=$address;
+		$billArray['OrderDate']=$quotationData->entryDate;
+		$billArray['TotalQty']=$totalQty;
+		$billArray['TotalInWord']=$currencyResult;
+		$billArray['displayNone']='none';
+		$billArray['CMPLOGO']="<img src='".$constantArray['mainLogo']."MainLogo.png'/>";
+		$billArray['CompanyAdd']=$companyAddress;
+		$billArray['CLIENTTINNO']="";
+		$mpdf = new mPDF('A4','landscape');
+		// $mpdf = new mPDF('','A4','','agency','0','0','0','0','0','0','landscape');
+		$mpdf->SetDisplayMode('fullpage');
+		foreach($billArray as $key => $value)
+		{
+			$htmlBody = str_replace('['.$key.']', $value, $htmlBody);
+		}
+		
+		$mpdf->WriteHTML($htmlBody);
+		$path = $constantArray['quotationDocUrl'];
+		//change the name of document-name
+		$dateTime = date("d-m-Y h-i-s");
+		$convertedDateTime = str_replace(" ","-",$dateTime);
+		$splitDateTime = explode("-",$convertedDateTime);
+		$combineDateTime = $splitDateTime[0].$splitDateTime[1].$splitDateTime[2].$splitDateTime[3].$splitDateTime[4].$splitDateTime[5];
+		$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999)."_quotation.pdf";
+		$documentPathName = $path.$documentName;
+		$documentFormat="pdf";
+		$documentType ="quotation";
+		
+		//pdf generate
+		$mpdf->Output($documentPathName,'F');
+		
+		//insertion quotation document data into database
+		$quotationModel = new QuotationModel();
+		$quotationDocumentStatus = $quotationModel->quotationDocumentData($quotationBillId,$documentName,$documentFormat,$documentType);
+		
+		if(strcmp($exceptionArray['500'],$quotationDocumentStatus)==0)
+		{
+			return $quotationDocumentStatus;
+		}
+		else
+		{
+			$pathArray = array();
+			$pathArray['documentPath'] = $documentPathName;
+			return $pathArray;
+		}	
 	}
 }

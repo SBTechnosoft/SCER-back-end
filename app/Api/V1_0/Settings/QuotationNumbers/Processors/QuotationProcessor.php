@@ -124,7 +124,7 @@ class QuotationProcessor extends BaseProcessor
 		if($requestMethod == 'POST')
 		{
 			//if data is not available in update request
-			if(count($_POST)==0)
+			if(count($request->input())==0)
 			{
 				$status = $exceptionArray['204'];
 				return $status;
@@ -132,12 +132,12 @@ class QuotationProcessor extends BaseProcessor
 			//data is avalilable for update
 			else
 			{
-				for($data=0;$data<count($_POST);$data++)
+				for($data=0;$data<count($request->input());$data++)
 				{
 					//data get from body
 					$quotationPersistable = new QuotationPersistable();
-					$value[$data] = $_POST[array_keys($_POST)[$data]];
-					$key[$data] = array_keys($_POST)[$data];
+					$value[$data] = $request->input()[array_keys($request->input())[$data]];
+					$key[$data] = array_keys($request->input())[$data];
 					//trim an input 
 					$quotationTransformer = new QuotationTransformer();
 					$tRequest = $quotationTransformer->trimUpdateData($key[$data],$value[$data]);
@@ -197,7 +197,7 @@ class QuotationProcessor extends BaseProcessor
 								$errorCount++;
 							}
 						}
-						if($data==(count($_POST)-1))
+						if($data==(count($request->input())-1))
 						{
 							if($flag==1)
 							{

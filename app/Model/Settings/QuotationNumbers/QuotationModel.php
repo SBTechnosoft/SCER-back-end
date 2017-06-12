@@ -232,7 +232,7 @@ class QuotationModel extends Model
 		
 		DB::beginTransaction();	
 		$raw = DB::connection($databaseName)->select("SELECT 
-		max(quotation_id) quotation_id,
+		quotation_id,
 		quotation_label,
 		quotation_type,
 		start_at,
@@ -241,8 +241,9 @@ class QuotationModel extends Model
 		updated_at,
 		company_id		
 		FROM quotation_dtl 
-		where company_id=".$companyId." and 
-		deleted_at='0000-00-00 00:00:00'");
+		where company_id='".$companyId."' and 
+		deleted_at='0000-00-00 00:00:00' 
+		group by quotation_id desc limit 1");
 		DB::commit();
 		
 		//get exception message

@@ -35,7 +35,7 @@ class RouteServiceProvider extends ServiceProvider
         ],function (Router $router) {
             $packages = $this->app->make('config')->get('app.packages');
 			$splitUriRoute = explode("/", $_SERVER['REQUEST_URI']); 
-			
+		
 			$urlFlag=0;
 			$routeArray = array();
 			$routeArray['companies'] = "Company";
@@ -67,6 +67,7 @@ class RouteServiceProvider extends ServiceProvider
 			$routeArray['polish-report'] = "PolishReport";
 			$routeArray['job-form'] = "JobForm";
 			$routeArray['job-form-number'] = "JobFormNumber";
+			$routeArray['quotations'] = "Quotation";
 			foreach($routeArray as $key => $value)
 			{
 				if($key==$splitUriRoute[1])

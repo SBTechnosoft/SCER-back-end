@@ -122,9 +122,9 @@ class DocumentProcessor extends BaseProcessor
 	public function createPersistableData(Request $request)
 	{
 		//trim data
-		$tSaleId = trim($request->input()['saleId']);
+		$tSaleId = trim(array_keys($request->input())[0]);
 		$trimArray = array();
-		$trimArray['saleId'] = $tSaleId;
+		$trimArray[array_keys($request->input())[0]] = $tSaleId;
 		return $trimArray;
 	}
 }

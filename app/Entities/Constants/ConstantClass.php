@@ -29,6 +29,7 @@ class ConstantClass
 		$constantArray['billDocumentUrl'] = "Storage/Bill/Document/";
 		$constantArray['journalDocumentUrl'] = "Storage/Journal/";
 		$constantArray['billUrl']="Storage/Bill/";
+		$constantArray['quotationDocUrl']="Storage/Quotation/";
 		$constantArray['profitLossPdf']="Storage/ProfitLoss/Pdf/";
 		$constantArray['profitLossExcel']="Storage/ProfitLoss/Excel/";
 		$constantArray['cashFlowPdf']="Storage/CashFlow/Pdf/";
@@ -99,9 +100,11 @@ class ConstantClass
 		
 		$constantArray['clientUrl']="http://www.scerp1.com/clients";
 		$constantArray['documentGenerateUrl']="http://www.scerp1.com/documents/bill";
+		$constantArray['documentGenerateQuotationUrl']="http://www.scerp1.com/documents/quotation";
 		$constantArray['ledgerUrl']="http://www.scerp1.com/accounting/ledgers";
 		$constantArray['journalUrl']="http://www.scerp1.com/accounting/journals";
 		$constantArray['invoiceUrl']="http://www.scerp1.com/settings/invoice-numbers";
+		$constantArray['quotationUrl']="http://www.scerp1.com/settings/quotation-numbers";
 		$constantArray['productUrl']="http://www.scerp1.com/accounting/products";
 		return $constantArray;
 	}

@@ -144,11 +144,10 @@ class QuotationService extends AbstractService
 	{
 		$quotationModel = new QuotationModel();
 		$status = $quotationModel->getLatestQuotationData($companyId);
-		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		if(strcmp($status,$fileSizeArray['204'])==0)
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($status,$exceptionArray['204'])==0)
 		{
 			return $status;
 		}

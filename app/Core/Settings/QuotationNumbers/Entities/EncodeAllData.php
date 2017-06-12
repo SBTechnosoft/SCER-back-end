@@ -54,12 +54,10 @@ class EncodeAllData extends CompanyService
 			$companyIsDefault[$decodedData]= $companyDecodedJson[$decodedData]['isDefault'];
 			$companyStateAbb[$decodedData]= $companyDecodedJson[$decodedData]['state']['stateAbb'];
 			$companyCityId[$decodedData]= $companyDecodedJson[$decodedData]['city']['cityId'];
-		
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
 			$quotation->setCreated_at($convertedCreatedDate[$decodedData]);
 			$getCreatedDate[$decodedData] = $quotation->getCreated_at();
-			
 			if(strcmp($updatedAt[$decodedData],'0000-00-00 00:00:00')==0)
 			{
 				$getUpdatedate[$decodedData] = "00-00-0000";

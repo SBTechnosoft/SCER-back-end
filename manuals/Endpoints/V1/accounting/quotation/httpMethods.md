@@ -1,6 +1,6 @@
 ##### Creates Quotation
 
-##### `POST /accounting/quotation/`
+##### `POST /accounting/quotations/`
 + Header
 	- Authentication Token
 + Body

@@ -96,15 +96,14 @@ class QuotationController extends BaseController implements ContainerInterface
      */
 	public function update(Request $request,$quotationId)
     {    
-		//Authentication
-		$tokenAuthentication = new TokenAuthentication();
-		$authenticationResult = $tokenAuthentication->authenticate($request->header());
-		
 		//get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
 		
-		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($_SERVER['REQUEST_URI'],"/accounting/quotations")==0)
 		{
 			$this->request = $request;
 			$processor = new QuotationProcessor();
@@ -113,10 +112,6 @@ class QuotationController extends BaseController implements ContainerInterface
 			$quotationModel = new QuotationModel();
 			$result = $quotationModel->getData($quotationId);
 			
-			//get exception message
-			$exception = new ExceptionMessage();
-			$exceptionArray = $exception->messageArrays();
-		
 			if(strcmp($result,$exceptionArray['404'])==0)
 			{
 				return $result;
@@ -139,7 +134,43 @@ class QuotationController extends BaseController implements ContainerInterface
 		}
 		else
 		{
-			return $authenticationResult;
+			//Authentication
+			$tokenAuthentication = new TokenAuthentication();
+			$authenticationResult = $tokenAuthentication->authenticate($request->header());
+			
+			if(strcmp($constantArray['success'],$authenticationResult)==0)
+			{
+				$this->request = $request;
+				$processor = new QuotationProcessor();
+				$quotationPersistable = new QuotationPersistable();		
+				$quotationService= new QuotationService();		
+				$quotationModel = new QuotationModel();
+				$result = $quotationModel->getData($quotationId);
+				
+				if(strcmp($result,$exceptionArray['404'])==0)
+				{
+					return $result;
+				}
+				else
+				{
+					$quotationPersistable = $processor->createPersistableChange($this->request,$quotationId);
+					
+					//here two array and string is return at a time
+					if(is_array($quotationPersistable))
+					{
+						$status = $quotationService->update($quotationPersistable);
+						return $status;
+					}
+					else
+					{
+						return $quotationPersistable;
+					}
+				}
+			}
+			else
+			{
+				return $authenticationResult;
+			}
 		}
 	}
 	
