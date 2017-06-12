@@ -28,6 +28,8 @@ class EncodeData extends StateService
 		$companyDisplayName = $decodedJson[0]['company_display_name'];
 		$address1= $decodedJson[0]['address1'];
 		$address2= $decodedJson[0]['address2'];
+		$emailId= $decodedJson[0]['email_id'];
+		$customerCare= $decodedJson[0]['customer_care'];
 		$pincode = $decodedJson[0]['pincode'];
 		$pan= $decodedJson[0]['pan'];
 		$tin= $decodedJson[0]['tin'];
@@ -80,6 +82,8 @@ class EncodeData extends StateService
 		$data['companyDisplayName'] = $companyDisplayName;
 		$data['address1'] = $address1;
 		$data['address2'] = $address2;
+		$data['emailId'] = $emailId;
+		$data['customerCare'] = $customerCare;
 		$data['pincode'] = $pincode;
 		$data['pan'] = $pan;
 		$data['tin'] = $tin;

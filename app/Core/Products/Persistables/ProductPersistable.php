@@ -39,6 +39,9 @@ use ERP\Core\Products\Properties\ColorPropertyTrait;
 use ERP\Core\Products\Properties\SizePropertyTrait;
 use ERP\Core\Products\Properties\ProductCodePropertyTrait;
 use ERP\Core\Products\Properties\StockLevelPropertyTrait;
+use ERP\Core\Products\Properties\IgstPropertyTrait;
+use ERP\Core\Products\Properties\CessPropertyTrait;
+use ERP\Core\Products\Properties\HsnPropertyTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -82,4 +85,7 @@ class productPersistable
 	use WholeSaleMarginFlatPropertyTrait;
 	use MarginFlatPropertyTrait;
 	use StockLevelPropertyTrait;
+	use IgstPropertyTrait;
+	use CessPropertyTrait;
+	use HsnPropertyTrait;
 }

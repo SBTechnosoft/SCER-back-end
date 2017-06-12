@@ -18,6 +18,8 @@ use ERP\Core\Companies\Properties\NoOfDecimalPointsPropertyTrait;
 use ERP\Core\Companies\Properties\CurrencySymbolPropertyTrait;
 use ERP\Core\Companies\Properties\SgstPropertyTrait;
 use ERP\Core\Companies\Properties\CgstPropertyTrait;
+use ERP\Core\Companies\Properties\EmailIdPropertyTrait;
+use ERP\Core\Companies\Properties\CustomerCarePropertyTrait;
 use ERP\Core\Shared\Properties\IsDisplayPropertyTrait;
 use ERP\Core\Properties\IsDefaultPropertyTrait;
 use ERP\Core\States\Properties\StateAbbPropertyTrait;
@@ -52,4 +54,6 @@ class CompanyPersistable
 	use CityIdPropertyTrait;
 	use SgstPropertyTrait;
 	use CgstPropertyTrait;
+	use EmailIdPropertyTrait;
+	use CustomerCarePropertyTrait;
 }

@@ -28,6 +28,7 @@
 	- 'salesType':'retail_sales/whole_sales'
 	- "fromDate":"date"
 	- "toDate":"date"
+	- "invoiceNumber":"string"
 + Error Message
 
 			{
@@ -45,7 +46,8 @@
 	- 'salesType':'retail_sales/whole_sales',
 	- "previousSaleId":"int",
 	- "nextSaleId":"int",
-	- "companyId":"int"
+	- "companyId":"int",
+	- "operation":"first/last"
 + Error Message
 
 			{

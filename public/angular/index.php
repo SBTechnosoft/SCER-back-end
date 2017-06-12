@@ -847,7 +847,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/product-groups";
 				// var url="http://www.scerp1.com/product-groups/"+productGrpId;
 				// var url="http://www.scerp1.com/products/"+productId;
-				var url="http://www.scerp1.com/products";
+				// var url="http://www.scerp1.com/products";
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/branch/"+branchId;
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/branch";
 				// var url="http://www.scerp1.com/products/company/"+companyId;

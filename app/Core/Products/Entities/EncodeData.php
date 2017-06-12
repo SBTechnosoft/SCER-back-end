@@ -30,6 +30,9 @@ class EncodeData extends ProductCategoryService
 		$semiWholeSaleMargin= $decodedJson[0]['semi_wholesale_margin'];
 		$vat= $decodedJson[0]['vat'];
 		$mrp= $decodedJson[0]['mrp'];
+		$igst= $decodedJson[0]['igst'];
+		$cess= $decodedJson[0]['cess'];
+		$hsn= $decodedJson[0]['hsn'];
 		$color= $decodedJson[0]['color'];
 		$size= $decodedJson[0]['size'];
 		$margin = $decodedJson[0]['margin'];
@@ -111,6 +114,9 @@ class EncodeData extends ProductCategoryService
 		$data['semiWholesaleMargin'] = $semiWholeSaleMargin;
 		$data['vat'] = $vat;
 		$data['mrp'] = $mrp;
+		$data['igst'] = $igst;
+		$data['cess'] = $cess;
+		$data['hsn'] = $hsn;
 		$data['color'] = $color;
 		$data['size'] = $size;
 		$data['margin'] = $margin;
@@ -148,6 +154,8 @@ class EncodeData extends ProductCategoryService
 			'companyDisplayName' => $getCompanyDetails['companyDisplayName'],
 			'address1' => $getCompanyDetails['address1'],	
 			'address2' => $getCompanyDetails['address2'],	
+			'emailId' => $getCompanyDetails['emailId'],	
+			'customerCare' => $getCompanyDetails['customerCare'],	
 			'pincode' => $getCompanyDetails['pincode'],
 			'pan' => $getCompanyDetails['pan'],	
 			'tin' => $getCompanyDetails['tin'],	

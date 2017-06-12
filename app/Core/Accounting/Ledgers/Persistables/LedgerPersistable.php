@@ -26,6 +26,7 @@ use ERP\Core\Accounting\Ledgers\Properties\AmountTypePropertyTrait;
 use ERP\Core\Accounting\Journals\Properties\FromDatePropertyTrait;
 use ERP\Core\Accounting\Journals\Properties\ToDatePropertyTrait;
 use ERP\Core\Accounting\Ledgers\Properties\InvoiceNumberPropertyTrait;
+use ERP\Core\Accounting\Ledgers\Properties\IsDealerPropertyTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -56,4 +57,5 @@ class LedgerPersistable
 	use FromDatePropertyTrait;
 	use ToDatePropertyTrait;
 	use InvoiceNumberPropertyTrait;
+	use IsDealerPropertyTrait;
 }

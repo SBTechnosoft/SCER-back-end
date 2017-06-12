@@ -15,7 +15,7 @@ class ConstantClass
 		$constantArray = array();
 		$constantArray['token'] = "authenticationToken";
 		$constantArray['success'] = "Success";
-		$constantArray['barcodeWidth'] = 1;
+		$constantArray['barcodeWidth'] = 1.5;
 		$constantArray['barcodeHeight'] = 60;
 		$constantArray['barcodeSetting'] = "barcode";
 		$constantArray['noImage'] = "Storage/No-Image/no-image.jpg";

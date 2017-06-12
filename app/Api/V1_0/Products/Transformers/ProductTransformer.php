@@ -40,6 +40,9 @@ class ProductTransformer extends ExceptionMessage
 		$semiWholeSaleMargin = $request->input('semiWholesaleMargin'); 			
 		$vat = $request->input('vat'); 			
 		$mrp = $request->input('mrp'); 			
+		$igst= $request->input('igst'); 			
+		$cess = $request->input('cess'); 			
+		$hsn = $request->input('hsn'); 			
 		$margin = $request->input('margin'); 			
 		$marginFlat = $request->input('marginFlat'); 			
 		$productDescription = $request->input('productDescription'); 			
@@ -62,6 +65,9 @@ class ProductTransformer extends ExceptionMessage
 		$tSemiWholeSaleMargin = trim($semiWholeSaleMargin);
 		$tVat = trim($vat);
 		$tMrp = trim($mrp);
+		$tIgst = trim($igst);
+		$tCess = trim($cess);
+		$tHsn = trim($hsn);
 		$tMargin = trim($margin);
 		$tMarginFlat = trim($marginFlat);
 		$tProductDescription = trim($productDescription);
@@ -131,6 +137,9 @@ class ProductTransformer extends ExceptionMessage
 			$data['wholesale_margin_flat'] = $tWholeSaleMarginFlat;
 			$data['vat'] = $tVat;
 			$data['mrp'] = $tMrp;
+			$data['igst'] = $tIgst;
+			$data['cess'] = $tCess;
+			$data['hsn'] = $tHsn;
 			$data['margin'] = $tMargin;
 			$data['margin_flat'] = $tMarginFlat;
 			$data['product_description'] = $tProductDescription;
@@ -181,6 +190,9 @@ class ProductTransformer extends ExceptionMessage
 				$tSemiWholeSaleMargin = trim($inputRequestData[$arrayData]['semiWholesaleMargin']);
 				$tVat = trim($inputRequestData[$arrayData]['vat']);
 				$tMrp = trim($inputRequestData[$arrayData]['mrp']);
+				// $tIgst = trim($inputRequestData[$arrayData]['igst']);
+				// $tCess = trim($inputRequestData[$arrayData]['cess']);
+				// $tHsn = trim($inputRequestData[$arrayData]['hsn']);
 				$tMargin = trim($inputRequestData[$arrayData]['margin']);
 				$tMarginFlat = trim($inputRequestData[$arrayData]['marginFlat']);
 				$tProductDescription = trim($inputRequestData[$arrayData]['productDescription']);
@@ -248,6 +260,9 @@ class ProductTransformer extends ExceptionMessage
 					$errorArray[$errorIndex]['semiWholesaleMargin'] = $tSemiWholeSaleMargin;
 					$errorArray[$errorIndex]['vat'] = $tVat;
 					$errorArray[$errorIndex]['mrp'] = $tMrp;
+					// $errorArray[$errorIndex]['igst'] = $tIgst;
+					// $errorArray[$errorIndex]['cess'] = $tCess;
+					// $errorArray[$errorIndex]['hsn'] = $tHsn;
 					$errorArray[$errorIndex]['margin'] = $tMargin;
 					$errorArray[$errorIndex]['marginFlat'] = $tMarginFlat;
 					$errorArray[$errorIndex]['productDescription'] = $tProductDescription;
@@ -281,6 +296,9 @@ class ProductTransformer extends ExceptionMessage
 					$data[$dataIndex]['wholesale_margin_flat'] = $tWholeSaleMarginFlat;
 					$data[$dataIndex]['vat'] = $tVat;
 					$data[$dataIndex]['mrp'] = $tMrp;
+					// $data[$dataIndex]['igst'] = $tIgst;
+					// $data[$dataIndex]['cess'] = $tCess;
+					// $data[$dataIndex]['hsn'] = $tHsn;
 					$data[$dataIndex]['margin'] = $tMargin;
 					$data[$dataIndex]['margin_flat'] = $tMarginFlat;
 					$data[$dataIndex]['product_description'] = $tProductDescription;
@@ -470,6 +488,9 @@ class ProductTransformer extends ExceptionMessage
 				$requestArray[$arrayData][array_keys($keyNameCount)[16]] = $dataArray[$arrayData][16];
 				$requestArray[$arrayData][array_keys($keyNameCount)[17]] = $dataArray[$arrayData][17];
 				$requestArray[$arrayData][array_keys($keyNameCount)[18]] = $dataArray[$arrayData][18];
+				// $requestArray[$arrayData][array_keys($keyNameCount)[19]] = $dataArray[$arrayData][19];
+				// $requestArray[$arrayData][array_keys($keyNameCount)[20]] = $dataArray[$arrayData][20];
+				// $requestArray[$arrayData][array_keys($keyNameCount)[21]] = $dataArray[$arrayData][21];
 			}
 		}
 		return $requestArray;

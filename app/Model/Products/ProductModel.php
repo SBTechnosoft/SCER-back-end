@@ -167,18 +167,33 @@ class ProductModel extends Model
 		$getProductKey = func_get_arg(1);
 		$getErrorArray = func_get_arg(2);
 		
-		$productCode = array();
 		$getErrorCount = count($getErrorArray);
 		for($dataArray=0;$dataArray<count($getProductData);$dataArray++)
 		{
 			$productData="";
+			$productCode='';
 			$keyName = "";
 			for($data=0;$data<count($getProductData[$dataArray]);$data++)
 			{
 				if(strcmp('product_code',$getProductKey[$dataArray][$data])==0)
 				{
-					$productCode[$dataArray] = $getProductData[$dataArray][$data];
+					$getProductData[$dataArray][$data];
+					$productCode = $getProductData[$dataArray][$data];
+					$index = $data;
 				}
+				if(strcmp('company_id',$getProductKey[$dataArray][$data])==0)
+				{
+					$companyId = $getProductData[$dataArray][$data];
+				}
+			}
+			$indexNumber=0;
+			
+			//check product-code
+			$productCodeResult = $this->batchRepeatProductCodeValidate($productCode,$companyId,$indexNumber);
+			$getProductData[$dataArray][$index] = $productCodeResult;
+			
+			for($data=0;$data<count($getProductData[$dataArray]);$data++)
+			{
 				if($data == (count($getProductData[$dataArray])-1))
 				{
 					$productData = $productData."'".$getProductData[$dataArray][$data]."'";
@@ -190,6 +205,7 @@ class ProductModel extends Model
 					$keyName = $keyName.$getProductKey[$dataArray][$data].",";
 				}
 			}
+			
 			//make unique name of barcode svg image
 			$dateTime = date("d-m-Y h-i-s");
 			$convertedDateTime = str_replace(" ","-",$dateTime);
@@ -199,54 +215,25 @@ class ProductModel extends Model
 			$documentPath = $path.$documentName;
 			
 			//insert barcode image
-			$barcodeobj = new TCPDFBarcode($productCode[$dataArray], 'C128','C');
+			$barcodeobj = new TCPDFBarcode($productCodeResult, 'C128','C');
 			file_put_contents($documentPath,$barcodeobj->getBarcodeSVGcode($width ,$height, 'black'));
 			
-			$finalProductData = "(".$productData.",'".$documentName."','svg')";
-			$keyName = $keyName.",document_name,document_format";
-			if($dataArray==count($getProductData)-1)
-			{
-				$productDetail = $productDetail.$finalProductData;
-			}
-			else
-			{
-				$productDetail = $productDetail.$finalProductData.",";
-			}
-		}
-		$lastCharacter = substr($productDetail, -1);
-		if(strcmp($lastCharacter,',')==0)
-		{
-			$productDetail = substr_replace($productDetail,"",-1);
-		}
-		if(count($getProductData)!=0)
-		{
 			//insert batch of product data	
 			DB::beginTransaction();
-			$raw = DB::connection($databaseName)->statement("insert into product_mst(".$keyName.") 
-			values".$productDetail);
-			
+			$raw = DB::connection($databaseName)->statement("insert into product_mst(".$keyName.",document_name,document_format) 
+			values (".$productData.",'".$documentName."','svg')");
 			DB::commit();
-			if($raw==1)
+		}
+		
+		if($raw==1)
+		{
+			if(count($getErrorArray)==0)
 			{
-				if(count($getErrorArray)==0)
-				{
-					return $exceptionArray['200'];
-				}
-				else
-				{
-					return json_encode($getErrorArray);
-				}
+				return $exceptionArray['200'];
 			}
 			else
 			{
-				if(count($getErrorArray)==0)
-				{
-					return $exceptionArray['500'];
-				}
-				else
-				{
-					return json_encode($getErrorArray);
-				}
+				return json_encode($getErrorArray);
 			}
 		}
 		else
@@ -260,42 +247,45 @@ class ProductModel extends Model
 				return json_encode($getErrorArray);
 			}
 		}
+		
 	}
 	
 	/**
-	 * validate batch product data(in-in) 
-	 * @param  array
-	 * returns the status
-	
-	public function batchProductCodeValidate($getProductData,$dataArray,$indexNumber)
+     * repeat product-code validation with database 
+     * product-code,company-id and index-number
+     * @return product-code
+     */	
+	public function batchRepeatProductCodeValidate($productCode,$companyId,$indexNumber)
 	{
-		//get exception message
+		
+		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		for($innerArray=0;$innerArray<$dataArray;$innerArray++)
+		
+		$productValidate = new ProductValidate();
+		$validationResult = $productValidate->productCodeValidate($companyId,$productCode);
+		if(strcmp($validationResult,$exceptionArray['200'])!=0)
 		{
-			if(strcmp($getProductData[$innerArray][20],$getProductData[$dataArray][20])==0)
+			
+			$indexNumber= $indexNumber+1;
+			if($indexNumber!=1 && $indexNumber<=10)
 			{
-				$getProductData[$dataArray][20] = substr_replace($getProductData[$dataArray][20],'', -1);
-				$indexNumber=$indexNumber+1;
-				$getProductData[$dataArray][20] = $getProductData[$dataArray][20].$indexNumber;
-				
-				$productValidate = new ProductValidate();
-				$validationResult = $productValidate->productCodeValidate($getProductData[$dataArray][16],$getProductData[$dataArray][20]);
-				
-				$dbResult = $this->batchProductDbValidate();
-				// if(strcmp($validationResult,$exceptionArray['200'])!=0)
-				// {
-					// $getProductData[$dataArray][20] = substr_replace($getProductData[$dataArray][20],'', -1);
-					// $indexNumber=$indexNumber+1;
-					// $getProductData[$dataArray][20] = $getProductData[$dataArray][20].$indexNumber;
-				// }
-				$result = $this->batchProductCodeValidate($getProductData,$dataArray,$indexNumber);
-				return $result;
+				$productCode = substr_replace($productCode,'', -1);
 			}
+			if($indexNumber>=11)
+			{
+				$productCode = substr_replace($productCode,'', -2);
+			}
+			$newProductCode = $productCode.$indexNumber;
+			
+			$result = $this->batchRepeatProductCodeValidate($newProductCode,$companyId,$indexNumber);
+			return $result;
 		}
-		return $getProductData[$dataArray][20];
-	}*/
+		else
+		{
+			return $productCode;
+		}
+	}
 	
 	/**
 	 * insert data 
@@ -998,6 +988,9 @@ class ProductModel extends Model
 		margin,
 		margin_flat,
 		mrp,
+		igst,
+		cess,
+		hsn,
 		color,
 		size,
 		product_description,
@@ -1206,6 +1199,9 @@ class ProductModel extends Model
 		margin,
 		margin_flat,
 		mrp,
+		igst,
+		cess,
+		hsn,
 		color,
 		size,
 		product_description,
@@ -1261,6 +1257,9 @@ class ProductModel extends Model
 		margin,
 		margin_flat,
 		mrp,
+		igst,
+		cess,
+		hsn,
 		color,
 		size,
 		product_description,
@@ -1317,6 +1316,9 @@ class ProductModel extends Model
 		margin,
 		margin_flat,
 		mrp,
+		igst,
+		cess,
+		hsn,
 		color,
 		size,
 		product_description,
@@ -1373,6 +1375,9 @@ class ProductModel extends Model
 		margin,
 		margin_flat,
 		mrp,
+		igst,
+		cess,
+		hsn,
 		color,
 		size,
 		product_description,
@@ -1440,6 +1445,9 @@ class ProductModel extends Model
 		semi_wholesale_margin,
 		vat,
 		mrp,
+		igst,
+		cess,
+		hsn,
 		color,
 		size,
 		margin,
@@ -1598,6 +1606,9 @@ class ProductModel extends Model
 		semi_wholesale_margin,
 		vat,
 		mrp,
+		igst,
+		cess,
+		hsn,
 		color,
 		size,
 		margin,

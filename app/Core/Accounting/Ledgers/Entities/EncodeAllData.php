@@ -31,6 +31,7 @@ class EncodeAllData extends StateService
 			$inventoryAffected[$decodedData] = $decodedJson[$decodedData]['inventory_affected'];
 			$address1[$decodedData] = $decodedJson[$decodedData]['address1'];
 			$address2[$decodedData] = $decodedJson[$decodedData]['address2'];
+			$isDealer[$decodedData] = $decodedJson[$decodedData]['is_dealer'];
 			$contactNo[$decodedData] = $decodedJson[$decodedData]['contact_no'];
 			$emailId[$decodedData] = $decodedJson[$decodedData]['email_id'];
 			$invoiceNumber[$decodedData] = $decodedJson[$decodedData]['invoice_number'];
@@ -97,6 +98,7 @@ class EncodeAllData extends StateService
 				'inventoryAffected' => $inventoryAffected[$jsonData],
 				'address1' => $address1[$jsonData],
 				'address2' => $address2[$jsonData],
+				'isDealer' => $isDealer[$jsonData],
 				'contactNo' => $contactNo[$jsonData],
 				'emailId' => $emailId[$jsonData],
 				'invoiceNumber' => $invoiceNumber[$jsonData],
@@ -143,6 +145,8 @@ class EncodeAllData extends StateService
 					'companyDisplayName' => $getCompanyDetails[$jsonData]['companyDisplayName'],	
 					'address1' => $getCompanyDetails[$jsonData]['address1'],	
 					'address2'=> $getCompanyDetails[$jsonData]['address2'],	
+					'emailId'=> $getCompanyDetails[$jsonData]['emailId'],	
+					'customerCare'=> $getCompanyDetails[$jsonData]['customerCare'],	
 					'pincode' => $getCompanyDetails[$jsonData]['pincode'],	
 					'pan' => $getCompanyDetails[$jsonData]['pan'],	
 					'tin'=> $getCompanyDetails[$jsonData]['tin'],	

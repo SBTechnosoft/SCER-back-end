@@ -34,6 +34,8 @@ class EncodeAllData extends StateService
 			$companyDisplayName[$decodedData] = $decodedJson[$decodedData]['company_display_name'];
 			$address1[$decodedData] = $decodedJson[$decodedData]['address1'];
 			$address2[$decodedData] = $decodedJson[$decodedData]['address2'];
+			$emailId[$decodedData] = $decodedJson[$decodedData]['email_id'];
+			$customerCare[$decodedData] = $decodedJson[$decodedData]['customer_care'];
 			$pincode[$decodedData] = $decodedJson[$decodedData]['pincode'];
 			$pan[$decodedData] = $decodedJson[$decodedData]['pan'];
 			$tin[$decodedData] = $decodedJson[$decodedData]['tin'];
@@ -93,6 +95,8 @@ class EncodeAllData extends StateService
 				'companyDisplayName' => $companyDisplayName[$jsonData],
 				'address1' => $address1[$jsonData],
 				'address2' => $address2[$jsonData],
+				'emailId' => $emailId[$jsonData],
+				'customerCare' => $customerCare[$jsonData],
 				'pincode'=> $pincode[$jsonData],
 				'pan' => $pan[$jsonData],
 				'tin' => $tin[$jsonData],

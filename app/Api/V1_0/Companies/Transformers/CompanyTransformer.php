@@ -23,6 +23,8 @@ class CompanyTransformer
 		$companyDispName = $request->input('companyDisplayName'); 
 		$address1 = $request->input('address1'); 
 		$address2 = $request->input('address2'); 
+		$emailId = $request->input('emailId'); 
+		$customerCare = $request->input('customerCare'); 
 		$pincode = $request->input('pincode'); 
 		$pan = $request->input('pan'); 
 		$tin = $request->input('tin'); 
@@ -44,6 +46,8 @@ class CompanyTransformer
 		$tCompanyDispName = trim($companyDispName);
 		$tAddress1 = trim($address1);
 		$tAddress2 = trim($address2);
+		$tEmailId = trim($emailId);
+		$tCustomerCare = trim($customerCare);
 		$tPincode = trim($pincode);
 		$tPan = trim($pan);
 		$tTin = trim($tin);
@@ -116,6 +120,8 @@ class CompanyTransformer
 			$data['company_display_name'] = $tCompanyDispName;
 			$data['address1'] = $tAddress1;
 			$data['address2'] = $tAddress2;
+			$data['email_id'] = $tEmailId;
+			$data['customer_care'] = $tCustomerCare;
 			$data['pincode'] = $tPincode;
 			$data['pan'] = $tPan;
 			$data['tin'] = $tTin;

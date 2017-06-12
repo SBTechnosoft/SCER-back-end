@@ -143,20 +143,24 @@ class BillController extends BaseController implements ContainerInterface
 		$constantArray = $constantClass->constantVariable();
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			$processor = new BillProcessor();
-			$billPersistable = new BillPersistable();
-			$billPersistable = $processor->getPersistableData($request->header());
-			
-			if(is_object($billPersistable))
+			if(array_key_exists('fromdate',$request->header()) && array_key_exists('todate',$request->header()))
 			{
-				$billService= new BillService();
-				$status = $billService->getData($billPersistable,$companyId);
-				return $status;
+				$processor = new BillProcessor();
+				$billPersistable = new BillPersistable();
+				$billPersistable = $processor->getPersistableData($request->header());
+				if(!is_object($billPersistable))
+				{
+					return $billPersistable;
+				}
+				$data = $billPersistable;
 			}
-			else
+			else if(array_key_exists('invoicenumber',$request->header()))
 			{
-				return $billPersistable;
+				$data = $request->header();
 			}
+			$billService = new BillService();
+			$status = $billService->getData($data,$companyId);
+			return $status;
 		}
 		else
 		{

@@ -38,6 +38,9 @@ class EncodeAllData extends ProductCategoryService
 			$margin[$decodedData] = $decodedJson[$decodedData]['margin'];
 			$marginFlat[$decodedData] = $decodedJson[$decodedData]['margin_flat'];
 			$mrp[$decodedData] = $decodedJson[$decodedData]['mrp'];
+			$igst[$decodedData] = $decodedJson[$decodedData]['igst'];
+			$cess[$decodedData] = $decodedJson[$decodedData]['cess'];
+			$hsn[$decodedData] = $decodedJson[$decodedData]['hsn'];
 			$color[$decodedData] = $decodedJson[$decodedData]['color'];
 			$size[$decodedData] = $decodedJson[$decodedData]['size'];
 			$productDescription[$decodedData] = $decodedJson[$decodedData]['product_description'];
@@ -119,6 +122,9 @@ class EncodeAllData extends ProductCategoryService
 				'margin' => $margin[$jsonData],
 				'marginFlat' => $marginFlat[$jsonData],
 				'mrp' => $mrp[$jsonData],
+				'igst' => $igst[$jsonData],
+				'cess' => $cess[$jsonData],
+				'hsn' => $hsn[$jsonData],
 				'color' => $color[$jsonData],
 				'size' => $size[$jsonData],
 				'productDescription' => $productDescription[$jsonData],
@@ -156,6 +162,8 @@ class EncodeAllData extends ProductCategoryService
 					'companyDisplayName' => $getCompanyDetails[$jsonData]['companyDisplayName'],	
 					'address1' => $getCompanyDetails[$jsonData]['address1'],	
 					'address2'=> $getCompanyDetails[$jsonData]['address2'],	
+					'emailId'=> $getCompanyDetails[$jsonData]['emailId'],	
+					'customerCare'=> $getCompanyDetails[$jsonData]['customerCare'],	
 					'pincode' => $getCompanyDetails[$jsonData]['pincode'],	
 					'pan' => $getCompanyDetails[$jsonData]['pan'],	
 					'tin'=> $getCompanyDetails[$jsonData]['tin'],	

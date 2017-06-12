@@ -24,6 +24,7 @@ class EncodeData extends StateService
 		$inventoryAffected= $decodedJson['inventory_affected'];
 		$address1= $decodedJson['address1'];
 		$address2= $decodedJson['address2'];
+		$isDealer= $decodedJson['is_dealer'];
 		$contactNo= $decodedJson['contact_no'];
 		$emailId= $decodedJson['email_id'];
 		$invoiceNumber = $decodedJson['invoice_number'];
@@ -85,6 +86,7 @@ class EncodeData extends StateService
 		$data['inventoryAffected'] = $inventoryAffected;
 		$data['address1'] = $address1;
 		$data['address2'] = $address2;
+		$data['isDealer'] = $isDealer;
 		$data['contactNo'] = $contactNo;
 		$data['emailId'] = $emailId;
 		$data['invoiceNumber'] = $invoiceNumber;
@@ -127,6 +129,8 @@ class EncodeData extends StateService
 			'companyDisplayName' => $companyDetails['companyDisplayName'],	
 			'address1' => $companyDetails['address1'],	
 			'address2' => $companyDetails['address2'],	
+			'emailId' => $companyDetails['emailId'],	
+			'customerCare' => $companyDetails['customerCare'],	
 			'pincode' => $companyDetails['pincode'],
 			'pan' => $companyDetails['pan'],	
 			'tin' => $companyDetails['tin'],

@@ -286,110 +286,84 @@ class ProductProcessor extends BaseProcessor
 					// convert string to upper-case
 					$convertedProductCode = strtoupper($tRequest['product_code']);
 					$tRequest['product_code'] = $convertedProductCode;
-					$indexNumber=1;
-					$productCodeFlag=0;
+					
+					
 					// validation
-					$validationResult = $productValidate->productCodeValidate($tRequest['company_id'],$convertedProductCode);
-					if(strcmp($validationResult,$msgArray['200'])!=0)
+					$status = $productValidate->validate($tRequest);
+					
+					if($status=="Success")
 					{
-						$productCode = $convertedProductCode.$indexNumber;
-						$productCodeFlag=1;
-						$result = $this->batchRepeatDbProductCodeValidate($productCode,$tRequest['company_id'],$indexNumber,$productCodeArray,$dataArray,$productCodeFlag);
-						$tRequest['product_code'] = $result;
-						$codeFlag=1;
-					}
-					else
-					{
-						$productCodeFlag=2;
-						$internalResult = $this->batchRepeatInternalProductCodeValidate($convertedProductCode,$tRequest['company_id'],$indexNumber,$productCodeArray,$dataArray,$productCodeFlag);
-						$tRequest['product_code'] = $internalResult;
-						$codeFlag=1;
-					}
-					array_push($productCodeArray,$tRequest['product_code']);
-					echo " array \n";
-					print_r($productCodeArray);
-					echo "array end \n";
-					if(strcmp($validationResult,$msgArray['200'])==0 || $codeFlag==1)
-					{
-						// validation
-						$status = $productValidate->validate($tRequest);
-						
-						if($status=="Success")
+						foreach ($tRequest as $key => $value)
 						{
-							foreach ($tRequest as $key => $value)
+							if(!is_numeric($value))
 							{
-								if(!is_numeric($value))
+								if (strpos($value, '\'') !== FALSE)
 								{
-									if (strpos($value, '\'') !== FALSE)
-									{
-										$productValue[$data]= str_replace("'","\'",$value);
-										$keyName[$data] = $key;
-									}
-									else
-									{
-										$productValue[$data] = $value;
-										$keyName[$data] = $key;
-									}
+									$productValue[$data]= str_replace("'","\'",$value);
+									$keyName[$data] = $key;
 								}
 								else
 								{
-									$productValue[$data]= $value;
+									$productValue[$data] = $value;
 									$keyName[$data] = $key;
 								}
-								$data++;
 							}
-							$productArray = array();
-							$getFuncName = array();
-							// set data to the persistable object
-							for($data=0;$data<count($productValue);$data++)
+							else
 							{
-								// set the data in persistable object
-								$productPersistable = new ProductPersistable();	
-								$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
-								// make function name dynamically
-								$setFuncName = 'set'.$str;
-								$getFuncName[$data] = 'get'.$str;
-								$productPersistable->$setFuncName($productValue[$data]);
-								$productPersistable->setName($getFuncName[$data]);
-								$productPersistable->setKey($keyName[$data]);
-								$productArray[$data] = array($productPersistable);
+								$productValue[$data]= $value;
+								$keyName[$data] = $key;
 							}
-							array_push($newProductArray,$productArray);
+							$data++;
 						}
-						else
+						$productArray = array();
+						$getFuncName = array();
+						// set data to the persistable object
+						for($data=0;$data<count($productValue);$data++)
 						{
-							$decodedArrayStatus = json_decode($status);
-							//convert object to array
-							$decodedArray = (array)$decodedArrayStatus[0];
-							$totalErrorArray = count($trimData['errorArray']);
-							
-							$trimData['errorArray'][$totalErrorArray]['productName'] = $trimData['dataArray'][$dataArray]['product_name'];
-							$trimData['errorArray'][$totalErrorArray]['measurementUnit'] = $trimData['dataArray'][$dataArray]['measurement_unit'];
-							$trimData['errorArray'][$totalErrorArray]['color'] = $trimData['dataArray'][$dataArray]['color'];
-							$trimData['errorArray'][$totalErrorArray]['size'] = $trimData['dataArray'][$dataArray]['size'];
-							$trimData['errorArray'][$totalErrorArray]['isDisplay'] = $trimData['dataArray'][$dataArray]['is_display'];
-							$trimData['errorArray'][$totalErrorArray]['purchasePrice'] = $trimData['dataArray'][$dataArray]['purchase_price'];
-							$trimData['errorArray'][$totalErrorArray]['wholesaleMargin'] = $trimData['dataArray'][$dataArray]['wholesale_margin'];
-							$trimData['errorArray'][$totalErrorArray]['wholesaleMarginFlat'] = $trimData['dataArray'][$dataArray]['wholesale_margin_flat'];
-							$trimData['errorArray'][$totalErrorArray]['vat'] = $trimData['dataArray'][$dataArray]['vat'];
-							$trimData['errorArray'][$totalErrorArray]['mrp'] = $trimData['dataArray'][$dataArray]['mrp'];
-							$trimData['errorArray'][$totalErrorArray]['margin'] = $trimData['dataArray'][$dataArray]['margin'];
-							$trimData['errorArray'][$totalErrorArray]['marginFlat'] = $trimData['dataArray'][$dataArray]['margin_flat'];
-							$trimData['errorArray'][$totalErrorArray]['productDescription'] = $trimData['dataArray'][$dataArray]['product_description'];
-							$trimData['errorArray'][$totalErrorArray]['additionalTax'] = $trimData['dataArray'][$dataArray]['additional_tax'];
-							$trimData['errorArray'][$totalErrorArray]['minimumStockLevel'] = $trimData['dataArray'][$dataArray]['minimum_stock_level'];
-							$trimData['errorArray'][$totalErrorArray]['semiWholesaleMargin'] = $trimData['dataArray'][$dataArray]['semi_wholesale_margin'];
-							$trimData['errorArray'][$totalErrorArray]['companyId'] = $trimData['dataArray'][$dataArray]['company_id'];
-							$trimData['errorArray'][$totalErrorArray]['productCategoryId'] = $trimData['dataArray'][$dataArray]['product_category_id'];
-							$trimData['errorArray'][$totalErrorArray]['productGroupId'] = $trimData['dataArray'][$dataArray]['product_group_id'];
-							$trimData['errorArray'][$totalErrorArray]['branchId'] = $trimData['dataArray'][$dataArray]['branch_id'];
-							$trimData['errorArray'][$totalErrorArray]['remark'] = $decodedArray[array_keys($decodedArray)[0]];
-							$totalErrorArray++;
+							// set the data in persistable object
+							$productPersistable = new ProductPersistable();	
+							$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
+							// make function name dynamically
+							$setFuncName = 'set'.$str;
+							$getFuncName[$data] = 'get'.$str;
+							$productPersistable->$setFuncName($productValue[$data]);
+							$productPersistable->setName($getFuncName[$data]);
+							$productPersistable->setKey($keyName[$data]);
+							$productArray[$data] = array($productPersistable);
 						}
+						array_push($newProductArray,$productArray);
+					}
+					else
+					{
+						$decodedArrayStatus = json_decode($status);
+						//convert object to array
+						$decodedArray = (array)$decodedArrayStatus[0];
+						$totalErrorArray = count($trimData['errorArray']);
+						
+						$trimData['errorArray'][$totalErrorArray]['productName'] = $trimData['dataArray'][$dataArray]['product_name'];
+						$trimData['errorArray'][$totalErrorArray]['measurementUnit'] = $trimData['dataArray'][$dataArray]['measurement_unit'];
+						$trimData['errorArray'][$totalErrorArray]['color'] = $trimData['dataArray'][$dataArray]['color'];
+						$trimData['errorArray'][$totalErrorArray]['size'] = $trimData['dataArray'][$dataArray]['size'];
+						$trimData['errorArray'][$totalErrorArray]['isDisplay'] = $trimData['dataArray'][$dataArray]['is_display'];
+						$trimData['errorArray'][$totalErrorArray]['purchasePrice'] = $trimData['dataArray'][$dataArray]['purchase_price'];
+						$trimData['errorArray'][$totalErrorArray]['wholesaleMargin'] = $trimData['dataArray'][$dataArray]['wholesale_margin'];
+						$trimData['errorArray'][$totalErrorArray]['wholesaleMarginFlat'] = $trimData['dataArray'][$dataArray]['wholesale_margin_flat'];
+						$trimData['errorArray'][$totalErrorArray]['vat'] = $trimData['dataArray'][$dataArray]['vat'];
+						$trimData['errorArray'][$totalErrorArray]['mrp'] = $trimData['dataArray'][$dataArray]['mrp'];
+						$trimData['errorArray'][$totalErrorArray]['margin'] = $trimData['dataArray'][$dataArray]['margin'];
+						$trimData['errorArray'][$totalErrorArray]['marginFlat'] = $trimData['dataArray'][$dataArray]['margin_flat'];
+						$trimData['errorArray'][$totalErrorArray]['productDescription'] = $trimData['dataArray'][$dataArray]['product_description'];
+						$trimData['errorArray'][$totalErrorArray]['additionalTax'] = $trimData['dataArray'][$dataArray]['additional_tax'];
+						$trimData['errorArray'][$totalErrorArray]['minimumStockLevel'] = $trimData['dataArray'][$dataArray]['minimum_stock_level'];
+						$trimData['errorArray'][$totalErrorArray]['semiWholesaleMargin'] = $trimData['dataArray'][$dataArray]['semi_wholesale_margin'];
+						$trimData['errorArray'][$totalErrorArray]['companyId'] = $trimData['dataArray'][$dataArray]['company_id'];
+						$trimData['errorArray'][$totalErrorArray]['productCategoryId'] = $trimData['dataArray'][$dataArray]['product_category_id'];
+						$trimData['errorArray'][$totalErrorArray]['productGroupId'] = $trimData['dataArray'][$dataArray]['product_group_id'];
+						$trimData['errorArray'][$totalErrorArray]['branchId'] = $trimData['dataArray'][$dataArray]['branch_id'];
+						$trimData['errorArray'][$totalErrorArray]['remark'] = $decodedArray[array_keys($decodedArray)[0]];
+						$totalErrorArray++;
 					}
 				}
-				echo "end";
-				exit;
 				unset($trimData['dataArray']);
 				$trimData['dataArray'] = $newProductArray;
 				return $trimData;
@@ -401,88 +375,6 @@ class ProductProcessor extends BaseProcessor
 				$encodeResult = json_encode($errorResult);
 				return $encodeResult;
 			}
-		}
-	}
-	
-	/**
-     * repeat batch-data product-code validation
-     * product-code,company-id and index-number
-     * @return status 200:ok
-     */	
-	public function batchRepeatDbProductCodeValidate($productCode,$companyId,$indexNumber,$productCodeArray,$dataArray,$productCodeFlag)
-	{
-		echo "- db func -";
-		$productCodeFlag=1;
-		// get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
-		
-		$productValidate = new ProductValidate();
-		$validationResult = $productValidate->productCodeValidate($companyId,$productCode);
-		
-		if(strcmp($validationResult,$exceptionArray['200'])!=0)
-		{
-			echo "- db in \n";
-			$indexNumber= $indexNumber+1;
-			$productCode = substr_replace($productCode,'', -1);
-			$newProductCode = $productCode.$indexNumber;
-			//match product-code with database
-			$result = $this->batchRepeatDbProductCodeValidate($newProductCode,$companyId,$indexNumber,$productCodeArray,$dataArray,$productCodeFlag);
-			
-			//match product code with their internal product-code
-			$internalResult = $this->batchRepeatInternalProductCodeValidate($newProductCode,$companyId,$indexNumber,$productCodeArray,$dataArray,$productCodeFlag);
-			return $internalResult;
-		}
-		else
-		{
-			return $productCode;
-		}
-	}
-	
-	/**
-     * repeat internal product-code validation 
-     * product-code,company-id and index-number
-     * @return status 200:ok
-     */	
-	public function batchRepeatInternalProductCodeValidate($newProductCode,$companyId,$indexNumber,$productCodeArray,$dataArray,$productCodeFlag)
-	{
-		echo "in";
-		if($dataArray!=0)
-		{
-			echo "dataArray = ".$dataArray;
-			for($innerArray=0;$innerArray<$dataArray;$innerArray++)
-			{
-				echo " for \n";
-				print_r($productCodeArray);
-				if(strcmp($productCodeArray[$innerArray],$newProductCode)==0)
-				{
-					echo "inIf \n";
-					echo $indexNumber;
-					if($productCodeFlag==1)
-					{
-						echo "ee";
-						$newProductCode = substr_replace($newProductCode,'', -1);
-						$indexNumber=$indexNumber+1;
-						$newProductCode = $newProductCode.$indexNumber;
-						
-					}
-					else
-					{
-						echo "ss";
-						$newProductCode = $newProductCode.$indexNumber;
-						$productCodeFlag=1;
-					}
-					
-					//internal product-code changed.so, check product-code in db
-					$validationResult = $this->batchRepeatDbProductCodeValidate($newProductCode,$companyId,$indexNumber,$productCodeArray,$dataArray,$productCodeFlag);
-					
-				}
-			}
-			return $validationResult;
-		}
-		else
-		{
-			return $newProductCode;
 		}
 	}
 	
@@ -502,7 +394,14 @@ class ProductProcessor extends BaseProcessor
 		if(strcmp($validationResult,$exceptionArray['200'])!=0)
 		{
 			$indexNumber= $indexNumber+1;
-			$productCode = substr_replace($productCode,'', -1);
+			if($indexNumber<=10)
+			{
+				$productCode = substr_replace($productCode,'', -1);
+			}
+			if($indexNumber>=11)
+			{
+				$productCode = substr_replace($productCode,'', -2);
+			}
 			$newProductCode = $productCode.$indexNumber;
 			$result = $this->batchRepeatProductCodeValidate($newProductCode,$companyId,$indexNumber);
 			return $result;
@@ -617,18 +516,37 @@ class ProductProcessor extends BaseProcessor
 				{
 					return $exceptionArray['content'];
 				}
-				
+				$countRequest = count($tRequest);
 				//product-code validation
 				if(array_key_exists('companyId',$request->input()) || array_key_exists('productGroupId',$request->input()) || 
 				array_key_exists('productCategoryId',$request->input()) || array_key_exists('color',$request->input()) || 
 				array_key_exists('size',$request->input()) || array_key_exists('productName',$request->input()))
 				{
+					if(!array_key_exists('companyId',$request->input()))
+					{
+						$companyModel = new CompanyModel();
+						$companyResult = $companyModel->getData($decodedProductData[0]->company_id);
+						$companyId = json_decode($companyResult)[0]->company_id;
+					}
+					else
+					{
+						$companyId = $request->input()['companyId'];
+					}
 					$validationResult = $this->productCodeValidation($tRequest,$productId,$decodedProductData);
 					if(!is_array($validationResult))
 					{
-						return $validationResult;
+						$indexNumber=1;
+						$productCode = $validationResult.$indexNumber;
+						$result = $this->batchRepeatProductCodeUpdateValidate($productCode,$companyId,$indexNumber,$productId);
+						$tRequest[$countRequest]['product_code'] = $result;
+						$codeFlag=1;
+						
 					}
-					$tRequest = $validationResult;
+					else
+					{
+						$tRequest = $validationResult;
+					}
+					
 				}
 				for($data=0;$data<count($tRequest);$data++)
 				{
@@ -716,6 +634,40 @@ class ProductProcessor extends BaseProcessor
 			return $productPersistable;
 		}
 	}	
+	
+	/**
+     * repeat product-code validation with database for update 
+     * product-code,company-id and index-number
+     * @return product-code
+     */	
+	public function batchRepeatProductCodeUpdateValidate($productCode,$companyId,$indexNumber,$productId)
+	{
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		$productValidate = new ProductValidate();
+		$validationResult = $productValidate->productUpdateCodeValidate($companyId,$productCode,$productId);
+		if(strcmp($validationResult,$exceptionArray['200'])!=0)
+		{
+			$indexNumber= $indexNumber+1;
+			if($indexNumber<=10)
+			{
+				$productCode = substr_replace($productCode,'', -1);
+			}
+			if($indexNumber>=11)
+			{
+				$productCode = substr_replace($productCode,'', -2);
+			}
+			$newProductCode = $productCode.$indexNumber;
+			$result = $this->batchRepeatProductCodeUpdateValidate($newProductCode,$companyId,$indexNumber,$productId);
+			return $result;
+		}
+		else
+		{
+			return $productCode;
+		}
+	}
 	
 	/**
      * validate product-code if required
@@ -869,7 +821,7 @@ class ProductProcessor extends BaseProcessor
 		}
 		else
 		{
-			return $validationResult;
+			return $convertedProductCode;
 		}
 	}
 	

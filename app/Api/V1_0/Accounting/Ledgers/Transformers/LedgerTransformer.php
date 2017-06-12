@@ -4,6 +4,7 @@ namespace ERP\Api\V1_0\Accounting\Ledgers\Transformers;
 use Illuminate\Http\Request;
 use ERP\Http\Requests;
 use ERP\Core\Accounting\Ledgers\Entities\InventoryAffectedEnum;
+use ERP\Core\Accounting\Ledgers\Entities\IsDealerEnum;
 use ERP\Core\Accounting\Ledgers\Entities\BalanceFlagEnum;
 use ERP\Core\Accounting\Journals\Entities\AmountTypeEnum;
 use Carbon;
@@ -18,6 +19,7 @@ class LedgerTransformer
      */
     public function trimInsertData(Request $request)
     {
+		$isDealerFlag=0;
 		$inventoryAffectedFlag=0;
 		$balanceTypeFlag=0;
 		$amountTypeFlag=0;
@@ -25,6 +27,7 @@ class LedgerTransformer
 		$ledgerName = $request->input('ledgerName'); 
 		$alias = $request->input('alias'); 
 		$inventoryAffected = $request->input('inventoryAffected'); 
+		$isDealer = $request->input('isDealer'); 
 		$address1 = $request->input('address1'); 
 		$address2 = $request->input('address2'); 
 		$contactNo = $request->input('contactNo'); 
@@ -46,6 +49,7 @@ class LedgerTransformer
 		$tLedgerName = trim($ledgerName);
 		$tAlias = trim($alias);
 		$tInventoryAffected = trim($inventoryAffected);
+		$tIsDealer = $request->input('isDealer'); 
 		$tAddress1 = trim($address1);
 		$tAddress2 = trim($address2);
 		$tContactNo = trim($contactNo);
@@ -77,6 +81,24 @@ class LedgerTransformer
 				else
 				{
 					$inventoryAffectedFlag=2;
+				}
+			}
+		}
+		if($tIsDealer!="")
+		{
+			$enumIsDealerArray = array();
+			$isDealerEnum = new IsDealerEnum();
+			$enumIsDealerArray = $isDealerEnum->enumArrays();
+			foreach ($enumIsDealerArray as $key => $value)
+			{
+				if(strcmp($value,$tIsDealer)==0)
+				{
+					$isDealerFlag=1;
+					break;
+				}
+				else
+				{
+					$isDealerFlag=2;
 				}
 			}
 		}
@@ -118,7 +140,7 @@ class LedgerTransformer
 				}
 			}
 		}	
-		if($inventoryAffectedFlag==2 || $balanceTypeFlag==2 || $amountTypeFlag==2)
+		if($inventoryAffectedFlag==2 || $balanceTypeFlag==2 || $amountTypeFlag==2 || $isDealerFlag==2)
 		{
 			return "1";
 		}
@@ -131,6 +153,7 @@ class LedgerTransformer
 			$data['inventory_affected'] = $tInventoryAffected;
 			$data['address1'] = $tAddress1;
 			$data['address2'] = $tAddress2;
+			$data['is_dealer'] = $tIsDealer;
 			$data['contact_no'] = $tContactNo;
 			$data['email_id'] = $tEmailId;
 			$data['invoice_number'] = $tInvoiceNumber;
@@ -158,6 +181,7 @@ class LedgerTransformer
 		$convertedValue="";
 		$inventoryAffectedEnumArray = array();
 		$inventoryAffectedFlag=0;
+		$isDealerFlag=0;
 		for($asciiChar=0;$asciiChar<strlen($keyValue);$asciiChar++)
 		{
 			if(ord($keyValue[$asciiChar])<=90 && ord($keyValue[$asciiChar])>=65) 
@@ -194,8 +218,26 @@ class LedgerTransformer
 				}
 			}
 		}
+		$enumIsDealerArray = array();
+		$isDealerEnum = new IsDealerEnum();
+		$enumIsDealerArray = $isDealerEnum->enumArrays();
+		if(strcmp($inventoryAffectedEnumArray,'is_dealer')==0)
+		{
+			foreach ($enumIsDealerArray as $key => $value)
+			{
+				if(strcmp($tLedgerArray[0]['is_dealer'],$value)==0)
+				{
+					$isDealerFlag=1;
+					break;
+				}
+				else
+				{
+					$isDealerFlag=2;
+				}
+			}
+		}
 		
-		if($inventoryAffectedFlag==2)
+		if($inventoryAffectedFlag==2 || $isDealerFlag==2)
 		{
 			return "1";
 		}

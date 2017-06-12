@@ -150,12 +150,8 @@ class BillService
      */
 	public function getData()
 	{
-		$persistableData = func_get_arg(0);
+		$data = func_get_arg(0);
 		$companyId = func_get_arg(1);
-		
-		$salesType = $persistableData->getSalesType();
-		$fromDate = $persistableData->getFromDate();
-		$toDate = $persistableData->getToDate();
 		
 		//get exception message
 		$exception = new ExceptionMessage();
@@ -163,7 +159,7 @@ class BillService
 			
 		//data pass to the model object for getData
 		$billModel = new BillModel();
-		$billResult = $billModel->getSpecifiedData($companyId,$salesType,$fromDate,$toDate);
+		$billResult = $billModel->getSpecifiedData($companyId,$data);
 		
 		if(strcmp($billResult,$exceptionArray['404'])==0)
 		{
@@ -317,7 +313,7 @@ class BillService
 					}
 					else
 					{
-						$documentRequest->headers->set('key',$request->header());
+						$documentRequest->headers->set('key',$headerData);
 					}
 					$processedData = $documentController->getData($documentRequest);
 					return $processedData;
@@ -343,7 +339,7 @@ class BillService
 					}
 					else
 					{
-						$documentRequest->headers->set('key',$request->header());
+						$documentRequest->headers->set('key',$headerData);
 					}
 					$processedData = $documentController->getData($documentRequest);
 					return $processedData;
@@ -407,7 +403,7 @@ class BillService
 				}
 				else
 				{
-					$documentRequest->headers->set('key',$request->header());
+					$documentRequest->headers->set('key',$headerData);
 				}
 				$processedData = $documentController->getData($documentRequest);
 				return $processedData;
@@ -428,7 +424,7 @@ class BillService
 			}
 			else
 			{
-				$documentRequest->headers->set('key',$request->header());
+				$documentRequest->headers->set('key',$headerData);
 			}
 			$processedData = $documentController->getData($documentRequest);
 			return $processedData;

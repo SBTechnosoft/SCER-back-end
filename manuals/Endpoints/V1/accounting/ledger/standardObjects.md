@@ -86,6 +86,6 @@
 			}
 ##### Is Dealer Enum
 			{
-				IsDealer:'y',
-				IsNotDealer:'n'
+				isDealer:'y',
+				isNotDealer:'n'
 			}

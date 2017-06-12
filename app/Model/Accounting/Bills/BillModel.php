@@ -452,7 +452,7 @@ class BillModel extends Model
 	 * @param  company-id,sales-type,from-date,to-date
 	 * returns the exception-message
 	*/
-	public function getSpecifiedData($companyId,$salesType,$fromDate,$toDate)
+	public function getSpecifiedData($companyId,$data)
 	{
 		//database selection
 		$database = "";
@@ -463,79 +463,162 @@ class BillModel extends Model
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
-		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->select("select 
-		sale_id,
-		product_array,
-		payment_mode,
-		bank_name,
-		invoice_number,
-		job_card_number,
-		check_number,
-		total,
-		extra_charge,
-		tax,
-		grand_total,
-		advance,
-		balance,
-		remark,
-		entry_date,
-		client_id,
-		sales_type,
-		refund,
-		jf_id,
-		company_id,
-		created_at,
-		updated_at 
-		from sales_bill 
-		where sales_type='".$salesType."' and
-		(entry_date BETWEEN '".$fromDate."' AND '".$toDate."') and 
-		company_id='".$companyId."' and 
-		deleted_at='0000-00-00 00:00:00'");
-		DB::commit();
-		if(count($raw)==0)
+		if(is_object($data))
 		{
-			return $exceptionArray['404']; 
-		}
-		else
-		{
+			$salesType = $data->getSalesType();
+			$fromDate = $data->getFromDate();
+			$toDate = $data->getToDate();
 		
-			$documentResult = array();
-			for($saleData=0;$saleData<count($raw);$saleData++)
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->select("select 
+			sale_id,
+			product_array,
+			payment_mode,
+			bank_name,
+			invoice_number,
+			job_card_number,
+			check_number,
+			total,
+			extra_charge,
+			tax,
+			grand_total,
+			advance,
+			balance,
+			remark,
+			entry_date,
+			client_id,
+			sales_type,
+			refund,
+			jf_id,
+			company_id,
+			created_at,
+			updated_at 
+			from sales_bill 
+			where sales_type='".$salesType."' and
+			(entry_date BETWEEN '".$fromDate."' AND '".$toDate."') and 
+			company_id='".$companyId."' and 
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+			if(count($raw)==0)
 			{
-				DB::beginTransaction();
-				$documentResult[$saleData] = DB::connection($databaseName)->select("select
-				document_id,
-				sale_id,
-				document_name,
-				document_size,
-				document_format,
-				document_type,
-				created_at,
-				updated_at
-				from sales_bill_doc_dtl
-				where sale_id='".$raw[$saleData]->sale_id."' and 
-				deleted_at='0000-00-00 00:00:00'");
-				DB::commit();
-				if(count($documentResult[$saleData])==0)
-				{
-					// return $exceptionArray['404'];
-					$documentResult[$saleData] = array();
-					$documentResult[$saleData][0] = new stdClass();
-					$documentResult[$saleData][0]->document_id = 0;
-					$documentResult[$saleData][0]->sale_id = 0;
-					$documentResult[$saleData][0]->document_name = '';
-					$documentResult[$saleData][0]->document_size = 0;
-					$documentResult[$saleData][0]->document_format = '';
-					$documentResult[$saleData][0]->document_type ='bill';
-					$documentResult[$saleData][0]->created_at = '0000-00-00 00:00:00';
-					$documentResult[$saleData][0]->updated_at = '0000-00-00 00:00:00';
-				}
+				return $exceptionArray['404']; 
 			}
-			$salesArrayData = array();
-			$salesArrayData['salesData'] = json_encode($raw);
-			$salesArrayData['documentData'] = json_encode($documentResult);
-			return json_encode($salesArrayData);
+			else
+			{
+			
+				$documentResult = array();
+				for($saleData=0;$saleData<count($raw);$saleData++)
+				{
+					DB::beginTransaction();
+					$documentResult[$saleData] = DB::connection($databaseName)->select("select
+					document_id,
+					sale_id,
+					document_name,
+					document_size,
+					document_format,
+					document_type,
+					created_at,
+					updated_at
+					from sales_bill_doc_dtl
+					where sale_id='".$raw[$saleData]->sale_id."' and 
+					deleted_at='0000-00-00 00:00:00'");
+					DB::commit();
+					if(count($documentResult[$saleData])==0)
+					{
+						// return $exceptionArray['404'];
+						$documentResult[$saleData] = array();
+						$documentResult[$saleData][0] = new stdClass();
+						$documentResult[$saleData][0]->document_id = 0;
+						$documentResult[$saleData][0]->sale_id = 0;
+						$documentResult[$saleData][0]->document_name = '';
+						$documentResult[$saleData][0]->document_size = 0;
+						$documentResult[$saleData][0]->document_format = '';
+						$documentResult[$saleData][0]->document_type ='bill';
+						$documentResult[$saleData][0]->created_at = '0000-00-00 00:00:00';
+						$documentResult[$saleData][0]->updated_at = '0000-00-00 00:00:00';
+					}
+				}
+				$salesArrayData = array();
+				$salesArrayData['salesData'] = json_encode($raw);
+				$salesArrayData['documentData'] = json_encode($documentResult);
+				return json_encode($salesArrayData);
+			}
+		}
+		else if(is_array($data))
+		{
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->select("select 
+			sale_id,
+			product_array,
+			payment_mode,
+			bank_name,
+			invoice_number,
+			job_card_number,
+			check_number,
+			total,
+			extra_charge,
+			tax,
+			grand_total,
+			advance,
+			balance,
+			remark,
+			entry_date,
+			client_id,
+			sales_type,
+			refund,
+			jf_id,
+			company_id,
+			created_at,
+			updated_at 
+			from sales_bill 
+			where sales_type='".$data['salestype'][0]."' and 
+			company_id='".$companyId."' and 
+			deleted_at='0000-00-00 00:00:00' and 
+			invoice_number='".$data['invoicenumber'][0]."'");
+			DB::commit();
+			if(count($raw)==0)
+			{
+				return $exceptionArray['404']; 
+			}
+			else
+			{
+				$documentResult = array();
+				for($saleData=0;$saleData<count($raw);$saleData++)
+				{
+					DB::beginTransaction();
+					$documentResult[$saleData] = DB::connection($databaseName)->select("select
+					document_id,
+					sale_id,
+					document_name,
+					document_size,
+					document_format,
+					document_type,
+					created_at,
+					updated_at
+					from sales_bill_doc_dtl
+					where sale_id='".$raw[$saleData]->sale_id."' and 
+					deleted_at='0000-00-00 00:00:00'");
+					DB::commit();
+					if(count($documentResult[$saleData])==0)
+					{
+						// return $exceptionArray['404'];
+						$documentResult[$saleData] = array();
+						$documentResult[$saleData][0] = new stdClass();
+						$documentResult[$saleData][0]->document_id = 0;
+						$documentResult[$saleData][0]->sale_id = 0;
+						$documentResult[$saleData][0]->document_name = '';
+						$documentResult[$saleData][0]->document_size = 0;
+						$documentResult[$saleData][0]->document_format = '';
+						$documentResult[$saleData][0]->document_type ='bill';
+						$documentResult[$saleData][0]->created_at = '0000-00-00 00:00:00';
+						$documentResult[$saleData][0]->updated_at = '0000-00-00 00:00:00';
+					}
+				}
+				$salesArrayData = array();
+				$salesArrayData['salesData'] = json_encode($raw);
+				$salesArrayData['documentData'] = json_encode($documentResult);
+				return json_encode($salesArrayData);
+			}
 		}
 	}
 	
@@ -699,7 +782,7 @@ class BillModel extends Model
 				}
 			}
 		}
-		else
+		else if(array_key_exists('nextsaleid',$headerData))
 		{
 			$saleId = $headerData['nextsaleid'][0]+1;
 			$result = $this->getSalePreviousNextData($headerData,$saleId);
@@ -740,6 +823,79 @@ class BillModel extends Model
 			else
 			{
 				$saleDataResult = $this->getDocumentData($result);
+				return $saleDataResult;
+			}
+		}
+		else if(array_key_exists('operation',$headerData))
+		{
+			if(strcmp($headerData['operation'][0],'first')==0)
+			{
+				DB::beginTransaction();
+				$fistSaleDataResult = DB::connection($databaseName)->select("select 
+				sale_id,
+				product_array,
+				payment_mode,
+				bank_name,
+				invoice_number,
+				job_card_number,
+				check_number,
+				total,
+				extra_charge,
+				tax,
+				grand_total,
+				advance,
+				balance,
+				remark,
+				entry_date,
+				client_id,
+				sales_type,
+				refund,
+				company_id,
+				jf_id,
+				created_at,
+				updated_at 
+				from sales_bill 
+				where sales_type='".$headerData['salestype'][0]."' and
+				company_id = '".$headerData['companyid'][0]."' and
+				deleted_at='0000-00-00 00:00:00'  order by sale_id asc limit 1");
+				DB::commit();
+				
+				$saleDataResult = $this->getDocumentData($fistSaleDataResult);
+				return $saleDataResult;
+			}
+			else if(strcmp($headerData['operation'][0],'last')==0)
+			{
+				DB::beginTransaction();
+				$lastSaleDataResult = DB::connection($databaseName)->select("select 
+				sale_id,
+				product_array,
+				payment_mode,
+				bank_name,
+				invoice_number,
+				job_card_number,
+				check_number,
+				total,
+				extra_charge,
+				tax,
+				grand_total,
+				advance,
+				balance,
+				remark,
+				entry_date,
+				client_id,
+				sales_type,
+				refund,
+				company_id,
+				jf_id,
+				created_at,
+				updated_at 
+				from sales_bill 
+				where sales_type='".$headerData['salestype'][0]."' and
+				company_id = '".$headerData['companyid'][0]."' and
+				deleted_at='0000-00-00 00:00:00' order by sale_id desc limit 1");
+				DB::commit();
+				
+				$saleDataResult = $this->getDocumentData($lastSaleDataResult);
 				return $saleDataResult;
 			}
 		}
