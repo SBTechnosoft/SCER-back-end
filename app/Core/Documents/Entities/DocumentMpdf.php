@@ -646,6 +646,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 	*/
 	public function quotationMpdfGenerate($templateData,$quotationData)
 	{		
+		echo "in";
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -670,6 +671,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$totalQty=0;
 		
 		$totalCm = 10.4;
+		echo "ff";
 		for($productArray=0;$productArray<count($decodedArray->inventory);$productArray++)
 		{
 			//get product-data

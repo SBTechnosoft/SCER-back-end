@@ -106,7 +106,6 @@ class DocumentService extends BillModel
 		$templateType = new TemplateTypeEnum();
 		$templateArray = $templateType->enumArrays();
 		$templateType = $templateArray['quotationTemplate'];
-		
 		$templateService = new TemplateService();
 		$templateData = $templateService->getSpecificData($companyId,$templateType);
 		if(strcmp($templateData,$exceptionArray['404'])==0)

@@ -42,10 +42,8 @@
 ##### `GET /clients`
 + Header 
 	- Authentication Token
-	- "fromDate" :"",
-	- "toDate": "",
-	- "companyId":"",
-	- "productName":""
+	- "contactNo":"",
+	- "clientName":""
 + Error Message
 
 			{

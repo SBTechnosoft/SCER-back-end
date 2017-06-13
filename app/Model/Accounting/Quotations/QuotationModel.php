@@ -158,7 +158,6 @@ class QuotationModel extends Model
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
-		
 		$raw = DB::connection($databaseName)->statement("insert into quotation_bill_doc_dtl(
 		quotation_bill_id,
 		document_name,
@@ -166,7 +165,6 @@ class QuotationModel extends Model
 		document_type)
 		values('".$quotationBillId."','".$documentName."','".$documentFormat."','".$documentType."')");
 		DB::commit();
-		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();

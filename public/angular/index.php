@@ -773,7 +773,7 @@ include ('connection.php');
 				// var saleId = 371;
 				// var jobCardNo = 3;
 				
-				// var url="http://www.scerp1.com/accounting/quotations";
+				var url="http://www.scerp1.com/accounting/quotations";
 				
 				// var url="http://www.scerp1.com/crm/job-form-number/company/"+companyId+"/latest";
 				// var url="http://www.scerp1.com/crm/job-form-number";
@@ -820,7 +820,7 @@ include ('connection.php');
 				// var url = "http://www.scerp1.com/accounting/bills/company/"+companyId;
 				
 				// var url = "http://www.scerp1.com/clients/"+clientId;
-				var url = "http://www.scerp1.com/clients";
+				// var url = "http://www.scerp1.com/clients";
 				
 				// var url = "http://www.scerp1.com/documents/bill";
 				// var url="http://www.scerp1.com/products/inward"; 
@@ -891,7 +891,7 @@ include ('connection.php');
 						
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','type':'payment'},
-                        headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','clientname':'cash','fromDate':'12-02-2017','toDate':'23-06-2017'},
+                        headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','salesType':'retail_sales','operation':'excel'},
                         // headers: {'Content-Type': undefined,'type':'sales','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6',

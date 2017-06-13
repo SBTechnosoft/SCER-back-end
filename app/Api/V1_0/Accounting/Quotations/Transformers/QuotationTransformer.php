@@ -71,8 +71,16 @@ class QuotationTransformer
 			$tExtraCharge = trim($quotationArrayData['extraCharge']);
 		}
 		$tTax = trim($quotationArrayData['tax']);
-		$tGrandTotal = trim($quotationArrayData['grandTotal']);
-
+		
+		if(array_key_exists("grandTotal",$quotationArrayData))
+		{
+			$tGrandTotal = trim($quotationArrayData['grandTotal']);
+		}
+		else
+		{
+			$tGrandTotal =0;
+		}
+	
 		if(array_key_exists("remark",$quotationArrayData))
 		{
 			$tRemark = trim($quotationArrayData['remark']);
@@ -89,7 +97,6 @@ class QuotationTransformer
 		{
 			$tIsDisplay="yes";
 		}
-		
 		$isDisplayEnum = new IsDisplayEnum();
 		$isDisplayArray = $isDisplayEnum->enumArrays();
 		if($tIsDisplay=="")

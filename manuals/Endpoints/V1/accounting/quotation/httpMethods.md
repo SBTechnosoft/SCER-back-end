@@ -19,3 +19,18 @@
             {
                 "documentPath":''
             }
+			
+##### `GET /accounting/quotations/`
++ Header
+	- Authentication Token
+	- "quotationNumber":"string"
++ Error Message
+
+			{
+				... Error Message
+			}            
++ Response
+
+            {
+                ... Standard Quotation Object
+            }
