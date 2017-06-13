@@ -7,7 +7,7 @@ use ERP\Model\Accounting\Quotations\QuotationModel;
 use ERP\Core\Shared\Options\UpdateOptions;
 use ERP\Core\User\Entities\User;
 use ERP\Core\Accounting\Quotations\Entities\EncodeData;
-// use ERP\Core\Accounting\Quotations\Entities\EncodeAllData;
+use ERP\Core\Accounting\Quotations\Entities\EncodeAllData;
 use ERP\Exceptions\ExceptionMessage;
 use Illuminate\Container\Container;
 use ERP\Http\Requests;
@@ -88,6 +88,27 @@ class QuotationService
 				$encodeData = $encoded->getEncodedData($status);
 				return $encodeData;
 			}
+		}
+	}
+	
+	public function getSearchingData($headerData)
+	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+			
+		//data pass to the model object for getData
+		$quotationModel = new QuotationModel();
+		$quotationResult = $quotationModel->getSpecifiedData($headerData);
+		if(strcmp($quotationResult,$exceptionArray['404'])==0)
+		{
+			return $quotationResult;
+		}
+		else
+		{
+			$encodeAllData = new EncodeAllData();
+			$encodingResult = $encodeAllData->getEncodedAllData($quotationResult);
+			return $encodingResult;
 		}
 	}
 }

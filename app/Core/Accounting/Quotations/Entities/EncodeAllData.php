@@ -1,7 +1,7 @@
 <?php
-namespace ERP\Core\Accounting\Bills\Entities;
+namespace ERP\Core\Accounting\Quotations\Entities;
 
-use ERP\Core\Accounting\Bills\Entities\Bill;
+use ERP\Core\Accounting\Quotations\Entities\Quotation;
 use ERP\Core\Clients\Services\ClientService;
 use ERP\Core\Entities\CompanyDetail;
 use ERP\Entities\Constants\ConstantClass;
@@ -19,31 +19,23 @@ class EncodeAllData extends ClientService
 		$convertedCreatedDate =  array();
 		$convertedUpdatedDate =  array();
 		$decodedJson = json_decode($status,true);
-		$deocodedJsonData = json_decode($decodedJson['salesData']);
+		$deocodedJsonData = json_decode($decodedJson['quotationData']);
 		$decodedDocumentData = json_decode($decodedJson['documentData']);
-		$bill = new Bill();
+		$quotation = new Quotation();
 		
 		for($decodedData=0;$decodedData<count($deocodedJsonData);$decodedData++)
 		{
-			$saleId[$decodedData] = $deocodedJsonData[$decodedData]->sale_id;
+			$quotationBillId[$decodedData] = $deocodedJsonData[$decodedData]->quotation_bill_id;
 			$productArray[$decodedData] = $deocodedJsonData[$decodedData]->product_array;
-			$paymentMode[$decodedData] = $deocodedJsonData[$decodedData]->payment_mode;
-			$bankName[$decodedData] = $deocodedJsonData[$decodedData]->bank_name;
-			$invoiceNumber[$decodedData] = $deocodedJsonData[$decodedData]->invoice_number;
-			$jobCardNumber[$decodedData] = $deocodedJsonData[$decodedData]->job_card_number;
-			$checkNumber[$decodedData] = $deocodedJsonData[$decodedData]->check_number;
+			$quotationNumber[$decodedData] = $deocodedJsonData[$decodedData]->quotation_number;
 			$total[$decodedData] = $deocodedJsonData[$decodedData]->total;
 			$extraCharge[$decodedData] = $deocodedJsonData[$decodedData]->extra_charge;
 			$tax[$decodedData] = $deocodedJsonData[$decodedData]->tax;
 			$grandTotal[$decodedData] = $deocodedJsonData[$decodedData]->grand_total;
-			$advance[$decodedData] = $deocodedJsonData[$decodedData]->advance;
-			$balance[$decodedData] = $deocodedJsonData[$decodedData]->balance;
 			$remark[$decodedData] = $deocodedJsonData[$decodedData]->remark;
-			$refund[$decodedData] = $deocodedJsonData[$decodedData]->refund;
 			$entryDate[$decodedData] = $deocodedJsonData[$decodedData]->entry_date;
 			$clientId[$decodedData] = $deocodedJsonData[$decodedData]->client_id;
 			$jfId[$decodedData] = $deocodedJsonData[$decodedData]->jf_id;
-			$salesType[$decodedData] = $deocodedJsonData[$decodedData]->sales_type;
 			$companyId[$decodedData] = $deocodedJsonData[$decodedData]->company_id;
 			$createdAt[$decodedData] = $deocodedJsonData[$decodedData]->created_at;
 			$updatedAt[$decodedData] = $deocodedJsonData[$decodedData]->updated_at;
@@ -60,14 +52,11 @@ class EncodeAllData extends ClientService
 			$total[$decodedData] = number_format($total[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
 			$tax[$decodedData] = number_format($tax[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
 			$grandTotal[$decodedData] = number_format($grandTotal[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
-			$advance[$decodedData] = number_format($advance[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
-			$balance[$decodedData] = number_format($balance[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
-			$refund[$decodedData] = number_format($refund[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
 			
 			//date format conversion
 			$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
-			$bill->setCreated_at($convertedCreatedDate);
-			$getCreatedDate[$decodedData] = $bill->getCreated_at();
+			$quotation->setCreated_at($convertedCreatedDate);
+			$getCreatedDate[$decodedData] = $quotation->getCreated_at();
 			if(strcmp($updatedAt[$decodedData],'0000-00-00 00:00:00')==0)
 			{
 				$getUpdatedDate[$decodedData] = "00-00-0000";
@@ -75,8 +64,8 @@ class EncodeAllData extends ClientService
 			else
 			{
 				$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
-				$bill->setUpdated_at($convertedUpdatedDate);
-				$getUpdatedDate[$decodedData] = $bill->getUpdated_at();
+				$quotation->setUpdated_at($convertedUpdatedDate);
+				$getUpdatedDate[$decodedData] = $quotation->getUpdated_at();
 			}
 			if(strcmp($entryDate[$decodedData],'0000-00-00 00:00:00')==0)
 			{
@@ -85,11 +74,11 @@ class EncodeAllData extends ClientService
 			else
 			{
 				$convertedEntryDate = Carbon\Carbon::createFromFormat('Y-m-d', $entryDate[$decodedData])->format('d-m-Y');
-				$bill->setEntryDate($convertedEntryDate);
-				$getEntryDate[$decodedData] = $bill->getEntryDate();
+				$quotation->setEntryDate($convertedEntryDate);
+				$getEntryDate[$decodedData] = $quotation->getEntryDate();
 			}
 			$documentId[$decodedData] = array();
-			$documentSaleId[$decodedData] = array();
+			$documentQuotationId[$decodedData] = array();
 			$documentName[$decodedData] = array();
 			$documentSize[$decodedData] = array();
 			$documentFormat[$decodedData] = array();
@@ -103,7 +92,7 @@ class EncodeAllData extends ClientService
 			for($documentArray=0;$documentArray<count($decodedDocumentData[$decodedData]);$documentArray++)
 			{
 				$documentId[$decodedData][$documentArray] = $decodedDocumentData[$decodedData][$documentArray]->document_id;
-				$documentSaleId[$decodedData][$documentArray] = $decodedDocumentData[$decodedData][$documentArray]->sale_id;
+				$documentQuotationId[$decodedData][$documentArray] = $decodedDocumentData[$decodedData][$documentArray]->quotation_bill_id;
 				$documentName[$decodedData][$documentArray] = $decodedDocumentData[$decodedData][$documentArray]->document_name;
 				$documentSize[$decodedData][$documentArray] = $decodedDocumentData[$decodedData][$documentArray]->document_size;
 				$documentFormat[$decodedData][$documentArray] = $decodedDocumentData[$decodedData][$documentArray]->document_format;
@@ -119,8 +108,8 @@ class EncodeAllData extends ClientService
 				else
 				{
 					$documentCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $documentCreatedAt[$decodedData][$documentArray])->format('d-m-Y');
-					$bill->setCreated_at($documentCreatedDate);
-					$getDocumentCreatedDate[$decodedData][$documentArray] = $bill->getCreated_at();
+					$quotation->setCreated_at($documentCreatedDate);
+					$getDocumentCreatedDate[$decodedData][$documentArray] = $quotation->getCreated_at();
 				}
 				if(strcmp($documentUpdatedAt[$decodedData][$documentArray],'0000-00-00 00:00:00')==0)
 				{
@@ -129,8 +118,8 @@ class EncodeAllData extends ClientService
 				else
 				{
 					$documentUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $documentUpdatedAt[$decodedData][$documentArray])->format('d-m-Y');
-					$bill->setUpdated_at($documentUpdatedDate);
-					$getDocumentUpdatedDate[$decodedData][$documentArray] = $bill->getUpdated_at();
+					$quotation->setUpdated_at($documentUpdatedDate);
+					$getDocumentUpdatedDate[$decodedData][$documentArray] = $quotation->getUpdated_at();
 				}
 			}
 		}
@@ -147,7 +136,7 @@ class EncodeAllData extends ClientService
 				{
 					$arrayData[$jsonData][$innerArrayData] = array(
 						'documentId'=>$documentId[$jsonData][$innerArrayData],
-						'saleId'=>$documentSaleId[$jsonData][$innerArrayData],
+						'quotationBillId'=>$documentQuotationId[$jsonData][$innerArrayData],
 						'documentName'=>$documentName[$jsonData][$innerArrayData],
 						'documentSize'=>$documentSize[$jsonData][$innerArrayData],
 						'documentFormat'=>$documentFormat[$jsonData][$innerArrayData],
@@ -161,7 +150,7 @@ class EncodeAllData extends ClientService
 				{
 					$arrayData[$jsonData][$innerArrayData] = array(
 						'documentId'=>$documentId[$jsonData][$innerArrayData],
-						'saleId'=>$documentSaleId[$jsonData][$innerArrayData],
+						'quotationBillId'=>$documentQuotationId[$jsonData][$innerArrayData],
 						'documentName'=>$documentName[$jsonData][$innerArrayData],
 						'documentSize'=>$documentSize[$jsonData][$innerArrayData],
 						'documentFormat'=>$documentFormat[$jsonData][$innerArrayData],
@@ -174,22 +163,14 @@ class EncodeAllData extends ClientService
 			}
 			$clientData = json_decode($getClientDetails[$jsonData]);
 			$data[$jsonData]= array(
-				'saleId'=>$saleId[$jsonData],
+				'quotationBillId'=>$quotationBillId[$jsonData],
 				'productArray'=>$productArray[$jsonData],
-				'paymentMode'=>$paymentMode[$jsonData],
-				'bankName'=>$bankName[$jsonData],
-				'invoiceNumber'=>$invoiceNumber[$jsonData],
-				'jobCardNumber'=>$jobCardNumber[$jsonData],
-				'checkNumber'=>$checkNumber[$jsonData],
+				'quotationNumber'=>$quotationNumber[$jsonData],
 				'total'=>$total[$jsonData],
 				'extraCharge'=>$extraCharge[$jsonData],
 				'tax'=>$tax[$jsonData],
 				'grandTotal'=>$grandTotal[$jsonData],
-				'advance'=>$advance[$jsonData],
-				'balance'=>$balance[$jsonData],
 				'remark'=>$remark[$jsonData],
-				'salesType'=>$salesType[$jsonData],
-				'refund'=>$refund[$jsonData],
 				'jfId'=>$jfId[$jsonData],
 				'createdAt'=>$getCreatedDate[$jsonData],
 				'updatedAt'=>$getUpdatedDate[$jsonData],

@@ -121,4 +121,16 @@ class QuotationController extends BaseController implements ContainerInterface
 			return $authenticationResult;
 		}
 	}
+	
+	/**
+	 * get the specified resource 
+	 * @param  Request object[Request $request]
+	 * method calls the service and get data as per given searching data
+	*/
+	public function getSearchingData(Request $request)
+	{
+		$quotationService = new QuotationService();
+		$status = $quotationService->getSearchingData($request->header());
+		return $status;
+	}
 }

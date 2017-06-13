@@ -13,6 +13,7 @@ use ERP\Http\Requests;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use stdClass;
+use ERP\Core\Accounting\Quotations\Entities\QuotationArray;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -175,6 +176,97 @@ class QuotationModel extends Model
 		else
 		{
 			return $exceptionArray['500'];
+		}
+	}
+	
+	/**
+	 * get specific data
+	 * @param  headerdata
+	 * returns the exception-message/array data
+	*/
+	public function getSpecifiedData($headerData)
+	{
+		$quotationArray = new QuotationArray();
+		$quotationArrayData = $quotationArray->searchQuotationData();
+		$queryParameter="";
+		for($dataArray=0;$dataArray<count($quotationArrayData);$dataArray++)
+		{
+			$key = $quotationArrayData[array_keys($quotationArrayData)[$dataArray]];
+			$queryKey = array_keys($quotationArrayData)[$dataArray];
+			
+			if(array_key_exists($quotationArrayData[array_keys($quotationArrayData)[$dataArray]],$headerData))
+			{
+				$queryParameter = $queryParameter."".$queryKey."='".$headerData[$key][0]."' and ";
+			}
+		}
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();		
+		$raw = DB::connection($databaseName)->select("select 
+		quotation_bill_id,
+		product_array,
+		quotation_number,
+		total,
+		extra_charge,
+		tax,
+		grand_total,
+		remark,
+		entry_date,
+		client_id,
+		company_id,
+		jf_id,
+		created_at,
+		updated_at	
+		from quotation_bill_dtl where ".$queryParameter." deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(count($raw)==0)
+		{
+			return $exceptionArray['204'];
+		}
+		else
+		{
+			$documentResult = array();
+			for($quotationData=0;$quotationData<count($raw);$quotationData++)
+			{
+				DB::beginTransaction();
+				$documentResult[$quotationData] = DB::connection($databaseName)->select("select
+				document_id,
+				quotation_bill_id,
+				document_name,
+				document_size,
+				document_format,
+				document_type,
+				created_at,
+				updated_at
+				from quotation_bill_doc_dtl
+				where quotation_bill_id='".$raw[$quotationData]->quotation_bill_id."' and 
+				deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+				if(count($documentResult[$quotationData])==0)
+				{
+					$documentResult[$quotationData] = array();
+					$documentResult[$quotationData][0] = new stdClass();
+					$documentResult[$quotationData][0]->document_id = 0;
+					$documentResult[$quotationData][0]->quotation_bill_id = 0;
+					$documentResult[$quotationData][0]->document_name = '';
+					$documentResult[$quotationData][0]->document_size = 0;
+					$documentResult[$quotationData][0]->document_format = '';
+					$documentResult[$quotationData][0]->document_type ='quotation';
+					$documentResult[$quotationData][0]->created_at = '0000-00-00 00:00:00';
+					$documentResult[$quotationData][0]->updated_at = '0000-00-00 00:00:00';
+				}
+			}
+			$quotationArrayData = array();
+			$quotationArrayData['quotationData'] = json_encode($raw);
+			$quotationArrayData['documentData'] = json_encode($documentResult);
+			return json_encode($quotationArrayData);
 		}
 	}
 }

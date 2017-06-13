@@ -16,6 +16,9 @@ class Quotation implements RouteRegistrarInterface
      */
     public function register(RegistrarInterface $Registrar)
     {
+		// get data
+		Route::get('Accounting/Quotations/Quotation', 'Accounting\Quotations\Controllers\QuotationController@getSearchingData');
+		
 		// insert data post request
 		Route::post('Accounting/Quotations/Quotation', 'Accounting\Quotations\Controllers\QuotationController@store');
 	}
