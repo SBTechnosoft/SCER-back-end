@@ -7,6 +7,7 @@ use Carbon;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Entities\EnumClasses\IsDisplayEnum;
 use ERP\Entities\Constants\ConstantClass;
+use ERP\Core\Clients\Entities\ClientArray;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -143,8 +144,28 @@ class ClientModel extends Model
 	 * get All data 
 	 * returns the status
 	*/
-	public function getAllData()
+	public function getAllData($headerData,$processedData=null)
 	{
+		$clientArray = new ClientArray();
+		$clientArrayData = $clientArray->searchClientData();
+		$queryParameter="";
+		for($dataArray=0;$dataArray<count($clientArrayData);$dataArray++)
+		{
+			$key = $clientArrayData[array_keys($clientArrayData)[$dataArray]];
+			$queryKey = array_keys($clientArrayData)[$dataArray];
+			
+			if(array_key_exists($clientArrayData[array_keys($clientArrayData)[$dataArray]],$headerData))
+			{
+				$queryParameter = $queryParameter."".$queryKey."='".$headerData[$key][0]."' and ";
+			}
+		}
+		if(array_key_exists('fromdate',$headerData) && array_key_exists('todate',$headerData))
+		{
+			$fromDate = $processedData->fromdate;
+			$toDate = $processedData->todate;
+			$queryParameter = $queryParameter."(created_at BETWEEN '".$fromDate."' AND '".$toDate."') and ";
+		}
+		
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -164,7 +185,7 @@ class ClientModel extends Model
 		deleted_at,
 		state_abb,
 		city_id			
-		from client_mst where deleted_at='0000-00-00 00:00:00'");
+		from client_mst where ".$queryParameter." deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		// get exception message

@@ -130,13 +130,22 @@ class ClientController extends BaseController implements ContainerInterface
 		//get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-		
+		$processedData='';
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
 			if($clientId==null)
 			{	
+				if(array_key_exists('fromdate',$request->header()) && array_key_exists('todate',$request->header()))
+				{
+					$processor = new ClientProcessor();
+					$processedData = $processor->dateConversion($request->header());
+					if(!is_object($processedData))
+					{
+						return $processedData;
+					}
+				}
 				$clientService= new ClientService();
-				$status = $clientService->getAllClientData();
+				$status = $clientService->getAllClientData($request->header(),$processedData);
 				return $status;
 			}
 			else

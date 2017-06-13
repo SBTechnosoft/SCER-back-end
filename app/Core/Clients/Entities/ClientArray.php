@@ -23,6 +23,16 @@ class ClientArray
 		return $clientArray;
 	}
 	
+	public function searchClientData()
+	{
+		$clientArray = array();
+		$clientArray['client_name'] = 'clientname';
+		// $clientArray['company_id'] = 'companyid';
+		// $clientArray['from_date'] = 'fromdate';
+		// $clientArray['to_date'] = 'todate';
+		return $clientArray;
+	}
+	
 	public function getBillClientArrayData()
 	{
 		$clientArray = array();

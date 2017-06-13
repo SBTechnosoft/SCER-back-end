@@ -23,7 +23,7 @@
 ##### `GET /clients/{clientId}`
 + Header 
 	- Authentication Token
-
+	
 + Error Message
 
 			{
@@ -42,7 +42,10 @@
 ##### `GET /clients`
 + Header 
 	- Authentication Token
-
+	- "fromDate" :"",
+	- "toDate": "",
+	- "companyId":"",
+	- "productName":""
 + Error Message
 
 			{

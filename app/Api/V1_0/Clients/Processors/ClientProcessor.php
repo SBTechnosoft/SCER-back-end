@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use ERP\Core\Clients\Validations\ClientValidate;
 use ERP\Api\V1_0\Clients\Transformers\ClientTransformer;
 use ERP\Exceptions\ExceptionMessage;
+use stdclass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -226,5 +227,34 @@ class ClientProcessor extends BaseProcessor
 			
 			}
 		}
+	}
+	
+	 /**
+     * get the form-data and convert and validate it
+     * $param Request header data
+     * @return object
+     */	
+	public function dateConversion($headerData)
+	{
+		//date format conversion
+		$splitedFromDate = explode("-",trim($headerData['fromdate'][0]));
+		$transformFromDate = $splitedFromDate[2]."-".$splitedFromDate[1]."-".$splitedFromDate[0];
+		
+		$splitedToDate = explode("-",trim($headerData['todate'][0]));
+		$transformToDate = $splitedToDate[2]."-".$splitedToDate[1]."-".$splitedToDate[0];
+		
+		//valiate Date
+		if(!preg_match("/^[0-9]{4}-([1-9]|1[0-2]|0[1-9])-([1-9]|0[1-9]|[1-2][0-9]|3[0-1])$/",$transformFromDate))
+		{
+			return "from-date is not valid";
+		}
+		if(!preg_match("/^[0-9]{4}-([1-9]|1[0-2]|0[1-9])-([1-9]|0[1-9]|[1-2][0-9]|3[0-1])$/",$transformToDate))
+		{
+			return "to-date is not valid";
+		}
+		$objectClass = new stdclass();
+		$objectClass->fromdate = $transformFromDate;
+		$objectClass->todate = $transformToDate;
+		return $objectClass;
 	}
 }
