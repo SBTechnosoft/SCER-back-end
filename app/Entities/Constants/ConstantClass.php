@@ -90,6 +90,7 @@ class ConstantClass
 		$constantArray['emailType']="email";
 		$constantArray['smsType']="sms";
 		$constantArray['blankType']="blank";
+		$constantArray['quotationType']="quotation";
 		$constantArray['invoice']="invoice";
 		$constantArray['paymentType']="payment";
 		$constantArray['refundType']="refund";

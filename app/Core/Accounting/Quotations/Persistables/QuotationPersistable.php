@@ -17,7 +17,12 @@ use ERP\Core\Accounting\Bills\Properties\KeyArrayPropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\NameArrayPropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\SaleIdArrayPropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\ExtraChargePropertyTrait;
+use ERP\Core\Products\Properties\ProductNamePropertyTrait;
+use ERP\Core\Products\Properties\MeasureUnitPropertyTrait;
+use ERP\Core\Products\Properties\ColorPropertyTrait;
+use ERP\Core\Products\Properties\SizePropertyTrait;
 use ERP\Core\Accounting\Quotations\Properties\QuotationNumberPropertyTrait;
+use ERP\Core\Accounting\Quotations\Properties\QuotationIdPropertyTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -40,4 +45,9 @@ class QuotationPersistable
 	use NameArrayPropertyTrait;
 	use SaleIdArrayPropertyTrait;
 	use ExtraChargePropertyTrait;
+	use QuotationIdPropertyTrait;
+	use ProductNamePropertyTrait;
+	use MeasureUnitPropertyTrait;
+	use ColorPropertyTrait;
+	use SizePropertyTrait;
 }

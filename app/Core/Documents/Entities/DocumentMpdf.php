@@ -646,7 +646,6 @@ class DocumentMpdf extends CurrencyToWordConversion
 	*/
 	public function quotationMpdfGenerate($templateData,$quotationData)
 	{		
-		echo "in";
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -671,7 +670,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$totalQty=0;
 		
 		$totalCm = 10.4;
-		echo "ff";
+		
 		for($productArray=0;$productArray<count($decodedArray->inventory);$productArray++)
 		{
 			//get product-data
@@ -733,8 +732,8 @@ class DocumentMpdf extends CurrencyToWordConversion
 			   <td colspan="2" class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->color.' | '.$decodedArray->inventory[$productArray]->size.'</td>
 			   <td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->frameNo.'</td>
 			   <td class="tg-ullm thsrno" style="font-size: 14px;   height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->qty.'</td>
-			   <td class="tg-ullm thsrno" style="font-size: 14px; height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $price.'</td>
-				<td colspan="2" class="tg-ullm thamt" style="font-size: 14px;   height:  0.7cm; text-align: center; padding:0 0 0 0;">PCS</td>
+			   <td colspan="2" class="tg-ullm thsrno" style="font-size: 14px; height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $price.'</td>
+				<td  class="tg-ullm thamt" style="font-size: 14px;   height:  0.7cm; text-align: center; padding:0 0 0 0;">PCS</td>
 			   <td class="tg-ullm thamt" style="font-size: 14px;  height: 0.7cm; text-align: center; padding:0 0 0 0;">'.$total[$productArray];
 
 			if($productArray != count($decodedArray->inventory)-1)
@@ -752,11 +751,13 @@ class DocumentMpdf extends CurrencyToWordConversion
 			}
 			$index++;
 		}
+		
 		//calculation of currecy to word conversion
 		$currecyToWordConversion = new DocumentMpdf();
 		$currencyResult = $currecyToWordConversion->conversion($totalAmount);
 		$address = $quotationData->client->address1;
 		$companyAddress = $quotationData->company->address1.",".$quotationData->company->address2;
+		
 		//add 1 month in entry date for displaying expiry date
 		$date = date_create($quotationData->entryDate);
 		date_add($date, date_interval_create_from_date_string('30 days'));

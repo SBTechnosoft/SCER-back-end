@@ -269,4 +269,158 @@ class QuotationModel extends Model
 			return json_encode($quotationArrayData);
 		}
 	}
+	
+	/**
+	 * get specific quotation-bill data
+	 * @param  headerdata
+	 * returns the exception-message/array data
+	*/
+	public function getquotationIdData($quotationBillId)
+	{
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();		
+		$raw = DB::connection($databaseName)->select("select 
+		quotation_bill_id,
+		product_array,
+		quotation_number,
+		total,
+		extra_charge,
+		tax,
+		grand_total,
+		remark,
+		entry_date,
+		client_id,
+		company_id,
+		jf_id,
+		created_at,
+		updated_at	
+		from quotation_bill_dtl where quotation_bill_id='".$quotationBillId."' and deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		if(count($raw)==0)
+		{
+			return $exceptionArray['204'];
+		}
+		else
+		{
+			return json_encode($raw);
+		}
+	}
+	
+	/**
+	 * update quotation data
+	 * @param  quotation-bill-id and quotation-data array
+	 * returns the exception-message/status
+	*/
+	public function updateQuotationData($quotationArray,$quotationId)
+	{
+		$mytime = Carbon\Carbon::now();
+	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		$keyValueString = "";
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		for($quotationArrayData=0;$quotationArrayData<count($quotationArray);$quotationArrayData++)
+		{
+			$keyValueString = $keyValueString.array_keys($quotationArray)[$quotationArrayData]." = '".$quotationArray[array_keys($quotationArray)[$quotationArrayData]]."',";
+		}
+		// update bill-date
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->statement("update
+		quotation_bill_dtl set
+		".$keyValueString."
+		updated_at = '".$mytime."'
+		where quotation_bill_id = ".$quotationId." and
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		if($raw==1)
+		{
+			$quotationData = $this->getQuotationIdData($quotationId);
+			$jsonDecodedQuotationData = json_decode($quotationData);
+			
+			//insert quotation data in quotation_bill_archives 
+			DB::beginTransaction();
+			$quotaionInsertionResult = DB::connection($databaseName)->statement("insert
+			into quotation_bill_archives(
+			quotation_bill_id,
+			product_array,
+			quotation_number,
+			total,
+			extra_charge,
+			tax,
+			grand_total,
+			remark,
+			entry_date,
+			client_id,
+			company_id,
+			jf_id,
+			created_at,
+			updated_at)
+			values(
+			'".$jsonDecodedQuotationData[0]->quotation_bill_id."',
+			'".$jsonDecodedQuotationData[0]->product_array."',
+			'".$jsonDecodedQuotationData[0]->quotation_number."',
+			'".$jsonDecodedQuotationData[0]->total."',
+			'".$jsonDecodedQuotationData[0]->extra_charge."',
+			'".$jsonDecodedQuotationData[0]->tax."',
+			'".$jsonDecodedQuotationData[0]->grand_total."',
+			'".$jsonDecodedQuotationData[0]->remark."',
+			'".$jsonDecodedQuotationData[0]->entry_date."',
+			'".$jsonDecodedQuotationData[0]->client_id."',
+			'".$jsonDecodedQuotationData[0]->company_id."',
+			'".$jsonDecodedQuotationData[0]->jf_id."',
+			'".$jsonDecodedQuotationData[0]->created_at."',
+			'".$jsonDecodedQuotationData[0]->updated_at."')");
+			DB::commit();
+			
+			if($quotaionInsertionResult!=1)
+			{
+				return $exceptionArray['500']; 
+			}
+			else
+			{
+				//get latest inserted quotation bill data
+				DB::beginTransaction();
+				$quotationResult = DB::connection($databaseName)->select("select
+				quotation_bill_id,
+				product_array,
+				quotation_number,
+				total,
+				extra_charge,
+				tax,
+				grand_total,
+				remark,
+				entry_date,
+				client_id,
+				company_id,
+				jf_id,
+				created_at,
+				updated_at 
+				from quotation_bill_dtl where quotation_bill_id = ".$quotationId." and deleted_at='0000-00-00 00:00:00'"); 
+				DB::commit();
+				if(count($quotationResult)!=0)
+				{
+					return json_encode($quotationResult);
+				}
+				else
+				{
+					return $exceptionArray['204']; 
+				}
+			}
+		}
+	}
 }

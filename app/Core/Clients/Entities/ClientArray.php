@@ -13,10 +13,8 @@ class ClientArray
 		$clientArray['client_name'] = 'clientName';
 		$clientArray['company_name'] = 'companyName';
 		$clientArray['contact_no'] = 'contactNo';
-		$clientArray['work_no'] = 'workNo';
 		$clientArray['email_id'] = 'emailId';
 		$clientArray['address1'] = 'address1';
-		$clientArray['address2'] = 'address2';
 		$clientArray['is_display'] = 'isDisplay';
 		$clientArray['city_id'] = 'cityId';
 		$clientArray['state_abb'] = 'stateAbb';
@@ -28,8 +26,8 @@ class ClientArray
 		$clientArray = array();
 		$clientArray['client_name'] = 'clientname';
 		$clientArray['contact_no'] = 'contactNo';
-		// $clientArray['from_date'] = 'fromdate';
-		// $clientArray['to_date'] = 'todate';
+		$clientArray['address1'] = 'address';
+		$clientArray['email_id'] = 'emailId';
 		return $clientArray;
 	}
 	
@@ -39,10 +37,8 @@ class ClientArray
 		$clientArray['client_name'] = 'clientName';
 		$clientArray['company_name'] = 'companyName';
 		$clientArray['contact_no'] = 'contactNo';
-		$clientArray['work_no'] = 'workNo';
 		$clientArray['email_id'] = 'emailId';
 		$clientArray['address1'] = 'address1';
-		$clientArray['address2'] = 'address2';
 		$clientArray['is_display'] = 'isDisplay';
 		$clientArray['city_id'] = 'cityId';
 		$clientArray['state_abb'] = 'stateAbb';

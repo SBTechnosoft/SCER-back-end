@@ -146,6 +146,15 @@ class ClientModel extends Model
 	*/
 	public function getAllData($headerData,$processedData=null)
 	{
+		if(array_key_exists('invoicenumber',$headerData))
+		{
+			echo "iff";
+		}
+		if(array_key_exists('jobcardnumber',$headerData))
+		{
+			echo "iff";
+		}
+		exit;
 		$clientArray = new ClientArray();
 		$clientArrayData = $clientArray->searchClientData();
 		$queryParameter="";

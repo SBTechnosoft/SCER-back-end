@@ -14,6 +14,7 @@ use ERP\Api\V1_0\Clients\Controllers\ClientController;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Entities\Constants\ConstantClass;
 use Carbon;
+use ERP\Core\Clients\Entities\ClientArray;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -181,5 +182,109 @@ class QuotationProcessor extends BaseProcessor
 		$quotationPersistable->setCompanyId($tRequest['company_id']);		
 		$quotationPersistable->setJfId(0);		
 		return $quotationPersistable;
+	}
+	
+	/**
+     * get request data & quotation-bill-id and set into the persistable object
+     * $param Request object [Request $request] and quotation-bill-id and quotationdata
+     * @return Quotation Persistable object/error message
+     */
+	public function createPersistableChange(Request $request,$quotationBillId,$quotationData)
+	{
+		$balanceFlag=0;
+		
+		//get constant variables array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+
+		//get exception message
+		$exception = new ExceptionMessage();
+		$msgArray = $exception->messageArrays();
+		//trim quotation data
+		$quotationTransformer = new QuotationTransformer();
+		$quotationTrimData = $quotationTransformer->trimQuotationUpdateData($request);
+		
+		// $ledgerModel = new LedgerModel();
+		$clientArray = new ClientArray();
+		$clientArrayData = $clientArray->getClientArrayData();
+		$clientData = array();
+		foreach($clientArrayData as $key => $value)
+		{
+			if(array_key_exists($key,$quotationTrimData))
+			{
+				$clientData[$value] = $quotationTrimData[$key];
+			}
+		}		
+		//get clientId as per given quotationBillId
+		$quotationData = json_decode($quotationData);	
+
+		if(count($clientData)!=0)
+		{
+			//call controller of client for updating of client data
+			$clientController = new ClientController(new Container());
+			$clientMethod=$constantArray['postMethod'];
+			$clientPath=$constantArray['clientUrl'].'/'.$quotationData[0]->client_id;
+			$clientRequest = Request::create($clientPath,$clientMethod,$clientData);
+			$clientData = $clientController->updateData($clientRequest,$quotationData[0]->client_id);			
+			if(strcmp($clientData,$msgArray['200'])!=0)
+			{
+				return $clientData;
+			}
+		}
+		//validate bill data
+		//........pending
+		$quoFlag=0;
+		//set bill data into persistable object
+		$quotationPersistable = array();
+		$clientBillArrayData = $clientArray->getBillClientArrayData();
+		
+		//splice data from trim array
+		for($index=0;$index<count($clientBillArrayData);$index++)
+		{
+			for($innerIndex=0;$innerIndex<count($quotationTrimData);$innerIndex++)
+			{
+				if(strcmp('inventory',array_keys($quotationTrimData)[$innerIndex])!=0)
+				{
+					if(strcmp(array_keys($quotationTrimData)[$innerIndex],array_keys($clientBillArrayData)[$index])==0)
+					{
+						array_splice($quotationTrimData,$innerIndex,1);
+						break;
+					}
+				}
+			}
+		}
+		for($quotationArrayData=0;$quotationArrayData<count($quotationTrimData);$quotationArrayData++)
+		{
+			// making an object of persistable
+			$quotationPersistable[$quotationArrayData] = new QuotationPersistable();
+			if(strcmp('inventory',array_keys($quotationTrimData)[$quotationArrayData])!=0)
+			{
+				$str = str_replace(' ', '', ucwords(str_replace('_', ' ', array_keys($quotationTrimData)[$quotationArrayData])));	
+				$setFuncName = "set".$str;
+				$getFuncName = "get".$str;
+				$quotationPersistable[$quotationArrayData]->$setFuncName($quotationTrimData[array_keys($quotationTrimData)[$quotationArrayData]]);
+				$quotationPersistable[$quotationArrayData]->setName($getFuncName);
+				$quotationPersistable[$quotationArrayData]->setKey(array_keys($quotationTrimData)[$quotationArrayData]);
+				$quotationPersistable[$quotationArrayData]->setQuotationId($quotationBillId);
+			}
+			else
+			{
+				$quoFlag=1;
+				$decodedProductArrayData = json_decode($quotationData[0]->product_array);
+				$productArray = array();
+				$productArray['quotationNumber'] = $decodedProductArrayData->quotationNumber;
+				$productArray['transactionType'] = $decodedProductArrayData->transactionType;
+				$productArray['companyId'] = $decodedProductArrayData->companyId;
+				$productArray['inventory'] = $quotationTrimData['inventory'];
+				$quotationPersistable[$quotationArrayData]->setProductArray(json_encode($productArray));
+				$quotationPersistable[$quotationArrayData]->setQuotationId($quotationBillId);
+			}
+		}
+		if($quoFlag==1)
+		{
+			$quotationPersistable[count($quotationPersistable)] = 'flag';
+		}
+		return $quotationPersistable;
+		
 	}
 }

@@ -225,47 +225,47 @@ include ('connection.php');
 				// formdata.append('productGroupParentId',$scope.formAdata.product_group_parent_id);
 				
 				//product
-				$scope.formAdata.product_name = 'SPYKER 26" M/S D/S';
-				$scope.formAdata.is_display = 'no';
-				$scope.formAdata.product_cat_id='1';
-				$scope.formAdata.measurement_unit='piece';
-				$scope.formAdata.color='RD';
-				$scope.formAdata.size='12T.()';
-				$scope.formAdata.purchase_price='120.09';
-				$scope.formAdata.wholesale_margin='12.00';
-				$scope.formAdata.wholesale_margin_flat='12.00';
-				$scope.formAdata.semi_wholesale_margin='10.90';
-				$scope.formAdata.vat='10.00';
-				$scope.formAdata.margin='10.00';
-				$scope.formAdata.margin_flat='10.00';
-				$scope.formAdata.mrp='140.00';
-				$scope.formAdata.productDescription='dfsdfsd';
-				$scope.formAdata.additionalTax='21.00';
-				$scope.formAdata.minimumStockLevel='25';
-				$scope.formAdata.product_group_id='1';
-				$scope.formAdata.company_id='1';
-				$scope.formAdata.branch_id='1';
+				// $scope.formAdata.product_name = 'SPYKER 26" M/S D/S';
+				// $scope.formAdata.is_display = 'no';
+				// $scope.formAdata.product_cat_id='1';
+				// $scope.formAdata.measurement_unit='piece';
+				// $scope.formAdata.color='RD';
+				// $scope.formAdata.size='12T.()';
+				// $scope.formAdata.purchase_price='120.09';
+				// $scope.formAdata.wholesale_margin='12.00';
+				// $scope.formAdata.wholesale_margin_flat='12.00';
+				// $scope.formAdata.semi_wholesale_margin='10.90';
+				// $scope.formAdata.vat='10.00';
+				// $scope.formAdata.margin='10.00';
+				// $scope.formAdata.margin_flat='10.00';
+				// $scope.formAdata.mrp='140.00';
+				// $scope.formAdata.productDescription='dfsdfsd';
+				// $scope.formAdata.additionalTax='21.00';
+				// $scope.formAdata.minimumStockLevel='25';
+				// $scope.formAdata.product_group_id='1';
+				// $scope.formAdata.company_id='1';
+				// $scope.formAdata.branch_id='1';
 			
-				formdata.append('productName',$scope.formAdata.product_name);
-				formdata.append('isDisplay',$scope.formAdata.is_display);
-				formdata.append('measurementUnit',$scope.formAdata.measurement_unit);
-				formdata.append('color',$scope.formAdata.color);
-				formdata.append('size',$scope.formAdata.size);
-				formdata.append('purchasePrice',$scope.formAdata.purchase_price);
-				formdata.append('wholesaleMargin',$scope.formAdata.wholesale_margin);
-				formdata.append('wholesaleMarginFlat',$scope.formAdata.wholesale_margin_flat);
-				formdata.append('semiWholesaleMargin',$scope.formAdata.semi_wholesale_margin);
-				formdata.append('vat',$scope.formAdata.vat);
-				formdata.append('mrp',$scope.formAdata.mrp);
-				formdata.append('margin',$scope.formAdata.margin);
-				formdata.append('marginFlat',$scope.formAdata.margin_flat);
-				formdata.append('productDescription',$scope.formAdata.productDescription);
-				formdata.append('additionalTax',$scope.formAdata.additionalTax);
-				formdata.append('minimumStockLevel',$scope.formAdata.minimumStockLevel);
-				formdata.append('productCategoryId',$scope.formAdata.product_cat_id);
-				formdata.append('productGroupId',$scope.formAdata.product_group_id);
-				formdata.append('companyId',$scope.formAdata.company_id);
-				formdata.append('branchId',$scope.formAdata.branch_id);
+				// formdata.append('productName',$scope.formAdata.product_name);
+				// formdata.append('isDisplay',$scope.formAdata.is_display);
+				// formdata.append('measurementUnit',$scope.formAdata.measurement_unit);
+				// formdata.append('color',$scope.formAdata.color);
+				// formdata.append('size',$scope.formAdata.size);
+				// formdata.append('purchasePrice',$scope.formAdata.purchase_price);
+				// formdata.append('wholesaleMargin',$scope.formAdata.wholesale_margin);
+				// formdata.append('wholesaleMarginFlat',$scope.formAdata.wholesale_margin_flat);
+				// formdata.append('semiWholesaleMargin',$scope.formAdata.semi_wholesale_margin);
+				// formdata.append('vat',$scope.formAdata.vat);
+				// formdata.append('mrp',$scope.formAdata.mrp);
+				// formdata.append('margin',$scope.formAdata.margin);
+				// formdata.append('marginFlat',$scope.formAdata.margin_flat);
+				// formdata.append('productDescription',$scope.formAdata.productDescription);
+				// formdata.append('additionalTax',$scope.formAdata.additionalTax);
+				// formdata.append('minimumStockLevel',$scope.formAdata.minimumStockLevel);
+				// formdata.append('productCategoryId',$scope.formAdata.product_cat_id);
+				// formdata.append('productGroupId',$scope.formAdata.product_group_id);
+				// formdata.append('companyId',$scope.formAdata.company_id);
+				// formdata.append('branchId',$scope.formAdata.branch_id);
 				
 				//template
 				// $scope.formAdata.template_name = " abcffd ";
@@ -699,14 +699,14 @@ include ('connection.php');
 				// 
 				//9875647544
 	//------------------------------------------------Quotation-Bill ---------------------------------------------------//
-				// $scope.user = [{"billData":[{"companyId":10,"entryDate":"22-12-2015","contactNo":"8768667676",
-				// "workNo":"9875647344","isDisplay":"no","emailId":"reemapatel25@gmail.co.in","companyName":"siliconbrain",
-				// "clientName":"kgjkbk","quotationNumber":"INV/2016-15/30","address1":"sfja,sa","address2":"dfsd,ds",
-				// "stateAbb":"IN-AG","cityId":1,"total":100,"tax":10,"grandTotal":134,"remark":"adsfsf afasf"}]}];
+				// $scope.user = [{"billData":[{"companyId":10,"entryDate":"22-12-2015","contactNo":"8768667671",
+				// "isDisplay":"yes","emailId":"reemapatel251@gmail.co.in","companyName":"siliconbraint",
+				// "clientName":"kgjkbkt","quotationNumber":"INV/2016-15/30","address1":"sfja,sa1",
+				// "stateAbb":"IN-AG","cityId":1,"total":101,"tax":11,"grandTotal":131,"remark":"adsfsf afasf1"}]}];
 				
-				// $scope.inventory=[{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":44,'color':'ddd',
-				// 'frameNo':'fff','size':'12T'},{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":40,'color':'hh',
-				// 'frameNo':'dsfds','size':'12T'}];
+				// $scope.inventory=[{"productId": 6 ,"discount":11,"discountType":"flat","price":1301,"qty":41,'color':'ddd1',
+				// 'frameNo':'fff1','size':'12T1'},{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":40,'color':'hh',
+				// 'frameNo':'dsfds','size':'12T1'}];
 				
 				// angular.forEach($scope.user[0]['billData'][0], function (input,key) {
 					
@@ -772,8 +772,10 @@ include ('connection.php');
 				// var journalId=207;
 				// var saleId = 371;
 				// var jobCardNo = 3;
+				// var quotationBillId = 1;
 				
-				var url="http://www.scerp1.com/accounting/quotations";
+				// var url="http://www.scerp1.com/accounting/quotations/"+quotationBillId;
+				// var url="http://www.scerp1.com/accounting/quotations";
 				
 				// var url="http://www.scerp1.com/crm/job-form-number/company/"+companyId+"/latest";
 				// var url="http://www.scerp1.com/crm/job-form-number";
@@ -820,7 +822,7 @@ include ('connection.php');
 				// var url = "http://www.scerp1.com/accounting/bills/company/"+companyId;
 				
 				// var url = "http://www.scerp1.com/clients/"+clientId;
-				// var url = "http://www.scerp1.com/clients";
+				var url = "http://www.scerp1.com/clients";
 				
 				// var url = "http://www.scerp1.com/documents/bill";
 				// var url="http://www.scerp1.com/products/inward"; 
@@ -891,7 +893,7 @@ include ('connection.php');
 						
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','type':'payment'},
-                        headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','quotationNumber':'INV/2016-15/30'},
+                        headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','emailId':'reemas@gmail.com','address':'address1','invoiceNumber':'','jobCardNumber':''},
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','salesType':'retail_sales','operation':'excel'},
                         // headers: {'Content-Type': undefined,'type':'sales','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6',
@@ -905,7 +907,7 @@ include ('connection.php');
                         // headers: {'Content-Type':undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','productCode':'ABC_ABC_AB_CYCFDJ_BKBK_122T'},
                         // headers: {'Content-Type':undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','fromDate':'01/04/2017','toDate':'28/04/2017'},
                         // headers: {'Content-Type':'application/x-www-form-urlencoded','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
-						 // data:formdata
+						 data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

@@ -112,7 +112,6 @@ class DocumentController extends BaseController implements ContainerInterface
 		$RequestUri = explode("/", $_SERVER['REQUEST_URI']);
 		if(strcmp($RequestUri[1],"accounting")==0 || strcmp($RequestUri[2],"quotations")==0)
 		{
-			
 			//get quotations data as per given quotationBillId
 			$documentProcessor = new DocumentProcessor();
 			$documentService= new DocumentService();	

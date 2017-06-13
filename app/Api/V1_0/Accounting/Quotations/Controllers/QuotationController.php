@@ -19,7 +19,7 @@ use ERP\Core\Settings\InvoiceNumbers\Services\InvoiceService;
 // use ERP\Api\V1_0\Settings\InvoiceNumbers\Controllers\InvoiceController;
 use Illuminate\Container\Container;
 use ERP\Api\V1_0\Documents\Controllers\DocumentController;
-// use ERP\Model\Accounting\Quotation\QuotationModel;
+use ERP\Model\Accounting\Quotations\QuotationModel;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -132,5 +132,60 @@ class QuotationController extends BaseController implements ContainerInterface
 		$quotationService = new QuotationService();
 		$status = $quotationService->getSearchingData($request->header());
 		return $status;
+	}
+	
+	/**
+	 * update the specified resource 
+	 * @param  Request object[Request $request] and quotation-bill-id
+	 * method calls the processer...after processing it calls the service and give the document-path of pdf
+	*/
+	public function update(Request $request,$quotationBillId)
+	{
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$msgArray = $exception->messageArrays();
+			
+		// get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			//check the condition for image or data or both available
+			if(!empty($request->input()))
+			{
+				//check quotationId exist or not?
+				$quotationModel = new QuotationModel();
+				$quotationData = $quotationModel->getquotationIdData($quotationBillId);
+				if(strcmp($quotationData,$msgArray['404'])==0)
+				{
+					return $msgArray['404'];
+				}
+				$processor = new QuotationProcessor();
+				$quotationPersistable = new QuotationPersistable();
+				$quotationPersistable = $processor->createPersistableChange($request,$quotationBillId,$quotationData);
+				if(is_array($quotationPersistable))
+				{
+					$quotationService= new QuotationService();
+					$status = $quotationService->updateData($quotationPersistable,$quotationBillId,$request->header());
+					return $status;
+				}
+				else
+				{
+					return $quotationPersistable;
+				}
+			}
+			else
+			{
+				return $msgArray['204'];
+			}
+		}
+		else
+		{
+			return $authenticationResult;
+		}
 	}
 }

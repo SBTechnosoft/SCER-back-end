@@ -21,6 +21,9 @@ class Quotation implements RouteRegistrarInterface
 		
 		// insert data post request
 		Route::post('Accounting/Quotations/Quotation', 'Accounting\Quotations\Controllers\QuotationController@store');
+		
+		// update data post request
+		Route::post('Accounting/Quotations/Quotation/{quotationBillId}', 'Accounting\Quotations\Controllers\QuotationController@update');
 	}
 }
 

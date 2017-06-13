@@ -56,7 +56,6 @@ class CompanyModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
-			//branch insertion
 			DB::beginTransaction();
 			$companyId = DB::connection($databaseName)->select("SELECT 
 			company_id,
@@ -68,6 +67,7 @@ class CompanyModel extends Model
 			ORDER by company_id DESC limit 1");
 			DB::commit();
 			
+			//branch insertion
 			DB::beginTransaction();
 			$branchInserion = DB::connection($databaseName)->statement("INSERT 
 			into branch_mst(
@@ -171,7 +171,21 @@ class CompanyModel extends Model
 			'".$companyId[0]->company_id."')");
 			DB::commit();
 			
-			if($invoiceInsertion!=1 && $paymentInsertion!=1 && $emailInsertion!=1 && $smsInsertion!=1 && $blankInsertion!=1)
+			DB::beginTransaction();
+			$quotationInsertion = DB::connection($databaseName)->statement("insert
+			into template_mst(
+			template_name,
+			template_body,
+			template_type,
+			company_id)
+			values(
+			'".$companyId[0]->company_name.' Quotaion'."',
+			'".$templateArray['quotaion']."',
+			'".$constantArray['quotaionType']."',
+			'".$companyId[0]->company_id."')");
+			DB::commit();
+			
+			if($invoiceInsertion!=1 && $paymentInsertion!=1 && $emailInsertion!=1 && $smsInsertion!=1 && $blankInsertion!=1 && $quotationInsertion!=1)
 			{
 				return $exceptionArray['500'];
 			}
@@ -337,9 +351,23 @@ class CompanyModel extends Model
 			'".$templateArray['blank']."',
 			'".$constantArray['blankType']."',
 			'".$latestCompanyId[0]->company_id."')");
+			
+			DB::beginTransaction();
+			$quotationInsertion = DB::connection($databaseName)->statement("insert
+			into template_mst(
+			template_name,
+			template_body,
+			template_type,
+			company_id)
+			values(
+			'".$latestCompanyId[0]->company_name.' Quotation'."',
+			'".$templateArray['quotation']."',
+			'".$constantArray['quotationType']."',
+			'".$latestCompanyId[0]->company_id."')");
+			DB::commit();
 			DB::commit();
 			
-			if($invoiceInsertion!=1 && $paymentInsertion!=1 && $emailInsertion!=1 && $smsInsertion!=1 && $blankInsertion!=1)
+			if($invoiceInsertion!=1 && $paymentInsertion!=1 && $emailInsertion!=1 && $smsInsertion!=1 && $blankInsertion!=1 && $quotationInsertion!=1)
 			{
 				return $exceptionArray['500'];
 			}

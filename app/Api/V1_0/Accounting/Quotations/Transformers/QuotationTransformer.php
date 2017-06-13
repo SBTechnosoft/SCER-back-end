@@ -6,6 +6,7 @@ use ERP\Http\Requests;
 use  ERP\Entities\EnumClasses\IsDisplayEnum;
 use ERP\Core\Products\Entities\EnumClasses\DiscountTypeEnum;
 use ERP\Exceptions\ExceptionMessage;
+use Carbon;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -186,5 +187,120 @@ class QuotationTransformer
 			array_push($data,$trimArray);
 			return $data;
 		}
+	}
+	
+	/**
+     * trim quotation update data and check enum data type
+	 * @param request data 
+     * @return array/error message
+     */
+	public function trimQuotationUpdateData(Request $request)
+	{
+		$convertedValue="";
+		$dataFlag=0;
+		$discountTypeFlag=0;
+		$isDisplayFlag = 0;
+		$tempArrayFlag=0;
+		$tempArray = array();
+		$tQuotationArray = array();
+		$quotationArrayData = $request->input();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();		
+		for($inputArrayData=0;$inputArrayData<count($quotationArrayData);$inputArrayData++)
+		{
+			if(strcmp(array_keys($quotationArrayData)[$inputArrayData],'inventory')==0)
+			{
+				$enumDiscountTypeArray = array();
+				$discountTypeEnum = new DiscountTypeEnum();
+				$enumDiscountTypeArray = $discountTypeEnum->enumArrays();
+				for($inventoryArray=0;$inventoryArray<count($quotationArrayData['inventory']);$inventoryArray++)
+				{
+					$tempArrayFlag=1;
+					$tempArray[$inventoryArray] = array();
+					$tempArray[$inventoryArray]['productId'] = trim($quotationArrayData['inventory'][$inventoryArray]['productId']);
+					$tempArray[$inventoryArray]['discount'] = trim($quotationArrayData['inventory'][$inventoryArray]['discount']);
+					$tempArray[$inventoryArray]['discountType'] = trim($quotationArrayData['inventory'][$inventoryArray]['discountType']);
+					$tempArray[$inventoryArray]['price'] = trim($quotationArrayData['inventory'][$inventoryArray]['price']);
+					$tempArray[$inventoryArray]['qty'] = trim($quotationArrayData['inventory'][$inventoryArray]['qty']);
+					$tempArray[$inventoryArray]['color'] = trim($quotationArrayData['inventory'][$inventoryArray]['color']);
+					$tempArray[$inventoryArray]['frameNo'] = trim($quotationArrayData['inventory'][$inventoryArray]['frameNo']);
+					$tempArray[$inventoryArray]['size'] = trim($quotationArrayData['inventory'][$inventoryArray]['size']);
+					foreach ($enumDiscountTypeArray as $key => $value)
+					{
+						if(strcmp($value,$tempArray[$inventoryArray]['discountType'])==0)
+						{
+							$discountTypeFlag=1;
+							break;
+						}
+						else
+						{
+							$discountTypeFlag=0;
+						}
+					}
+					if($discountTypeFlag==0)
+					{
+						return $exceptionArray['content'];
+					}
+				}
+			}
+			else
+			{
+				$dataFlag=1;
+				$key = array_keys($quotationArrayData)[$inputArrayData];
+				$value = $quotationArrayData[$key];
+				for($asciiChar=0;$asciiChar<strlen($key);$asciiChar++)
+				{
+					if(ord($key[$asciiChar])<=90 && ord($key[$asciiChar])>=65) 
+					{
+						$convertedValue1 = "_".chr(ord($key[$asciiChar])+32);
+						$convertedValue=$convertedValue.$convertedValue1;
+					}
+					else
+					{
+						$convertedValue=$convertedValue.$key[$asciiChar];
+					}
+				}
+				//check is_display and payment-mode
+				if(strcmp('is_display',$convertedValue)==0)
+				{
+					$isDisplayEnum = new IsDisplayEnum();
+					$isDisplayArray = $isDisplayEnum->enumArrays();
+					$tQuotationArray[$convertedValue]=trim($value);
+					foreach ($isDisplayArray as $key => $value)
+					{
+						if(strcmp($value,$tQuotationArray[$convertedValue])==0)
+						{
+							$isDisplayFlag=1;
+							break;
+						}
+					}
+					if($isDisplayFlag==0)
+					{
+						return $exceptionArray['content'];
+					}
+				}
+				else
+				{
+					if(strcmp($convertedValue,'entry_date')==0)
+					{
+						//entry date conversion
+						$value = Carbon\Carbon::createFromFormat('d-m-Y', $value)->format('Y-m-d');
+					}
+					$tQuotationArray[$convertedValue]=trim($value);
+				}
+				$convertedValue="";
+			}
+		}
+		if($tempArrayFlag==1 && $dataFlag==1)
+		{
+			$tQuotationArray['inventory'] = $tempArray;
+		}
+		else if($tempArrayFlag==1)
+		{
+			$tQuotationArray['inventory'] = $tempArray;
+		}
+		return $tQuotationArray;
 	}
 }
