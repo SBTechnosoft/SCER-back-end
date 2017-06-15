@@ -236,25 +236,49 @@ class ClientProcessor extends BaseProcessor
      */	
 	public function dateConversion($headerData)
 	{
-		//date format conversion
-		$splitedFromDate = explode("-",trim($headerData['fromdate'][0]));
-		$transformFromDate = $splitedFromDate[2]."-".$splitedFromDate[1]."-".$splitedFromDate[0];
-		
-		$splitedToDate = explode("-",trim($headerData['todate'][0]));
-		$transformToDate = $splitedToDate[2]."-".$splitedToDate[1]."-".$splitedToDate[0];
-		
-		//valiate Date
-		if(!preg_match("/^[0-9]{4}-([1-9]|1[0-2]|0[1-9])-([1-9]|0[1-9]|[1-2][0-9]|3[0-1])$/",$transformFromDate))
-		{
-			return "from-date is not valid";
-		}
-		if(!preg_match("/^[0-9]{4}-([1-9]|1[0-2]|0[1-9])-([1-9]|0[1-9]|[1-2][0-9]|3[0-1])$/",$transformToDate))
-		{
-			return "to-date is not valid";
-		}
 		$objectClass = new stdclass();
-		$objectClass->fromdate = $transformFromDate;
-		$objectClass->todate = $transformToDate;
+		if(array_key_exists('invoicefromdate',$headerData))
+		{
+			//date format conversion
+			$splitedFromDate = explode("-",trim($headerData['invoicefromdate'][0]));
+			$invoiceTransformFromDate = $splitedFromDate[2]."-".$splitedFromDate[1]."-".$splitedFromDate[0];
+			
+			$splitedToDate = explode("-",trim($headerData['invoicetodate'][0]));
+			$invoiceTransformToDate = $splitedToDate[2]."-".$splitedToDate[1]."-".$splitedToDate[0];
+			
+			//valiate Date
+			if(!preg_match("/^[0-9]{4}-([1-9]|1[0-2]|0[1-9])-([1-9]|0[1-9]|[1-2][0-9]|3[0-1])$/",$invoiceTransformFromDate))
+			{
+				return "invoice from-date is not valid";
+			}
+			if(!preg_match("/^[0-9]{4}-([1-9]|1[0-2]|0[1-9])-([1-9]|0[1-9]|[1-2][0-9]|3[0-1])$/",$invoiceTransformToDate))
+			{
+				return "invoice to-date is not valid";
+			}
+			$objectClass->invoicefromdate = $invoiceTransformFromDate;
+			$objectClass->invoicetodate = $invoiceTransformToDate;
+		}
+		if(array_key_exists('jobcardfromdate',$headerData))
+		{
+			//date format conversion
+			$splitedFromDate = explode("-",trim($headerData['jobcardfromdate'][0]));
+			$jobcardTransformFromDate = $splitedFromDate[2]."-".$splitedFromDate[1]."-".$splitedFromDate[0];
+			
+			$splitedToDate = explode("-",trim($headerData['jobcardtodate'][0]));
+			$jobcardTransformToDate = $splitedToDate[2]."-".$splitedToDate[1]."-".$splitedToDate[0];
+			
+			//valiate Date
+			if(!preg_match("/^[0-9]{4}-([1-9]|1[0-2]|0[1-9])-([1-9]|0[1-9]|[1-2][0-9]|3[0-1])$/",$jobcardTransformFromDate))
+			{
+				return "invoice from-date is not valid";
+			}
+			if(!preg_match("/^[0-9]{4}-([1-9]|1[0-2]|0[1-9])-([1-9]|0[1-9]|[1-2][0-9]|3[0-1])$/",$jobcardTransformToDate))
+			{
+				return "invoice to-date is not valid";
+			}
+			$objectClass->jobcardfromdate = $jobcardTransformFromDate;
+			$objectClass->jobcardtodate = $jobcardTransformToDate;
+		}
 		return $objectClass;
 	}
 }

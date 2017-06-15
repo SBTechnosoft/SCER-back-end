@@ -475,7 +475,7 @@ include ('connection.php');
 				// formdata.append('companyId',$scope.formAdata.companyId);
 				
 				//job-form
-				// $scope.formAdata.clientName = "reema";
+				// $scope.formAdata.clientName = "reemavss";
 				// $scope.formAdata.contactNo = '8788888888';
 				// $scope.formAdata.address = 'address';
 				// $scope.formAdata.emailId = 'email@gmail.com';
@@ -488,23 +488,14 @@ include ('connection.php');
 				// $scope.formAdata.total = '200';
 				// $scope.formAdata.tax = '200';
 				// $scope.formAdata.paymentMode = 'cash';
-				// $scope.formAdata.stateAbb = 'IN-AP';
-				// $scope.formAdata.cityId = '79';
-				// $scope.formAdata.companyId = '9';
+				// $scope.formAdata.stateAbb = 'IN-AS';
+				// $scope.formAdata.cityId = '361';
+				// $scope.formAdata.companyId = '10';
 				// $scope.formAdata.bankName = 'sdfsd';
 				// $scope.formAdata.chequeNo = 'sdfsd';
 				// $scope.inventory=[{"productId":3,"productName":"Rangerddcd" ,"productInformation":'info',"qty":'2',
 				 // "price":45,'discountType':'flat','discount':10},{"productId":3,"productName":"Rangerddcd" ,"productInformation":'info',"qty":'2',
 				 // "price":45,'discountType':'flat','discount':10}];
-				// $scope.formAdata.productInformation = 'information';
-				// $scope.formAdata.qty = '2';
-				// $scope.formAdata.tax = '10';
-				// $scope.formAdata.discountType = 'flat';
-				// $scope.formAdata.discount = '4';
-				// $scope.formAdata.additionalTax = '12';
-				// $scope.formAdata.price = '100';
-				
-				// $scope.formAdata.productId = '3';
 				
 				
 				// formdata.append('clientName',$scope.formAdata.clientName);
@@ -530,16 +521,6 @@ include ('connection.php');
    					// formdata.append('product['+i+']['+key+']',value);
   					// });
 				// }
-				// formdata.append('productInformation',$scope.formAdata.productInformation);
-				// formdata.append('qty',$scope.formAdata.qty);
-				// formdata.append('tax',$scope.formAdata.tax);
-				// formdata.append('discountType',$scope.formAdata.discountType);
-				// formdata.append('discount',$scope.formAdata.discount);
-				// formdata.append('additionalTax',$scope.formAdata.additionalTax);
-				// formdata.append('price',$scope.formAdata.price);
-				
-				// formdata.append('productId',$scope.formAdata.productId);
-				
 				
 				// insert into job_card_dtl(client_name,company_id,product_id,state_abb,city_id) values('fff',9,3,'IN-AP',79) on duplicate key update client_name='ggg'
 	//----------------------------------Batch Insertion-----------------------------------------------------------------			
@@ -774,6 +755,9 @@ include ('connection.php');
 				// var jobCardNo = 3;
 				// var quotationBillId = 1;
 				
+				
+				var url="http://www.scerp1.com/crm/conversations/bulk-email";
+				
 				// var url="http://www.scerp1.com/accounting/quotations/"+quotationBillId;
 				// var url="http://www.scerp1.com/accounting/quotations";
 				
@@ -821,8 +805,9 @@ include ('connection.php');
 				// var url = "http://www.scerp1.com/accounting/bills";
 				// var url = "http://www.scerp1.com/accounting/bills/company/"+companyId;
 				
+				// var url= "http://www.scerp1.com/clients/export"; //header:operation:pdf/excel and searching criteria..that send in client
 				// var url = "http://www.scerp1.com/clients/"+clientId;
-				var url = "http://www.scerp1.com/clients";
+				// var url = "http://www.scerp1.com/clients";
 				
 				// var url = "http://www.scerp1.com/documents/bill";
 				// var url="http://www.scerp1.com/products/inward"; 
@@ -892,9 +877,9 @@ include ('connection.php');
 						processData: false,
 						
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
-                        // headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','type':'payment'},
-                        headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','emailId':'reemas@gmail.com','address':'address1','invoiceNumber':'','jobCardNumber':''},
-                        // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','salesType':'retail_sales','operation':'excel'},
+                        headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372'},
+                        // headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','clientName':'reemapatell','contactNo':'9998989899','emailId':'reemas@gmail.com','address':'address2','invoiceFromDate':'12-01-2017','invoiceNumber':'myCompany44','jobCardNumber':'2'},
+                        // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','salesType':'retail_sales','operation':'excel'},//
                         // headers: {'Content-Type': undefined,'type':'sales','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6',
 						// 'type':'sales'},
@@ -907,7 +892,7 @@ include ('connection.php');
                         // headers: {'Content-Type':undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','productCode':'ABC_ABC_AB_CYCFDJ_BKBK_122T'},
                         // headers: {'Content-Type':undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','fromDate':'01/04/2017','toDate':'28/04/2017'},
                         // headers: {'Content-Type':'application/x-www-form-urlencoded','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
-						 data:formdata
+						 // data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

@@ -238,7 +238,8 @@ return [
 		'PolishReport',
 		'JobForm',
 		'JobFormNumber',
-		'Quotations'
+		'Quotations',
+		'Conversations'
 	],
 
     /*

@@ -68,6 +68,7 @@ class RouteServiceProvider extends ServiceProvider
 			$routeArray['job-form'] = "JobForm";
 			$routeArray['job-form-number'] = "JobFormNumber";
 			$routeArray['quotations'] = "Quotation";
+			$routeArray['conversations'] = "Conversation";
 			foreach($routeArray as $key => $value)
 			{
 				if($key==$splitUriRoute[1])
@@ -151,8 +152,8 @@ class RouteServiceProvider extends ServiceProvider
 						if(!strcmp($package,$convertedString1)) 
 						{
 							$path = app_path('Api\V1_0\\' . str_replace('\\', '/', $package) .'\\Routes');		
-							$namespace = 'ERP\Api\V1_0\\Crm\\' . $package ;	
-							$namespace .'\\Routes\\' . $routeName;
+							$namespace = 'ERP\Api\V1_0\\Crm\\' . $package;	
+							
 							//go to the register method from particular Route class 
 							$this->app->make($namespace .'\\Routes\\' . $routeName)
 							->register($router);	

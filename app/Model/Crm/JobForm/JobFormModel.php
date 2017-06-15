@@ -54,6 +54,7 @@ class JobFormModel extends Model
 		state_abb,
 		city_id,
 		company_id,
+		client_id,
 		bank_name,
 		cheque_no,
 		product_array) 
@@ -74,6 +75,7 @@ class JobFormModel extends Model
 		'".$dataArray['stateAbb']."',
 		'".$dataArray['cityId']."',
 		'".$dataArray['companyId']."',
+		'".$dataArray['clientId']."',
 		'".$dataArray['bankName']."',
 		'".$dataArray['chequeNo']."',
 		'".$encodedArray."') on duplicate key update 
@@ -93,6 +95,7 @@ class JobFormModel extends Model
 		state_abb='".$dataArray['stateAbb']."',
 		city_id='".$dataArray['cityId']."',
 		company_id='".$dataArray['companyId']."',
+		client_id='".$dataArray['clientId']."',
 		bank_name='".$dataArray['bankName']."',
 		cheque_no='".$dataArray['chequeNo']."',
 		product_array='".$encodedArray."',
@@ -113,11 +116,14 @@ class JobFormModel extends Model
 			//update job-form-number
 			$jobFormNumberModel = new JobFormNumberModel();
 			$latestJobFormNumber = $jobFormNumberModel->getLatestJobFormNumberData($dataArray['companyId']);
+			if(strcmp($latestJobFormNumber,$exceptionArray['204'])==0)
+			{
+				return $exceptionArray['204'];
+			}
 			$decodedJobFormNumber = json_decode($latestJobFormNumber);
 			$endAt = $decodedJobFormNumber[0]->end_at+1;
 			$updateResult = $jobFormNumberModel->updateJobCardNo($dataArray['companyId'],$endAt);
 		}
-		
 		if($raw==1)
 		{
 			return $exceptionArray['200'];
@@ -158,6 +164,7 @@ class JobFormModel extends Model
 		state_abb,
 		city_id,
 		company_id,
+		client_id,
 		bank_name,
 		cheque_no,
 		product_array,
@@ -209,6 +216,7 @@ class JobFormModel extends Model
 		state_abb,
 		city_id,
 		company_id,
+		client_id,
 		bank_name,
 		cheque_no,
 		product_array,
@@ -229,6 +237,61 @@ class JobFormModel extends Model
 		else
 		{
 			return json_encode($raw);
+		}
+	}
+	
+	/**
+	 * get job-card data
+	 * @param  fromdate,todate
+	 * returns the exception-message/data
+	*/
+	public function getFromToDateData($fromDate,$toDate)
+	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();
+		$jobCardData = DB::connection($databaseName)->select("select 
+		job_card_id,
+		client_name,
+		address,
+		contact_no,
+		email_id,
+		job_card_no,
+		labour_charge,
+		service_type,
+		entry_date,
+		delivery_date,
+		advance,
+		total,
+		tax,
+		payment_mode,
+		state_abb,
+		city_id,
+		company_id,
+		client_id,
+		bank_name,
+		cheque_no,
+		product_array,
+		created_at,
+		updated_at 
+		from job_card_dtl 
+		where (entry_Date BETWEEN '".$fromDate."' AND '".$toDate."') and
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		if(count($jobCardData)!=0)
+		{
+			return json_encode($jobCardData);
+		}
+		else
+		{
+			return $exceptionArray['204'];
 		}
 	}
 }

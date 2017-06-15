@@ -1367,6 +1367,114 @@ class BillModel extends Model
 	}
 	
 	/**
+	 * get bill data
+	 * @param  invoice-number
+	 * returns the exception-message/data
+	*/
+	public function getInvoiceNumberData($invoiceNumber)
+	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();
+		$billData = DB::connection($databaseName)->select("select 
+		sale_id,
+		product_array,
+		payment_mode,
+		bank_name,
+		invoice_number,
+		job_card_number,
+		check_number,
+		total,
+		extra_charge,
+		tax,
+		grand_total,
+		advance,
+		balance,
+		remark,
+		entry_date,
+		client_id,
+		sales_type,
+		refund,
+		company_id,
+		jf_id,
+		created_at,
+		updated_at 
+		from sales_bill 
+		where invoice_number='".$invoiceNumber."' and
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		if(count($billData)!=0)
+		{
+			return json_encode($billData);
+		}
+		else
+		{
+			return $exceptionArray['204'];
+		}
+	}
+	
+	/**
+	 * get bill data
+	 * @param  fromdate,todate
+	 * returns the exception-message/data
+	*/
+	public function getFromToDateData($fromDate,$toDate)
+	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();
+		$billData = DB::connection($databaseName)->select("select 
+		sale_id,
+		product_array,
+		payment_mode,
+		bank_name,
+		invoice_number,
+		job_card_number,
+		check_number,
+		total,
+		extra_charge,
+		tax,
+		grand_total,
+		advance,
+		balance,
+		remark,
+		entry_date,
+		client_id,
+		sales_type,
+		refund,
+		company_id,
+		jf_id,
+		created_at,
+		updated_at 
+		from sales_bill 
+		where (entry_Date BETWEEN '".$fromDate."' AND '".$toDate."') and
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		if(count($billData)!=0)
+		{
+			return json_encode($billData);
+		}
+		else
+		{
+			return $exceptionArray['204'];
+		}
+	}
+	
+	/**
 	 * delete bill data
 	 * @param  sale-id
 	 * returns the exception-message/status

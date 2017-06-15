@@ -26,6 +26,7 @@ use ERP\Core\Crm\JobForm\Properties\AddressPropertyTrait;
 use ERP\Core\Crm\JobForm\Properties\ProductNamePropertyTrait;
 use ERP\Core\Crm\JobForm\Properties\BankNamePropertyTrait;
 use ERP\Core\Crm\JobForm\Properties\chequeNoPropertyTrait;
+use ERP\Core\Crm\JobForm\Properties\ClientIdPropertyTrait;
 use ERP\Core\States\Properties\StateAbbPropertyTrait;
 use ERP\Core\Shared\Properties\IdPropertyTrait;
 use ERP\Core\Shared\Properties\KeyPropertyTrait;
@@ -64,4 +65,5 @@ class JobFormPersistable
 	use ProductNamePropertyTrait;
 	use BankNamePropertyTrait;
 	use chequeNoPropertyTrait;
+	use ClientIdPropertyTrait;
 }

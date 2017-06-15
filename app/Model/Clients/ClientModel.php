@@ -8,6 +8,8 @@ use ERP\Exceptions\ExceptionMessage;
 use ERP\Entities\EnumClasses\IsDisplayEnum;
 use ERP\Entities\Constants\ConstantClass;
 use ERP\Core\Clients\Entities\ClientArray;
+use ERP\Model\Accounting\Bills\BillModel;
+use ERP\Model\Crm\JobForm\JobFormModel;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -146,18 +148,110 @@ class ClientModel extends Model
 	*/
 	public function getAllData($headerData,$processedData=null)
 	{
-		if(array_key_exists('invoicenumber',$headerData))
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		$billFlag=0;
+		$jobFormFlag=0;
+		$invoiceDateFlag=0;
+		$jobCardDateFlag=0;
+		$queryParameter="";
+		$billModel = new BillModel();
+		$jobFormModel = new JobFormModel();
+		
+		if(array_key_exists('invoicenumber',$headerData) && $headerData['invoicenumber'][0]!='')
 		{
-			echo "iff";
+			$billResult = $billModel->getInvoiceNumberData($headerData['invoicenumber'][0]);
+			if(strcmp($billResult,$exceptionArray['204'])!=0)
+			{
+				$decodedBillData = json_decode($billResult);
+				$billFlag=1;
+				$queryParameter = $queryParameter." client_id IN('".$decodedBillData[0]->client_id."'";
+			}
 		}
-		if(array_key_exists('jobcardnumber',$headerData))
+		
+		if(array_key_exists('jobcardnumber',$headerData) && $headerData['jobcardnumber'][0]!='')
 		{
-			echo "iff";
+			$jobFormResult = $jobFormModel->getData($headerData['jobcardnumber'][0]);
+			if(strcmp($jobFormResult,$exceptionArray['204'])!=0)
+			{
+				$decodedJobCardData = json_decode($jobFormResult);
+				if($billFlag==1)
+				{
+					$queryParameter = $queryParameter.",'".$decodedJobCardData[0]->client_id."'";
+				}
+				else
+				{
+					$queryParameter = $queryParameter." client_id IN('".$decodedJobCardData[0]->client_id."'";
+				}
+				$jobFormFlag=1;
+			}
 		}
-		exit;
+		
+		if(array_key_exists('invoicefromdate',$headerData) && array_key_exists('invoicetodate',$headerData))
+		{
+			$invoiceFromDate = $processedData->invoicefromdate;
+			$invoiceToDate = $processedData->invoicetodate;
+			$billResult = $billModel->getFromToDateData($invoiceFromDate,$invoiceToDate);
+			if(strcmp($billResult,$exceptionArray['204'])!=0)
+			{
+				$decodedJsonData = json_decode($billResult);
+				if($billFlag!=1 && $jobFormFlag!=1)
+				{
+					$queryParameter = $queryParameter." client_id IN(";
+				}
+				for($arrayData=0;$arrayData<count($billResult);$arrayData++)
+				{
+					$invoiceDateFlag=1;
+					if($billFlag==1 || $jobFormFlag==1 && $arrayData==0)
+					{
+						$queryParameter = $queryParameter.",'".$decodedJsonData[$arrayData]->client_id."',";
+					}
+					else
+					{
+						$queryParameter = $queryParameter.$decodedJsonData[$arrayData]->client_id.",";
+					}
+				}
+			}
+		}
+		if(array_key_exists('jobcardfromdate',$headerData) && array_key_exists('jobcardtodate',$headerData))
+		{
+			$jobcardFromDate = $processedData->jobcardfromdate;
+			$jobcardToDate = $processedData->jobcardfromdate;
+			$jobCardResult = $JobFormModel->getFromToDateData($jobcardFromDate,$jobcardToDate);
+			if(strcmp($jobCardResult,$exceptionArray['204'])!=0)
+			{
+				$decodedJsonData = json_decode($jobCardResult);
+				if($billFlag!=1 && $jobFormFlag!=1 && $invoiceDateFlag!=1)
+				{
+					$queryParameter = $queryParameter." client_id IN(";
+				}
+				for($arrayData=0;$arrayData<count($jobCardResult);$arrayData++)
+				{
+					$jobCardDateFlag=1;
+					if($billFlag==1 || $jobFormFlag==1 || $invoiceDateFlag==1 && $arrayData==0)
+					{
+						$queryParameter = $queryParameter.",'".$decodedJsonData[$arrayData]->client_id."',";
+					}
+					else
+					{
+						$queryParameter = $queryParameter.$decodedJsonData[$arrayData]->client_id.",";
+					}
+				}
+			}
+		}		
+		if($invoiceDateFlag==1 || $jobCardDateFlag)
+		{
+			$queryParameter = rtrim($queryParameter,",");
+			$queryParameter = $queryParameter.") OR ";
+		}
+		else if($billFlag==1 || $jobFormFlag==1)
+		{
+			$queryParameter = $queryParameter.") OR ";
+		}
+		//simple data searching(without date)
 		$clientArray = new ClientArray();
 		$clientArrayData = $clientArray->searchClientData();
-		$queryParameter="";
 		for($dataArray=0;$dataArray<count($clientArrayData);$dataArray++)
 		{
 			$key = $clientArrayData[array_keys($clientArrayData)[$dataArray]];
@@ -165,15 +259,18 @@ class ClientModel extends Model
 			
 			if(array_key_exists($clientArrayData[array_keys($clientArrayData)[$dataArray]],$headerData))
 			{
-				$queryParameter = $queryParameter."".$queryKey."='".$headerData[$key][0]."' and ";
+				//address like query pending
+				if(strcmp('address',$clientArrayData[array_keys($clientArrayData)[$dataArray]])==0)
+				{
+					$queryParameter = $queryParameter."".$queryKey." LIKE '%".$headerData[$key][0]."%' OR ";
+				}	
+				else
+				{
+					$queryParameter = $queryParameter."".$queryKey."='".$headerData[$key][0]."' OR ";		
+				}
 			}
 		}
-		if(array_key_exists('fromdate',$headerData) && array_key_exists('todate',$headerData))
-		{
-			$fromDate = $processedData->fromdate;
-			$toDate = $processedData->todate;
-			$queryParameter = $queryParameter."(created_at BETWEEN '".$fromDate."' AND '".$toDate."') and ";
-		}
+		$queryParameter = rtrim($queryParameter,"OR ");
 		
 		//database selection
 		$database = "";
@@ -194,12 +291,9 @@ class ClientModel extends Model
 		deleted_at,
 		state_abb,
 		city_id			
-		from client_mst where ".$queryParameter." deleted_at='0000-00-00 00:00:00'");
+		from client_mst where ".$queryParameter." and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
-		// get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)
 		{
 			return $exceptionArray['204'];

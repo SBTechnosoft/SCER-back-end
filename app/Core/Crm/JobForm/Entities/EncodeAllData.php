@@ -5,6 +5,7 @@ use ERP\Core\Crm\JobForm\Entities\JobForm;
 use ERP\Core\States\Services\StateService;
 use ERP\Core\Entities\CityDetail;
 use ERP\Core\Entities\CompanyDetail;
+use ERP\Core\Clients\Services\ClientService;
 use Carbon;
 /**
  *
@@ -44,6 +45,7 @@ class EncodeAllData extends StateService
 			$stateAbb[$decodedData] = $decodedJson[$decodedData]['state_abb'];
 			$cityId[$decodedData] = $decodedJson[$decodedData]['city_id'];
 			$companyId[$decodedData] = $decodedJson[$decodedData]['company_id'];
+			$clientId[$decodedData] = $decodedJson[$decodedData]['client_id'];
 			
 			//get the state detail from database
 			$encodeDataClass = new EncodeAllData();
@@ -61,6 +63,10 @@ class EncodeAllData extends StateService
 			//get the company details from database
 			$companyDetail = new CompanyDetail();
 			$getCompanyDetails[$decodedData] = $companyDetail->getCompanyDetails($companyId[$decodedData]);
+			
+			//get the client detail from database
+			$clientService = new ClientService();
+			$getClientDetails[$decodedData] = $clientService->getClientData($clientId[$decodedData]);
 			
 			//convert amount(number_format) into their company's selected decimal points
 			$advance[$decodedData] = number_format($advance[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
@@ -102,6 +108,7 @@ class EncodeAllData extends StateService
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
 		{
+			$clientData = json_decode($getClientDetails[$jsonData]);
 			$data[$jsonData]= array(
 				'jobCardNo'=>$jobCardNo[$jsonData],
 				'clientName' => $clientName[$jsonData],
@@ -139,7 +146,19 @@ class EncodeAllData extends StateService
 					'updatedAt' => $getCityDetail[$jsonData]['updatedAt'],
 					'stateAbb' => $getCityDetail[$jsonData]['state']['stateAbb']
 				),
-				
+				'client' => array(
+					'clientId'=>$clientData->clientId,
+					'clientName'=>$clientData->clientName,
+					'companyName'=>$clientData->companyName,
+					'contactNo'=>$clientData->contactNo,
+					'emailId'=>$clientData->emailId,
+					'address1'=>$clientData->address1,
+					'isDisplay'=>$clientData->isDisplay,
+					'createdAt'=>$clientData->createdAt,
+					'updatedAt'=>$clientData->updatedAt,
+					'stateAbb'=>$clientData->state->stateAbb,
+					'cityId'=>$clientData->city->cityId
+				),
 				'company' => array(	
 					'companyId' => $getCompanyDetails[$jsonData]['companyId'],
 					'companyName' => $getCompanyDetails[$jsonData]['companyName'],	

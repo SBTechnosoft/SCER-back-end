@@ -45,7 +45,11 @@
 	- "contactNo":"",
 	- "clientName":"",
 	- "invoiceNumber":"",
-	- "jobCardNumber":""
+	- "jobCardNumber":"",
+	- "invoiceFromDate":"",
+	- "invoiceToDate":"",
+	- "jobCardFromDate":"",
+	- "jobCardToDate":"",
 + Error Message
 
 			{

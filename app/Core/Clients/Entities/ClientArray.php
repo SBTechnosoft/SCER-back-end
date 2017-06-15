@@ -25,9 +25,9 @@ class ClientArray
 	{
 		$clientArray = array();
 		$clientArray['client_name'] = 'clientname';
-		$clientArray['contact_no'] = 'contactNo';
+		$clientArray['contact_no'] = 'contactno';
 		$clientArray['address1'] = 'address';
-		$clientArray['email_id'] = 'emailId';
+		$clientArray['email_id'] = 'emailid';
 		return $clientArray;
 	}
 	

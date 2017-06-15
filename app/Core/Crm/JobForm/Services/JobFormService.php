@@ -75,6 +75,7 @@ class JobFormService extends AbstractService
 		$arrayData['companyId']= $jobFormArray[0]->getCompanyId();
 		$arrayData['bankName']= $jobFormArray[0]->getBankName();
 		$arrayData['chequeNo']= $jobFormArray[0]->getChequeNo();
+		$arrayData['clientId']= $jobFormArray[0]->getClientId();
 			
 		$inventoryArray = array();
 		for($data=0;$data<count($jobFormArray);$data++)
@@ -88,7 +89,6 @@ class JobFormService extends AbstractService
 			$inventoryArray[$data]['discountType'] = $jobFormArray[$data]->getDiscountType();
 			$inventoryArray[$data]['discount'] = $jobFormArray[$data]->getDiscount();
 		}
-		
 		$jobFormModel = new JobFormModel();
 		if(array_key_exists('operation',$headerArray))
 		{

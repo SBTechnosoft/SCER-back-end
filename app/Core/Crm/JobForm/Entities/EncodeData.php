@@ -6,6 +6,7 @@ use ERP\Core\States\Services\StateService;
 use ERP\Core\Entities\CompanyDetail;
 use ERP\Core\Entities\CityDetail;
 use Carbon;
+use ERP\Core\Clients\Services\ClientService;
 /**
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -37,6 +38,7 @@ class EncodeData extends StateService
 		$stateAbb= $decodedJson[0]['state_abb'];
 		$cityId= $decodedJson[0]['city_id'];
 		$companyId= $decodedJson[0]['company_id'];
+		$clientId= $decodedJson[0]['client_id'];
 		
 		// get the state details from database
 		$encodeStateDataClass = new EncodeData();
@@ -50,6 +52,11 @@ class EncodeData extends StateService
 		// get the company details from database
 		$companyDetail = new CompanyDetail();
 		$companyDetails = $companyDetail->getCompanyDetails($companyId);
+		
+		//get the client details from database
+		$clientService = new ClientService();
+		$clientStatus = $clientService->getClientData($clientId);
+		$clientDecodedJson = json_decode($clientStatus,true);
 		
 		//convert amount(number_format) into their company's selected decimal points
 		$advance = number_format($advance,$companyDetails['noOfDecimalPoints'],'.','');
@@ -138,6 +145,19 @@ class EncodeData extends StateService
 			'isDefault' => $companyDetails['isDefault'],	
 			'createdAt' => $companyDetails['createdAt'],	
 			'updatedAt' => $companyDetails['updatedAt'],	
+		);
+		$data['client']= array(
+			'clientId' => $clientDecodedJson['clientId'],	
+			'clientName' => $clientDecodedJson['clientName'],	
+			'companyName' => $clientDecodedJson['companyName'],	
+			'contactNo' => $clientDecodedJson['contactNo'],	
+			'emailId' => $clientDecodedJson['emailId'],	
+			'address1' => $clientDecodedJson['address1'],		
+			'isDisplay' => $clientDecodedJson['isDisplay'],	
+			'createdAt' => $clientDecodedJson['createdAt'],	
+			'updatedAt' => $clientDecodedJson['updatedAt'],	
+			'stateAbb' => $clientDecodedJson['state']['stateAbb'],	
+			'cityId' => $clientDecodedJson['city']['cityId']
 		);
 		$data['state']= array(
 			'stateAbb' => $stateDecodedJson['stateAbb'],

@@ -32,9 +32,8 @@
 				{
 					{
 						{
-							"documentId":int,
-							"saleId":int,
 							...Standard Document Object
+							"saleId":int,
 							"documentType":string,
 							"createdAt":timestamp,
 							"updatedAt":datetime
