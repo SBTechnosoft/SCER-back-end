@@ -461,6 +461,28 @@ include ('connection.php');
 				// formdata.append('branchId',$scope.formAdata.branch_id);
 				
 	//---------------------------------CRM-------------------------------------------------------------------------------
+				//conversation-dtl(email)
+				$scope.client=[{"clientId":3},{"clientId":3},{"clientId":3},{"clientId":3}];
+				
+				$scope.formAdata.emailId = "";
+				$scope.formAdata.ccEmailId = "";
+				$scope.formAdata.bccEmailId = "";
+				$scope.formAdata.subject = "";
+				$scope.formAdata.conversation = "";
+				
+				for(var i=0;i<$scope.client.length;i++)
+				{
+					angular.forEach($scope.client[i], function (value,key) {
+						formdata.append('client['+i+']['+key+']',value);
+  					});
+				}
+				
+				formdata.append('emailId',$scope.formAdata.emailId);
+				formdata.append('ccEmailId',$scope.formAdata.ccEmailId);
+				formdata.append('bccEmailId',$scope.formAdata.bccEmailId);
+				formdata.append('subject',$scope.formAdata.subject);
+				formdata.append('conversation',$scope.formAdata.conversation);
+				
 				//job-form-number
 				// $scope.formAdata.jobCardNumberLabel = "ffff";
 				// $scope.formAdata.jobCardNumberType = 'prefix';

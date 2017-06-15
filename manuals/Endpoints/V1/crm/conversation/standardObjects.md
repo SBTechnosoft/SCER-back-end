@@ -12,7 +12,13 @@
 				{
 					... File Object
 				}
-			"clientId":int,
+			"client":
+				{
+					{
+						"clientId":int,
+					}
+					...
+				}
 			"companyId":int,
 			"branchId":int,
 		}
