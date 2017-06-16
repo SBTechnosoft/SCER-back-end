@@ -7,7 +7,7 @@
 + Body
 
             {
-                ... Standard Email Persistable Object
+                ... Standard Email/Sms Persistable Object
             }
 + Error Message
 
@@ -29,7 +29,7 @@
 + Body
 
             {
-                ... Standard SMS Persistable Object
+                ... Standard Email/Sms Persistable Object
             }
 + Error Message
 

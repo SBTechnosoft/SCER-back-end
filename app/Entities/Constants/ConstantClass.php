@@ -21,6 +21,7 @@ class ConstantClass
 		$constantArray['noImage'] = "Storage/No-Image/no-image.jpg";
 		$constantArray['productBarcode'] = "Storage/Barcode/";
 		$constantArray['documentUrl'] = "Storage/Document/";
+		$constantArray['emailDocumentUrl'] = "Storage/Email/";
 		$constantArray['purchaseTaxationUrl'] = "Storage/Taxation/PurchaseDetail/";
 		$constantArray['purchaseTaxUrl'] = "Storage/Taxation/PurchaseTax/";
 		$constantArray['saleTaxUrl'] = "Storage/Taxation/SaleTax/";
@@ -99,6 +100,10 @@ class ConstantClass
 		$constantArray['fromDate']="fromdate";
 		$constantArray['toDate']="todate";
 		
+		//crm
+		$constantArray['conversationEmailType']="email";
+		$constantArray['conversationSmsType']="sms";
+		
 		$constantArray['clientUrl']="http://www.scerp1.com/clients";
 		$constantArray['documentGenerateUrl']="http://www.scerp1.com/documents/bill";
 		$constantArray['documentGenerateQuotationUrl']="http://www.scerp1.com/documents/quotation";
@@ -109,7 +114,7 @@ class ConstantClass
 		$constantArray['productUrl']="http://www.scerp1.com/accounting/products";
 		return $constantArray;
 	}
-	
+
 	/**
 	 * check the incoming request url and give them respected database name
 	 * @param (no parameter)

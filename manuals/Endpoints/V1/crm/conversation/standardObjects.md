@@ -1,4 +1,4 @@
-##### Standard Email Persistable Object
+##### Standard Email/Sms Persistable Object
 		{
 			"conversationId":int,
 			"emailId":string,

@@ -3,11 +3,11 @@ namespace ERP\Api\V1_0\Crm\Conversations\Controllers;
 
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
-// use ERP\Core\Crm\Conversations\Services\JobFormService;
+use ERP\Core\Crm\Conversations\Services\ConversationService;
 use ERP\Http\Requests;
 use ERP\Api\V1_0\Support\BaseController;
-// use ERP\Api\V1_0\Crm\Conversations\Processors\JobFormProcessor;
-// use ERP\Core\Crm\Conversations\Persistables\JobFormPersistable;
+use ERP\Api\V1_0\Crm\Conversations\Processors\ConversationProcessor;
+use ERP\Core\Crm\Conversations\Persistables\ConversationPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Entities\Constants\ConstantClass;
@@ -45,7 +45,51 @@ class ConversationController extends BaseController implements ContainerInterfac
 	 * @param  Request object[Request $request]
 	 * method calls the processor for creating persistable object & setting the data
 	*/
-    public function store(Request $request)
+    public function storeEmail(Request $request)
+    {
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$this->request = $request;
+			// check the requested Http method
+			$requestMethod = $_SERVER['REQUEST_METHOD'];
+			// insert
+			if($requestMethod == 'POST')
+			{
+				$processor = new ConversationProcessor();
+				$conversationPersistable = new ConversationPersistable();
+				$conversationService= new ConversationService();
+				$conversationType=$constantArray['conversationEmailType'];
+				$conversationPersistable = $processor->createPersistable($this->request,$conversationType);
+				if(is_array($conversationPersistable))
+				{
+					$status = $conversationService->insert($conversationPersistable,$this->request->input(),$conversationType);
+					return $status;
+				}
+				else
+				{
+					return $conversationPersistable;
+				}
+			}
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+	}
+	
+	/**
+	 * insert the specified resource 
+	 * @param  Request object[Request $request]
+	 * method calls the processor for creating persistable object & setting the data
+	*/
+    public function storeSms(Request $request)
     {
 		//Authentication
 		$tokenAuthentication = new TokenAuthentication();
@@ -57,26 +101,27 @@ class ConversationController extends BaseController implements ContainerInterfac
 		
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			// $this->request = $request;
+			$this->request = $request;
 			// check the requested Http method
-			// $requestMethod = $_SERVER['REQUEST_METHOD'];
+			$requestMethod = $_SERVER['REQUEST_METHOD'];
 			// insert
-			// if($requestMethod == 'POST')
-			// {
-				// $processor = new ConversationProcessor();
-				// $conversationPersistable = new ConversationPersistable();
-				// $conversationService= new ConversationService();		
-				// $conversationPersistable = $processor->createPersistable($this->request);
-				// if(is_array($jobFormPersistable))
-				// {
-					// $status = $conversationService->insert($conversationPersistable,$this->request->header());
-					// return $status;
-				// }
-				// else
-				// {
-					// return $conversationPersistable;
-				// }
-			// }
+			if($requestMethod == 'POST')
+			{
+				$processor = new ConversationProcessor();
+				$conversationPersistable = new ConversationPersistable();
+				$conversationService= new ConversationService();
+				$conversationType=$constantArray['conversationSmsType'];
+				$conversationPersistable = $processor->createPersistable($this->request,$conversationType);
+				if(is_array($conversationPersistable))
+				{
+					$status = $conversationService->insert($conversationPersistable,$this->request->input(),$conversationType);
+					return $status;
+				}
+				else
+				{
+					return $conversationPersistable;
+				}
+			}
 		}
 		else
 		{

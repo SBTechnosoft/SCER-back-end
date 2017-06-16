@@ -17,7 +17,8 @@ class Conversation implements RouteRegistrarInterface
     public function register(RegistrarInterface $Registrar)
     {
 		// insert data post request
-		Route::post('Crm/Conversations/Conversation', 'Crm\Conversations\Controllers\ConversationController@store');
+		Route::post('Crm/Conversations/Conversation/bulk-email', 'Crm\Conversations\Controllers\ConversationController@storeEmail');
+		Route::post('Crm/Conversations/Conversation/bulk-sms', 'Crm\Conversations\Controllers\ConversationController@storeSms');
 	}
 }
 

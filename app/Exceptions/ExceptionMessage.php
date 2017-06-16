@@ -24,6 +24,9 @@ class ExceptionMessage
 		$msgArray['Exists'] = "Exists: Token Already Exists";
 		$msgArray['NoExists'] = "NotExists: Token Not Exists";
 		$msgArray['Email'] = "Message could not be sent";
+		$msgArray['successSms'] = "Sms is successfully send";
+		$msgArray['successEmail'] = "Message is successfully send";
+		$msgArray['requiredEmail'] = "Email-Address is required";
 		$msgArray['noAccess'] = "Don't Have Access Right";
 		$msgArray['mapping'] = "mapping is not proper";
 		$msgArray['missingField'] = "mapping field is missing";

@@ -462,26 +462,26 @@ include ('connection.php');
 				
 	//---------------------------------CRM-------------------------------------------------------------------------------
 				//conversation-dtl(email)
-				$scope.client=[{"clientId":3},{"clientId":3},{"clientId":3},{"clientId":3}];
+				// $scope.client=[{"clientId":1},{"clientId":2},{"clientId":3}];
 				
-				$scope.formAdata.emailId = "";
-				$scope.formAdata.ccEmailId = "";
-				$scope.formAdata.bccEmailId = "";
-				$scope.formAdata.subject = "";
-				$scope.formAdata.conversation = "";
+				$scope.formAdata.emailId = "reemapatel25@gmail.com";
+				// $scope.formAdata.ccEmailId = "";
+				// $scope.formAdata.bccEmailId = "";
+				// $scope.formAdata.subject = "Sample Email Send";
+				// $scope.formAdata.conversation = "Good Morning, Your Bill Is Generated...";
 				
-				for(var i=0;i<$scope.client.length;i++)
-				{
-					angular.forEach($scope.client[i], function (value,key) {
-						formdata.append('client['+i+']['+key+']',value);
-  					});
-				}
+				// for(var i=0;i<$scope.client.length;i++)
+				// {
+					// angular.forEach($scope.client[i], function (value,key) {
+						// formdata.append('client['+i+']['+key+']',value);
+  					// });
+				// }
 				
-				formdata.append('emailId',$scope.formAdata.emailId);
-				formdata.append('ccEmailId',$scope.formAdata.ccEmailId);
-				formdata.append('bccEmailId',$scope.formAdata.bccEmailId);
-				formdata.append('subject',$scope.formAdata.subject);
-				formdata.append('conversation',$scope.formAdata.conversation);
+				// formdata.append('emailId',$scope.formAdata.emailId);
+				// formdata.append('ccEmailId',$scope.formAdata.ccEmailId);
+				// formdata.append('bccEmailId',$scope.formAdata.bccEmailId);
+				// formdata.append('subject',$scope.formAdata.subject);
+				// formdata.append('conversation',$scope.formAdata.conversation);
 				
 				//job-form-number
 				// $scope.formAdata.jobCardNumberLabel = "ffff";
@@ -497,52 +497,52 @@ include ('connection.php');
 				// formdata.append('companyId',$scope.formAdata.companyId);
 				
 				//job-form
-				// $scope.formAdata.clientName = "reemavss";
-				// $scope.formAdata.contactNo = '8788888888';
-				// $scope.formAdata.address = 'address';
-				// $scope.formAdata.emailId = 'email@gmail.com';
-				// $scope.formAdata.jobCardNo = '4';
-				// $scope.formAdata.labourCharge = '200';
-				// $scope.formAdata.serviceType = 'free';
-				// $scope.formAdata.entryDate = '2-2-2017';
-				// $scope.formAdata.deliveryDate = '2-2-2017';
-				// $scope.formAdata.advance = '200';
-				// $scope.formAdata.total = '200';
-				// $scope.formAdata.tax = '200';
-				// $scope.formAdata.paymentMode = 'cash';
-				// $scope.formAdata.stateAbb = 'IN-AS';
-				// $scope.formAdata.cityId = '361';
-				// $scope.formAdata.companyId = '10';
-				// $scope.formAdata.bankName = 'sdfsd';
-				// $scope.formAdata.chequeNo = 'sdfsd';
-				// $scope.inventory=[{"productId":3,"productName":"Rangerddcd" ,"productInformation":'info',"qty":'2',
-				 // "price":45,'discountType':'flat','discount':10},{"productId":3,"productName":"Rangerddcd" ,"productInformation":'info',"qty":'2',
-				 // "price":45,'discountType':'flat','discount':10}];
+				$scope.formAdata.clientName = "reemavss";
+				$scope.formAdata.contactNo = '8788888888';
+				$scope.formAdata.address = 'address';
+				$scope.formAdata.emailId = 'email@gmail.com';
+				$scope.formAdata.jobCardNo = '4';
+				$scope.formAdata.labourCharge = '200';
+				$scope.formAdata.serviceType = 'free';
+				$scope.formAdata.entryDate = '2-2-2017';
+				$scope.formAdata.deliveryDate = '2-2-2017';
+				$scope.formAdata.advance = '200';
+				$scope.formAdata.total = '200';
+				$scope.formAdata.tax = '200';
+				$scope.formAdata.paymentMode = 'cash';
+				$scope.formAdata.stateAbb = 'IN-AS';
+				$scope.formAdata.cityId = '361';
+				$scope.formAdata.companyId = '10';
+				$scope.formAdata.bankName = 'sdfsd';
+				$scope.formAdata.chequeNo = 'sdfsd';
+				$scope.inventory=[{"productId":3,"productName":"Rangerddcd" ,"productInformation":'info',"qty":'2',
+				 "price":45,'discountType':'flat','discount':10},{"productId":3,"productName":"Rangerddcd" ,"productInformation":'info',"qty":'2',
+				 "price":45,'discountType':'flat','discount':10}];
 				
 				
-				// formdata.append('clientName',$scope.formAdata.clientName);
-				// formdata.append('contactNo',$scope.formAdata.contactNo);
-				// formdata.append('address',$scope.formAdata.address);
-				// formdata.append('emailId',$scope.formAdata.emailId);
-				// formdata.append('jobCardNo',$scope.formAdata.jobCardNo);
-				// formdata.append('labourCharge',$scope.formAdata.labourCharge);
-				// formdata.append('serviceType',$scope.formAdata.serviceType);
-				// formdata.append('entryDate',$scope.formAdata.entryDate);
-				// formdata.append('deliveryDate',$scope.formAdata.deliveryDate);
-				// formdata.append('advance',$scope.formAdata.advance);
-				// formdata.append('total',$scope.formAdata.total);
-				// formdata.append('tax',$scope.formAdata.tax);
-				// formdata.append('paymentMode',$scope.formAdata.paymentMode);
-				// formdata.append('stateAbb',$scope.formAdata.stateAbb);
-				// formdata.append('cityId',$scope.formAdata.cityId);
-				// formdata.append('companyId',$scope.formAdata.companyId);
-				// for(var i=0;i<$scope.inventory.length;i++){
+				formdata.append('clientName',$scope.formAdata.clientName);
+				formdata.append('contactNo',$scope.formAdata.contactNo);
+				formdata.append('address',$scope.formAdata.address);
+				formdata.append('emailId',$scope.formAdata.emailId);
+				formdata.append('jobCardNo',$scope.formAdata.jobCardNo);
+				formdata.append('labourCharge',$scope.formAdata.labourCharge);
+				formdata.append('serviceType',$scope.formAdata.serviceType);
+				formdata.append('entryDate',$scope.formAdata.entryDate);
+				formdata.append('deliveryDate',$scope.formAdata.deliveryDate);
+				formdata.append('advance',$scope.formAdata.advance);
+				formdata.append('total',$scope.formAdata.total);
+				formdata.append('tax',$scope.formAdata.tax);
+				formdata.append('paymentMode',$scope.formAdata.paymentMode);
+				formdata.append('stateAbb',$scope.formAdata.stateAbb);
+				formdata.append('cityId',$scope.formAdata.cityId);
+				formdata.append('companyId',$scope.formAdata.companyId);
+				for(var i=0;i<$scope.inventory.length;i++){
    
-  					// angular.forEach($scope.inventory[i], function (value,key) {
+  					angular.forEach($scope.inventory[i], function (value,key) {
    						
-   					// formdata.append('product['+i+']['+key+']',value);
-  					// });
-				// }
+   					formdata.append('product['+i+']['+key+']',value);
+  					});
+				}
 				
 				// insert into job_card_dtl(client_name,company_id,product_id,state_abb,city_id) values('fff',9,3,'IN-AP',79) on duplicate key update client_name='ggg'
 	//----------------------------------Batch Insertion-----------------------------------------------------------------			
@@ -778,7 +778,8 @@ include ('connection.php');
 				// var quotationBillId = 1;
 				
 				
-				var url="http://www.scerp1.com/crm/conversations/bulk-email";
+				// var url="http://www.scerp1.com/crm/conversations/bulk-email";
+				// var url="http://www.scerp1.com/crm/conversations/bulk-sms";
 				
 				// var url="http://www.scerp1.com/accounting/quotations/"+quotationBillId;
 				// var url="http://www.scerp1.com/accounting/quotations";
@@ -786,7 +787,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/crm/job-form-number/company/"+companyId+"/latest";
 				// var url="http://www.scerp1.com/crm/job-form-number";
 				// var url="http://www.scerp1.com/crm/job-form/"+jobCardNo;
-				// var url="http://www.scerp1.com/crm/job-form";
+				var url="http://www.scerp1.com/crm/job-form";
 				
 				// var url="http://www.scerp1.com/reports/polish-report/company/"+companyId;
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/stock-summary";
@@ -888,8 +889,8 @@ include ('connection.php');
                         url: url,
                         // type:'patch',
                         // type:'get',
-						 method: 'get',
-						 // method: 'post',
+						 // method: 'get',
+						 method: 'post',
 						 // method: 'patch',
 						// enctype:'multipart/formdata',
 						 // _method: 'patch',
@@ -914,7 +915,7 @@ include ('connection.php');
                         // headers: {'Content-Type':undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','productCode':'ABC_ABC_AB_CYCFDJ_BKBK_122T'},
                         // headers: {'Content-Type':undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','fromDate':'01/04/2017','toDate':'28/04/2017'},
                         // headers: {'Content-Type':'application/x-www-form-urlencoded','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
-						 // data:formdata
+						 data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

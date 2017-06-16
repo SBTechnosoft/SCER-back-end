@@ -50,6 +50,8 @@
 	- "invoiceToDate":"",
 	- "jobCardFromDate":"",
 	- "jobCardToDate":"",
+	- "emailId":"",
+	- "address":""
 + Error Message
 
 			{

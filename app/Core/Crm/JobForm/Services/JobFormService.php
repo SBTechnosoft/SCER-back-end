@@ -5,7 +5,6 @@ use ERP\Core\Crm\JobForm\Persistables\JobFormPersistable;
 use ERP\Model\Crm\JobForm\JobFormModel;
 use ERP\Core\Shared\Options\UpdateOptions;
 use ERP\Core\Support\Service\AbstractService;
-use ERP\Core\User\Entities\User;
 use ERP\Core\Crm\JobForm\Entities\EncodeData;
 use ERP\Core\Crm\JobForm\Entities\EncodeAllData;
 use ERP\Exceptions\ExceptionMessage;
