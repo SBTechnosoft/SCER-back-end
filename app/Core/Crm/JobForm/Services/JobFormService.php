@@ -106,7 +106,16 @@ class JobFormService extends AbstractService
 		{
 			//data pass to the model object for insert
 			$status = $jobFormModel->insertData($arrayData,$inventoryArray);
-			return $status;
+			if(strcmp($status,$exceptionArray['204'])==0)
+			{
+				return $status;
+			}
+			else
+			{
+				$encoded = new EncodeAllData();
+				$encodeAllData = $encoded->getEncodedAllData($status);
+				return $encodeAllData;
+			}
 		}
 	}
 	

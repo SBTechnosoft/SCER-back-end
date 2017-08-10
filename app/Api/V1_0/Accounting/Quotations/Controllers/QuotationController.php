@@ -111,7 +111,7 @@ class QuotationController extends BaseController implements ContainerInterface
 					}
 					else
 					{
-						return $billPersistable;
+						return $quotationPersistable;
 					}
 				}
 			}

@@ -223,6 +223,7 @@ class TemplateModel extends Model
 			company_id='".$companyId."' and 
 			deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
+			
 		}
 		//get exception message
 		$exception = new ExceptionMessage();

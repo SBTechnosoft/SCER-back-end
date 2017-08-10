@@ -161,7 +161,6 @@ class BillProcessor extends BaseProcessor
 				return $status;
 			}
 		}
-		
 		$paymentMode = $tRequest['payment_mode'];
 		$ledgerModel = new LedgerModel();
 		$ledgerResult = $ledgerModel->getLedgerId($tRequest['company_id'],$paymentMode);
@@ -169,8 +168,8 @@ class BillProcessor extends BaseProcessor
 		{
 			$paymentLedgerId = json_decode($ledgerResult)[0]->ledger_id;
 		}
-		if($tRequest['balance']!="" && $tRequest['balance']!=0)
-		{
+		// if($tRequest['balance']!="" && $tRequest['balance']!=0)
+		// {
 			if($tRequest['contact_no']=="" || $tRequest['contact_no']==0)
 			{
 				$contactFlag=2;
@@ -215,7 +214,7 @@ class BillProcessor extends BaseProcessor
 					$contactFlag=2;
 				}
 			}
-		}
+		// }
 		if($contactFlag==2)
 		{
 			$ledgerArray=array();
@@ -245,7 +244,6 @@ class BillProcessor extends BaseProcessor
 			}
 			$ledgerId = json_decode($processedData)[0]->ledger_id;
 		}
-		
 		// get jf_id
 		$journalController = new JournalController(new Container());
 		$journalMethod=$constantArray['getMethod'];
@@ -277,6 +275,7 @@ class BillProcessor extends BaseProcessor
 		
 		$amountTypeEnum = new AmountTypeEnum();
 		$amountTypeArray = $amountTypeEnum->enumArrays();
+		
 		$ledgerAmount = $tRequest['total']-$tRequest['advance'];		
 		$discountTotal=0;
 		for($discountArray=0;$discountArray<count($tRequest[0]);$discountArray++)
@@ -561,6 +560,7 @@ class BillProcessor extends BaseProcessor
 				}
 			}
 		}
+		// echo "emd";
 		//make data array for journal sale entry
 		$journalArray = array();
 		$journalArray= array(

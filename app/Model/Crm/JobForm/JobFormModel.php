@@ -126,7 +126,43 @@ class JobFormModel extends Model
 		}
 		if($raw==1)
 		{
-			return $exceptionArray['200'];
+			DB::beginTransaction();		
+			$jobCardDtl = DB::connection($databaseName)->select("select 
+			job_card_id,
+			client_name,
+			address,
+			contact_no,
+			email_id,
+			job_card_no,
+			labour_charge,
+			service_type,
+			entry_date,
+			delivery_date,
+			advance,
+			total,
+			tax,
+			payment_mode,
+			state_abb,
+			city_id,
+			company_id,
+			client_id,
+			bank_name,
+			cheque_no,
+			product_array,
+			created_at,
+			updated_at
+			from job_card_dtl 
+			where deleted_at='0000-00-00 00:00:00' and
+			job_card_no='".$dataArray['jobCardNo']."'");
+			DB::commit();
+			if(count($raw)==0)
+			{
+				return $exceptionArray['204'];;
+			}
+			else
+			{	
+				return json_encode($jobCardDtl);
+			}	
 		}
 		else
 		{
@@ -292,6 +328,37 @@ class JobFormModel extends Model
 		else
 		{
 			return $exceptionArray['204'];
+		}
+	}
+	
+	/**
+	 * insert document data
+	 * @param  jobForm-id,document-name,document-format,document-type
+	 * returns the exception-message
+	*/
+	public function jobFormDocumentData($jobFormId,$documentName,$documentFormat,$documentType)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		$raw = DB::connection($databaseName)->statement("insert into job_card_doc_dtl(
+		job_card_id,
+		document_name,
+		document_format,
+		document_type)
+		values('".$jobFormId."','".$documentName."','".$documentFormat."','".$documentType."')");
+		DB::commit();
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if($raw==1)
+		{
+			return $exceptionArray['200'];
+		}
+		else
+		{
+			return $exceptionArray['500'];
 		}
 	}
 }

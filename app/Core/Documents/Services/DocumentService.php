@@ -120,4 +120,33 @@ class DocumentService extends BillModel
 		}
 		
 	}
+	
+	/**
+     * get all the data and call the model for database selection opertation
+     * @return status
+     */
+	public function getJobformData($inputData)
+	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		$templateType = new TemplateTypeEnum();
+		$templateArray = $templateType->enumArrays();
+		$templateType = $templateArray['jobCardTemplate'];
+		$templateService = new TemplateService();
+		$companyId = $inputData[0]->company->companyId;
+		$templateData = $templateService->getSpecificData($companyId,$templateType);
+		if(strcmp($templateData,$exceptionArray['404'])==0)
+		{
+			return $templateData;
+		}
+		else
+		{
+			$documentMpdf = new DocumentMpdf();
+			$documentMpdf = $documentMpdf->jobFormMpdfGenerate($templateData,$inputData);
+			return $documentMpdf;
+		}
+		
+	}
 }

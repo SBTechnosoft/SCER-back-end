@@ -44,7 +44,6 @@ class DocumentProcessor extends BaseProcessor
 		$convertedDateTime = str_replace(" ","-",$dateTime);
 		$splitDateTime = explode("-",$convertedDateTime);
 		$combineDateTime = $splitDateTime[0].$splitDateTime[1].$splitDateTime[2].$splitDateTime[3].$splitDateTime[4].$splitDateTime[5];
-		
 		//get constant document-url from document
 		$constDocumentUrl =  new ConstantClass();
 		$documentArray = $constDocumentUrl->constantVariable();
@@ -63,7 +62,7 @@ class DocumentProcessor extends BaseProcessor
 				$documentName[$fileArray] = $combineDateTime.mt_rand(1,9999).$fileArray.mt_rand(1,9999).".".$documentFormat[$fileArray];
 				$documentSize[$fileArray] = $file['file'][$fileArray]->getClientSize();
 				$file['file'][$fileArray]->move($documentUrl[$fileArray],$documentName[$fileArray]);
-				if($documentFormat[$fileArray]=='jpg' || $documentFormat[$fileArray]=='jpeg' || $documentFormat[$fileArray]=='gif' || $documentFormat[$fileArray]=='png' || $documentFormat[$fileArray]=='pdf')
+				if($documentFormat[$fileArray]=='jpg' || $documentFormat[$fileArray]=='jpeg' || $documentFormat[$fileArray]=='gif' || $documentFormat[$fileArray]=='png' || $documentFormat[$fileArray]=='pdf' || $documentFormat[$fileArray]=='bmp')
 				{	
 					if(($documentSize[$fileArray]/1048576)<=5)
 					{
@@ -122,7 +121,7 @@ class DocumentProcessor extends BaseProcessor
 	public function createPersistableData(Request $request)
 	{
 		//trim data
-		$tSaleId = trim(array_keys($request->input())[0]);
+		$tSaleId = trim($request->input()[array_keys($request->input())[0]]);
 		$trimArray = array();
 		$trimArray[array_keys($request->input())[0]] = $tSaleId;
 		return $trimArray;

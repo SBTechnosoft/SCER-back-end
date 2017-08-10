@@ -13,6 +13,8 @@ use ERP\Core\Documents\Entities\CurrencyToWordConversion;
 use PHPMailer;
 use SMTP;
 use ERP\Model\Accounting\Quotations\QuotationModel;
+use ERP\Model\Crm\JobForm\JobFormModel;
+// use ERP\Core\Documents\Entities\CssStyleMpdf;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -44,6 +46,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 		{
 			$htmlBody = json_decode($templateData)[0]->templateBody;
 		}
+		// exit;
 		$decodedBillData = json_decode($status);
 		if(is_object($decodedBillData))
 		{
@@ -60,21 +63,22 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$productData = array();
 		$decodedData = array();
 		$index=1;
-	
 		$output="";
 		$totalAmount =0;
 		$totalVatValue=0;
 		$totalAdditionalTax=0;
 		$totalQty=0;
+		//echo "start document mpdf";
 		if(strcmp($decodedBillData->salesType,"retail_sales")==0)
 		{
-			$totalCm = 10.4;
+			$totalCm = 12;
 			for($productArray=0;$productArray<count($decodedArray->inventory);$productArray++)
 			{
 				//get product-data
 				$productData[$productArray] = $productService->getProductData($decodedArray->inventory[$productArray]->productId);
 				$decodedData[$productArray] = json_decode($productData[$productArray]);
-				
+				// print_r($decodedData[$productArray]);
+				// exit;
 				//calculate margin value
 				$marginValue[$productArray]=($decodedData[$productArray]->margin/100)*$decodedArray->inventory[$productArray]->price;
 				$marginValue[$productArray] = $marginValue[$productArray]+$decodedData[$productArray]->marginFlat;
@@ -123,20 +127,27 @@ class DocumentMpdf extends CurrencyToWordConversion
 				$additionalTaxValue[$productArray] = number_format($additionalTaxValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
 				$total[$productArray] = number_format($total[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints,'.','');
 				
+				if($decodedData[$productArray]->hsn){
+					$product_hsnCode = $decodedData[$productArray]->hsn;
+				}
+				else{
+					$product_hsnCode = "";
+				}
+				
 				$output =$output."".
 					'<tr class="trhw" style="font-family: Calibri; text-align: left; height:  0.7cm; background-color: transparent;">
-				   <td class="tg-m36b thsrno" style="font-size: 14px; height: 0.7cm; text-align:center; padding:0 0 0 0;">'.$index.'</td>
-				   <td class="tg-m36b theqp" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedData[$productArray]->productName.'</td>
-				   <td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->color.' | '.$decodedArray->inventory[$productArray]->size.'</td>
-				   <td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->frameNo.'</td>
-				   <td class="tg-ullm thsrno" style="font-size: 14px;   height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->qty.'</td>
-				   <td class="tg-ullm thsrno" style="font-size: 14px; height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $price.'</td>
-				   <td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $discountValue[$productArray].'</td>
-				   <td class="tg-ullm thamt" style="font-size: 14px;  height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $decodedData[$productArray]->vat.'%</td>
-				   <td class="tg-ullm thamt" style="font-size: 14px; height: 0.7cm; text-align: center; padding:0 0 0 0;">'.$vatValue[$productArray].'</td>
-				   <td class="tg-ullm thamt" style="font-size: 14px;  height:  0.7cm; text-align: center; padding:0 0 0 0;">'.$decodedData[$productArray]->additionalTax.'</td>
-				   <td class="tg-ullm thamt" style="font-size: 14px;   height:  0.7cm; text-align: center; padding:0 0 0 0;">'.$additionalTaxValue[$productArray].'</td>
-				   <td class="tg-ullm thamt" style="font-size: 14px;  height: 0.7cm; text-align: center; padding:0 0 0 0;">'.$total[$productArray];
+				   <td class="tg-m36b thsrno" style="font-size: 14px; height: 0.7cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;">'.$index.'</td>
+				   <td class="tg-m36b theqp" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid black;" colspan="3">'. $decodedData[$productArray]->productName.'</td>
+				   <!--td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid black;">'. $decodedArray->inventory[$productArray]->color.' | '.$decodedArray->inventory[$productArray]->size.'</td-->
+				   <td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid black;">'. $product_hsnCode.'</td>
+				   <td class="tg-ullm thsrno" style="font-size: 14px;   height:  0.7cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black;">'. $decodedArray->inventory[$productArray]->qty.'</td>
+				   <td class="tg-ullm thsrno" style="font-size: 14px; height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid black;">'. $price.'</td>
+				   <!--td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black;">'. $discountValue[$productArray].'</td-->
+				   <td class="tg-ullm thamt" style="font-size: 14px;  height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid black;">'. $decodedData[$productArray]->vat.'%</td>
+				   <td class="tg-ullm thamt" style="font-size: 14px; height: 0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid black;">'.$vatValue[$productArray].'</td>
+				   <td class="tg-ullm thamt" style="font-size: 14px;  height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid black;">'.$decodedData[$productArray]->additionalTax.'%</td>
+				   <td class="tg-ullm thamt" style="font-size: 14px;   height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid black;">'.$additionalTaxValue[$productArray].'</td>
+				   <td class="tg-ullm thamt" style="font-size: 14px;  height: 0.7cm; text-align: right; padding:0 5px 0 0;">'.$total[$productArray];
 
 				if($productArray != count($decodedArray->inventory)-1)
 				{
@@ -149,17 +160,15 @@ class DocumentMpdf extends CurrencyToWordConversion
 					
 					$finalProductBlankSpace = $totalCm-$totalProductSpace;
 					$output =$output."<tr class='trhw' style='font-family: Calibri; text-align: left; height:  ".$finalProductBlankSpace."cm;background-color: transparent;'>
-				   <td class='tg-m36b thsrno' style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;'></td>
-				   <td class='tg-m36b theqp' style='font-size: 12px;  height:  ".$finalProductBlankSpace."cm; padding:0 0 0 0;'></td>
-				   <td class='tg-ullm thsrno' style='font-size: 12px;  height: ".$finalProductBlankSpace."cm; padding:0 0 0 0;'></td>
-				   <td class='tg-ullm thsrno' style='font-size: 12px;  height:  ".$finalProductBlankSpace."cm; padding:0 0 0 0;'></td>
-				   <td class='tg-ullm thsrno' style='font-size: 12px;   height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
-				   <td class='tg-ullm thsrno' style='font-size: 12px; height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
-				   <td class='tg-ullm thsrno' style='font-size: 12px;  height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
-				   <td class='tg-ullm thamt' style='font-size: 12px;  height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
-				   <td class='tg-ullm thamt' style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
-				   <td class='tg-ullm thamt' style='font-size: 12px;  height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
-				   <td class='tg-ullm thamt' style='font-size: 12px;   height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
+				   <td class='tg-m36b thsrno' style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black'></td>
+				   <td class='tg-m36b theqp' style='font-size: 12px;  height:  ".$finalProductBlankSpace."cm; padding:0 0 0 0;border-right: 1px solid black' colspan='3'></td>
+				   <td class='tg-ullm thsrno' style='font-size: 12px;   height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black'></td>
+				   <td class='tg-ullm thsrno' style='font-size: 12px; height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black'></td>
+				   <td class='tg-ullm thsrno' style='font-size: 12px;  height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black'></td>
+				   <td class='tg-ullm thamt' style='font-size: 12px;  height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black'></td>
+				   <td class='tg-ullm thamt' style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black'></td>
+				   <td class='tg-ullm thamt' style='font-size: 12px;  height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black'></td>
+				   <td class='tg-ullm thamt' style='font-size: 12px;   height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black'></td>
 				   <td class='tg-ullm thamt' style='font-size: 12px;  height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td></tr>";
 
 				}
@@ -168,7 +177,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 		}
 		else
 		{
-			$totalCm = 10.4;
+			$totalCm = 12;
 			for($productArray=0;$productArray<count($decodedArray->inventory);$productArray++)
 			{
 				//get product-data
@@ -188,7 +197,6 @@ class DocumentMpdf extends CurrencyToWordConversion
 				{
 					$discountValue[$productArray] = ($decodedArray->inventory[$productArray]->discount/100)*$totalPrice[$productArray];
 				}
-				
 				$finalVatValue = $totalPrice[$productArray]-$discountValue[$productArray];
 				
 				//calculate vat value;
@@ -211,6 +219,12 @@ class DocumentMpdf extends CurrencyToWordConversion
 				{
 					$decodedArray->inventory[$productArray]->frameNo="";
 				}
+				if($decodedData[$productArray]->hsn){
+					$product_hsnCode = $decodedData[$productArray]->hsn;
+				}
+				else{
+					$product_hsnCode = "";
+				}
 				
 				$totalAmount=$totalAmount+$total[$productArray];
 				$totalAdditionalTax=$totalAdditionalTax+$additionalTaxValue[$productArray]+$vatValue[$productArray];
@@ -223,52 +237,47 @@ class DocumentMpdf extends CurrencyToWordConversion
 				$total[$productArray] = number_format($total[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
 				$price = number_format($decodedArray->inventory[$productArray]->price,$decodedData[$productArray]->company->noOfDecimalPoints);
 				
-				$output =$output."".'<tr class="trhw" style="font-family: Calibri; text-align: left; height:  0.7cm; background-color: transparent;">
-				   <td class="tg-m36b thsrno" style="font-size: 14px; height: 0.7cm; text-align:center; padding:0 0 0 0;">'.$index.'</td>
-				   <td class="tg-m36b theqp" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedData[$productArray]->productName.'</td>
-				   <td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->color.' | '.$decodedArray->inventory[$productArray]->size.'</td>
-				   <td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->frameNo.'</td>
-				   <td class="tg-ullm thsrno" style="font-size: 14px;   height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $decodedArray->inventory[$productArray]->qty.'</td>
-				   <td class="tg-ullm thsrno" style="font-size: 14px; height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $price.'</td>
-				   <td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $discountValue[$productArray].'</td>
-				   <td class="tg-ullm thamt" style="font-size: 14px;  height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $decodedData[$productArray]->vat.'%</td>
-				   <td class="tg-ullm thamt" style="font-size: 14px; height: 0.7cm; text-align: center; padding:0 0 0 0;">'.$vatValue[$productArray].'</td>
-				   <td class="tg-ullm thamt" style="font-size: 14px;  height:  0.7cm; text-align: center; padding:0 0 0 0;">'.$decodedData[$productArray]->additionalTax.'</td>
-				   <td class="tg-ullm thamt" style="font-size: 14px;   height:  0.7cm; text-align: center; padding:0 0 0 0;">'.$additionalTaxValue[$productArray].'</td>
-				   <td class="tg-ullm thamt" style="font-size: 14px;  height: 0.7cm; text-align: center; padding:0 0 0 0;">'.$total[$productArray];
-                				   
-				if($productArray != count($decodedArray->inventory)-1)
-				{
-					$output = $output.$trClose;
+				$output =$output."".
+				'<tr class="trhw" style="font-family: Calibri; text-align: left; height:  0.7cm; background-color: transparent;">
+				   <td class="tg-m36b thsrno" style="font-size: 14px; height: 0.7cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;">'.$index.'</td>
+				   <td class="tg-m36b theqp" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid black;" colspan="3">'. $decodedData[$productArray]->productName.'</td>
+				   <!--td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid black;">'. $decodedArray->inventory[$productArray]->color.' | '.$decodedArray->inventory[$productArray]->size.'</td-->
+				   <td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid black;">'. $product_hsnCode.'</td>
+				   <td class="tg-ullm thsrno" style="font-size: 14px;   height:  0.7cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black;">'. $decodedArray->inventory[$productArray]->qty.'</td>
+				   <td class="tg-ullm thsrno" style="font-size: 14px; height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid black;">'. $price.'</td>
+				   <!--td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black;">'. $discountValue[$productArray].'</td-->
+				   <td class="tg-ullm thamt" style="font-size: 14px;  height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid black;">'. $decodedData[$productArray]->vat.'%</td>
+				   <td class="tg-ullm thamt" style="font-size: 14px; height: 0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid black;">'.$vatValue[$productArray].'</td>
+				   <td class="tg-ullm thamt" style="font-size: 14px;  height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid black;">'.$decodedData[$productArray]->additionalTax.'%</td>
+				   <td class="tg-ullm thamt" style="font-size: 14px;   height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid black;">'.$additionalTaxValue[$productArray].'</td>
+				   <td class="tg-ullm thamt" style="font-size: 14px;  height: 0.7cm; text-align: right; padding:0 5px 0 0;">'.$total[$productArray].$trClose;
+				// if($productArray != count($decodedArray->inventory)-1)
+				// {
+					// $output = $output.$trClose;
 				
-				}
+				// }
 				if($productArray==(count($decodedArray->inventory)-1))
 				{
 					$totalProductSpace = $index*0.7;	
 					
 					$finalProductBlankSpace = $totalCm-$totalProductSpace;
 					$output =$output."<tr class='trhw' style='font-family: Calibri; text-align: left; height:  ".$finalProductBlankSpace."cm;background-color: transparent;'>
-				   <td class='tg-m36b thsrno' style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;'></td>
-				   <td class='tg-m36b theqp' style='font-size: 12px;  height:  ".$finalProductBlankSpace."cm; padding:0 0 0 0;'></td>
-				   <td class='tg-ullm thsrno' style='font-size: 12px;  height: ".$finalProductBlankSpace."cm; padding:0 0 0 0;'></td>
-				   <td class='tg-ullm thsrno' style='font-size: 12px;  height:  ".$finalProductBlankSpace."cm; padding:0 0 0 0;'></td>
-				   <td class='tg-ullm thsrno' style='font-size: 12px;   height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
-				   <td class='tg-ullm thsrno' style='font-size: 12px; height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
-				   <td class='tg-ullm thsrno' style='font-size: 12px;  height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
-				   <td class='tg-ullm thamt' style='font-size: 12px;  height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
-				   <td class='tg-ullm thamt' style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
-				   <td class='tg-ullm thamt' style='font-size: 12px;  height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
-				   <td class='tg-ullm thamt' style='font-size: 12px;   height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td>
-				   <td class='tg-ullm thamt' style='font-size: 12px;  height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'></td></tr>";
+				   <td class='tg-m36b thsrno' style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black'></td>
+				   <td class='tg-m36b theqp' style='font-size: 12px;  height:  ".$finalProductBlankSpace."cm; padding:0 0 0 0;border-right: 1px solid black' colspan='3'></td>
+				   <td class='tg-ullm thsrno' style='font-size: 12px;   height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black'></td>
+				   <td class='tg-ullm thsrno' style='font-size: 12px; height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black'></td>
+				   <td class='tg-ullm thsrno' style='font-size: 12px;  height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black'></td>
+				   <td class='tg-ullm thamt' style='font-size: 12px;  height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black'></td>
+				   <td class='tg-ullm thamt' style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black'></td>
+				   <td class='tg-ullm thamt' style='font-size: 12px;  height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black'></td>
+				   <td class='tg-ullm thamt' style='font-size: 12px;   height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black'></td>
+				   <td class='tg-ullm thamt' style='font-size: 12px;  height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'>";
 
 				}
 				$index++;
 		    }    
 		}
-		
-		//calculation of currecy to word conversion
-		$currecyToWordConversion = new DocumentMpdf();
-		$currencyResult = $currecyToWordConversion->conversion($totalAmount);
+
 		$address = $decodedBillData->client->address1;
 		$companyAddress = $decodedBillData->company->address1.",".$decodedBillData->company->address2;
 		if(strcmp($decodedBillData->salesType,"retail_sales")==0)
@@ -277,7 +286,8 @@ class DocumentMpdf extends CurrencyToWordConversion
 		}
 		else
 		{
-			$typeSale = "TAX";
+			$typeSale = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TAX";
+			// $typeSale = "TAX";
 
 		}
 		//add 1 month in entry date for displaying expiry date
@@ -289,12 +299,21 @@ class DocumentMpdf extends CurrencyToWordConversion
 		// convert amount(number_format) into their company's selected decimal points
 		$totalTax = number_format($totalTax,$decodedData[0]->company->noOfDecimalPoints,'.','');
 		$totalAmount = number_format($totalAmount,$decodedData[0]->company->noOfDecimalPoints,'.','');
-				
+		$roundTotal = round($totalAmount);
+		$roundUpFigure = $roundTotal-$totalAmount;
+		$roundUpFigure = number_format($roundUpFigure,$decodedData[0]->company->noOfDecimalPoints,'.','');
+		
+		//calculation of currecy to word conversion
+		$currecyToWordConversion = new DocumentMpdf();
+		$currencyResult = $currecyToWordConversion->conversion($roundTotal);
+		
 		$billArray = array();
 		$billArray['Description']=$output;
 		$billArray['ClientName']=$decodedBillData->client->clientName;
-		$billArray['Company']="<span style='font-family: algerian;font-size:22px'>".$decodedBillData->company->companyName."</span>";
+		$billArray['Company']="<span style='font-size:22px'>".$decodedBillData->company->companyName."</span>";
 		$billArray['Total']=$totalAmount;
+		$billArray['RoundTotal']=$roundTotal;
+		$billArray['RoundFigure']=$roundUpFigure;
 		$billArray['Mobile']=$decodedBillData->client->contactNo;
 		$billArray['INVID']=$decodedBillData->invoiceNumber;
 		$billArray['CLIENTADD']=$address;
@@ -313,14 +332,28 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$billArray['CompanyCGST']=$decodedBillData->company->cgst;
 		$billArray['CLIENTTINNO']="";
 		
-		$mpdf = new mPDF('A4','landscape');
-		// $mpdf = new mPDF('','A4','','agency','0','0','0','0','0','0','landscape');
+		$billArray['ChallanNo']="";
+		$billArray['ChallanDate']="";
+		$billArray['Transport']="";
+		$billArray['GCLRNO']="";
+		$billArray['Reference']="";
+		$billArray['GCLRNO']="";
+		$billArray['REMARK']=$decodedBillData->remark;
+		
+		// $mpdf = new mPDF('A4','landscape');
+		 // $mpdf = new mPDF('','A4','','agency','0','0','0','0','0','0','landscape');
+		 $mpdf = new mPDF('','', 0, '', 10, 5, 5, 10, 0, 0, 'L');
 		$mpdf->SetDisplayMode('fullpage');
 		foreach($billArray as $key => $value)
 		{
 			$htmlBody = str_replace('['.$key.']', $value, $htmlBody);
 		}
+		
 		$mpdf->WriteHTML($htmlBody);
+		//echo $htmlBody;
+		// echo "start document mpdf";
+		// echo $output;
+		//exit;
 		$path = $constantArray['billUrl'];
 		//change the name of document-name
 		$dateTime = date("d-m-Y h-i-s");
@@ -770,7 +803,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$billArray = array();
 		$billArray['Description']=$output;
 		$billArray['ClientName']=$quotationData->client->clientName;
-		$billArray['Company']="<span style='font-family: algerian;font-size:22px'>".$quotationData->company->companyName."</span>";
+		$billArray['Company']="<span style='font-size:22px'>".$quotationData->company->companyName."</span>";
 		$billArray['Total']=$totalAmount;
 		$billArray['Mobile']=$quotationData->client->contactNo;
 		$billArray['QuotationNo']=$quotationData->quotationNumber;
@@ -792,6 +825,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 		
 		$mpdf->WriteHTML($htmlBody);
 		$path = $constantArray['quotationDocUrl'];
+		
 		//change the name of document-name
 		$dateTime = date("d-m-Y h-i-s");
 		$convertedDateTime = str_replace(" ","-",$dateTime);
@@ -801,6 +835,44 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$documentPathName = $path.$documentName;
 		$documentFormat="pdf";
 		$documentType ="quotation";
+		
+		if($quotationData->client->emailId!="")
+		{
+			// mail send
+			// $result = $this->mailSending($quotationData->client->emailId,$documentPathName,$emailTemplateData,$quotationData->client->clientName,$decodedBillData->company->companyName);
+			// if(strcmp($result,$exceptionArray['Email'])==0)
+			// {
+				// return $result;
+			// }
+		}
+			
+		//sms send
+		// if($quotationData->client->contactNo!=0 || $quotationData->client->contactNo!="")
+		// {
+			// if($quotationData->company->companyId==9)
+			// {
+				// $smsTemplateBody = json_decode($smsTemplateData)[0]->templateBody;
+				// $smsArray = array();
+				// $smsArray['ClientName'] = $quotationData->client->clientName;
+				// foreach($smsArray as $key => $value)
+				// {
+					// $smsHtmlBody = str_replace('['.$key.']', $value, $smsTemplateBody);
+				// }
+				// replace 'p' tag
+				// $smsHtmlBody = str_replace('<p>','', $smsHtmlBody);
+				// $smsHtmlBody = str_replace('</p>','', $smsHtmlBody);
+				// $data = array(
+					// 'user' => "siliconbrain",
+					// 'password' => "demo54321",
+					// 'msisdn' => $quotationData->client->contactNo,
+					// 'sid' => "ERPJSC",
+					// 'msg' => $smsHtmlBody,
+					// 'fl' =>"0",
+					// 'gwid'=>"2"
+				// );
+				// list($header,$content) = $this->postRequest("http://login.arihantsms.com//vendorsms/pushsms.aspx",$data);
+			// }
+		// }
 		
 		//pdf generate
 		$mpdf->Output($documentPathName,'F');
@@ -818,6 +890,218 @@ class DocumentMpdf extends CurrencyToWordConversion
 			$pathArray = array();
 			$pathArray['documentPath'] = $documentPathName;
 			return $pathArray;
+		}	
+	}
+	
+	/**
+	* pdf generation
+	* @param template-data and job-form data
+	* @return error-message/document-path
+	*/
+	public function jobFormMpdfGenerate($templateData,$jobFormData)
+	{		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		$htmlBody = json_decode($templateData)[0]->templateBody;
+		
+		$jobCardId = $jobFormData[0]->jobCardId;
+		
+		$decodedArray = json_decode($jobFormData[0]->productArray);
+		$productService = new ProductService();
+		$productData = array();
+		$decodedData = array();
+		$index=1;
+	
+		$output="";
+		$totalAmount =0;
+		$totalVatValue=0;
+		$totalAdditionalTax=0;
+		$totalQty=0;
+		$totalCm = 10.4;
+		for($productArray=0;$productArray<count($decodedArray);$productArray++)
+		{
+			//get product-data
+			$productData[$productArray] = $productService->getProductData($decodedArray[$productArray]->productId);
+			$decodedData[$productArray] = json_decode($productData[$productArray]);
+			
+			//calculate margin value
+			$marginValue[$productArray]=($decodedData[$productArray]->margin/100)*$decodedArray[$productArray]->price;
+			$marginValue[$productArray] = $marginValue[$productArray]+$decodedData[$productArray]->marginFlat;
+			
+			$totalPrice = $decodedArray[$productArray]->price*$decodedArray[$productArray]->qty;
+			if(strcmp($decodedArray[$productArray]->discountType,"flat")==0)
+			{
+				$discountValue[$productArray] = $decodedArray[$productArray]->discount;
+
+			}
+			else
+			{
+				$discountValue[$productArray] = ($decodedArray[$productArray]->discount/100)*$totalPrice;
+			}
+			$finalVatValue = $totalPrice - $discountValue[$productArray];
+			
+			//calculate vat value;
+			$vatValue[$productArray]=($decodedData[$productArray]->vat/100)*$finalVatValue;
+			
+			//calculate additional tax
+			$additionalTaxValue[$productArray] = ($decodedData[$productArray]->additionalTax/100)*$finalVatValue;
+			$total[$productArray] =($totalPrice)-$discountValue[$productArray]+$vatValue[$productArray] +$additionalTaxValue[$productArray];
+			
+			$price = number_format($decodedArray[$productArray]->price,$decodedData[$productArray]->company->noOfDecimalPoints,'.','');
+			$trClose = "</td></tr>";
+			if($productArray==0)
+			{
+				$output =$output.$trClose;
+			}
+			if(empty($decodedArray[$productArray]->color))
+			{
+				$decodedArray[$productArray]->color="";
+			}
+			if(empty($decodedArray[$productArray]->frameNo))
+			{
+				$decodedArray[$productArray]->frameNo="";
+			}
+			$totalVatValue = $totalVatValue+$vatValue[$productArray];
+			$totalAdditionalTax=$totalAdditionalTax+$additionalTaxValue[$productArray];
+			$totalQty=$totalQty+$decodedArray[$productArray]->qty;
+			$totalAmount=$totalAmount+$total[$productArray];
+			
+			//convert (number_format)as per company's selected decimal points
+			$vatValue[$productArray] = number_format($vatValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
+			$additionalTaxValue[$productArray] = number_format($additionalTaxValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
+			$total[$productArray] = number_format($total[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints,'.','');
+			$output =$output."".
+				'<tr class="trhw" style="font-family: Calibri; text-align: left; height:  0.7cm; background-color: transparent;">
+			   <td class="tg-m36b thsrno" style="font-size: 14px; height: 0.7cm; text-align:center; padding:0 0 0 0;">'.$index.'</td>
+			   <td colspan="3" class="tg-m36b theqp" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;">'. $decodedData[$productArray]->productName.'</td>
+			   <td colspan="2" class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;"></td>
+			   <td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;"></td>
+			   <td class="tg-ullm thsrno" style="font-size: 14px;   height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $decodedArray[$productArray]->qty.'</td>
+			   <td colspan="2" class="tg-ullm thsrno" style="font-size: 14px; height:  0.7cm; text-align: center; padding:0 0 0 0;">'. $price.'</td>
+				<td  class="tg-ullm thamt" style="font-size: 14px;   height:  0.7cm; text-align: center; padding:0 0 0 0;">PCS</td>
+			   <td class="tg-ullm thamt" style="font-size: 14px;  height: 0.7cm; text-align: center; padding:0 0 0 0;">'.$total[$productArray];
+			if($productArray != count($decodedArray)-1)
+			{
+				$output = $output.$trClose;
+			
+			}
+			if($productArray==(count($decodedArray)-1))
+			{
+				$totalProductSpace = $index*0.7;	
+				
+				$finalProductBlankSpace = $totalCm-$totalProductSpace;
+				$output =$output."<tr class='trhw' style='font-family: Calibri; text-align: left; height:  ".$finalProductBlankSpace."cm;background-color: transparent;'>
+			   <td colspan='12' class='tg-m36b thsrno' style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;'></td></tr>";
+			}
+			$index++;
+		}
+	
+		//calculation of currecy to word conversion
+		$currecyToWordConversion = new DocumentMpdf();
+		$currencyResult = $currecyToWordConversion->conversion($totalAmount);
+		$address = $jobFormData[0]->client->address1;
+		$companyAddress = $jobFormData[0]->company->address1.",".$jobFormData[0]->company->address2;
+		
+		//add 1 month in entry date for displaying expiry date
+		$date = date_create($jobFormData[0]->entryDate);
+		date_add($date, date_interval_create_from_date_string('30 days'));
+		$expiryDate = date_format($date, 'd-m-Y');
+		$totalTax = $totalVatValue+$totalAdditionalTax;
+		// convert amount(number_format) into their company's selected decimal points
+		$totalTax = number_format($totalTax,$decodedData[0]->company->noOfDecimalPoints,'.','');
+		$totalAmount = number_format($totalAmount,$decodedData[0]->company->noOfDecimalPoints,'.','');
+		
+		$jobFormArray = array();
+		$jobFormArray['Description']=$output;
+		$jobFormArray['ClientName']=$jobFormData[0]->client->clientName;
+		$jobFormArray['Company']="<span style='font-family: algerian;font-size:22px'>".$jobFormData[0]->company->companyName."</span>";
+		$jobFormArray['Total']=$totalAmount;
+		$jobFormArray['Mobile']=$jobFormData[0]->client->contactNo;
+		$jobFormArray['QuotationNo']=$jobFormData[0]->jobCardNo;
+		$jobFormArray['CLIENTADD']=$address;
+		$jobFormArray['OrderDate']=$jobFormData[0]->entryDate;
+		$jobFormArray['TotalQty']=$totalQty;
+		$jobFormArray['TotalInWord']=$currencyResult;
+		$jobFormArray['displayNone']='none';
+		$jobFormArray['CMPLOGO']="<img src='".$constantArray['mainLogo']."MainLogo.png'/>";
+		$jobFormArray['CompanyAdd']=$companyAddress;
+		$jobFormArray['CLIENTTINNO']="";
+		$mpdf = new mPDF('A4','landscape');
+		// $mpdf = new mPDF('','A4','','agency','0','0','0','0','0','0','landscape');
+		$mpdf->SetDisplayMode('fullpage');
+		foreach($jobFormArray as $key => $value)
+		{
+			$htmlBody = str_replace('['.$key.']', $value, $htmlBody);
+		}
+		
+		$mpdf->WriteHTML($htmlBody);
+		$path = $constantArray['jobFormDocUrl'];
+		//change the name of document-name
+		$dateTime = date("d-m-Y h-i-s");
+		$convertedDateTime = str_replace(" ","-",$dateTime);
+		$splitDateTime = explode("-",$convertedDateTime);
+		$combineDateTime = $splitDateTime[0].$splitDateTime[1].$splitDateTime[2].$splitDateTime[3].$splitDateTime[4].$splitDateTime[5];
+		$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999)."_jobForm.pdf";
+		$documentPathName = $path.$documentName;
+		$documentFormat="pdf";
+		$documentType ="job_card";
+		
+		if($jobFormData->client->emailId!="")
+		{
+			// mail send
+			// $result = $this->mailSending($jobFormData->client->emailId,$documentPathName,$emailTemplateData,$jobFormData->client->clientName,$decodedBillData->company->companyName);
+			// if(strcmp($result,$exceptionArray['Email'])==0)
+			// {
+				// return $result;
+			// }
+		}
+			
+		//sms send
+		// if($jobFormData->client->contactNo!=0 || $jobFormData->client->contactNo!="")
+		// {
+			// if($jobFormData->company->companyId==9)
+			// {
+				// $smsTemplateBody = json_decode($smsTemplateData)[0]->templateBody;
+				// $smsArray = array();
+				// $smsArray['ClientName'] = $jobFormData->client->clientName;
+				// foreach($smsArray as $key => $value)
+				// {
+					// $smsHtmlBody = str_replace('['.$key.']', $value, $smsTemplateBody);
+				// }
+				// replace 'p' tag
+				// $smsHtmlBody = str_replace('<p>','', $smsHtmlBody);
+				// $smsHtmlBody = str_replace('</p>','', $smsHtmlBody);
+				// $data = array(
+					// 'user' => "siliconbrain",
+					// 'password' => "demo54321",
+					// 'msisdn' => $jobFormData->client->contactNo,
+					// 'sid' => "ERPJSC",
+					// 'msg' => $smsHtmlBody,
+					// 'fl' =>"0",
+					// 'gwid'=>"2"
+				// );
+				// list($header,$content) = $this->postRequest("http://login.arihantsms.com//vendorsms/pushsms.aspx",$data);
+			// }
+		// }
+		//pdf generate
+		$mpdf->Output($documentPathName,'F');
+		//insertion quotation document data into database
+		$jobFormModel = new JobFormModel();
+		$jobFormDocumentStatus = $jobFormModel->jobFormDocumentData($jobFormData[0]->jobCardId,$documentName,$documentFormat,$documentType);
+		if(strcmp($exceptionArray['500'],$jobFormDocumentStatus)==0)
+		{
+			return $jobFormDocumentStatus;
+		}
+		else
+		{
+			$pathArray = array();
+			$pathArray['documentPath'] = $documentPathName;
+			return json_encode($pathArray);
 		}	
 	}
 }

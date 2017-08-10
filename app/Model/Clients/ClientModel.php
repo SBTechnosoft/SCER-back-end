@@ -203,7 +203,7 @@ class ClientModel extends Model
 				for($arrayData=0;$arrayData<count($billResult);$arrayData++)
 				{
 					$invoiceDateFlag=1;
-					if($billFlag==1 || $jobFormFlag==1 && $arrayData==0)
+					if(($billFlag==1 || $jobFormFlag==1) && $arrayData==0)
 					{
 						$queryParameter = $queryParameter.",'".$decodedJsonData[$arrayData]->client_id."',";
 					}
@@ -218,7 +218,7 @@ class ClientModel extends Model
 		{
 			$jobcardFromDate = $processedData->jobcardfromdate;
 			$jobcardToDate = $processedData->jobcardfromdate;
-			$jobCardResult = $JobFormModel->getFromToDateData($jobcardFromDate,$jobcardToDate);
+			$jobCardResult = $jobFormModel->getFromToDateData($jobcardFromDate,$jobcardToDate);
 			if(strcmp($jobCardResult,$exceptionArray['204'])!=0)
 			{
 				$decodedJsonData = json_decode($jobCardResult);
@@ -229,7 +229,7 @@ class ClientModel extends Model
 				for($arrayData=0;$arrayData<count($jobCardResult);$arrayData++)
 				{
 					$jobCardDateFlag=1;
-					if($billFlag==1 || $jobFormFlag==1 || $invoiceDateFlag==1 && $arrayData==0)
+					if(($billFlag==1 || $jobFormFlag==1) && $arrayData==0 && $invoiceDateFlag!=1)
 					{
 						$queryParameter = $queryParameter.",'".$decodedJsonData[$arrayData]->client_id."',";
 					}
@@ -240,7 +240,7 @@ class ClientModel extends Model
 				}
 			}
 		}		
-		if($invoiceDateFlag==1 || $jobCardDateFlag)
+		if($invoiceDateFlag==1 || $jobCardDateFlag==1)
 		{
 			$queryParameter = rtrim($queryParameter,",");
 			$queryParameter = $queryParameter.") OR ";
@@ -270,8 +270,11 @@ class ClientModel extends Model
 				}
 			}
 		}
-		$queryParameter = rtrim($queryParameter,"OR ");
-		
+		if($queryParameter!='')
+		{
+			$queryParameter = rtrim($queryParameter,"OR ");
+			$queryParameter= $queryParameter." and";
+		}
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -291,7 +294,7 @@ class ClientModel extends Model
 		deleted_at,
 		state_abb,
 		city_id			
-		from client_mst where ".$queryParameter." and deleted_at='0000-00-00 00:00:00'");
+		from client_mst where ".$queryParameter." deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		if(count($raw)==0)

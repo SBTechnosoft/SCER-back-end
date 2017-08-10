@@ -22,78 +22,100 @@ class TemplateDesign
 
 		$templateArray = array();
 
-		$templateArray['invoice'] =  "<div style=''background-image: url(''http://4.bp.blogspot.com/-J9g2UmC8cJk/UCyoyj24VMI/AAAAAAAAEDg/Q3oUk33685w/s1600/Indian+Flag+Wallpapers-03.jpg''); background-size: 100% 100%;''>
-										<table style=''border-collapse: collapse; border-spacing: 0px; margin-left: auto; margin-right: auto;'' border=''1'' cellspacing=''0''>
-										<tbody>
-										<tr style=''height: 250px;''>
-										<th style=''height: 250px; text-align: left;'' colspan=''12''>[CMPLOGO]</th>
-										</tr>
-										<tr style=''background-color: transparent; height: 50px; text-align: left;''>
-										<td style=''font-family: Calibri; font-size: 12px; vertical-align: middle; height: 50px; text-align: left;'' colspan=''7''>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; INVOICE SHIP TO: <span style=''color: #000000;''><strong>[ClientName]<br /></strong></span></td>
-										<td style=''font-family: Calibri; font-size: 12px; vertical-align: middle; color: #4e4e4e; text-align: left; height: 50px;'' colspan=''5''>&nbsp;&nbsp;&nbsp;&nbsp; Invoice No : [INVID]</td>
-										</tr>
-										<tr class=''trhw'' style=''height: 50px; text-align: left;''>
-										<td class=''tg-vi9z'' style=''font-family: Calibri; font-size: 12px; vertical-align: middle; color: #4e4e4e; height: 50px;'' colspan=''7''>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Address : [CLIENTADD]</td>
-										<td class=''tg-vi9z'' style=''font-family: Calibri; font-size: 12px; vertical-align: middle; color: #4e4e4e; height: 50px;'' colspan=''5''>&nbsp;&nbsp;&nbsp;&nbsp; Invoice Date: [OrderDate]</td>
-										</tr>
-										<tr class=''trhw'' style=''background-color: transparent; height: 50px; text-align: left;''>
-										<td class=''tg-vi9z'' style=''font-family: Calibri; font-size: 12px; vertical-align: middle; color: #4e4e4e; height: 50px;'' colspan=''7''>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; Mobile No: [Mobile]</td>
-										<td class=''tg-vi9z'' style=''font-family: Calibri; font-size: 12px; vertical-align: middle; color: #4e4e4e; height: 50px;'' colspan=''5''>&nbsp;&nbsp;&nbsp;&nbsp; Credit Limit:</td>
-										</tr>
-										<tr class=''trhw'' style=''font-family: Calibri; height: 30px; text-align: left;''>
-										<td class=''tg-m36b thsrno'' style=''font-size: 12px; padding: 5px; text-align: center; height: 30px;''><span style=''color: #000000;''><strong>Sr.No</strong></span></td>
-										<td class=''tg-m36b theqp'' style=''font-size: 12px; padding: 5px; height: 30px; text-align: left;''><span style=''color: #000000;''><strong>Particulars</strong></span></td>
-										<td class=''tg-ullm thsrno'' style=''font-size: 12px; height: 30px; text-align: center; padding: 5px 2px 5px 2px;''><span style=''color: #000000;''><strong>Color | Size</strong></span></td>
-										<td class=''tg-ullm thsrno'' style=''font-size: 12px; padding: 5px; height: 30px; text-align: left;''><span style=''color: #000000;''><strong>Frame No</strong></span></td>
-										<td class=''tg-ullm thsrno'' style=''font-size: 12px; padding: 5px; height: 30px; text-align: center;''><span style=''color: #000000;''><strong>Qty</strong></span></td>
-										<td class=''tg-ullm thsrno'' style=''font-size: 12px; padding: 5px; height: 30px; text-align: center;''><span style=''color: #000000;''><strong>Rate</strong></span></td>
-										<td class=''tg-ullm thsrno'' style=''font-size: 12px; padding: 5px; height: 30px; text-align: center;''><span style=''color: #000000;''><strong>Discount</strong></span></td>
-										<td class=''tg-ullm thamt'' style=''font-size: 12px; padding: 5px; height: 30px; text-align: center;''><span style=''color: #000000;''><strong>CGST%</strong></span></td>
-										<td class=''tg-ullm thamt'' style=''font-size: 12px; padding: 5px; height: 30px; text-align: center;''><span style=''color: #000000;''><strong>CGST</strong></span></td>
-										<td class=''tg-ullm thamt'' style=''font-size: 12px; padding: 5px; height: 30px; text-align: center;''><span style=''color: #000000;''><strong>SGST%</strong></span></td>
-										<td class=''tg-ullm thamt'' style=''font-size: 12px; padding: 5px; height: 30px; text-align: center;''><span style=''color: #000000;''><strong>SGST</strong></span></td>
-										<td class=''tg-ullm thamt'' style=''font-size: 12px; padding: 5px; height: 30px; text-align: center;''><span style=''color: #000000;''><strong>Amount</strong></span></td>
-										</tr>
-										<tr class=''trhw'' style=''font-family: Calibri; text-align: left; height: 14px; background-color: transparent; display: [displayNone];''>
-										<td class=''tg-m36b thsrno'' style=''font-size: 12px; color: #000000; height: 14px;'' colspan=''12''>[Description]</td>
-										</tr>
-										<tr class=''trhw'' style=''height: 50px; text-align: left;''>
-										<td class=''tg-jtyd'' style=''font-size: 10px; padding: 5px; height: 50px; text-align: left;'' colspan=''4''><span style=''color: #000000;''>[TotalInWord]</span>&nbsp;</td>
-										<td class=''tg-jtyd'' style=''font-size: 12px; padding: 5px; height: 50px; text-align: center;''><span style=''color: #000000;''><strong>[TotalQty]</strong>&nbsp;</span></td>
-										<td class=''tg-jtyd'' style=''text-align: right; font-size: 12px; padding: 5px; height: 50px;'' colspan=''2''>&nbsp;</td>
-										<td class=''tg-jtyd'' style=''text-align: right; font-size: 12px; padding: 5px; height: 50px;'' colspan=''2''>&nbsp;</td>
-										<td class=''tg-jtyd'' style=''text-align: right; font-size: 12px; padding: 5px; height: 50px;''><strong><span style=''color: #000000;''>Total</span></strong></td>
-										<td class=''tg-jtyd'' style=''text-align: right; font-size: 12px; padding: 5px; height: 50px;''><span style=''color: #000000;''><strong>[TotalTax]</strong>&nbsp;</span></td>
-										<td class=''tg-3gzm'' style=''font-size: 12px; padding: 5px; color: #4e4e4e; height: 20px; text-align: center;''><strong>&nbsp;<span style=''color: #000000;''>[Total]</span></strong></td>
-										</tr>
-										<tr class=''trhw'' style=''background-color: transparent; height: 80px; text-align: left;''>
-										<td class=''tg-vi9z'' style=''padding: 5px; height: 80px; text-align: center; vertical-align: middle;'' colspan=''4''>
-										<p>&nbsp;Status: Pending Payment</p>
-										<p style=''padding-top: 10px;''><span style=''color: #000000;''><strong> [REMAINAMT]</strong></span></p>
-										</td>
-										<td class=''tg-vi9z'' style=''padding: 5px; height: 80px; text-align: center; vertical-align: middle;'' colspan=''4''>
-										<p>Signature of Vat Dealer</p>
-										<p>&nbsp;</p>
-										</td>
-										<td class=''tg-vi9z'' style=''padding: 5px; height: 80px; text-align: center; vertical-align: middle;'' colspan=''4''>
-										<p style=''padding: 0 0 5px 0;''>Net Amount</p>
-										<p><span style=''color: #000000;''><strong style=''padding: 5px;''>&nbsp;[Total]</strong></span></p>
-										</td>
-										</tr>
-										<tr style=''height: 50px; text-align: left;''>
-										<td class=''tg-3gzm'' style=''text-align: center; vertical-align: bottom; height: 80px;'' colspan=''1''>&nbsp;</td>
-										<td style=''vertical-align: bottom; color: #4e4e4e; height: 80px;'' colspan=''6''>[REMARK]</td>
-										<td class=''tg-3gzm'' style=''text-align: center; vertical-align: bottom; color: #4e4e4e; height: 60px;'' colspan=''5''>Venture Of</td>
-										</tr>
-										<tr style=''background-color: transparent; height: 80px; text-align: left;''>
-										<td class=''tg-3gzm'' style=''text-align: center; vertical-align: bottom;'' colspan=''1''>&nbsp;</td>
-										<td style=''vertical-align: bottom; color: #4e4e4e; height: 80px;'' colspan=''6''>E.&amp;.O.E.</td>
-										<td class=''tg-3gzm'' style=''text-align: center; height: 80px;'' colspan=''5''>&nbsp;</td>
-										</tr>
-										</tbody>
-										</table>
-										<p style=''text-align: left;''>&nbsp;</p>
-										</div>";
+		$templateArray['invoice'] =  "<table style=''height: 1296px; width: 775px; margin-left: auto; margin-right: auto; font-family: calibri; border: 1px solid black; border-collapse: collapse; border-padding: 0;'' cellspacing=''0'' cellpadding=''0''>
+									<tbody>
+									<tr style=''height: 10px; padding: 0px; padding-top: 5px;''>
+									<td style=''height: 10px; text-align: left; vertical-align: top; font-size: 12px; padding-top: 5px;'' colspan=''1''>Original</td>
+									<td style=''height: 10px; text-align: center;'' colspan=''10''><strong><span style=''font-size: 12px; vertical-align: top; padding: 0; text-align: top !important; padding-top: 5px;''>''SWAMINARAYANO VIJAYTE''</span></strong></td>
+									<td style=''height: 10px; text-align: right; vertical-align: top; font-size: 12px; padding-top: 5px;'' colspan=''1''><strong style=''text-transform: uppercase;''>[RetailOrTax] Invoice &nbsp;</strong></td>
+									</tr>
+									<tr style=''height: 109px;''>
+									<td style=''height: 109px; text-align: left; vertical-align: top; font-size: 12px;'' colspan=''1''>Duplicate<br />Triplicate</td>
+									<td style=''height: 109px; text-align: center;'' colspan=''11''><strong>[Company]</strong><br /> <span style=''font-family: Agency FB; font-size: 12px;''>[CompanyAdd]</span></td>
+									</tr>
+									<tr style=''height: 35px; padding: 0px; border-bottom;none !important;border-bottom: 1px solid black;''>
+									<td style=''height: 35px; text-align: center; border-bottom;none !important;padding: 0px;'' colspan=''12''><span style=''font-size: 14px; vertical-align: top; text-align: top !important;''><strong>Phone : 2342824</strong></span></td>
+									</tr>
+									<tr style=''height: 15px; padding: 5px;''>
+									<td style=''height: 15px; text-align: center; vertical-align: middle; font-size: 16px; border-bottom: 1px solid black; border-top: 1px solid black; padding: 5px;'' colspan=''12''><strong> GSTIN : 24CUCPM0422J1ZZ &nbsp;&nbsp;&nbsp;&nbsp; State Code : 24-GJ </strong></td>
+									</tr>
+									<tr style=''background-color: transparent; height: 30px; text-align: left;''>
+									<td style=''font-size: 15px; vertical-align: top; height: 30px; text-align: left; padding-top: 4px;'' colspan=''9'' rowspan=''2''>&nbsp;&nbsp;&nbsp;&nbsp; <strong>M/S.</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style=''color: #000000; font-size: 18px;''><strong>[ClientName]</strong></span> <br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style=''font-size: 16px;''>[CLIENTADD]</span></td>
+									<td style=''font-size: 14px; vertical-align: middle; color: black; text-align: left; height: 30px; border-left: 1px solid black;'' colspan=''3''>&nbsp;&nbsp;<strong>Invoice No :</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[INVID]</td>
+									</tr>
+									<tr class=''trhw'' style=''height: 30px; text-align: left;''>
+									<td class=''tg-vi9z'' style=''font-size: 14px; vertical-align: middle; color: black; height: 30px; border-left: 1px solid black;'' colspan=''12''>&nbsp; <strong>Invoice Date: </strong>&nbsp; [OrderDate]</td>
+									</tr>
+									<tr class=''trhw'' style=''background-color: transparent; height: 30px; text-align: left;''>
+									<td class=''tg-vi9z'' style=''font-size: 14px; vertical-align: middle; color: black; height: 30px;'' colspan=''9''>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Phone :</strong> &nbsp; &nbsp;&nbsp; [Mobile]</td>
+									<td class=''tg-vi9z'' style=''font-size: 14px; vertical-align: middle; color: black; height: 30px; border-left: 1px solid black;'' colspan=''3''>&nbsp; <strong>Challan No :</strong>&nbsp;&nbsp;&nbsp;&nbsp; [ChallanNo]</td>
+									</tr>
+									<tr class=''trhw'' style=''background-color: transparent; height: 30px; text-align: left;''>
+									<td class=''tg-vi9z'' style=''font-size: 14px; vertical-align: middle; color: black; height: 30px;'' colspan=''9''>&nbsp;&nbsp;&nbsp;&nbsp; <strong>GSTIN :</strong> &nbsp; &nbsp;&nbsp; [CLIENTTINNO] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>State Code :</strong> &nbsp; &nbsp;&nbsp; 24-GJ</td>
+									<td class=''tg-vi9z'' style=''font-size: 14px; vertical-align: middle; color: black; height: 30px; border-left: 1px solid black;'' colspan=''3''>&nbsp; <strong>Challan Date:</strong>&nbsp;&nbsp; [ChallanDate]</td>
+									</tr>
+									<tr class=''trhw'' style=''height: 15px; text-align: left; background-color: transparent;''>
+									<td class=''tg-m36b thsrno'' style=''font-size: 14px; text-align: center; height: 15px; width: 10px; padding: 1px; border: 1px solid black; border-left: 0px;'' colspan=''1'' rowspan=''2''><span style=''color: #000000;''><strong>No</strong></span></td>
+									<td class=''tg-m36b theqp'' style=''font-size: 14px; padding: 5px; height: 15px; text-align: left; border: 1px solid black; border-right: 0px; border-left: 0px; width: 154px;'' colspan=''3'' rowspan=''2''><span style=''color: #000000;''><strong>Description</strong></span></td>
+									<td class=''tg-m36b theqp'' style=''font-size: 14px; padding: 2px; height: 15px; text-align: center; border: 1px solid black; border-right: 0px;'' colspan=''1'' rowspan=''2''><span style=''color: #000000;''><strong>HSN Code</strong></span></td>
+									<td class=''tg-ullm thsrno'' style=''font-size: 14px; padding: 5px; height: 15px; width: 10px; text-align: center; border: 1px solid black; border-right: 0px;'' colspan=''1'' rowspan=''2''><span style=''color: #000000;''><strong>Qty</strong></span></td>
+									<td class=''tg-ullm thsrno'' style=''font-size: 14px; padding: 5px; height: 15px; text-align: center; border: 1px solid black; border-right: 0px;'' colspan=''1'' rowspan=''2''><span style=''color: #000000;''><strong>Rate</strong></span></td>
+									<!--td class=''tg-ullm thsrno'' style=''font-size: 14px; padding: 5px; height: 45px; text-align: center;''><span style=''color: #000000;''><strong>Discount</strong></span></td-->
+									<td class=''tg-ullm thamt'' style=''font-size: 14px; padding: 0px; height: 15px; text-align: center; border: 1px solid black; border-right: 0px; border-bottom: 0px;'' colspan=''2''><span style=''color: #000000;''><strong>SGST</strong></span></td>
+									<td class=''tg-ullm thamt'' style=''font-size: 14px; padding: 0px; height: 15px; text-align: center; border: 1px solid black; border-right: 0px; border-bottom: 0px;'' colspan=''2''><span style=''color: #000000;''><strong>CGST</strong></span></td>
+									<td class=''tg-ullm thamt'' style=''font-size: 14px; padding: 1px; height: 15px; text-align: center; border: 1px solid black; border-right: 0px;'' colspan=''1'' rowspan=''2''><span style=''color: #000000;''><strong>Amount</strong></span></td>
+									</tr>
+									<tr class=''trhw'' style=''height: 15px; text-align: left; background-color: transparent;''>
+									<td class=''tg-ullm thamt'' style=''font-size: 14px; padding: 0px; height: 15px; text-align: center; border: 1px solid black; border-right: 0px; border-top: 0px;'' colspan=''1''><span style=''color: #000000;''><strong>Rate</strong></span></td>
+									<td class=''tg-ullm thamt'' style=''font-size: 14px; padding: 1px; height: 15px; text-align: center; border: 1px solid black; border-right: 0px; border-top: 0px;'' colspan=''1''><span style=''color: #000000;''><strong>Amount</strong></span></td>
+									<td class=''tg-ullm thamt'' style=''font-size: 14px; padding: 0px; height: 15px; text-align: center; border: 1px solid black; border-right: 0px; border-top: 0px;'' colspan=''1''><span style=''color: #000000;''><strong>Rate</strong></span></td>
+									<td class=''tg-ullm thamt'' style=''font-size: 14px; padding: 1px; height: 15px; text-align: center; border: 1px solid black; border-right: 0px; border-top: 0px;'' colspan=''1''><span style=''color: #000000;''><strong>Amount</strong></span></td>
+									</tr>
+									<tr class=''trhw'' style=''text-align: left; height: 1px; background-color: transparent; display: [displayNone];''>
+									<td class=''tg-m36b thsrno'' style=''font-size: 10px; color: #000000; height: 1px;'' colspan=''12''>[Description]</td>
+									</tr>
+									<tr style=''height: 26px; text-align: left; background-color: transparent; border-right: 0px;''>
+									<td class=''tg-jtyd'' style=''font-size: 14px; padding: 0px; height: 26px; text-align: left; border: 1px solid black; border-left: 0px;'' colspan=''5''><span style=''color: #000000;''><strong>&nbsp; Our PAN NO : CUCPM0422J</strong></span></td>
+									<td class=''tg-jtyd'' style=''font-size: 15px; padding: 5px; height: 26px; text-align: right; border: 1px solid black; border-left: 0px;'' colspan=''1''><span style=''color: #000000;''><strong>[TotalQty]</strong></span></td>
+									<td class=''tg-jtyd'' style=''font-size: 14px; padding: 1px; height: 26px; text-align: center; font-family: calibri; border: 1px solid black; border-left: 0px;'' colspan=''1''><span style=''color: #000000;''><strong>TOTAL</strong></span></td>
+									<td class=''tg-jtyd'' style=''font-size: 14px; padding: 5px; height: 26px; text-align: center; border: 1px solid black; border-left: 0px;'' colspan=''4''>&nbsp;</td>
+									<td class=''tg-jtyd'' style=''font-size: 14px; padding: 0px; height: 26px; border: 1px solid black; border-left: 0px; text-align: right; vertical-align: bottom; ;border-right: 0px;'' colspan=''1''><strong style=''padding: 2px; font-size: 18px;''>[Total]</strong></td>
+									</tr>
+									<tr class=''trhw'' style=''background-color: transparent; height: 25px; text-align: left; font-size: 12px; padding-top: 5x;''>
+									<td class=''tg-vi9z'' style=''height: 25px; text-align: left; vertical-align: center; padding-top: 5x;'' colspan=''11''>&nbsp; <strong> Transporter : </strong> [Transport]</td>
+									<td class=''tg-vi9z'' style=''height: 25px; text-align: left; vertical-align: center; border-left: 1px solid black;'' colspan=''1''>&nbsp;</td>
+									</tr>
+									<tr class=''trhw'' style=''background-color: transparent; height: 25px; text-align: left; font-size: 12px;''>
+									<td class=''tg-vi9z'' style=''height: 25px; text-align: left; vertical-align: center;'' colspan=''11''>&nbsp; <strong> GC/LR No. : </strong> [GCLRNO] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong> Eway Bill No : </strong> [GCLRNO]</td>
+									<td class=''tg-vi9z'' style=''height: 25px; text-align: left; vertical-align: center; border-left: 1px solid black;'' colspan=''1''>&nbsp;</td>
+									</tr>
+									<tr class=''trhw'' style=''background-color: transparent; height: 25px; text-align: left; font-size: 12px;''>
+									<td class=''tg-vi9z'' style=''height: 25px; text-align: left; vertical-align: center;'' colspan=''11''>&nbsp; <strong> Reference : </strong> [Reference]</td>
+									<td class=''tg-vi9z'' style=''height: 25px; text-align: left; vertical-align: center; border-left: 1px solid black;'' colspan=''1''>&nbsp;</td>
+									</tr>
+									<tr class=''trhw'' style=''background-color: transparent; height: 25px; text-align: left; font-size: 12px;''>
+									<td class=''tg-vi9z'' style=''height: 25px; text-align: left; vertical-align: center;'' colspan=''9''>&nbsp; <strong> Remarks : </strong> [REMARK]</td>
+									<td class=''tg-vi9z'' style=''height: 25px; text-align: right; vertical-align: center;'' colspan=''2''><strong>Round Up &nbsp;</strong></td>
+									<td class=''tg-vi9z'' style=''height: 25px; text-align: right; vertical-align: center; border-left: 1px solid black;'' colspan=''1''><strong style=''padding: 2px; font-size: 16px;''>[RoundFigure]</strong></td>
+									</tr>
+									<tr class=''trhw'' style=''background-color: transparent; height: 22px; text-align: left;''>
+									<td class=''tg-vi9z'' style=''height: 22px; text-align: left; vertical-align: middle; border-top: 1px solid black;'' colspan=''11''>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=''color: black;''><strong>[TotalInWord]</strong></span></td>
+									<td class=''tg-vi9z'' style=''height: 22px; text-align: right; vertical-align: bottom; border-top: 1px solid black; border-left: 1px solid black;'' colspan=''1''><span style=''color: #000000;''><strong style=''padding: 2px; font-size: 18px;''>[RoundTotal]</strong></span></td>
+									</tr>
+									<tr style=''background-color: transparent; height: 113px; text-align: left; padding: 0; vertical-align: top;''>
+									<td style=''padding: 3px; height: 113px; text-align: left; font-size: 13px; font-family: calibri; border-top: 1px solid black;'' colspan=''7''>
+									<p style=''line-height: 0.5; vertical-align: bottom;''><strong>Terms &amp; Conditions: </strong></p>
+									<br />
+									<p style=''line-height: 0.5;''>&nbsp;&nbsp; * Ineterest at 24% p.a. will be charged for late payments.</p>
+									<p style=''line-height: 0.5;''>&nbsp;&nbsp; * We check and pack the goods carefully before dispatch.</p>
+									<p style=''line-height: 0.5;''>&nbsp;&nbsp; * Cheque Retunrn Charge 150 Rs. Compulsory.</p>
+									<p style=''line-height: 0.5;''>&nbsp;&nbsp; * All Disputes are subject to SURAT jurisdiction only.</p>
+									</td>
+									<td style=''padding: 1px; height: 113px; text-align: right; font-family: calibri; border-top: 1px solid black;'' colspan=''5''><strong style=''vertical-align: top; font-size: 16px !important; padding: 0px;''>FOR, [Company] &nbsp;</strong><br /> &nbsp;<br /> &nbsp;<br />&nbsp;<br /> <strong style=''text-align: right; vertical-align: bottom; font-size: 12px !important; padding: 0px;''>Proprietor / Authorised Signature &nbsp;&nbsp;</strong></td>
+									</tr>
+									</tbody>
+									</table>
+									<p>&nbsp;</p>";
 
 		$templateArray['payment'] = "<div style=''background-image: url(''http://4.bp.blogspot.com/-J9g2UmC8cJk/UCyoyj24VMI/AAAAAAAAEDg/Q3oUk33685w/s1600/Indian+Flag+Wallpapers-03.jpg''); background-size: 100% 100%;''>
 

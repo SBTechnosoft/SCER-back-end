@@ -12,6 +12,8 @@ use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Entities\Constants\ConstantClass;
 use ERP\Entities\AuthenticationClass\TokenAuthentication;
+use Illuminate\Container\Container;
+use ERP\Api\V1_0\Documents\Controllers\DocumentController;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -70,7 +72,22 @@ class JobFormController extends BaseController implements ContainerInterface
 				if(is_array($jobFormPersistable))
 				{
 					$status = $jobFormService->insert($jobFormPersistable,$this->request->header());
-					return $status;
+					$decodedJson = json_decode($status);
+					if(is_array($decodedJson))
+					{
+						$documentController = new DocumentController(new Container());
+						$method=$constantArray['postMethod'];
+						$path=$constantArray['documentJobformUrl'];
+						$documentRequest = Request::create($path,$method,$decodedJson);
+						$processedData = $documentController->getJobFormDocumentData($documentRequest);
+						print_r($processedData);
+						exit;
+						return $processedData;
+					}
+					else
+					{
+						return $status;
+					}
 				}
 				else
 				{
@@ -107,6 +124,10 @@ class JobFormController extends BaseController implements ContainerInterface
 			}
 			else
 			{
+				if (strpos($jobCardNo, '~') !== false)
+				{
+					$jobCardNo = str_replace('~', "/", $jobCardNo);
+				}
 				$status = $jobFormService->getData($jobCardNo);
 				return $status;
 			}

@@ -96,7 +96,7 @@ class EncodeAllData extends StateService
 			{
 				$getEntryDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d', $entryDate[$decodedData])->format('d-m-Y');
 			}
-			if(strcmp($deliveryDate[$decodedData],'0000-00-00 ')==0)
+			if(strcmp($deliveryDate[$decodedData],'0000-00-00')==0)
 			{
 				$getDeliveryDate[$decodedData] = "00-00-0000";
 			}

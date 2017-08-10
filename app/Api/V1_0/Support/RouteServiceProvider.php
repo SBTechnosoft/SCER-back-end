@@ -144,7 +144,6 @@ class RouteServiceProvider extends ServiceProvider
 				}
 				else if($splitUriRoute[1]=="crm")
 				{
-					
 					$convertedString1 = str_replace(' ', '', ucwords(str_replace('-', ' ', $splitUriRoute[2])));
 					foreach ($packages as $package) 
 					{			
@@ -153,7 +152,6 @@ class RouteServiceProvider extends ServiceProvider
 						{
 							$path = app_path('Api\V1_0\\' . str_replace('\\', '/', $package) .'\\Routes');		
 							$namespace = 'ERP\Api\V1_0\\Crm\\' . $package;	
-							
 							//go to the register method from particular Route class 
 							$this->app->make($namespace .'\\Routes\\' . $routeName)
 							->register($router);	

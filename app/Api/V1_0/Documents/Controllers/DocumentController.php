@@ -120,4 +120,22 @@ class DocumentController extends BaseController implements ContainerInterface
 			return $serviceData;
 		}
 	}
+	
+	/**
+	 * get data with specified resource 
+	 * @param  Request object[Request $request]
+	 * method calls the processor for creating persistable object & setting the data
+	*/
+	public function getJobFormDocumentData(Request $request)
+	{
+		$RequestUri = explode("/", $_SERVER['REQUEST_URI']);
+		if(strcmp($RequestUri[1],"crm")==0 || strcmp($RequestUri[2],"job-form")==0)
+		{
+			// get quotations data as per given quotationBillId
+			$documentProcessor = new DocumentProcessor();
+			$documentService= new DocumentService();	
+			$serviceData = $documentService->getJobformData($request->input());
+			return $serviceData;
+		}
+	}
 }

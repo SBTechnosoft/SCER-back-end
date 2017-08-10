@@ -70,6 +70,9 @@ class EncodeAllData extends StateService
 			$cityDetail = new CityDetail();
 			$getCityDetail[$decodedData] = $cityDetail->getCityDetail($cityId[$decodedData]);
 			
+			//convert amount(number_format) into their company's selected decimal points
+			$cess[$decodedData] = number_format($cess[$decodedData],$noOfDecimalPoints[$decodedData],'.','');
+			
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
 			$company->setCreated_at($convertedCreatedDate[$decodedData]);
