@@ -239,7 +239,8 @@ return [
 		'JobForm',
 		'JobFormNumber',
 		'Quotations',
-		'Conversations'
+		'Conversations',
+		'Professions'
 	],
 
     /*

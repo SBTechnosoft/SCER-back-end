@@ -279,8 +279,7 @@ class BillController extends BaseController implements ContainerInterface
 				$processor = new BillProcessor();
 				$billPersistable = new BillPersistable();
 				$billPersistable = $processor->createPersistableChange($request,$saleId,$billData);
-				
-				if(is_array($billPersistable))
+				if(is_array($billPersistable) || is_object($billPersistable))
 				{
 					$billService= new BillService();
 					$status = $billService->updateData($billPersistable,$saleId,$request->header());

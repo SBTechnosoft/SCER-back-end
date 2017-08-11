@@ -239,64 +239,217 @@ class BillService
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
 		$imageArrayData = array();
-		if(empty($persistableData))
-		{
-			$noDataFlag=1;
-		}
-		else if(is_array($persistableData[0]))
-		{
-			$imageFlag=1;
+		
+		// if(is_object($persistableData))
+		// {
 			
-			//store image in an array
-			for($imageArray=0;$imageArray<count($persistableData)-1;$imageArray++)
+		// }
+		// else
+		// {
+			if(!is_array($persistableData) && !is_object($persistableData))
 			{
-				$imageArrayData[$imageArray] = $persistableData[$imageArray];
+				$noDataFlag=1;
 			}
-			$arrayLength = count($persistableData);
-			$innerArrayLength = count($persistableData[$arrayLength-1]);
-			
-			
-			if($innerArrayLength!=0)
+			else if(is_array($persistableData))
 			{
-				if(!is_object($persistableData[$arrayLength-1][$innerArrayLength-1]))
+				if(count($persistableData)==0)
 				{
-					// inventory is available
-					$flag=1;
+					//almost only client data is available
+					$noDataFlag=1;
 				}
-				if($flag==1)
+				else
 				{
-					$saleId = $persistableData[$arrayLength-1][0]->getSaleId();
-					for($arrayData=0;$arrayData<count($persistableData[$arrayLength-1])-1;$arrayData++)
+					if(is_array($persistableData[0]))
 					{
-						if($persistableData[$arrayLength-1][$arrayData]->getProductArray())
+						$imageFlag=1;
+						
+						// store image in an array
+						for($imageArray=0;$imageArray<count($persistableData)-1;$imageArray++)
 						{
-							$inventoryFlag=1;
-							$singleData['product_array'] = $persistableData[$arrayLength-1][$arrayData]->getProductArray();
+							$imageArrayData[$imageArray] = $persistableData[$imageArray];
+						}
+						$arrayLength = count($persistableData);
+						$innerArrayLength = count($persistableData[$arrayLength-1]);
+						
+						if($innerArrayLength!=0)
+						{
+							if(!is_object($persistableData[$arrayLength-1][$innerArrayLength-1]))
+							{
+								// inventory is available
+								$flag=1;
+							}
+							if($flag==1)
+							{
+								$saleId = $persistableData[$arrayLength-1][0]->getSaleId();
+								for($arrayData=0;$arrayData<count($persistableData[$arrayLength-1])-1;$arrayData++)
+								{
+									if($persistableData[$arrayLength-1][$arrayData]->getProductArray())
+									{
+										$inventoryFlag=1;
+										$singleData['product_array'] = $persistableData[$arrayLength-1][$arrayData]->getProductArray();
+									}
+									else
+									{
+										$dataFlag=1;
+										$funcName = $persistableData[$arrayLength-1][$arrayData]->getName();
+										$value = $persistableData[$arrayLength-1][$arrayData]->$funcName();
+										$key = $persistableData[$arrayLength-1][$arrayData]->getKey();
+										$singleData[$key] = $value;
+									}
+								}
+							}
+							else
+							{
+								$saleId = $persistableData[$arrayLength-1][0]->getSaleId();
+								for($arrayData=0;$arrayData<count($persistableData[$arrayLength-1]);$arrayData++)
+								{
+									$dataFlag=1;
+									$funcName = $persistableData[$arrayLength-1][$arrayData]->getName();
+									$value = $persistableData[$arrayLength-1][$arrayData]->$funcName();
+									$key = $persistableData[$arrayLength-1][$arrayData]->getKey();
+									$singleData[$key] = $value;
+								}
+							}
+							if(array_key_exists('entry_date',$singleData))
+							{
+								// date conversion 
+								// entry-date conversion
+								$splitedEntryDate = explode("-",$singleData['entry_date']);
+								$transformEntryDates = $splitedEntryDate[2]."-".$splitedEntryDate[1]."-".$splitedEntryDate[0];
+								$singleData['entry_date'] = $transformEntryDates;
+							}
+							$billModel = new BillModel();
+							$billUpdateResult = $billModel->updateBillData($singleData,$saleId,$imageArrayData);
+							if(strcmp($billUpdateResult,$exceptionArray['200'])==0)
+							{
+								$saleIdArray = array();
+								$saleIdArray['saleId'] = $saleId;
+								$documentController = new DocumentController(new Container());
+								$method=$constantArray['postMethod'];
+								$path=$constantArray['documentGenerateUrl'];
+								$documentRequest = Request::create($path,$method,$saleIdArray);
+								if(array_key_exists('operation',$headerData))
+								{
+									$documentRequest->headers->set('operation',$headerData['operation'][0]);
+								}
+								else
+								{
+									$documentRequest->headers->set('key',$headerData);
+								}
+								$processedData = $documentController->getData($documentRequest);
+								return $processedData;
+							}
 						}
 						else
 						{
-							$dataFlag=1;
-							$funcName = $persistableData[$arrayLength-1][$arrayData]->getName();
-							$value = $persistableData[$arrayLength-1][$arrayData]->$funcName();
-							$key = $persistableData[$arrayLength-1][$arrayData]->getKey();
-							$singleData[$key] = $value;
+							// only image is available
+							$billModel = new BillModel();
+							$billUpdateResult = $billModel->updateImageData($saleId,$imageArrayData);
+							if(strcmp($billUpdateResult,$exceptionArray['200'])==0)
+							{
+								$saleIdArray = array();
+								$saleIdArray['saleId'] = $saleId;
+								$documentController = new DocumentController(new Container());
+								
+								$method=$constantArray['postMethod'];
+								$path=$constantArray['documentGenerateUrl'];
+								$documentRequest = Request::create($path,$method,$saleIdArray);
+								if(array_key_exists('operation',$headerData))
+								{
+									$documentRequest->headers->set('operation',$headerData['operation'][0]);
+								}
+								else
+								{
+									$documentRequest->headers->set('key',$headerData);
+								}
+								$processedData = $documentController->getData($documentRequest);
+								return $processedData;
+							}
+						}
+					}
+					else
+					{
+						if(!is_object($persistableData[count($persistableData)-1]))
+						{
+							// inventory is available
+							$flag=1;
+						}
+						$singleData = array();
+						if($flag==1)
+						{
+							$saleId = $persistableData[0]->getSaleId();
+							for($arrayData=0;$arrayData<count($persistableData)-1;$arrayData++)
+							{
+								if($persistableData[$arrayData]->getProductArray())
+								{
+									$inventoryFlag=1;
+									$singleData['product_array'] = $persistableData[$arrayData]->getProductArray();
+								}
+								else
+								{
+									$dataFlag=1;
+									$funcName = $persistableData[$arrayData]->getName();
+									$value = $persistableData[$arrayData]->$funcName();
+									$key = $persistableData[$arrayData]->getKey();
+									$singleData[$key] = $value;
+								}
+							}
+						}
+						else
+						{
+							$saleId = $persistableData[0]->getSaleId();
+							for($arrayData=0;$arrayData<count($persistableData);$arrayData++)
+							{
+								$dataFlag=1;
+								$funcName = $persistableData[$arrayData]->getName();
+								$value = $persistableData[$arrayData]->$funcName();
+								$key = $persistableData[$arrayData]->getKey();
+								$singleData[$key] = $value;
+							}
+						}
+						if(array_key_exists('entry_date',$singleData))
+						{
+							//date conversion 
+							//entry-date conversion
+							$splitedEntryDate = explode("-",$singleData['entry_date']);
+							$transformEntryDate = $splitedEntryDate[2]."-".$splitedEntryDate[1]."-".$splitedEntryDate[0];
+							$singleData['entry_date'] = $transformEntryDate;
+						}
+						
+						$billModel = new BillModel();
+						$billUpdateResult = $billModel->updateBillData($singleData,$saleId,$imageArrayData);
+						if(strcmp($billUpdateResult,$exceptionArray['200'])==0)
+						{
+							$saleIdArray = array();
+							$saleIdArray['saleId'] = $saleId;
+							$documentController = new DocumentController(new Container());
+							
+							$method=$constantArray['postMethod'];
+							$path=$constantArray['documentGenerateUrl'];
+							$documentRequest = Request::create($path,$method,$saleIdArray);
+							if(array_key_exists('operation',$headerData))
+							{
+								$documentRequest->headers->set('operation',$headerData['operation'][0]);
+							}
+							else
+							{
+								$documentRequest->headers->set('key',$headerData);
+							}
+							$processedData = $documentController->getData($documentRequest);
+							return $processedData;
 						}
 					}
 				}
-				else
-				{
-					$saleId = $persistableData[$arrayLength-1][0]->getSaleId();
-					for($arrayData=0;$arrayData<count($persistableData[$arrayLength-1]);$arrayData++)
-					{
-						$dataFlag=1;
-						$funcName = $persistableData[$arrayLength-1][$arrayData]->getName();
-						$value = $persistableData[$arrayLength-1][$arrayData]->$funcName();
-						$key = $persistableData[$arrayLength-1][$arrayData]->getKey();
-						$singleData[$key] = $value;
-					}
-				}
+			}
+			else
+			{
+				$entryDate = $persistableData->getEntrydate();
+				//transform date
+				//entry-date conversion
+				$splitedEntryDate = explode("-",$entryDate);
+				$transformEntryDate = $splitedEntryDate[2]."-".$splitedEntryDate[1]."-".$splitedEntryDate[0];
 				$billModel = new BillModel();
-				$billUpdateResult = $billModel->updateBillData($singleData,$saleId,$imageArrayData);
+				$billUpdateResult = $billModel->updateBillEntryData($transformEntryDate,$saleId);
 				if(strcmp($billUpdateResult,$exceptionArray['200'])==0)
 				{
 					$saleIdArray = array();
@@ -306,6 +459,7 @@ class BillService
 					$method=$constantArray['postMethod'];
 					$path=$constantArray['documentGenerateUrl'];
 					$documentRequest = Request::create($path,$method,$saleIdArray);
+					
 					if(array_key_exists('operation',$headerData))
 					{
 						$documentRequest->headers->set('operation',$headerData['operation'][0]);
@@ -318,96 +472,7 @@ class BillService
 					return $processedData;
 				}
 			}
-			else
-			{
-				//only image is available
-				$billModel = new BillModel();
-				$billUpdateResult = $billModel->updateImageData($saleId,$imageArrayData);
-				if(strcmp($billUpdateResult,$exceptionArray['200'])==0)
-				{
-					$saleIdArray = array();
-					$saleIdArray['saleId'] = $saleId;
-					$documentController = new DocumentController(new Container());
-					
-					$method=$constantArray['postMethod'];
-					$path=$constantArray['documentGenerateUrl'];
-					$documentRequest = Request::create($path,$method,$saleIdArray);
-					if(array_key_exists('operation',$headerData))
-					{
-						$documentRequest->headers->set('operation',$headerData['operation'][0]);
-					}
-					else
-					{
-						$documentRequest->headers->set('key',$headerData);
-					}
-					$processedData = $documentController->getData($documentRequest);
-					return $processedData;
-				}
-			}
-		}
-		else
-		{
-			if(!is_object($persistableData[count($persistableData)-1]))
-			{
-				//inventory is available
-				$flag=1;
-			}
-			$singleData = array();
-			if($flag==1)
-			{
-				$saleId = $persistableData[0]->getSaleId();
-				for($arrayData=0;$arrayData<count($persistableData)-1;$arrayData++)
-				{
-					if($persistableData[$arrayData]->getProductArray())
-					{
-						$inventoryFlag=1;
-						$singleData['product_array'] = $persistableData[$arrayData]->getProductArray();
-					}
-					else
-					{
-						$dataFlag=1;
-						$funcName = $persistableData[$arrayData]->getName();
-						$value = $persistableData[$arrayData]->$funcName();
-						$key = $persistableData[$arrayData]->getKey();
-						$singleData[$key] = $value;
-					}
-				}
-			}
-			else
-			{
-				$saleId = $persistableData[0]->getSaleId();
-				for($arrayData=0;$arrayData<count($persistableData);$arrayData++)
-				{
-					$dataFlag=1;
-					$funcName = $persistableData[$arrayData]->getName();
-					$value = $persistableData[$arrayData]->$funcName();
-					$key = $persistableData[$arrayData]->getKey();
-					$singleData[$key] = $value;
-				}
-			}
-			$billModel = new BillModel();
-			$billUpdateResult = $billModel->updateBillData($singleData,$saleId,$imageArrayData);
-			if(strcmp($billUpdateResult,$exceptionArray['200'])==0)
-			{
-				$saleIdArray = array();
-				$saleIdArray['saleId'] = $saleId;
-				$documentController = new DocumentController(new Container());
-				
-				$method=$constantArray['postMethod'];
-				$path=$constantArray['documentGenerateUrl'];
-				$documentRequest = Request::create($path,$method,$saleIdArray);
-				if(array_key_exists('operation',$headerData))
-				{
-					$documentRequest->headers->set('operation',$headerData['operation'][0]);
-				}
-				else
-				{
-					$documentRequest->headers->set('key',$headerData);
-				}
-				$processedData = $documentController->getData($documentRequest);
-				return $processedData;
-			}
-		}
+		// }
 		if($noDataFlag==1)
 		{
 			$saleIdArray = array();
@@ -415,7 +480,7 @@ class BillService
 			$documentController = new DocumentController(new Container());
 			
 			$method=$constantArray['postMethod'];
-			$path=$constantArray['documentGenerateUrl'];
+			$path=$constantArray['documentGenerateUrl']; 
 			$documentRequest = Request::create($path,$method,$saleIdArray);
 			if(array_key_exists('operation',$headerData))
 			{

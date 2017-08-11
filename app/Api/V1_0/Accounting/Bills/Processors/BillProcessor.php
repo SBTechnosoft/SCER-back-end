@@ -1407,13 +1407,19 @@ class BillProcessor extends BaseProcessor
 				}
 			}
 		}
+		
+		$dateFlag=0;
+		if(count($billTrimData)==1 && array_key_exists('entry_date',$billTrimData))
+		{
+			$dateFlag=1;
+		}
+	
 		//validate bill data
 		//........pending
 		$invFlag=0;
 		//set bill data into persistable object
 		$billPersistable = array();
 		$clientBillArrayData = $clientArray->getBillClientArrayData();
-		
 		//splice data from trim array
 		for($index=0;$index<count($clientBillArrayData);$index++)
 		{
@@ -1474,6 +1480,12 @@ class BillProcessor extends BaseProcessor
 			{
 				return $processedData;
 			}
+		}
+		if($dateFlag==1)
+		{
+			$billPersistable = new BillPersistable();
+			$billPersistable->setEntryDate($billTrimData['entry_date']);
+			$billPersistable->setSaleId($saleId);
 		}
 		if($docFlag==1)
 		{
