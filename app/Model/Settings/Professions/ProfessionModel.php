@@ -116,11 +116,10 @@ class ProfessionModel extends Model
 		$raw = DB::connection($databaseName)->select("select 
 		profession_id,
 		profession_name,
-		profession_body,
-		profession_type,
+		description,
+		profession_parent_id,
 		updated_at,
-		created_at,
-		company_id
+		created_at
 		from profession_mst 
 		where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();

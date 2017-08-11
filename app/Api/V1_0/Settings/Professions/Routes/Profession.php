@@ -17,11 +17,10 @@ class Profession implements RouteRegistrarInterface
     public function register(RegistrarInterface $Registrar)
     {
 		// all the possible get request 
-		// Route::group(['as' => 'get'], function ()
-		// {
-			// Route::get('Settings/Professions/Profession/{ProfessionId?}', 'Settings\Professions\Controllers\ProfessionController@getData');
-			// Route::get('Settings/Professions/Profession/company/{companyId?}', 'Settings\Professions\Controllers\ProfessionController@getProfessionData');
-		// });
+		Route::group(['as' => 'get'], function ()
+		{
+			Route::get('Settings/Professions/Profession/{ProfessionId?}', 'Settings\Professions\Controllers\ProfessionController@getData');
+		});
 		
 		// insert data post request
 		Route::post('Settings/Professions/Profession', 'Settings\Professions\Controllers\ProfessionController@store');

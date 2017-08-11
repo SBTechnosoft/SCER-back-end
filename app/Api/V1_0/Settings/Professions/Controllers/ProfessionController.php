@@ -124,33 +124,6 @@ class ProfessionController extends BaseController implements ContainerInterface
     }
 	
 	/**
-     * get the specified resource.
-     * @param  int  $companyId
-     */
-    public function getProfessionData(Request $request,$companyId)
-    {
-		//Authentication
-		$tokenAuthentication = new TokenAuthentication();
-		$authenticationResult = $tokenAuthentication->authenticate($request->header());
-		
-		//get constant array
-		$constantClass = new ConstantClass();
-		$constantArray = $constantClass->constantVariable();
-		
-		if(strcmp($constantArray['success'],$authenticationResult)==0)
-		{
-			$professionType="all";
-			$professionService= new ProfessionService();
-			$status = $professionService->getSpecificData($companyId,$professionType);
-			return $status;
-		}
-		else
-		{
-			return $authenticationResult;
-		}
-	}
-	
-	/**
      * Update the specified resource in storage.
      * @param  Request object[Request $request]
      * @param  branch_id

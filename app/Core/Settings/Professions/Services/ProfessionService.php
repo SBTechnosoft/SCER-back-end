@@ -2,13 +2,12 @@
 namespace ERP\Core\Settings\Professions\Services;
 
 use ERP\Core\Settings\Professions\Persistables\ProfessionPersistable;
-// use ERP\Core\Settings\Professions\Entities\Branch;
 use ERP\Model\Settings\Professions\ProfessionModel;
 use ERP\Core\Shared\Options\UpdateOptions;
 use ERP\Core\Support\Service\AbstractService;
 use ERP\Core\User\Entities\User;
 // use ERP\Core\Settings\Professions\Entities\EncodeData;
-// use ERP\Core\Settings\Professions\Entities\EncodeAllData;
+use ERP\Core\Settings\Professions\Entities\EncodeAllData;
 use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -71,7 +70,6 @@ class ProfessionService extends AbstractService
 	{
 		$professionModel = new ProfessionModel();
 		$status = $professionModel->getAllData();
-		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$fileSizeArray = $exception->messageArrays();
@@ -112,29 +110,6 @@ class ProfessionService extends AbstractService
 		}
 	}
 	
-	/**
-     * get all the data as per given id and call the model for database selection opertation
-     * @return status
-     */
-	public function getSpecificData($companyId,$professionType)
-	{
-		$professionModel = new ProfessionModel();
-		$status = $professionModel->getAllProfessionData($companyId,$professionType);
-		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
-		if(strcmp($status,$exceptionArray['204'])==0)
-		{
-			return $status;
-		}
-		else
-		{
-			$encoded = new EncodeAllData();
-			$encodeAllData = $encoded->getEncodedAllData($status);
-			return $encodeAllData;
-		}
-	}
     /**
      * get the data from persistable object and call the model for database update opertation
      * @param SettingPersistable $persistable

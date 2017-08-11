@@ -762,7 +762,7 @@ include ('connection.php');
 				
 				// formdata.append('professionName',$scope.formAdata.professionName);
 				// formdata.append('description',$scope.formAdata.description);
-				formdata.append('professionParentId',$scope.formAdata.professionParentId);
+				// formdata.append('professionParentId',$scope.formAdata.professionParentId);
 				
 //--------------------------------------------------end---------------------------------------------------------------------
 				
@@ -787,11 +787,11 @@ include ('connection.php');
 				// var saleId = 371;
 				// var jobCardNo = "abc/3";
 				// var quotationBillId = 1;
-				var professionId = 2;
+				// var professionId = 2;
 				
 				//professions
-				// var url="http://www.scerp1.com/settings/professions";
-				var url="http://www.scerp1.com/settings/professions/"+professionId;
+				var url="http://www.scerp1.com/settings/professions";
+				// var url="http://www.scerp1.com/settings/professions/"+professionId;
 				
 				// var url="http://www.scerp1.com/crm/conversations/bulk-email";
 				// var url="http://www.scerp1.com/crm/conversations/bulk-sms";
@@ -904,8 +904,8 @@ include ('connection.php');
                         url: url,
                         // type:'patch',
                         // type:'get',
-						 // method: 'get',
-						 method: 'post',
+						 method: 'get',
+						 // method: 'post',
 						 // method: 'patch',
 						// enctype:'multipart/formdata',
 						 // _method: 'patch',
@@ -930,7 +930,7 @@ include ('connection.php');
                         // headers: {'Content-Type':undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','productCode':'ABC_ABC_AB_CYCFDJ_BKBK_122T'},
                         // headers: {'Content-Type':undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','fromDate':'01/04/2017','toDate':'28/04/2017'},
                         // headers: {'Content-Type':'application/x-www-form-urlencoded','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
-						 data:formdata
+						 // data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {
