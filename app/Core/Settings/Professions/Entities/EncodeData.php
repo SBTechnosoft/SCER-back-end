@@ -1,37 +1,29 @@
 <?php
-namespace ERP\Core\Settings\Templates\Entities;
+namespace ERP\Core\Settings\Professions\Entities;
 
-use ERP\Core\Settings\Templates\Entities\Template;
+use ERP\Core\Settings\Professions\Entities\Profession;
 use Carbon;
-use ERP\Core\Companies\Services\CompanyService;
 /**
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class EncodeData extends CompanyService
+class EncodeData extends Profession
 {
 	public function getEncodedData($status)
 	{
 		$decodedJson = json_decode($status,true);
 		$createdAt= $decodedJson[0]['created_at'];
 		$updatedAt= $decodedJson[0]['updated_at'];
-		$templateId= $decodedJson[0]['template_id'];
-		$templateName= $decodedJson[0]['template_name'];
-		$templateType= $decodedJson[0]['template_type'];
-		$templateBody= $decodedJson[0]['template_body'];
-		$companyId= $decodedJson[0]['company_id'];
-		
-		//get the company details from database
-		$encodeCompanyDataClass = new EncodeData();
-		$companyStatus = $encodeCompanyDataClass->getCompanyData($companyId);
-		$companyDecodedJson = json_decode($companyStatus,true);
+		$professionId= $decodedJson[0]['profession_id'];
+		$professionName= $decodedJson[0]['profession_name'];
+		$description= $decodedJson[0]['description'];
+		$professionParentId= $decodedJson[0]['profession_parent_id'];
 		
 		//date format conversion
-		$template = new Template();
-		
+		$profession = new EncodeData();
 		$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt)->format('d-m-Y');
-		$template->setCreated_at($convertedCreatedDate);
-		$getCreatedDate = $template->getCreated_at();
+		$profession->setCreated_at($convertedCreatedDate);
+		$getCreatedDate = $profession->getCreated_at();
 		
 		if(strcmp($updatedAt,'0000-00-00 00:00:00')==0)
 		{
@@ -40,45 +32,17 @@ class EncodeData extends CompanyService
 		else
 		{
 			$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt)->format('d-m-Y');
-			$template->setUpdated_at($convertedUpdatedDate);
-			$getUpdatedDate = $template->getUpdated_at();
+			$profession->setUpdated_at($convertedUpdatedDate);
+			$getUpdatedDate = $profession->getUpdated_at();
 		}
 		//set all data into json array
 		$data = array();
-		$data['templateId'] = $templateId;
-		$data['templateName'] = $templateName;
-		$data['templateBody'] = $templateBody;
-		$data['templateType'] = $templateType;
+		$data['professionId'] = $professionId;
+		$data['professionName'] = $professionName;
+		$data['description'] = $description;
+		$data['professionParentId'] = $professionParentId;
 		$data['createdAt'] = $getCreatedDate;	
 		$data['updatedAt'] = $getUpdatedDate;	
-		$data['company']= array(
-			'companyId' => $companyDecodedJson['companyId'],	
-			'companyName' => $companyDecodedJson['companyName'],
-			'companyDisplayName' => $companyDecodedJson['companyDisplayName'],	
-			'address1' => $companyDecodedJson['address1'],	
-			'address2' => $companyDecodedJson['address2'],
-			'pincode'=> $companyDecodedJson['pincode'],	
-			'pan' => $companyDecodedJson['pan'],	
-			'tin' => $companyDecodedJson['tin'],	
-			'vatNo' => $companyDecodedJson['vatNo'],
-			'serviceTaxNo' => $companyDecodedJson['serviceTaxNo'],	
-			'basicCurrencySymbol'=> $companyDecodedJson['basicCurrencySymbol'],
-			'formalName'=> $companyDecodedJson['formalName'],
-			'noOfDecimalPoints' => $companyDecodedJson['noOfDecimalPoints'],	
-			'currencySymbol' => $companyDecodedJson['currencySymbol'],
-			'logo'=> array(
-				'documentName'=> $companyDecodedJson['logo']['documentName'],
-				'documentUrl' => $companyDecodedJson['logo']['documentUrl'],
-				'documentSize' => $companyDecodedJson['logo']['documentSize'],	
-				'documentFormat' => $companyDecodedJson['logo']['documentFormat']
-			),
-			'isDisplay' => $companyDecodedJson['isDisplay'],	
-			'isDefault' => $companyDecodedJson['isDefault'],	
-			'createdAt' => $companyDecodedJson['createdAt'],	
-			'updatedAt' => $companyDecodedJson['updatedAt'],	
-			'stateAbb' => $companyDecodedJson['state']['stateAbb'],
-			'cityId' => $companyDecodedJson['city']['cityId'],
-		);
 		$encodeData = json_encode($data);
 		return $encodeData;
 	}

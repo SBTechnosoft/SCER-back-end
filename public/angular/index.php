@@ -787,11 +787,11 @@ include ('connection.php');
 				// var saleId = 371;
 				// var jobCardNo = "abc/3";
 				// var quotationBillId = 1;
-				// var professionId = 2;
+				var professionId = 2;
 				
 				//professions
-				var url="http://www.scerp1.com/settings/professions";
-				// var url="http://www.scerp1.com/settings/professions/"+professionId;
+				// var url="http://www.scerp1.com/settings/professions";
+				var url="http://www.scerp1.com/settings/professions/"+professionId;
 				
 				// var url="http://www.scerp1.com/crm/conversations/bulk-email";
 				// var url="http://www.scerp1.com/crm/conversations/bulk-sms";

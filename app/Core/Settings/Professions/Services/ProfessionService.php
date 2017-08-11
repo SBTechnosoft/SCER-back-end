@@ -6,7 +6,7 @@ use ERP\Model\Settings\Professions\ProfessionModel;
 use ERP\Core\Shared\Options\UpdateOptions;
 use ERP\Core\Support\Service\AbstractService;
 use ERP\Core\User\Entities\User;
-// use ERP\Core\Settings\Professions\Entities\EncodeData;
+use ERP\Core\Settings\Professions\Entities\EncodeData;
 use ERP\Core\Settings\Professions\Entities\EncodeAllData;
 use ERP\Exceptions\ExceptionMessage;
 /**
@@ -72,8 +72,8 @@ class ProfessionService extends AbstractService
 		$status = $professionModel->getAllData();
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		if(strcmp($status,$fileSizeArray['204'])==0)
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($status,$exceptionArray['204'])==0)
 		{
 			return $status;
 		}
@@ -97,8 +97,8 @@ class ProfessionService extends AbstractService
 		
 		//get exception message
 		$exception = new ExceptionMessage();
-		$fileSizeArray = $exception->messageArrays();
-		if(strcmp($status,$fileSizeArray['404'])==0)
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($status,$exceptionArray['404'])==0)
 		{
 			return $status;
 		}
