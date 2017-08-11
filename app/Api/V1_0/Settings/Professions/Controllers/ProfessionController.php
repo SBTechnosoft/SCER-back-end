@@ -10,7 +10,7 @@ use ERP\Api\V1_0\Settings\Professions\Processors\ProfessionProcessor;
 use ERP\Core\Settings\Professions\Persistables\ProfessionPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Exceptions\ExceptionMessage;
-// use ERP\Model\Settings\Professions\ProfessionModel;
+use ERP\Model\Settings\Professions\ProfessionModel;
 use ERP\Entities\AuthenticationClass\TokenAuthentication;
 use ERP\Entities\Constants\ConstantClass;
 /**
@@ -90,9 +90,9 @@ class ProfessionController extends BaseController implements ContainerInterface
 	
 	/**
      * get the specified resource.
-     * @param  int  $templateId
+     * @param  int  $professionId
      */
-    public function getData(Request $request,$templateId=null)
+    public function getData(Request $request,$professionId=null)
     {
 		//Authentication
 		$tokenAuthentication = new TokenAuthentication();
@@ -104,16 +104,16 @@ class ProfessionController extends BaseController implements ContainerInterface
 		
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			if($templateId==null)
+			if($professionId==null)
 			{	
-				$templateService= new ProfessionService();
-				$status = $templateService->getAllProfessionData();
+				$professionService= new ProfessionService();
+				$status = $professionService->getAllProfessionData();
 				return $status;
 			}
 			else
 			{	
-				$templateService= new ProfessionService();
-				$status = $templateService->getProfessionData($templateId);
+				$professionService= new ProfessionService();
+				$status = $professionService->getProfessionData($professionId);
 				return $status;
 			} 
 		}
@@ -139,9 +139,9 @@ class ProfessionController extends BaseController implements ContainerInterface
 		
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
-			$templateType="all";
-			$templateService= new ProfessionService();
-			$status = $templateService->getSpecificData($companyId,$templateType);
+			$professionType="all";
+			$professionService= new ProfessionService();
+			$status = $professionService->getSpecificData($companyId,$professionType);
 			return $status;
 		}
 		else
@@ -155,7 +155,7 @@ class ProfessionController extends BaseController implements ContainerInterface
      * @param  Request object[Request $request]
      * @param  branch_id
      */
-	public function update(Request $request,$templateId)
+	public function update(Request $request,$professionId)
     {
 		//Authentication
 		$tokenAuthentication = new TokenAuthentication();
@@ -169,30 +169,30 @@ class ProfessionController extends BaseController implements ContainerInterface
 		{
 			$this->request = $request;
 			$processor = new ProfessionProcessor();
-			$templatePersistable = new ProfessionPersistable();
-			$templateModel = new ProfessionModel();		
-			$result = $templateModel->getData($templateId);
+			$professionPersistable = new ProfessionPersistable();
+			$professionModel = new ProfessionModel();		
+			$result = $professionModel->getData($professionId);
 			
 			//get exception message
 			$exception = new ExceptionMessage();
-			$fileSizeArray = $exception->messageArrays();
-			if(strcmp($result,$fileSizeArray['404'])==0)
+			$exceptionArray = $exception->messageArrays();
+			if(strcmp($result,$exceptionArray['404'])==0)
 			{
 				return $result;
 			}
 			else
 			{
-				$templatePersistable = $processor->createPersistableChange($this->request,$templateId);
+				$professionPersistable = $processor->createPersistableChange($this->request,$professionId);
 				//here two array and string is return at a time
-				if(is_array($templatePersistable))
+				if(is_array($professionPersistable))
 				{
-					$templateService= new ProfessionService();	
-					$status = $templateService->update($templatePersistable);
+					$professionService= new ProfessionService();	
+					$status = $professionService->update($professionPersistable);
 					return $status;
 				}
 				else
 				{
-					return $templatePersistable;
+					return $professionPersistable;
 				}
 			}
 		}

@@ -27,7 +27,7 @@ class Profession implements RouteRegistrarInterface
 		Route::post('Settings/Professions/Profession', 'Settings\Professions\Controllers\ProfessionController@store');
 		
 		// update data post request
-		// Route::post('Settings/Professions/Profession/{ProfessionId}', 'Settings\Professions\Controllers\ProfessionController@update');
+		Route::post('Settings/Professions/Profession/{ProfessionId}', 'Settings\Professions\Controllers\ProfessionController@update');
 	}
 }
 

@@ -29,24 +29,24 @@ class ProfessionModel extends Model
 		$getProfessionKey = array();
 		$getProfessionData = func_get_arg(0);
 		$getProfessionKey = func_get_arg(1);
-		$templateData="";
+		$professionData="";
 		$keyName = "";
 		for($data=0;$data<count($getProfessionData);$data++)
 		{
 			if($data == (count($getProfessionData)-1))
 			{
-				$templateData = $templateData."'".$getProfessionData[$data]."'";
+				$professionData = $professionData."'".$getProfessionData[$data]."'";
 				$keyName =$keyName.$getProfessionKey[$data];
 			}
 			else
 			{
-				$templateData = $templateData."'".$getProfessionData[$data]."',";
+				$professionData = $professionData."'".$getProfessionData[$data]."',";
 				$keyName =$keyName.$getProfessionKey[$data].",";
 			}
 		}
 		DB::beginTransaction();
 		$raw = DB::connection($databaseName)->statement("insert into profession_mst(".$keyName.") 
-		values(".$templateData.")");
+		values(".$professionData.")");
 		DB::commit();
 		
 		//get exception message
@@ -64,10 +64,10 @@ class ProfessionModel extends Model
 	
 	/**
 	 * update data 
-	 * @param  template-data,key of template-data,template-id
+	 * @param  profession-data,key of profession-data,profession-id
 	 * returns the status
 	*/
-	public function updateData($templateData,$key,$templateId)
+	public function updateData($professionData,$key,$professionId)
 	{
 		//database selection
 		$database = "";
@@ -77,14 +77,14 @@ class ProfessionModel extends Model
 		date_default_timezone_set("Asia/Calcutta");
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
-		for($data=0;$data<count($templateData);$data++)
+		for($data=0;$data<count($professionData);$data++)
 		{
-			$keyValueString=$keyValueString.$key[$data]."='".$templateData[$data]."',";
+			$keyValueString=$keyValueString.$key[$data]."='".$professionData[$data]."',";
 		}
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("update template_mst 
+		$raw = DB::connection($databaseName)->statement("update profession_mst 
 		set ".$keyValueString."updated_at='".$mytime."'
-		where template_id = '".$templateId."' and 
+		where profession_id = '".$professionId."' and 
 		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
@@ -114,14 +114,14 @@ class ProfessionModel extends Model
 		
 		DB::beginTransaction();		
 		$raw = DB::connection($databaseName)->select("select 
-		template_id,
-		template_name,
-		template_body,
-		template_type,
+		profession_id,
+		profession_name,
+		profession_body,
+		profession_type,
 		updated_at,
 		created_at,
 		company_id
-		from template_mst 
+		from profession_mst 
 		where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
@@ -141,10 +141,10 @@ class ProfessionModel extends Model
 	
 	/**
 	 * get data as per given Profession Id
-	 * @param $templateId
+	 * @param $professionId
 	 * returns the status
 	*/
-	public function getData($templateId)
+	public function getData($professionId)
 	{		
 		//database selection
 		$database = "";
@@ -153,15 +153,14 @@ class ProfessionModel extends Model
 		
 		DB::beginTransaction();
 		$raw = DB::connection($databaseName)->select("select 
-		template_id,
-		template_name,
-		template_body,
-		template_type,
+		profession_id,
+		profession_name,
+		description,
+		profession_parent_id,
 		updated_at,
-		created_at,
-		company_id
-		from template_mst 
-		where template_id ='".$templateId."' and 
+		created_at
+		from profession_mst 
+		where profession_id ='".$professionId."' and 
 		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
@@ -184,25 +183,25 @@ class ProfessionModel extends Model
 	 * @param $companyId
 	 * returns the status
 	*/
-	public function getAllProfessionData($companyId,$templateType)
+	public function getAllProfessionData($companyId,$professionType)
 	{		
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
-		if(strcmp($templateType,"all")==0)
+		if(strcmp($professionType,"all")==0)
 		{
 			DB::beginTransaction();
 			$raw = DB::connection($databaseName)->select("select 
-			template_id,
-			template_body,
-			template_name,
-			template_type,
+			profession_id,
+			profession_body,
+			profession_name,
+			profession_type,
 			created_at,
 			updated_at,
 			company_id
-			from template_mst 
+			from profession_mst 
 			where company_id='".$companyId."' and 
 			deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
@@ -211,15 +210,15 @@ class ProfessionModel extends Model
 		{
 			DB::beginTransaction();
 			$raw = DB::connection($databaseName)->select("select 
-			template_id,
-			template_body,
-			template_name,
-			template_type,
+			profession_id,
+			profession_body,
+			profession_name,
+			profession_type,
 			created_at,
 			updated_at,
 			company_id
-			from template_mst 
-			where template_type ='".$templateType."' and 
+			from profession_mst 
+			where profession_type ='".$professionType."' and 
 			company_id='".$companyId."' and 
 			deleted_at='0000-00-00 00:00:00'");
 			DB::commit();

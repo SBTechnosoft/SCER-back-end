@@ -756,12 +756,12 @@ include ('connection.php');
 //--------------------------------------------------OVER---------------------------------------------------------------------
 //--------------------------------------------------Profession---------------------------------------------------------------------
 				// professions
-				$scope.formAdata.professionName = "abc";
-				$scope.formAdata.description = 'description';
-				$scope.formAdata.professionParentId = '1';
+				// $scope.formAdata.professionName = "abc12";
+				// $scope.formAdata.description = 'description12';
+				$scope.formAdata.professionParentId = '0';
 				
-				formdata.append('professionName',$scope.formAdata.professionName);
-				formdata.append('description',$scope.formAdata.description);
+				// formdata.append('professionName',$scope.formAdata.professionName);
+				// formdata.append('description',$scope.formAdata.description);
 				formdata.append('professionParentId',$scope.formAdata.professionParentId);
 				
 //--------------------------------------------------end---------------------------------------------------------------------
@@ -787,9 +787,11 @@ include ('connection.php');
 				// var saleId = 371;
 				// var jobCardNo = "abc/3";
 				// var quotationBillId = 1;
+				var professionId = 2;
 				
 				//professions
-				var url="http://www.scerp1.com/settings/professions";
+				// var url="http://www.scerp1.com/settings/professions";
+				var url="http://www.scerp1.com/settings/professions/"+professionId;
 				
 				// var url="http://www.scerp1.com/crm/conversations/bulk-email";
 				// var url="http://www.scerp1.com/crm/conversations/bulk-sms";
