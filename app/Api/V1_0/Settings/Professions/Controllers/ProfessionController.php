@@ -174,4 +174,47 @@ class ProfessionController extends BaseController implements ContainerInterface
 			return $authenticationResult;
 		}
 	}
+	
+	/**
+     * Remove the specified resource from storage.
+     * @param  Request object[Request $request]     
+     * @param  profession_id     
+     */
+    public function destroy(Request $request,$professionId)
+    {
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$this->request = $request;
+			$processor = new ProfessionProcessor();
+			$professionPersistable = new ProfessionPersistable();		
+			$professionService= new ProfessionService();	
+			
+			//get exception message
+			$exception = new ExceptionMessage();
+			$exceptionArray = $exception->messageArrays();
+			
+			$professionModel = new ProfessionModel();
+			$result = $professionModel->getData($professionId);
+			if(strcmp($result,$exceptionArray['404'])==0)
+			{	
+				return $result;
+			}
+			else
+			{
+				$status = $professionService->delete($professionId);
+				return $status;
+			}
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+    }
 }

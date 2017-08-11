@@ -40,7 +40,7 @@ class ProfessionService extends AbstractService
 	
 	 /**
      * get the data from persistable object and call the model for database insertion opertation
-     * @param BranchPersistable $persistable
+     * @param ProfessionPersistable $persistable
      * @return status
      */
 	public function insert()
@@ -151,13 +151,12 @@ class ProfessionService extends AbstractService
 	
     /**
      * @param delete
-     * @param BranchPersistable $persistable
+     * @param profession-id
      */
-    public function delete(BranchPersistable $persistable)
+    public function delete($professionId)
     {      
-		$branchId = $persistable->getBranchId();
-        $branchModel = new BranchModel();
-		$status = $branchModel->deleteData($branchId);
+		$professionModel = new ProfessionModel();
+		$status = $professionModel->deleteData($professionId);
 		return $status;
     }   
 }

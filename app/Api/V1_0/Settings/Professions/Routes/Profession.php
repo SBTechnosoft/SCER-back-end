@@ -27,6 +27,9 @@ class Profession implements RouteRegistrarInterface
 		
 		// update data post request
 		Route::post('Settings/Professions/Profession/{ProfessionId}', 'Settings\Professions\Controllers\ProfessionController@update');
+		
+		//delete data delete request
+		Route::delete('Settings/Professions/Profession/{ProfessionId}', 'Settings\Professions\Controllers\ProfessionController@destroy');
 	}
 }
 

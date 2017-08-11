@@ -177,63 +177,31 @@ class ProfessionModel extends Model
 		}
 	}
 	
-	/**
-	 * get data as per given Company Id
-	 * @param $companyId
-	 * returns the status
-	*/
-	public function getAllProfessionData($companyId,$professionType)
-	{		
+	//delete
+	public function deleteData($professionId)
+	{
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
-		if(strcmp($professionType,"all")==0)
-		{
-			DB::beginTransaction();
-			$raw = DB::connection($databaseName)->select("select 
-			profession_id,
-			profession_body,
-			profession_name,
-			profession_type,
-			created_at,
-			updated_at,
-			company_id
-			from profession_mst 
-			where company_id='".$companyId."' and 
-			deleted_at='0000-00-00 00:00:00'");
-			DB::commit();
-		}
-		else
-		{
-			DB::beginTransaction();
-			$raw = DB::connection($databaseName)->select("select 
-			profession_id,
-			profession_body,
-			profession_name,
-			profession_type,
-			created_at,
-			updated_at,
-			company_id
-			from profession_mst 
-			where profession_type ='".$professionType."' and 
-			company_id='".$companyId."' and 
-			deleted_at='0000-00-00 00:00:00'");
-			DB::commit();
-			
-		}
+		DB::beginTransaction();
+		$mytime = Carbon\Carbon::now();
+		$raw = DB::connection($databaseName)->statement("update profession_mst 
+		set deleted_at='".$mytime."' 
+		where profession_id=".$professionId);
+		DB::commit();
+		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		if(count($raw)==0)
+		if($raw==1)
 		{
-			return $exceptionArray['404'];
+			return $exceptionArray['200'];
 		}
 		else
 		{
-			$enocodedData = json_encode($raw,true); 	
-			return $enocodedData;
+			return $exceptionArray['500'];
 		}
 	}
 }
