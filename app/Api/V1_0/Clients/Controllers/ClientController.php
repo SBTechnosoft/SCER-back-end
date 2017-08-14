@@ -12,6 +12,8 @@ use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Entities\AuthenticationClass\TokenAuthentication;
 use ERP\Entities\Constants\ConstantClass;
+use ERP\Model\Clients\ClientModel;
+use ERP\Core\Clients\Entities\EncodeData;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -47,6 +49,10 @@ class ClientController extends BaseController implements ContainerInterface
 	*/
     public function store(Request $request)
     {
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
 		if(strcmp($_SERVER['REQUEST_URI'],"/accounting/bills")==0 || strcmp($_SERVER['REQUEST_URI'],"/accounting/quotations")==0 
 			|| strcmp($_SERVER['REQUEST_URI'],"/crm/job-form")==0)
 		{
@@ -56,22 +62,41 @@ class ClientController extends BaseController implements ContainerInterface
 			// insert
 			if($requestMethod == 'POST')
 			{
-				$processor = new ClientProcessor();
-				$clientPersistable = new ClientPersistable();		
-				$clientService= new ClientService();			
-				$clientPersistable = $processor->createPersistable($this->request);
-				if($clientPersistable[0][0]=='[')
+				if(array_key_exists('contactNo',$request->input()))
 				{
-					return $clientPersistable;
-				}
-				else if(is_array($clientPersistable))
-				{
-					$status = $clientService->insert($clientPersistable);
-					return $status;
+					// check contact_no exists or not?
+					$clientModel = new ClientModel();
+					$clientData = $clientModel->getClientData($request->input('contactNo'));
+					if(strcmp($clientData,$exceptionArray['200'])==0)
+					{
+						$processor = new ClientProcessor();
+						$clientPersistable = new ClientPersistable();		
+						$clientService= new ClientService();			
+						$clientPersistable = $processor->createPersistable($this->request);
+						if($clientPersistable[0][0]=='[')
+						{
+							return $clientPersistable;
+						}
+						else if(is_array($clientPersistable))
+						{
+							$status = $clientService->insert($clientPersistable);
+							return $status;
+						}
+						else
+						{
+							return $clientPersistable;
+						}
+					}
+					else
+					{
+						$encodedData = new EncodeData();
+						$encodedClientData = $encodedData->getEncodedData($clientData);
+						return $encodedClientData;
+					}
 				}
 				else
 				{
-					return $clientPersistable;
+					return $exceptionArray['content'];
 				}
 			}
 			
@@ -92,22 +117,41 @@ class ClientController extends BaseController implements ContainerInterface
 				// insert
 				if($requestMethod == 'POST')
 				{
-					$processor = new ClientProcessor();
-					$clientPersistable = new ClientPersistable();		
-					$clientService= new ClientService();			
-					$clientPersistable = $processor->createPersistable($this->request);
-					if($clientPersistable[0][0]=='[')
+					if(array_key_exists('contactNo',$request->input()))
 					{
-						return $clientPersistable;
-					}
-					else if(is_array($clientPersistable))
-					{
-						$status = $clientService->insert($clientPersistable);
-						return $status;
+						// check contact_no exists or not?
+						$clientModel = new ClientModel();
+						$clientData = $clientModel->getClientData($request->input('contactNo'));
+						if(strcmp($clientData,$exceptionArray['200'])==0)
+						{
+							$processor = new ClientProcessor();
+							$clientPersistable = new ClientPersistable();		
+							$clientService= new ClientService();			
+							$clientPersistable = $processor->createPersistable($this->request);
+							if($clientPersistable[0][0]=='[')
+							{
+								return $clientPersistable;
+							}
+							else if(is_array($clientPersistable))
+							{
+								$status = $clientService->insert($clientPersistable);
+								return $status;
+							}
+							else
+							{
+								return $clientPersistable;
+							}
+						}
+						else
+						{
+							$encodedData = new EncodeData();
+							$encodedClientData = $encodedData->getEncodedData($clientData);
+							return $encodedClientData;
+						}
 					}
 					else
 					{
-						return $clientPersistable;
+						return $exceptionArray['content'];
 					}
 				}
 			}

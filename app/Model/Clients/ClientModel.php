@@ -322,7 +322,17 @@ class ClientModel extends Model
 		
 		DB::beginTransaction();		
 		$raw = DB::connection($databaseName)->select("select 
-		client_id
+		client_id,
+		client_name,
+		email_id,
+		contact_no,
+		address1,
+		is_display,
+		state_abb,
+		city_id,
+		company_name,
+		created_at,
+		updated_at
 		from client_mst 
 		where deleted_at='0000-00-00 00:00:00' and 
 		contact_no='".$contactNo."'");
