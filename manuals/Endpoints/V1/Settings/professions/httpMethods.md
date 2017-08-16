@@ -75,7 +75,7 @@
 
 ##### Updates Profession    
        
-##### `PATCH /settings/professions/{professionId}`
+##### `UPDATE /settings/professions/{professionId}`
 + Header
 	- Authentication Token
 

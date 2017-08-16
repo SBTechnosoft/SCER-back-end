@@ -40,6 +40,7 @@ class ExceptionMessage
 		$msgArray['invalidClientName'] = "Client-Name is invalid";
 		$msgArray['invalidEntryDate'] = "entry-date is invalid";
 		$msgArray['invalidDeliveryDate'] = "delivery-date is invalid";
+		$msgArray['contact'] = "contact already exists";
 		return $msgArray;
 	}
 }

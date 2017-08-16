@@ -9,6 +9,7 @@ use ERP\Core\Accounting\Journals\Entities\EncodeAllData;
 use ERP\Model\Companies\CompanyModel;
 use ERP\Core\Accounting\Ledgers\Entities\LedgerArray;
 use ERP\Entities\Constants\ConstantClass;
+use ERP\Model\Clients\ClientModel;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -366,11 +367,49 @@ class LedgerModel extends Model
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
 	    $mytime = Carbon\Carbon::now();
 		$keyValueString="";
 		$keyValueStringAmt="";
+		$contactFlag=0;
 		for($data=0;$data<count($ledgerData);$data++)
 		{
+			if(strcmp('contact_no',$key[$data])==0)
+			{
+				$contactFlag=1;
+				//get contact_no of ledger from database for updating the contact of client
+				DB::beginTransaction();
+				$ledgerResult = DB::connection($databaseName)->select("select 
+				ledger_id,
+				contact_no
+				from ledger_mst where deleted_at='0000-00-00 00:00:00' and 
+				ledger_id='".$ledgerId."'");
+				DB::commit();
+				if(count($ledgerResult)!=0)
+				{
+					//update client contact_no
+					// check contact_no exists or not?
+					$clientModel = new ClientModel();
+					$clientData = $clientModel->getClientData($ledgerData[$data]);
+					if(strcmp($clientData,$exceptionArray['200'])!=0)
+					{
+						return $exceptionArray['contact'];
+					}
+					else
+					{
+						//update contact number
+						DB::beginTransaction();
+						$updateClientResult = DB::connection($databaseName)->statement("update client_mst 
+						set contact_no= '".$ledgerData[$data]."' and updated_at='".$mytime."'
+						where contact_no = '".$ledgerResult[0]->contact_no."' and 
+						deleted_at='0000-00-00 00:00:00'");
+						DB::commit();
+					}
+				}
+			}
 			if(strcmp($key[$data],"amount")==0 || strcmp($key[$data],"amount_type")==0 || strcmp($key[$data],"balance_flag")==0)
 			{
 				$keyValueStringAmt=$keyValueStringAmt.$key[$data]."='".$ledgerData[$data]."',";
@@ -397,9 +436,6 @@ class LedgerModel extends Model
 			DB::commit();
 		}
 	  
-		//get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
 		if($keyValueStringAmt!="" && $ledgerTrnData==1 || $keyValueString!="" && $raw==1)
 		{
 			return $exceptionArray['200'];
