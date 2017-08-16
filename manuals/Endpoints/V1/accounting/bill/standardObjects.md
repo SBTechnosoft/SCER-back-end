@@ -24,6 +24,9 @@
             	"company":{
 					... standard company object
 				},
+				"profession":{
+					... standard profession object
+				},
                 
 				"invoiceNumber":string,	
 				"quotationNumber":string,	
@@ -57,6 +60,7 @@
 				"address2":String,
 				"stateAbb":char,
 				"cityId":int,
+				"professionId":int,
 				"invoiceNumber":string,
 				"quotationNumber":string,	
 				"jobCardNumber":string,

@@ -55,24 +55,6 @@
 			}
 
 **NOTES:** List all the professions 
-
-##### `GET /settings/professions/company/{companyId}`
-+ Header 
-	- Authentication Token
-	
-+ Error Message
-
-			{
-				... Error Message
-			} 
-+ Response
-
-			{
-				... Standard Profession Object
-			}
-
-**NOTES:** List all the templates as per given company-id
-
 ##### Updates Profession    
        
 ##### `UPDATE /settings/professions/{professionId}`

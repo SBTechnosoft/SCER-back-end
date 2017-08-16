@@ -374,12 +374,10 @@ class LedgerModel extends Model
 	    $mytime = Carbon\Carbon::now();
 		$keyValueString="";
 		$keyValueStringAmt="";
-		$contactFlag=0;
 		for($data=0;$data<count($ledgerData);$data++)
 		{
 			if(strcmp('contact_no',$key[$data])==0)
 			{
-				$contactFlag=1;
 				//get contact_no of ledger from database for updating the contact of client
 				DB::beginTransaction();
 				$ledgerResult = DB::connection($databaseName)->select("select 
@@ -388,6 +386,20 @@ class LedgerModel extends Model
 				from ledger_mst where deleted_at='0000-00-00 00:00:00' and 
 				ledger_id='".$ledgerId."'");
 				DB::commit();
+				
+				//check contact-no in ledger for unique contact-no
+				DB::beginTransaction();
+				$contactResult = DB::connection($databaseName)->select("select 
+				ledger_id,
+				contact_no
+				from ledger_mst where deleted_at='0000-00-00 00:00:00' and 
+				contact_no='".$ledgerData[$data]."'");
+				DB::commit();
+				
+				if(count($contactResult)!=0 && $contactResult[0]->contact_no!=$ledgerResult[0]->contact_no)
+				{
+					return $exceptionArray['contact'];
+				}
 				if(count($ledgerResult)!=0)
 				{
 					//update client contact_no
@@ -396,7 +408,11 @@ class LedgerModel extends Model
 					$clientData = $clientModel->getClientData($ledgerData[$data]);
 					if(strcmp($clientData,$exceptionArray['200'])!=0)
 					{
-						return $exceptionArray['contact'];
+						$clientDecodedData = json_decode($clientData);
+						if($clientDecodedData[0]->contact_no!=$ledgerData[$data])
+						{
+							return $exceptionArray['contact'];
+						}
 					}
 					else
 					{
