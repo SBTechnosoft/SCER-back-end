@@ -24,10 +24,6 @@
             	"company":{
 					... standard company object
 				},
-				"profession":{
-					... standard profession object
-				},
-                
 				"invoiceNumber":string,	
 				"quotationNumber":string,	
 				"jobCardNumber":string,

@@ -9,6 +9,10 @@
 				"isDisplay": Enum,
 				"createdAt": timestamp,
 				"updatedAt": datetime,
+				"profession":
+				{
+					... Standard Profession Object
+				}
 				"city": 
 				{
 					... Standard City Object
@@ -27,6 +31,7 @@
 				"contactNo": string,
 				"emailId": string,
 				"address1": string,
+				"professionId":int,
 				"isDisplay": Enum,
 				"cityId":int, 
 				"stateAbb":char

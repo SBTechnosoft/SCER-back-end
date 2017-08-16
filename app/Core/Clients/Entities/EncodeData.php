@@ -4,6 +4,7 @@ namespace ERP\Core\Clients\Entities;
 use ERP\Core\Clients\Entities\Client;
 use ERP\Core\States\Services\StateService;
 use ERP\Core\Entities\CityDetail;
+use ERP\Core\Settings\Professions\Services\ProfessionService;
 use Carbon;
 /**
  *
@@ -22,6 +23,7 @@ class EncodeData extends StateService
 		$contactNo= $decodedJson[0]['contact_no'];
 		$emailId= $decodedJson[0]['email_id'];
 		$address1= $decodedJson[0]['address1'];
+		$professionId= $decodedJson[0]['profession_id'];
 		$isDisplay= $decodedJson[0]['is_display'];
 		$stateAbb= $decodedJson[0]['state_abb'];
 		$cityId= $decodedJson[0]['city_id'];
@@ -34,6 +36,10 @@ class EncodeData extends StateService
 		// get the city details from database
 		$cityDetail = new CityDetail();
 		$getCityDetail = $cityDetail->getCityDetail($cityId);
+		
+		//get all profession details from database 
+		$professionService = new ProfessionService();
+		$professionDetail = $professionService->getProfessionData($professionId);
 		
 		// date format conversion
 		$client = new Client();
@@ -60,6 +66,7 @@ class EncodeData extends StateService
 		$data['emailId'] = $emailId;
 		$data['address1'] = $address1;
 		$data['isDisplay'] = $isDisplay;
+		$data['professionId'] = $professionId;
 		$data['createdAt'] = $getCreatedDate;
 		$data['updatedAt'] = $getUpdatedDate;	
 		$data['state']= array(
@@ -67,7 +74,15 @@ class EncodeData extends StateService
 			'stateName' => $stateDecodedJson['stateName'],
 			'isDisplay' => $stateDecodedJson['isDisplay'],	
 			'createdAt' => $stateDecodedJson['createdAt'],	
-			'updatedAt' => $stateDecodedJson['updatedAt']	
+			'updatedAt' => $stateDecodedJson['updatedAt']
+		
+		$data['profession']= array(
+			'professionId' => $professionDetail['professionId'],
+			'professionName' => $professionDetail['professionName'],
+			'description' => $professionDetail['description'],	
+			'professionParentId' => $professionDetail['professionParentId'],	
+			'createdAt' => $professionDetail['createdAt'],	
+			'updatedAt' => $professionDetail['updatedAt']	
 		);
 		$data['city']= array(
 			'cityId' => $getCityDetail['cityId'],

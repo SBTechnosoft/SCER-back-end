@@ -83,6 +83,7 @@ class ClientModel extends Model
 			contact_no,
 			email_id,
 			address1,
+			profession_id,
 			is_display,
 			created_at,
 			updated_at,
@@ -119,6 +120,7 @@ class ClientModel extends Model
 		contact_no,
 		email_id,
 		address1,
+		profession_id,
 		is_display,
 		created_at,
 		updated_at,
@@ -288,6 +290,7 @@ class ClientModel extends Model
 		contact_no,
 		email_id,
 		address1,
+		profession_id,
 		is_display,
 		created_at,
 		updated_at,
@@ -331,6 +334,7 @@ class ClientModel extends Model
 		state_abb,
 		city_id,
 		company_name,
+		profession_id,
 		created_at,
 		updated_at
 		from client_mst 

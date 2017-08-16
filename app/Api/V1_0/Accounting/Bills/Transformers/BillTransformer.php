@@ -29,6 +29,7 @@ class BillTransformer
 		//trim an input
 		$tCompanyId = trim($billArrayData['companyId']);
 		$tEntryDate = trim($billArrayData['entryDate']);
+		$tProfessionId = trim($billArrayData['professionId']);
 		if(!array_key_exists('contactNo',$request->input()))
 		{
 			$tContactNo = "";
@@ -192,6 +193,7 @@ class BillTransformer
 			// make an array
 			$data = array();
 			$data['company_id'] = $tCompanyId;
+			$data['profession_id'] = $tProfessionId;
 			$data['entry_date'] = $tEntryDate;
 			$data['contact_no'] = $tContactNo;
 			$data['email_id'] = $tEmailId;

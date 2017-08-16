@@ -3,6 +3,7 @@ namespace ERP\Core\Clients\Entities;
 
 use ERP\Core\Clients\Entities\Client;
 use ERP\Core\States\Services\StateService;
+use ERP\Core\Settings\Professions\Services\ProfessionService;
 use ERP\Core\Entities\CityDetail;
 use Carbon;
 /**
@@ -31,6 +32,7 @@ class EncodeAllData extends StateService
 			$isDisplay[$decodedData] = $decodedJson[$decodedData]['is_display'];
 			$stateAbb[$decodedData] = $decodedJson[$decodedData]['state_abb'];
 			$cityId[$decodedData] = $decodedJson[$decodedData]['city_id'];
+			$professionId[$decodedData] = $decodedJson[$decodedData]['profession_id'];
 			
 			//get the state detail from database
 			$encodeDataClass = new EncodeAllData();
@@ -45,6 +47,10 @@ class EncodeAllData extends StateService
 			$cityDetail = new CityDetail();
 			$getCityDetail[$decodedData] = $cityDetail->getCityDetail($cityId[$decodedData]);
 			 
+			//get all profession details from database 
+			$professionService = new ProfessionService();
+			$professionDetail = $professionService->getProfessionData($professionId[$decodedData]);
+			
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
 			$client->setCreated_at($convertedCreatedDate[$decodedData]);
@@ -75,6 +81,14 @@ class EncodeAllData extends StateService
 				'createdAt' => $getCreatedDate[$jsonData],
 				'updatedAt' => $getUpdatedDate[$jsonData],
 				
+				'profession' => array(
+					'professionId' => $professionId[$jsonData],
+					'professionName' => $professionDetail[$jsonData]['professionName'],
+					'description' => $professionDetail[$jsonData]['description'],
+					'professionParentId' => $professionDetail[$jsonData]['professionParentId'],
+					'createdAt' => $professionDetail[$jsonData]['createdAt'],
+					'updatedAt' => $professionDetail[$jsonData]['updatedAt']
+				),
 				'state' => array(
 					'stateAbb' => $stateAbb[$jsonData],
 					'stateName' => $stateName[$jsonData],

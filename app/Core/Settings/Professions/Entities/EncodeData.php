@@ -35,6 +35,10 @@ class EncodeData extends Profession
 			$profession->setUpdated_at($convertedUpdatedDate);
 			$getUpdatedDate = $profession->getUpdated_at();
 		}
+		if($professionParentId==0)
+		{
+			$professionParentId='';
+		}
 		//set all data into json array
 		$data = array();
 		$data['professionId'] = $professionId;

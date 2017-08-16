@@ -7,6 +7,7 @@
                 "address1": string,
                 "address2": string,
 				"emailId":string,
+				"printType":Enum,
 				"customerCare":"string",
                 "city":  {
 					... Standard City Object
@@ -48,6 +49,7 @@
 			"cityId": int,
 			"stateAbb": char,
 			"pincode": char,
+			"printType":Enum,
 			"pan": string,
 			"tin": string,
 			"sgst":string,
@@ -75,4 +77,9 @@
 ##### Is Default Enum
 		{
 			... Is Default Enum
+		}
+##### Print Enum
+		{
+			"print":'print',
+			"preprint":'preprint'
 		}

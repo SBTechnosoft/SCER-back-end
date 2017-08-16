@@ -90,6 +90,7 @@ class BillProcessor extends BaseProcessor
 					$clientArray['isDisplay']=$tRequest['is_display'];
 					$clientArray['stateAbb']=$tRequest['state_abb'];
 					$clientArray['cityId']=$tRequest['city_id'];
+					$clientArray['professionId']=$tRequest['profession_id'];
 					$clientController = new ClientController(new Container());
 					$method=$constantArray['postMethod'];
 					$path=$constantArray['clientUrl'];
@@ -120,6 +121,7 @@ class BillProcessor extends BaseProcessor
 						$clientArray['address1']=$tRequest['address1'];
 						$clientArray['isDisplay']=$tRequest['is_display'];
 						$clientArray['stateAbb']=$tRequest['state_abb'];
+						$clientArray['professionId']=$tRequest['profession_id'];
 						$clientArray['cityId']=$tRequest['city_id'];
 						$clientController = new ClientController(new Container());
 						$method=$constantArray['postMethod'];
@@ -141,6 +143,7 @@ class BillProcessor extends BaseProcessor
 						$clientArray['address1']=$tRequest['address1'];
 						$clientArray['isDisplay']=$tRequest['is_display'];
 						$clientArray['stateAbb']=$tRequest['state_abb'];
+						$clientArray['professionId']=$tRequest['profession_id'];
 						$clientArray['cityId']=$tRequest['city_id'];
 						$clientController = new ClientController(new Container());
 						$method=$constantArray['postMethod'];

@@ -23,7 +23,10 @@ class EncodeAllData
 			$professionName[$decodedData] = $decodedJson[$decodedData]['profession_name'];
 			$description[$decodedData] = $decodedJson[$decodedData]['description'];
 			$professionParentId[$decodedData] = $decodedJson[$decodedData]['profession_parent_id'];
-			
+			if($professionParentId[$decodedData]==0)
+			{
+				$professionParentId[$decodedData]='';
+			}
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
 			$profession->setCreated_at($convertedCreatedDate[$decodedData]);

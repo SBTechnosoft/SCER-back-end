@@ -23,6 +23,7 @@ class ClientTransformer
 		$contactNo = $request->input('contactNo'); 
 		$emailId = $request->input('emailId'); 
 		$address1 = $request->input('address1'); 
+		$professionId = $request->input('professionId'); 
 		$isDisplay = $request->input('isDisplay'); 			
 		$stateAbb = $request->input('stateAbb'); 			
 		$cityId = $request->input('cityId'); 			
@@ -33,6 +34,7 @@ class ClientTransformer
 		$tContactNo = trim($contactNo);
 		$tEmailId = trim($emailId);
 		$tAddress1 = trim($address1);
+		$tProfessionId = trim($professionId);
 		$tIsDisplay = trim($isDisplay);
 		$tStateAbb = trim($stateAbb);
 		$tCityId = trim($cityId);
@@ -87,6 +89,7 @@ class ClientTransformer
 			$data['contact_no'] = $tContactNo;
 			$data['email_id'] = $tEmailId;
 			$data['address1'] = $tAddress1;
+			$data['profession_id'] = $tProfessionId;
 			$data['is_display'] = $tIsDisplay;
 			$data['state_abb'] = $tStateAbb;
 			$data['city_id'] = $tCityId;
