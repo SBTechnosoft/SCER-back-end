@@ -23,7 +23,10 @@
 ##### `GET /accounting/quotations/`
 + Header
 	- Authentication Token
-	- "quotationNumber":"string"
+	- "quotationNumber":"string",
+	- "previousQuotationId":"int",
+	- "nextQuotationId":"int",
+	- "companyId":"int",
 	- "operation":"first/last"
 + Error Message
 
