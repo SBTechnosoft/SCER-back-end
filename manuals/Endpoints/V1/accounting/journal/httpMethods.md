@@ -148,7 +148,10 @@
 						... Standard Document Object
 					},
 				]
-				'clientName':string
+				'clientName':string,
+				'extraCharge':decimal,
+				'advance':decimal,
+				'balance':decimal
 			}
 **NOTES:** Provide details of the journal and product_trn based on the jornal_folio id
 

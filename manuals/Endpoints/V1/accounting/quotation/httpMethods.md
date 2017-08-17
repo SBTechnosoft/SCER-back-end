@@ -24,6 +24,7 @@
 + Header
 	- Authentication Token
 	- "quotationNumber":"string"
+	- "operation":"first/last"
 + Error Message
 
 			{
