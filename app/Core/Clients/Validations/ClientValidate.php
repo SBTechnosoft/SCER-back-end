@@ -22,7 +22,7 @@ class ClientValidate extends ClientModel
 		$rules = array(
 			'client_name'=> 'between:1,100|regex:/^[a-zA-Z &_`#().\'-]*$/', 
 			'company_name'=> 'between:2,50|regex:/^[a-zA-Z &_`#().\'-]+$/', 
-			'contact_no'=> 'between:10,12|regex:/^[1-9][0-9]+$/', 
+			'contact_no'=> 'between:10,12|regex:/^[0-9]+$/', 
 			'email_id'=> 'regex:/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,})$/', 
 			'address1'=>'between:1,200|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/'
 		);
@@ -63,7 +63,7 @@ class ClientValidate extends ClientModel
 		$validationArray = array(
 			'client_name'=> 'between:1,100|regex:/^[a-zA-Z &_`#().\'-]*$/', 
 			'company_name'=> 'between:2,50|regex:/^[a-zA-Z &_`#().\'-]+$/', 
-			'contact_no'=> 'between:10,12|regex:/^[1-9][0-9]+$/', 
+			'contact_no'=> 'between:10,12|regex:/^[0-9]+$/', 
 			'work_no'=> 'between:10,12|regex:/^[1-9][0-9]+$/', 
 			'email_id'=> 'regex:/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,})$/', 
 			'address1'=>'between:1,200|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
