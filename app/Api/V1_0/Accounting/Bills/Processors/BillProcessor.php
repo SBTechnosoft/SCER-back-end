@@ -960,7 +960,7 @@ class BillProcessor extends BaseProcessor
 			{
 				$ledgerArray = new LedgerArray();
 				$ledgerArrayData = $ledgerArray->getLedgerArrayData();
-				
+				$ledgerData = array();
 				foreach($ledgerArrayData as $key => $value)
 				{
 					if(array_key_exists($value,$billTrimData))
@@ -968,7 +968,7 @@ class BillProcessor extends BaseProcessor
 						$ledgerData[$key] = $billTrimData[$value];
 					}
 				}
-				if(!empty($decodedLedgerData))
+				if(!empty($decodedLedgerData) && count($ledgerData)!=0)
 				{
 					//Now, we can update ledger data
 					$ledgerController = new LedgerController(new Container());

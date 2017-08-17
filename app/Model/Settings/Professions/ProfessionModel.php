@@ -187,15 +187,15 @@ class ProfessionModel extends Model
 		
 		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
-		$raw = DB::connection($databaseName)->statement("update profession_mst 
+		$professionDeleteResult = DB::connection($databaseName)->statement("update profession_mst 
 		set deleted_at='".$mytime."' 
-		where profession_id=".$professionId);
+		where profession_id=".$professionId." OR profession_parent_id='".$professionId."'");
 		DB::commit();
 		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		if($raw==1)
+		if($professionDeleteResult==1)
 		{
 			return $exceptionArray['200'];
 		}

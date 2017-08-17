@@ -419,7 +419,7 @@ class LedgerModel extends Model
 						//update contact number
 						DB::beginTransaction();
 						$updateClientResult = DB::connection($databaseName)->statement("update client_mst 
-						set contact_no= '".$ledgerData[$data]."' and updated_at='".$mytime."'
+						set contact_no= '".$ledgerData[$data]."',updated_at='".$mytime."'
 						where contact_no = '".$ledgerResult[0]->contact_no."' and 
 						deleted_at='0000-00-00 00:00:00'");
 						DB::commit();
@@ -435,6 +435,7 @@ class LedgerModel extends Model
 				$keyValueString=$keyValueString.$key[$data]."='".$ledgerData[$data]."',";
 			}
 		}
+		
 		if($keyValueStringAmt!="")
 		{
 			DB::beginTransaction();

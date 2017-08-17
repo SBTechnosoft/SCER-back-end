@@ -50,6 +50,11 @@ class ClientService
 		$keyName = array();
 		$funcName = array();
 		$clientArray = func_get_arg(0);
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$fileSizeArray = $exception->messageArrays();
+		
 		for($data=0;$data<count($clientArray);$data++)
 		{
 			$funcName[$data] = $clientArray[$data][0]->getName();
@@ -59,7 +64,16 @@ class ClientService
 		// data pass to the model object for insert
 		$clientModel = new ClientModel();
 		$status = $clientModel->insertData($getData,$keyName);
-		return $status;
+		if(strcmp($status,$fileSizeArray['500'])==0)
+		{
+			return $status;
+		}
+		else
+		{
+			$encoded = new EncodeData();
+			$encodeData = $encoded->getEncodedData($status);
+			return $encodeData;
+		}
 	}
 	
 	

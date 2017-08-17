@@ -50,6 +50,7 @@ class EncodeData extends StateService
 		$isDefault= $decodedJson[0]['is_default'];
 		$stateAbb= $decodedJson[0]['state_abb'];
 		$cityId= $decodedJson[0]['city_id'];
+		$printType= $decodedJson[0]['print_type'];
 	
 		//get the state_name from database
 		$encodeStateDataClass = new EncodeData();
@@ -100,6 +101,7 @@ class EncodeData extends StateService
 		$data['formalName'] = $formalName;
 		$data['noOfDecimalPoints'] = $noOfDecimalPoints;
 		$data['currencySymbol'] = $currencySymbol;
+		$data['printType'] = $printType;
 		$data['logo'] = array(
 			'documentName' => $documentName,
 			'documentUrl' => $documentUrl,

@@ -16,6 +16,7 @@ class ClientArray
 		$clientArray['email_id'] = 'emailId';
 		$clientArray['address1'] = 'address1';
 		$clientArray['is_display'] = 'isDisplay';
+		$clientArray['profession_id'] = 'professionId';
 		$clientArray['city_id'] = 'cityId';
 		$clientArray['state_abb'] = 'stateAbb';
 		return $clientArray;
@@ -40,6 +41,7 @@ class ClientArray
 		$clientArray['email_id'] = 'emailId';
 		$clientArray['address1'] = 'address1';
 		$clientArray['is_display'] = 'isDisplay';
+		$clientArray['profession_id'] = 'professionId';
 		$clientArray['city_id'] = 'cityId';
 		$clientArray['state_abb'] = 'stateAbb';
 		$clientArray['transaction_date'] = 'transactionDate';

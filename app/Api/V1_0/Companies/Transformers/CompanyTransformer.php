@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use ERP\Http\Requests;
 use ERP\Entities\EnumClasses\IsDisplayEnum;
 use ERP\Entities\EnumClasses\IsDefaultEnum;
+use ERP\Core\Companies\Entities\PrintEnum;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -39,6 +40,7 @@ class CompanyTransformer
 		$currencySymbol = $request->input('currencySymbol'); 			
 		$isDisplay = $request->input('isDisplay'); 			
 		$isDefault = $request->input('isDefault'); 			
+		$printType = $request->input('printType'); 			
 		$stateAbb = $request->input('stateAbb'); 			
 		$cityId = $request->input('cityId');  
 		
@@ -63,6 +65,7 @@ class CompanyTransformer
 		$tCurrencySymbol = trim($currencySymbol);
 		$tIsDisplay = trim($isDisplay);
 		$tIsDefault = trim($isDefault);
+		$tPrintType = trim($printType);
 		$tStateAbb = trim($stateAbb);
 		$tCityId = trim($cityId);
 		
@@ -110,7 +113,28 @@ class CompanyTransformer
 				}
 			}
 		}
-		if($isDisplayFlag==2 || $isDefaultFlag==2)
+		$printEnum = new PrintEnum();
+		$printEnumArray = $printEnum->enumArrays();
+		if($tPrintType=="")
+		{
+			$tPrintType=$printEnumArray['print'];
+		}
+		else
+		{
+			foreach ($printEnumArray as $key => $value)
+			{
+				if(strcmp($value,$tPrintType)==0)
+				{
+					$printFlag=1;
+					break;
+				}
+				else
+				{
+					$printFlag=2;
+				}
+			}
+		}
+		if($isDisplayFlag==2 || $isDefaultFlag==2 || $printFlag==2)
 		{
 			return "1";
 		}
@@ -138,6 +162,7 @@ class CompanyTransformer
 			$data['currency_symbol'] = $tCurrencySymbol;
 			$data['is_display'] = $tIsDisplay;
 			$data['is_default'] = $tIsDefault;
+			$data['print_type'] = $tPrintType;
 			$data['state_abb'] = $tStateAbb;
 			$data['city_id'] = $tCityId;
 			return $data;

@@ -464,7 +464,7 @@ include ('connection.php');
 				//conversation-dtl(email)
 				// $scope.client=[{"clientId":1},{"clientId":2},{"clientId":3}];
 				
-				$scope.formAdata.emailId = "reemapatel25@gmail.com";
+				// $scope.formAdata.emailId = "reemapatel25@gmail.com";
 				// $scope.formAdata.ccEmailId = "";
 				// $scope.formAdata.bccEmailId = "";
 				// $scope.formAdata.subject = "Sample Email Send";
@@ -758,7 +758,7 @@ include ('connection.php');
 				// professions
 				// $scope.formAdata.professionName = "abc12";
 				// $scope.formAdata.description = 'description12';
-				$scope.formAdata.professionParentId = '0';
+				// $scope.formAdata.professionsParentId = '0';
 				
 				// formdata.append('professionName',$scope.formAdata.professionName);
 				// formdata.append('description',$scope.formAdata.description);
@@ -787,11 +787,11 @@ include ('connection.php');
 				// var saleId = 371;
 				// var jobCardNo = "abc/3";
 				// var quotationBillId = 1;
-				var professionId = 2;
+				// var professionId = 2;
 				
 				//professions
 				// var url="http://www.scerp1.com/settings/professions";
-				var url="http://www.scerp1.com/settings/professions/"+professionId;
+				// var url="http://www.scerp1.com/settings/professions/"+professionId;
 				
 				// var url="http://www.scerp1.com/crm/conversations/bulk-email";
 				// var url="http://www.scerp1.com/crm/conversations/bulk-sms";
@@ -845,7 +845,7 @@ include ('connection.php');
 				
 				// var url= "http://www.scerp1.com/clients/export"; //header:operation:pdf/excel and searching criteria..that send in client
 				// var url = "http://www.scerp1.com/clients/"+clientId;
-				// var url = "http://www.scerp1.com/clients";
+				var url = "http://www.scerp1.com/clients";
 				
 				// var url = "http://www.scerp1.com/documents/bill";
 				// var url="http://www.scerp1.com/products/inward"; 
@@ -904,14 +904,14 @@ include ('connection.php');
                         url: url,
                         // type:'patch',
                         // type:'get',
-						 // method: 'get',
+						 method: 'get',
 						 // method: 'post',
 						 // method: 'patch',
 						// enctype:'multipart/formdata',
 						 // _method: 'patch',
 						// method: 'post',
 						// method: "PATCH",
-						method:'delete',
+						// method:'delete',
 						processData: false,
 						
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},

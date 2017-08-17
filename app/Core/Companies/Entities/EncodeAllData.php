@@ -43,6 +43,7 @@ class EncodeAllData extends StateService
 			$cgst[$decodedData] = $decodedJson[$decodedData]['cgst'];
 			$sgst[$decodedData] = $decodedJson[$decodedData]['sgst'];
 			$cess[$decodedData] = $decodedJson[$decodedData]['cess'];
+			$printType[$decodedData] = $decodedJson[$decodedData]['print_type'];
 			$serviceTaxNo[$decodedData] = $decodedJson[$decodedData]['service_tax_no'];
 			$basicCurrencySymbol[$decodedData] = $decodedJson[$decodedData]['basic_currency_symbol'];
 			$formalName[$decodedData] = $decodedJson[$decodedData]['formal_name'];
@@ -113,6 +114,7 @@ class EncodeAllData extends StateService
 				'formalName' => $formalName[$jsonData],
 				'noOfDecimalPoints' => $noOfDecimalPoints[$jsonData],
 				'currencySymbol' => $currencySymbol[$jsonData],
+				'printType' => $printType[$jsonData],
 				'logo' => array(
 					'documentName'=> $documentName[$jsonData],
 					'documentUrl' => $documentUrl,

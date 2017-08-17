@@ -43,7 +43,7 @@ class JournalValidate
 				'amount'=> 'regex:/^[0-9 .]+$/'
 				);
 				$messages = [
-					'amount.regex' => 'amount ontains character from "0-9" only'
+					'amount.regex' => 'amount contains character from "0-9." only'
 				];
 				$validator = Validator::make($request[0][$arrayData],$rules,$messages);
 				if ($validator->fails()) {
@@ -86,7 +86,7 @@ class JournalValidate
 				'amount'=> 'regex:/^[0-9 .]+$/'
 			);
 			$messages = [
-				'amount.regex' => 'amount ontains character from "0-9" only'
+				'amount.regex' => 'amount contains character from "0-9 ." only'
 			];
 			$validator = Validator::make($requestData[$arrayData],$rules,$messages);
 			if ($validator->fails()) {

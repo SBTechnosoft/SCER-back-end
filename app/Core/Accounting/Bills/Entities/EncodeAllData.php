@@ -204,6 +204,7 @@ class EncodeAllData extends ClientService
 					'isDisplay'=>$clientData->isDisplay,
 					'createdAt'=>$clientData->createdAt,
 					'updatedAt'=>$clientData->updatedAt,
+					'professionId'=>$clientData->professionId,
 					'stateAbb'=>$clientData->state->stateAbb,
 					'cityId'=>$clientData->city->cityId
 				),

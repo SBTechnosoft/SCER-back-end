@@ -110,6 +110,7 @@ class EncodeData extends ClientService
 			'isDisplay' => $clientDecodedJson['isDisplay'],	
 			'createdAt' => $clientDecodedJson['createdAt'],	
 			'updatedAt' => $clientDecodedJson['updatedAt'],	
+			'professionId' => $clientDecodedJson['professionId'],	
 			'stateAbb' => $clientDecodedJson['state']['stateAbb'],	
 			'cityId' => $clientDecodedJson['city']['cityId']
 		);

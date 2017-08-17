@@ -6,6 +6,7 @@ use ERP\Core\States\Services\StateService;
 use ERP\Core\Settings\Professions\Services\ProfessionService;
 use ERP\Core\Entities\CityDetail;
 use Carbon;
+use ERP\Exceptions\ExceptionMessage;
 /**
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -19,6 +20,12 @@ class EncodeAllData extends StateService
 		$encodeAllData =  array();
 		$decodedJson = json_decode($status,true);
 		$client = new Client();
+		$professionDetail = array();
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
 		for($decodedData=0;$decodedData<count($decodedJson);$decodedData++)
 		{
 			$createdAt[$decodedData] = $decodedJson[$decodedData]['created_at'];
@@ -32,7 +39,7 @@ class EncodeAllData extends StateService
 			$isDisplay[$decodedData] = $decodedJson[$decodedData]['is_display'];
 			$stateAbb[$decodedData] = $decodedJson[$decodedData]['state_abb'];
 			$cityId[$decodedData] = $decodedJson[$decodedData]['city_id'];
-			$professionId[$decodedData] = $decodedJson[$decodedData]['profession_id'];
+			$professionIdArray[$decodedData] = $decodedJson[$decodedData]['profession_id'];
 			
 			//get the state detail from database
 			$encodeDataClass = new EncodeAllData();
@@ -49,7 +56,7 @@ class EncodeAllData extends StateService
 			 
 			//get all profession details from database 
 			$professionService = new ProfessionService();
-			$professionDetail = $professionService->getProfessionData($professionId[$decodedData]);
+			$professionDetail[$decodedData] = $professionService->getProfessionData($professionIdArray[$decodedData]);
 			
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
@@ -68,8 +75,41 @@ class EncodeAllData extends StateService
 			}
 		}
 		$data = array();
+		$professionDecodedDetail = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
 		{
+			if(strcmp($professionDetail[$jsonData],$exceptionArray['404'])==0)
+			{
+				$professionId='';
+				$professionName='';
+				$description='';
+				$professionParentId='';
+				$createdAt='00-00-0000 00:00:00';
+				$updatedAt='00-00-0000 00:00:00';
+			}
+			else
+			{
+				
+				$professionDecodedDetail[$jsonData] = json_decode($professionDetail[$jsonData]);
+				if($professionIdArray[$jsonData]=='' || $professionIdArray[$jsonData]==0 || $professionIdArray[$jsonData]==null)
+				{
+					$professionId='';
+					$professionName='';
+					$description='';
+					$professionParentId='';
+					$createdAt='00-00-0000 00:00:00';
+					$updatedAt='00-00-0000 00:00:00';
+				}
+				else
+				{
+					$professionId=$professionIdArray[$jsonData];
+					$professionName=$professionDecodedDetail[$jsonData]->professionName;
+					$description=$professionDecodedDetail[$jsonData]->description;
+					$professionParentId=$professionDecodedDetail[$jsonData]->professionParentId;
+					$createdAt=$professionDecodedDetail[$jsonData]->createdAt;
+					$updatedAt=$professionDecodedDetail[$jsonData]->updatedAt;
+				}
+			}
 			$data[$jsonData]= array(
 				'clientId'=>$clientId[$jsonData],
 				'clientName' => $clientName[$jsonData],
@@ -82,12 +122,12 @@ class EncodeAllData extends StateService
 				'updatedAt' => $getUpdatedDate[$jsonData],
 				
 				'profession' => array(
-					'professionId' => $professionId[$jsonData],
-					'professionName' => $professionDetail[$jsonData]['professionName'],
-					'description' => $professionDetail[$jsonData]['description'],
-					'professionParentId' => $professionDetail[$jsonData]['professionParentId'],
-					'createdAt' => $professionDetail[$jsonData]['createdAt'],
-					'updatedAt' => $professionDetail[$jsonData]['updatedAt']
+					'professionId' => $professionId,
+					'professionName' => $professionName,
+					'description' => $description,
+					'professionParentId' => $professionParentId,
+					'createdAt' => $createdAt,
+					'updatedAt' => $updatedAt
 				),
 				'state' => array(
 					'stateAbb' => $stateAbb[$jsonData],

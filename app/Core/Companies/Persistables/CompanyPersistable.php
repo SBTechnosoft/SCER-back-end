@@ -21,6 +21,7 @@ use ERP\Core\Companies\Properties\CgstPropertyTrait;
 use ERP\Core\Companies\Properties\EmailIdPropertyTrait;
 use ERP\Core\Companies\Properties\CustomerCarePropertyTrait;
 use ERP\Core\Companies\Properties\CessPropertyTrait;
+use ERP\Core\Companies\Properties\PrintTypePropertyTrait;
 use ERP\Core\Shared\Properties\IsDisplayPropertyTrait;
 use ERP\Core\Properties\IsDefaultPropertyTrait;
 use ERP\Core\States\Properties\StateAbbPropertyTrait;
@@ -58,4 +59,5 @@ class CompanyPersistable
 	use EmailIdPropertyTrait;
 	use CustomerCarePropertyTrait;
 	use CessPropertyTrait;
+	use PrintTypePropertyTrait;
 }
