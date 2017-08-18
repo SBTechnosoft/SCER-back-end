@@ -39,6 +39,9 @@ class ProductTransformer extends ExceptionMessage
 		$wholeSaleMarginFlat = $request->input('wholesaleMarginFlat'); 			
 		$semiWholeSaleMargin = $request->input('semiWholesaleMargin'); 			
 		$vat = $request->input('vat'); 			
+		$purchaseCgst = $request->input('purchaseCgst'); 			
+		$purchaseSgst = $request->input('purchaseSgst'); 			
+		$purchaseIgst = $request->input('purchaseIgst'); 			
 		$mrp = $request->input('mrp'); 			
 		$igst= $request->input('igst'); 			 			
 		$hsn = $request->input('hsn'); 			
@@ -63,6 +66,9 @@ class ProductTransformer extends ExceptionMessage
 		$tWholeSaleMarginFlat = trim($wholeSaleMarginFlat);
 		$tSemiWholeSaleMargin = trim($semiWholeSaleMargin);
 		$tVat = trim($vat);
+		$tPurchaseCgst = trim($purchaseCgst);
+		$tPurchaseSgst = trim($purchaseSgst);
+		$tPurchaseIgst = trim($purchaseIgst);
 		$tMrp = trim($mrp);
 		$tIgst = trim($igst);
 		$tHsn = trim($hsn);
@@ -134,6 +140,9 @@ class ProductTransformer extends ExceptionMessage
 			$data['wholesale_margin'] = $tWholeSaleMargin;
 			$data['wholesale_margin_flat'] = $tWholeSaleMarginFlat;
 			$data['vat'] = $tVat;
+			$data['purchase_cgst'] = $tPurchaseCgst;
+			$data['purchase_sgst'] = $tPurchaseSgst;
+			$data['purchase_igst'] = $tPurchaseIgst;
 			$data['mrp'] = $tMrp;
 			$data['igst'] = $tIgst;
 			$data['hsn'] = $tHsn;

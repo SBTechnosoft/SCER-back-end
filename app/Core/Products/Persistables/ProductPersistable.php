@@ -41,6 +41,9 @@ use ERP\Core\Products\Properties\ProductCodePropertyTrait;
 use ERP\Core\Products\Properties\StockLevelPropertyTrait;
 use ERP\Core\Products\Properties\IgstPropertyTrait;
 use ERP\Core\Products\Properties\HsnPropertyTrait;
+use ERP\Core\Products\Properties\PurchaseCgstTrait;
+use ERP\Core\Products\Properties\PurchaseSgstTrait;
+use ERP\Core\Products\Properties\PurchaseIgstTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -86,4 +89,7 @@ class productPersistable
 	use StockLevelPropertyTrait;
 	use IgstPropertyTrait;
 	use HsnPropertyTrait;
+	use PurchaseCgstTrait;
+	use PurchaseSgstTrait;
+	use PurchaseIgstTrait;
 }

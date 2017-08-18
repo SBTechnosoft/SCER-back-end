@@ -186,10 +186,11 @@ class QuotationModel extends Model
 	*/
 	public function getSpecifiedData($headerData)
 	{
-		if(array_key_exists('previousQuotationId',$headerData) || array_key_exists('nextQuotationId',$headerData)
+		if(array_key_exists('previousquotationid',$headerData) || array_key_exists('nextquotationid',$headerData)
 			|| array_key_exists('operation',$headerData))
 		{
-			$resultData = getPreviousNextData($headerData);
+			$resultData = $this->getPreviousNextData($headerData);
+			return $resultData;
 		}
 		else
 		{
@@ -293,10 +294,9 @@ class QuotationModel extends Model
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		
-		if(array_key_exists('previousquotationId',$headerData))
+		if(array_key_exists('previousquotationid',$headerData))
 		{
-			if($headerData['previousquotationId'][0]==0)
+			if($headerData['previousquotationid'][0]==0)
 			{
 				DB::beginTransaction();
 				$raw = DB::connection($databaseName)->select("select 
@@ -331,7 +331,7 @@ class QuotationModel extends Model
 			}
 			else
 			{
-				$quotationId = $headerData['previousquotationId'][0]-1;
+				$quotationId = $headerData['previousquotationid'][0]-1;
 				$result = $this->getQuotationPreviousNextData($headerData,$quotationId);
 				if(count($result)==0)
 				{
@@ -547,15 +547,15 @@ class QuotationModel extends Model
 				$documentResult[$quotationData][0]->document_name = '';
 				$documentResult[$quotationData][0]->document_size = 0;
 				$documentResult[$quotationData][0]->document_format = '';
-				$documentResult[$quotationData][0]->document_type ='bill';
+				$documentResult[$quotationData][0]->document_type ='quotation';
 				$documentResult[$quotationData][0]->created_at = '0000-00-00 00:00:00';
 				$documentResult[$quotationData][0]->updated_at = '0000-00-00 00:00:00';
 			}
 		}
-		$quotationArrayData = array();
-		$quotationArrayData['quotationData'] = json_encode($quotationArrayData);
-		$quotationArrayData['documentData'] = json_encode($documentResult);
-		return json_encode($quotationArrayData);
+		$quotationDataArray = array();
+		$quotationDataArray['quotationData'] = json_encode($quotationArrayData);
+		$quotationDataArray['documentData'] = json_encode($documentResult);
+		return json_encode($quotationDataArray);
 	}
 	
 	/**
