@@ -126,6 +126,10 @@ class LedgerModel extends Model
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
 		$mytime = Carbon\Carbon::now();
 		$getLedgerData = array();
 		$getLedgerKey = array();
@@ -142,6 +146,21 @@ class LedgerModel extends Model
 		//make keys and values for query of ledger data
 		for($data=0;$data<count($getLedgerData);$data++)
 		{
+			if(strcmp($getLedgerKey[$data],'contact_no')==0)
+			{
+				//check contact_no in database that it is exists or not?
+				DB::beginTransaction();
+				$ledgerContactResult = DB::connection($databaseName)->select("select 
+				ledger_id,
+				contact_no
+				from ledger_mst where deleted_at='0000-00-00 00:00:00' and 
+				contact_no='".$getLedgerData[$data]."'");
+				DB::commit();
+				if(count($ledgerContactResult)!=0)
+				{
+					return $exceptionArray['contact'];
+				}
+			}
 			if($data == (count($getLedgerData)-1))
 			{
 				$ledgerData = $ledgerData."'".$getLedgerData[$data]."'";
@@ -172,9 +191,6 @@ class LedgerModel extends Model
 		values(".$ledgerData.")");
 		DB::commit();
 		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
 			$ledgerId = DB::connection($databaseName)->select("SELECT  MAX(ledger_id) AS ledger_id from ledger_mst where deleted_at='0000-00-00 00:00:00'");

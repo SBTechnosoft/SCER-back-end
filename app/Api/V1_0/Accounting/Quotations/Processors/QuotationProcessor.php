@@ -73,6 +73,7 @@ class QuotationProcessor extends BaseProcessor
 				{
 					$clientArray = array();
 					$clientArray['clientName']=$tRequest['client_name'];
+					$clientArray['professionId']=$tRequest['profession_id'];
 					$clientArray['companyName']=$tRequest['company_name'];
 					$clientArray['emailId']=$tRequest['email_id'];
 					$clientArray['contactNo']=$tRequest['contact_no'];
@@ -105,6 +106,7 @@ class QuotationProcessor extends BaseProcessor
 						//update client data
 						$clientArray = array();
 						$clientArray['clientName']=$tRequest['client_name'];
+						$clientArray['professionId']=$tRequest['profession_id'];
 						$clientArray['companyName']=$tRequest['company_name'];
 						$clientArray['emailId']=$tRequest['email_id'];
 						$clientArray['contactNo']=$tRequest['contact_no'];
@@ -126,6 +128,7 @@ class QuotationProcessor extends BaseProcessor
 					{
 						$clientArray = array();
 						$clientArray['clientName']=$tRequest['client_name'];
+						$clientArray['professionId']=$tRequest['profession_id'];
 						$clientArray['companyName']=$tRequest['company_name'];
 						$clientArray['contactNo']=$tRequest['contact_no'];
 						$clientArray['emailId']=$tRequest['email_id'];

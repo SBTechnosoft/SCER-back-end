@@ -26,6 +26,14 @@ class QuotationTransformer
 		//trim an input
 		$tCompanyId = trim($quotationArrayData['companyId']);
 		$tEntryDate = trim($quotationArrayData['entryDate']);
+		if(!array_key_exists('professionId',$request->input()))
+		{
+			$tProfessionId = "";
+		}
+		else
+		{
+			$tProfessionId = trim($quotationArrayData['professionId']);
+		}
 		if(!array_key_exists('contactNo',$request->input()))
 		{
 			$tContactNo = "";
@@ -164,6 +172,7 @@ class QuotationTransformer
 			$data['is_display'] = $tIsDisplay;
 			$data['company_name'] = $tCompanyName;
 			$data['client_name'] = $tClientName;
+			$data['profession_id'] = $tProfessionId;
 			$data['quotation_number'] = $tQuotationNumber;
 			$data['address1'] = $tAddress1;
 			$data['state_abb'] = $tStateAbb;

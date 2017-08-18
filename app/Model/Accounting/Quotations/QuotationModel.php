@@ -186,88 +186,396 @@ class QuotationModel extends Model
 	*/
 	public function getSpecifiedData($headerData)
 	{
-		$quotationArray = new QuotationArray();
-		$quotationArrayData = $quotationArray->searchQuotationData();
-		$queryParameter="";
-		for($dataArray=0;$dataArray<count($quotationArrayData);$dataArray++)
+		if(array_key_exists('previousQuotationId',$headerData) || array_key_exists('nextQuotationId',$headerData)
+			|| array_key_exists('operation',$headerData))
 		{
-			$key = $quotationArrayData[array_keys($quotationArrayData)[$dataArray]];
-			$queryKey = array_keys($quotationArrayData)[$dataArray];
-			
-			if(array_key_exists($quotationArrayData[array_keys($quotationArrayData)[$dataArray]],$headerData))
+			$resultData = getPreviousNextData($headerData);
+		}
+		else
+		{
+			$quotationArray = new QuotationArray();
+			$quotationArrayData = $quotationArray->searchQuotationData();
+			$queryParameter="";
+			for($dataArray=0;$dataArray<count($quotationArrayData);$dataArray++)
 			{
-				$queryParameter = $queryParameter."".$queryKey."='".$headerData[$key][0]."' and ";
+				$key = $quotationArrayData[array_keys($quotationArrayData)[$dataArray]];
+				$queryKey = array_keys($quotationArrayData)[$dataArray];
+				
+				if(array_key_exists($quotationArrayData[array_keys($quotationArrayData)[$dataArray]],$headerData))
+				{
+					$queryParameter = $queryParameter."".$queryKey."='".$headerData[$key][0]."' and ";
+				}
+			}
+			//database selection
+			$database = "";
+			$constantDatabase = new ConstantClass();
+			$databaseName = $constantDatabase->constantDatabase();
+			
+			DB::beginTransaction();		
+			$raw = DB::connection($databaseName)->select("select 
+			quotation_bill_id,
+			product_array,
+			quotation_number,
+			total,
+			extra_charge,
+			tax,
+			grand_total,
+			remark,
+			entry_date,
+			client_id,
+			company_id,
+			jf_id,
+			created_at,
+			updated_at	
+			from quotation_bill_dtl where ".$queryParameter." deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+			
+			// get exception message
+			$exception = new ExceptionMessage();
+			$exceptionArray = $exception->messageArrays();
+			if(count($raw)==0)
+			{
+				return $exceptionArray['204'];
+			}
+			else
+			{
+				$documentResult = array();
+				for($quotationData=0;$quotationData<count($raw);$quotationData++)
+				{
+					DB::beginTransaction();
+					$documentResult[$quotationData] = DB::connection($databaseName)->select("select
+					document_id,
+					quotation_bill_id,
+					document_name,
+					document_size,
+					document_format,
+					document_type,
+					created_at,
+					updated_at
+					from quotation_bill_doc_dtl
+					where quotation_bill_id='".$raw[$quotationData]->quotation_bill_id."' and 
+					deleted_at='0000-00-00 00:00:00'");
+					DB::commit();
+					if(count($documentResult[$quotationData])==0)
+					{
+						$documentResult[$quotationData] = array();
+						$documentResult[$quotationData][0] = new stdClass();
+						$documentResult[$quotationData][0]->document_id = 0;
+						$documentResult[$quotationData][0]->quotation_bill_id = 0;
+						$documentResult[$quotationData][0]->document_name = '';
+						$documentResult[$quotationData][0]->document_size = 0;
+						$documentResult[$quotationData][0]->document_format = '';
+						$documentResult[$quotationData][0]->document_type ='quotation';
+						$documentResult[$quotationData][0]->created_at = '0000-00-00 00:00:00';
+						$documentResult[$quotationData][0]->updated_at = '0000-00-00 00:00:00';
+					}
+				}
+				$quotationArrayData = array();
+				$quotationArrayData['quotationData'] = json_encode($raw);
+				$quotationArrayData['documentData'] = json_encode($documentResult);
+				return json_encode($quotationArrayData);
 			}
 		}
+	}
+	
+	/**
+	 * get previous-next quotation-bill data
+	 * @param  header-data
+	 * returns the exception-message/sales data
+	*/
+	public function getPreviousNextData($headerData)
+	{
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
-		DB::beginTransaction();		
-		$raw = DB::connection($databaseName)->select("select 
-		quotation_bill_id,
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		if(array_key_exists('previousquotationId',$headerData))
+		{
+			// if($headerData['previousQuotationId'][0]==0)
+			// {
+				// DB::beginTransaction();
+				// $raw = DB::connection($databaseName)->select("select 
+				// sale_id,
+				// product_array,
+				// payment_mode,
+				// bank_name,
+				// invoice_number,
+				// check_number,
+				// job_card_number,
+				// total,
+				// extra_charge,
+				// tax,
+				// grand_total,
+				// advance,
+				// balance,
+				// remark,
+				// entry_date,
+				// client_id,
+				// sales_type,
+				// refund,
+				// company_id,
+				// jf_id,
+				// created_at,
+				// updated_at 
+				// from sales_bill 
+				// where sales_type='".$headerData['salestype'][0]."' and
+				// company_id = '".$headerData['companyid'][0]."' and
+				// deleted_at='0000-00-00 00:00:00'
+				// order by sale_id desc limit 1");
+				// DB::commit();
+				// if(count($raw)==0)
+				// {
+					// return $exceptionArray['204'];
+				// }
+				// else
+				// {
+					// $saleDataResult = $this->getDocumentData($raw);
+					// return $saleDataResult;
+				// }
+			// }
+			// else
+			// {
+				// $saleId = $headerData['previoussaleid'][0]-1;
+				// $result = $this->getQuotationPreviousNextData($headerData,$saleId);
+				// if(count($result)==0)
+				// {
+					// DB::beginTransaction();
+					// $previousAscId = DB::connection($databaseName)->select("select 
+					// sale_id
+					// from sales_bill 
+					// where sales_type='".$headerData['salestype'][0]."' and
+					// company_id = '".$headerData['companyid'][0]."' and
+					// deleted_at='0000-00-00 00:00:00'
+					// order by sale_id asc limit 1");
+					// DB::commit();
+					// if($saleId<$previousAscId[0]->sale_id)
+					// {
+						// return $exceptionArray['204'];
+					// }
+					// else
+					// {
+						// for($arrayData=$saleId-1;$arrayData>=$previousAscId[0]->sale_id;$arrayData--)
+						// {
+							// $innerResult = $this->getQuotationPreviousNextData($headerData,$arrayData);
+							// if(count($innerResult)!=0)
+							// {
+								// break;
+							// }
+							// if($arrayData==$previousAscId[0]->sale_id && count($innerResult)==0)
+							// {
+								// return $exceptionArray['204'];
+							// }
+							// $saleId++;
+						// }
+						// $saleDataResult = $this->getDocumentData($innerResult);
+						// return $saleDataResult;
+					// }
+				// }
+				// else
+				// {
+					// $saleDataResult = $this->getDocumentData($result);
+					// return $saleDataResult;
+				// }
+			// }
+		}
+		else if(array_key_exists('nextquotationid',$headerData))
+		{
+			// $saleId = $headerData['nextsaleid'][0]+1;
+			// $result = $this->getQuotationPreviousNextData($headerData,$saleId);
+			// if(count($result)==0)
+			// {
+				// DB::beginTransaction();
+				// $nextDescId = DB::connection($databaseName)->select("select 
+				// sale_id
+				// from sales_bill 
+				// where sales_type='".$headerData['salestype'][0]."' and
+				// company_id = '".$headerData['companyid'][0]."' and
+				// deleted_at='0000-00-00 00:00:00' 
+				// order by sale_id desc limit 1");
+				// DB::commit();
+				// if($saleId>$nextDescId[0]->sale_id)
+				// {
+					// return $exceptionArray['204'];
+				// }
+				// else
+				// {
+					// for($arrayData=$saleId+1;$arrayData<=$nextDescId[0]->sale_id;$arrayData++)
+					// {
+						// $innerResult = $this->getQuotationPreviousNextData($headerData,$arrayData);
+						// if(count($innerResult)!=0)
+						// {
+							// break;
+						// }
+						// if($arrayData==$nextDescId[0]->sale_id && count($innerResult)==0)
+						// {
+							// return $exceptionArray['204'];
+						// }
+						// $saleId++;
+					// }
+					// $saleDataResult = $this->getDocumentData($innerResult);
+					// return $saleDataResult;
+				// }
+			// }
+			// else
+			// {
+				// $saleDataResult = $this->getDocumentData($result);
+				// return $saleDataResult;
+			// }
+		}
+		else if(array_key_exists('operation',$headerData))
+		{
+			if(strcmp($headerData['operation'][0],'first')==0)
+			{
+				DB::beginTransaction();
+				$fistQuotationDataResult = DB::connection($databaseName)->select("select 
+				quotation_bill_id,
+				product_array,
+				quotation_number,
+				total,
+				extra_charge,
+				tax,
+				grand_total,
+				remark,
+				entry_date,
+				client_id,
+				company_id,
+				jf_id,
+				created_at,
+				updated_at	 
+				from quotation_bill_dtl 
+				where company_id = '".$headerData['companyid'][0]."' and
+				deleted_at='0000-00-00 00:00:00'  order by quotation_bill_id asc limit 1");
+				DB::commit();
+				
+				$quotationDataResult = $this->getDocumentData($fistQuotationDataResult);
+				return $quotationDataResult;
+			}
+			else if(strcmp($headerData['operation'][0],'last')==0)
+			{
+				DB::beginTransaction();
+				$lastQuotationDataResult = DB::connection($databaseName)->select("select 
+				quotation_bill_id,
+				product_array,
+				quotation_number,
+				total,
+				extra_charge,
+				tax,
+				grand_total,
+				remark,
+				entry_date,
+				client_id,
+				company_id,
+				jf_id,
+				created_at,
+				updated_at 
+				from quotation_bill_dtl 
+				where company_id = '".$headerData['companyid'][0]."' and
+				deleted_at='0000-00-00 00:00:00' order by quotation_bill_id desc limit 1");
+				DB::commit();
+				
+				$quotationDataResult = $this->getDocumentData($lastQuotationDataResult);
+				return $quotationDataResult;
+			}
+		}
+	}
+	
+	/**
+	 * get previous quotation-bill data
+	 * @param  header-data
+	 * returns the exception-message/sales data
+	*/
+	public function getQuotationPreviousNextData($headerData,$saleId)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();
+		$saleData = DB::connection($databaseName)->select("select 
+		sale_id,
 		product_array,
-		quotation_number,
+		payment_mode,
+		bank_name,
+		invoice_number,
+		job_card_number,
+		check_number,
 		total,
 		extra_charge,
 		tax,
 		grand_total,
+		advance,
+		balance,
 		remark,
 		entry_date,
 		client_id,
+		sales_type,
+		refund,
 		company_id,
 		jf_id,
 		created_at,
-		updated_at	
-		from quotation_bill_dtl where ".$queryParameter." deleted_at='0000-00-00 00:00:00'");
+		updated_at 
+		from sales_bill 
+		where sales_type='".$headerData['salestype'][0]."' and
+		company_id = '".$headerData['companyid'][0]."' and
+		deleted_at='0000-00-00 00:00:00' and
+		sale_id='".$saleId."'");
 		DB::commit();
+		return $saleData;
+	}
+	
+	/**
+	 * get document quotation-bill data(internal call)
+	 * @param  quotation-bill-data
+	 * returns the quotation-data
+	*/
+	public function getDocumentData($quotationArrayData)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
 		
-		// get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
-		if(count($raw)==0)
+		$documentResult = array();
+		for($quotationData=0;$quotationData<count($quotationArrayData);$quotationData++)
 		{
-			return $exceptionArray['204'];
-		}
-		else
-		{
-			$documentResult = array();
-			for($quotationData=0;$quotationData<count($raw);$quotationData++)
+			DB::beginTransaction();
+			$documentResult[$quotationData] = DB::connection($databaseName)->select("select
+			document_id,
+			quotation_bill_id,
+			document_name,
+			document_size,
+			document_format,
+			document_type,
+			created_at,
+			updated_at
+			from quotation_bill_doc_dtl
+			where quotation_bill_id='".$quotationArrayData[$quotationData]->quotation_bill_id."' and 
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+			if(count($documentResult[$quotationData])==0)
 			{
-				DB::beginTransaction();
-				$documentResult[$quotationData] = DB::connection($databaseName)->select("select
-				document_id,
-				quotation_bill_id,
-				document_name,
-				document_size,
-				document_format,
-				document_type,
-				created_at,
-				updated_at
-				from quotation_bill_doc_dtl
-				where quotation_bill_id='".$raw[$quotationData]->quotation_bill_id."' and 
-				deleted_at='0000-00-00 00:00:00'");
-				DB::commit();
-				if(count($documentResult[$quotationData])==0)
-				{
-					$documentResult[$quotationData] = array();
-					$documentResult[$quotationData][0] = new stdClass();
-					$documentResult[$quotationData][0]->document_id = 0;
-					$documentResult[$quotationData][0]->quotation_bill_id = 0;
-					$documentResult[$quotationData][0]->document_name = '';
-					$documentResult[$quotationData][0]->document_size = 0;
-					$documentResult[$quotationData][0]->document_format = '';
-					$documentResult[$quotationData][0]->document_type ='quotation';
-					$documentResult[$quotationData][0]->created_at = '0000-00-00 00:00:00';
-					$documentResult[$quotationData][0]->updated_at = '0000-00-00 00:00:00';
-				}
+				$documentResult[$quotationData] = array();
+				$documentResult[$quotationData][0] = new stdClass();
+				$documentResult[$quotationData][0]->document_id = 0;
+				$documentResult[$quotationData][0]->quotation_bill_id = 0;
+				$documentResult[$quotationData][0]->document_name = '';
+				$documentResult[$quotationData][0]->document_size = 0;
+				$documentResult[$quotationData][0]->document_format = '';
+				$documentResult[$quotationData][0]->document_type ='bill';
+				$documentResult[$quotationData][0]->created_at = '0000-00-00 00:00:00';
+				$documentResult[$quotationData][0]->updated_at = '0000-00-00 00:00:00';
 			}
-			$quotationArrayData = array();
-			$quotationArrayData['quotationData'] = json_encode($raw);
-			$quotationArrayData['documentData'] = json_encode($documentResult);
-			return json_encode($quotationArrayData);
 		}
+		$quotationArrayData = array();
+		$quotationArrayData['quotationData'] = json_encode($quotationArrayData);
+		$quotationArrayData['documentData'] = json_encode($documentResult);
+		return json_encode($quotationArrayData);
 	}
 	
 	/**
