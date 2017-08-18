@@ -296,136 +296,125 @@ class QuotationModel extends Model
 		
 		if(array_key_exists('previousquotationId',$headerData))
 		{
-			// if($headerData['previousQuotationId'][0]==0)
-			// {
-				// DB::beginTransaction();
-				// $raw = DB::connection($databaseName)->select("select 
-				// sale_id,
-				// product_array,
-				// payment_mode,
-				// bank_name,
-				// invoice_number,
-				// check_number,
-				// job_card_number,
-				// total,
-				// extra_charge,
-				// tax,
-				// grand_total,
-				// advance,
-				// balance,
-				// remark,
-				// entry_date,
-				// client_id,
-				// sales_type,
-				// refund,
-				// company_id,
-				// jf_id,
-				// created_at,
-				// updated_at 
-				// from sales_bill 
-				// where sales_type='".$headerData['salestype'][0]."' and
-				// company_id = '".$headerData['companyid'][0]."' and
-				// deleted_at='0000-00-00 00:00:00'
-				// order by sale_id desc limit 1");
-				// DB::commit();
-				// if(count($raw)==0)
-				// {
-					// return $exceptionArray['204'];
-				// }
-				// else
-				// {
-					// $saleDataResult = $this->getDocumentData($raw);
-					// return $saleDataResult;
-				// }
-			// }
-			// else
-			// {
-				// $saleId = $headerData['previoussaleid'][0]-1;
-				// $result = $this->getQuotationPreviousNextData($headerData,$saleId);
-				// if(count($result)==0)
-				// {
-					// DB::beginTransaction();
-					// $previousAscId = DB::connection($databaseName)->select("select 
-					// sale_id
-					// from sales_bill 
-					// where sales_type='".$headerData['salestype'][0]."' and
-					// company_id = '".$headerData['companyid'][0]."' and
-					// deleted_at='0000-00-00 00:00:00'
-					// order by sale_id asc limit 1");
-					// DB::commit();
-					// if($saleId<$previousAscId[0]->sale_id)
-					// {
-						// return $exceptionArray['204'];
-					// }
-					// else
-					// {
-						// for($arrayData=$saleId-1;$arrayData>=$previousAscId[0]->sale_id;$arrayData--)
-						// {
-							// $innerResult = $this->getQuotationPreviousNextData($headerData,$arrayData);
-							// if(count($innerResult)!=0)
-							// {
-								// break;
-							// }
-							// if($arrayData==$previousAscId[0]->sale_id && count($innerResult)==0)
-							// {
-								// return $exceptionArray['204'];
-							// }
-							// $saleId++;
-						// }
-						// $saleDataResult = $this->getDocumentData($innerResult);
-						// return $saleDataResult;
-					// }
-				// }
-				// else
-				// {
-					// $saleDataResult = $this->getDocumentData($result);
-					// return $saleDataResult;
-				// }
-			// }
+			if($headerData['previousquotationId'][0]==0)
+			{
+				DB::beginTransaction();
+				$raw = DB::connection($databaseName)->select("select 
+				quotation_bill_id,
+				product_array,
+				quotation_number,
+				total,
+				extra_charge,
+				tax,
+				grand_total,
+				remark,
+				entry_date,
+				client_id,
+				company_id,
+				jf_id,
+				created_at,
+				updated_at	 
+				from quotation_bill_dtl 
+				where company_id = '".$headerData['companyid'][0]."' and
+				deleted_at='0000-00-00 00:00:00'
+				order by quotation_bill_id desc limit 1");
+				DB::commit();
+				if(count($raw)==0)
+				{
+					return $exceptionArray['204'];
+				}
+				else
+				{
+					$quotationDataResult = $this->getDocumentData($raw);
+					return $quotationDataResult;
+				}
+			}
+			else
+			{
+				$quotationId = $headerData['previousquotationId'][0]-1;
+				$result = $this->getQuotationPreviousNextData($headerData,$quotationId);
+				if(count($result)==0)
+				{
+					DB::beginTransaction();
+					$previousAscId = DB::connection($databaseName)->select("select 
+					quotation_bill_id
+					from quotation_bill_dtl 
+					where company_id = '".$headerData['companyid'][0]."' and
+					deleted_at='0000-00-00 00:00:00'
+					order by quotation_bill_id asc limit 1");
+					DB::commit();
+					if($quotationId<$previousAscId[0]->quotation_bill_id)
+					{
+						return $exceptionArray['204'];
+					}
+					else
+					{
+						for($arrayData=$quotationId-1;$arrayData>=$previousAscId[0]->sale_id;$arrayData--)
+						{
+							$innerResult = $this->getQuotationPreviousNextData($headerData,$arrayData);
+							if(count($innerResult)!=0)
+							{
+								break;
+							}
+							if($arrayData==$previousAscId[0]->sale_id && count($innerResult)==0)
+							{
+								return $exceptionArray['204'];
+							}
+							$quotationId++;
+						}
+						$quotationDataResult = $this->getDocumentData($innerResult);
+						return $quotationDataResult;
+					}
+				}
+				else
+				{
+					$quotationDataResult = $this->getDocumentData($result);
+					return $quotationDataResult;
+				}
+			}
 		}
 		else if(array_key_exists('nextquotationid',$headerData))
 		{
-			// $saleId = $headerData['nextsaleid'][0]+1;
-			// $result = $this->getQuotationPreviousNextData($headerData,$saleId);
-			// if(count($result)==0)
-			// {
-				// DB::beginTransaction();
-				// $nextDescId = DB::connection($databaseName)->select("select 
-				// sale_id
-				// from sales_bill 
-				// where sales_type='".$headerData['salestype'][0]."' and
-				// company_id = '".$headerData['companyid'][0]."' and
-				// deleted_at='0000-00-00 00:00:00' 
-				// order by sale_id desc limit 1");
-				// DB::commit();
-				// if($saleId>$nextDescId[0]->sale_id)
-				// {
-					// return $exceptionArray['204'];
-				// }
-				// else
-				// {
-					// for($arrayData=$saleId+1;$arrayData<=$nextDescId[0]->sale_id;$arrayData++)
-					// {
-						// $innerResult = $this->getQuotationPreviousNextData($headerData,$arrayData);
-						// if(count($innerResult)!=0)
-						// {
-							// break;
-						// }
-						// if($arrayData==$nextDescId[0]->sale_id && count($innerResult)==0)
-						// {
-							// return $exceptionArray['204'];
-						// }
-						// $saleId++;
-					// }
-					// $saleDataResult = $this->getDocumentData($innerResult);
-					// return $saleDataResult;
-				// }
-			// }
-			// else
-			// {
-				// $saleDataResult = $this->getDocumentData($result);
-				// return $saleDataResult;
-			// }
+			$quotationId = $headerData['nextquotationid'][0]+1;
+			$result = $this->getQuotationPreviousNextData($headerData,$quotationId);
+			if(count($result)==0)
+			{
+				DB::beginTransaction();
+				$nextDescId = DB::connection($databaseName)->select("select 
+				quotation_bill_id
+				from quotation_bill_dtl 
+				where company_id = '".$headerData['companyid'][0]."' and
+				deleted_at='0000-00-00 00:00:00' 
+				order by quotation_bill_id desc limit 1");
+				DB::commit();
+				if($quotationId>$nextDescId[0]->quotation_bill_id)
+				{
+					return $exceptionArray['204'];
+				}
+				else
+				{
+					for($arrayData=$quotationId+1;$arrayData<=$nextDescId[0]->quotation_bill_id;$arrayData++)
+					{
+						$innerResult = $this->getQuotationPreviousNextData($headerData,$arrayData);
+						if(count($innerResult)!=0)
+						{
+							break;
+						}
+						if($arrayData==$nextDescId[0]->quotation_bill_id && count($innerResult)==0)
+						{
+							return $exceptionArray['204'];
+						}
+						$quotationId++;
+					}
+					$quotationDataResult = $this->getDocumentData($innerResult);
+					return $quotationDataResult;
+				}
+			}
+			else
+			{
+				$quotationDataResult = $this->getDocumentData($result);
+				return $quotationDataResult;
+			}
 		}
 		else if(array_key_exists('operation',$headerData))
 		{
@@ -489,7 +478,7 @@ class QuotationModel extends Model
 	 * @param  header-data
 	 * returns the exception-message/sales data
 	*/
-	public function getQuotationPreviousNextData($headerData,$saleId)
+	public function getQuotationPreviousNextData($headerData,$quotationId)
 	{
 		//database selection
 		$database = "";
@@ -497,36 +486,27 @@ class QuotationModel extends Model
 		$databaseName = $constantDatabase->constantDatabase();
 		
 		DB::beginTransaction();
-		$saleData = DB::connection($databaseName)->select("select 
-		sale_id,
+		$quotationData = DB::connection($databaseName)->select("select 
+		quotation_bill_id,
 		product_array,
-		payment_mode,
-		bank_name,
-		invoice_number,
-		job_card_number,
-		check_number,
+		quotation_number,
 		total,
 		extra_charge,
 		tax,
 		grand_total,
-		advance,
-		balance,
 		remark,
 		entry_date,
 		client_id,
-		sales_type,
-		refund,
 		company_id,
 		jf_id,
 		created_at,
 		updated_at 
-		from sales_bill 
-		where sales_type='".$headerData['salestype'][0]."' and
-		company_id = '".$headerData['companyid'][0]."' and
+		from quotation_bill_dtl 
+		where company_id = '".$headerData['companyid'][0]."' and
 		deleted_at='0000-00-00 00:00:00' and
-		sale_id='".$saleId."'");
+		quotation_bill_id='".$quotationId."'");
 		DB::commit();
-		return $saleData;
+		return $quotationData;
 	}
 	
 	/**
