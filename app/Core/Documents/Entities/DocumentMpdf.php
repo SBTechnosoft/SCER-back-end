@@ -784,10 +784,6 @@ class DocumentMpdf extends CurrencyToWordConversion
 			}
 			$index++;
 		}
-		
-		//calculation of currecy to word conversion
-		$currecyToWordConversion = new DocumentMpdf();
-		$currencyResult = $currecyToWordConversion->conversion($totalAmount);
 		$address = $quotationData->client->address1;
 		$companyAddress = $quotationData->company->address1.",".$quotationData->company->address2;
 		
@@ -799,6 +795,14 @@ class DocumentMpdf extends CurrencyToWordConversion
 		// convert amount(number_format) into their company's selected decimal points
 		$totalTax = number_format($totalTax,$decodedData[0]->company->noOfDecimalPoints,'.','');
 		$totalAmount = number_format($totalAmount,$decodedData[0]->company->noOfDecimalPoints,'.','');
+		
+		$roundTotal = round($totalAmount);
+		$roundUpFigure = $roundTotal-$totalAmount;
+		$roundUpFigure = number_format($roundUpFigure,$decodedData[0]->company->noOfDecimalPoints,'.','');
+		
+		//calculation of currecy to word conversion
+		$currecyToWordConversion = new DocumentMpdf();
+		$currencyResult = $currecyToWordConversion->conversion($roundTotal);
 		
 		$billArray = array();
 		$billArray['Description']=$output;

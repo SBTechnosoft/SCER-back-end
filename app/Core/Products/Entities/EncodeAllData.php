@@ -35,6 +35,9 @@ class EncodeAllData extends ProductCategoryService
 			$wholesaleMarginFlat[$decodedData] = $decodedJson[$decodedData]['wholesale_margin_flat'];
 			$semiWholesaleMargin[$decodedData] = $decodedJson[$decodedData]['semi_wholesale_margin'];
 			$vat[$decodedData] = $decodedJson[$decodedData]['vat'];
+			$purchaseCgst[$decodedData] = $decodedJson[$decodedData]['purchase_cgst'];
+			$purchaseSgst[$decodedData] = $decodedJson[$decodedData]['purchase_sgst'];
+			$purchaseIgst[$decodedData] = $decodedJson[$decodedData]['purchase_igst'];
 			$margin[$decodedData] = $decodedJson[$decodedData]['margin'];
 			$marginFlat[$decodedData] = $decodedJson[$decodedData]['margin_flat'];
 			$mrp[$decodedData] = $decodedJson[$decodedData]['mrp'];
@@ -81,6 +84,9 @@ class EncodeAllData extends ProductCategoryService
 			$wholesaleMargin[$decodedData] = number_format($wholesaleMargin[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
 			$semiWholesaleMargin[$decodedData] = number_format($semiWholesaleMargin[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
 			$vat[$decodedData] = number_format($vat[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
+			$purchaseCgst[$decodedData] = number_format($purchaseCgst[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
+			$purchaseSgst[$decodedData] = number_format($purchaseSgst[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
+			$purchaseIgst[$decodedData] = number_format($purchaseIgst[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
 			$margin[$decodedData] = number_format($margin[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
 			$mrp[$decodedData] = number_format($mrp[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
 			$additionalTax[$decodedData] = number_format($additionalTax[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
@@ -118,6 +124,9 @@ class EncodeAllData extends ProductCategoryService
 				'wholesaleMarginFlat' => $wholesaleMarginFlat[$jsonData],
 				'semiWholesaleMargin' => $semiWholesaleMargin[$jsonData],
 				'vat' => $vat[$jsonData],
+				'purchaseCgst' => $purchaseCgst[$jsonData],
+				'purchaseSgst' => $purchaseSgst[$jsonData],
+				'purchaseIgst' => $purchaseIgst[$jsonData],
 				'margin' => $margin[$jsonData],
 				'marginFlat' => $marginFlat[$jsonData],
 				'mrp' => $mrp[$jsonData],
@@ -174,6 +183,7 @@ class EncodeAllData extends ProductCategoryService
 					'formalName' => $getCompanyDetails[$jsonData]['formalName'],	
 					'noOfDecimalPoints' => $getCompanyDetails[$jsonData]['noOfDecimalPoints'],	
 					'currencySymbol' => $getCompanyDetails[$jsonData]['currencySymbol'],
+					'printType' => $getCompanyDetails[$jsonData]['printType'],
 					'logo' => array(
 						'documentName' => $getCompanyDetails[$jsonData]['logo']['documentName'],	
 						'documentUrl' => $getCompanyDetails[$jsonData]['logo']['documentUrl'],	

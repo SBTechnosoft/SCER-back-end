@@ -83,6 +83,9 @@ class EncodeAllStockSummaryData extends ProductService
 					'wholesaleMarginFlat' => $productDecodedJson[$jsonData]['wholesaleMarginFlat'],
 					'semiWholesaleMargin' => $productDecodedJson[$jsonData]['semiWholesaleMargin'],
 					'vat' => $productDecodedJson[$jsonData]['vat'],
+					'purchaseCgst' => $productDecodedJson[$jsonData]['purchaseCgst'],
+					'purchaseSgst' => $productDecodedJson[$jsonData]['purchaseSgst'],
+					'purchaseIgst' => $productDecodedJson[$jsonData]['purchaseIgst'],
 					'mrp' => $productDecodedJson[$jsonData]['mrp'],
 					'igst' => $productDecodedJson[$jsonData]['igst'],
 					'hsn' => $productDecodedJson[$jsonData]['hsn'],
@@ -123,6 +126,7 @@ class EncodeAllStockSummaryData extends ProductService
 					'formalName' => $getCompanyDetails[$jsonData]['formalName'],	
 					'noOfDecimalPoints' => $getCompanyDetails[$jsonData]['noOfDecimalPoints'],	
 					'currencySymbol' => $getCompanyDetails[$jsonData]['currencySymbol'],
+					'printType' => $getCompanyDetails[$jsonData]['printType'],
 					'logo' => array(
 						'documentName' => $getCompanyDetails[$jsonData]['logo']['documentName'],	
 						'documentUrl' => $getCompanyDetails[$jsonData]['logo']['documentUrl'],	

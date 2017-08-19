@@ -29,6 +29,9 @@ class EncodeData extends ProductCategoryService
 		$wholesaleMarginFlat= $decodedJson[0]['wholesale_margin_flat'];
 		$semiWholeSaleMargin= $decodedJson[0]['semi_wholesale_margin'];
 		$vat= $decodedJson[0]['vat'];
+		$purchaseCgst= $decodedJson[0]['purchase_cgst'];
+		$purchaseSgst= $decodedJson[0]['purchase_sgst'];
+		$purchaseIgst= $decodedJson[0]['purchase_igst'];
 		$mrp= $decodedJson[0]['mrp'];
 		$igst= $decodedJson[0]['igst'];
 		$hsn= $decodedJson[0]['hsn'];
@@ -74,6 +77,9 @@ class EncodeData extends ProductCategoryService
 		$wholesaleMargin = number_format($wholesaleMargin,$getCompanyDetails['noOfDecimalPoints'],'.','');
 		$semiWholeSaleMargin = number_format($semiWholeSaleMargin,$getCompanyDetails['noOfDecimalPoints'],'.','');
 		$vat= number_format($vat,$getCompanyDetails['noOfDecimalPoints'],'.','');
+		$purchaseCgst= number_format($purchaseCgst,$getCompanyDetails['noOfDecimalPoints'],'.','');
+		$purchaseSgst= number_format($purchaseSgst,$getCompanyDetails['noOfDecimalPoints'],'.','');
+		$purchaseIgst= number_format($purchaseIgst,$getCompanyDetails['noOfDecimalPoints'],'.','');
 		$mrp= number_format($mrp,$getCompanyDetails['noOfDecimalPoints'],'.','');
 		$margin= number_format($margin,$getCompanyDetails['noOfDecimalPoints'],'.','');
 		$additionalTax = number_format($additionalTax,$getCompanyDetails['noOfDecimalPoints'],'.','');
@@ -112,6 +118,9 @@ class EncodeData extends ProductCategoryService
 		$data['wholesaleMarginFlat'] = $wholesaleMarginFlat;
 		$data['semiWholesaleMargin'] = $semiWholeSaleMargin;
 		$data['vat'] = $vat;
+		$data['purchaseCgst'] = $purchaseCgst;
+		$data['purchaseSgst'] = $purchaseSgst;
+		$data['purchaseIgst'] = $purchaseIgst;
 		$data['mrp'] = $mrp;
 		$data['igst'] = $igst;
 		$data['hsn'] = $hsn;
@@ -166,6 +175,7 @@ class EncodeData extends ProductCategoryService
 			'formalName' => $getCompanyDetails['formalName'],	
 			'noOfDecimalPoints' => $getCompanyDetails['noOfDecimalPoints'],
 			'currencySymbol' => $getCompanyDetails['currencySymbol'],
+			'printType' => $getCompanyDetails['printType'],
 			'logo' => array(
 				'documentName' => $getCompanyDetails['logo']['documentName'],	
 				'documentUrl' => $getCompanyDetails['logo']['documentUrl'],	
