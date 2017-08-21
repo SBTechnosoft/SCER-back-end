@@ -62,6 +62,7 @@ class DocumentProcessor extends BaseProcessor
 				$documentName[$fileArray] = $combineDateTime.mt_rand(1,9999).$fileArray.mt_rand(1,9999).".".$documentFormat[$fileArray];
 				$documentSize[$fileArray] = $file['file'][$fileArray]->getClientSize();
 				$file['file'][$fileArray]->move($documentUrl[$fileArray],$documentName[$fileArray]);
+				$documentFormat[$fileArray] = strtolower($documentFormat[$fileArray]);
 				if($documentFormat[$fileArray]=='jpg' || $documentFormat[$fileArray]=='jpeg' || $documentFormat[$fileArray]=='gif' || $documentFormat[$fileArray]=='png' || $documentFormat[$fileArray]=='pdf' || $documentFormat[$fileArray]=='bmp')
 				{	
 					if(($documentSize[$fileArray]/1048576)<=5)

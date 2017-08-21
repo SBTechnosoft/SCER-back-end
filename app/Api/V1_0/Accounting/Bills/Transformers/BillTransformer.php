@@ -83,6 +83,24 @@ class BillTransformer
 		$tStateAbb = trim($billArrayData['stateAbb']);
 		$tCityId = trim($billArrayData['cityId']);
 		$tTotal = trim($billArrayData['total']);
+		if(!array_key_exists('totalDiscounttype',$request->input()) && !array_key_exists('totalDiscount',$request->input()))
+		{
+			$tTotalDiscounttype = 'flat';
+			$tTotalDiscount = 0;
+		}
+		else
+		{
+			if($billArrayData['totalDiscounttype']=='flat' || $billArrayData['totalDiscounttype']=='percentage')
+			{
+				$tTotalDiscounttype = trim($billArrayData['totalDiscounttype']);
+				$tTotalDiscount = trim($billArrayData['totalDiscount']);
+			}
+			else
+			{
+				return "1";
+			}
+		}
+		
 		if(!array_key_exists('extraCharge',$request->input()))
 		{
 			$tExtraCharge = 0;
@@ -223,6 +241,8 @@ class BillTransformer
 			$data['payment_mode'] = $tPaymentMode;
 			$data['check_number'] = $tCheckNumber;
 			$data['remark'] = $tRemark;
+			$data['totalDiscounttype'] = $tTotalDiscounttype;
+			$data['totalDiscount'] = $tTotalDiscount;
 			$trimArray=array();
 			for($inventoryArray=0;$inventoryArray<count($billArrayData['inventory']);$inventoryArray++)
 			{
