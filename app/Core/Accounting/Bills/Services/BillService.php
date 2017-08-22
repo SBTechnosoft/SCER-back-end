@@ -66,6 +66,8 @@ class BillService
 			$bankName = $billArray->getBankName();
 			$checkNumber = $billArray->getCheckNumber();
 			$total = $billArray->getTotal();
+			$totalDiscounttype = $billArray->getTotalDiscounttype();
+			$totalDiscount = $billArray->getTotalDiscount();
 			$extraCharge = $billArray->getExtraCharge();
 			$tax = $billArray->getTax();
 			$grandTotal = $billArray->getGrandTotal();
@@ -79,7 +81,7 @@ class BillService
 			$jfId= $billArray->getJfId();
 			//data pass to the model object for insert
 			$billModel = new BillModel();
-			$status = $billModel->insertData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$jfId);
+			$status = $billModel->insertData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$jfId,$totalDiscounttype,$totalDiscount);
 			
 			//get exception message
 			$exception = new ExceptionMessage();
@@ -107,6 +109,8 @@ class BillService
 			$bankName = $billArray[count($billArray)-1]->getBankName();
 			$checkNumber = $billArray[count($billArray)-1]->getCheckNumber();
 			$total = $billArray[count($billArray)-1]->getTotal();
+			$totalDiscounttype = $billArray[count($billArray)-1]->getTotalDiscounttype();
+			$totalDiscount = $billArray[count($billArray)-1]->getTotalDiscount();
 			$extraCharge = $billArray[count($billArray)-1]->getExtraCharge();
 			$tax = $billArray[count($billArray)-1]->getTax();
 			$grandTotal = $billArray[count($billArray)-1]->getGrandTotal();
@@ -125,7 +129,7 @@ class BillService
 			
 			//data pass to the model object for insert
 			$billModel = new BillModel();
-			$status = $billModel->insertAllData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray,$jfId);
+			$status = $billModel->insertAllData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray,$jfId,$totalDiscounttype,$totalDiscount);
 			//get exception message
 			$exception = new ExceptionMessage();
 			$exceptionArray = $exception->messageArrays();
@@ -239,7 +243,6 @@ class BillService
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
 		$imageArrayData = array();
-		
 		// if(is_object($persistableData))
 		// {
 			
@@ -269,14 +272,23 @@ class BillService
 							$imageArrayData[$imageArray] = $persistableData[$imageArray];
 						}
 						$arrayLength = count($persistableData);
-						$innerArrayLength = count($persistableData[$arrayLength-1]);
-						
+						if(is_array($persistableData[$arrayLength-1]) || is_object($persistableData[$arrayLength-1]))
+						{
+							$innerArrayLength = count($persistableData[$arrayLength-1]);
+						}
+						else
+						{
+							$innerArrayLength = 0;
+						}
 						if($innerArrayLength!=0)
 						{
-							if(!is_object($persistableData[$arrayLength-1][$innerArrayLength-1]))
+							if(is_array($persistableData[$arrayLength-1]))
 							{
-								// inventory is available
-								$flag=1;
+								if(!is_object($persistableData[$arrayLength-1][$innerArrayLength-1]))
+								{
+									// inventory is available
+									$flag=1;
+								}
 							}
 							if($flag==1)
 							{
@@ -300,14 +312,21 @@ class BillService
 							}
 							else
 							{
-								$saleId = $persistableData[$arrayLength-1][0]->getSaleId();
-								for($arrayData=0;$arrayData<count($persistableData[$arrayLength-1]);$arrayData++)
+								if(is_array($persistableData[$arrayLength-1]))
 								{
-									$dataFlag=1;
-									$funcName = $persistableData[$arrayLength-1][$arrayData]->getName();
-									$value = $persistableData[$arrayLength-1][$arrayData]->$funcName();
-									$key = $persistableData[$arrayLength-1][$arrayData]->getKey();
-									$singleData[$key] = $value;
+									for($arrayData=0;$arrayData<count($persistableData[$arrayLength-1]);$arrayData++)
+									{
+										$dataFlag=1;
+										$funcName = $persistableData[$arrayLength-1][$arrayData]->getName();
+										$value = $persistableData[$arrayLength-1][$arrayData]->$funcName();
+										$key = $persistableData[$arrayLength-1][$arrayData]->getKey();
+										$singleData[$key] = $value;
+										
+									}
+								}
+								else if(is_object($persistableData[$arrayLength-1]))
+ 								{
+									$singleData['entry_date'] =  $persistableData[$arrayLength-1]->getEntryDate();
 								}
 							}
 							if(array_key_exists('entry_date',$singleData))

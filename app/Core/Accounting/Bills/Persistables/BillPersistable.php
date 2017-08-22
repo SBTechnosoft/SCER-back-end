@@ -25,6 +25,8 @@ use ERP\Core\Accounting\Bills\Properties\KeyArrayPropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\NameArrayPropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\SaleIdArrayPropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\ExtraChargePropertyTrait;
+use ERP\Core\Accounting\Bills\Properties\TotalDiscounttypeTrait;
+use ERP\Core\Accounting\Bills\Properties\TotalDiscountTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -54,4 +56,6 @@ class BillPersistable
 	use SaleIdArrayPropertyTrait;
 	use JobCardNumberPropertyTrait;
 	use ExtraChargePropertyTrait;
+	use TotalDiscounttypeTrait;
+	use TotalDiscountTrait;
 }

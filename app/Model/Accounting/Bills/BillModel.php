@@ -26,7 +26,7 @@ class BillModel extends Model
 	 * @param  array
 	 * returns the status
 	*/
-	public function insertAllData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray,$jfId)
+	public function insertAllData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray,$jfId,$totalDiscounttype,$totalDiscount)
 	{
 		//database selection
 		$database = "";
@@ -65,6 +65,8 @@ class BillModel extends Model
 			bank_name,
 			check_number,
 			total,
+			total_discounttype,
+			total_discount,
 			extra_charge,
 			tax,
 			grand_total,
@@ -76,7 +78,7 @@ class BillModel extends Model
 			sales_type,
 			client_id,
 			jf_id) 
-			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$salesType."','".$ClientId."','".$jfId."')");
+			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$salesType."','".$ClientId."','".$jfId."')");
 			DB::commit();
 			
 			//update invoice-number
@@ -99,6 +101,8 @@ class BillModel extends Model
 			bank_name='".$bankName."',
 			check_number='".$checkNumber."',
 			total='".$total."',
+			total_discounttype='".$totalDiscounttype."',
+			total_discount='".$totalDiscount."',
 			extra_total='".$extraCharge."',
 			tax='".$tax."',
 			grand_total='".$grandTotal."',
@@ -132,6 +136,8 @@ class BillModel extends Model
 			bank_name,
 			check_number,
 			total,
+			total_discounttype,
+			total_discount,
 			extra_charge,
 			tax,
 			grand_total,
@@ -144,7 +150,7 @@ class BillModel extends Model
 			client_id,
 			sale_id,
 			jf_id) 
-			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$salesType."','".$ClientId."','".$saleId[0]->sale_id."','".$jfId."')");
+			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$salesType."','".$ClientId."','".$saleId[0]->sale_id."','".$jfId."')");
 			DB::commit();
 			
 			if(is_array($saleId))
@@ -176,6 +182,8 @@ class BillModel extends Model
 					job_card_number,
 					check_number,
 					total,
+					total_discounttype,
+					total_discount,
 					extra_charge,
 					tax,
 					grand_total,
@@ -217,7 +225,7 @@ class BillModel extends Model
 	 * @param  array
 	 * returns the status
 	*/
-	public function insertData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$jfId)
+	public function insertData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$jfId,$totalDiscounttype,$totalDiscount)
 	{
 		//database selection
 		$database = "";
@@ -257,6 +265,8 @@ class BillModel extends Model
 			bank_name,
 			check_number,
 			total,
+			total_discounttype,
+			total_discount,
 			extra_charge,
 			tax,
 			grand_total,
@@ -268,7 +278,7 @@ class BillModel extends Model
 			client_id,
 			sales_type,
 			jf_id) 
-			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$salesType."','".$jfId."')");
+			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$salesType."','".$jfId."')");
 			DB::commit();
 			
 			//update invoice-number
@@ -291,6 +301,8 @@ class BillModel extends Model
 			bank_name='".$bankName."',
 			check_number='".$checkNumber."',
 			total='".$total."',
+			total_discounttype='".$totalDiscounttype."',
+			total_discount='".$totalDiscount."',
 			extra_charge='".$extraCharge."',
 			tax='".$tax."',
 			grand_total='".$grandTotal."',
@@ -325,6 +337,8 @@ class BillModel extends Model
 			bank_name,
 			check_number,
 			total,
+			total_discounttype,
+			total_discount,
 			extra_charge,
 			tax,
 			grand_total,
@@ -337,7 +351,7 @@ class BillModel extends Model
 			sales_type,
 			sale_id,
 			jf_id) 
-			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$salesType."','".$saleId[0]->sale_id."','".$jfId."')");
+			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."',,'".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$salesType."','".$saleId[0]->sale_id."','".$jfId."')");
 			DB::commit();
 			
 			//get latest inserted sale bill data
@@ -351,6 +365,8 @@ class BillModel extends Model
 			job_card_number,
 			check_number,
 			total,
+			total_discounttype,
+			total_discount,
 			extra_charge,
 			tax,
 			grand_total,

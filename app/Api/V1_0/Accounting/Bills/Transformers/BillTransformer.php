@@ -241,8 +241,8 @@ class BillTransformer
 			$data['payment_mode'] = $tPaymentMode;
 			$data['check_number'] = $tCheckNumber;
 			$data['remark'] = $tRemark;
-			$data['totalDiscounttype'] = $tTotalDiscounttype;
-			$data['totalDiscount'] = $tTotalDiscount;
+			$data['total_discounttype'] = $tTotalDiscounttype;
+			$data['total_discount'] = $tTotalDiscount;
 			$trimArray=array();
 			for($inventoryArray=0;$inventoryArray<count($billArrayData['inventory']);$inventoryArray++)
 			{

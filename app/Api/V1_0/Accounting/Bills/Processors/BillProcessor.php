@@ -635,6 +635,8 @@ class BillProcessor extends BaseProcessor
 			$billPersistable->setEntryDate($transformEntryDate);
 			$billPersistable->setClientId($clientId);
 			$billPersistable->setCompanyId($tRequest['company_id']);
+			$billPersistable->setTotalDiscounttype($tRequest['total_discounttype']);
+			$billPersistable->setTotalDiscount($tRequest['total_discount']);
 			$billPersistable->setJfId($jsonDecodedJfId);
 			if(strcmp($request->header()['salestype'][0],$salesTypeEnumArray['retailSales'])==0 || strcmp($request->header()['salestype'][0],$salesTypeEnumArray['wholesales'])==0)
 			{
@@ -1454,6 +1456,11 @@ class BillProcessor extends BaseProcessor
 			}
 			else
 			{
+				for($inventoryData=0;$inventoryData<count($request->input()['inventory']);$inventoryData++)
+				{
+					$billTrimData['inventory'][$inventoryData]['amount'] = $request->input()['inventory'][$inventoryData]['amount'];
+					$billTrimData['inventory'][$inventoryData]['productName'] = $request->input()['inventory'][$inventoryData]['productName'];
+				}
 				$invFlag=1;
 				$decodedProductArrayData = json_decode($billData[0]->product_array);
 				$productArray = array();

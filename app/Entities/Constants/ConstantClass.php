@@ -60,6 +60,7 @@ class ConstantClass
 		
 		//from header data
 		$constantArray['sales']="sales";
+		$constantArray['wholeSales']="whole_sales";
 		$constantArray['purchase']="purchase";
 		$constantArray['jfId']="jfid";
 		$constantArray['productCode']="productcode";

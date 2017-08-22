@@ -21,7 +21,7 @@ class BillValidate
 			'company_name'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]*$/', 
 			'client_name'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]*$/', 
 			// 'invoice_number'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]*$/', 
-			'address1'=>'between:1,200|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
+			'address1'=>'between:1,200',
 			// 'address2'=>'between:1,50|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'contact_no'=>'between:10,12|regex:/^[0-9]+$/',
 			'work_no'=>'between:10,12|regex:/^[0-9]+$/'
@@ -42,7 +42,7 @@ class BillValidate
 			'client_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
 			'client_name.regex' => 'client-name contains character from "a-zA-Z &_`#().\'-" only',
 			'address1.between' => 'StringLengthException :Enter the :attribute less then 200 character',
-			'address1.regex' => 'address1 contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
+			// 'address1.regex' => 'address1 contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
 			// 'address2.between' => 'StringLengthException :Enter the :attribute less then 50 character',
 			// 'address2.regex' => 'address2 contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
 			'contact_no.between' => 'StringLengthException :Enter the :attribute between 10-12 character',
