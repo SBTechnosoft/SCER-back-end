@@ -27,8 +27,8 @@ class ProductValidate extends ProductModel
 			'margin'=> 'regex:/^[0-9 .]+$/', 
 			'vat'=> 'regex:/^[0-9 .]+$/', 
 			'mrp'=> 'required|regex:/^[0-9 .]+$/', 
-			'color'=> 'required|regex:/^[a-zA-Z .\/-()]+$/', 
-			'size'=> 'required|regex:/^[a-zA-Z0-9 .\/-()]+$/', 
+			'color'=> 'required|regex:/^[a-zA-Z .\/()-]+$/', 
+			'size'=> 'required|regex:/^[a-zA-Z0-9 .\/()-]+$/', 
 			'minimum_stock_level'=> 'regex:/^[0-9]+$/', 
 		);
 		$messages = [
@@ -136,8 +136,8 @@ class ProductValidate extends ProductModel
 			'margin'=> 'regex:/^[0-9 .]+$/', 
 			'vat'=> 'regex:/^[0-9 .]+$/', 
 			'mrp'=> 'required|regex:/^[0-9 .]+$/', 
-			'color'=> 'required|regex:/^[a-zA-Z .\/-()]+$/', 
-			'size'=> 'required|regex:/^[a-zA-Z0-9 .\/-()]+$/', 
+			'color'=> 'required|regex:/^[a-zA-Z .\/()-]+$/', 
+			'size'=> 'required|regex:/^[a-zA-Z0-9 .\/()-]+$/', 
 			'minimum_stock_level'=> 'regex:/^[0-9]+$/',  
 		);
 		$rules = array();

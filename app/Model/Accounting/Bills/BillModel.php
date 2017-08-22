@@ -251,7 +251,6 @@ class BillModel extends Model
 		{
 			$getJobCardNumber = array();
 		}
-		
 		//if job-card-number is exists then update bill data otherwise insert bill data
 		if(count($getJobCardNumber)==0)
 		{
@@ -351,9 +350,8 @@ class BillModel extends Model
 			sales_type,
 			sale_id,
 			jf_id) 
-			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."',,'".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$salesType."','".$saleId[0]->sale_id."','".$jfId."')");
+			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$salesType."','".$saleId[0]->sale_id."','".$jfId."')");
 			DB::commit();
-			
 			//get latest inserted sale bill data
 			DB::beginTransaction();
 			$billResult = DB::connection($databaseName)->select("select
@@ -382,7 +380,6 @@ class BillModel extends Model
 			updated_at 
 			from sales_bill where sale_id=(select MAX(sale_id) as sale_id from sales_bill) and deleted_at='0000-00-00 00:00:00'"); 
 			DB::commit();
-			
 			if(count($billResult)==1)
 			{
 				return json_encode($billResult);
@@ -495,6 +492,8 @@ class BillModel extends Model
 			job_card_number,
 			check_number,
 			total,
+			total_discounttype,
+			total_discount,
 			extra_charge,
 			tax,
 			grand_total,
@@ -572,6 +571,8 @@ class BillModel extends Model
 			job_card_number,
 			check_number,
 			total,
+			total_discounttype,
+			total_discount,
 			extra_charge,
 			tax,
 			grand_total,
@@ -664,6 +665,8 @@ class BillModel extends Model
 		job_card_number,
 		check_number,
 		total,
+		total_discounttype,
+		total_discount,
 		extra_charge,
 		tax,
 		grand_total,
@@ -723,6 +726,8 @@ class BillModel extends Model
 				check_number,
 				job_card_number,
 				total,
+				total_discounttype,
+				total_discount,
 				extra_charge,
 				tax,
 				grand_total,
@@ -856,6 +861,8 @@ class BillModel extends Model
 				job_card_number,
 				check_number,
 				total,
+				total_discounttype,
+				total_discount,
 				extra_charge,
 				tax,
 				grand_total,
@@ -891,6 +898,8 @@ class BillModel extends Model
 				job_card_number,
 				check_number,
 				total,
+				total_discounttype,
+				total_discount,
 				extra_charge,
 				tax,
 				grand_total,
@@ -939,6 +948,8 @@ class BillModel extends Model
 		job_card_number,
 		check_number,
 		total,
+		total_discounttype,
+		total_discount,
 		extra_charge,
 		tax,
 		grand_total,
@@ -1234,6 +1245,8 @@ class BillModel extends Model
 			job_card_number,
 			check_number,
 			total,
+			total_discounttype,
+			total_discount,
 			extra_charge,
 			tax,
 			grand_total,
@@ -1256,6 +1269,8 @@ class BillModel extends Model
 			'".$jsonDecodedSaleData[0]->job_card_number."',
 			'".$jsonDecodedSaleData[0]->check_number."',
 			'".$jsonDecodedSaleData[0]->total."',
+			'".$jsonDecodedSaleData[0]->total_discounttype."',
+			'".$jsonDecodedSaleData[0]->total_discount."',
 			'".$jsonDecodedSaleData[0]->extra_charge."',
 			'".$jsonDecodedSaleData[0]->tax."',
 			'".$jsonDecodedSaleData[0]->grand_total."',
@@ -1326,6 +1341,8 @@ class BillModel extends Model
 			job_card_number,
 			check_number,
 			total,
+			total_discounttype,
+			total_discount,
 			extra_charge,
 			tax,
 			grand_total,
@@ -1348,6 +1365,8 @@ class BillModel extends Model
 			'".$jsonDecodedSaleData[0]->job_card_number."',
 			'".$jsonDecodedSaleData[0]->check_number."',
 			'".$jsonDecodedSaleData[0]->total."',
+			'".$jsonDecodedSaleData[0]->total_discounttype."',
+			'".$jsonDecodedSaleData[0]->total_discount."',
 			'".$jsonDecodedSaleData[0]->extra_charge."',
 			'".$jsonDecodedSaleData[0]->tax."',
 			'".$jsonDecodedSaleData[0]->grand_total."',
@@ -1442,6 +1461,8 @@ class BillModel extends Model
 		job_card_number,
 		check_number,
 		total,
+		total_discounttype,
+		total_discount,
 		extra_charge,
 		tax,
 		grand_total,
@@ -1500,6 +1521,8 @@ class BillModel extends Model
 		job_card_number,
 		check_number,
 		total,
+		total_discounttype,
+		total_discount,
 		extra_charge,
 		tax,
 		grand_total,
@@ -1554,6 +1577,8 @@ class BillModel extends Model
 		job_card_number,
 		check_number,
 		total,
+		total_discounttype,
+		total_discount,
 		extra_charge,
 		tax,
 		grand_total,
