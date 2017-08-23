@@ -390,19 +390,20 @@ class LedgerModel extends Model
 	    $mytime = Carbon\Carbon::now();
 		$keyValueString="";
 		$keyValueStringAmt="";
+		$clientkeyValueString='';
+		$clientFlag=0;
 		for($data=0;$data<count($ledgerData);$data++)
 		{
+			//get contact_no of ledger from database for updating the contact of client
+			DB::beginTransaction();
+			$ledgerResult = DB::connection($databaseName)->select("select 
+			ledger_id,
+			contact_no
+			from ledger_mst where deleted_at='0000-00-00 00:00:00' and 
+			ledger_id='".$ledgerId."'");
+			DB::commit();
 			if(strcmp('contact_no',$key[$data])==0)
 			{
-				//get contact_no of ledger from database for updating the contact of client
-				DB::beginTransaction();
-				$ledgerResult = DB::connection($databaseName)->select("select 
-				ledger_id,
-				contact_no
-				from ledger_mst where deleted_at='0000-00-00 00:00:00' and 
-				ledger_id='".$ledgerId."'");
-				DB::commit();
-				
 				//check contact-no in ledger for unique contact-no
 				DB::beginTransaction();
 				$contactResult = DB::connection($databaseName)->select("select 
@@ -442,6 +443,19 @@ class LedgerModel extends Model
 					}
 				}
 			}
+			if(strcmp('ledger_name',$key[$data])==0 || strcmp('address1',$key[$data])==0 || strcmp('state_abb',$key[$data])==0 || strcmp('city_id',$key[$data])==0 || strcmp('email_id',$key[$data])==0)
+			{
+				$clientFlag=1;
+				if(strcmp('ledger_name',$key[$data])==0)
+				{
+					$clientNameKey = "client_name";
+				}
+				else
+				{
+					$clientNameKey = $key[$data];
+				}
+				$clientkeyValueString = $clientkeyValueString.$clientNameKey."='".$ledgerData[$data]."',";
+			}
 			if(strcmp($key[$data],"amount")==0 || strcmp($key[$data],"amount_type")==0 || strcmp($key[$data],"balance_flag")==0)
 			{
 				$keyValueStringAmt=$keyValueStringAmt.$key[$data]."='".$ledgerData[$data]."',";
@@ -451,7 +465,16 @@ class LedgerModel extends Model
 				$keyValueString=$keyValueString.$key[$data]."='".$ledgerData[$data]."',";
 			}
 		}
-		
+		if($clientFlag==1)
+		{
+			//update client-detail
+			DB::beginTransaction();
+			$updateClientDataResult = DB::connection($databaseName)->statement("update client_mst 
+			set ".$clientkeyValueString." updated_at='".$mytime."'
+			where contact_no = '".$ledgerResult[0]->contact_no."' and 
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+		}
 		if($keyValueStringAmt!="")
 		{
 			DB::beginTransaction();
