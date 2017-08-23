@@ -176,6 +176,8 @@ class QuotationProcessor extends BaseProcessor
 		$quotationPersistable->setProductArray(json_encode($productArray));
 		$quotationPersistable->setQuotationNumber($tRequest['quotation_number']);		
 		$quotationPersistable->setTotal($tRequest['total']);
+		$quotationPersistable->setTotalDiscounttype($tRequest['total_discounttype']);
+		$quotationPersistable->setTotalDiscount($tRequest['total_discount']);
 		$quotationPersistable->setExtraCharge($tRequest['extra_charge']);
 		$quotationPersistable->setTax($tRequest['tax']);		
 		$quotationPersistable->setGrandTotal($tRequest['grand_total']);
@@ -272,6 +274,11 @@ class QuotationProcessor extends BaseProcessor
 			}
 			else
 			{
+				for($inventoryData=0;$inventoryData<count($request->input()['inventory']);$inventoryData++)
+				{
+					$quotationTrimData['inventory'][$inventoryData]['amount'] = $request->input()['inventory'][$inventoryData]['amount'];
+					$quotationTrimData['inventory'][$inventoryData]['productName'] = $request->input()['inventory'][$inventoryData]['productName'];
+				}
 				$quoFlag=1;
 				$decodedProductArrayData = json_decode($quotationData[0]->product_array);
 				$productArray = array();

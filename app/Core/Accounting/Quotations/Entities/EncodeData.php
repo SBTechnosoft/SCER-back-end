@@ -20,6 +20,8 @@ class EncodeData extends ClientService
 		$productArray= $decodedJson[0]['product_array'];
 		$quotationNumber= $decodedJson[0]['quotation_number'];
 		$total= $decodedJson[0]['total'];
+		$totalDiscounttype = $decodedJson[0]['total_discounttype'];
+		$totalDiscount = $decodedJson[0]['total_discount'];
 		$extraCharge= $decodedJson[0]['extra_charge'];
 		$tax= $decodedJson[0]['tax'];
 		$grandTotal= $decodedJson[0]['grand_total'];
@@ -39,6 +41,7 @@ class EncodeData extends ClientService
 		
 		//convert amount(round) into their company's selected decimal points
 		$total = number_format($total,$companyDetails['noOfDecimalPoints'],'.','');
+		$totalDiscount = number_format($totalDiscount,$companyDetails['noOfDecimalPoints'],'.','');
 		$tax = number_format($tax,$companyDetails['noOfDecimalPoints'],'.','');
 		$grandTotal = number_format($grandTotal,$companyDetails['noOfDecimalPoints'],'.','');
 		
@@ -73,6 +76,8 @@ class EncodeData extends ClientService
 		$data['productArray'] = $productArray;
 		$data['quotationNumber'] = $quotationNumber;
 		$data['total'] = $total;
+		$data['totalDiscounttype'] = $totalDiscounttype;
+		$data['totalDiscount'] = $totalDiscount;
 		$data['extraCharge'] = $extraCharge;
 		$data['tax'] = $tax;
 		$data['grandTotal'] = $grandTotal;
@@ -88,6 +93,7 @@ class EncodeData extends ClientService
 			'companyName' => $clientDecodedJson['companyName'],	
 			'contactNo' => $clientDecodedJson['contactNo'],	
 			'emailId' => $clientDecodedJson['emailId'],	
+			'professionId' => $clientDecodedJson['professionId'],	
 			'address1' => $clientDecodedJson['address1'],		
 			'isDisplay' => $clientDecodedJson['isDisplay'],	
 			'createdAt' => $clientDecodedJson['createdAt'],	

@@ -23,6 +23,8 @@ use ERP\Core\Products\Properties\ColorPropertyTrait;
 use ERP\Core\Products\Properties\SizePropertyTrait;
 use ERP\Core\Accounting\Quotations\Properties\QuotationNumberPropertyTrait;
 use ERP\Core\Accounting\Quotations\Properties\QuotationIdPropertyTrait;
+use ERP\Core\Accounting\Bills\Properties\TotalDiscounttypeTrait;
+use ERP\Core\Accounting\Bills\Properties\TotalDiscountTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -50,4 +52,6 @@ class QuotationPersistable
 	use MeasureUnitPropertyTrait;
 	use ColorPropertyTrait;
 	use SizePropertyTrait;
+	use TotalDiscountTrait;
+	use TotalDiscounttypeTrait;
 }

@@ -29,6 +29,8 @@ class EncodeAllData extends ClientService
 			$productArray[$decodedData] = $deocodedJsonData[$decodedData]->product_array;
 			$quotationNumber[$decodedData] = $deocodedJsonData[$decodedData]->quotation_number;
 			$total[$decodedData] = $deocodedJsonData[$decodedData]->total;
+			$totalDiscounttype[$decodedData] = $deocodedJsonData[$decodedData]->total_discounttype;
+			$totalDiscount[$decodedData] = $deocodedJsonData[$decodedData]->total_discount;
 			$extraCharge[$decodedData] = $deocodedJsonData[$decodedData]->extra_charge;
 			$tax[$decodedData] = $deocodedJsonData[$decodedData]->tax;
 			$grandTotal[$decodedData] = $deocodedJsonData[$decodedData]->grand_total;
@@ -50,6 +52,7 @@ class EncodeAllData extends ClientService
 			
 			//convert amount(round) into their company's selected decimal points
 			$total[$decodedData] = number_format($total[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
+			$totalDiscount[$decodedData] = number_format($totalDiscount[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
 			$tax[$decodedData] = number_format($tax[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
 			$grandTotal[$decodedData] = number_format($grandTotal[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
 			
@@ -167,6 +170,8 @@ class EncodeAllData extends ClientService
 				'productArray'=>$productArray[$jsonData],
 				'quotationNumber'=>$quotationNumber[$jsonData],
 				'total'=>$total[$jsonData],
+				'totalDiscounttype'=>$totalDiscounttype[$jsonData],
+				'totalDiscount'=>$totalDiscount[$jsonData],
 				'extraCharge'=>$extraCharge[$jsonData],
 				'tax'=>$tax[$jsonData],
 				'grandTotal'=>$grandTotal[$jsonData],
@@ -181,6 +186,7 @@ class EncodeAllData extends ClientService
 					'companyName'=>$clientData->companyName,
 					'contactNo'=>$clientData->contactNo,
 					'emailId'=>$clientData->emailId,
+					'professionId'=>$clientData->professionId,
 					'address1'=>$clientData->address1,
 					'isDisplay'=>$clientData->isDisplay,
 					'createdAt'=>$clientData->createdAt,

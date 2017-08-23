@@ -71,6 +71,23 @@ class QuotationTransformer
 		$tStateAbb = trim($quotationArrayData['stateAbb']);
 		$tCityId = trim($quotationArrayData['cityId']);
 		$tTotal = trim($quotationArrayData['total']);
+		if(!array_key_exists('totalDiscounttype',$request->input()) && !array_key_exists('totalDiscount',$request->input()))
+		{
+			$tTotalDiscounttype = 'flat';
+			$tTotalDiscount = 0;
+		}
+		else
+		{
+			if($quotationArrayData['totalDiscounttype']=='flat' || $quotationArrayData['totalDiscounttype']=='percentage')
+			{
+				$tTotalDiscounttype = trim($quotationArrayData['totalDiscounttype']);
+				$tTotalDiscount = trim($quotationArrayData['totalDiscount']);
+			}
+			else
+			{
+				return "1";
+			}
+		}
 		if(!array_key_exists('extraCharge',$request->input()))
 		{
 			$tExtraCharge = 0;
@@ -178,6 +195,8 @@ class QuotationTransformer
 			$data['state_abb'] = $tStateAbb;
 			$data['city_id'] = $tCityId;
 			$data['total'] = $tTotal;
+			$data['total_discounttype'] = $tTotalDiscounttype;
+			$data['total_discount'] = $tTotalDiscount;
 			$data['extra_charge'] = $tExtraCharge;
 			$data['tax'] = $tTax;
 			$data['grand_total'] = $tGrandTotal;

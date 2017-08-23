@@ -62,6 +62,8 @@ class QuotationService
 			$productArray = $quotationArray->getProductArray();
 			$quotationNumber = $quotationArray->getQuotationNumber();
 			$total = $quotationArray->getTotal();
+			$totalDiscounttype = $quotationArray->getTotalDiscounttype();
+			$totalDiscount = $quotationArray->getTotalDiscount();
 			$extraCharge = $quotationArray->getExtraCharge();
 			$tax = $quotationArray->getTax();
 			$grandTotal = $quotationArray->getGrandTotal();
@@ -73,7 +75,7 @@ class QuotationService
 			
 			//data pass to the model object for insert
 			$quotationModel = new QuotationModel();
-			$status = $quotationModel->insertData($productArray,$quotationNumber,$total,$extraCharge,$tax,$grandTotal,$remark,$entryDate,$companyId,$ClientId,$jfId);
+			$status = $quotationModel->insertData($productArray,$quotationNumber,$total,$extraCharge,$tax,$grandTotal,$remark,$entryDate,$companyId,$ClientId,$jfId,$totalDiscounttype,$totalDiscount);
 			
 			//get exception message
 			$exception = new ExceptionMessage();

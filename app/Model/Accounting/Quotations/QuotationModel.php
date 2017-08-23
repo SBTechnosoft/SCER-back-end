@@ -26,7 +26,7 @@ class QuotationModel extends Model
 	 * @param  array
 	 * returns the status
 	*/
-	public function insertData($productArray,$quotationNumber,$total,$extraCharge,$tax,$grandTotal,$remark,$entryDate,$companyId,$ClientId,$jfId)
+	public function insertData($productArray,$quotationNumber,$total,$extraCharge,$tax,$grandTotal,$remark,$entryDate,$companyId,$ClientId,$jfId,$totalDiscounttype,$totalDiscount)
 	{
 		//database selection
 		$database = "";
@@ -43,6 +43,8 @@ class QuotationModel extends Model
 		product_array,
 		quotation_number,
 		total,
+		total_discounttype,
+		total_discount,
 		extra_charge,
 		tax,
 		grand_total,
@@ -51,9 +53,8 @@ class QuotationModel extends Model
 		company_id,
 		client_id,
 		jf_id) 
-		values('".$productArray."','".$quotationNumber."','".$total."','".$extraCharge."','".$tax."','".$grandTotal."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$jfId."')");
+		values('".$productArray."','".$quotationNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$jfId."')");
 		DB::commit();
-		
 		//update quotation-number
 		$quotationResult = $this->updateQuotationNumber($companyId);
 		if(strcmp($quotationResult,$exceptionArray['200'])!=0)
@@ -73,6 +74,8 @@ class QuotationModel extends Model
 			product_array,
 			quotation_number,
 			total,
+			total_discounttype,
+			total_discount,
 			extra_charge,
 			tax,
 			grand_total,
@@ -82,8 +85,9 @@ class QuotationModel extends Model
 			client_id,
 			quotation_bill_id,
 			jf_id) 
-			values('".$productArray."','".$quotationNumber."','".$total."','".$extraCharge."','".$tax."','".$grandTotal."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$quotationId[0]->quotation_bill_id."','".$jfId."')");
+			values('".$productArray."','".$quotationNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$quotationId[0]->quotation_bill_id."','".$jfId."')");
 			DB::commit();
+			
 			//get latest inserted quotation bill data
 			DB::beginTransaction();
 			$quotationResult = DB::connection($databaseName)->select("select
@@ -91,6 +95,8 @@ class QuotationModel extends Model
 			product_array,
 			quotation_number,
 			total,
+			total_discounttype,
+			total_discount,
 			extra_charge,
 			tax,
 			grand_total,
@@ -218,6 +224,8 @@ class QuotationModel extends Model
 			product_array,
 			quotation_number,
 			total,
+			total_discounttype,
+			total_discount,
 			extra_charge,
 			tax,
 			grand_total,
@@ -304,6 +312,8 @@ class QuotationModel extends Model
 				product_array,
 				quotation_number,
 				total,
+				total_discounttype,
+				total_discount,
 				extra_charge,
 				tax,
 				grand_total,
@@ -426,6 +436,8 @@ class QuotationModel extends Model
 				product_array,
 				quotation_number,
 				total,
+				total_discounttype,
+				total_discount,
 				extra_charge,
 				tax,
 				grand_total,
@@ -452,6 +464,8 @@ class QuotationModel extends Model
 				product_array,
 				quotation_number,
 				total,
+				total_discounttype,
+				total_discount,
 				extra_charge,
 				tax,
 				grand_total,
@@ -491,6 +505,8 @@ class QuotationModel extends Model
 		product_array,
 		quotation_number,
 		total,
+		total_discounttype,
+		total_discount,
 		extra_charge,
 		tax,
 		grand_total,
@@ -580,6 +596,8 @@ class QuotationModel extends Model
 		product_array,
 		quotation_number,
 		total,
+		total_discounttype,
+		total_discount,
 		extra_charge,
 		tax,
 		grand_total,
@@ -648,6 +666,8 @@ class QuotationModel extends Model
 			product_array,
 			quotation_number,
 			total,
+			total_discounttype,
+			total_discount,
 			extra_charge,
 			tax,
 			grand_total,
@@ -663,6 +683,8 @@ class QuotationModel extends Model
 			'".$jsonDecodedQuotationData[0]->product_array."',
 			'".$jsonDecodedQuotationData[0]->quotation_number."',
 			'".$jsonDecodedQuotationData[0]->total."',
+			'".$jsonDecodedQuotationData[0]->total_discounttype."',
+			'".$jsonDecodedQuotationData[0]->total_discount."',
 			'".$jsonDecodedQuotationData[0]->extra_charge."',
 			'".$jsonDecodedQuotationData[0]->tax."',
 			'".$jsonDecodedQuotationData[0]->grand_total."',
@@ -688,6 +710,8 @@ class QuotationModel extends Model
 				product_array,
 				quotation_number,
 				total,
+				total_discounttype,
+				total_discount,
 				extra_charge,
 				tax,
 				grand_total,
