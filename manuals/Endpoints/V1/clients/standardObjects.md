@@ -13,6 +13,10 @@
 				{
 					... Standard Profession Object
 				}
+				"document":
+				{
+					... Standard Document Object
+				}
 				"city": 
 				{
 					... Standard City Object

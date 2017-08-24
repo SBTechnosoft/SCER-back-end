@@ -346,27 +346,27 @@ include ('connection.php');
 				// formdata.append('companyId',$scope.formAdata.company_id);
 				
 				//client
-				// $scope.formAdata.client_name = "saasdsa";
-				// $scope.formAdata.company_name = "abcd";
-				// $scope.formAdata.contact_no = "888545345461";
-				// $scope.formAdata.work_no = "87654534546";
-				// $scope.formAdata.email_id = "abcd@a.fc";
-				// $scope.formAdata.address1 ="";
-				// $scope.formAdata.address2 = "";
-				// $scope.formAdata.is_display = 'yes';
-				// $scope.formAdata.state_abb= 'IN-AG';
-				// $scope.formAdata.city_id= 1;
+				$scope.formAdata.client_name = "saasdsdda";
+				$scope.formAdata.company_name = "abcd";
+				$scope.formAdata.contact_no = "888545345461";
+				$scope.formAdata.work_no = "87654534546";
+				$scope.formAdata.email_id = "abcd@a.fc";
+				$scope.formAdata.address1 ="";
+				$scope.formAdata.address2 = "";
+				$scope.formAdata.is_display = 'yes';
+				$scope.formAdata.state_abb= 'IN-AG';
+				$scope.formAdata.city_id= 1;
 				
-				// formdata.append('clientName',$scope.formAdata.client_name);
-				// formdata.append('companyName',$scope.formAdata.company_name);
-				// formdata.append('contactNo',$scope.formAdata.contact_no);
-				// formdata.append('workNo',$scope.formAdata.work_no);
-				// formdata.append('emailId',$scope.formAdata.email_id);
-				// formdata.append('address1',$scope.formAdata.address1);
-				// formdata.append('address2',$scope.formAdata.address2);
-				// formdata.append('isDisplay',$scope.formAdata.is_display);
-				// formdata.append('stateAbb',$scope.formAdata.state_abb);
-				// formdata.append('cityId',$scope.formAdata.city_id);
+				formdata.append('clientName',$scope.formAdata.client_name);
+				formdata.append('companyName',$scope.formAdata.company_name);
+				formdata.append('contactNo',$scope.formAdata.contact_no);
+				formdata.append('workNo',$scope.formAdata.work_no);
+				formdata.append('emailId',$scope.formAdata.email_id);
+				formdata.append('address1',$scope.formAdata.address1);
+				formdata.append('address2',$scope.formAdata.address2);
+				formdata.append('isDisplay',$scope.formAdata.is_display);
+				formdata.append('stateAbb',$scope.formAdata.state_abb);
+				formdata.append('cityId',$scope.formAdata.city_id);
 				
 				//User
 				// $scope.formAdata.user_name = "palak";
@@ -767,7 +767,7 @@ include ('connection.php');
 //--------------------------------------------------end---------------------------------------------------------------------
 				
 				// var userId=9;
-				// var clientId=2;
+				// var clientId=9;
 				// var productId =6;
 				// var productGrpId = 11;
 				// var productCatId = 18;
@@ -845,7 +845,7 @@ include ('connection.php');
 				
 				// var url= "http://www.scerp1.com/clients/export"; //header:operation:pdf/excel and searching criteria..that send in client
 				// var url = "http://www.scerp1.com/clients/"+clientId;
-				// var url = "http://www.scerp1.com/clients";
+				var url = "http://www.scerp1.com/clients";
 				
 				// var url = "http://www.scerp1.com/documents/bill";
 				// var url="http://www.scerp1.com/products/inward"; 
@@ -861,7 +861,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/accounting/ledgers/company/"+companyId;
 				// var url="http://www.scerp1.com/accounting/ledgers/"+ledgerId;
 				// var url="http://www.scerp1.com/accounting/ledgers/ledgerGrp/"+ledgerGrpId;
-				var url="http://www.scerp1.com/accounting/ledgers";
+				// var url="http://www.scerp1.com/accounting/ledgers";
 				
 				// var url="http://www.scerp1.com/accounting/ledger-groups/"+ledgerGrpId;
 				// var url="http://www.scerp1.com/accounting/ledger-groups";
@@ -904,8 +904,8 @@ include ('connection.php');
                         url: url,
                         // type:'patch',
                         // type:'get',
-						 // method: 'get',
-						 method: 'post',
+						 method: 'get',
+						 // method: 'post',
 						 // method: 'patch',
 						// enctype:'multipart/formdata',
 						 // _method: 'patch',
@@ -930,7 +930,7 @@ include ('connection.php');
                         // headers: {'Content-Type':undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','productCode':'ABC_ABC_AB_CYCFDJ_BKBK_122T'},
                         // headers: {'Content-Type':undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','fromDate':'01/04/2017','toDate':'28/04/2017'},
                         // headers: {'Content-Type':'application/x-www-form-urlencoded','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
-						 data:formdata
+						 // data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

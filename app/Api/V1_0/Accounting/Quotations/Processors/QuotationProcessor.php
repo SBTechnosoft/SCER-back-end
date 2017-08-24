@@ -45,7 +45,6 @@ class QuotationProcessor extends BaseProcessor
 		//get constant variables array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();	
-		
 		//trim an input 
 		$quotationTransformer = new QuotationTransformer();
 		$tRequest = $quotationTransformer->trimInsertData($this->request);	
@@ -91,17 +90,18 @@ class QuotationProcessor extends BaseProcessor
 					{
 						return $processedData;
 					}
-					$clientId = json_decode($processedData)[0]->client_id;
+					$clientId = json_decode($processedData)->clientId;
 				}
 				else
 				{
 					//check client is exists by contact-number
 					$clientModel = new ClientModel();
-					$clientData = $clientModel->getClientData($contactNo);
+					$clientArrayData = $clientModel->getClientData($contactNo);
+					$clientData = (json_decode($clientArrayData));
 					
-					if(is_array(json_decode($clientData)))
+					if(is_array($clientData))
 					{
-						$encodedClientData = json_decode($clientData);
+						$encodedClientData = $clientData['clientData'];
 						$clientId = $encodedClientData[0]->client_id;
 						//update client data
 						$clientArray = array();
@@ -145,7 +145,7 @@ class QuotationProcessor extends BaseProcessor
 						{
 							return $processedData;
 						}
-						$clientId = json_decode($processedData)[0]->client_id;
+						$clientId = json_decode($processedData)->clientId;
 					}
 				}
 			}

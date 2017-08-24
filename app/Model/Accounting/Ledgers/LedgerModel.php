@@ -425,7 +425,7 @@ class LedgerModel extends Model
 					$clientData = $clientModel->getClientData($ledgerData[$data]);
 					if(strcmp($clientData,$exceptionArray['200'])!=0)
 					{
-						$clientDecodedData = json_decode($clientData);
+						$clientDecodedData = json_decode($clientData)->clientData;
 						if($clientDecodedData[0]->contact_no!=$ledgerData[$data])
 						{
 							return $exceptionArray['contact'];
@@ -1713,8 +1713,7 @@ class LedgerModel extends Model
 		DB::beginTransaction();
 		$raw = DB::connection($databaseName)->select("select ledger_id 
 		from ledger_mst 
-		where company_id='".$companyId."' and 
-		contact_no='".$contactNo."' and
+		where contact_no='".$contactNo."' and
 		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		if(count($raw)==0)

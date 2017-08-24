@@ -121,6 +121,7 @@ class BillModel extends Model
 		}
 		if($raw==1)
 		{
+			//get latest sale-id from database
 			DB::beginTransaction();
 			$saleId = DB::connection($databaseName)->select("SELECT 
 			max(sale_id) sale_id
@@ -157,21 +158,34 @@ class BillModel extends Model
 			{
 				for($docArray=0;$docArray<count($documentArray);$docArray++)
 				{
+					// add documents in sale-document table
 					DB::beginTransaction();
-					$documentResult = DB::connection($databaseName)->statement("insert into sales_bill_doc_dtl(
+					$saleDocumentResult = DB::connection($databaseName)->statement("insert into sales_bill_doc_dtl(
 					sale_id,
 					document_name,
 					document_size,
 					document_format) 
 					values('".$saleId[0]->sale_id."','".$documentArray[$docArray][0]."','".$documentArray[$docArray][1]."','".$documentArray[$docArray][2]."')");
 					DB::commit();
-					if($documentResult==0)
+					
+					// add documents in client database
+					DB::beginTransaction();
+					$clientDocumentResult = DB::connection($databaseName)->statement("insert into client_doc_dtl(
+					sale_id,
+					document_name,
+					document_size,
+					document_format,
+					client_id) 
+					values('".$saleId[0]->sale_id."','".$documentArray[$docArray][0]."','".$documentArray[$docArray][1]."','".$documentArray[$docArray][2]."','".$ClientId."')");
+					DB::commit();
+					if($saleDocumentResult==0 || $clientDocumentResult==0)
 					{
 						return $exceptionArray['500'];
 					}
 				}	
 				if($documentResult==1)
 				{
+					//get latest sale data from database
 					DB::beginTransaction();
 					$billResult = DB::connection($databaseName)->select("select
 					sale_id,
@@ -438,13 +452,32 @@ class BillModel extends Model
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
-		
+		//insert document data into sale-bill-document table
 		$raw = DB::connection($databaseName)->statement("insert into sales_bill_doc_dtl(
 		sale_id,
 		document_name,
 		document_format,
 		document_type)
 		values('".$saleId."','".$documentName."','".$documentFormat."','".$documentType."')");
+		DB::commit();
+		
+		//get client-id from sale-bill
+		DB::beginTransaction();
+		$saleBillData = DB::connection($databaseName)->select("SELECT 
+		sale_id,
+		client_id
+		FROM sales_bill where sale_id='".$saleId."' and deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		//insert document data into client-document table
+		DB::beginTransaction();
+		$clientDocumentInsertion = DB::connection($databaseName)->statement("insert into client_doc_dtl(
+		sale_id,
+		document_name,
+		document_format,
+		document_type,
+		client_id)
+		values('".$saleId."','".$documentName."','".$documentFormat."','".$documentType."','".$saleBillData[0]->client_id."')");
 		DB::commit();
 		
 		//get exception message
@@ -1208,6 +1241,25 @@ class BillModel extends Model
 				document_format) 
 				values('".$saleId."','".$documentArray[$docArray][0]."','".$documentArray[$docArray][1]."','".$documentArray[$docArray][2]."')");
 				DB::commit();
+				
+				//get client-id from sale-bill
+				DB::beginTransaction();
+				$saleBillData = DB::connection($databaseName)->select("SELECT 
+				sale_id,
+				client_id
+				FROM sales_bill where sale_id='".$saleId."' and deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+				
+				//insert document data into client-document table
+				DB::beginTransaction();
+				$clientDocumentInsertion = DB::connection($databaseName)->statement("insert into client_doc_dtl(
+				sale_id,
+				document_name,
+				document_format,
+				document_size,
+				client_id)
+				values('".$saleId."','".$documentArray[$docArray][0]."','".$documentArray[$docArray][2]."','".$documentArray[$docArray][1]."','".$saleBillData[0]->client_id."')");
+				DB::commit();
 				if($documentResult==0)
 				{
 					return $exceptionArray['500'];
@@ -1419,6 +1471,25 @@ class BillModel extends Model
 				document_size,
 				document_format) 
 				values('".$saleId."','".$documentArray[$docArray][0]."','".$documentArray[$docArray][1]."','".$documentArray[$docArray][2]."')");
+				DB::commit();
+				
+				//get client-id from sale-bill
+				DB::beginTransaction();
+				$saleBillData = DB::connection($databaseName)->select("SELECT 
+				sale_id,
+				client_id
+				FROM sales_bill where sale_id='".$saleId."' and deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+				
+				//insert document data into client-document table
+				DB::beginTransaction();
+				$clientDocumentInsertion = DB::connection($databaseName)->statement("insert into client_doc_dtl(
+				sale_id,
+				document_name,
+				document_format,
+				document_size,
+				client_id)
+				values('".$saleId."','".$documentArray[$docArray][0]."','".$documentArray[$docArray][2]."','".$documentArray[$docArray][1]."','".$saleBillData[0]->client_id."')");
 				DB::commit();
 				if($documentResult==0)
 				{

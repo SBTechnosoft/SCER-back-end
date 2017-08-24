@@ -86,6 +86,7 @@ class ClientService
 	{
 		$clientModel = new ClientModel();
 		$status = $clientModel->getData($clientId);
+		
 		// get exception message
 		$exception = new ExceptionMessage();
 		$fileSizeArray = $exception->messageArrays();

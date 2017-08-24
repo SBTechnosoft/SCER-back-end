@@ -91,8 +91,26 @@ class ClientModel extends Model
 			state_abb,
 			city_id
 			from client_mst where client_id = (select max(client_id) from client_mst) and deleted_at='0000-00-00 00:00:00'");
+			DB::commit();			
+			
+			//get data from client-document
+			DB::beginTransaction();
+			$clientDocumentData = DB::connection($databaseName)->select("select 
+			client_id,
+			sale_id,
+			document_name,
+			document_size,
+			document_format,
+			document_type,
+			created_at,
+			updated_at,
+			deleted_at
+			from client_mst where client_id = '".$clientData[0]->client_id."' and deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
-			return json_encode($clientData);
+			$clientArraydata = array();
+			$clientArraydata['clientData'] = $clientData;
+			$clientArraydata['clientDocumentData'] = $clientDocumentData;
+			return json_encode($clientArraydata);
 		}
 		else
 		{
@@ -113,7 +131,7 @@ class ClientModel extends Model
 		$databaseName = $constantDatabase->constantDatabase();
 		
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->select("select 
+		$clientData = DB::connection($databaseName)->select("select 
 		client_id,
 		client_name,
 		company_name,
@@ -133,13 +151,31 @@ class ClientModel extends Model
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		if(count($raw)==0)
+		if(count($clientData)==0)
 		{
 			return $exceptionArray['404'];
 		}
 		else
 		{
-			$enocodedData = json_encode($raw,true); 	
+			//get data from client-document
+			DB::beginTransaction();
+			$clientDocumentData = DB::connection($databaseName)->select("select 
+			client_id,
+			sale_id,
+			document_name,
+			document_size,
+			document_format,
+			document_type,
+			created_at,
+			updated_at,
+			deleted_at
+			from client_doc_dtl where client_id = '".$clientData[0]->client_id."' and deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+			$clientArraydata = array();
+			$clientArraydata['clientData'] = $clientData;
+			$clientArraydata['clientDocumentData'] = $clientDocumentData;
+		
+			$enocodedData = json_encode($clientArraydata,true); 	
 			return $enocodedData;
 		}
 	}
@@ -283,7 +319,7 @@ class ClientModel extends Model
 		$databaseName = $constantDatabase->constantDatabase();
 		
 		DB::beginTransaction();		
-		$raw = DB::connection($databaseName)->select("select 
+		$clientData = DB::connection($databaseName)->select("select 
 		client_id,
 		client_name,
 		company_name,
@@ -300,18 +336,40 @@ class ClientModel extends Model
 		from client_mst where ".$queryParameter." deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
-		if(count($raw)==0)
+		if(count($clientData)==0)
 		{
 			return $exceptionArray['204'];
 		}
 		else
 		{
-			$enocodedData = json_encode($raw);
+			$documentArray = array();
+			for($documentArrayData=0;$documentArrayData<count($clientData);$documentArrayData++)
+			{
+				//get data from client-document
+				DB::beginTransaction();
+				$clientDocumentData = DB::connection($databaseName)->select("select 
+				client_id,
+				sale_id,
+				document_name,
+				document_size,
+				document_format,
+				document_type,
+				created_at,
+				updated_at,
+				deleted_at
+				from client_doc_dtl where client_id = '".$clientData[$documentArrayData]->client_id."' and deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+				$documentArray[$documentArrayData] = $clientDocumentData;
+			}
+			$clientArraydata = array();
+			$clientArraydata['clientData'] = $clientData;
+			$clientArraydata['clientDocumentData'] = $documentArray;
+			$enocodedData = json_encode($clientArraydata);
 			return $enocodedData;
 		}
 	}
 	
-	/**
+	/**-------------------------------
 	 * get client data 
 	 * @param contact-no
 	 * returns the status
@@ -324,7 +382,7 @@ class ClientModel extends Model
 		$databaseName = $constantDatabase->constantDatabase();
 		
 		DB::beginTransaction();		
-		$raw = DB::connection($databaseName)->select("select 
+		$clientData = DB::connection($databaseName)->select("select 
 		client_id,
 		client_name,
 		email_id,
@@ -345,13 +403,31 @@ class ClientModel extends Model
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		if(count($raw)==0)
+		if(count($clientData)==0)
 		{
 			return $exceptionArray['200'];
 		}
 		else
 		{
-			$enocodedData = json_encode($raw);
+			//get data from client-document
+			DB::beginTransaction();
+			$clientDocumentData = DB::connection($databaseName)->select("select 
+			client_id,
+			sale_id,
+			document_name,
+			document_size,
+			document_format,
+			document_type,
+			created_at,
+			updated_at,
+			deleted_at
+			from client_doc_dtl where client_id = '".$clientData[0]->client_id."' and deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+			$clientArraydata = array();
+			$clientArraydata['clientData'] = $clientData;
+			$clientArraydata['clientDocumentData'] = $clientDocumentData;
+		
+			$enocodedData = json_encode($clientArraydata);
 			return $enocodedData;
 		}
 	}

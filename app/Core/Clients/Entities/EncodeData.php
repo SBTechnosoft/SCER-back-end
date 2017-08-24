@@ -19,7 +19,8 @@ class EncodeData extends StateService
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
-		$decodedJson = json_decode($status,true);
+		$decodedArrayJson = json_decode($status,true);
+		$decodedJson = $decodedArrayJson['clientData'];
 		$createdAt = $decodedJson[0]['created_at'];
 		$updatedAt= $decodedJson[0]['updated_at'];
 		$clientId= $decodedJson[0]['client_id'];
@@ -60,6 +61,7 @@ class EncodeData extends StateService
 			$client->setUpdated_at($convertedUpdatedDate);
 			$getUpdatedDate = $client->getUpdated_at();
 		}
+		
 		// set all data into json array
 		$data = array();
 		$data['clientId'] = $clientId;
@@ -110,6 +112,41 @@ class EncodeData extends StateService
 			'updatedAt' => $getCityDetail['updatedAt'],	
 			'stateAbb'=> $getCityDetail['state']['stateAbb']
 		);
+		$decodedDocumentJson = $decodedArrayJson['clientDocumentData'];
+		if(count($decodedDocumentJson)==0)
+		{
+			$data['document']= array(
+				'documentName' => '',
+				'documentSize' => '',	
+				'documentFormat' => '',	
+				'documentType' => '',	
+				'createdAt' => '00-00-00 00:00:00',
+				'updatedAt'=> '00-00-00 00:00:00',
+				'clientId'=> ''
+			);
+		}
+		else
+		{
+			if(strcmp($decodedDocumentJson[0]['updated_at'],'0000-00-00 00:00:00')==0)
+			{
+				$convertedUpdatedDate = "00-00-0000";
+			}
+			else
+			{
+				$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $decodedDocumentJson[0]['updated_at'])->format('d-m-Y');
+			}
+			$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $decodedDocumentJson[0]['created_at'])->format('d-m-Y');
+			
+			$data['document']= array(
+				'documentName' => $decodedDocumentJson[0]['document_name'],
+				'documentSize' => $decodedDocumentJson[0]['document_size'],	
+				'documentFormat' => $decodedDocumentJson[0]['document_format'],	
+				'documentType' => $decodedDocumentJson[0]['document_type'],	
+				'createdAt' => $convertedCreatedDate,
+				'updatedAt'=> $convertedUpdatedDate,
+				'clientId'=> $decodedDocumentJson[0]['client_id']
+			);
+		}
 		$encodeData = json_encode($data);
 		return $encodeData;
 	}

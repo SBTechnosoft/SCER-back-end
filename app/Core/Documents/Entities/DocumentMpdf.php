@@ -795,7 +795,6 @@ class DocumentMpdf extends CurrencyToWordConversion
 		// convert amount(number_format) into their company's selected decimal points
 		$totalTax = number_format($totalTax,$decodedData[0]->company->noOfDecimalPoints,'.','');
 		$totalAmount = number_format($totalAmount,$decodedData[0]->company->noOfDecimalPoints,'.','');
-		
 		$roundTotal = round($totalAmount);
 		$roundUpFigure = $roundTotal-$totalAmount;
 		$roundUpFigure = number_format($roundUpFigure,$decodedData[0]->company->noOfDecimalPoints,'.','');

@@ -55,7 +55,6 @@ class BillProcessor extends BaseProcessor
 		//get constant variables array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();	
-
 		//trim an input 
 		$billTransformer = new BillTransformer();
 		$tRequest = $billTransformer->trimInsertData($this->request);	
@@ -100,17 +99,17 @@ class BillProcessor extends BaseProcessor
 					{
 						return $processedData;
 					}
-					$clientId = json_decode($processedData)[0]->client_id;
+					$clientId = json_decode($processedData)->clientId;
 				}
 				else
 				{
 					//check client is exists by contact-number
 					$clientModel = new ClientModel();
-					$clientData = $clientModel->getClientData($contactNo);
-					
-					if(is_array(json_decode($clientData)))
+					$clientArrayData = $clientModel->getClientData($contactNo);
+					$clientData = (json_decode($clientArrayData));
+					if(is_array($clientData))
 					{
-						$encodedClientData = json_decode($clientData);
+						$encodedClientData = $clientData['clientData'];
 						$clientId = $encodedClientData[0]->client_id;
 						//update client data
 						$clientArray = array();
@@ -154,7 +153,7 @@ class BillProcessor extends BaseProcessor
 						{
 							return $processedData;
 						}
-						$clientId = json_decode($processedData)[0]->client_id;
+						$clientId = json_decode($processedData)->clientId;
 					}
 				}
 			}
@@ -181,7 +180,6 @@ class BillProcessor extends BaseProcessor
 			{
 				// get ledger data for checking client is exist in ledger or not by contact-number
 				$ledgerData = $ledgerModel->getDataAsPerContactNo($tRequest['company_id'],$tRequest['contact_no']);
-				
 				if(is_array(json_decode($ledgerData)))
 				{
 					$contactFlag=1;
@@ -563,7 +561,6 @@ class BillProcessor extends BaseProcessor
 				}
 			}
 		}
-		// echo "emd";
 		//make data array for journal sale entry
 		$journalArray = array();
 		$journalArray= array(
@@ -944,7 +941,8 @@ class BillProcessor extends BaseProcessor
 		//get client-data as per given client-id for getting client contact_no
 		$clientModel = new ClientModel();
 		$clientIdData = $clientModel->getData($billData[0]->client_id);
-		$decodedClientData = json_decode($clientIdData);
+		$decodedClientData = (json_decode($clientIdData));
+		// $decodedClientData = json_decode($clientIdData);
 
 		//get ledgerId for update ledegerData 
 		$getLedgerData = $ledgerModel->getDataAsPerInvoiceNumber($billData[0]->company_id,$billData[0]->invoice_number);

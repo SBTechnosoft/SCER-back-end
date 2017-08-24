@@ -18,7 +18,8 @@ class EncodeAllData extends StateService
 		$convertedCreatedDate =  array();
 		$convertedUpdatedDate =  array();
 		$encodeAllData =  array();
-		$decodedJson = json_decode($status,true);
+		$decodedArrayJson = json_decode($status,true);
+		$decodedJson = $decodedArrayJson['clientData'];
 		$client = new Client();
 		$professionDetail = array();
 		
@@ -76,6 +77,7 @@ class EncodeAllData extends StateService
 		}
 		$data = array();
 		$professionDecodedDetail = array();
+		$decodedDocumentJson = $decodedArrayJson['clientDocumentData'];
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
 		{
 			if(strcmp($professionDetail[$jsonData],$exceptionArray['404'])==0)
@@ -89,7 +91,6 @@ class EncodeAllData extends StateService
 			}
 			else
 			{
-				
 				$professionDecodedDetail[$jsonData] = json_decode($professionDetail[$jsonData]);
 				if($professionIdArray[$jsonData]=='' || $professionIdArray[$jsonData]==0 || $professionIdArray[$jsonData]==null)
 				{
@@ -108,6 +109,41 @@ class EncodeAllData extends StateService
 					$professionParentId=$professionDecodedDetail[$jsonData]->professionParentId;
 					$createdAt=$professionDecodedDetail[$jsonData]->createdAt;
 					$updatedAt=$professionDecodedDetail[$jsonData]->updatedAt;
+				}
+			}
+			$documentArrayData = array();
+			if(count($decodedDocumentJson[$jsonData])==0)
+			{
+				$documentArrayData[$jsonData][0]['documentName']='';
+				$documentArrayData[$jsonData][0]['documentSize']='';
+				$documentArrayData[$jsonData][0]['documentFormat']='';
+				$documentArrayData[$jsonData][0]['documentType']='';
+				$documentArrayData[$jsonData][0]['clientId']='';
+				$documentArrayData[$jsonData][0]['saleId']='';
+				$documentArrayData[$jsonData][0]['createdAt']='00-00-0000 00:00:00';
+				$documentArrayData[$jsonData][0]['updatedAt']='00-00-0000 00:00:00';
+			}
+			else
+			{
+				for($documentArray=0;$documentArray<count($decodedDocumentJson[$jsonData]);$documentArray++)
+				{
+					if(strcmp($decodedDocumentJson[$jsonData][$documentArray]['updated_at'],'0000-00-00 00:00:00')==0)
+					{
+						$convertedUpdatedDate[$documentArray] = '00-00-0000';
+					}
+					else
+					{
+						$convertedUpdatedDate[$documentArray] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$decodedDocumentJson[$jsonData][$documentArray]['updated_at'])->format('d-m-Y');
+					}
+					$convertedCreatedDate[$documentArray] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $decodedDocumentJson[$jsonData][$documentArray]['created_at'])->format('d-m-Y');
+					$documentArrayData[$jsonData][$documentArray]['documentName'] = $decodedDocumentJson[$jsonData][$documentArray]['document_name'];
+					$documentArrayData[$jsonData][$documentArray]['documentSize']=$decodedDocumentJson[$jsonData][$documentArray]['document_size'];
+					$documentArrayData[$jsonData][$documentArray]['documentFormat']=$decodedDocumentJson[$jsonData][$documentArray]['document_format'];
+					$documentArrayData[$jsonData][$documentArray]['documentType']=$decodedDocumentJson[$jsonData][$documentArray]['document_type'];
+					$documentArrayData[$jsonData][$documentArray]['clientId']=$decodedDocumentJson[$jsonData][$documentArray]['client_id'];
+					$documentArrayData[$jsonData][$documentArray]['saleId']=$decodedDocumentJson[$jsonData][$documentArray]['sale_id'];
+					$documentArrayData[$jsonData][$documentArray]['createdAt']=$convertedCreatedDate[$documentArray];
+					$documentArrayData[$jsonData][$documentArray]['updatedAt']=$convertedUpdatedDate[$documentArray];
 				}
 			}
 			$data[$jsonData]= array(
@@ -146,6 +182,7 @@ class EncodeAllData extends StateService
 					'stateAbb' => $getCityDetail[$jsonData]['state']['stateAbb']
 				)
 			);
+			$data[$jsonData]['file'] = $documentArrayData[$jsonData];
 		}
 		return json_encode($data);
 	}
