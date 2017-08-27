@@ -1,6 +1,6 @@
 ##### Creates Purchase-Bill
 
-##### `POST /accounting/purchaseBills/`
+##### `POST /accounting/purchase-bills/`
 + Header
 	- Authentication Token
 	- 'operation':'preprint'
@@ -21,7 +21,7 @@
                 "documentPath":''
             }
 			
-##### `GET /accounting/purchaseBills/company/{companyId}`
+##### `GET /accounting/purchase-bills/company/{companyId}`
 + Header
 	- Authentication Token
 	- "fromDate":"date"
@@ -38,7 +38,7 @@
                 ... Standard Purchase-Bill Object
             }
 			
-##### `GET /accounting/purchaseBills`
+##### `GET /accounting/purchase-bills`
 + Header
 	- Authentication Token
 	- "previousPurchaseId":"int",
@@ -57,7 +57,7 @@
             }
 			
 	
-##### `POST /accounting/purchaseBills/{purchaseBillId}`
+##### `POST /accounting/purchase-bills/{purchaseBillId}`
 + Header
 	- Authentication Token
 + Body
@@ -77,7 +77,7 @@
                 "documentPath":''
             }
 			
-##### `DELETE /accounting/purchaseBills/{purchaseBillId}`
+##### `DELETE /accounting/purchase-bills/{purchaseBillId}`
 + Header
 	- Authentication Token
 
