@@ -7,6 +7,7 @@ use ERP\Core\Entities\CityDetail;
 use ERP\Core\Settings\Professions\Services\ProfessionService;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Entities\Constants\ConstantClass;
 /**
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -18,6 +19,9 @@ class EncodeData extends StateService
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
+		
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
 		
 		$decodedArrayJson = json_decode($status,true);
 		$decodedJson = $decodedArrayJson['clientData'];
@@ -120,6 +124,7 @@ class EncodeData extends StateService
 				'documentSize' => '',	
 				'documentFormat' => '',	
 				'documentType' => '',	
+				'documentUrl' => '',	
 				'createdAt' => '00-00-00 00:00:00',
 				'updatedAt'=> '00-00-00 00:00:00',
 				'clientId'=> ''
@@ -142,6 +147,7 @@ class EncodeData extends StateService
 				'documentSize' => $decodedDocumentJson[0]['document_size'],	
 				'documentFormat' => $decodedDocumentJson[0]['document_format'],	
 				'documentType' => $decodedDocumentJson[0]['document_type'],	
+				'documentUrl' => $constantArray['billDocumentUrl'],	
 				'createdAt' => $convertedCreatedDate,
 				'updatedAt'=> $convertedUpdatedDate,
 				'clientId'=> $decodedDocumentJson[0]['client_id']

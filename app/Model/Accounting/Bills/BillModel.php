@@ -183,7 +183,7 @@ class BillModel extends Model
 						return $exceptionArray['500'];
 					}
 				}	
-				if($documentResult==1)
+				if($saleDocumentResult==1)
 				{
 					//get latest sale data from database
 					DB::beginTransaction();

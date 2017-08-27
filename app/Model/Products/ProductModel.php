@@ -426,7 +426,7 @@ class ProductModel extends Model
 			
 			DB::beginTransaction();
 			$purchaseBill = DB::connection($databaseName)->statement("insert into 
-			purchase_dtl(
+			purchase_bill(
 			client_name,
 			product_array,
 			bill_number,
@@ -663,7 +663,7 @@ class ProductModel extends Model
 		
 		//delete existing data from purchase bill and then insert new data
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("update purchase_dtl 
+		$raw = DB::connection($databaseName)->statement("update purchase_bill 
 		set deleted_at='".$mytime."'
 		where jf_id='".$jfId."'");
 		DB::commit();
@@ -791,7 +791,7 @@ class ProductModel extends Model
 			
 			//delete existing data and then insert new data
 			DB::beginTransaction();
-			$purchaseBillDataResult = DB::connection($databaseName)->statement("update purchase_dtl 
+			$purchaseBillDataResult = DB::connection($databaseName)->statement("update purchase_bill 
 			set deleted_at='".$mytime."'
 			where jf_id='".$jfId."'");
 			DB::commit();
@@ -895,7 +895,7 @@ class ProductModel extends Model
 					
 					DB::beginTransaction();
 					$purchaseBill = DB::connection($databaseName)->statement("insert into 
-					purchase_dtl(
+					purchase_bill(
 					client_name,
 					product_array,
 					bill_number,
@@ -948,7 +948,7 @@ class ProductModel extends Model
 			DB::commit();
 			
 			DB::beginTransaction();
-			$billTransactionResult = DB::connection($databaseName)->statement("update purchase_dtl
+			$billTransactionResult = DB::connection($databaseName)->statement("update purchase_bill
 			set ".$keyValueString."
 			updated_at='".$mytime."'
 			where jf_id='".$jfId."' and deleted_at='0000-00-00 00:00:00'");
@@ -1575,7 +1575,7 @@ class ProductModel extends Model
 		
 		DB::beginTransaction();		
 		$raw = DB::connection($databaseName)->statement("update 
-		purchase_dtl
+		purchase_bill
 		set client_name='".$clientNameArray['client_name']."',
 		updated_at='".$mytime."'
 		where jf_id='".$jfId."' and

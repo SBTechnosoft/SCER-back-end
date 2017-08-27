@@ -7,6 +7,7 @@ use ERP\Core\Settings\Professions\Services\ProfessionService;
 use ERP\Core\Entities\CityDetail;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Entities\Constants\ConstantClass;
 /**
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -27,6 +28,8 @@ class EncodeAllData extends StateService
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
 		for($decodedData=0;$decodedData<count($decodedJson);$decodedData++)
 		{
 			$createdAt[$decodedData] = $decodedJson[$decodedData]['created_at'];
@@ -118,6 +121,7 @@ class EncodeAllData extends StateService
 				$documentArrayData[$jsonData][0]['documentSize']='';
 				$documentArrayData[$jsonData][0]['documentFormat']='';
 				$documentArrayData[$jsonData][0]['documentType']='';
+				$documentArrayData[$jsonData][0]['documentUrl']='';
 				$documentArrayData[$jsonData][0]['clientId']='';
 				$documentArrayData[$jsonData][0]['saleId']='';
 				$documentArrayData[$jsonData][0]['createdAt']='00-00-0000 00:00:00';
@@ -140,6 +144,7 @@ class EncodeAllData extends StateService
 					$documentArrayData[$jsonData][$documentArray]['documentSize']=$decodedDocumentJson[$jsonData][$documentArray]['document_size'];
 					$documentArrayData[$jsonData][$documentArray]['documentFormat']=$decodedDocumentJson[$jsonData][$documentArray]['document_format'];
 					$documentArrayData[$jsonData][$documentArray]['documentType']=$decodedDocumentJson[$jsonData][$documentArray]['document_type'];
+					$documentArrayData[$jsonData][$documentArray]['documentUrl']=$constantArray['billDocumentUrl'];
 					$documentArrayData[$jsonData][$documentArray]['clientId']=$decodedDocumentJson[$jsonData][$documentArray]['client_id'];
 					$documentArrayData[$jsonData][$documentArray]['saleId']=$decodedDocumentJson[$jsonData][$documentArray]['sale_id'];
 					$documentArrayData[$jsonData][$documentArray]['createdAt']=$convertedCreatedDate[$documentArray];

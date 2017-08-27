@@ -14,7 +14,6 @@
 				"extraCharge":decimal,
 				"balance":decimal,
 				"salesType":Enum,
-				"refund":decimal,
 				"remark":string,
 				"entryDate":datetime,
 				"createdAt":timestamp,
