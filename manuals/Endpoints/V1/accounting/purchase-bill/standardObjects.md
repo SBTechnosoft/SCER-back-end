@@ -61,10 +61,9 @@
 				"extraCharge":decimal,
 				"balance":decimal,
 				"remark":string,
-				"entryDate":datetime,
+				"transactionDate":datetime,
 				"createdAt":timestamp,
 				"updatedAt":datetime,
-				"jf_id":int,
 				"file":
 				{
 					{

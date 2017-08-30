@@ -6,6 +6,7 @@
 	- 'type':'sales'
 	- 'type':'payment'
 	- 'type':'receipt'
+	- 'type':'purchase'
 + Body
 
             {

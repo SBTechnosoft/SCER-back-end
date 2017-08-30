@@ -3,7 +3,6 @@
 ##### `POST /accounting/purchase-bills/`
 + Header
 	- Authentication Token
-	- 'operation':'preprint'
 + Body
 
             {
@@ -18,7 +17,7 @@
 + Response
 
             {
-                "documentPath":''
+                ... HTTP_Status:200
             }
 			
 ##### `GET /accounting/purchase-bills/company/{companyId}`
@@ -44,7 +43,8 @@
 	- "previousPurchaseId":"int",
 	- "nextPurchaseId":"int",
 	- "companyId":"int",
-	- "operation":"first/last"
+	- "operation":"first/last",
+	- "purchaseBillId":"int"
 + Error Message
 
 			{
@@ -54,29 +54,7 @@
 
             {
                 ... Standard Purchase-Bill Object
-            }
-			
-	
-##### `POST /accounting/purchase-bills/{purchaseBillId}`
-+ Header
-	- Authentication Token
-+ Body
-
-            {
-                ... Standard Purchase-Bill Persistable Object
-            }
-
-+ Error Message
-
-			{
-				... Error Message
-			}            
-+ Response
-
-            {
-                "documentPath":''
-            }
-			
+            }	
 ##### `DELETE /accounting/purchase-bills/{purchaseBillId}`
 + Header
 	- Authentication Token

@@ -1689,15 +1689,50 @@ class BillModel extends Model
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
-		
 		$mytime = Carbon\Carbon::now();
-		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
 		$saleIdData = $this->getSaleIdData($saleId);
 		$jsonDecodedSaleData = json_decode($saleIdData);
+		$productArray = $jsonDecodedSaleData[0]->product_array;
+		$inventoryCount = count(json_decode($productArray)->inventory);
+		for($productArrayData=0;$productArrayData<$inventoryCount;$productArrayData++)
+		{
+			$inventoryData = json_decode($productArray)->inventory;
+			DB::beginTransaction();
+			$getTransactionSummaryData[$productArrayData] = DB::connection($databaseName)->select("select 
+			product_trn_summary_id,
+			qty
+			from product_trn_summary
+			where product_id='".$inventoryData[$productArrayData]->productId."' and
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+			if(count($getTransactionSummaryData[$productArrayData])==0)
+			{
+				//insert data
+				DB::beginTransaction();
+				$insertionResult[$productArrayData] = DB::connection($databaseName)->statement("insert into 
+				product_trn_summary(qty,company_id,branch_id,product_id)
+				values('".$inventoryData[$productArrayData]->qty."',
+					   '".$jsonDecodedSaleData[0]->company_id."',
+					   0,
+					   '".$jsonDecodedSaleData[0]->productId."')");
+				DB::commit();
+			}
+			else
+			{
+				$qty = $getTransactionSummaryData[$productArrayData][0]->qty+$inventoryData[$productArrayData]->qty;
+				//update data
+				DB::beginTransaction();
+				$updateResult = DB::connection($databaseName)->statement("update 
+				product_trn_summary set qty='".$qty."'
+				where product_trn_summary_id='".$getTransactionSummaryData[$productArrayData][0]->product_trn_summary_id."' and
+				deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+			}
+		}
 		if(strcmp($saleIdData,$exceptionArray['404'])==0)
 		{
 			return $exceptionArray['404'];
@@ -1706,6 +1741,7 @@ class BillModel extends Model
 		$journalModel = new JournalModel();
 		$journalData = $journalModel->getJfIdArrayData($jsonDecodedSaleData[0]->jf_id);
 		$jsonDecodedJournalData = json_decode($journalData);
+		
 		if(strcmp($journalData,$exceptionArray['404'])!=0)
 		{
 			foreach ($jsonDecodedJournalData as $value)
@@ -1755,6 +1791,7 @@ class BillModel extends Model
 		where sale_id = ".$saleId." and
 		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
+		
 		
 		if($deleteJournalData==1 && $deleteProductTrnData==1 && $deleteBillData==1 && $deleteBillTrnData==1)
 		{

@@ -10,7 +10,7 @@ class DiscountTypeEnum
 	{
 		$enumArray = array();
 		$enumArray['flatType'] = "flat";
-		$enumArray['perCentageType'] = "percentage";
+		$enumArray['percentageType'] = "percentage";
 		return $enumArray;
 	}
 }

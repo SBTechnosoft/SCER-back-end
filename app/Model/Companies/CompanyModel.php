@@ -740,6 +740,9 @@ class CompanyModel extends Model
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
 		
 		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
@@ -747,10 +750,6 @@ class CompanyModel extends Model
 		set deleted_at='".$mytime."' 
 		where company_id=".$companyId);
 		DB::commit();
-		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
 			$ledgerId = DB::connection($databaseName)->select("select ledger_id 
@@ -758,7 +757,7 @@ class CompanyModel extends Model
 			where company_id=".$companyId." and deleted_at='0000-00-00 00:00:00'");
 			$userId = DB::connection($databaseName)->select("select user_id 
 			from user_mst 
-			where company_id=".$companyId." and deleted_at='0000-00-00 00:00:00'");
+			where company_id=".$companyId." and user_type!='superadmin' and deleted_at='0000-00-00 00:00:00'");
 			$branch = DB::connection($databaseName)->statement("update branch_mst 
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);

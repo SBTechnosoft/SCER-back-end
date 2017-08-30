@@ -30,6 +30,8 @@ class ConstantClass
 		$constantArray['billDocumentUrl'] = "Storage/Bill/Document/";
 		$constantArray['journalDocumentUrl'] = "Storage/Journal/";
 		$constantArray['billUrl']="Storage/Bill/";
+		$constantArray['purchaseBillDocUrl'] = "Storage/PurchaseBill/Document/";
+		$constantArray['purchaseBillUrl'] = "Storage/PurchaseBill/";
 		$constantArray['quotationDocUrl']="Storage/Quotation/";
 		$constantArray['jobFormDocUrl']="Storage/Crm/JobForm";
 		$constantArray['profitLossPdf']="Storage/ProfitLoss/Pdf/";

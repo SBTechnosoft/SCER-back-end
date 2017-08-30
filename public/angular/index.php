@@ -346,27 +346,27 @@ include ('connection.php');
 				// formdata.append('companyId',$scope.formAdata.company_id);
 				
 				//client
-				$scope.formAdata.client_name = "saasdsdda";
-				$scope.formAdata.company_name = "abcd";
-				$scope.formAdata.contact_no = "888545345461";
-				$scope.formAdata.work_no = "87654534546";
-				$scope.formAdata.email_id = "abcd@a.fc";
-				$scope.formAdata.address1 ="";
-				$scope.formAdata.address2 = "";
-				$scope.formAdata.is_display = 'yes';
-				$scope.formAdata.state_abb= 'IN-AG';
-				$scope.formAdata.city_id= 1;
+				// $scope.formAdata.client_name = "saasdsdda";
+				// $scope.formAdata.company_name = "abcd";
+				// $scope.formAdata.contact_no = "888545345461";
+				// $scope.formAdata.work_no = "87654534546";
+				// $scope.formAdata.email_id = "abcd@a.fc";
+				// $scope.formAdata.address1 ="";
+				// $scope.formAdata.address2 = "";
+				// $scope.formAdata.is_display = 'yes';
+				// $scope.formAdata.state_abb= 'IN-AG';
+				// $scope.formAdata.city_id= 1;
 				
-				formdata.append('clientName',$scope.formAdata.client_name);
-				formdata.append('companyName',$scope.formAdata.company_name);
-				formdata.append('contactNo',$scope.formAdata.contact_no);
-				formdata.append('workNo',$scope.formAdata.work_no);
-				formdata.append('emailId',$scope.formAdata.email_id);
-				formdata.append('address1',$scope.formAdata.address1);
-				formdata.append('address2',$scope.formAdata.address2);
-				formdata.append('isDisplay',$scope.formAdata.is_display);
-				formdata.append('stateAbb',$scope.formAdata.state_abb);
-				formdata.append('cityId',$scope.formAdata.city_id);
+				// formdata.append('clientName',$scope.formAdata.client_name);
+				// formdata.append('companyName',$scope.formAdata.company_name);
+				// formdata.append('contactNo',$scope.formAdata.contact_no);
+				// formdata.append('workNo',$scope.formAdata.work_no);
+				// formdata.append('emailId',$scope.formAdata.email_id);
+				// formdata.append('address1',$scope.formAdata.address1);
+				// formdata.append('address2',$scope.formAdata.address2);
+				// formdata.append('isDisplay',$scope.formAdata.is_display);
+				// formdata.append('stateAbb',$scope.formAdata.state_abb);
+				// formdata.append('cityId',$scope.formAdata.city_id);
 				
 				//User
 				// $scope.formAdata.user_name = "palak";
@@ -765,13 +765,36 @@ include ('connection.php');
 				// formdata.append('professionParentId',$scope.formAdata.professionParentId);
 				
 //--------------------------------------------------end---------------------------------------------------------------------
+//--------------------------------------------------Purchase-Bill-----------------------------------------------------------
+                // $scope.user = [{"purchaseBillData":[{"transactionDate":"22-10-2015","vendorId":1,"companyId":'10',
+				// "billNumber":10,"billType":"purchase_bill","total":100,"tax":10,"grandTotal":134,"advance":60,"balance":10,
+				// "extraCharge":100,"paymentMode":"bank","bankName":"abc","checkNumber":"abbb34eQ1G","remark":"adsfsf afasf",
+				// "totalDiscounttype":"flat","totalDiscount":"12"}]}];
+				
+				// $scope.inventory=[{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":44,'color':'ddd',
+				// 'frameNo':'fff'},{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":40,'color':'hh',
+				// 'frameNo':'dsfds','size':'12T'}];
+				// angular.forEach($scope.user[0]['purchaseBillData'][0], function (input,key) {
+					
+					// formdata.append(key,input);
+				// });
+				// for(var i=0;i<$scope.inventory.length;i++)
+				// {
+					// angular.forEach($scope.inventory[i], function (input,key) {
+						
+						// formdata.append('inventory['+i+']['+key+']',input);
+					// });
+				// } 
+
+
+//--------------------------------------------------end---------------------------------------------------------------------
 				
 				// var userId=9;
 				// var clientId=9;
 				// var productId =6;
 				// var productGrpId = 11;
 				// var productCatId = 18;
-				// var companyId=1;
+				// var companyId=10;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -784,10 +807,14 @@ include ('connection.php');
 				// var ledgerId=82;
 				// var jfId=52;
 				// var journalId=207;
-				// var saleId = 371;
+				// var saleId = 130;
 				// var jobCardNo = "abc/3";
 				// var quotationBillId = 1;
 				// var professionId = 2;
+				var purchaseBillId = 3;
+				
+				var url="http://www.scerp1.com/accounting/purchase-bills/"+purchaseBillId;
+				// var url="http://www.scerp1.com/accounting/purchase-bills";
 				
 				//professions
 				// var url="http://www.scerp1.com/settings/professions";
@@ -845,7 +872,7 @@ include ('connection.php');
 				
 				// var url= "http://www.scerp1.com/clients/export"; //header:operation:pdf/excel and searching criteria..that send in client
 				// var url = "http://www.scerp1.com/clients/"+clientId;
-				var url = "http://www.scerp1.com/clients";
+				// var url = "http://www.scerp1.com/clients";
 				
 				// var url = "http://www.scerp1.com/documents/bill";
 				// var url="http://www.scerp1.com/products/inward"; 
@@ -904,14 +931,14 @@ include ('connection.php');
                         url: url,
                         // type:'patch',
                         // type:'get',
-						 method: 'get',
+						 // method: 'get',
 						 // method: 'post',
 						 // method: 'patch',
 						// enctype:'multipart/formdata',
 						 // _method: 'patch',
 						// method: 'post',
 						// method: "PATCH",
-						// method:'delete',
+						method:'delete',
 						processData: false,
 						
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},

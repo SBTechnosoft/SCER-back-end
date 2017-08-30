@@ -64,7 +64,7 @@ class JournalController extends BaseController implements ContainerInterface
 		$exceptionArray = $exception->messageArrays();
 				
 		$RequestUri = explode("/", $_SERVER['REQUEST_URI']);
-		if(strcmp($RequestUri[1],"accounting")==0 && strcmp($RequestUri[2],"bills")==0)
+		if(strcmp($RequestUri[1],"accounting")==0 && strcmp($RequestUri[2],"bills")==0 || strcmp($RequestUri[1],"accounting")==0 && strcmp($RequestUri[2],"purchase-bills")==0)
 		{
 			
 		}
@@ -308,7 +308,8 @@ class JournalController extends BaseController implements ContainerInterface
 		$constantArray = $constantClass->constantVariable();
 			
 		$RequestUri = explode("/", $_SERVER['REQUEST_URI']);
-		if(strcmp($RequestUri[1],"accounting")==0 && strcmp($RequestUri[2],"bills")==0)
+		if(strcmp($RequestUri[1],"accounting")==0 && strcmp($RequestUri[2],"bills")==0 || 
+			strcmp($RequestUri[1],"accounting")==0 && strcmp($RequestUri[2],"purchase-bills")==0)
 		{   
 			$this->request = $request;
 			$processor = new JournalProcessor();
