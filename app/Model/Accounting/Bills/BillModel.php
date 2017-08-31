@@ -1718,7 +1718,7 @@ class BillModel extends Model
 				values('".$inventoryData[$productArrayData]->qty."',
 					   '".$jsonDecodedSaleData[0]->company_id."',
 					   0,
-					   '".$jsonDecodedSaleData[0]->productId."')");
+					   '".$inventoryData[$productArrayData]->productId."')");
 				DB::commit();
 			}
 			else

@@ -214,14 +214,8 @@ class ClientModel extends Model
 			if(strcmp($jobFormResult,$exceptionArray['204'])!=0)
 			{
 				$decodedJobCardData = json_decode($jobFormResult);
-				if($billFlag==1)
-				{
-					$queryParameter = $queryParameter.",'".$decodedJobCardData[0]->client_id."'";
-				}
-				else
-				{
-					$queryParameter = $queryParameter." client_id IN('".$decodedJobCardData[0]->client_id."'";
-				}
+				$queryParameter = $billFlag==1 ? $queryParameter.",'".$decodedJobCardData[0]->client_id."'" 
+												:$queryParameter." client_id IN('".$decodedJobCardData[0]->client_id."'";
 				$jobFormFlag=1;
 			}
 		}
@@ -298,14 +292,9 @@ class ClientModel extends Model
 			if(array_key_exists($clientArrayData[array_keys($clientArrayData)[$dataArray]],$headerData))
 			{
 				//address like query pending
-				if(strcmp('address',$clientArrayData[array_keys($clientArrayData)[$dataArray]])==0)
-				{
-					$queryParameter = $queryParameter."".$queryKey." LIKE '%".$headerData[$key][0]."%' OR ";
-				}	
-				else
-				{
-					$queryParameter = $queryParameter."".$queryKey."='".$headerData[$key][0]."' OR ";		
-				}
+				$queryParameter = strcmp('address',$clientArrayData[array_keys($clientArrayData)[$dataArray]])==0 
+									? $queryParameter."".$queryKey." LIKE '%".$headerData[$key][0]."%' OR "
+									: $queryParameter."".$queryKey."='".$headerData[$key][0]."' OR ";
 			}
 		}
 		if($queryParameter!='')

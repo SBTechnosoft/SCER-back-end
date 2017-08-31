@@ -498,6 +498,7 @@ class PurchaseBillProcessor extends BaseProcessor
 			$purchaseData = $purchaseIdArray['purchasebillid'][0];
 			$purchaseModel = new PurchaseBillModel();
 			$purchaseJfIdData = $purchaseModel->getPurchaseBillData($purchaseData);
+			$purchaseJfIdData = json_decode(json_decode($purchaseJfIdData)->purchaseBillData);
 			$jsonDecodedJfId = $purchaseJfIdData[0]->jf_id;
 		}
 		// conversion of transaction-date

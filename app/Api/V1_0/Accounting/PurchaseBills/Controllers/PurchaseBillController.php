@@ -19,7 +19,7 @@ use ERP\Core\Settings\Templates\Entities\TemplateTypeEnum;
 // use ERP\Api\V1_0\Settings\InvoiceNumbers\Controllers\InvoiceController;
 use Illuminate\Container\Container;
 // use ERP\Api\V1_0\Documents\Controllers\DocumentController;
-// use ERP\Model\Accounting\PurchaseBills\PurchaseBillModel;
+use ERP\Model\Accounting\PurchaseBills\PurchaseBillModel;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -170,23 +170,22 @@ class PurchaseBillController extends BaseController implements ContainerInterfac
 	}
 	
 	/**
-	 * update the specified resource 
+	 * delete the specified resource 
 	 * @param  Request object[Request $request]
 	 * method calls the processor for creating persistable object & setting the data
 	*/
-	public function destroy(Request $request,$saleId)
+	public function destroy(Request $request,$purchaseId)
 	{
 		//Authentication
 		$tokenAuthentication = new TokenAuthentication();
 		$authenticationResult = $tokenAuthentication->authenticate($request->header());
-		
 		// get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
 			$purchaseBillModel = new PurchaseBillModel();
-			$deletePurchaseBillResult = $purchaseBillModel->deletePurchaseBillData($saleId);
+			$deletePurchaseBillResult = $purchaseBillModel->deletePurchaseBillData($purchaseId);
 			return $deletePurchaseBillResult;
 		}
 		else

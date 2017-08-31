@@ -813,7 +813,7 @@ include ('connection.php');
 				// var professionId = 2;
 				var purchaseBillId = 3;
 				
-				var url="http://www.scerp1.com/accounting/purchase-bills/"+purchaseBillId;
+				// var url="http://www.scerp1.com/accounting/purchase-bills/"+purchaseBillId;
 				// var url="http://www.scerp1.com/accounting/purchase-bills";
 				
 				//professions

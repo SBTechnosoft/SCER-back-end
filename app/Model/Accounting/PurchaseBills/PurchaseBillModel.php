@@ -6,7 +6,7 @@ use DB;
 use Carbon;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Entities\Constants\ConstantClass;
-// use ERP\Model\Accounting\Journals\JournalModel;
+use ERP\Model\Accounting\Journals\JournalModel;
 // use ERP\Core\Settings\InvoiceNumbers\Services\InvoiceService;
 // use ERP\Api\V1_0\Settings\InvoiceNumbers\Controllers\InvoiceController;
 use Illuminate\Container\Container;
@@ -623,5 +623,111 @@ class PurchaseBillModel extends Model
 		$purchaseDataArray['purchaseBillData'] = json_encode($purchaseArrayData);
 		$purchaseDataArray['documentData'] = json_encode($documentResult);
 		return json_encode($purchaseDataArray);
+	}
+	
+	/**
+	 * delete purchase-bill data
+	 * @param  purchase-bill-id
+	 * returns status/error-message
+	*/
+	public function deletePurchaseBillData($purchaseId)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		$mytime = Carbon\Carbon::now();
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		$purchaseArray = array();
+		$purchaseArray['purchasebillid'][0] = $purchaseId;
+		$purchaseIdData = $this->getPurchaseBillData($purchaseArray);
+		$jsonDecodedPurchaseData = json_decode(json_decode($purchaseIdData)->purchaseBillData);
+		
+		$productArray = $jsonDecodedPurchaseData[0]->product_array;
+		$inventoryCount = count(json_decode($productArray));
+		for($productArrayData=0;$productArrayData<$inventoryCount;$productArrayData++)
+		{
+			$inventoryData = json_decode($productArray);
+			DB::beginTransaction();
+			$getTransactionSummaryData[$productArrayData] = DB::connection($databaseName)->select("select 
+			product_trn_summary_id,
+			qty
+			from product_trn_summary
+			where product_id='".$inventoryData[$productArrayData]->productId."' and
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+			if(count($getTransactionSummaryData[$productArrayData])==0)
+			{
+				$qty = $inventoryData[$productArrayData]->qty*(-1);
+				//insert data
+				DB::beginTransaction();
+				$insertionResult[$productArrayData] = DB::connection($databaseName)->statement("insert into 
+				product_trn_summary(qty,company_id,branch_id,product_id)
+				values('".$qty."',
+					   '".$jsonDecodedPurchaseData[0]->company_id."',
+					   0,
+					   '".$inventoryData[$productArrayData]->productId."')");
+				DB::commit();
+			}
+			else
+			{
+				$qty = $getTransactionSummaryData[$productArrayData][0]->qty-$inventoryData[$productArrayData]->qty;
+				//update data
+				DB::beginTransaction();
+				$updateResult = DB::connection($databaseName)->statement("update 
+				product_trn_summary set qty='".$qty."'
+				where product_trn_summary_id='".$getTransactionSummaryData[$productArrayData][0]->product_trn_summary_id."' and
+				deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+			}
+		}
+		//get ledger id from journal
+		$journalModel = new JournalModel();
+		$journalData = $journalModel->getJfIdArrayData($jsonDecodedPurchaseData[0]->jf_id);
+		$jsonDecodedJournalData = json_decode($journalData);
+		
+		if(strcmp($journalData,$exceptionArray['404'])!=0)
+		{
+			foreach ($jsonDecodedJournalData as $value)
+			{
+				//delete ledgerId_ledger_dtl data as per given ledgerId and jf_id
+				DB::beginTransaction();
+				$deleteLedgerData = DB::connection($databaseName)->statement("update
+				".$value->ledger_id."_ledger_dtl set
+				deleted_at = '".$mytime."'
+				where jf_id = ".$jsonDecodedPurchaseData[0]->jf_id." and
+				deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+			}
+		}
+		//delete journal data
+		DB::beginTransaction();
+		$deleteJournalData = DB::connection($databaseName)->statement("update
+		journal_dtl set
+		deleted_at = '".$mytime."'
+		where jf_id = ".$jsonDecodedPurchaseData[0]->jf_id." and
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		//delete product_trn data
+		DB::beginTransaction();
+		$deleteProductTrnData = DB::connection($databaseName)->statement("update
+		product_trn set
+		deleted_at = '".$mytime."'
+		where jf_id = ".$jsonDecodedPurchaseData[0]->jf_id." and
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		
+		//delete purchase-bill data 
+		DB::beginTransaction();
+		$deleteBillData = DB::connection($databaseName)->statement("update
+		purchase_bill set
+		deleted_at = '".$mytime."'
+		where purchase_id = ".$purchaseId." and
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
 	}
 }
