@@ -19,6 +19,7 @@
 				"balance":decimal,
 				"remark":string,
 				"transactionDate":datetime,
+				"entryDate":datetime,
 				"createdAt":timestamp,
 				"updatedAt":datetime,
 				"jf_id":int,
@@ -51,7 +52,6 @@
 				"tax":decimal,
 				"grandTotal":decimal,
 				"transactionType":Enum,
-				"billType":Enum,
 				"paymentMode":Enum,
 				"bankName":string,
 				"checkNumber":string,
@@ -62,6 +62,7 @@
 				"balance":decimal,
 				"remark":string,
 				"transactionDate":datetime,
+				"entryDate":datetime,
 				"createdAt":timestamp,
 				"updatedAt":datetime,
 				"file":
@@ -92,4 +93,9 @@
 			{
 				"purchaseType":'purchase',
 				"purchaseBillType":'purchase_bill'
+			}
+##### Transaction Type Enum
+			{
+				"purchaseTaxType":"'purchase_tax",
+				"purchaseType":"purchase"
 			}

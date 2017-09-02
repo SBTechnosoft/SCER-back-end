@@ -29,6 +29,7 @@ class ClientArray
 		$clientArray['contact_no'] = 'contactno';
 		$clientArray['address1'] = 'address';
 		$clientArray['email_id'] = 'emailid';
+		$clientArray['profession_id'] = 'professionid';
 		return $clientArray;
 	}
 	

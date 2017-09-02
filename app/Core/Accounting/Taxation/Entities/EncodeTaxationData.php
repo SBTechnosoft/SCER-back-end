@@ -46,6 +46,7 @@ class EncodeTaxationData extends ProductService
 				$calculateAdditionalTax = $calculateAdditionalTax+$additionalTax;
 			}
 			$total[$decodedData] = $decodedJson[$decodedData]['total'];
+			$totalDiscount[$decodedData] = $decodedJson[$decodedData]['total_discount'];
 			$tax[$decodedData] = $decodedJson[$decodedData]['tax'];
 			$grandTotal[$decodedData] = $decodedJson[$decodedData]['grand_total'];
 			$advance[$decodedData] = $decodedJson[$decodedData]['advance'];
@@ -71,6 +72,7 @@ class EncodeTaxationData extends ProductService
 			$totalGrandTotal = $totalGrandTotal+$calculateGrandTotal[$decodedData];
 			
 			$total[$decodedData] = number_format($total[$decodedData],$companyDecodedData[$decodedData]->noOfDecimalPoints);
+			$totalDiscount[$decodedData] = number_format($totalDiscount[$decodedData],$companyDecodedData[$decodedData]->noOfDecimalPoints);
 			$tax[$decodedData] = number_format($tax[$decodedData],$companyDecodedData[$decodedData]->noOfDecimalPoints);
 			$grandTotal[$decodedData] = number_format($grandTotal[$decodedData],$companyDecodedData[$decodedData]->noOfDecimalPoints);
 			$advance[$decodedData] = number_format($advance[$decodedData],$companyDecodedData[$decodedData]->noOfDecimalPoints);
@@ -92,6 +94,8 @@ class EncodeTaxationData extends ProductService
 				'invoiceNumber'=>$decodedJson[$decodedData]['invoice_number'],
 				'salesType'=>$decodedJson[$decodedData]['sales_type'],
 				'total'=>$total[$decodedData],
+				'totalDiscount'=>$totalDiscount[$decodedData],
+				'totalDiscounttype'=>$decodedJson[$decodedData]['total_discounttype'],
 				'tax'=>$calculateVat,
 				'grandTotal'=>$calculateGrandTotal[$decodedData],
 				'advance'=>$advance[$decodedData],

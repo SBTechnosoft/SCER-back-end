@@ -55,3 +55,21 @@
             {
                 ... Standard Purchase-Detail Object
             }
+##### Creates Taxation of GST
+
+##### `GET /accounting/taxation/purchase-detail/company/{companyId}`
++ Header
+	- Authentication Token
+	- 'operation':'excel'
+	- 'fromDate':'',
+	- 'toDate':''
++ Error Message
+
+			{
+				... Error Message
+			}            
++ Response
+
+            {
+                ... Standard Purchase-Detail Object
+            }

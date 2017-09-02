@@ -18,6 +18,7 @@ class PurchaseBill implements RouteRegistrarInterface
     {
 		ini_set('memory_limit', '256M');
 		// get data
+		Route::get('Accounting/PurchaseBills/PurchaseBill/company/{companyId}', 'Accounting\PurchaseBills\Controllers\PurchaseBillController@getData');
 		Route::get('Accounting/PurchaseBills/PurchaseBill', 'Accounting\PurchaseBills\Controllers\PurchaseBillController@getPurchaseBillData');
 		
 		// insert data post request

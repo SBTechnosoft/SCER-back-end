@@ -22,26 +22,33 @@ class TaxationModel extends Model
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
-		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
+		$dateString = '';
 		$mytime = Carbon\Carbon::now();
-		//date conversion
-		//from-date conversion
-		$splitedFromDate = explode("-",$headerData['fromdate'][0]);
-		$transformFromDate = $splitedFromDate[2]."-".$splitedFromDate[1]."-".$splitedFromDate[0];
-		//from-date conversion
-		$splitedToDate = explode("-",$headerData['todate'][0]);
-		$transformToDate = $splitedToDate[2]."-".$splitedToDate[1]."-".$splitedToDate[0];
-		
+		if(array_key_exists('fromdate',$headerData) && array_key_exists('todate',$headerData))
+		{
+			//date conversion
+			//from-date conversion
+			$splitedFromDate = explode("-",$headerData['fromdate'][0]);
+			$transformFromDate = $splitedFromDate[2]."-".$splitedFromDate[1]."-".$splitedFromDate[0];
+			//to-date conversion
+			$splitedToDate = explode("-",$headerData['todate'][0]);
+			$transformToDate = $splitedToDate[2]."-".$splitedToDate[1]."-".$splitedToDate[0];
+			$dateString = "(entry_date BETWEEN '".$transformFromDate."' AND '".$transformToDate."') and";
+		}
 		//get saleTax from sales bill 
 		DB::beginTransaction();	
 		$saleTaxResult = DB::connection($databaseName)->select("select
+		sale_id,
 		product_array,
 		invoice_number,
 		total,
+		total_discounttype,
+		total_discount,
+		extra_charge,
 		tax,
 		grand_total,
 		advance,
@@ -54,11 +61,9 @@ class TaxationModel extends Model
 		jf_id
 		from sales_bill
 		where deleted_at='0000-00-00 00:00:00' and 
-		sales_type='whole_sales' and 
-		company_id='".$companyId."' and
-		(entry_date BETWEEN '".$transformFromDate."' AND '".$transformToDate."')"); 
+		sales_type='whole_sales' and ".$dateString."
+		company_id='".$companyId."'"); 
 		DB::commit();
-		
 		if(count($saleTaxResult)!=0)
 		{
 			return json_encode($saleTaxResult);

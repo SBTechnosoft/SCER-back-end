@@ -144,6 +144,47 @@ class PurchaseBillController extends BaseController implements ContainerInterfac
 	}
 	
 	/**
+	 * get the specified resource 
+	 * @param  Request object[Request $request] and companyId
+	 * method calls the processor for creating persistable object & setting the data
+	*/
+	public function getData(Request $request,$companyId)
+	{
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		// get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			if(array_key_exists('fromdate',$request->header()) && array_key_exists('todate',$request->header()))
+			{
+				$processor = new PurchaseBillProcessor();
+				$purchaseBillPersistable = new PurchaseBillPersistable();
+				$purchaseBillPersistable = $processor->getPersistableData($request->header());
+				if(!is_object($purchaseBillPersistable))
+				{
+					return $purchaseBillPersistable;
+				}
+				$data = $purchaseBillPersistable;
+			}
+			else if(array_key_exists('billnumber',$request->header()))
+			{
+				$data = $request->header();
+			}
+			$purchaseBillService = new PurchaseBillService();
+			$status = $purchaseBillService->getData($data,$companyId);
+			return $status;
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+	}
+	
+	/**
 	 * get the purchase-bill data as per given parameter
 	 * @param  Request object[Request $request]
 	 * @return array-data/error message

@@ -125,8 +125,8 @@ class JournalController extends BaseController implements ContainerInterface
 						$productPersistable = $productProcessor->createPersistableInOutWard($this->request,$outward);
 						if(is_array($productPersistable))
 						{
-							$clientName = "";
-							$status = $productService->insertInOutward($productPersistable,$jfId,$clientName);
+							$vendorId = "";
+							$status = $productService->insertInOutward($productPersistable,$jfId,$vendorId);
 							return $status;
 						}
 						else
@@ -139,10 +139,10 @@ class JournalController extends BaseController implements ContainerInterface
 						$inward = $constantArray['journalInward'];
 						$productProcessor = new ProductProcessor();
 						$productPersistable = $productProcessor->createPersistableInOutWard($this->request,$inward);
-						$clientName = $productProcessor->processClientName($request->input());
-						if(is_array($productPersistable) && is_array($clientName))
+						$vendorId = $productProcessor->processVendorId($request->input());
+						if(is_array($productPersistable) && is_array($vendorId))
 						{
-							$status = $productService->insertInOutward($productPersistable,$jfId,$clientName['client_name']);
+							$status = $productService->insertInOutward($productPersistable,$jfId,$vendorId['vendor_id']);
 							return $status;
 						}
 						else

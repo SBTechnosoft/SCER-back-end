@@ -794,7 +794,7 @@ include ('connection.php');
 				// var productId =6;
 				// var productGrpId = 11;
 				// var productCatId = 18;
-				// var companyId=10;
+				var companyId=10;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -811,8 +811,9 @@ include ('connection.php');
 				// var jobCardNo = "abc/3";
 				// var quotationBillId = 1;
 				// var professionId = 2;
-				var purchaseBillId = 3;
+				// var purchaseBillId = 3;
 				
+				// var url="http://www.scerp1.com/accounting/purchase-bills/company/"+companyId;
 				// var url="http://www.scerp1.com/accounting/purchase-bills/"+purchaseBillId;
 				// var url="http://www.scerp1.com/accounting/purchase-bills";
 				
@@ -931,18 +932,19 @@ include ('connection.php');
                         url: url,
                         // type:'patch',
                         // type:'get',
-						 // method: 'get',
+						 method: 'get',
 						 // method: 'post',
 						 // method: 'patch',
 						// enctype:'multipart/formdata',
 						 // _method: 'patch',
 						// method: 'post',
 						// method: "PATCH",
-						method:'delete',
+						// method:'delete',
 						processData: false,
 						
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
-                        headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372'},
+                        headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372',
+						"billNumber":10},
                         // headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','clientName':'reemapatell','contactNo':'9998989899','emailId':'reemas@gmail.com','address':'address2','invoiceFromDate':'12-01-2017','invoiceNumber':'myCompany44','jobCardNumber':'2'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','salesType':'retail_sales','operation':'excel'},//
                         // headers: {'Content-Type': undefined,'type':'sales','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},

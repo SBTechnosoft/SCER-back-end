@@ -7,7 +7,7 @@ use ERP\Model\Accounting\PurchaseBills\PurchaseBillModel;
 use ERP\Core\Shared\Options\UpdateOptions;
 // use ERP\Core\User\Entities\User;
 // use ERP\Core\Accounting\PurchaseBills\Entities\EncodeData;
-// use ERP\Core\Accounting\PurchaseBills\Entities\EncodeAllData;
+use ERP\Core\Accounting\PurchaseBills\Entities\EncodeAllData;
 use ERP\Exceptions\ExceptionMessage;
 use Illuminate\Container\Container;
 use ERP\Http\Requests;
@@ -168,10 +168,10 @@ class PurchaseBillService
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-			
+		
 		//data pass to the model object for getData
-		$billModel = new BillModel();
-		$billResult = $billModel->getSpecifiedData($companyId,$data);
+		$purchaseBillModel = new PurchaseBillModel();
+		$billResult = $purchaseBillModel->getSpecifiedData($companyId,$data);
 		
 		if(strcmp($billResult,$exceptionArray['404'])==0)
 		{
@@ -199,17 +199,16 @@ class PurchaseBillService
 		// data pass to the model object for getData
 		$purchaseBillModel = new PurchaseBillModel();
 		$purchaseBillResult = $purchaseBillModel->getPurchaseBillData($headerData);
-		print_r($purchaseBillResult);
-		exit;
-		// if(strcmp($purchaseBillResult,$exceptionArray['204'])==0)
-		// {
-			// return $purchaseBillResult;
-		// }
-		// else
-		// {
-			// $encodeAllData = new EncodeAllData();
-			// $encodingResult = $encodeAllData->getEncodedAllData($purchaseBillResult);
-			// return $encodingResult;
-		// }
+		
+		if(strcmp($purchaseBillResult,$exceptionArray['204'])==0)
+		{
+			return $purchaseBillResult;
+		}
+		else
+		{
+			$encodeAllData = new EncodeAllData();
+			$encodingResult = $encodeAllData->getEncodedAllData($purchaseBillResult);
+			return $encodingResult;
+		}
 	}
 }

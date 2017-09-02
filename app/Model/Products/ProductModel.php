@@ -326,7 +326,7 @@ class ProductModel extends Model
 		$invoiceNumberArray = func_get_arg(10);
 		$jfId = func_get_arg(11);
 		$taxArray = func_get_arg(12);
-		$clientName = func_get_arg(13);
+		$vendorId = func_get_arg(13);
 		
 		if(strcmp($transactionTypeArray[0],'Inward')==0)
 		{		
@@ -423,35 +423,38 @@ class ProductModel extends Model
 					$purchaseType = $ledgerData[$ledgerIdArray][0]->ledger_name;
 				}
 			}
-			
-			DB::beginTransaction();
-			$purchaseBill = DB::connection($databaseName)->statement("insert into 
-			purchase_bill(
-			client_name,
-			product_array,
-			bill_number,
-			total,
-			tax,
-			grand_total,
-			transaction_type,
-			transaction_date,
-			company_id,
-			jf_id) 
-			values(
-			'".$clientName."',
-			'".$encodedJsonArray."',
-			'".$billNumberArray[0]."',
-			'".$totalPrice."',
-			'".$taxArray[0]."',
-			'".$grandTotal."',
-			'".$purchaseType."',
-			'".$transactionDateArray[0]."',
-			'".$companyIdArray[0]."',
-			'".$jfId."')");
-			DB::commit();
-			if($purchaseBill!=1)
+			$RequestUri = explode("/", $_SERVER['REQUEST_URI']);
+			if(strcmp($RequestUri[1],"accounting")==0 && strcmp($RequestUri[2],"purchase-bills")!=0)
 			{
-				return $exceptionArray['500'];
+				DB::beginTransaction();
+				$purchaseBill = DB::connection($databaseName)->statement("insert into 
+				purchase_bill(
+				vendor_id,
+				product_array,
+				bill_number,
+				total,
+				tax,
+				grand_total,
+				transaction_type,
+				transaction_date,
+				company_id,
+				jf_id) 
+				values(
+				'".$vendorId."',
+				'".$encodedJsonArray."',
+				'".$billNumberArray[0]."',
+				'".$totalPrice."',
+				'".$taxArray[0]."',
+				'".$grandTotal."',
+				'".$purchaseType."',
+				'".$transactionDateArray[0]."',
+				'".$companyIdArray[0]."',
+				'".$jfId."')");
+				DB::commit();
+				if($purchaseBill!=1)
+				{
+					return $exceptionArray['500'];
+				}
 			}
 		}
 		if($raw==1)
@@ -789,13 +792,16 @@ class ProductModel extends Model
 			where jf_id='".$jfId."'");
 			DB::commit();
 			
-			//delete existing data and then insert new data
-			DB::beginTransaction();
-			$purchaseBillDataResult = DB::connection($databaseName)->statement("update purchase_bill 
-			set deleted_at='".$mytime."'
-			where jf_id='".$jfId."'");
-			DB::commit();
-			
+			$RequestUri = explode("/", $_SERVER['REQUEST_URI']);
+			if(strcmp($RequestUri[1],"accounting")==0 && strcmp($RequestUri[2],"purchase-bills")!=0)
+			{
+				//delete existing data and then insert new data
+				DB::beginTransaction();
+				$purchaseBillDataResult = DB::connection($databaseName)->statement("update purchase_bill 
+				set deleted_at='".$mytime."'
+				where jf_id='".$jfId."'");
+				DB::commit();
+			}
 			if(strcmp($inOutWardData,'Inward')==0)
 			{		
 				$inventoryArrayData = array();
@@ -874,53 +880,57 @@ class ProductModel extends Model
 					$purchaseType = $journalData[0]->journal_type;
 					
 					$ledgerData = array();
-					$clientName="";
+					// $clientName="";
 					for($ledgerIdArray=0;$ledgerIdArray<count($journalData);$ledgerIdArray++)
 					{
 						//get ledger-group from ledger
 						DB::beginTransaction();
 						$ledgerData[$ledgerIdArray] = DB::connection($databaseName)->select("select
+						ledger_id,
 						ledger_name,
 						ledger_group_id
 						from ledger_mst
 						where deleted_at='0000-00-00 00:00:00' and ledger_id='".$journalData[$ledgerIdArray]->ledger_id."'");
 						DB::commit();
 						
-						if($ledgerData[$ledgerIdArray][0]->ledger_group_id==31 || $ledgerData[$ledgerIdArray][0]->ledger_group_id==32)
+						if($ledgerData[$ledgerIdArray][0]->ledger_group_id==31)
 						{
-							$clientName = $ledgerData[$ledgerIdArray][0]->ledger_name;
+							$vendorId = $ledgerData[$ledgerIdArray][0]->ledger_id;
 							break;
 						}
 					}
-					
-					DB::beginTransaction();
-					$purchaseBill = DB::connection($databaseName)->statement("insert into 
-					purchase_bill(
-					client_name,
-					product_array,
-					bill_number,
-					total,
-					tax,
-					grand_total,
-					transaction_type,
-					transaction_date,
-					company_id,
-					jf_id) 
-					values(
-					'".$clientName."',
-					'".$encodedJsonArray."',
-					'".$transactionData[0]->bill_number."',
-					'100',
-					'".$transactionData[0]->tax."',
-					'200',
-					'".$purchaseType."',
-					'".$transactionData[0]->transaction_date."',
-					'".$transactionData[0]->company_id."',
-					'".$jfId."')");
-					DB::commit();
-					if($purchaseBill!=1)
+					$RequestUri = explode("/", $_SERVER['REQUEST_URI']);
+					if(strcmp($RequestUri[1],"accounting")==0 && strcmp($RequestUri[2],"purchase-bills")!=0)
 					{
-						return $exceptionArray['500'];
+						DB::beginTransaction();
+						$purchaseBill = DB::connection($databaseName)->statement("insert into 
+						purchase_bill(
+						vendor_id,
+						product_array,
+						bill_number,
+						total,
+						tax,
+						grand_total,
+						transaction_type,
+						transaction_date,
+						company_id,
+						jf_id) 
+						values(
+						'".$vendorId."',
+						'".$encodedJsonArray."',
+						'".$transactionData[0]->bill_number."',
+						'100',
+						'".$transactionData[0]->tax."',
+						'200',
+						'".$purchaseType."',
+						'".$transactionData[0]->transaction_date."',
+						'".$transactionData[0]->company_id."',
+						'".$jfId."')");
+						DB::commit();
+						if($purchaseBill!=1)
+						{
+							return $exceptionArray['500'];
+						}
 					}
 				}
 				if($transactionResult==1)
@@ -947,12 +957,16 @@ class ProductModel extends Model
 			where jf_id='".$jfId."' and deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
 			
-			DB::beginTransaction();
-			$billTransactionResult = DB::connection($databaseName)->statement("update purchase_bill
-			set ".$keyValueString."
-			updated_at='".$mytime."'
-			where jf_id='".$jfId."' and deleted_at='0000-00-00 00:00:00'");
-			DB::commit();
+			$RequestUri = explode("/", $_SERVER['REQUEST_URI']);
+			if(strcmp($RequestUri[1],"accounting")==0 && strcmp($RequestUri[2],"purchase-bills")!=0)
+			{
+				DB::beginTransaction();
+				$billTransactionResult = DB::connection($databaseName)->statement("update purchase_bill
+				set ".$keyValueString."
+				updated_at='".$mytime."'
+				where jf_id='".$jfId."' and deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+			}
 			if($transactionResult==0)
 			{
 				return $exceptionArray['500'];

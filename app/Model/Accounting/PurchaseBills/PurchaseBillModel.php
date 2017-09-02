@@ -161,7 +161,6 @@ class PurchaseBillModel extends Model
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		
 		if(array_key_exists('previouspurchaseid',$headerData))
 		{
 			$previousPurchaseId = $this->getPreviousPurchaseId($headerData);
@@ -200,6 +199,7 @@ class PurchaseBillModel extends Model
 			balance,
 			transaction_type,
 			transaction_date,
+			entry_date,
 			bill_type,
 			remark,
 			company_id,
@@ -244,6 +244,7 @@ class PurchaseBillModel extends Model
 			balance,
 			transaction_type,
 			transaction_date,
+			entry_date,
 			bill_type,
 			remark,
 			company_id,
@@ -360,6 +361,7 @@ class PurchaseBillModel extends Model
 			balance,
 			transaction_type,
 			transaction_date,
+			entry_date,
 			bill_type,
 			remark,
 			company_id,
@@ -403,6 +405,7 @@ class PurchaseBillModel extends Model
 			balance,
 			transaction_type,
 			transaction_date,
+			entry_date,
 			bill_type,
 			remark,
 			company_id,
@@ -462,13 +465,14 @@ class PurchaseBillModel extends Model
 			balance,
 			transaction_type,
 			transaction_date,
+			entry_date,
 			bill_type,
 			remark,
 			company_id,
 			jf_id,
 			created_at,
 			updated_at 
-			from sales_bill 
+			from purchase_bill 
 			where bill_type='purchase_bill' and
 			company_id = '".$headerData['companyid'][0]."' and
 			deleted_at='0000-00-00 00:00:00'
@@ -541,7 +545,6 @@ class PurchaseBillModel extends Model
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
-		
 		DB::beginTransaction();
 		$purchaseData = DB::connection($databaseName)->select("select 
 		purchase_id,
@@ -561,17 +564,18 @@ class PurchaseBillModel extends Model
 		balance,
 		transaction_type,
 		transaction_date,
+		entry_date,
 		bill_type,
 		remark,
 		company_id,
 		jf_id,
 		created_at,
 		updated_at 
-		from sales_bill 
+		from purchase_bill 
 		where bill_type='purchase_bill' and
 		company_id = '".$headerData['companyid'][0]."' and
 		deleted_at='0000-00-00 00:00:00' and
-		sale_id='".$purchaseId."'");
+		purchase_id='".$purchaseId."'");
 		DB::commit();
 		return $purchaseData;
 	}
@@ -613,7 +617,7 @@ class PurchaseBillModel extends Model
 				$documentResult[$purchaseData][0]->document_name = '';
 				$documentResult[$purchaseData][0]->document_size = 0;
 				$documentResult[$purchaseData][0]->document_format = '';
-				$documentResult[$purchaseData][0]->document_type ='purchase-bill';
+				// $documentResult[$purchaseData][0]->document_type ='purchase-bill';
 				$documentResult[$purchaseData][0]->created_at = '0000-00-00 00:00:00';
 				$documentResult[$purchaseData][0]->updated_at = '0000-00-00 00:00:00';
 			}
@@ -623,6 +627,115 @@ class PurchaseBillModel extends Model
 		$purchaseDataArray['purchaseBillData'] = json_encode($purchaseArrayData);
 		$purchaseDataArray['documentData'] = json_encode($documentResult);
 		return json_encode($purchaseDataArray);
+	}
+	
+	/**
+	 * get purchase-bill data
+	 * @param  company-id,from-date,to-date
+	 * returns the exception-message
+	*/
+	public function getSpecifiedData($companyId,$data)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		if(is_object($data))
+		{
+			$fromDate = $data->getFromDate();
+			$toDate = $data->getToDate();
+		
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->select("select 
+			purchase_id,
+			vendor_id,
+			product_array,
+			bill_number,
+			total,
+			tax,
+			grand_total,
+			payment_mode,
+			bank_name,
+			check_number,
+			total_discounttype,
+			total_discount,
+			advance,
+			extra_charge,
+			balance,
+			transaction_type,
+			transaction_date,
+			entry_date,
+			bill_type,
+			remark,
+			company_id,
+			jf_id,
+			created_at,
+			updated_at  
+			from purchase_bill 
+			where bill_type='purchase_bill' and
+			(entry_date BETWEEN '".$fromDate."' AND '".$toDate."') and 
+			company_id='".$companyId."' and 
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+			if(count($raw)==0)
+			{
+				return $exceptionArray['404']; 
+			}
+			else
+			{
+				$purchaseDataResult = $this->getDocumentData($raw);
+				return $purchaseDataResult;
+			}
+		}
+		else if(is_array($data))
+		{
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->select("select 
+			purchase_id,
+			vendor_id,
+			product_array,
+			bill_number,
+			total,
+			tax,
+			grand_total,
+			payment_mode,
+			bank_name,
+			check_number,
+			total_discounttype,
+			total_discount,
+			advance,
+			extra_charge,
+			balance,
+			transaction_type,
+			transaction_date,
+			entry_date,
+			bill_type,
+			remark,
+			company_id,
+			jf_id,
+			created_at,
+			updated_at 
+			from purchase_bill 
+			where bill_type='purchase_bill' and
+			company_id='".$companyId."' and 
+			deleted_at='0000-00-00 00:00:00' and 
+			(bill_number='".$data['billnumber'][0]."')");
+			DB::commit();
+			if(count($raw)==0)
+			{
+				return $exceptionArray['404']; 
+			}
+			else
+			{
+				$purchaseDataResult = $this->getDocumentData($raw);
+				return $purchaseDataResult;
+			}
+		}
 	}
 	
 	/**
@@ -711,7 +824,6 @@ class PurchaseBillModel extends Model
 		where jf_id = ".$jsonDecodedPurchaseData[0]->jf_id." and
 		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
-		
 		//delete product_trn data
 		DB::beginTransaction();
 		$deleteProductTrnData = DB::connection($databaseName)->statement("update
@@ -720,7 +832,6 @@ class PurchaseBillModel extends Model
 		where jf_id = ".$jsonDecodedPurchaseData[0]->jf_id." and
 		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
-		
 		//delete purchase-bill data 
 		DB::beginTransaction();
 		$deleteBillData = DB::connection($databaseName)->statement("update
@@ -729,5 +840,13 @@ class PurchaseBillModel extends Model
 		where purchase_id = ".$purchaseId." and
 		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
+		if($deleteJournalData==1 && $deleteProductTrnData==1 && $deleteBillData==1)
+		{
+			return $exceptionArray['200'];
+		}
+		else
+		{
+			return $exceptionArray['500'];
+		}
 	}
 }

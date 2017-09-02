@@ -40,6 +40,7 @@ class ProductProcessor extends BaseProcessor
 		$keyName = array();
 		$value = array();
 		$data=0;
+		$codeFlag=0;
 		
 		// get exception message
 		$exception = new ExceptionMessage();
@@ -135,7 +136,6 @@ class ProductProcessor extends BaseProcessor
 			{
 				// validation
 				$status = $productValidate->validate($tRequest);
-				
 				if($status=="Success")
 				{
 					foreach ($tRequest as $key => $value)
@@ -160,7 +160,6 @@ class ProductProcessor extends BaseProcessor
 						}
 						$data++;
 					}
-					
 					// set data to the persistable object
 					for($data=0;$data<count($productValue);$data++)
 					{
@@ -1051,32 +1050,32 @@ class ProductProcessor extends BaseProcessor
 	}
 	
 	/**
-     * process client name
+     * process vendor id
      * $param request input
-     * @return clientname
+     * @return vendor_id
      */	
-	public function processClientName($requestInput)
+	public function processVendorId($requestInput)
 	{
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
-		$trimclientName = trim($requestInput['clientName']);
-		if($trimclientName=="")
-		{
-			return $exceptionArray['invalidClientName'];
-		}
-		$result =  preg_match("/^[a-zA-Z &_`#().\'-]*$/",$trimclientName);
-		if($result == 1)
-		{
+		$trimVendorId = trim($requestInput['vendorId']);
+		// if($trimVendorId=="")
+		// {
+			// return $exceptionArray['invalidClientName'];
+		// }
+		// $result =  preg_match("/^[a-zA-Z &_`#().\'-]*$/",$trimclientName);
+		// if($result == 1)
+		// {
 		  	$dataArray = array();
-			$dataArray['client_name'] = $trimclientName;
+			$dataArray['vendor_id'] = $trimVendorId;
 			return $dataArray;
-		}
-		else
-		{
-			return $exceptionArray['invalidClientName'];
-		}
+		// }
+		// else
+		// {
+			// return $exceptionArray['invalidClientName'];
+		// }
 
 	}
 	

@@ -659,6 +659,7 @@ class BillProcessor extends BaseProcessor
 			return $processedData;
 		}
 	}
+	
 	/**
      * get the fromDate-toDate data and set into the persistable object
      * $param Request object [Request $request]
@@ -695,6 +696,7 @@ class BillProcessor extends BaseProcessor
 			return $tRequest;
 		}
 	}
+	
 	/**
      * get request data and set into the persistable object
      * $param Request object [Request $request] and sale-id

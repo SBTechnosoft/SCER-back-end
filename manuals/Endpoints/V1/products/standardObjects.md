@@ -195,11 +195,8 @@
 				"type1":"piece",
 				"type2":"pair"
 			}
-			
-//marginType			
-
-margin
-
-//wholesaleMarginType
-wholesaleMarginFlat
-wholesaleMargin
+##### Transaction Type Enum
+			{
+				"purchaseTaxType":"'purchase_tax",
+				"purchaseType":"purchase"
+			}

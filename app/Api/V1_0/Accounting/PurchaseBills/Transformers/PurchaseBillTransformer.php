@@ -40,6 +40,13 @@ class PurchaseBillTransformer
 			$transactionDate = $splitedDate[2]."-".$splitedDate[1]."-".$splitedDate[0];
 			$purchaseBillArray['transactionDate'] = $transactionDate;
 		}
+		//date conversation
+		if(array_key_exists('entryDate',$request->input()))
+		{
+			$splitedDate = explode("-",trim($request->input()['entryDate']));
+			$entryDate = $splitedDate[2]."-".$splitedDate[1]."-".$splitedDate[0];
+			$purchaseBillArray['entryDate'] = $entryDate;
+		}
 		$purchaseBillArray['vendorId'] = array_key_exists('vendorId',$request->input())? trim($request->input()['vendorId']):0;
 		$purchaseBillArray['companyId'] = array_key_exists('companyId',$request->input())? trim($request->input()['companyId']):0;
 		$purchaseBillArray['billNumber'] = array_key_exists('billNumber',$request->input())? trim($request->input()['billNumber']):'';
@@ -53,22 +60,12 @@ class PurchaseBillTransformer
 		$purchaseBillArray['checkNumber'] = array_key_exists('checkNumber',$request->input())? trim($request->input()['checkNumber']):'';
 		$purchaseBillArray['remark'] = array_key_exists('remark',$request->input())? trim($request->input()['remark']):'';
 		$purchaseBillArray['totalDiscount'] = array_key_exists('totalDiscount',$request->input())? trim($request->input()['totalDiscount']):0;
+		$purchaseBillArray['billType'] = $billTypeEnumArray['purchaseBillType'];
 		if(array_key_exists('totalDiscounttype',$request->input()))
 		{
 			if(strcmp(trim($request->input()['totalDiscounttype']),$discountTypeEnumArray['flatType'])==0 || strcmp(trim($request->input()['totalDiscounttype']),$discountTypeEnumArray['percentageType'])==0)
 			{
 				$purchaseBillArray['totalDiscounttype'] = trim($request->input()['totalDiscounttype']);
-			}
-			else
-			{
-				return $exceptionArray['content'];
-			}
-		}
-		if(array_key_exists('billType',$request->input()))
-		{
-			if(strcmp(trim($request->input()['billType']),$billTypeEnumArray['purchaseType'])==0 || strcmp(trim($request->input()['billType']),$billTypeEnumArray['purchaseBillType'])==0)
-			{
-				$purchaseBillArray['billType'] = trim($request->input()['billType']);
 			}
 			else
 			{
@@ -100,6 +97,7 @@ class PurchaseBillTransformer
 				$purchaseBillArray['inventory'][$inventoryArray]['color'] = array_key_exists('color',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['color']) : '';
 				$purchaseBillArray['inventory'][$inventoryArray]['frameNo'] = array_key_exists('frameNo',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['frameNo']) : '';
 				$purchaseBillArray['inventory'][$inventoryArray]['size'] = array_key_exists('size',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['size']) : '';
+				$purchaseBillArray['inventory'][$inventoryArray]['amount'] = array_key_exists('amount',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['amount']) : 0;
 				if(array_key_exists('discountType',$inventoryData[$inventoryArray]))
 				{
 					if(strcmp($inventoryData[$inventoryArray]['discountType'],$discountTypeEnumArray['flatType'])==0 || strcmp($inventoryData[$inventoryArray]['discountType'],$discountTypeEnumArray['percentageType'])==0)
@@ -129,10 +127,17 @@ class PurchaseBillTransformer
 		$billTypeEnumArray = $billTypeEnum->enumArrays();
 		$paymentModeEnum = new PaymentModeEnum();
 		$paymentModeArray = $paymentModeEnum->enumArrays();
-		
-		$purchaseDataCount = array_key_exists('inventory',$request->input()) 
-							? count($request->input())-1 :count($request->input());
-		$input = $request->input();		
+		$inputData = $request->input();
+		if(array_key_exists('inventory',$request->input()))
+		{
+			$inputData = array_except($inputData,['inventory']);
+			$purchaseDataCount = count($inputData);
+		}
+		else
+		{
+			$purchaseDataCount = count($request->input());
+		}
+		$input = $inputData;		
 		for($arrayData=0;$arrayData<$purchaseDataCount;$arrayData++)
 		{
 			//date conversation
@@ -142,38 +147,33 @@ class PurchaseBillTransformer
 				$transactionDate = $splitedDate[2]."-".$splitedDate[1]."-".$splitedDate[0];
 				$purchaseBillArray['transactionDate'] = $transactionDate;
 			}
+			else if(strcmp(array_keys($input)[$arrayData],'entryDate')==0)
+			{
+				$splitedDate = explode("-",trim($input['entryDate']));
+				$entryDate = $splitedDate[2]."-".$splitedDate[1]."-".$splitedDate[0];
+				$purchaseBillArray['entryDate'] = $entryDate;
+			}
 			else
 			{
 				if(strcmp(array_keys($input)[$arrayData],'totalDiscounttype')==0 || strcmp(array_keys($input)[$arrayData],'billType')==0 
 					|| strcmp(array_keys($input)[$arrayData],'paymentMode')==0)
 				{
-					if(array_key_exists('totalDiscounttype',$request->input()))
+					if(array_key_exists('totalDiscounttype',$inputData))
 					{
-						if(strcmp(trim($request->input()['totalDiscounttype']),$discountTypeEnumArray['flatType'])==0 || strcmp(trim($request->input()['totalDiscounttype']),$discountTypeEnumArray['percentageType'])==0)
+						if(strcmp(trim($inputData['totalDiscounttype']),$discountTypeEnumArray['flatType'])==0 || strcmp(trim($inputData['totalDiscounttype']),$discountTypeEnumArray['percentageType'])==0)
 						{
-							$purchaseBillArray['totalDiscounttype'] = trim($request->input()['totalDiscounttype']);
+							$purchaseBillArray['totalDiscounttype'] = trim($inputData['totalDiscounttype']);
 						}
 						else
 						{
 							return $exceptionArray['content'];
 						}
 					}
-					if(array_key_exists('billType',$request->input()))
+					if(array_key_exists('paymentMode',$inputData))
 					{
-						if(strcmp(trim($request->input()['billType']),$billTypeEnumArray['purchaseType'])==0 || strcmp(trim($request->input()['billType']),$billTypeEnumArray['purchaseBillType'])==0)
+						if(strcmp(trim($inputData['paymentMode']),$paymentModeArray['cashPayment'])==0 || strcmp(trim($inputData['paymentMode']),$paymentModeArray['bankPayment'])==0|| strcmp(trim($inputData['paymentMode']),$paymentModeArray['cardPayment'])==0)
 						{
-							$purchaseBillArray['billType'] = trim($request->input()['billType']);
-						}
-						else
-						{
-							return $exceptionArray['content'];
-						}
-					}
-					if(array_key_exists('paymentMode',$request->input()))
-					{
-						if(strcmp(trim($request->input()['paymentMode']),$paymentModeArray['cashPayment'])==0 || strcmp(trim($request->input()['paymentMode']),$paymentModeArray['bankPayment'])==0|| strcmp(trim($request->input()['paymentMode']),$paymentModeArray['cardPayment'])==0)
-						{
-							$purchaseBillArray['paymentMode'] = trim($request->input()['paymentMode']);
+							$purchaseBillArray['paymentMode'] = trim($inputData['paymentMode']);
 						}
 						else
 						{
@@ -203,6 +203,7 @@ class PurchaseBillTransformer
 				$purchaseBillArray['inventory'][$inventoryArray]['color'] = array_key_exists('color',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['color']) : '';
 				$purchaseBillArray['inventory'][$inventoryArray]['frameNo'] = array_key_exists('frameNo',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['frameNo']) : '';
 				$purchaseBillArray['inventory'][$inventoryArray]['size'] = array_key_exists('size',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['size']) : '';
+				$purchaseBillArray['inventory'][$inventoryArray]['amount'] = array_key_exists('amount',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['amount']) : '';
 				if(array_key_exists('discountType',$inventoryData[$inventoryArray]))
 				{
 					if(strcmp($inventoryData[$inventoryArray]['discountType'],$discountTypeEnumArray['flatType'])==0 || strcmp($inventoryData[$inventoryArray]['discountType'],$discountTypeEnumArray['percentageType'])==0)
@@ -356,5 +357,42 @@ class PurchaseBillTransformer
 			$tBillArray['inventory'] = $tempArray;
 		}
 		return $tBillArray;
+	}
+	
+	 /**
+	 *  trim data -> conversion date -> make an array of transform data
+	 * @param request header
+     * @return array/error message
+     */
+	public function trimFromToDateData($headerData)
+	{
+		//get date from header and trim data
+		$fromDate = trim($headerData['fromdate'][0]);
+		$toDate = trim($headerData['todate'][0]);
+		
+		if(strcmp($fromDate,'00-00-0000')==0)
+		{
+			$transformFromDate = '0000-00-00';
+		}
+		else
+		{
+			//from-date conversion
+			$splitedFromDate = explode("-",$fromDate);
+			$transformFromDate = $splitedFromDate[2]."-".$splitedFromDate[1]."-".$splitedFromDate[0];
+		}
+		if(strcmp($toDate,'00-00-0000')==0)
+		{
+			$transformToDate = '0000-00-00';
+		}
+		else
+		{
+			//to-date conversion
+			$splitedToDate = explode("-",$toDate);
+			$transformToDate = $splitedToDate[2]."-".$splitedToDate[1]."-".$splitedToDate[0];
+		}
+		$trimArray = array();	
+		$trimArray['fromDate'] = $transformFromDate;	
+		$trimArray['toDate'] = $transformToDate;	
+		return $trimArray;
 	}
 }

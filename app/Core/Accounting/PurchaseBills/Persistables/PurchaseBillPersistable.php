@@ -1,6 +1,9 @@
 <?php
 namespace ERP\Core\Accounting\PurchaseBills\Persistables;
 
+use ERP\Core\Accounting\Bills\Properties\EntryDatePropertyTrait;
+use ERP\Core\Accounting\Bills\Properties\FromDatePropertyTrait;
+use ERP\Core\Accounting\Bills\Properties\ToDatePropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\ProductArrayPropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\PaymentModePropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\BankNamePropertyTrait;
@@ -22,6 +25,7 @@ use ERP\Core\Accounting\PurchaseBills\Properties\TransactionDateTrait;
 use ERP\Core\Accounting\PurchaseBills\Properties\VendorIdTrait;
 use ERP\Core\Accounting\PurchaseBills\Properties\BillNumberTrait;
 use ERP\Core\Accounting\PurchaseBills\Properties\BillTypeTrait;
+use ERP\Core\Accounting\PurchaseBills\Properties\TransactionTypeTrait;
 
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -49,4 +53,8 @@ class PurchaseBillPersistable
 	use VendorIdTrait;
 	use BillNumberTrait;
 	use BillTypeTrait;
+	use EntryDatePropertyTrait;
+	use FromDatePropertyTrait;
+	use ToDatePropertyTrait;
+	use TransactionTypeTrait;
 }
