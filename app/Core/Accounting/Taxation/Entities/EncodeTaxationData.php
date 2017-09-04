@@ -5,21 +5,32 @@ use ERP\Core\Clients\Services\ClientService;
 use ERP\Core\Companies\Services\CompanyService;
 use Carbon;
 use ERP\Core\Products\Services\ProductService;
+use ERP\Model\Accounting\Ledgers\LedgerModel;
 use ERP\Entities\Constants\ConstantClass;
+use ERP\Exceptions\ExceptionMessage;
 use PHPExcel;
 use PHPExcel_IOFactory;
 use PHPExcel_Style_Fill;
 use PHPExcel_Style_Alignment;
+use PHPExcel_Style_Border;
 /**
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
 class EncodeTaxationData extends ProductService
 {
+	/**
+	 * convert necessary sale-tax data and generate excel-sheet of that data
+	 * returns the array-data/exception message/excel-sheet path
+	*/
 	public function getEncodedAllData($status,$headerData)
 	{
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
 		
 		$decodedJson = json_decode($status,true);
 		$companyService = new CompanyService();
@@ -33,7 +44,9 @@ class EncodeTaxationData extends ProductService
 			$calculateAdditionalTax=0;
 			$calculateVat=0;
 			$decodedProductArrayData = json_decode($decodedJson[$decodedData]['product_array']);
-			for($arrayData=0;$arrayData<count($decodedProductArrayData->inventory);$arrayData++)
+			$productDataArray = array();
+			$inventoryCount = count($decodedProductArrayData->inventory);
+			for($arrayData=0;$arrayData<$inventoryCount;$arrayData++)
 			{
 				$productService = new EncodeTaxationData();
 				$productData = $productService->getProductData($decodedProductArrayData->inventory[$arrayData]->productId);
@@ -44,6 +57,8 @@ class EncodeTaxationData extends ProductService
 				
 				$additionalTax = ($productDecodedData->purchasePrice/100)*$productDecodedData->additionalTax;
 				$calculateAdditionalTax = $calculateAdditionalTax+$additionalTax;
+				$productDataArray[$arrayData] = $decodedProductArrayData->inventory[$arrayData];
+				$productDataArray[$arrayData]->product = $productDecodedData;
 			}
 			$total[$decodedData] = $decodedJson[$decodedData]['total'];
 			$totalDiscount[$decodedData] = $decodedJson[$decodedData]['total_discount'];
@@ -82,14 +97,9 @@ class EncodeTaxationData extends ProductService
 			$calculateAdditionalTax = number_format($calculateAdditionalTax,$companyDecodedData[$decodedData]->noOfDecimalPoints);
 			
 			//date format conversion
-			if(strcmp($entryDate[$decodedData],'0000-00-00 00:00:00')==0)
-			{
-				$convertedEntryDate[$decodedData] = "00-00-0000";
-			}
-			else
-			{
-				$convertedEntryDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d', $entryDate[$decodedData])->format('d-m-Y');
-			}
+			$convertedEntryDate[$decodedData] = strcmp($entryDate[$decodedData],'0000-00-00 00:00:00')==0
+												? "00-00-0000"
+												: Carbon\Carbon::createFromFormat('Y-m-d', $entryDate[$decodedData])->format('d-m-Y');	
 			$data[$decodedData]= array(
 				'invoiceNumber'=>$decodedJson[$decodedData]['invoice_number'],
 				'salesType'=>$decodedJson[$decodedData]['sales_type'],
@@ -102,9 +112,19 @@ class EncodeTaxationData extends ProductService
 				'balance'=>$balance[$decodedData],
 				'refund'=>$refund[$decodedData],
 				'entryDate'=>$convertedEntryDate[$decodedData],
-				'clientName'=>$decodedClientData[$decodedData]->clientName,
-				'additionalTax'=>$calculateAdditionalTax
+				'additionalTax'=>$calculateAdditionalTax,
+				'client'=>$decodedClientData[$decodedData],
+				'company'=>$companyDecodedData[$decodedData],
+				'product'=>$productDataArray
 			);
+			//get ledger-data from invoice-number
+			$ledgerModel = new LedgerModel();
+			$ledgerData = $ledgerModel->getDataAsPerInvoiceNumber($companyDecodedData[$decodedData]->companyId,$decodedJson[$decodedData]['invoice_number']);
+			if(strcmp($ledgerData,$exceptionArray['500'])!=0)
+			{
+				$decodedLedgerData[$decodedData] = json_decode($ledgerData);
+				$data[$decodedData]['ledger'] = $decodedLedgerData[$decodedData][0];
+			}
 		}
 		if(array_key_exists('operation',$headerData))
 		{
@@ -162,7 +182,7 @@ class EncodeTaxationData extends ProductService
 					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,$dataArray+5,$dataArray+5);
 					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$dataArray+5,$data[$dataArray]['invoiceNumber']);
 					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$dataArray+5,$data[$dataArray]['entryDate']);
-					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,$dataArray+5,$data[$dataArray]['clientName']);
+					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,$dataArray+5,$data[$dataArray]['client']->clientName);
 					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(4,$dataArray+5,'');
 					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(5,$dataArray+5,'');
 					$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(6,$dataArray+5,$data[$dataArray]['total']);
@@ -227,6 +247,10 @@ class EncodeTaxationData extends ProductService
 		}
 	}
 	
+	/**
+	 * convert necessary purchase-tax data and generate excel-sheet of that data
+	 * returns the array-data/exception message/excel-sheet path
+	*/
 	public function getPurchaseTaxEncodedAllData($status,$headerData)
 	{
 		$constantClass = new ConstantClass();
@@ -423,6 +447,10 @@ class EncodeTaxationData extends ProductService
 		}
 	}
 	
+	/**
+	 * convert necessary purchase-detail data and generate excel-sheet of that data
+	 * returns the array-data/exception message/excel-sheet path
+	*/
 	public function getPurchaseEncodedAllData($status,$headerData)
 	{
 		$constantClass = new ConstantClass();
@@ -573,5 +601,118 @@ class EncodeTaxationData extends ProductService
 			$jsonEncodedData = json_encode($data);
 			return $jsonEncodedData;
 		}
+	}
+	
+	/**
+	 * generate excel-sheet of gst-return data
+	 * returns the array-data/exception message/excel-sheet path
+	*/
+	public function getGstReturnExcelPath($saleTaxData)
+	{
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		$saleTaxDecodedData = json_decode($saleTaxData);
+		
+		// generate excel
+		$objPHPExcel = new \PHPExcel();
+		//first sheet (Sales Invoice)
+		$objPHPExcel->setActiveSheetIndex(0);
+		// Set properties comment
+		$objPHPExcel->getProperties()->setCreator("ThinkPHP")
+						->setLastModifiedBy("Daniel Schlichtholz")
+						->setTitle("Office 2007 XLSX Test Document")
+						->setSubject("Office 2007 XLSX Test Document")
+						->setDescription("Test doc for Office 2007 XLSX, generated by PHPExcel.")
+						->setKeywords("office 2007 openxml php")
+						->setCategory("Test result file");
+		$objPHPExcel->getActiveSheet()->setTitle('Sales Invoice');
+		// $objPHPExcel->createSheet();
+		// $objPHPExcel->setActiveSheetIndex(1);
+		// $objPHPExcel->getActiveSheet()->setCellValue('A1', 'More data');
+		// $objPHPExcel->getActiveSheet()->setTitle('Purchase Invoice');
+		// heading-start
+		// $objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(0,1, '1');
+		// $objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,1, '');
+		
+		// $objPHPExcel->setActiveSheetIndex(0)->mergeCells('B1:K1');
+		
+		$objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1,3, 'Sr.');
+		$objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2,3, 'Invoice Number');
+		$objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3,3, 'Invoice Date');
+		$objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4,3, 'Buyer\'s Name');
+		$objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5,3, 'Buyer\'s Gst No');
+		$objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6,3, 'Place of supplier(State)');
+		$objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7,3, 'Particulars');
+		$objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8,3, 'HSN Code');
+		$objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9,3, 'Taxable Value');
+		$objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10,3, 'GST Rate');
+		$objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11,3, 'CGST Amount');
+		$objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(12,3, 'SGST Amount');
+		$objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(13,3, 'IGST Amount');
+		$objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(14,3, 'CESS Amount');
+		$objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(15,3, 'Invoice Value(Total)');
+		//heading-end
+		
+		$dataCount = count($saleTaxDecodedData);
+		for($data=0;$data<$dataCount;$data++)
+		{
+			$productCount = count($saleTaxDecodedData[$data]->product);
+			$totalCgst=0;
+			$totalSgst=0;
+			$totalIgst=0;
+			//calculating total-cgst & total-sgst
+			for($productArray=0;$productArray<$productCount;$productArray++)
+			{
+				$totalCgst = $totalCgst+$saleTaxDecodedData[$data]->product[$productArray]->product->vat;
+				$totalSgst = $totalSgst+$saleTaxDecodedData[$data]->product[$productArray]->product->additionalTax;
+				$totalIgst = $totalIgst+$saleTaxDecodedData[$data]->product[$productArray]->product->igst;
+			}
+			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(1,$data+4,$data+1);
+			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(2,$data+4,$saleTaxDecodedData[$data]->invoiceNumber);
+			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(3,$data+4,$saleTaxDecodedData[$data]->entryDate);
+			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(4,$data+4,$saleTaxDecodedData[$data]->client->clientName);
+			if(array_key_exists('ledger',$saleTaxDecodedData[$data]))
+			{
+				$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(5,$data+4,$saleTaxDecodedData[$data]->ledger->cgst);
+			}
+			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(6,$data+4,$saleTaxDecodedData[$data]->client->state->stateName);
+			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(7,$data+4,'product-detail');
+			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(8,$data+4,'HSN Code');
+			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(9,$data+4,'Taxable Value');
+			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(10,$data+4,'GST Rate');
+			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(11,$data+4,$totalCgst);
+			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(12,$data+4,$totalSgst);
+			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(13,$data+4,$totalIgst);
+			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(14,$data+4,$saleTaxDecodedData[$data]->company->cess);
+			$objPHPExcel->setActiveSheetIndex()->setCellValueByColumnAndRow(15,$data+4,'Invoice Value(Total)');
+		}
+		$styleArray = array(
+			'borders' => array(
+			  'allborders' => array(
+				  'style' => PHPExcel_Style_Border::BORDER_THIN
+			  )
+			)
+		);
+		echo "vv";
+		// echo $dataCount;
+		echo $borderConunt = "B3:P".$dataCount+3;
+		exit;
+		$objPHPExcel->getActiveSheet()->getStyle($borderConunt)->applyFromArray($styleArray);
+		
+		// make unique name
+		$dateTime = date("d-m-Y h-i-s");
+		$convertedDateTime = str_replace(" ","-",$dateTime);
+		$splitDateTime = explode("-",$convertedDateTime);
+		$combineDateTime = $splitDateTime[0].$splitDateTime[1].$splitDateTime[2].$splitDateTime[3].$splitDateTime[4].$splitDateTime[5];
+		$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999)."_GSTReturn.xls"; //xslx
+		$path = $constantArray['taxReturnUrl'];
+		$documentPathName = $path.$documentName;
+		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+		$objWriter->save($documentPathName);
+		
+		$pathArray = array();
+		$pathArray['documentPath'] = $documentPathName;
+		return $pathArray;
 	}
 }

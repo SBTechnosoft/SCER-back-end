@@ -1,8 +1,7 @@
 <?php
 namespace ERP\Core\Accounting\PurchaseBills\Entities;
 
-// use ERP\Core\Accounting\Bills\Entities\Bill;
-// use ERP\Core\Clients\Services\ClientService;
+use ERP\Core\Accounting\Ledgers\Services\LedgerService;
 use ERP\Core\Entities\CompanyDetail;
 use ERP\Entities\Constants\ConstantClass;
 use Carbon;
@@ -10,7 +9,7 @@ use Carbon;
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
-class EncodeAllData
+class EncodeAllData extends LedgerService
 {
 	public function getEncodedAllData($status)
 	{
@@ -21,7 +20,6 @@ class EncodeAllData
 		$decodedJson = json_decode($status,true);
 		$deocodedJsonData = json_decode($decodedJson['purchaseBillData']);
 		$decodedDocumentData = json_decode($decodedJson['documentData']);
-		// $bill = new Bill();
 		for($decodedData=0;$decodedData<count($deocodedJsonData);$decodedData++)
 		{
 			$vendorId[$decodedData] = $deocodedJsonData[$decodedData]->vendor_id;
@@ -51,6 +49,10 @@ class EncodeAllData
 			//get the company detail from database
 			$companyDetail  = new CompanyDetail();
 			$getCompanyDetails[$decodedData] = $companyDetail->getCompanyDetails($companyId[$decodedData]);
+			//get vendor(ledger) detail from database
+			$ledgerService =  new EncodeAllData();
+			$getLedgerDetails[$decodedData] = $ledgerService->getLedgerData($vendorId[$decodedData]);
+			$decodedLedgerDetail[$decodedData] = json_decode($getLedgerDetails[$decodedData]);
 			//convert amount(round) into their company's selected decimal points
 			$total[$decodedData] = number_format($total[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
 			$totalDiscount[$decodedData] = number_format($totalDiscount[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
@@ -60,8 +62,6 @@ class EncodeAllData
 			$balance[$decodedData] = number_format($balance[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
 			//date format conversion
 			$getCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
-			// $bill->setCreated_at($convertedCreatedDate);
-			// $getCreatedDate[$decodedData] = $bill->getCreated_at();
 			if(strcmp($updatedAt[$decodedData],'0000-00-00 00:00:00')==0)
 			{
 				$getUpdatedDate[$decodedData] = "00-00-0000";
@@ -69,8 +69,6 @@ class EncodeAllData
 			else
 			{
 				$getUpdatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updatedAt[$decodedData])->format('d-m-Y');
-				// $bill->setUpdated_at($convertedUpdatedDate);
-				// $getUpdatedDate[$decodedData] = $bill->getUpdated_at();
 			}
 			if(strcmp($transactionDate[$decodedData],'0000-00-00')==0)
 			{
@@ -79,8 +77,6 @@ class EncodeAllData
 			else
 			{
 				$getTransactionDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d', $transactionDate[$decodedData])->format('d-m-Y');
-				// $bill->setEntryDate($convertedEntryDate);
-				// $getEntryDate[$decodedData] = $bill->getEntryDate();
 			}
 			if(strcmp($entryDate[$decodedData],'0000-00-00')==0)
 			{
@@ -89,8 +85,6 @@ class EncodeAllData
 			else
 			{
 				$getEntryDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d', $entryDate[$decodedData])->format('d-m-Y');
-				// $bill->setEntryDate($convertedEntryDate);
-				// $getEntryDate[$decodedData] = $bill->getEntryDate();
 			}
 			$documentId[$decodedData] = array();
 			$documentSaleId[$decodedData] = array();
@@ -110,7 +104,6 @@ class EncodeAllData
 				$documentName[$decodedData][$documentArray] = $decodedDocumentData[$decodedData][$documentArray]->document_name;
 				$documentSize[$decodedData][$documentArray] = $decodedDocumentData[$decodedData][$documentArray]->document_size;
 				$documentFormat[$decodedData][$documentArray] = $decodedDocumentData[$decodedData][$documentArray]->document_format;
-				// $documentType[$decodedData][$documentArray] = $decodedDocumentData[$decodedData][$documentArray]->document_type;
 				$documentCreatedAt[$decodedData][$documentArray] = $decodedDocumentData[$decodedData][$documentArray]->created_at;
 				$documentUpdatedAt[$decodedData][$documentArray] = $decodedDocumentData[$decodedData][$documentArray]->updated_at;
 				//date format conversion
@@ -121,8 +114,6 @@ class EncodeAllData
 				else
 				{
 					$getDocumentCreatedDate[$decodedData][$documentArray] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $documentCreatedAt[$decodedData][$documentArray])->format('d-m-Y');
-					// $bill->setCreated_at($documentCreatedDate);
-					// $getDocumentCreatedDate[$decodedData][$documentArray] = $bill->getCreated_at();
 				}
 				if(strcmp($documentUpdatedAt[$decodedData][$documentArray],'0000-00-00 00:00:00')==0)
 				{
@@ -131,8 +122,6 @@ class EncodeAllData
 				else
 				{
 					$getDocumentUpdatedDate[$decodedData][$documentArray] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $documentUpdatedAt[$decodedData][$documentArray])->format('d-m-Y');
-					// $bill->setUpdated_at($documentUpdatedDate);
-					// $getDocumentUpdatedDate[$decodedData][$documentArray] = $bill->getUpdated_at();
 				}
 			}
 			
@@ -154,18 +143,15 @@ class EncodeAllData
 						'documentName'=>$documentName[$jsonData][$innerArrayData],
 						'documentSize'=>$documentSize[$jsonData][$innerArrayData],
 						'documentFormat'=>$documentFormat[$jsonData][$innerArrayData],
-						// 'documentType'=>$documentType[$jsonData][$innerArrayData],
 						'documentUrl'=>$constantArray['purchaseBillDocUrl'],
 						'createdAt'=>$getDocumentCreatedDate[$jsonData][$innerArrayData],
 						'updatedAt'=>$getDocumentUpdatedDate[$jsonData][$innerArrayData]
 					);
 				}
 			}
-			// $clientData = json_decode($getClientDetails[$jsonData]);
 			$data[$jsonData]= array(
 				'purchaseId'=>$purchaseId[$jsonData],
 				'productArray'=>$productArray[$jsonData],
-				'vendorId'=>$vendorId[$jsonData],
 				'billNumber'=>$billNumber[$jsonData],
 				'transactionType'=>$transactionType[$jsonData],
 				'billType'=>$billType[$jsonData],
@@ -186,6 +172,7 @@ class EncodeAllData
 				'updatedAt'=>$getUpdatedDate[$jsonData],
 				'transactionDate'=>$getTransactionDate[$jsonData],
 				'entryDate'=>$getEntryDate[$jsonData],
+				'vendor' =>$decodedLedgerDetail[$jsonData],
 				'company' => array(	
 					'companyId' => $getCompanyDetails[$jsonData]['companyId'],
 					'companyName' => $getCompanyDetails[$jsonData]['companyName'],	

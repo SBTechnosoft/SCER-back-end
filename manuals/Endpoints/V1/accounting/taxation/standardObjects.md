@@ -1,12 +1,38 @@
 ##### Standard Sale-Tax Object
 			{
+				"saleId":int,
 				"invoiceNumber":string,
 				"salesType":string,
 				"total":decimal,
-				"clientName":string,
+				"totalDiscounttype":Enum,
+				"totalDiscount":decimal,
+				"client":{
+					... standard client object
+				},
+				"company":{
+					... standard company object
+				},
+				"product":{
+					{
+						"color": string,
+						"size": string,
+						"frameNo": string,
+						"qty": decimal,
+						"price": decimal,
+						"amount": decimal,
+						"discount":decimal,
+						"discountType":Enum,
+						"productId":int,
+						"productName":string,
+						"product":{
+							... standard product object
+						},
+					}
+				},
 				"entryDate":date,
 				"advance":decimal,
 				"balance":decimal,
+				"extraCharge":decimal,
 				"refund":decimal,
 				"tax":decimal,
 				"grandTotal":decimal,

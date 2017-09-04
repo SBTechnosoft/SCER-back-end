@@ -55,12 +55,12 @@
             {
                 ... Standard Purchase-Detail Object
             }
-##### Creates Taxation of GST
+##### Creates Taxation of GST-Return
 
-##### `GET /accounting/taxation/purchase-detail/company/{companyId}`
+##### `GET /accounting/taxation/gst-return/company/{companyId}`
 + Header
 	- Authentication Token
-	- 'operation':'excel'
+	- 'operation':'gst-return-excel'
 	- 'fromDate':'',
 	- 'toDate':''
 + Error Message
@@ -71,5 +71,5 @@
 + Response
 
             {
-                ... Standard Purchase-Detail Object
+                ... Document Path
             }

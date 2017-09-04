@@ -843,6 +843,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/accounting/taxation/purchase-detail";  //purchase
 				// var url="http://www.scerp1.com/accounting/taxation/purchase-tax";  //purchase tax
 				// var url="http://www.scerp1.com/accounting/taxation/sale-tax/company/"+companyId;  //sale tax
+				var url="http://www.scerp1.com/accounting/taxation/gst-return/company/"+companyId;  //gst-return 
 				
 				// var url="http://www.scerp1.com/accounting/cash-flow/company/"+companyId+"/export";  //pdf generate
 				// var url="http://www.scerp1.com/accounting/profit-loss/company/"+companyId+"/export";  //pdf generate
@@ -943,8 +944,7 @@ include ('connection.php');
 						processData: false,
 						
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
-                        headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372',
-						"billNumber":10},
+                        headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','clientName':'reemapatell','contactNo':'9998989899','emailId':'reemas@gmail.com','address':'address2','invoiceFromDate':'12-01-2017','invoiceNumber':'myCompany44','jobCardNumber':'2'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','salesType':'retail_sales','operation':'excel'},//
                         // headers: {'Content-Type': undefined,'type':'sales','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},

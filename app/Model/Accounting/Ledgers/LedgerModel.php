@@ -1762,7 +1762,28 @@ class LedgerModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->select("select ledger_id 
+		$raw = DB::connection($databaseName)->select("select 
+		ledger_id,
+		ledger_name,
+		alias,
+		inventory_affected,
+		address1,
+		address2,
+		contact_no,
+		email_id,
+		is_dealer,
+		invoice_number,
+		pan,
+		tin,
+		cgst,
+		sgst,
+		created_at,
+		updated_at,
+		deleted_at,
+		state_abb,
+		city_id,
+		ledger_group_id,
+		company_id 
 		from ledger_mst 
 		where company_id='".$companyId."' and 
 		invoice_number='".$invoiceNumber."' and

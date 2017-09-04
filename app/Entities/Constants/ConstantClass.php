@@ -24,6 +24,7 @@ class ConstantClass
 		$constantArray['emailDocumentUrl'] = "Storage/Email/";
 		$constantArray['purchaseTaxationUrl'] = "Storage/Taxation/PurchaseDetail/";
 		$constantArray['purchaseTaxUrl'] = "Storage/Taxation/PurchaseTax/";
+		$constantArray['taxReturnUrl'] = "Storage/Taxation/GstReturn/";
 		$constantArray['saleTaxUrl'] = "Storage/Taxation/SaleTax/";
 		$constantArray['mainLogo'] = "Storage/Logo/";
 		$constantArray['polishReportUrl'] = "Storage/Reports/Polish-Report/";

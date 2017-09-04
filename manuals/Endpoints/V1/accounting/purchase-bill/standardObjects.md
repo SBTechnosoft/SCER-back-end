@@ -1,7 +1,6 @@
 ##### Standard Purchase-Bill Object
 			{
 				"purchaseId":int,
-				"vendorId":int,
 				"productArray":string,
 				"billNumber":string,
 				"total":decimal,
@@ -23,6 +22,9 @@
 				"createdAt":timestamp,
 				"updatedAt":datetime,
 				"jf_id":int,
+				"vendor":{
+					... standard ledger object
+				}
 				"company":{
 					... standard company object
 				},

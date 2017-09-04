@@ -11,6 +11,7 @@ use ERP\Entities\Constants\ConstantClass;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Model\Accounting\Taxation\TaxationModel;
+use ERP\Core\Accounting\Taxation\Entities\EncodeTaxationData;
 // use ERP\Core\Accounting\Taxation\Entities\TrialBalanceOperation;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -42,7 +43,6 @@ class TaxationController extends BaseController implements ContainerInterface
 		//get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-		
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
 			$taxationService = new TaxationService();
@@ -60,6 +60,29 @@ class TaxationController extends BaseController implements ContainerInterface
 	 * @param  Request $request
 	 * method calls the model and get the data
 	*/
+    public function getGstReturnExcel(Request $request,$companyId)
+    {
+		$saleTaxResult = $this->getSaleTaxData($request,$companyId);
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($saleTaxResult,$exceptionArray['204'])==0)
+		{
+			return $saleTaxResult;
+		}
+		else
+		{
+			$encodeTaxationData = new EncodeTaxationData();
+			$resultData = $encodeTaxationData->getGstReturnExcelPath($saleTaxResult);
+			return $resultData;
+		}	
+	}
+	
+	/**
+	 * get the specified resource 
+	 * @param  Request $request
+	 * method calls the model and get the data
+	*/
     public function getPurchaseTaxData(Request $request,$companyId)
     {
 		//Authentication
@@ -68,7 +91,6 @@ class TaxationController extends BaseController implements ContainerInterface
 		//get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-		
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
 			$taxationService = new TaxationService();
@@ -91,11 +113,9 @@ class TaxationController extends BaseController implements ContainerInterface
 		//Authentication
 		$tokenAuthentication = new TokenAuthentication();
 		$authenticationResult = $tokenAuthentication->authenticate($request->header());
-		
 		//get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-		
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
 			$taxationService = new TaxationService();

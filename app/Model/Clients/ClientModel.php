@@ -105,7 +105,7 @@ class ClientModel extends Model
 			created_at,
 			updated_at,
 			deleted_at
-			from client_mst where client_id = '".$clientData[0]->client_id."' and deleted_at='0000-00-00 00:00:00'");
+			from client_doc_dtl where client_id = '".$clientData[0]->client_id."' and deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
 			$clientArraydata = array();
 			$clientArraydata['clientData'] = $clientData;
