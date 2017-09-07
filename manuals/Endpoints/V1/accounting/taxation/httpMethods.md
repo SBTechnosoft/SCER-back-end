@@ -73,3 +73,21 @@
             {
                 ... Document Path
             }
+			
+##### Creates product-stock
+
+##### `GET /accounting/taxation/stock-detail/company/{companyId}`
++ Header
+	- Authentication Token
+	- 'fromDate':'',
+	- 'toDate':''
++ Error Message
+
+			{
+				... Error Message
+			}            
++ Response
+
+            {
+                ... Standard Stock-Detail Object
+            }

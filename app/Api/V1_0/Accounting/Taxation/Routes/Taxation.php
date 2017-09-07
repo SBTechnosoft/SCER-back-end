@@ -24,6 +24,7 @@ class Taxation implements RouteRegistrarInterface
 			Route::get('Accounting/Taxation/Taxation/sale-tax/company/{companyId}', 'Accounting\Taxation\Controllers\TaxationController@getSaleTaxData');
 			Route::get('Accounting/Taxation/Taxation/purchase-tax/company/{companyId}', 'Accounting\Taxation\Controllers\TaxationController@getPurchaseTaxData');
 			Route::get('Accounting/Taxation/Taxation/purchase-detail/company/{companyId}', 'Accounting\Taxation\Controllers\TaxationController@getPurchaseData');
+			Route::get('Accounting/Taxation/Taxation/stock-detail/company/{companyId}', 'Accounting\Taxation\Controllers\TaxationController@getPurchaseData');
 		});
 		
 	}
