@@ -80,7 +80,10 @@ class PurchaseBillProcessor extends BaseProcessor
 				//make an journal array 
 				$journalResult = $this->makeJournalArray($tRequest,'insert',$purchaseId);
 				//seprate inventory from other data
-				$inventoryData = $tRequest['inventory'];
+				$inventoryData['inventory'] = $tRequest['inventory'];
+				$inventoryData['billNumber'] = $tRequest['billNumber'];
+				$inventoryData['transactionType'] = 'purchase_tax';
+				$inventoryData['companyId'] = $tRequest['companyId'];
 				$requestData = array_except($tRequest,['inventory']);
 				if(strcmp($journalResult,$exceptionArray['content'])!=0)
 				{
@@ -621,11 +624,26 @@ class PurchaseBillProcessor extends BaseProcessor
 			{
 				$inventoryFlag=1;
 				$journalResult = $this->makeJournalArray($tRequest,'update',$purchaseId);
-				//seprate inventory from other data
-				$inventoryData = $tRequest['inventory'];
-				$requestData = array_except($tRequest,['inventory']);
+				
 				if(strcmp($journalResult,$exceptionArray['content'])!=0 && strcmp($journalResult,$exceptionArray['204'])!=0)
 				{
+					//get jf_id as per given purchaseId
+					$purchaseIdArray = array();
+					$purchaseIdArray['purchasebillid'][0] = $purchaseId;
+					$purchaseModel = new PurchaseBillModel();
+					$purchaseArrayData = $purchaseModel->getPurchaseBillData($purchaseIdArray);
+					// print_r($purchaseArrayData);
+					if(strcmp($purchaseArrayData,$exceptionArray['204'])==0)
+					{
+						return $exceptionArray['204'];
+					}
+					$purchaseArrayData = json_decode(json_decode($purchaseArrayData)->purchaseBillData);
+					$inventoryData['companyId'] = $purchaseArrayData[0]->company_id;
+					$inventoryData['inventory'] = $tRequest['inventory'];
+					$inventoryData['billNumber'] =  array_key_exists('billNumber',$tRequest) 
+													? $tRequest['billNumber'] : $purchaseArrayData[0]->bill_number;
+					
+					$inventoryData['transactionType'] =  'purchase_tax';
 					$purchaseValue[$data] = json_encode($inventoryData);
 					$keyName[$data] = 'productArray';
 				}
@@ -633,6 +651,8 @@ class PurchaseBillProcessor extends BaseProcessor
 				{
 					return $journalResult;
 				}
+				//seprate inventory from other data
+				$requestData = array_except($tRequest,['inventory']);
 			}
 			else
 			{

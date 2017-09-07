@@ -63,17 +63,18 @@ class TaxationController extends BaseController implements ContainerInterface
     public function getGstReturnExcel(Request $request,$companyId)
     {
 		$saleTaxResult = $this->getSaleTaxData($request,$companyId);
+		$purchaseTaxResult = $this->getPurchaseTaxData($request,$companyId);
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		if(strcmp($saleTaxResult,$exceptionArray['204'])==0)
+		if(strcmp($saleTaxResult,$exceptionArray['204'])==0 || strcmp($purchaseTaxResult,$exceptionArray['204'])==0)
 		{
 			return $saleTaxResult;
 		}
 		else
 		{
 			$encodeTaxationData = new EncodeTaxationData();
-			$resultData = $encodeTaxationData->getGstReturnExcelPath($saleTaxResult);
+			$resultData = $encodeTaxationData->getGstReturnExcelPath($saleTaxResult,$purchaseTaxResult);
 			return $resultData;
 		}	
 	}

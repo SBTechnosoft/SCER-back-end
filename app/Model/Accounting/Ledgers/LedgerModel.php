@@ -1729,9 +1729,31 @@ class LedgerModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->select("select ledger_id 
+		$raw = DB::connection($databaseName)->select("select 
+		ledger_id,
+		ledger_name,
+		alias,
+		inventory_affected,
+		address1,
+		address2,
+		contact_no,
+		email_id,
+		is_dealer,
+		invoice_number,
+		pan,
+		tin,
+		cgst,
+		sgst,
+		created_at,
+		updated_at,
+		deleted_at,
+		state_abb,
+		city_id,
+		ledger_group_id,
+		company_id 
 		from ledger_mst 
 		where contact_no='".$contactNo."' and
+		company_id='".$companyId."' and
 		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		if(count($raw)==0)
@@ -1760,7 +1782,6 @@ class LedgerModel extends Model
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		
 		DB::beginTransaction();
 		$raw = DB::connection($databaseName)->select("select 
 		ledger_id,
@@ -1789,6 +1810,7 @@ class LedgerModel extends Model
 		invoice_number='".$invoiceNumber."' and
 		deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
+		
 		if(count($raw)==0)
 		{
 			return $exceptionArray['500'];

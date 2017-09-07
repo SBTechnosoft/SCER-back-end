@@ -90,34 +90,44 @@ class TaxationModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		
 		$mytime = Carbon\Carbon::now();
-		//date conversion
-		//from-date conversion
-		$splitedFromDate = explode("-",$headerData['fromdate'][0]);
-		$transformFromDate = $splitedFromDate[2]."-".$splitedFromDate[1]."-".$splitedFromDate[0];
-		//from-date conversion
-		$splitedToDate = explode("-",$headerData['todate'][0]);
-		$transformToDate = $splitedToDate[2]."-".$splitedToDate[1]."-".$splitedToDate[0];
-		
-		//get saleTax from purchase bill 
+		$dateString='';
+		if(array_key_exists('fromdate',$headerData) && array_key_exists('todate',$headerData))
+		{
+			//date conversion
+			//from-date conversion
+			$splitedFromDate = explode("-",$headerData['fromdate'][0]);
+			$transformFromDate = $splitedFromDate[2]."-".$splitedFromDate[1]."-".$splitedFromDate[0];
+			//to-date conversion
+			$splitedToDate = explode("-",$headerData['todate'][0]);
+			$transformToDate = $splitedToDate[2]."-".$splitedToDate[1]."-".$splitedToDate[0];
+			$dateString = "(entry_date BETWEEN '".$transformFromDate."' AND '".$transformToDate."') and";
+		}
+		//get purchaseTax from purchase bill 
 		DB::beginTransaction();	
 		$purchaseTaxResult = DB::connection($databaseName)->select("select
+		purchase_id,
+		vendor_id,
 		product_array,
 		bill_number,
 		total,
 		tax,
 		grand_total,
+		total_discounttype,
+		total_discount,
+		advance,
+		bill_type,
+		extra_charge,
+		balance,
 		transaction_type,
 		transaction_date,
-		client_name,
+		entry_date,
 		company_id,
 		jf_id
 		from purchase_bill
-		where deleted_at='0000-00-00 00:00:00' and 
-		transaction_type='purchase_tax' and 
+		where bill_type='purchase_bill' and ".$dateString."
 		company_id='".$companyId."' and
-		(transaction_date BETWEEN '".$transformFromDate."' AND '".$transformToDate."')"); 
+		deleted_at='0000-00-00 00:00:00'"); 
 		DB::commit();
-		
 		if(count($purchaseTaxResult)!=0)
 		{
 			return json_encode($purchaseTaxResult);

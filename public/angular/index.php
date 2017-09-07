@@ -841,9 +841,9 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/products/batch";
 				
 				// var url="http://www.scerp1.com/accounting/taxation/purchase-detail";  //purchase
-				// var url="http://www.scerp1.com/accounting/taxation/purchase-tax";  //purchase tax
+				var url="http://www.scerp1.com/accounting/taxation/purchase-tax/company/"+companyId;  //purchase tax
 				// var url="http://www.scerp1.com/accounting/taxation/sale-tax/company/"+companyId;  //sale tax
-				var url="http://www.scerp1.com/accounting/taxation/gst-return/company/"+companyId;  //gst-return 
+				// var url="http://www.scerp1.com/accounting/taxation/gst-return/company/"+companyId;  //gst-return 
 				
 				// var url="http://www.scerp1.com/accounting/cash-flow/company/"+companyId+"/export";  //pdf generate
 				// var url="http://www.scerp1.com/accounting/profit-loss/company/"+companyId+"/export";  //pdf generate

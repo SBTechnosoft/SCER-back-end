@@ -61,6 +61,7 @@ class PurchaseBillTransformer
 		$purchaseBillArray['remark'] = array_key_exists('remark',$request->input())? trim($request->input()['remark']):'';
 		$purchaseBillArray['totalDiscount'] = array_key_exists('totalDiscount',$request->input())? trim($request->input()['totalDiscount']):0;
 		$purchaseBillArray['billType'] = $billTypeEnumArray['purchaseBillType'];
+		$purchaseBillArray['transactionType'] = 'purchase_tax';
 		if(array_key_exists('totalDiscounttype',$request->input()))
 		{
 			if(strcmp(trim($request->input()['totalDiscounttype']),$discountTypeEnumArray['flatType'])==0 || strcmp(trim($request->input()['totalDiscounttype']),$discountTypeEnumArray['percentageType'])==0)
