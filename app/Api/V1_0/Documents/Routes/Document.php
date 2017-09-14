@@ -19,6 +19,9 @@ class Document implements RouteRegistrarInterface
 		ini_set('memory_limit', '256M');
 		//post request 
 		Route::post('Documents/Document/bill', 'Documents\Controllers\DocumentController@getData');
+		
+		//delete request
+		Route::delete('Documents/Document/{documentId}', 'Documents\Controllers\DocumentController@deleteDocument');
 	}
 }
 

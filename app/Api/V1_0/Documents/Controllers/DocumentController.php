@@ -11,6 +11,7 @@ use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Core\Documents\Services\DocumentService;
 use ERP\Entities\AuthenticationClass\TokenAuthentication;
 use ERP\Entities\Constants\ConstantClass;
+use ERP\Model\Documents\DocumentModel;
 // use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -136,6 +137,32 @@ class DocumentController extends BaseController implements ContainerInterface
 			$documentService= new DocumentService();	
 			$serviceData = $documentService->getJobformData($request->input());
 			return $serviceData;
+		}
+	}
+	
+	/**
+	 * delete specified resource 
+	 * @param  Request object[Request $request] and document-id
+	*/
+	public function deleteDocument(Request $request,$documentId)
+	{
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$documentModel= new DocumentModel();	
+			$deletedResult = $documentModel->deleteDocumentData($request->header(),$documentId);
+			return $deletedResult;
+		}
+		else
+		{
+			return $authenticationResult;
 		}
 	}
 }
