@@ -92,6 +92,34 @@ class TaxationService extends AbstractService
      * get all the data and call the model for database selection opertation
      * @return status
      */
+	public function getStockDetailData(Request $request,$companyId)
+	{
+		//get data
+		$taxationModel = new TaxationModel();
+		$stockDetailData = $taxationModel->getStockDetailData($companyId,$request->header());
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($stockDetailData,$exceptionArray['204'])==0)
+		{
+			return $stockDetailData;
+		}
+		else
+		{
+			echo "else";
+			print_r($stockDetailData);
+			exit;
+			$encoded = new EncodeTaxationData();
+			$encodeAllData = $encoded->getPurchaseTaxEncodedAllData($stockDetailData,$request->header());
+			return $encodeAllData;
+		}
+	}
+	
+	/**
+     * get all the data and call the model for database selection opertation
+     * @return status
+     */
 	public function getPurchaseData(Request $request,$companyId)
 	{
 		//get data

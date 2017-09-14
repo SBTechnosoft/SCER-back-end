@@ -130,7 +130,7 @@ class EncodeAllData extends StateService
 					'stateAbb' => $getCityDetail[$jsonData]['state']['stateAbb']
 				),
 				
-				'ledgergroup'=> array(
+				'ledgerGroup'=> array(
 					'ledgerGroupId' => $getLedgerGrpDetails[$jsonData]['ledgerGroupId'],	
 					'ledgerGroupName' => $getLedgerGrpDetails[$jsonData]['ledgerGroupName'],	
 					'underWhat' => $getLedgerGrpDetails[$jsonData]['underWhat'],

@@ -64,7 +64,6 @@ class ClientModel extends Model
 				$keyName =$keyName.$getClientKey[$data].",";
 			}
 		}
-		
 		DB::beginTransaction();
 		$raw = DB::connection($databaseName)->statement("insert into client_mst(".$keyName.") 
 		values(".$clientData.")");
@@ -92,7 +91,6 @@ class ClientModel extends Model
 			city_id
 			from client_mst where client_id = (select max(client_id) from client_mst) and deleted_at='0000-00-00 00:00:00'");
 			DB::commit();			
-			
 			//get data from client-document
 			DB::beginTransaction();
 			$clientDocumentData = DB::connection($databaseName)->select("select 
@@ -184,7 +182,7 @@ class ClientModel extends Model
 	 * get All data 
 	 * returns the status
 	*/
-	public function getAllData($headerData,$processedData=null)
+	public function getAllData($headerData,$processedData=null,$identifyFlag)
 	{
 		// get exception message
 		$exception = new ExceptionMessage();
@@ -214,8 +212,14 @@ class ClientModel extends Model
 			if(strcmp($jobFormResult,$exceptionArray['204'])!=0)
 			{
 				$decodedJobCardData = json_decode($jobFormResult);
-				$queryParameter = $billFlag==1 ? $queryParameter.",'".$decodedJobCardData[0]->client_id."'" 
-												:$queryParameter." client_id IN('".$decodedJobCardData[0]->client_id."'";
+				if($billFlag==1)
+				{
+					$queryParameter = $queryParameter.",'".$decodedJobCardData[0]->client_id."'";
+				}
+				else
+				{
+					$queryParameter = $queryParameter." client_id IN('".$decodedJobCardData[0]->client_id."'";
+				}
 				$jobFormFlag=1;
 			}
 		}
@@ -292,15 +296,24 @@ class ClientModel extends Model
 			if(array_key_exists($clientArrayData[array_keys($clientArrayData)[$dataArray]],$headerData))
 			{
 				//address like query pending
-				$queryParameter = strcmp('address',$clientArrayData[array_keys($clientArrayData)[$dataArray]])==0 
-									? $queryParameter."".$queryKey." LIKE '%".$headerData[$key][0]."%' OR "
-									: $queryParameter."".$queryKey."='".$headerData[$key][0]."' OR ";
+				if(strcmp('address',$clientArrayData[array_keys($clientArrayData)[$dataArray]])==0)
+				{
+					$queryParameter = $queryParameter."".$queryKey." LIKE '%".$headerData[$key][0]."%' OR ";
+				}	
+				else
+				{
+					$queryParameter = $queryParameter."".$queryKey."='".$headerData[$key][0]."' OR ";		
+				}
 			}
 		}
 		if($queryParameter!='')
 		{
 			$queryParameter = rtrim($queryParameter,"OR ");
 			$queryParameter= $queryParameter." and";
+		}
+		if($queryParameter=='' && $identifyFlag==1)
+		{
+			return $exceptionArray['204'];
 		}
 		//database selection
 		$database = "";

@@ -98,6 +98,6 @@
 			}
 ##### Transaction Type Enum
 			{
-				"purchaseTaxType":"'purchase_tax",
+				"purchaseTaxType":"purchase_tax",
 				"purchaseType":"purchase"
 			}

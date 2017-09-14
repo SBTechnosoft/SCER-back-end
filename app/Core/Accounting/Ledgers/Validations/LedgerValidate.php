@@ -13,7 +13,7 @@ class LedgerValidate
 	public function validate($request)
 	{
 		$rules = array(
-			'ledger_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 &_`#().\'-\/]*$/', 
+			'ledger_name'=> 'between:1,100|regex:/^[a-zA-Z0-9 &_`#().\'-\/]*$/', 
 			'alias'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]*$/', 
 			'address1'=>'between:1,200|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'address2'=>'between:1,200|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
@@ -24,7 +24,7 @@ class LedgerValidate
 			'gst'=>'between:1,35|regex:/^([a-zA-Z0-9]{15})+$/'
 		);
 		$messages = [
-			'ledger_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
+			'ledger_name.between' => 'StringLengthException :Enter the :attribute less then 100 character',
 			'ledger_name.regex' => 'ledger-name contains character from "a-zA-Z &_`#().\'-" only',
 			'alias.regex' => 'alias contains character from "a-zA-Z &_`#().\'-" only',
 			'address1.between' => 'StringLengthException :Enter the :attribute less then 200 character',
@@ -63,7 +63,7 @@ class LedgerValidate
 	public function validateUpdateData($keyName,$value,$request)
 	{
 		$validationArray = array(
-			'ledger_name'=> 'between:1,35|regex:/^[a-zA-Z0-9 &_`#().\'-\/]*$/', 
+			'ledger_name'=> 'between:1,100|regex:/^[a-zA-Z0-9 &_`#().\'-\/]*$/', 
 			'alias'=> 'between:1,35|regex:/^[a-zA-Z &_`#().\'-]*$/', 
 			'address1'=>'between:1,200|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'address2'=>'between:1,200|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
@@ -88,7 +88,7 @@ class LedgerValidate
 				$key=> $rules[$key],
 			);
 			$messages = [
-				'ledger_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
+				'ledger_name.between' => 'StringLengthException :Enter the :attribute less then 100 character',
 				'ledger_name.regex' => 'ledger-name contains character from "a-zA-Z &_`#().\'-" only',
 				'alias.regex' => 'alias contains character from "a-zA-Z &_`#().\'-" only',
 				'address1.between' => 'StringLengthException :Enter the :attribute less then 200 character',

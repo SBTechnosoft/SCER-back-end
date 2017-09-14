@@ -46,7 +46,6 @@ class DocumentMpdf extends CurrencyToWordConversion
 		{
 			$htmlBody = json_decode($templateData)[0]->templateBody;
 		}
-		// exit;
 		$decodedBillData = json_decode($status);
 		if(is_object($decodedBillData))
 		{
@@ -59,7 +58,6 @@ class DocumentMpdf extends CurrencyToWordConversion
 		}
 		$decodedArray = json_decode($decodedBillData->productArray);
 		$productService = new ProductService();
-		
 		$productData = array();
 		$decodedData = array();
 		$index=1;
@@ -68,7 +66,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$totalVatValue=0;
 		$totalAdditionalTax=0;
 		$totalQty=0;
-		//echo "start document mpdf";
+		$finalDiscount = 0;
 		if(strcmp($decodedBillData->salesType,"retail_sales")==0)
 		{
 			$totalCm = 12;
@@ -77,8 +75,6 @@ class DocumentMpdf extends CurrencyToWordConversion
 				//get product-data
 				$productData[$productArray] = $productService->getProductData($decodedArray->inventory[$productArray]->productId);
 				$decodedData[$productArray] = json_decode($productData[$productArray]);
-				// print_r($decodedData[$productArray]);
-				// exit;
 				//calculate margin value
 				$marginValue[$productArray]=($decodedData[$productArray]->margin/100)*$decodedArray->inventory[$productArray]->price;
 				$marginValue[$productArray] = $marginValue[$productArray]+$decodedData[$productArray]->marginFlat;
@@ -93,6 +89,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 				{
 					$discountValue[$productArray] = ($decodedArray->inventory[$productArray]->discount/100)*$totalPrice;
 				}
+				$finalDiscount = $finalDiscount + $discountValue[$productArray];
 				$finalVatValue = $totalPrice - $discountValue[$productArray];
 				
 				//calculate vat value;
@@ -127,13 +124,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 				$additionalTaxValue[$productArray] = number_format($additionalTaxValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
 				$total[$productArray] = number_format($total[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints,'.','');
 				
-				if($decodedData[$productArray]->hsn){
-					$product_hsnCode = $decodedData[$productArray]->hsn;
-				}
-				else{
-					$product_hsnCode = "";
-				}
-				
+				$product_hsnCode = $decodedData[$productArray]->hsn ? $decodedData[$productArray]->hsn : "";
 				$output =$output."".
 					'<tr class="trhw" style="font-family: Calibri; text-align: left; height:  0.7cm; background-color: transparent;">
 				   <td class="tg-m36b thsrno" style="font-size: 14px; height: 0.7cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;">'.$index.'</td>
@@ -189,14 +180,10 @@ class DocumentMpdf extends CurrencyToWordConversion
 				
 				$totalPrice[$productArray] = $decodedArray->inventory[$productArray]->price*$decodedArray->inventory[$productArray]->qty;
 				
-				if(strcmp($decodedArray->inventory[$productArray]->discountType,"flat")==0)
-				{
-					$discountValue[$productArray] = $decodedArray->inventory[$productArray]->discount;
-				}
-				else
-				{
-					$discountValue[$productArray] = ($decodedArray->inventory[$productArray]->discount/100)*$totalPrice[$productArray];
-				}
+				$discountValue[$productArray] = strcmp($decodedArray->inventory[$productArray]->discountType,"flat")==0
+												? $decodedArray->inventory[$productArray]->discount
+												: ($decodedArray->inventory[$productArray]->discount/100)*$totalPrice[$productArray];
+				$finalDiscount = $finalDiscount + $discountValue[$productArray];
 				$finalVatValue = $totalPrice[$productArray]-$discountValue[$productArray];
 				
 				//calculate vat value;
@@ -219,12 +206,8 @@ class DocumentMpdf extends CurrencyToWordConversion
 				{
 					$decodedArray->inventory[$productArray]->frameNo="";
 				}
-				if($decodedData[$productArray]->hsn){
-					$product_hsnCode = $decodedData[$productArray]->hsn;
-				}
-				else{
-					$product_hsnCode = "";
-				}
+				$product_hsnCode = $decodedData[$productArray]->hsn
+								   ? $decodedData[$productArray]->hsn : "";
 				
 				$totalAmount=$totalAmount+$total[$productArray];
 				$totalAdditionalTax=$totalAdditionalTax+$additionalTaxValue[$productArray]+$vatValue[$productArray];
@@ -277,36 +260,30 @@ class DocumentMpdf extends CurrencyToWordConversion
 				$index++;
 		    }    
 		}
-
+		//calculation of total-discount 
+		$totalDiscount = strcmp($decodedBillData->totalDiscounttype,'flat')==0
+						? $decodedBillData->totalDiscount+$finalDiscount 
+						: (($decodedBillData->totalDiscount/100)*$decodedBillData->total)+$finalDiscount;
 		$address = $decodedBillData->client->address1;
 		$companyAddress = $decodedBillData->company->address1.",".$decodedBillData->company->address2;
-		if(strcmp($decodedBillData->salesType,"retail_sales")==0)
-		{
-			$typeSale = "RETAIL";
-		}
-		else
-		{
-			$typeSale = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TAX";
-			// $typeSale = "TAX";
-
-		}
+		
+		$typeSale = strcmp($decodedBillData->salesType,"retail_sales")==0
+					? "RETAIL" : "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TAX";
+		
 		//add 1 month in entry date for displaying expiry date
 		$date = date_create($decodedBillData->entryDate);
 		date_add($date, date_interval_create_from_date_string('30 days'));
 		$expiryDate = date_format($date, 'd-m-Y');
 		$totalTax = $totalVatValue+$totalAdditionalTax;
-		
 		// convert amount(number_format) into their company's selected decimal points
 		$totalTax = number_format($totalTax,$decodedData[0]->company->noOfDecimalPoints,'.','');
 		$totalAmount = number_format($totalAmount,$decodedData[0]->company->noOfDecimalPoints,'.','');
 		$roundTotal = round($totalAmount);
 		$roundUpFigure = $roundTotal-$totalAmount;
 		$roundUpFigure = number_format($roundUpFigure,$decodedData[0]->company->noOfDecimalPoints,'.','');
-		
 		//calculation of currecy to word conversion
 		$currecyToWordConversion = new DocumentMpdf();
 		$currencyResult = $currecyToWordConversion->conversion($roundTotal);
-		
 		$billArray = array();
 		$billArray['Description']=$output;
 		$billArray['ClientName']=$decodedBillData->client->clientName;
@@ -331,7 +308,6 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$billArray['CompanySGST']=$decodedBillData->company->sgst;
 		$billArray['CompanyCGST']=$decodedBillData->company->cgst;
 		$billArray['CLIENTTINNO']="";
-		
 		$billArray['ChallanNo']="";
 		$billArray['ChallanDate']="";
 		$billArray['Transport']="";
@@ -339,10 +315,10 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$billArray['Reference']="";
 		$billArray['GCLRNO']="";
 		$billArray['REMARK']=$decodedBillData->remark;
-		
-		// $mpdf = new mPDF('A4','landscape');
+		$billArray['TotalDiscount']=$totalDiscount;
+		$mpdf = new mPDF('A4','landscape');
 		 // $mpdf = new mPDF('','A4','','agency','0','0','0','0','0','0','landscape');
-		 $mpdf = new mPDF('','', 0, '', 10, 5, 5, 10, 0, 0, 'L');
+		 // $mpdf = new mPDF('','', 0, '', 10, 5, 5, 10, 0, 0, 'L');
 		$mpdf->SetDisplayMode('fullpage');
 		foreach($billArray as $key => $value)
 		{

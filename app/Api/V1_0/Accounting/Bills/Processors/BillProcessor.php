@@ -291,6 +291,15 @@ class BillProcessor extends BaseProcessor
 			}	
 			$discountTotal = $discount+$discountTotal;
 		}
+		// if(strcmp($tRequest['totalDiscounttype'],'flat')==0)
+		// {
+			// $totalDiscount = $tRequest['totalDiscount'];
+		// }
+		// else
+		// {
+			// $totalDiscount = ($tRequest['totalDiscount']/100)*$tRequest['total'];
+		// }
+		// $discountTotal = $discountTotal+$totalDiscount;
 		$totalSaleAmount = $discountTotal+$tRequest['total'];
 		$totalDebitAmount = $tRequest['tax']+$tRequest['total'];
 		if($discountTotal==0)
@@ -596,6 +605,12 @@ class BillProcessor extends BaseProcessor
 				$tInventoryArray[$trimData][5] = trim($request->input()['inventory'][$trimData]['color']);
 				$tInventoryArray[$trimData][6] = trim($request->input()['inventory'][$trimData]['frameNo']);
 				$tInventoryArray[$trimData][7] = trim($request->input()['inventory'][$trimData]['size']);
+				$tInventoryArray[$trimData][8] = trim($request->input()['inventory'][$trimData]['cgstPercentage']);
+				$tInventoryArray[$trimData][9] = trim($request->input()['inventory'][$trimData]['cgstAmount']);
+				$tInventoryArray[$trimData][10] = trim($request->input()['inventory'][$trimData]['sgstPercentage']);
+				$tInventoryArray[$trimData][11] = trim($request->input()['inventory'][$trimData]['sgstAmount']);
+				$tInventoryArray[$trimData][12] = trim($request->input()['inventory'][$trimData]['igstPercentage']);
+				$tInventoryArray[$trimData][13] = trim($request->input()['inventory'][$trimData]['igstAmount']);
 				array_push($request->input()['inventory'][$trimData],$tInventoryArray[$trimData]);
 			}
 			$productArray['inventory'] = $request->input()['inventory'];
@@ -1458,8 +1473,14 @@ class BillProcessor extends BaseProcessor
 			{
 				for($inventoryData=0;$inventoryData<count($request->input()['inventory']);$inventoryData++)
 				{
-					$billTrimData['inventory'][$inventoryData]['amount'] = $request->input()['inventory'][$inventoryData]['amount'];
-					$billTrimData['inventory'][$inventoryData]['productName'] = $request->input()['inventory'][$inventoryData]['productName'];
+					$billTrimData['inventory'][$inventoryData]['amount'] = trim($request->input()['inventory'][$inventoryData]['amount']);
+					$billTrimData['inventory'][$inventoryData]['productName'] = trim($request->input()['inventory'][$inventoryData]['productName']);
+					$billTrimData['inventory'][$inventoryData]['cgstPercentage'] = trim($request->input()['inventory'][$inventoryData]['cgstPercentage']);
+					$billTrimData['inventory'][$inventoryData]['cgstAmount'] = trim($request->input()['inventory'][$inventoryData]['cgstAmount']);
+					$billTrimData['inventory'][$inventoryData]['sgstPercentage'] = trim($request->input()['inventory'][$inventoryData]['sgstPercentage']);
+					$billTrimData['inventory'][$inventoryData]['sgstAmount'] = trim($request->input()['inventory'][$inventoryData]['sgstAmount']);
+					$billTrimData['inventory'][$inventoryData]['igstPercentage'] = trim($request->input()['inventory'][$inventoryData]['igstPercentage']);
+					$billTrimData['inventory'][$inventoryData]['igstAmount'] = trim($request->input()['inventory'][$inventoryData]['igstAmount']);
 				}
 				$invFlag=1;
 				$decodedProductArrayData = json_decode($billData[0]->product_array);

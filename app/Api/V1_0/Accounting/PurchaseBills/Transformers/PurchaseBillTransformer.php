@@ -99,6 +99,12 @@ class PurchaseBillTransformer
 				$purchaseBillArray['inventory'][$inventoryArray]['frameNo'] = array_key_exists('frameNo',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['frameNo']) : '';
 				$purchaseBillArray['inventory'][$inventoryArray]['size'] = array_key_exists('size',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['size']) : '';
 				$purchaseBillArray['inventory'][$inventoryArray]['amount'] = array_key_exists('amount',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['amount']) : 0;
+				$purchaseBillArray['inventory'][$inventoryArray]['cgstPercentage'] = array_key_exists('cgstPercentage',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['cgstPercentage']) : 0;
+				$purchaseBillArray['inventory'][$inventoryArray]['cgstAmount'] = array_key_exists('cgstAmount',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['cgstAmount']) : 0;
+				$purchaseBillArray['inventory'][$inventoryArray]['sgstPercentage'] = array_key_exists('sgstPercentage',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['sgstPercentage']) : 0;
+				$purchaseBillArray['inventory'][$inventoryArray]['sgstAmount'] = array_key_exists('sgstAmount',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['sgstAmount']) : 0;
+				$purchaseBillArray['inventory'][$inventoryArray]['igstPercentage'] = array_key_exists('igstPercentage',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['igstPercentage']) : 0;
+				$purchaseBillArray['inventory'][$inventoryArray]['igstAmount'] = array_key_exists('igstAmount',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['igstAmount']) : 0;
 				if(array_key_exists('discountType',$inventoryData[$inventoryArray]))
 				{
 					if(strcmp($inventoryData[$inventoryArray]['discountType'],$discountTypeEnumArray['flatType'])==0 || strcmp($inventoryData[$inventoryArray]['discountType'],$discountTypeEnumArray['percentageType'])==0)
@@ -205,6 +211,12 @@ class PurchaseBillTransformer
 				$purchaseBillArray['inventory'][$inventoryArray]['frameNo'] = array_key_exists('frameNo',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['frameNo']) : '';
 				$purchaseBillArray['inventory'][$inventoryArray]['size'] = array_key_exists('size',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['size']) : '';
 				$purchaseBillArray['inventory'][$inventoryArray]['amount'] = array_key_exists('amount',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['amount']) : '';
+				$purchaseBillArray['inventory'][$inventoryArray]['cgstPercentage'] = array_key_exists('cgstPercentage',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['cgstPercentage']) : 0;
+				$purchaseBillArray['inventory'][$inventoryArray]['cgstAmount'] = array_key_exists('cgstAmount',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['cgstAmount']) : 0;
+				$purchaseBillArray['inventory'][$inventoryArray]['sgstPercentage'] = array_key_exists('sgstPercentage',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['sgstPercentage']) : 0;
+				$purchaseBillArray['inventory'][$inventoryArray]['sgstAmount'] = array_key_exists('sgstAmount',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['sgstAmount']) : 0;
+				$purchaseBillArray['inventory'][$inventoryArray]['igstPercentage'] = array_key_exists('igstPercentage',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['igstPercentage']) : 0;
+				$purchaseBillArray['inventory'][$inventoryArray]['igstAmount'] = array_key_exists('igstAmount',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['igstAmount']) : 0;
 				if(array_key_exists('discountType',$inventoryData[$inventoryArray]))
 				{
 					if(strcmp($inventoryData[$inventoryArray]['discountType'],$discountTypeEnumArray['flatType'])==0 || strcmp($inventoryData[$inventoryArray]['discountType'],$discountTypeEnumArray['percentageType'])==0)
@@ -217,154 +229,11 @@ class PurchaseBillTransformer
 		return $purchaseBillArray;
 	}
 	
-	
-	
 	/**
-     * trim bill update data and check enum data type
-	 * @param request data 
-     * @return array/error message
-     */
-	public function trimBillUpdateData(Request $request)
-	{
-		$convertedValue="";
-		$dataFlag=0;
-		$discountTypeFlag=0;
-		$paymentModeFlag = 0;
-		$isDisplayFlag = 0;
-		$tempArrayFlag=0;
-		$tempArray = array();
-		$tBillArray = array();
-		$billArrayData = $request->input();
-		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
-		if(array_key_exists('paymentMode',$billArrayData))
-		{
-			if(strcmp($billArrayData['paymentMode'],'cash')==0 || strcmp($billArrayData['paymentMode'],'card')==0)
-			{
-				$billArrayData['bankName'] = "";
-				$billArrayData['checkNumber'] = "";
-			}
-		}			
-		for($inputArrayData=0;$inputArrayData<count($billArrayData);$inputArrayData++)
-		{
-			if(strcmp(array_keys($billArrayData)[$inputArrayData],'inventory')==0)
-			{
-				$enumDiscountTypeArray = array();
-				$discountTypeEnum = new DiscountTypeEnum();
-				$enumDiscountTypeArray = $discountTypeEnum->enumArrays();
-				for($inventoryArray=0;$inventoryArray<count($billArrayData['inventory']);$inventoryArray++)
-				{
-					$tempArrayFlag=1;
-					$tempArray[$inventoryArray] = array();
-					$tempArray[$inventoryArray]['productId'] = trim($billArrayData['inventory'][$inventoryArray]['productId']);
-					$tempArray[$inventoryArray]['discount'] = trim($billArrayData['inventory'][$inventoryArray]['discount']);
-					$tempArray[$inventoryArray]['discountType'] = trim($billArrayData['inventory'][$inventoryArray]['discountType']);
-					$tempArray[$inventoryArray]['price'] = trim($billArrayData['inventory'][$inventoryArray]['price']);
-					$tempArray[$inventoryArray]['qty'] = trim($billArrayData['inventory'][$inventoryArray]['qty']);
-					$tempArray[$inventoryArray]['color'] = trim($billArrayData['inventory'][$inventoryArray]['color']);
-					$tempArray[$inventoryArray]['frameNo'] = trim($billArrayData['inventory'][$inventoryArray]['frameNo']);
-					$tempArray[$inventoryArray]['size'] = trim($billArrayData['inventory'][$inventoryArray]['size']);
-					foreach ($enumDiscountTypeArray as $key => $value)
-					{
-						if(strcmp($value,$tempArray[$inventoryArray]['discountType'])==0)
-						{
-							$discountTypeFlag=1;
-							break;
-						}
-						else
-						{
-							$discountTypeFlag=0;
-						}
-					}
-					if($discountTypeFlag==0)
-					{
-						return $exceptionArray['content'];
-					}
-				}
-			}
-			else
-			{
-				$dataFlag=1;
-				$key = array_keys($billArrayData)[$inputArrayData];
-				$value = $billArrayData[$key];
-				for($asciiChar=0;$asciiChar<strlen($key);$asciiChar++)
-				{
-					if(ord($key[$asciiChar])<=90 && ord($key[$asciiChar])>=65) 
-					{
-						$convertedValue1 = "_".chr(ord($key[$asciiChar])+32);
-						$convertedValue=$convertedValue.$convertedValue1;
-					}
-					else
-					{
-						$convertedValue=$convertedValue.$key[$asciiChar];
-					}
-				}
-				//check is_display and payment-mode
-				//check enum type of payment-mode
-				if(strcmp('payment_mode',$convertedValue)==0)
-				{
-					$paymentModeArray = array();
-					$paymentModeEnum = new PaymentModeEnum();
-					$paymentModeArray = $paymentModeEnum->enumArrays();
-					
-					$tBillArray[$convertedValue]=trim($value);
-					foreach ($paymentModeArray as $key => $value)
-					{
-						if(strcmp($value,$tBillArray[$convertedValue])==0)
-						{
-							$paymentModeFlag=1;
-							break;
-						}
-					}
-					if($paymentModeFlag==0)
-					{
-						return $exceptionArray['content'];
-					}
-				}
-				else if(strcmp('is_display',$convertedValue)==0)
-				{
-					$isDisplayEnum = new IsDisplayEnum();
-					$isDisplayArray = $isDisplayEnum->enumArrays();
-					
-					$tBillArray[$convertedValue]=trim($value);
-					foreach ($isDisplayArray as $key => $value)
-					{
-						if(strcmp($value,$tBillArray[$convertedValue])==0)
-						{
-							$isDisplayFlag=1;
-							break;
-						}
-					}
-					if($isDisplayFlag==0)
-					{
-						return $exceptionArray['content'];
-					}
-				}
-				else
-				{
-					$tBillArray[$convertedValue]=trim($value);
-				}
-				$convertedValue="";
-			}
-		}
-		if($tempArrayFlag==1 && $dataFlag==1)
-		{
-			$tBillArray['inventory'] = $tempArray;
-		}
-		else if($tempArrayFlag==1)
-		{
-			$tBillArray['inventory'] = $tempArray;
-		}
-		return $tBillArray;
-	}
-	
-	 /**
 	 *  trim data -> conversion date -> make an array of transform data
 	 * @param request header
      * @return array/error message
-     */
+    */
 	public function trimFromToDateData($headerData)
 	{
 		//get date from header and trim data

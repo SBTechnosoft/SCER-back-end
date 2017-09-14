@@ -20,3 +20,20 @@
             {
                 "documentPath":''
             }
+			
+##### Creates Documents (generate pdf)
+
+##### `DELETE /documents/{documentId}`
++ Header
+	- Authentication Token
+    - type: 'sale-bill/purchase-bill'
++ Error Message
+
+			{
+				... Error Message
+			}            
++ Response
+
+            {
+                ... HTTP_Status:200
+            }

@@ -177,6 +177,7 @@ class ClientController extends BaseController implements ContainerInterface
 		$constantArray = $constantClass->constantVariable();
 		$processedData='';
 		$clientService= new ClientService();
+		$identifyFlag=0;
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
 			if($clientId==null)
@@ -184,6 +185,7 @@ class ClientController extends BaseController implements ContainerInterface
 				if(array_key_exists('invoicefromdate',$request->header()) && array_key_exists('invoicetodate',$request->header())
 					|| array_key_exists('jobcardfromdate',$request->header()) && array_key_exists('jobcardtodate',$request->header()))
 				{
+					$identifyFlag=1;
 					$processor = new ClientProcessor();
 					$processedData = $processor->dateConversion($request->header());
 					if(!is_object($processedData))
@@ -191,7 +193,7 @@ class ClientController extends BaseController implements ContainerInterface
 						return $processedData;
 					}
 				}
-				$status = $clientService->getAllClientData($request->header(),$processedData);
+				$status = $clientService->getAllClientData($request->header(),$processedData,$identifyFlag);
 				return $status;
 			}
 			else

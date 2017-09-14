@@ -51,7 +51,7 @@ class PurchaseBillProcessor extends BaseProcessor
 		$constantArray = $constantClass->constantVariable();	
 		$file = $request->file();
 		$docFlag=0;
-		if(in_array(true,$file))
+		if(in_array(true,$file)  || array_key_exists('scanFile',$request->input()))
 		{
 			$documentController =new DocumentController(new Container());
 			$processedData = $documentController->insertUpdate($request,$constantArray['purchaseBillDocUrl']);
@@ -598,7 +598,7 @@ class PurchaseBillProcessor extends BaseProcessor
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		$file = $request->file();
-		if(in_array(true,$file))
+		if(in_array(true,$file)  || array_key_exists('scanFile',$request->input()))
 		{
 			$documentController =new DocumentController(new Container());
 			$processedData = $documentController->insertUpdate($request,$constantArray['purchaseBillDocUrl']);

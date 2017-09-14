@@ -106,10 +106,10 @@ class ClientService
      * get all the data and call the model for database selection opertation
      * @return status
      */
-	public function getAllClientData($headerData,$processedData=null)
+	public function getAllClientData($headerData,$processedData=null,$identifyFlag)
 	{
 		$clientModel = new ClientModel();
-		$status = $clientModel->getAllData($headerData,$processedData);
+		$status = $clientModel->getAllData($headerData,$processedData,$identifyFlag);
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();

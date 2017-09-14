@@ -1,5 +1,6 @@
 <?php
 namespace ERP\Entities\Constants;
+use Carbon;
 /**
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -122,20 +123,47 @@ class ConstantClass
 	}
 
 	/**
+	 * making an array contains constant data 
+	 * @param (no parameter)
+	*/
+    public function constantAccountingDate()
+	{
+		$financialArrayDate = array();
+		$mytime = Carbon\Carbon::now();
+		$currentDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $mytime)->format('Y-m-d');
+		$dateTime = $mytime->toDateTimeString();
+		$yearStartDate = $mytime->year.'-04-01 00:00:00';
+		if($dateTime >= $yearStartDate)
+		{
+			$toYear = $mytime->year+1;
+			$financialArrayDate['fromDate'] = $mytime->year.'-04-01 00:00:00';
+			$financialArrayDate['toDate'] = $toYear.'-03-31 00:00:00';
+		}
+		else
+		{
+			$fromYear = $mytime->year-1;
+			$financialArrayDate['fromDate'] = $fromYear.'-04-01 00:00:00';
+			$financialArrayDate['toDate'] = $mytime->year.'-03-31 00:00:00';
+		}
+		return $financialArrayDate;
+	}
+	
+	/**
 	 * check the incoming request url and give them respected database name
 	 * @param (no parameter)
 	*/
 	public function constantDatabase()
 	{
-		// if(strcmp("www.scerp1.com",$_SERVER['HTTP_HOST'])==0)
-		// {
+		if(strcmp("www.scerp1.com",$_SERVER['HTTP_HOST'])==0)
+		{
 			$database = "mysql";
 			return $database;
-		// }
+		}
 		// else
 		// {
 			// $database = "mysql_silicon";
 			// return $database;
 		// }
 	}
+	 
 }
