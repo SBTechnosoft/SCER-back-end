@@ -462,26 +462,26 @@ include ('connection.php');
 				
 	//---------------------------------CRM-------------------------------------------------------------------------------
 				//conversation-dtl(email)
-				// $scope.client=[{"clientId":1},{"clientId":2},{"clientId":3}];
+				$scope.client=[{"clientId":1},{"clientId":2},{"clientId":3}];
 				
-				// $scope.formAdata.emailId = "reemapatel25@gmail.com";
-				// $scope.formAdata.ccEmailId = "";
-				// $scope.formAdata.bccEmailId = "";
-				// $scope.formAdata.subject = "Sample Email Send";
-				// $scope.formAdata.conversation = "Good Morning, Your Bill Is Generated...";
+				$scope.formAdata.emailId = "reemapatel25@gmail.com";
+				$scope.formAdata.ccEmailId = "";
+				$scope.formAdata.bccEmailId = "";
+				$scope.formAdata.subject = "Sample Email Send";
+				$scope.formAdata.conversation = "Good Morning, Your Bill Is Generated...";
 				
-				// for(var i=0;i<$scope.client.length;i++)
-				// {
-					// angular.forEach($scope.client[i], function (value,key) {
-						// formdata.append('client['+i+']['+key+']',value);
-  					// });
-				// }
+				for(var i=0;i<$scope.client.length;i++)
+				{
+					angular.forEach($scope.client[i], function (value,key) {
+						formdata.append('client['+i+']['+key+']',value);
+  					});
+				}
 				
-				// formdata.append('emailId',$scope.formAdata.emailId);
-				// formdata.append('ccEmailId',$scope.formAdata.ccEmailId);
-				// formdata.append('bccEmailId',$scope.formAdata.bccEmailId);
-				// formdata.append('subject',$scope.formAdata.subject);
-				// formdata.append('conversation',$scope.formAdata.conversation);
+				formdata.append('emailId',$scope.formAdata.emailId);
+				formdata.append('ccEmailId',$scope.formAdata.ccEmailId);
+				formdata.append('bccEmailId',$scope.formAdata.bccEmailId);
+				formdata.append('subject',$scope.formAdata.subject);
+				formdata.append('conversation',$scope.formAdata.conversation);
 				
 				//job-form-number
 				// $scope.formAdata.jobCardNumberLabel = "ffff";
@@ -794,7 +794,7 @@ include ('connection.php');
 				// var productId =6;
 				// var productGrpId = 11;
 				// var productCatId = 18;
-				var companyId=10;
+				// var companyId=10;
 				// var cityId = 1;
 				 // var stateAbb = "IN-AG";
 				 // var branchId = 6;
@@ -812,9 +812,10 @@ include ('connection.php');
 				// var quotationBillId = 1;
 				// var professionId = 2;
 				// var purchaseBillId = 3;
-				var documentId = 1;
+				// var documentId = 2;
 				
-				var url="http://www.scerp1.com/documents/"+documentId;
+				var url="http://www.scerp1.com/crm/conversastion/bulk-email";
+				// var url="http://www.scerp1.com/documents/"+documentId;
 				
 				// var url="http://www.scerp1.com/accounting/purchase-bills/company/"+companyId;
 				// var url="http://www.scerp1.com/accounting/purchase-bills/"+purchaseBillId;
@@ -938,18 +939,17 @@ include ('connection.php');
                         // type:'patch',
                         // type:'get',
 						 // method: 'get',
-						 // method: 'post',
+						 method: 'post',
 						 // method: 'patch',
 						// enctype:'multipart/formdata',
 						 // _method: 'patch',
 						// method: 'post',
 						// method: "PATCH",
-						method:'delete',
+						// method:'delete',
 						processData: false,
 						
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
-                        headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372',
-						"type":"purchase-bill"},
+                        headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','clientName':'reemapatell','contactNo':'9998989899','emailId':'reemas@gmail.com','address':'address2','invoiceFromDate':'12-01-2017','invoiceNumber':'myCompany44','jobCardNumber':'2'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','salesType':'retail_sales','operation':'excel'},//
                         // headers: {'Content-Type': undefined,'type':'sales','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
@@ -964,7 +964,7 @@ include ('connection.php');
                         // headers: {'Content-Type':undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','productCode':'ABC_ABC_AB_CYCFDJ_BKBK_122T'},
                         // headers: {'Content-Type':undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','fromDate':'01/04/2017','toDate':'28/04/2017'},
                         // headers: {'Content-Type':'application/x-www-form-urlencoded','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
-						 // data:formdata
+						 data:formdata
 						// data:$scope.user						
                         
                     }).success(function(data, status, headers, config) {

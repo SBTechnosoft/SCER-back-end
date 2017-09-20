@@ -52,8 +52,9 @@ class ClientController extends BaseController implements ContainerInterface
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		
-		if(strcmp($_SERVER['REQUEST_URI'],"/accounting/bills")==0 || strcmp($_SERVER['REQUEST_URI'],"/accounting/quotations")==0 
+		// print_r($_SERVER['REQUEST_URI']);
+		$requestUri = explode('/',$_SERVER['REQUEST_URI']);
+		if(strcmp($requestUri[1],"accounting")==0 && strcmp($requestUri[2],"bills")==0 || strcmp($_SERVER['REQUEST_URI'],"/accounting/quotations")==0 
 			|| strcmp($_SERVER['REQUEST_URI'],"/crm/job-form")==0)
 		{
 			$this->request = $request;

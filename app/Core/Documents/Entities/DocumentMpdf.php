@@ -316,8 +316,8 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$billArray['GCLRNO']="";
 		$billArray['REMARK']=$decodedBillData->remark;
 		$billArray['TotalDiscount']=$totalDiscount;
-		$mpdf = new mPDF('A4','landscape');
-		 // $mpdf = new mPDF('','A4','','agency','0','0','0','0','0','0','landscape');
+		// $mpdf = new mPDF('A4','landscape');
+		 $mpdf = new mPDF('','A4','','agency','0','0','0','0','0','0','landscape');
 		 // $mpdf = new mPDF('','', 0, '', 10, 5, 5, 10, 0, 0, 'L');
 		$mpdf->SetDisplayMode('fullpage');
 		foreach($billArray as $key => $value)
@@ -384,11 +384,11 @@ class DocumentMpdf extends CurrencyToWordConversion
 			if($decodedBillData->client->emailId!="")
 			{
 				// mail send
-				// $result = $this->mailSending($decodedBillData->client->emailId,$documentPathName,$emailTemplateData,$decodedBillData->client->clientName,$decodedBillData->company->companyName);
-				// if(strcmp($result,$exceptionArray['Email'])==0)
-				// {
-					// return $result;
-				// }
+				$result = $this->mailSending($decodedBillData->client->emailId,$documentPathName,$emailTemplateData,$decodedBillData->client->clientName,$decodedBillData->company->companyName);
+				if(strcmp($result,$exceptionArray['Email'])==0)
+				{
+					return $result;
+				}
 			}
 			
 			//sms send
@@ -575,18 +575,18 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$mail = new PHPMailer;
 		$email = $emailId;
 		$message = $htmlBody;
-		$mail->IsSMTP();  
+		// $mail->IsSMTP();  
 		$mail->SMTPDebug = 0;
 		$mail->SMTPAuth = true;
-		$mail->SMTPSecure = 'ssl';
+		$mail->SMTPSecure = 'tls';
 		
 		// Set mailer to use SMTP
-		$mail->Host = 'swaminarayancycles.com';                // Specify main and backup server //sg2plcpnl0073.prod.sin2.secureserver.net port=465
-		$mail->Port =  465;                                    // Set the SMTP port 465
-		$mail->Username = 'support@swaminarayancycles.com';                // SMTP username
+		$mail->Host = 'smtp.gmail.com';                // Specify main and backup server //sg2plcpnl0073.prod.sin2.secureserver.net port=465
+		$mail->Port =  587;                                    // Set the SMTP port 465
+		$mail->Username = 'farhan.s@siliconbrain.in';                // SMTP username
 		$mail->Password = 'Abcd@1234'; 
-		$mail->From = 'support@swaminarayancycles.com';
-		$mail->FromName = 'support@swaminarayancycles.com';
+		$mail->From = 'farhan.s@siliconbrain.in';
+		$mail->FromName = 'farhan.s@siliconbrain.in';
 		$mail->AddAddress($email);  // Add a recipient
 		
 		$mail->AddAttachment($documentPathName); //,"abc",'base8','mime/type'
@@ -599,7 +599,6 @@ class DocumentMpdf extends CurrencyToWordConversion
 		}
 		
 	}
-	
 	public function postRequest($url,$_data) 
 	{
 		// convert variables array to string:

@@ -174,16 +174,17 @@ class LedgerProcessor extends BaseProcessor
 					}
 					else
 					{
+						$buisnessFlag=0;
 						if(array_key_exists("ledger_name",$tRequest[0]))
 						{
 							$buisnessFlag=1;
 							$buisnessLogic = new BuisnessLogic();
-							$businessResult = $buisnessLogic->validateUpdateLedgerData($tRequest,$ledgerId);
+							$businessResult = $buisnessLogic->validateUpdateLedgerData($tRequest,$ledgerId,$request->input());
 							if(!is_array($businessResult))
 							{
 								$contactNo = json_decode($result)->contact_no;
 								$tRequest[0]['ledger_name'] = $tRequest[0]['ledger_name'].$contactNo;
-								$innerBusinessResult = $buisnessLogic->validateUpdateLedgerData($tRequest,$ledgerId);
+								$innerBusinessResult = $buisnessLogic->validateUpdateLedgerData($tRequest,$ledgerId,$request->input());
 								if(!is_array($innerBusinessResult))
 								{
 									return $exceptionArray['content'];

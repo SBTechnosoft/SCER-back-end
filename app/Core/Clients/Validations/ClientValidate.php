@@ -20,7 +20,7 @@ class ClientValidate extends ClientModel
 	public function validate($request)
 	{
 		$rules = array(
-			'client_name'=> 'between:1,100|regex:/^[a-zA-Z &_`#().\'-]*$/', 
+			'client_name'=> 'between:1,100|regex:/^[a-zA-Z0-9 &_`#().\'-]*$/', 
 			'company_name'=> 'between:2,50|regex:/^[a-zA-Z &_`#().\'-]+$/', 
 			'contact_no'=> 'between:10,12|regex:/^[0-9]+$/', 
 			'email_id'=> 'regex:/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,})$/', 
@@ -28,7 +28,7 @@ class ClientValidate extends ClientModel
 		);
 		$messages = [
 			'client_name.between' => 'StringLengthException :Enter the :attribute less then 100 character',
-			'client_name.regex' => 'client-name contains character from "a-zA-Z &_`#().\'-" only','company_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
+			'client_name.regex' => 'client-name contains character from "a-zA-Z0-9 &_`#().\'-" only','company_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
 			'company_name.regex' => 'company-name contains character from "a-zA-Z &_`#().\'-" only',
 			'contact_no.between' => 'StringLengthException :Enter the :attribute between 10-12 number',
 			'contact_no.regex' => 'contact-no contains character from "0-9" only',
@@ -61,7 +61,7 @@ class ClientValidate extends ClientModel
 	public function validateUpdateData($keyName,$value,$request)
 	{
 		$validationArray = array(
-			'client_name'=> 'between:1,100|regex:/^[a-zA-Z &_`#().\'-]*$/', 
+			'client_name'=> 'between:1,100|regex:/^[a-zA-Z0-9 &_`#().\'-]*$/', 
 			'company_name'=> 'between:2,50|regex:/^[a-zA-Z &_`#().\'-]+$/', 
 			'contact_no'=> 'between:10,12|regex:/^[0-9]+$/', 
 			'work_no'=> 'between:10,12|regex:/^[1-9][0-9]+$/', 
@@ -85,7 +85,7 @@ class ClientValidate extends ClientModel
 			);
 			$messages = [
 				'client_name.between' => 'StringLengthException :Enter the :attribute less then 100 character',
-				'client_name.regex' => 'client-name contains character from "a-zA-Z &_`#().\'-" only','company_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
+				'client_name.regex' => 'client-name contains character from "a-zA-Z0-9 &_`#().\'-" only','company_name.between' => 'StringLengthException :Enter the :attribute less then 35 character',
 				'company_name.regex' => 'company-name contains character from "a-zA-Z &_`#().\'-" only',
 				'contact_no.between' => 'StringLengthException :Enter the :attribute between 10-12 number',
 				// 'contact_no.required' => 'contact-no is required',
@@ -153,7 +153,7 @@ class ClientValidate extends ClientModel
      * $param trim request data
      * @return error messgage/trim request array
      */	
-	public function clientNameValidateUpdate($tRequest,$clientId)
+	public function clientNameValidateUpdate($tRequest,$clientId,$input)
 	{
 		$flag=0;
 		// get exception message
@@ -164,8 +164,22 @@ class ClientValidate extends ClientModel
 		$clientValidation = new ClientValidate();
 		$clientData = $clientValidation->getData($clientId);
 		$decodedClientdata = json_decode($clientData);
-		
-		$clientResult = $clientValidation->getClientName($tRequest['client_name']);
+		if(array_key_exists('contactNo',$input))
+		{
+			$contactNo = trim($input['contactNo']);
+		}
+		else
+		{
+			$contactNo='';
+		}
+		$clientResult = $clientValidation->getClientNameForValidate($tRequest['client_name'],$contactNo);
+		if(!is_array($clientResult))
+		{
+			if(strcmp($clientResult,$exceptionArray['content'])==0)
+			{
+				return $exceptionArray['content'];
+			}
+		}
 		if(!is_array($clientResult))
 		{
 			return $tRequest;

@@ -158,10 +158,9 @@ class ClientProcessor extends BaseProcessor
 					// get key value from trim array
 					$tKeyValue[$data] = array_keys($tRequest[0])[0];
 					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
-				
 					if(strcmp($tKeyValue[$data],"client_name")==0)
 					{
-						$validationResult = $clientValidate->clientNameValidateUpdate($tRequest[0],$clientId);
+						$validationResult = $clientValidate->clientNameValidateUpdate($tRequest[0],$clientId,$request->input());
 						if(!is_array($validationResult))
 						{
 							return $validationResult;

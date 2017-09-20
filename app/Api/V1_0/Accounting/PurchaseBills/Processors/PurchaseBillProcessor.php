@@ -219,7 +219,7 @@ class PurchaseBillProcessor extends BaseProcessor
 			{$purchaseLedgerId = $generalLedgerArray[$ledgerArray]->ledger_id;}	
 		}
 		// total discount calculation
-		$discountTotal=0;
+		$finalTotalDiscount=0;
 		$inventoryCount = count($trimRequest['inventory']);
 		for($discountArray=0;$discountArray<$inventoryCount;$discountArray++)
 		{
@@ -227,12 +227,12 @@ class PurchaseBillProcessor extends BaseProcessor
 						? $trimRequest['inventory'][$discountArray]['discount'] 
 						: ($trimRequest['inventory'][$discountArray]['discount']/100)*
 						($trimRequest['inventory'][$discountArray]['price']*$trimRequest['inventory'][$discountArray]['qty']);
-			$discountTotal = $discount+$discountTotal;
+			$finalTotalDiscount = $discount+$finalTotalDiscount;
 		}
 		$grandTotal = $trimRequest['total']+$trimRequest['extraCharge'];
-		$totalDiscount = strcmp($trimRequest['totalDiscounttype'],'flat')==0 
-						? $trimRequest['totalDiscount'] : (($trimRequest['totalDiscount']/100)*$grandTotal);
-		$finalTotalDiscount = $totalDiscount+$discountTotal;										
+		// $totalDiscount = strcmp($trimRequest['totalDiscounttype'],'flat')==0 
+						// ? $trimRequest['totalDiscount'] : (($trimRequest['totalDiscount']/100)*$grandTotal);
+		// $finalTotalDiscount = $totalDiscount+$discountTotal;										
 		$ledgerId = $trimRequest['vendorId'];
 		$actualTotal  = $trimRequest['total'] - $trimRequest['tax'];
 		$finalTotal = $actualTotal+$trimRequest['extraCharge'];
@@ -577,7 +577,7 @@ class PurchaseBillProcessor extends BaseProcessor
 			$processedData = $journalController->update($journalRequest,$jsonDecodedJfId);
 			if(strcmp($processedData,$exceptionArray['200'])!=0)
 			{
-				return $exceptionArray['500'];
+				return $processedData;
 			}
 		}
 		return $jsonDecodedJfId;

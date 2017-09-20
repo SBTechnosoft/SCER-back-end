@@ -120,6 +120,7 @@ class EncodeData extends StateService
 		if(count($decodedDocumentJson)==0)
 		{
 			$data['document']= array(
+				'documentId' => '',
 				'documentName' => '',
 				'documentSize' => '',	
 				'documentFormat' => '',	
@@ -143,6 +144,7 @@ class EncodeData extends StateService
 			$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $decodedDocumentJson[0]['created_at'])->format('d-m-Y');
 			
 			$data['document']= array(
+				'documentId' => $decodedDocumentJson[0]['document_id'],
 				'documentName' => $decodedDocumentJson[0]['document_name'],
 				'documentSize' => $decodedDocumentJson[0]['document_size'],	
 				'documentFormat' => $decodedDocumentJson[0]['document_format'],	

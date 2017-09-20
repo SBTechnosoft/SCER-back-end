@@ -94,6 +94,7 @@ class ClientModel extends Model
 			//get data from client-document
 			DB::beginTransaction();
 			$clientDocumentData = DB::connection($databaseName)->select("select 
+			document_id,
 			client_id,
 			sale_id,
 			document_name,
@@ -158,6 +159,7 @@ class ClientModel extends Model
 			//get data from client-document
 			DB::beginTransaction();
 			$clientDocumentData = DB::connection($databaseName)->select("select 
+			document_id,
 			client_id,
 			sale_id,
 			document_name,
@@ -236,7 +238,7 @@ class ClientModel extends Model
 				{
 					$queryParameter = $queryParameter." client_id IN(";
 				}
-				for($arrayData=0;$arrayData<count($billResult);$arrayData++)
+				for($arrayData=0;$arrayData<count($decodedJsonData);$arrayData++)
 				{
 					$invoiceDateFlag=1;
 					if(($billFlag==1 || $jobFormFlag==1) && $arrayData==0)
@@ -262,7 +264,7 @@ class ClientModel extends Model
 				{
 					$queryParameter = $queryParameter." client_id IN(";
 				}
-				for($arrayData=0;$arrayData<count($jobCardResult);$arrayData++)
+				for($arrayData=0;$arrayData<count($decodedJsonData);$arrayData++)
 				{
 					$jobCardDateFlag=1;
 					if(($billFlag==1 || $jobFormFlag==1) && $arrayData==0 && $invoiceDateFlag!=1)
@@ -350,6 +352,7 @@ class ClientModel extends Model
 				//get data from client-document
 				DB::beginTransaction();
 				$clientDocumentData = DB::connection($databaseName)->select("select 
+				document_id,
 				client_id,
 				sale_id,
 				document_name,
@@ -414,6 +417,7 @@ class ClientModel extends Model
 			//get data from client-document
 			DB::beginTransaction();
 			$clientDocumentData = DB::connection($databaseName)->select("select 
+			document_id,
 			client_id,
 			sale_id,
 			document_name,
@@ -457,6 +461,60 @@ class ClientModel extends Model
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
+		if(count($raw)==0)
+		{
+			return $exceptionArray['404'];
+		}
+		else
+		{
+			return $raw;
+		}
+	}
+	
+	/**
+	 * get client data 
+	 * @param client_name
+	 * returns the status/error-message
+	*/
+	public function getClientNameForValidate($clientName,$contactNo)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if($contactNo!='')
+		{
+			DB::beginTransaction();		
+			$raw = DB::connection($databaseName)->select("select 
+			client_id,
+			contact_no,
+			client_name
+			from client_mst 
+			where deleted_at='0000-00-00 00:00:00' and 
+			client_name='".$clientName."' and contact_no!='".$contactNo."'");
+			DB::commit();
+			if(count($raw)!=0)
+			{
+				if(strcmp($clientName,$raw[0]->client_name)==0 && strcmp($contactNo,$raw[0]->contact_no)!=0)
+				{
+					return $exceptionArray['content'];
+				}
+			}
+		}
+		else
+		{
+			DB::beginTransaction();		
+			$raw = DB::connection($databaseName)->select("select 
+			client_id
+			from client_mst 
+			where deleted_at='0000-00-00 00:00:00' and 
+			client_name='".$clientName."'");
+			DB::commit();
+		}
 		if(count($raw)==0)
 		{
 			return $exceptionArray['404'];

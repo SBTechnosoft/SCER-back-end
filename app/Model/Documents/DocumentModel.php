@@ -25,20 +25,44 @@ class DocumentModel extends Model
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
-		
 		$mytime = Carbon\Carbon::now();
-		
-		$tableName = strcmp('sale-bill',$headerData['type'][0])==0 ? "sales_bill_doc_dtl" : "purchase_doc_dtl";
-		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("update ".$tableName." 
-		set deleted_at='".$mytime."'
-		where document_id='".$documentId."'");
-		DB::commit();
-		
+		$tableName='';
+		if(strcmp('sale-bill',$headerData['type'][0])==0)
+		{
+			$tableName = "sales_bill_doc_dtl";
+			DB::beginTransaction();
+			$clientDocumentName = DB::connection($databaseName)->select("select document_name 
+			from client_doc_dtl where document_id='".$documentId."'");
+			DB::commit();
+			if(count($clientDocumentName)!=0)
+			{
+				DB::beginTransaction();
+				$updateBillDocument = DB::connection($databaseName)->statement("update ".$tableName." 
+				set deleted_at='".$mytime."'
+				where document_name='".$clientDocumentName[0]->document_name."'");
+				DB::commit();
+			}
+			DB::beginTransaction();
+			$updateClientDocument = DB::connection($databaseName)->statement("update client_doc_dtl 
+			set deleted_at='".$mytime."'
+			where document_id='".$documentId."'");
+			DB::commit();
+				
+				
+		}
+		else
+		{
+			$tableName = "purchase_doc_dtl";
+			DB::beginTransaction();
+			$updateBillDocument = DB::connection($databaseName)->statement("update ".$tableName." 
+			set deleted_at='".$mytime."'
+			where document_id='".$documentId."'");
+			DB::commit();
+		}
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		if($raw==1)
+		if($updateBillDocument==1)
 		{
 			return $exceptionArray['200'];
 		}
