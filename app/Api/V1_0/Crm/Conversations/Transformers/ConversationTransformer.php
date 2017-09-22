@@ -17,20 +17,23 @@ class ConversationTransformer
     {
 		$data = array();
 		// data get from body and trim an input
-		$data['email_id'] = trim($request->input('emailId'));
-		$data['cc_email_id'] = trim($request->input('ccEmailId'));
-		$data['bcc_email_id'] = trim($request->input('bccEmailId'));
-		$data['subject'] = trim($request->input('subject'));
-		$data['conversation'] = trim($request->input('conversation'));
+		$data['email_id'] = array_key_exists('emailId',$request->input())?trim($request->input('emailId')):'';
+		$data['cc_email_id'] = array_key_exists('ccEmailId',$request->input())?trim($request->input('ccEmailId')):'';
+		$data['bcc_email_id'] = array_key_exists('bccEmailId',$request->input())?trim($request->input('bccEmailId')):'';
+		$data['subject'] = array_key_exists('subject',$request->input())?trim($request->input('subject')):'';
+		$data['conversation'] = array_key_exists('conversation',$request->input())?trim($request->input('conversation')):'';
 		$data['company_id'] = trim($request->input('companyId'));
-		$data['branch_id'] = trim($request->input('branchId'));
+		$data['branch_id'] = array_key_exists('branchId',$request->input()) ?trim($request->input('branchId')):'';
+		$data['contact_no'] = array_key_exists('contactNo',$request->input()) ? trim($request->input('contactNo')):'';
 		$data['conversation_type'] = trim($conversationType);
-		$data['contact_no'] = trim($request->input('contactNo'));
 		$data['client_id'] = array();
-		$countClientId = count($request->input()['client']);
-		for($arrayData=0;$arrayData<$countClientId;$arrayData++)
+		if(array_key_exists('client',$request->input()))
 		{
-			$data['client_id'][$arrayData] = $request->input()['client'][$arrayData]['clientId'];
+			$countClientId = count($request->input()['client']);
+			for($arrayData=0;$arrayData<$countClientId;$arrayData++)
+			{
+				$data['client_id'][$arrayData] = $request->input()['client'][$arrayData]['clientId'];
+			}
 		}
 		return $data;
 	}

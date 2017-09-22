@@ -71,7 +71,7 @@ class RouteServiceProvider extends ServiceProvider
 			$routeArray['professions'] = "Profession";
 			$routeArray['purchase-bills'] = "PurchaseBill";
 			$routeArray['settings'] = "Setting";
-			
+			$i=0;
 			foreach($routeArray as $key => $value)
 			{
 				if($key==$splitUriRoute[1])
@@ -91,6 +91,7 @@ class RouteServiceProvider extends ServiceProvider
 						}
 					}
 				}
+				
 			}
 			if($urlFlag==0)
 			{

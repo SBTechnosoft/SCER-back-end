@@ -7,6 +7,7 @@ use ERP\Core\Entities\CompanyDetail;
 use ERP\Core\Entities\BranchDetail;
 use Carbon;
 use ERP\Entities\Constants\ConstantClass;
+use ERP\Exceptions\ExceptionMessage;
 /**
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -17,6 +18,9 @@ class EncodeAllStockSummaryData extends ProductService
 	{
 		$convertedCreatedDate =  array();
 		$convertedUpdatedDate =  array();
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
 		
 		$encodeAllData =  array();
 		$decodedJson = json_decode($status,true);
@@ -36,7 +40,13 @@ class EncodeAllStockSummaryData extends ProductService
 			$encodeDataClass = new EncodeAllStockSummaryData();
 			$productStatus[$decodedData] = $encodeDataClass->getProductData($productId[$decodedData]);
 			$productDecodedJson[$decodedData] = json_decode($productStatus[$decodedData],true);
-			
+			if(strcmp($productStatus[$decodedData],$exceptionArray['404'])==0)
+			{
+				//remove deleted product from an array(splice and break)
+				array_splice($decodedJson,$decodedData,1);
+				$decodedData = $decodedData-1;
+				continue;
+			}
 			//get the company details from database
 			$companyDetail = new CompanyDetail();
 			$getCompanyDetails[$decodedData] = $companyDetail->getCompanyDetails($companyId[$decodedData]);

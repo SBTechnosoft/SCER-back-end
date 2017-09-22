@@ -1,6 +1,7 @@
 <?php
 namespace ERP\Entities\Constants;
 use Carbon;
+use stdClass;
 /**
  *
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -146,6 +147,32 @@ class ConstantClass
 			$financialArrayDate['toDate'] = $mytime->year.'-03-31 00:00:00';
 		}
 		return $financialArrayDate;
+	}
+	
+	/**
+	 * making an array contains constant data 
+	 * @param (no parameter)
+	*/
+    public function setEmailPassword()
+	{
+		$mailPasswordArray = array();
+		$mailPasswordArray['emailId'] = 'farhan.s@siliconbrain.in';
+		$mailPasswordArray['password'] = 'Abcd@1234';
+		return $mailPasswordArray;
+	}
+	
+	/**
+	 * making an array contains comment data 
+	 * @param (no parameter)
+	*/
+    public function getCommentMessage()
+	{
+		$commentObject = new stdClass();
+		// $commentObject->mailSend = "Your Mail Is Successfully Send";
+		$commentObject->billMailSend = "Your Mail Is Successfully Send From Sale-Bill";
+		$commentObject->crmMailSend = "Your Mail Is Successfully Send From Crm";
+		$commentObject->crmSmsSend = "Your Mail Is Successfully Send From Crm";
+		return $commentObject;
 	}
 	
 	/**

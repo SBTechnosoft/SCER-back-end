@@ -1,4 +1,4 @@
-##### Standard Email/Sms Persistable Object
+##### Standard Email Persistable Object
 		{
 			"conversationId":int,
 			"emailId":string,
@@ -7,8 +7,7 @@
 			"contactNo":string,
 			"subject":string,
 			"conversation":text,
-			"conversationType":Enum,
-			"attachment":
+			"file":
 				{
 					... File Object
 				}
@@ -22,3 +21,24 @@
 			"companyId":int,
 			"branchId":int,
 		}
+##### Standard Sms Persistable Object
+		{
+			"conversationId":int,
+			"contactNo":string,
+			"subject":string,
+			"conversation":text,
+			"file":
+				{
+					... File Object
+				}
+			"client":
+				{
+					{
+						"clientId":int,
+					}
+					...
+				}
+			"companyId":int,
+			"branchId":int,
+		}
+		

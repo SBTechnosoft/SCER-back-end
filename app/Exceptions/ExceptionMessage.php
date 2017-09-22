@@ -24,6 +24,8 @@ class ExceptionMessage
 		$msgArray['Exists'] = "Exists: Token Already Exists";
 		$msgArray['NoExists'] = "NotExists: Token Not Exists";
 		$msgArray['Email'] = "Message could not be sent";
+		$msgArray['EmailFail'] = "Mail could not be sent";
+		$msgArray['SmsFail'] = "Sms is not successfully sent";
 		$msgArray['successSms'] = "Sms is successfully send";
 		$msgArray['successEmail'] = "Message is successfully send";
 		$msgArray['requiredEmail'] = "Email-Address is required";
@@ -41,6 +43,8 @@ class ExceptionMessage
 		$msgArray['invalidEntryDate'] = "entry-date is invalid";
 		$msgArray['invalidDeliveryDate'] = "delivery-date is invalid";
 		$msgArray['contact'] = "contact already exists";
+		$msgArray['emailExist'] = "email-address is not exist";
+		$msgArray['userLogin'] = "user is not logged-in";
 		return $msgArray;
 	}
 }

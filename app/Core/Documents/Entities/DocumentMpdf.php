@@ -597,7 +597,6 @@ class DocumentMpdf extends CurrencyToWordConversion
 		if(!$mail->Send()) {
 		   return $exceptionArray['Email'];
 		}
-		
 	}
 	public function postRequest($url,$_data) 
 	{

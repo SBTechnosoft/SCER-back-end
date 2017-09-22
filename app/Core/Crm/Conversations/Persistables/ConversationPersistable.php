@@ -14,6 +14,8 @@ use ERP\Core\Crm\Conversations\Properties\SubjectTrait;
 use ERP\Core\Crm\Conversations\Properties\CcEmailIdTrait;
 use ERP\Core\Crm\Conversations\Properties\BccEmailIdTrait;
 use ERP\Core\Crm\Conversations\Properties\ConversationTypeTrait;
+use ERP\Core\Crm\Conversations\Properties\CommentTrait;
+use ERP\Core\Crm\Conversations\Properties\UserIdTrait;
 
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -33,4 +35,6 @@ class ConversationPersistable
 	use CcEmailIdTrait;
 	use BccEmailIdTrait;
 	use ConversationTypeTrait;
+	use CommentTrait;
+	use UserIdTrait;
 }

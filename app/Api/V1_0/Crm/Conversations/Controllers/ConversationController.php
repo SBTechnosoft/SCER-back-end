@@ -69,8 +69,19 @@ class ConversationController extends BaseController implements ContainerInterfac
 				$conversationPersistable = $processor->createPersistable($this->request,$conversationType);
 				if(is_array($conversationPersistable))
 				{
-					$status = $conversationService->insert($conversationPersistable,$this->request->input(),$conversationType);
-					return $status;
+					$status='';
+					if(array_key_exists('clientSuccessData',$conversationPersistable))
+					{
+						$status = $conversationService->insert($conversationPersistable['clientSuccessData'],$conversationType,$request->header());
+					}
+					if(array_key_exists('clientFailData',$conversationPersistable))
+					{
+						return $conversationPersistable['clientFailData'];
+					}
+					else if($status!='')
+					{
+						return $status;
+					}
 				}
 				else
 				{
@@ -114,8 +125,19 @@ class ConversationController extends BaseController implements ContainerInterfac
 				$conversationPersistable = $processor->createPersistable($this->request,$conversationType);
 				if(is_array($conversationPersistable))
 				{
-					$status = $conversationService->insert($conversationPersistable,$this->request->input(),$conversationType);
-					return $status;
+					$status='';
+					if(array_key_exists('clientSuccessData',$conversationPersistable))
+					{
+						$status = $conversationService->insert($conversationPersistable['clientSuccessData'],$conversationType,$request->header());
+					}
+					if(array_key_exists('clientFailData',$conversationPersistable))
+					{
+						return $conversationPersistable['clientFailData'];
+					}
+					else if($status!='')
+					{
+						return $status;
+					}
 				}
 				else
 				{

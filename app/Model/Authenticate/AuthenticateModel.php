@@ -195,6 +195,38 @@ class AuthenticateModel extends Model
 	 * @param header-data
 	 * returns the exception-message/user-type
 	*/
+	public function getActiveUser($headerData)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->select("select
+		user_id
+		from active_session
+		where token='".$headerData['authenticationtoken'][0]."'");
+		DB::commit();
+		if(count($raw)==1)
+		{
+			return $raw;
+		}
+		else
+		{
+			return $exceptionArray['userLogin'];
+		}
+	}
+	
+	/**
+	 * get user-type 
+	 * @param header-data
+	 * returns the exception-message/user-type
+	*/
 	public function checkAuthenticationToken($headerData)
 	{
 		//database selection

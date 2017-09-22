@@ -18,7 +18,7 @@ class ConversationValidate
 	public function validate($request)
 	{
 		$rules = array(
-			'conversation'=>'between:1,200|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
+			// 'conversation'=>'between:1,200|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'subject'=>'between:1,50|regex:/^[a-zA-Z0-9 *,-\/_`#\[\]().\']+$/',
 			'contact_no'=>'between:10,12|regex:/^[1-9][0-9]+$/',
 			'email_id'=>'regex:/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,})$/',
@@ -26,8 +26,8 @@ class ConversationValidate
 			'bcc_email_id'=>'regex:/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,})$/'
 		);
 		$messages = [
-			'conversation.between' => 'StringLengthException :Enter the :attribute less then 200 character',
-			'conversation.regex' => 'conversation contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
+			// 'conversation.between' => 'StringLengthException :Enter the :attribute less then 200 character',
+			// 'conversation.regex' => 'conversation contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
 			'subject.between' => 'StringLengthException :Enter the :attribute less then 50 character',
 			'subject.regex' => 'subject contains character from "a-zA-Z0-9 *,-\/_`#\[\]().\'" only',
 			'contact_no.between' => 'StringLengthException :Enter the :attribute between 10-12 number',

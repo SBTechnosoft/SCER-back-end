@@ -196,7 +196,6 @@ class ClientModel extends Model
 		$queryParameter="";
 		$billModel = new BillModel();
 		$jobFormModel = new JobFormModel();
-		
 		if(array_key_exists('invoicenumber',$headerData) && $headerData['invoicenumber'][0]!='')
 		{
 			$billResult = $billModel->getInvoiceNumberData($headerData['invoicenumber'][0]);
@@ -281,11 +280,11 @@ class ClientModel extends Model
 		if($invoiceDateFlag==1 || $jobCardDateFlag==1)
 		{
 			$queryParameter = rtrim($queryParameter,",");
-			$queryParameter = $queryParameter.") OR ";
+			$queryParameter = $queryParameter.") And ";
 		}
 		else if($billFlag==1 || $jobFormFlag==1)
 		{
-			$queryParameter = $queryParameter.") OR ";
+			$queryParameter = $queryParameter.") And ";
 		}
 		//simple data searching(without date)
 		$clientArray = new ClientArray();

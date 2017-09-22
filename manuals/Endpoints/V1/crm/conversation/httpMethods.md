@@ -1,13 +1,13 @@
 ##### Send Email
 
-##### `POST crm/conversastion/bulk-email`
+##### `POST crm/conversastions/bulk-email`
 + Header
 	- Authentication Token
-	
+	- "saleId":""
 + Body
 
             {
-                ... Standard Email/Sms Persistable Object
+                ... Standard Email Persistable Object
             }
 + Error Message
 
@@ -22,14 +22,14 @@
 			
 ##### Send Sms
 
-##### `POST crm/conversastion/bulk-sms`
+##### `POST crm/conversastions/bulk-sms`
 + Header
 	- Authentication Token
 	
 + Body
 
             {
-                ... Standard Email/Sms Persistable Object
+                ... Standard Sms Persistable Object
             }
 + Error Message
 

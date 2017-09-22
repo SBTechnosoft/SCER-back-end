@@ -462,13 +462,14 @@ include ('connection.php');
 				
 	//---------------------------------CRM-------------------------------------------------------------------------------
 				//conversation-dtl(email)
-				$scope.client=[{"clientId":1},{"clientId":2},{"clientId":3}];
+				$scope.client=[{"clientId":1}];
 				
-				$scope.formAdata.emailId = "reemapatel25@gmail.com";
-				$scope.formAdata.ccEmailId = "";
-				$scope.formAdata.bccEmailId = "";
-				$scope.formAdata.subject = "Sample Email Send";
-				$scope.formAdata.conversation = "Good Morning, Your Bill Is Generated...";
+				// $scope.formAdata.emailId = "reemapatel25@gmail.com";
+				// $scope.formAdata.ccEmailId = "shaikhfarhan05@gmail.com";
+				// $scope.formAdata.bccEmailId = "palak_soni14@yahoo.com";
+				// $scope.formAdata.subject = "Sample Email Send";
+				$scope.formAdata.conversation = "Good Morning";
+				// $scope.formAdata.contactNo = 8758384083;
 				
 				for(var i=0;i<$scope.client.length;i++)
 				{
@@ -477,11 +478,12 @@ include ('connection.php');
   					});
 				}
 				
-				formdata.append('emailId',$scope.formAdata.emailId);
-				formdata.append('ccEmailId',$scope.formAdata.ccEmailId);
-				formdata.append('bccEmailId',$scope.formAdata.bccEmailId);
-				formdata.append('subject',$scope.formAdata.subject);
+				// formdata.append('emailId',$scope.formAdata.emailId);
+				// formdata.append('ccEmailId',$scope.formAdata.ccEmailId);
+				// formdata.append('bccEmailId',$scope.formAdata.bccEmailId);
+				// formdata.append('subject',$scope.formAdata.subject);
 				formdata.append('conversation',$scope.formAdata.conversation);
+				// formdata.append('contactNo',$scope.formAdata.contactNo);
 				
 				//job-form-number
 				// $scope.formAdata.jobCardNumberLabel = "ffff";
@@ -814,7 +816,6 @@ include ('connection.php');
 				// var purchaseBillId = 3;
 				// var documentId = 2;
 				
-				var url="http://www.scerp1.com/crm/conversastion/bulk-email";
 				// var url="http://www.scerp1.com/documents/"+documentId;
 				
 				// var url="http://www.scerp1.com/accounting/purchase-bills/company/"+companyId;
@@ -826,7 +827,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/settings/professions/"+professionId;
 				
 				// var url="http://www.scerp1.com/crm/conversations/bulk-email";
-				// var url="http://www.scerp1.com/crm/conversations/bulk-sms";
+				var url="http://www.scerp1.com/crm/conversations/bulk-sms";
 				
 				// var url="http://www.scerp1.com/accounting/quotations/"+quotationBillId;
 				// var url="http://www.scerp1.com/accounting/quotations";
@@ -950,7 +951,8 @@ include ('connection.php');
 						
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
                         headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372'},
-                        // headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','clientName':'reemapatell','contactNo':'9998989899','emailId':'reemas@gmail.com','address':'address2','invoiceFromDate':'12-01-2017','invoiceNumber':'myCompany44','jobCardNumber':'2'},
+                        //,"saleId":131
+						// headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','clientName':'reemapatell','contactNo':'9998989899','emailId':'reemas@gmail.com','address':'address2','invoiceFromDate':'12-01-2017','invoiceNumber':'myCompany44','jobCardNumber':'2'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','salesType':'retail_sales','operation':'excel'},//
                         // headers: {'Content-Type': undefined,'type':'sales','authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6',

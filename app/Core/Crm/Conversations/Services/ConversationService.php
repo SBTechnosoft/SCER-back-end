@@ -5,6 +5,7 @@ use ERP\Model\Crm\Conversations\ConversationModel;
 use ERP\Core\Shared\Options\UpdateOptions;
 use ERP\Core\Support\Service\AbstractService;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Model\Authenticate\AuthenticateModel;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -46,58 +47,54 @@ class ConversationService extends AbstractService
 		$keyName = array();
 		$funcName = array();
 		$conversationArray = func_get_arg(0);
-		$inputData = func_get_arg(1);
-		$conversationType= func_get_arg(2);
+		$conversationType= func_get_arg(1);
+		$headerData= func_get_arg(2);
 		$documentFlag=0;
-		
-		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		//split error-message and data
-		$errorArray = $conversationArray[count($conversationArray)-1];
-		$conversationArray = array_splice($conversationArray,0,-1);
-			
-		//check document is available
-		if(is_array($conversationArray[count($conversationArray)-1][0]))
+		
+		//get user-id
+		$authenticationModel = new AuthenticateModel();
+		$userData = $authenticationModel->getActiveUser($headerData);
+		if(!is_array($userData))
 		{
-			$documentCount = count($conversationArray[count($conversationArray)-1]);
-			//get document data
-			for($documentArray=0;$documentArray<$documentCount;$documentArray++)
+			if(strcmp($exceptionArray['userLogin'],$userData)==0)
 			{
-				$document[$documentArray] = array();
-				$document[$documentArray][0] = $conversationArray[count($conversationArray)-1][$documentArray][0];
-				$document[$documentArray][1] = $conversationArray[count($conversationArray)-1][$documentArray][1];
-				$document[$documentArray][2] = $conversationArray[count($conversationArray)-1][$documentArray][2];
-				$document[$documentArray][3] = $conversationArray[count($conversationArray)-1][$documentArray][3];
+				return $exceptionArray['userLogin'];
 			}
-			$documentFlag=1;
 		}
-		else
+		$conversationCount = count($conversationArray);
+		for($data=0;$data<$conversationCount;$data++)
 		{
-			$document='';
-		}
-		for($data=0;$data<count($conversationArray);$data++)
-		{
-			if($documentFlag==1 && $data==(count($conversationArray)-1))
+			$document = array();
+			if(array_key_exists('document',$conversationArray[$data]))
 			{
-				break;
+				if($data==0)
+				{
+					$innerArrayCount = count($conversationArray[$data])-1;
+					$document = $conversationArray[$data]['document'];
+				}
 			}
 			else
 			{
-				$funcName[$data] = $conversationArray[$data][0]->getName();
-				$getData[$data] = $conversationArray[$data][0]->$funcName[$data]();
-				$keyName[$data] = $conversationArray[$data][0]->getkey();
+				$innerArrayCount = count($conversationArray[$data]);
+			}
+			for($innerArray=0;$innerArray<$innerArrayCount;$innerArray++)
+			{
+				$funcName[$data][$innerArray] = $conversationArray[$data][$innerArray][0]->getName();
+				$getData[$data][$innerArray] = $conversationArray[$data][$innerArray][0]->$funcName[$data][$innerArray]();
+				$keyName[$data][$innerArray] = $conversationArray[$data][$innerArray][0]->getkey();
 			}
 		}
 		// data pass to the model object for insert
 		$conversationModel = new ConversationModel();
 		if(strcmp($conversationType,'email')==0)
 		{
-			$status = $conversationModel->insertEmailData($getData,$keyName,$document,$errorArray,$inputData);
+			$status = $conversationModel->insertEmailData($getData,$keyName,$document,$userData[0]->user_id);
 		}
 		else
 		{
-			$status = $conversationModel->insertSmsData($getData,$keyName,$document,$errorArray,$inputData);
+			$status = $conversationModel->insertSmsData($getData,$keyName,$document,$userData[0]->user_id);
 		}
 		return $status;
 	}
