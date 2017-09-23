@@ -4,6 +4,7 @@
 				"settingType":string,
 				"barcodeWidth": decimal,
                 "barcodeHeight": decimal,
+				"chequeno": Enum
 				"createdAt":timestamp,
 				"updatedAt":datetime
 			}
@@ -11,6 +12,10 @@
 			{
                 "barcodeWidth": decimal,
                 "barcodeHeight": decimal,
-				"settingType":string,
+				"chequeno": Enum
             }
-
+##### chequeno Enum
+			{
+				chequeno:'enable',
+				chequeno:'disable'
+			}

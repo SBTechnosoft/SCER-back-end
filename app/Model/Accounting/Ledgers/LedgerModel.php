@@ -1807,9 +1807,9 @@ class LedgerModel extends Model
 		ledger_group_id,
 		company_id 
 		from ledger_mst 
-		where contact_no='".$contactNo."' and
-		company_id='".$companyId."' and
-		deleted_at='0000-00-00 00:00:00'");
+		where deleted_at='0000-00-00 00:00:00' and
+		contact_no='".$contactNo."' and
+		company_id='".$companyId."'");
 		DB::commit();
 		if(count($raw)==0)
 		{

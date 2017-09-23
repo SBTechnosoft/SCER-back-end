@@ -224,7 +224,6 @@ class ClientModel extends Model
 				$jobFormFlag=1;
 			}
 		}
-		
 		if(array_key_exists('invoicefromdate',$headerData) && array_key_exists('invoicetodate',$headerData))
 		{
 			$invoiceFromDate = $processedData->invoicefromdate;
@@ -276,7 +275,7 @@ class ClientModel extends Model
 					}
 				}
 			}
-		}		
+		}	
 		if($invoiceDateFlag==1 || $jobCardDateFlag==1)
 		{
 			$queryParameter = rtrim($queryParameter,",");
@@ -289,6 +288,7 @@ class ClientModel extends Model
 		//simple data searching(without date)
 		$clientArray = new ClientArray();
 		$clientArrayData = $clientArray->searchClientData();
+		$clientDataFlag=0;
 		for($dataArray=0;$dataArray<count($clientArrayData);$dataArray++)
 		{
 			$key = $clientArrayData[array_keys($clientArrayData)[$dataArray]];
@@ -299,15 +299,17 @@ class ClientModel extends Model
 				//address like query pending
 				if(strcmp('address',$clientArrayData[array_keys($clientArrayData)[$dataArray]])==0)
 				{
+					$clientDataFlag=1;
 					$queryParameter = $queryParameter."".$queryKey." LIKE '%".$headerData[$key][0]."%' OR ";
 				}	
 				else
 				{
+					$clientDataFlag=1;
 					$queryParameter = $queryParameter."".$queryKey."='".$headerData[$key][0]."' OR ";		
 				}
 			}
 		}
-		if($queryParameter!='')
+		if($queryParameter!='' && $clientDataFlag==1)
 		{
 			$queryParameter = rtrim($queryParameter,"OR ");
 			$queryParameter= $queryParameter." and";
@@ -455,6 +457,40 @@ class ClientModel extends Model
 		from client_mst 
 		where deleted_at='0000-00-00 00:00:00' and 
 		client_name='".$clientName."'");
+		DB::commit();
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(count($raw)==0)
+		{
+			return $exceptionArray['404'];
+		}
+		else
+		{
+			return $raw;
+		}
+	}
+	
+	/**
+	 * get client data 
+	 * @param client_name
+	 * returns the status/error-message
+	*/
+	public function getClientNameValidate($clientName,$contactNo)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();		
+		$raw = DB::connection($databaseName)->select("select 
+		client_id
+		from client_mst 
+		where deleted_at='0000-00-00 00:00:00' and 
+		client_name='".$clientName."' and 
+		contact_no!='".$contactNo."'");
 		DB::commit();
 		
 		// get exception message

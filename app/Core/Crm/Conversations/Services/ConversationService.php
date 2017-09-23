@@ -52,7 +52,6 @@ class ConversationService extends AbstractService
 		$documentFlag=0;
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		
 		//get user-id
 		$authenticationModel = new AuthenticateModel();
 		$userData = $authenticationModel->getActiveUser($headerData);

@@ -958,9 +958,6 @@ class BillProcessor extends BaseProcessor
 		//get clientId as per given saleId
 		$billData = json_decode($billData);
 		$journalController = new JournalController(new Container());
-		
-		$clientController = new ClientController(new Container());
-		$clientMethod=$constantArray['postMethod'];
 		if(count($clientData)!=0)
 		{
 			//check contact_no exist or not
@@ -971,6 +968,8 @@ class BillProcessor extends BaseProcessor
 				$clientDataAsPerContactNo = $clientModel->getClientData($clientData['contactNo']);
 				$decodedClientInsertionData = json_decode($clientDataAsPerContactNo);
 			}
+			$clientController = new ClientController(new Container());
+			$clientMethod=$constantArray['postMethod'];
 			$clientUpdateFlag=0;
 			if($contactFlag==1 && strcmp($msgArray['200'],$clientDataAsPerContactNo)==0)
 			{
@@ -1005,9 +1004,16 @@ class BillProcessor extends BaseProcessor
 			}
 			if($clientUpdateFlag==1 && is_object($clientJsonDecodedData) || $clientUpdateFlag==2 && strcmp($clientResultData,$msgArray['200'])==0)
 			{
-				//get client-data as per given client-id for getting client contact_no
-				$clientIdData = $clientModel->getData($billData[0]->client_id);
-				$decodedClientData = (json_decode($clientIdData));
+				if($clientUpdateFlag==1)
+				{
+					$decodedClientData->clientData[0] = $clientJsonDecodedData;
+				}
+				else
+				{
+					//get client-data as per given client-id for getting client contact_no
+					$clientIdData = $clientModel->getData($billData[0]->client_id);
+					$decodedClientData = (json_decode($clientIdData));
+				}
 				//get ledgerId for update ledegerData 
 				$getLedgerData = $ledgerModel->getDataAsPerContactNo($billData[0]->company_id,$decodedClientData->clientData[0]->contact_no);
 				$decodedLedgerData = json_decode($getLedgerData);
@@ -1039,19 +1045,19 @@ class BillProcessor extends BaseProcessor
 				{
 					//insert ledger-data
 					$ledgerArray=array();
-					$ledgerArray['ledgerName']=$clientData['clientName'];
-					$ledgerArray['emailId']=array_key_exists('emailId',$clientData)?$clientData['emailId']:'';
-					$ledgerArray['contactNo']=$clientData['contactNo'];
+					$ledgerArray['ledgerName']=$decodedClientData->clientData[0]->client_name;
+					$ledgerArray['emailId']=$decodedClientData->clientData[0]->email_id;
+					$ledgerArray['contactNo']=$decodedClientData->clientData[0]->contact_no;
 					$ledgerArray['invoiceNumber']=$billData[0]->invoice_number;
 					$ledgerArray['companyId']=$billData[0]->company_id;
 					$ledgerArray['balanceFlag']=$constantArray['openingBalance'];
 					$ledgerArray['amount']=0;
 					$ledgerArray['amountType']=$constantArray['credit'];
 					$ledgerArray['ledgerGroupId']=$constantArray['ledgerGroupSundryDebitors'];
-					$ledgerArray['address1']=array_key_exists('address1',$clientData)?$clientData['address1']:'';
+					$ledgerArray['address1']=$decodedClientData->clientData[0]->address1;
 					$ledgerArray['address2']='';
-					$ledgerArray['stateAbb']=array_key_exists('stateAbb',$clientData)?$clientData['stateAbb']:'';
-					$ledgerArray['cityId']=array_key_exists('cityId',$clientData)?$clientData['cityId']:'';
+					$ledgerArray['stateAbb']=$decodedClientData->clientData[0]->state_abb;
+					$ledgerArray['cityId']=$decodedClientData->clientData[0]->city_id;
 					$ledgerController = new LedgerController(new Container());
 					$method=$constantArray['postMethod'];
 					$path=$constantArray['ledgerUrl'];
@@ -1077,15 +1083,6 @@ class BillProcessor extends BaseProcessor
 			{
 				return $msgArray['content'];
 			}
-		}
-		else
-		{
-			//get client-data as per given client-id for getting client contact_no
-			$clientIdData = $clientModel->getData($billData[0]->client_id);
-			$decodedClientData = (json_decode($clientIdData));
-			//get ledgerId for update ledegerData 
-			$getLedgerData = $ledgerModel->getDataAsPerContactNo($billData[0]->company_id,$decodedClientData->clientData[0]->contact_no);
-			$decodedLedgerData = json_decode($getLedgerData);
 		}
 		if(array_key_exists('inventory',$billTrimData))
 		{
@@ -1113,6 +1110,7 @@ class BillProcessor extends BaseProcessor
 			$generalLedgerData = $ledgerModel->getLedger($billData[0]->company_id);
 			$generalLedgerArray = json_decode($generalLedgerData);
 			$salesTypeEnum = new SalesTypeEnum();
+						
 			$salesTypeEnumArray = $salesTypeEnum->enumArrays();		
 			if(strcmp($billData[0]->sales_type,$salesTypeEnumArray['retailSales'])==0)
 			{
@@ -1133,6 +1131,7 @@ class BillProcessor extends BaseProcessor
 			{
 				$ledgerId = $decodedLedgerData[0]->ledger_id;
 			}
+					
 			$amountTypeEnum = new AmountTypeEnum();
 			$amountTypeArray = $amountTypeEnum->enumArrays();
 			$ledgerAmount = $billTrimData['total']-$billTrimData['advance'];		
@@ -1516,6 +1515,7 @@ class BillProcessor extends BaseProcessor
 				}
 			}
 		}
+		
 		$dateFlag=0;
 		if(count($billTrimData)==1 && array_key_exists('entry_date',$billTrimData))
 		{

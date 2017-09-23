@@ -136,7 +136,7 @@ class ClientValidate extends ClientModel
 		
 		//get product-data
 		$clientValidation = new ClientValidate();
-		$clientResult = $clientValidation->getClientName($tRequest['client_name']);
+		$clientResult = $clientValidation->getClientNameValidate($tRequest['client_name'],$tRequest['contact_no']);
 		
 		if(!is_array($clientResult))
 		{

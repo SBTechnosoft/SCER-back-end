@@ -35,7 +35,6 @@ class ConversationModel extends Model
 		$userId = func_get_arg(3);
 		$conversationData='';
 		$keyName = "";
-		
 		$queryArrayCount = count($getDataArray);
 		for($insertQueryIndex=0;$insertQueryIndex<$queryArrayCount;$insertQueryIndex++)
 		{
@@ -53,7 +52,7 @@ class ConversationModel extends Model
 			if(count($document)!=0)
 			{
 				$documentKey = "attachment_name,attachment_format,attachment_size,attachment_path";
-				$documentData = $document[0].",".$document[2].",".$document[1].",".$document[3];
+				$documentData = "'".$document[0][0]."','".$document[0][2]."','".$document[0][1]."','".$document[0][3]."'";
 			}
 			else
 			{

@@ -18,6 +18,8 @@ use SMTP;
 use ERP\Model\Accounting\Bills\BillModel;
 use ERP\Core\Settings\Templates\Entities\TemplateTypeEnum;
 use ERP\Core\Settings\Templates\Services\TemplateService;
+use Carbon;
+use ERP\Model\Companies\CompanyModel;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -75,7 +77,6 @@ class ConversationProcessor extends BaseProcessor
 			//validation
 			$conversationValidate = new ConversationValidate();
 			$status = $conversationValidate->validate($tRequest);
-			
 			if($status=="Success")
 			{
 				$errorFlag=0;
@@ -243,10 +244,13 @@ class ConversationProcessor extends BaseProcessor
 						{
 							return $emailTemplateData;
 						}
+						$companyModel = new CompanyModel();
+						$companyData = $companyModel->getData($decodedBillData[0]->company_id);
+						$companyDecodedData = json_decode($companyData);
 						//replace data in template
 						$htmlBody = json_decode($emailTemplateData)[0]->templateBody;
 						$emailArray = array();
-						$emailArray['Company']=$decodedBillData[0]->company_id;
+						$emailArray['Company']=$companyDecodedData[0]->company_name;
 						$emailArray['ClientName']=$decodedClientData->clientData[0]->client_name;
 						foreach($emailArray as $key => $value)
 						{
@@ -260,18 +264,22 @@ class ConversationProcessor extends BaseProcessor
 						if(count($decodedClientData->clientDocumentData)!=0)
 						{
 							$documentCount = count($decodedClientData->clientDocumentData);
+							$documentSorting = array();
 							for($documentArray=0;$documentArray<$documentCount;$documentArray++)
 							{
-								if(strcmp($decodedClientData->clientDocumentData[$documentArray]->document_type,'pdf')==0)
+								if(strcmp($decodedClientData->clientDocumentData[$documentArray]->document_format,'pdf')==0)
 								{
-									$documentFlag=1;
-									$documentData[0] = $decodedClientData->clientDocumentData[$documentArray]->document_name;
-									$documentData[1] = $decodedClientData->clientDocumentData[$documentArray]->document_size;
-									$documentData[2] = $decodedClientData->clientDocumentData[$documentArray]->document_format;
-									$documentData[3] =  $constantArray['billUrl'];
-									break;
+									$documentSorting[$documentArray] = $decodedClientData->clientDocumentData[$documentArray]->document_id;
 								}
 							}
+							$maxId = max(array_keys($documentSorting));
+							$documentId = $documentSorting[$maxId];
+							
+							$documentFlag=1;
+							$documentData[0][0] = $decodedClientData->clientDocumentData[$maxId]->document_name;
+							$documentData[0][1] = $decodedClientData->clientDocumentData[$maxId]->document_size;
+							$documentData[0][2] = $decodedClientData->clientDocumentData[$maxId]->document_format;
+							$documentData[0][3] =  $constantArray['billUrl'];
 						}
 						$commentDataArray['success'] = array();
 						$commentDataArray['success'][0]['client_id'] = $decodedBillData[0]->client_id;
@@ -299,7 +307,6 @@ class ConversationProcessor extends BaseProcessor
 				$errorIndex = 0;
 				$commentDataArray = array();
 				$clientIdCount = count($trimRequest['client_id']);
-				
 				// send multiple mail
 				for($clientArray=0;$clientArray<$clientIdCount;$clientArray++)
 				{
@@ -365,14 +372,14 @@ class ConversationProcessor extends BaseProcessor
 					'password' => "demo54321",
 					'msisdn' => $contactNo,
 					'sid' => "ERPAKC",
-					'msg' => 'hi...Conversation testing.',
+					'msg' => $trimRequest['conversation'],
 					'fl' =>"0",
 					'gwid'=>"2"
 				);
-				// list($header,$content) = $this->postRequest("http://login.arihantsms.com//vendorsms/pushsms.aspx",$data);
-				$contactDataArray[$clientArray]['client_id'] =$trimRequest['client_id'][$clientArray];   
+				list($header,$content) = $this->postRequest("http://login.arihantsms.com//vendorsms/pushsms.aspx",$data);
+				$contactDataArray[$clientArray]['client_id'] =$trimRequest['client_id'][$clientArray]; 
 				$contactDataArray[$clientArray]['comment'] =$commentMessage->crmSmsSend; 
-				$contactDataArray[$clientArray]['contact_no'] =$decodedClientData->clientData[0]->contact_no;
+				$contactDataArray[$clientArray]['contact_no'] =$contactNo;
 				$contactDataArray[$clientArray]['company_id'] ='';   
 				// $url = "http://login.arihantsms.com/vendorsms/pushsms.aspx?user=siliconbrain&password=demo54321&msisdn=9558080695&sid=ERPAKC&msg=hi&fl=0&gwid=2";
 			}
@@ -408,11 +415,11 @@ class ConversationProcessor extends BaseProcessor
 		$mail->SMTPSecure = 'tls'; // secure transfer enabled REQUIRED for Gmail
 		$mail->Host = "smtp.gmail.com";
 		$mail->Port = 587; // or 465
-		$mail->IsHTML(true);
 		$mail->Username = $constantIdPassword['emailId'];
 		$mail->Password = $constantIdPassword['password'];
 		$mail->SetFrom($constantIdPassword['emailId']);
 		$mail->Subject = array_key_exists('subject',$trimRequest) ? $trimRequest['subject']:'Cycle Store';
+		$mail->IsHTML(true);
 		$mail->Body = $trimRequest['conversation'];
 		$mail->AddAddress($email);
 		if($trimRequest['bcc_email_id']!='')
@@ -425,9 +432,13 @@ class ConversationProcessor extends BaseProcessor
 		}
 		if(count($documentData)!=0)
 		{
-			$name = "Attachment";
+			$mytime = Carbon\Carbon::now();
+			$splitedTime = explode(' ',$mytime);
+			// Add a recipient
+			$name = "Your Document(".$splitedTime[0].").".$documentData[0][2];
 			$documentPath = $documentData[0][3].$documentData[0][0];
 			$mail->AddAttachment($documentPath,$name,'base64','application/octet-stream');
+			
 		}
 		if(!$mail->Send()) {
 			// echo "Mailer Error: " . $mail->ErrorInfo;
