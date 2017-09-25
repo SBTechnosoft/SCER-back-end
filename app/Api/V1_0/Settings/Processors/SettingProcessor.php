@@ -47,11 +47,9 @@ class SettingProcessor extends BaseProcessor
 			//trim an input 
 			$settingTransformer = new SettingTransformer();
 			$tRequest = $settingTransformer->trimInsertData($this->request);
-			
 			// validation
 			$settingValidate = new SettingValidate();
 			$status = $settingValidate->validate($tRequest);
-			
 			if($status=="Success")
 			{
 				foreach ($tRequest as $key => $value)
@@ -76,7 +74,6 @@ class SettingProcessor extends BaseProcessor
 					}
 					$data++;
 				}
-				
 				// set data to the persistable object
 				for($data=0;$data<count($settingValue);$data++)
 				{
@@ -139,7 +136,7 @@ class SettingProcessor extends BaseProcessor
 				//trim an input 
 				$settingTransformer = new SettingTransformer();
 				$tRequest = $settingTransformer->trimUpdateData($key[$data],$value[$data]);
-				if($tRequest==1)
+				if(!is_array($tRequest))
 				{
 					return $exceptionArray['content'];
 				}

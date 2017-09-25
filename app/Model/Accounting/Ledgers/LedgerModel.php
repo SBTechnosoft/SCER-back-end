@@ -419,25 +419,25 @@ class LedgerModel extends Model
 			{
 				if(strcmp('contact_no',$key[$data])==0)
 				{
-					if($ledgerData[$data]!='' || $ledgerData[$data]!=0)
-					{
-						//check contact-no in ledger for unique contact-no
-						DB::beginTransaction();
-						$contactResult = DB::connection($databaseName)->select("select 
-						ledger_id,
-						contact_no
-						from ledger_mst where deleted_at='0000-00-00 00:00:00' and 
-						contact_no='".$ledgerData[$data]."'");
-						DB::commit();
-						if(count($contactResult)!=0 && $contactResult[0]->contact_no!=$ledgerResult[0]->contact_no)
-						{
-							return $exceptionArray['contact'];
-						}
-					}
-					else
-					{
-						$ledgerData[$data]='NULL';
-					}
+					// if($ledgerData[$data]!='' || $ledgerData[$data]!=0)
+					// {
+						// check contact-no in ledger for unique contact-no
+						// DB::beginTransaction();
+						// $contactResult = DB::connection($databaseName)->select("select 
+						// ledger_id,
+						// contact_no
+						// from ledger_mst where deleted_at='0000-00-00 00:00:00' and 
+						// contact_no='".$ledgerData[$data]."'");
+						// DB::commit();
+						// if(count($contactResult)!=0 && $contactResult[0]->contact_no!=$ledgerResult[0]->contact_no)
+						// {
+							// return $exceptionArray['contact'];
+						// }
+					// }
+					// else
+					// {
+						// $ledgerData[$data]='NULL';
+					// }
 					if(count($ledgerResult)!=0)
 					{
 						//update client contact_no

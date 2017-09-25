@@ -3,6 +3,7 @@ namespace ERP\Core\Settings\Entities;
 
 use ERP\Core\Settings\Entities\Setting;
 use Carbon;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -12,6 +13,8 @@ class EncodeAllData extends Setting
 	{
 		$convertedUpdatedDate =  array();
 		$convertedCreatedDate =  array();
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
 		
 		$decodedJson = json_decode($status,true);
 		$setting = new EncodeAllData();
@@ -38,13 +41,23 @@ class EncodeAllData extends Setting
 			$settingData[$decodedData] = $decodedJson[$decodedData]['setting_data'];
 			
 			$decodedSettingData = json_decode($settingData[$decodedData]);
-			if(strcmp($decodedJson[$decodedData]['setting_type'],'barcode')==0)
+			if(strcmp($decodedJson[$decodedData]['setting_type'],$constantArray['barcodeSetting'])==0)
 			{
 				$data[$decodedData]= array(
 					'settingId' => $decodedJson[$decodedData]['setting_id'],
 					'settingType' => $decodedJson[$decodedData]['setting_type'],
 					'barcodeWidth' => $decodedSettingData->barcode_width,
 					'barcodeHeight' => $decodedSettingData->barcode_height,
+					'createdAt' => $getCreatedDate[$decodedData],
+					'updatedAt' => $getUpdatedDate[$decodedData],
+				);
+			}
+			else if(strcmp($decodedJson[$decodedData]['setting_type'],$constantArray['chequeNoSetting'])==0)
+			{
+				$data[$decodedData]= array(
+					'settingId' => $decodedJson[$decodedData]['setting_id'],
+					'settingType' => $decodedJson[$decodedData]['setting_type'],
+					'chequeno' => $decodedSettingData->chequeno_status,
 					'createdAt' => $getCreatedDate[$decodedData],
 					'updatedAt' => $getUpdatedDate[$decodedData],
 				);

@@ -16,6 +16,6 @@
             }
 ##### chequeno Enum
 			{
-				chequeno:'enable',
-				chequeno:'disable'
+				chequeNoEnable:'enable',
+				chequeNoDisable:'disable'
 			}

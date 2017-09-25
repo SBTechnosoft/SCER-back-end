@@ -31,36 +31,47 @@ class SettingModel extends Model
 		$getSettingKey = func_get_arg(1);
 		$barcodeFlag=0;
 		$barcodeArray = array();
-		
+		$chequeNoArray = array();
+		$chequeNoFlag=0;
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		
+		$constantArray = $constantDatabase->constantVariable();
 		for($data=0;$data<count($getSettingData);$data++)
 		{
 			$explodedSetting = explode('_',$getSettingKey[$data]);
-			if(strcmp('barcode',$explodedSetting[0])==0)
+			if(strcmp($constantArray['barcodeSetting'],$explodedSetting[0])==0)
 			{
 				$barcodeFlag=1;
 				$barcodeArray[$getSettingKey[$data]] = $getSettingData[$data];
 			}
+			else if(strcmp($constantArray['chequeNoSetting'],$explodedSetting[0])==0)
+			{
+				$chequeNoFlag=1;
+				$chequeNoArray[$getSettingKey[$data]] = $getSettingData[$data];
+			}
 		}
-		$constantArray = $constantDatabase->constantVariable();
 		if($barcodeFlag==1)
 		{
-			$settingType = 'barcode';
+			$settingType = $constantArray['barcodeSetting'];
 			//get setting data
 			$settingData = $this->getParticularTypeData($settingType);
 			$decodedSettingData = json_decode($settingData);
 			
-			if(strcmp($decodedSettingData[0]->setting_type,'barcode')==0)
+			if(strcmp($decodedSettingData[0]->setting_type,$constantArray['barcodeSetting'])==0)
 			{
 				return $exceptionArray['content'];
 			}
-			
 			DB::beginTransaction();
 			$raw = DB::connection($databaseName)->statement("insert into setting_mst(setting_type,setting_data) 
 			values('".$constantArray['barcodeSetting']."','".json_encode($barcodeArray)."')");
+			DB::commit();
+		}
+		else if($chequeNoFlag==1)
+		{
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->statement("insert into setting_mst(setting_type,setting_data) 
+			values('".$constantArray['chequeNoSetting']."','".json_encode($chequeNoArray)."')");
 			DB::commit();
 		}
 		if($raw==1)
@@ -86,21 +97,28 @@ class SettingModel extends Model
 		$databaseName = $constantDatabase->constantDatabase();
 		
 		$barcodeArray = array();
+		$chequeNoArray = array();
 		date_default_timezone_set("Asia/Calcutta");
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
-		// print_r($settingData);
+		$chequeNoFlag=0;
+		$barcodeFlag=0;
+		$constantArray = $constantDatabase->constantVariable();
 		for($data=0;$data<count($settingData);$data++)
 		{
 			$explodedSetting = explode('_',$key[$data]);
-			if(strcmp('barcode',$explodedSetting[0])==0)
+			if(strcmp($constantArray['barcodeSetting'],$explodedSetting[0])==0)
 			{
 				$barcodeFlag=1;
 				$barcodeArray[$key[$data]] = $settingData[$data];
 			}
+			else if(strcmp($constantArray['chequeNoSetting'],$explodedSetting[0])==0)
+			{
+				$chequeNoFlag=1;
+				$chequeNoArray[$key[$data]] = $settingData[$data];
+			}
 		}
-		// print_r($barcodeArray);
-		$constantArray = $constantDatabase->constantVariable();
+		
 		if($barcodeFlag==1)
 		{
 			DB::beginTransaction();
@@ -108,7 +126,18 @@ class SettingModel extends Model
 			setting_mst 
 			set setting_data = '".json_encode($barcodeArray)."',
 			updated_at = '".$mytime."'
-			where setting_type='barcode' and
+			where setting_type='".$constantArray['barcodeSetting']."' and
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+		}
+		else if($chequeNoFlag==1)
+		{
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->statement("update
+			setting_mst 
+			set setting_data = '".json_encode($chequeNoArray)."',
+			updated_at = '".$mytime."'
+			where setting_type='".$constantArray['chequeNoSetting']."' and
 			deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
 		}

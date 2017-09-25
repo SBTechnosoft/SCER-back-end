@@ -12,6 +12,7 @@ use ERP\Exceptions\ExceptionMessage;
 use ERP\Model\Cities\CityModel;
 use ERP\Entities\AuthenticationClass\TokenAuthentication;
 use ERP\Entities\Constants\ConstantClass;
+use DB;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -47,6 +48,54 @@ class CityController extends BaseController implements ContainerInterface
 	*/
     public function store(Request $request)
     {
+		
+		echo "enterrrrdd";
+		exit;
+		
+		// for($)
+		
+		echo "aaa";
+		DB::beginTransaction();
+		$clientData1 = DB::select("SELECT * from client_mst");
+		DB::commit();
+		
+		DB::beginTransaction();
+		$ledgerData1 = DB::select("SELECT * from ledger_mst");
+		DB::commit();
+		for($clientData=0;$clientData<count($clientData1);$clientData++)
+		{
+			for($ledgerData=0;$ledgerData<count($ledgerData1);$ledgerData++)
+			{
+				if(strcmp($clientData1[$clientData]->contact_no,$ledgerData1[$ledgerData]->contact_no)==0)
+				{
+					DB::beginTransaction();
+					$raw = DB::statement("update ledger_mst set client_id ='".$clientData1[$clientData]->client_id."',
+					client_name='".$clientData1[$clientData]->client_name."' 
+					where contact_no='".$ledgerData1[$ledgerData]->contact_no."'");
+					DB::commit();
+					if($raw!=1)
+					{
+						echo $clientData;
+						echo  " = ";
+						echo $ledgerData;
+						exit;
+					}
+					else
+					{
+						break;
+					}
+				}
+			}
+		}
+		// print_r($clientData);
+		echo "hhh";
+		// print_r($ledgerData);
+		//echo "jji";	
+		// print_r($raw);
+		// $raw = DB::statement("update client_mst set client_name ='abcfghrf' where client_id=4");
+				
+		exit;
+		
 		//Authentication
 		$tokenAuthentication = new TokenAuthentication();
 		$authenticationResult = $tokenAuthentication->authenticate($request->header());

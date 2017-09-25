@@ -3,6 +3,9 @@ namespace ERP\Api\V1_0\Settings\Transformers;
 
 use Illuminate\Http\Request;
 use ERP\Http\Requests;
+use ERP\Core\Settings\Entities\ChequeNoEnum;
+use ERP\Exceptions\ExceptionMessage;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -16,8 +19,28 @@ class SettingTransformer
     {
 		//trim-data and make an array
 		$data = array();
-		$data['barcode_width'] = trim($request->input('barcodeWidth'));
-		$data['barcode_height'] = trim($request->input('barcodeHeight'));
+		if(array_key_exists('barcodeWidth',$request->input()))
+		{
+			$data['barcode_width'] = trim($request->input('barcodeWidth'));
+			$data['barcode_height'] = trim($request->input('barcodeHeight'));
+		}
+		else if(array_key_exists('chequeno',$request->input()))
+		{
+			$chequeNoEnum = new ChequeNoEnum();
+			$chequeNoData = $chequeNoEnum->enumArrays();
+			if(strcmp($chequeNoData['chequeNoEnable'],trim($request->input('chequeno')))==0 ||
+			   strcmp($chequeNoData['chequeNoDisable'],trim($request->input('chequeno')))==0)
+			{
+				$data['chequeno_status'] = trim($request->input('chequeno'));
+			}
+			else
+			{
+				//get exception message
+				$exception = new ExceptionMessage();
+				$exceptionArray = $exception->messageArrays();
+				return $exceptionArray['content'];
+			}
+		}
 		return $data;
 	}
 	
@@ -30,6 +53,7 @@ class SettingTransformer
 		$tSettingArray = array();
 		$settingValue;
 		$keyValue = func_get_arg(0);
+		$valueData= func_get_arg(1);
 		$convertedValue="";
 		$settingEnumArray = array();
 		for($asciiChar=0;$asciiChar<strlen($keyValue);$asciiChar++)
@@ -44,12 +68,40 @@ class SettingTransformer
 				$convertedValue=$convertedValue.$keyValue[$asciiChar];
 			}
 		}
-		$settingValue = func_get_arg(1);
-		for($data=0;$data<count($settingValue);$data++)
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		if(strcmp($convertedValue,$constantArray['chequeNoSetting'])==0)
 		{
-			$tSettingArray[$data]= array($convertedValue=> trim($settingValue));
-			$settingEnumArray = array_keys($tSettingArray[$data])[0];
+			$chequeNoEnum = new ChequeNoEnum();
+			$chequeNoData = $chequeNoEnum->enumArrays();
+			if(strcmp($chequeNoData['chequeNoEnable'],$valueData)==0 || strcmp($chequeNoData['chequeNoDisable'],$valueData)==0)
+			{
+				$settingValue = func_get_arg(1);
+				for($data=0;$data<count($settingValue);$data++)
+				{
+					$tSettingArray[$data]= array('chequeno_status'=> trim($settingValue));
+					$settingEnumArray = array_keys($tSettingArray[$data])[0];
+				}
+				return $tSettingArray;
+			}
+			else
+			{
+				//get exception message
+				$exception = new ExceptionMessage();
+				$exceptionArray = $exception->messageArrays();
+				return $exceptionArray['content'];
+			}
 		}
-		return $tSettingArray;
+		else
+		{
+			$settingValue = func_get_arg(1);
+			for($data=0;$data<count($settingValue);$data++)
+			{
+				$tSettingArray[$data]= array($convertedValue=> trim($settingValue));
+				$settingEnumArray = array_keys($tSettingArray[$data])[0];
+			}
+			return $tSettingArray;
+		}
+		
 	}
 }

@@ -180,7 +180,7 @@ class AuthenticateModel extends Model
 		ON a.user_id=u.user_id
 		where token='".$headerData['authenticationtoken'][0]."'");
 		DB::commit();
-		if(strcmp($raw[0]->user_type,'admin')==0 || strcmp($raw[0]->user_type,'superadmin'))
+		if(strcmp($raw[0]->user_type,'admin')==0 || strcmp($raw[0]->user_type,'staff'))
 		{
 			return $exceptionArray['200'];
 		}

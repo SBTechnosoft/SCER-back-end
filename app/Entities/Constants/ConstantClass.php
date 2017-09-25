@@ -20,6 +20,7 @@ class ConstantClass
 		$constantArray['barcodeWidth'] = 1.5;
 		$constantArray['barcodeHeight'] = 60;
 		$constantArray['barcodeSetting'] = "barcode";
+		$constantArray['chequeNoSetting'] = "chequeno";
 		$constantArray['noImage'] = "Storage/No-Image/no-image.jpg";
 		$constantArray['productBarcode'] = "Storage/Barcode/";
 		$constantArray['documentUrl'] = "Storage/Document/";

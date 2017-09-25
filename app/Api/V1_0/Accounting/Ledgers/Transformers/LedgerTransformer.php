@@ -44,6 +44,8 @@ class LedgerTransformer
 		$cityId = $request->input('cityId'); 			
 		$ledgerGrpId = $request->input('ledgerGroupId');  
 		$companyId = $request->input('companyId');  
+		$clientId = array_key_exists('clientId',$request->input())?$request->input('clientId'):'';  
+		$clientName = array_key_exists('clientName',$request->input())?$request->input('clientName'):'';  
 		
 		//trim an input
 		$tLedgerName = trim($ledgerName);
@@ -66,6 +68,8 @@ class LedgerTransformer
 		$tCityId = trim($cityId);
 		$tLedgerGrpId = trim($ledgerGrpId);
 		$tcompanyId = trim($companyId);
+		$tClientId = trim($clientId);
+		$tClientName = trim($clientName);
 		if($tInventoryAffected!="")
 		{
 			$enumInventoryAffectedArray = array();
@@ -168,6 +172,8 @@ class LedgerTransformer
 			$data['city_id'] = $tCityId;
 			$data['ledger_group_id'] = $tLedgerGrpId;
 			$data['company_id'] = $tcompanyId;
+			$data['client_id'] = $tClientId;
+			$data['client_name'] = $tClientName;
 			return $data;
 		}
 	}

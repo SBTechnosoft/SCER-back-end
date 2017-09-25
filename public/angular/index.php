@@ -305,45 +305,47 @@ include ('connection.php');
 				// formdata.append('companyId',$scope.formAdata.company_id);
 				
 				//ledger
-				// $scope.formAdata.ledger_name = " hhhhhhhh";
-				// $scope.formAdata.alias = ' ddsafS ';
-				// $scope.formAdata.inventory_affected=' no ';
-				// $scope.formAdata.address1 =" sdx czS ";
-				// $scope.formAdata.address2 = " aEbS ";
-				// $scope.formAdata.contact_no = " 8758384088 ";
-				// $scope.formAdata.email_id = " reemapatel25@gmail.co.in ";
-				// $scope.formAdata.invoice_number = "dsf-jjj ";
-				// $scope.formAdata.pan= ' qqqas1122d ';
-				// $scope.formAdata.tin= ' 42aa3dgg774 ';
-				// $scope.formAdata.cgst = ' 71j0rg778a22b05 ';
-				// $scope.formAdata.sgst = ' 71j0rg778a22b06 ';
-				// $scope.formAdata.balanceFlag = ' opening ';
-				// $scope.formAdata.amount =1231;
-				// $scope.formAdata.amountType = ' credit';
-				// $scope.formAdata.state_abb= ' IN-AG ';
-				// $scope.formAdata.city_id= '1';
-				// $scope.formAdata.ledger_grp_id='9 ';
-				// $scope.formAdata.company_id='1';
+				$scope.formAdata.ledger_name = " hhhhhhhh";
+				$scope.formAdata.alias = ' ddsafS ';
+				$scope.formAdata.inventory_affected=' no ';
+				$scope.formAdata.address1 =" sdx czS ";
+				$scope.formAdata.address2 = " aEbS ";
+				$scope.formAdata.contact_no = " 8758384088 ";
+				$scope.formAdata.email_id = " reemapatel25@gmail.co.in ";
+				$scope.formAdata.invoice_number = "dsf-jjj ";
+				$scope.formAdata.pan= ' qqqas1122d ';
+				$scope.formAdata.tin= ' 42aa3dgg774 ';
+				$scope.formAdata.cgst = ' 71j0rg778a22b05 ';
+				$scope.formAdata.sgst = ' 71j0rg778a22b06 ';
+				$scope.formAdata.balanceFlag = ' opening ';
+				$scope.formAdata.amount =1231;
+				$scope.formAdata.amountType = ' credit';
+				$scope.formAdata.state_abb= ' IN-AG ';
+				$scope.formAdata.city_id= '1';
+				$scope.formAdata.ledger_grp_id='9 ';
+				$scope.formAdata.company_id='1';
+				$scope.formAdata.client_id='1';
+				$scope.formAdata.client_name='heelllloiul';
 				
-				// formdata.append('ledgerName',$scope.formAdata.ledger_name);
-				// formdata.append('alias',$scope.formAdata.alias);
-				// formdata.append('inventoryAffected',$scope.formAdata.inventory_affected);
-				// formdata.append('address1',$scope.formAdata.address1);
-				// formdata.append('address2',$scope.formAdata.address2);
-				// formdata.append('contactNo',$scope.formAdata.contact_no);
-				// formdata.append('emailId',$scope.formAdata.email_id);
-				// formdata.append('invoiceNumber',$scope.formAdata.invoice_number);
-				// formdata.append('pan',$scope.formAdata.pan);
-				// formdata.append('tin',$scope.formAdata.tin);
-				// formdata.append('cgst',$scope.formAdata.cgst);
-				// formdata.append('sgst',$scope.formAdata.sgst);
-				// formdata.append('balanceFlag',$scope.formAdata.balanceFlag);
-				// formdata.append('amount',$scope.formAdata.amount);
-				// formdata.append('amountType',$scope.formAdata.amountType);
-				// formdata.append('stateAbb',$scope.formAdata.state_abb);
-				// formdata.append('cityId',$scope.formAdata.city_id);
-				// formdata.append('ledgerGroupId',$scope.formAdata.ledger_grp_id);
-				// formdata.append('companyId',$scope.formAdata.company_id);
+				formdata.append('ledgerName',$scope.formAdata.ledger_name);
+				formdata.append('alias',$scope.formAdata.alias);
+				formdata.append('inventoryAffected',$scope.formAdata.inventory_affected);
+				formdata.append('address1',$scope.formAdata.address1);
+				formdata.append('address2',$scope.formAdata.address2);
+				formdata.append('contactNo',$scope.formAdata.contact_no);
+				formdata.append('emailId',$scope.formAdata.email_id);
+				formdata.append('invoiceNumber',$scope.formAdata.invoice_number);
+				formdata.append('pan',$scope.formAdata.pan);
+				formdata.append('tin',$scope.formAdata.tin);
+				formdata.append('cgst',$scope.formAdata.cgst);
+				formdata.append('sgst',$scope.formAdata.sgst);
+				formdata.append('balanceFlag',$scope.formAdata.balanceFlag);
+				formdata.append('amount',$scope.formAdata.amount);
+				formdata.append('amountType',$scope.formAdata.amountType);
+				formdata.append('stateAbb',$scope.formAdata.state_abb);
+				formdata.append('cityId',$scope.formAdata.city_id);
+				formdata.append('ledgerGroupId',$scope.formAdata.ledger_grp_id);
+				formdata.append('companyId',$scope.formAdata.company_id);
 				
 				//client
 				// $scope.formAdata.client_name = "frgdfsopopooooppp";
@@ -415,10 +417,10 @@ include ('connection.php');
 				//Settings
 				// $scope.formAdata.barcodeWidth = "3";
 				// $scope.formAdata.barcodeHeight = "32";
-				$scope.formAdata.chequeno = "enable";
+				// $scope.formAdata.chequeno = "disable";
 				// formdata.append('barcodeWidth',$scope.formAdata.barcodeWidth);
 				// formdata.append('barcodeHeight',$scope.formAdata.barcodeHeight);
-				formdata.append('chequeno',$scope.formAdata.chequeno);
+				// formdata.append('chequeno',$scope.formAdata.chequeno);
 				
 				// $scope.formAdata.product_name = "Ranger";
 				// $scope.formAdata.is_display = 'no';
@@ -794,7 +796,7 @@ include ('connection.php');
 //--------------------------------------------------end---------------------------------------------------------------------
 				
 				// var userId=9;
-				var clientId=1;
+				// var clientId=1;
 				// var productId =6;
 				// var productGrpId = 11;
 				// var productCatId = 18;
@@ -841,7 +843,7 @@ include ('connection.php');
 				
 				// var url="http://www.scerp1.com/reports/polish-report/company/"+companyId;
 				// var url="http://www.scerp1.com/products/company/"+companyId+"/stock-summary";
-				var url="http://www.scerp1.com/settings";
+				// var url="http://www.scerp1.com/settings";
 				
 				// var url="http://www.scerp1.com/product-groups/batch";
 				// var url="http://www.scerp1.com/product-categories/batch";
@@ -898,7 +900,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/accounting/ledgers/company/"+companyId;
 				// var url="http://www.scerp1.com/accounting/ledgers/"+ledgerId;
 				// var url="http://www.scerp1.com/accounting/ledgers/ledgerGrp/"+ledgerGrpId;
-				// var url="http://www.scerp1.com/accounting/ledgers";
+				var url="http://www.scerp1.com/accounting/ledgers";
 				
 				// var url="http://www.scerp1.com/accounting/ledger-groups/"+ledgerGrpId;
 				// var url="http://www.scerp1.com/accounting/ledger-groups";
@@ -939,9 +941,7 @@ include ('connection.php');
 				
 				$http({
                         url: url,
-                        // type:'patch',
-                        // type:'get',
-						 // method: 'get',
+                        // method: 'get',
 						 method: 'post',
 						 // method: 'patch',
 						// enctype:'multipart/formdata',

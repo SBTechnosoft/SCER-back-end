@@ -13,8 +13,8 @@ class SettingValidate
 	public function validate($request)
 	{
 		$rules = array(
-			'barcode_width'=> 'required|regex:/^[0-9 .]+$/',
-			'barcode_height'=> 'required|regex:/^[0-9 .]+$/',
+			'barcode_width'=> 'regex:/^[0-9 .]+$/',
+			'barcode_height'=> 'regex:/^[0-9 .]+$/',
 		);
 		$messages = [
 			'barcode_width.regex' => 'Enter the width contains character from "0-9 ." character',
@@ -40,8 +40,8 @@ class SettingValidate
 	public function validateUpdateData($keyName,$value,$request)
 	{
 		$validationArray = array(
-			'barcode_width'=> 'required|regex:/^[0-9 .]+$/',
-			'barcode_height'=> 'required|regex:/^[0-9 .]+$/',);
+			'barcode_width'=> 'regex:/^[0-9 .]+$/',
+			'barcode_height'=> 'regex:/^[0-9 .]+$/',);
 		$rules =array();
 		foreach ($validationArray as $key => $value) 
 		{
