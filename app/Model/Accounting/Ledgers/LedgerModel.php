@@ -146,32 +146,6 @@ class LedgerModel extends Model
 		//make keys and values for query of ledger data
 		for($data=0;$data<count($getLedgerData);$data++)
 		{
-			if(strcmp($getLedgerKey[$data],'contact_no')==0)
-			{
-				if($getLedgerData[$data]!='' || $getLedgerData[$data]!=0)
-				{
-					//check contact_no in database that it is exists or not?
-					DB::beginTransaction();
-					$ledgerContactResult = DB::connection($databaseName)->select("select 
-					ledger_id,
-					contact_no
-					from ledger_mst where deleted_at='0000-00-00 00:00:00' and 
-					contact_no='".$getLedgerData[$data]."'");
-					DB::commit();
-					if(count($ledgerContactResult)!=0)
-					{
-						return $exceptionArray['contact'];
-					}
-				}
-				else
-				{
-					unset($getLedgerKey[$data]);
-					unset($getLedgerData[$data]);
-					$getLedgerKey = array_values($getLedgerKey);
-					$getLedgerData = array_values($getLedgerData);
-				}
-			}
-			
 			if($data == (count($getLedgerData)-1))
 			{
 				$ledgerData = $ledgerData."'".$getLedgerData[$data]."'";
@@ -400,15 +374,19 @@ class LedgerModel extends Model
 		
 	    $mytime = Carbon\Carbon::now();
 		$keyValueString="";
+		$keyValueStringForOtherLedger="";
 		$keyValueStringAmt="";
 		$clientkeyValueString='';
 		$clientFlag=0;
+		$clientIdFlag=0;
+		$newClientId='';
 		for($data=0;$data<count($ledgerData);$data++)
 		{
 			//get contact_no of ledger from database for updating the contact of client
 			DB::beginTransaction();
 			$ledgerResult = DB::connection($databaseName)->select("select 
 			ledger_id,
+			client_id,
 			contact_no
 			from ledger_mst where deleted_at='0000-00-00 00:00:00' and 
 			ledger_id='".$ledgerId."'");
@@ -417,27 +395,9 @@ class LedgerModel extends Model
 			$RequestUri = explode("/", $_SERVER['REQUEST_URI']);
 			if(strcmp($RequestUri[2],"bills")!=0)
 			{
+				$clientNameData='';
 				if(strcmp('contact_no',$key[$data])==0)
 				{
-					// if($ledgerData[$data]!='' || $ledgerData[$data]!=0)
-					// {
-						// check contact-no in ledger for unique contact-no
-						// DB::beginTransaction();
-						// $contactResult = DB::connection($databaseName)->select("select 
-						// ledger_id,
-						// contact_no
-						// from ledger_mst where deleted_at='0000-00-00 00:00:00' and 
-						// contact_no='".$ledgerData[$data]."'");
-						// DB::commit();
-						// if(count($contactResult)!=0 && $contactResult[0]->contact_no!=$ledgerResult[0]->contact_no)
-						// {
-							// return $exceptionArray['contact'];
-						// }
-					// }
-					// else
-					// {
-						// $ledgerData[$data]='NULL';
-					// }
 					if(count($ledgerResult)!=0)
 					{
 						//update client contact_no
@@ -464,20 +424,21 @@ class LedgerModel extends Model
 						}
 					}
 				}
-			}
-			if(strcmp('ledger_name',$key[$data])==0 || strcmp('address1',$key[$data])==0 || strcmp('state_abb',$key[$data])==0 || strcmp('city_id',$key[$data])==0 || strcmp('email_id',$key[$data])==0)
-			{
-				$clientFlag=1;
-				if(strcmp('ledger_name',$key[$data])==0)
+				if(strcmp('ledger_name',$key[$data])==0 || strcmp('address1',$key[$data])==0 || strcmp('state_abb',$key[$data])==0 || strcmp('city_id',$key[$data])==0 || strcmp('email_id',$key[$data])==0)
 				{
-					$clientNameKey = "client_name";
+					$clientFlag=1;
+					if(strcmp('ledger_name',$key[$data])==0)
+					{
+						$clientNameKey = "client_name";
+					}
+					else
+					{
+						$clientNameKey = $key[$data];
+					}
+					$clientkeyValueString = $clientkeyValueString.$clientNameKey."='".$ledgerData[$data]."',";
 				}
-				else
-				{
-					$clientNameKey = $key[$data];
-				}
-				$clientkeyValueString = $clientkeyValueString.$clientNameKey."='".$ledgerData[$data]."',";
 			}
+			
 			if(strcmp($key[$data],"amount")==0 || strcmp($key[$data],"amount_type")==0 || strcmp($key[$data],"balance_flag")==0)
 			{
 				$keyValueStringAmt=$keyValueStringAmt.$key[$data]."='".$ledgerData[$data]."',";
@@ -485,6 +446,20 @@ class LedgerModel extends Model
 			else
 			{
 				$keyValueString=$keyValueString.$key[$data]."='".$ledgerData[$data]."',";
+				if(strcmp($key[$data],'ledger_name')!=0)
+				{
+					$keyValueStringForOtherLedger=$keyValueStringForOtherLedger.$key[$data]."='".$ledgerData[$data]."',";
+				}
+				else
+				{
+					$keyValueString=$keyValueString."client_name = '".$ledgerData[$data]."',";
+					$keyValueStringForOtherLedger=$keyValueStringForOtherLedger."client_name = '".$ledgerData[$data]."',";
+				}
+				if(strcmp($key[$data],'client_id')==0)
+				{
+					$clientIdFlag = 1;
+					$newClientId = $ledgerData[$data];
+				}
 			}
 		}
 		if($clientFlag==1)
@@ -497,6 +472,57 @@ class LedgerModel extends Model
 			deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
 		}
+		$updateAllLedgerFlag=0;
+		//get ledger-data as per client-id 
+		if(count($ledgerResult)!=0)
+		{
+			if($ledgerResult[0]->client_id!=0 || $ledgerResult[0]->client_id!=null || $ledgerResult[0]->client_id!='')
+			{
+				$updateAllLedgerFlag=1;
+				$clientId = $ledgerResult[0]->client_id;
+			}
+		}
+		if($clientIdFlag==1 && $newClientId!='' &&  $newClientId!=0 &&  $newClientId!=null)
+		{
+			$updateAllLedgerFlag=1;
+			$clientId = $newClientId;
+		}
+		if($updateAllLedgerFlag==1)
+		{			
+			//get ledger as per client-id
+			DB::beginTransaction();
+			$allLedgerResult = DB::connection($databaseName)->select("select 
+			ledger_id,
+			client_id,
+			contact_no
+			from ledger_mst where deleted_at='0000-00-00 00:00:00' and 
+			ledger_id!='".$ledgerId."' and client_id='".$clientId."'");
+			DB::commit();
+			if(count($allLedgerResult)!=0)
+			{
+				$allLedgerCount = count($allLedgerResult);
+				for($allLedgerIndex=0;$allLedgerIndex<$allLedgerCount;$allLedgerIndex++)
+				{
+					if($keyValueStringAmt!="")
+					{
+						DB::beginTransaction();
+						$ledgerTrnData = DB::connection($databaseName)->statement("update ".$allLedgerResult[0]->ledger_id."_ledger_dtl 
+						set ".$keyValueStringAmt."updated_at='".$mytime."'
+						where ledger_id = '".$allLedgerResult[0]->ledger_id."' and deleted_at='0000-00-00 00:00:00' and balance_flag='opening'");
+						DB::commit();
+					}
+					if($keyValueStringForOtherLedger!="")
+					{
+						$clientNameString='';
+						DB::beginTransaction();
+						$raw = DB::connection($databaseName)->statement("update ledger_mst 
+						set ".$keyValueStringForOtherLedger."updated_at='".$mytime."'".$clientNameString."
+						where ledger_id = '".$allLedgerResult[0]->ledger_id."' and deleted_at='0000-00-00 00:00:00'");
+						DB::commit();
+					}
+				}
+			}
+		}
 		if($keyValueStringAmt!="")
 		{
 			DB::beginTransaction();
@@ -504,6 +530,7 @@ class LedgerModel extends Model
 			set ".$keyValueStringAmt."updated_at='".$mytime."'
 			where ledger_id = '".$ledgerId."' and deleted_at='0000-00-00 00:00:00' and balance_flag='opening'");
 			DB::commit();
+			
 		}
 		if($keyValueString!="")
 		{
@@ -513,7 +540,6 @@ class LedgerModel extends Model
 			where ledger_id = '".$ledgerId."' and deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
 		}
-	  
 		if($keyValueStringAmt!="" && $ledgerTrnData==1 || $keyValueString!="" && $raw==1)
 		{
 			return $exceptionArray['200'];
@@ -1782,6 +1808,7 @@ class LedgerModel extends Model
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
+		$companyIdString = "";
 		
 		DB::beginTransaction();
 		$raw = DB::connection($databaseName)->select("select 
@@ -1814,6 +1841,61 @@ class LedgerModel extends Model
 		if(count($raw)==0)
 		{
 			return $exceptionArray['500'];
+		}
+		else
+		{
+			$encodedData = json_encode($raw);
+			return $encodedData;
+		}
+	}
+	
+	/**
+	 * get data as per client-id
+	 * @param: client-id
+	 * returns the error-message/data
+	*/
+	public function getDataAsPerClientId($clientId)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		$companyIdString = "";
+		
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->select("select 
+		ledger_id,
+		ledger_name,
+		alias,
+		inventory_affected,
+		address1,
+		address2,
+		contact_no,
+		email_id,
+		is_dealer,
+		invoice_number,
+		pan,
+		tin,
+		cgst,
+		sgst,
+		created_at,
+		updated_at,
+		deleted_at,
+		state_abb,
+		city_id,
+		ledger_group_id,
+		company_id 
+		from ledger_mst 
+		where deleted_at='0000-00-00 00:00:00' and
+		client_id='".$clientId."'");
+		DB::commit();
+		if(count($raw)==0)
+		{
+			return $exceptionArray['404'];
 		}
 		else
 		{

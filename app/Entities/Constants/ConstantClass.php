@@ -84,6 +84,7 @@ class ConstantClass
 		$constantArray['productName']="productname";
 		$constantArray['measurementUnit']="measurement_unit";
 		$constantArray['isDisplay']="is_display";
+		$constantArray['isDisplayYes']="yes";
 		$constantArray['transactionDate']="transaction_date";
 		
 		$constantArray['entry_date']="entry_date";

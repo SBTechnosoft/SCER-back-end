@@ -285,7 +285,7 @@ class LedgerController extends BaseController implements ContainerInterface
 	public function update(Request $request,$ledgerId)
     {  
 		$RequestUri = explode("/", $_SERVER['REQUEST_URI']);
-		if(strcmp($RequestUri[1],"accounting")==0 && strcmp($RequestUri[2],"bills")==0)
+		if(strcmp($RequestUri[1],"accounting")==0 && strcmp($RequestUri[2],"bills")==0 || strcmp($RequestUri[1],"clients")==0)
 		{
 			$this->request = $request;
 			$processor = new LedgerProcessor();

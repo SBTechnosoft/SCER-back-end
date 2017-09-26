@@ -24,6 +24,7 @@ use ERP\Model\Accounting\Bills\BillModel;
 use ERP\Core\Clients\Entities\ClientArray;
 use ERP\Core\Accounting\Ledgers\Entities\LedgerArray;
 use ERP\Model\Accounting\Journals\JournalModel;
+use ERP\Core\Accounting\Journals\Validations\BuisnessLogic;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -34,8 +35,9 @@ class BillProcessor extends BaseProcessor
 	 * @var request
 	*/
 	private $billPersistable;
-	private $request;    
-    /**
+	private $request;   
+
+	/**
      * get the form-data and set into the persistable object
      * $param Request object [Request $request]
      * @return Bill Persistable object
@@ -57,13 +59,14 @@ class BillProcessor extends BaseProcessor
 		$constantArray = $constantClass->constantVariable();	
 		//trim an input 
 		$billTransformer = new BillTransformer();
-		$tRequest = $billTransformer->trimInsertData($this->request);	
+		$tRequest = $billTransformer->trimInsertData($this->request);
 		if($tRequest==1)
 		{
 			return $msgArray['content'];
 		}	
 		else
 		{
+			$ledgerModel = new LedgerModel();
 			//validation
 			$billValidate = new BillValidate();
 			$status = $billValidate->validate($tRequest);
@@ -80,26 +83,30 @@ class BillProcessor extends BaseProcessor
 				}
 				if($contactNo=="" || $contactNo==0)
 				{
-					$clientArray = array();
-					$clientArray['clientName']=$tRequest['client_name'];
-					$clientArray['companyName']=$tRequest['company_name'];
-					$clientArray['emailId']=$tRequest['email_id'];
-					$clientArray['contactNo']=$tRequest['contact_no'];
-					$clientArray['address1']=$tRequest['address1'];
-					$clientArray['isDisplay']=$tRequest['is_display'];
-					$clientArray['stateAbb']=$tRequest['state_abb'];
-					$clientArray['cityId']=$tRequest['city_id'];
-					$clientArray['professionId']=$tRequest['profession_id'];
-					$clientController = new ClientController(new Container());
-					$method=$constantArray['postMethod'];
-					$path=$constantArray['clientUrl'];
-					$clientRequest = Request::create($path,$method,$clientArray);
-					$processedData = $clientController->store($clientRequest);
-					if(strcmp($processedData,$msgArray['content'])==0)
+					//client insertion and ledger validation
+					//ledger validation
+					$result = $this->ledgerValidationOfInsertion($tRequest['company_id'],$tRequest['client_name'],$tRequest['contact_no']);
+					if(is_array($result))
 					{
-						return $processedData;
+						//client insertion
+						$clientResult = $this->clientInsertion($tRequest);
+						if(strcmp($clientResult,$msgArray['content'])==0)
+						{
+							return $clientResult;
+						}
+						$clientId = json_decode($clientResult)->clientId;
+						$ledgerInsertionResult = $this->ledgerInsertion($tRequest,$clientId,$tRequest['invoice_number']);
+						//ledger insertion (|| $processedData[0][0]=='[' error while validation error occur)
+						if(strcmp($msgArray['500'],$ledgerInsertionResult)==0 || strcmp($msgArray['content'],$ledgerInsertionResult)==0)
+						{
+							return $ledgerInsertionResult;
+						}
+						$ledgerId = json_decode($ledgerInsertionResult)[0]->ledger_id;
 					}
-					$clientId = json_decode($processedData)->clientId;
+					else
+					{
+						return $result;
+					}
 				}
 				else
 				{
@@ -107,53 +114,116 @@ class BillProcessor extends BaseProcessor
 					$clientModel = new ClientModel();
 					$clientArrayData = $clientModel->getClientData($contactNo);
 					$clientData = (json_decode($clientArrayData));
-					if(is_array($clientData))
+					if(is_array($clientData) || is_object($clientData))
 					{
-						$encodedClientData = $clientData['clientData'];
-						$clientId = $encodedClientData[0]->client_id;
-						//update client data
-						$clientArray = array();
-						$clientArray['clientName']=$tRequest['client_name'];
-						$clientArray['companyName']=$tRequest['company_name'];
-						$clientArray['emailId']=$tRequest['email_id'];
-						$clientArray['contactNo']=$tRequest['contact_no'];
-						$clientArray['address1']=$tRequest['address1'];
-						$clientArray['isDisplay']=$tRequest['is_display'];
-						$clientArray['stateAbb']=$tRequest['state_abb'];
-						$clientArray['professionId']=$tRequest['profession_id'];
-						$clientArray['cityId']=$tRequest['city_id'];
-						$clientController = new ClientController(new Container());
-						$method=$constantArray['postMethod'];
-						$path=$constantArray['clientUrl'].'/'.$clientId;
-						$clientRequest = Request::create($path,$method,$clientArray);
-						$processedData = $clientController->updateData($clientRequest,$clientId);
-						if(strcmp($processedData,$msgArray['200'])!=0)
+						if(is_object($clientData))
 						{
-							return $processedData;
+							$clientObjectData = $clientData->clientData;
+						}
+						else if(is_array($clientData))
+						{
+							$clientObjectData = $clientData['clientData'];
+						}
+						//update client-data and check ledger
+						$ledgerData = $ledgerModel->getDataAsPerContactNo($tRequest['company_id'],$tRequest['contact_no']);
+						if(is_array(json_decode($ledgerData)))
+						{
+							$ledgerId = json_decode($ledgerData)[0]->ledger_id;
+							$inputArray = array();
+							$inputArray['contactNo'] = $tRequest['contact_no'];
+							//update client-data
+							$encodedClientData = $clientObjectData;
+							$clientId = $encodedClientData[0]->client_id;
+							$clientUpdateResult = $this->clientUpdate($tRequest,$clientId);
+							if(strcmp($clientUpdateResult,$msgArray['200'])!=0)
+							{
+								return $clientUpdateResult;
+							}
+							//update ledger-data
+							$ledgerValidationResult = $this->ledgerUpdate($tRequest,$ledgerId,$clientId);
+							if(strcmp($ledgerValidationResult,$msgArray['200'])!=0)
+							{
+								return $ledgerValidationResult;
+							}
+						}
+						else
+						{
+							//insert ledger and update client
+							//ledger validation
+							$result = $this->ledgerValidationOfInsertion($tRequest['company_id'],$tRequest['client_name'],$tRequest['contact_no']);
+							if(is_array($result))
+							{
+								//update client
+								//update client-data
+								$encodedClientData = $clientObjectData;
+								$clientId = $encodedClientData[0]->client_id;
+								$clientUpdateResult = $this->clientUpdate($tRequest,$clientId);
+								if(strcmp($clientUpdateResult,$msgArray['200'])!=0)
+								{
+									return $clientUpdateResult;
+								}
+								//insert ledger
+								$ledgerInsertionResult = $this->ledgerInsertion($tRequest,$clientId,$tRequest['invoice_number']);
+								//ledger insertion (|| $processedData[0][0]=='[' error while validation error occur)
+								if(strcmp($msgArray['500'],$ledgerInsertionResult)==0 || strcmp($msgArray['content'],$ledgerInsertionResult)==0)
+								{
+									return $ledgerInsertionResult;
+								}
+								$ledgerId = json_decode($ledgerInsertionResult)[0]->ledger_id;
+							}
+							else
+							{
+								return $result;
+							}
 						}
 					}
 					else
 					{
-						$clientArray = array();
-						$clientArray['clientName']=$tRequest['client_name'];
-						$clientArray['companyName']=$tRequest['company_name'];
-						$clientArray['contactNo']=$tRequest['contact_no'];
-						$clientArray['emailId']=$tRequest['email_id'];
-						$clientArray['address1']=$tRequest['address1'];
-						$clientArray['isDisplay']=$tRequest['is_display'];
-						$clientArray['stateAbb']=$tRequest['state_abb'];
-						$clientArray['professionId']=$tRequest['profession_id'];
-						$clientArray['cityId']=$tRequest['city_id'];
-						$clientController = new ClientController(new Container());
-						$method=$constantArray['postMethod'];
-						$path=$constantArray['clientUrl'];
-						$clientRequest = Request::create($path,$method,$clientArray);
-						$processedData = $clientController->store($clientRequest);
-						if(strcmp($processedData,$msgArray['content'])==0)
+						//client insert and ledger validation
+						$ledgerData = $ledgerModel->getDataAsPerContactNo($tRequest['company_id'],$tRequest['contact_no']);
+						if(is_array(json_decode($ledgerData)))
 						{
-							return $processedData;
+							//client insertion
+							$clientResult = $this->clientInsertion($tRequest);
+							if(strcmp($clientResult,$msgArray['content'])==0)
+							{
+								return $clientResult;
+							}
+							$clientId = json_decode($clientResult)->clientId;
+							$ledgerId = json_decode($ledgerData)[0]->ledger_id;
+							//update ledger-data
+							$ledgerValidationResult = $this->ledgerUpdate($tRequest,$ledgerId,$clientId);
+							if(strcmp($ledgerValidationResult,$msgArray['200'])!=0)
+							{
+								return $ledgerValidationResult;
+							}
 						}
-						$clientId = json_decode($processedData)->clientId;
+						else
+						{
+							//client insert and ledger insert
+							$result = $this->ledgerValidationOfInsertion($tRequest['company_id'],$tRequest['client_name'],$tRequest['contact_no']);
+							if(is_array($result))
+							{
+								//client insertion
+								$clientResult = $this->clientInsertion($tRequest);
+								if(strcmp($clientResult,$msgArray['content'])==0)
+								{
+									return $clientResult;
+								}
+								$clientId = json_decode($clientResult)->clientId;
+								$ledgerInsertionResult = $this->ledgerInsertion($tRequest,$clientId,$tRequest['invoice_number']);
+								// ledger insertion (|| $processedData[0][0]=='[' error while validation error occur)
+								if(strcmp($msgArray['500'],$ledgerInsertionResult)==0 || strcmp($msgArray['content'],$ledgerInsertionResult)==0)
+								{
+									return $ledgerInsertionResult;
+								}
+								$ledgerId = json_decode($ledgerInsertionResult)[0]->ledger_id;
+							}
+							else
+							{
+								return $result;
+							}
+						}
 					}
 				}
 			}
@@ -164,86 +234,10 @@ class BillProcessor extends BaseProcessor
 			}
 		}
 		$paymentMode = $tRequest['payment_mode'];
-		$ledgerModel = new LedgerModel();
 		$ledgerResult = $ledgerModel->getLedgerId($tRequest['company_id'],$paymentMode);
 		if(is_array(json_decode($ledgerResult)))
 		{
 			$paymentLedgerId = json_decode($ledgerResult)[0]->ledger_id;
-		}
-		// if($tRequest['balance']!="" && $tRequest['balance']!=0)
-		// {
-			if($tRequest['contact_no']=="" || $tRequest['contact_no']==0)
-			{
-				$contactFlag=2;
-			}
-			else
-			{
-				// get ledger data for checking client is exist in ledger or not by contact-number
-				$ledgerData = $ledgerModel->getDataAsPerContactNo($tRequest['company_id'],$tRequest['contact_no']);
-				if(is_array(json_decode($ledgerData)))
-				{
-					$contactFlag=1;
-					$ledgerId = json_decode($ledgerData)[0]->ledger_id;
-					
-					//update ledger data
-					$ledgerArray=array();
-					$ledgerArray['ledgerName']=$tRequest['client_name'];
-					$ledgerArray['address1']=$tRequest['address1'];
-					$ledgerArray['address2']='';
-					$ledgerArray['contactNo']=$tRequest['contact_no'];
-					$ledgerArray['emailId']=$tRequest['email_id'];
-					$ledgerArray['invoiceNumber']=$tRequest['invoice_number'];
-					$ledgerArray['stateAbb']=$tRequest['state_abb'];
-					$ledgerArray['cityId']=$tRequest['city_id'];
-					$ledgerArray['companyId']=$tRequest['company_id'];
-					$ledgerArray['balanceFlag']=$constantArray['openingBalance'];
-					$ledgerArray['amount']=0;
-					$ledgerArray['amountType']=$constantArray['credit'];
-					$ledgerArray['ledgerGroupId']=$constantArray['ledgerGroupSundryDebitors'];
-					$ledgerController = new LedgerController(new Container());
-					$method=$constantArray['postMethod'];
-					$path=$constantArray['ledgerUrl'].'/'.$ledgerId;
-					$ledgerRequest = Request::create($path,$method,$ledgerArray);
-					$processedData = $ledgerController->update($ledgerRequest,$ledgerId);
-					if(strcmp($processedData,$msgArray['200'])!=0)
-					{
-						return $processedData;
-					}
-				}
-				else
-				{
-					$contactFlag=2;
-				}
-			}
-		// }
-		if($contactFlag==2)
-		{
-			$ledgerArray=array();
-			$ledgerArray['ledgerName']=$tRequest['client_name'];
-			$ledgerArray['address1']=$tRequest['address1'];
-			$ledgerArray['address2']='';
-			$ledgerArray['contactNo']=$tRequest['contact_no'];
-			$ledgerArray['emailId']=$tRequest['email_id'];
-			$ledgerArray['invoiceNumber']=$tRequest['invoice_number'];
-			$ledgerArray['stateAbb']=$tRequest['state_abb'];
-			$ledgerArray['cityId']=$tRequest['city_id'];
-			$ledgerArray['companyId']=$tRequest['company_id'];
-			$ledgerArray['balanceFlag']=$constantArray['openingBalance'];
-			$ledgerArray['amount']=0;
-			$ledgerArray['amountType']=$constantArray['credit'];
-			$ledgerArray['ledgerGroupId']=$constantArray['ledgerGroupSundryDebitors'];
-			$ledgerController = new LedgerController(new Container());
-			$method=$constantArray['postMethod'];
-			$path=$constantArray['ledgerUrl'];
-			$ledgerRequest = Request::create($path,$method,$ledgerArray);
-			$processedData = $ledgerController->store($ledgerRequest);	
-			//|| $processedData[0][0]=='[' error while validation error occur
-			if(strcmp($msgArray['500'],$processedData)==0 || strcmp($msgArray['content'],$processedData)==0 ||
-				 strcmp($msgArray['contact'],$processedData)==0)
-			{
-				return $processedData;
-			}
-			$ledgerId = json_decode($processedData)[0]->ledger_id;
 		}
 		// get jf_id
 		$journalController = new JournalController(new Container());
@@ -928,22 +922,19 @@ class BillProcessor extends BaseProcessor
 	public function createPersistableChange(Request $request,$saleId,$billData)
 	{
 		$balanceFlag=0;
-		
 		//get constant variables array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-
 		//get exception message
 		$exception = new ExceptionMessage();
 		$msgArray = $exception->messageArrays();
-		
 		//trim bill data
 		$billTransformer = new BillTransformer();
 		$billTrimData = $billTransformer->trimBillUpdateData($request);
 	
 		$ledgerModel = new LedgerModel();
 		$clientArray = new ClientArray();
-		$clientArrayData = $clientArray->getClientArrayData();
+		$clientArrayData = $clientArray->getClientArrayDataForBill();
 		$clientData = array();
 		foreach($clientArrayData as $key => $value)
 		{
@@ -954,134 +945,105 @@ class BillProcessor extends BaseProcessor
 		}	
 		$contactFlag=0;
 		$clientModel = new ClientModel();
-		
+		$ledgerModel = new LedgerModel();
 		//get clientId as per given saleId
 		$billData = json_decode($billData);
 		$journalController = new JournalController(new Container());
 		if(count($clientData)!=0)
 		{
 			//check contact_no exist or not
-			if(array_key_exists("contactNo",$clientData))
+			if(array_key_exists("contact_no",$clientData))
 			{
-				$contactFlag=1;
-				//get client-data as per contact-no
-				$clientDataAsPerContactNo = $clientModel->getClientData($clientData['contactNo']);
-				$decodedClientInsertionData = json_decode($clientDataAsPerContactNo);
-			}
-			$clientController = new ClientController(new Container());
-			$clientMethod=$constantArray['postMethod'];
-			$clientUpdateFlag=0;
-			if($contactFlag==1 && strcmp($msgArray['200'],$clientDataAsPerContactNo)==0)
-			{
-				//insert client-data
-				$clientArray = array();
-				$clientArray['clientName']=$clientData['clientName'];
-				$clientArray['companyName']=array_key_exists('companyName',$clientData)?$clientData['companyName']:'';
-				$clientArray['emailId']=array_key_exists('emailId',$clientData)?$clientData['emailId']:'';
-				$clientArray['contactNo']=$clientData['contactNo'];
-				$clientArray['address1']=array_key_exists('address1',$clientData)?$clientData['address1']:'';
-				$clientArray['isDisplay']=array_key_exists('isDisplay',$clientData)?$clientData['isDisplay']:'yes';
-				$clientArray['stateAbb']=array_key_exists('stateAbb',$clientData)?$clientData['stateAbb']:'';
-				$clientArray['cityId']=array_key_exists('cityId',$clientData)?$clientData['cityId']:'';
-				$clientArray['professionId']=array_key_exists('professionId',$clientData)?$clientData['professionId']:'';
-				$path=$constantArray['clientUrl'];
-				$clientRequest = Request::create($path,$clientMethod,$clientArray);
-				$processedData = $clientController->store($clientRequest);
-				if(strcmp($processedData,$msgArray['content'])==0)
-				{
-					return $processedData;
-				}
-				$clientJsonDecodedData = json_decode($processedData);
-				$clientUpdateFlag=1;
+				$contactNo = $clientData['contact_no'];
 			}
 			else
 			{
-				$clientUpdateFlag=2;
-				//call controller of client for updating of client data
-				$clientPath=$constantArray['clientUrl'].'/'.$billData[0]->client_id;
-				$clientRequest = Request::create($clientPath,$clientMethod,$clientData);
-				$clientResultData = $clientController->updateData($clientRequest,$billData[0]->client_id);
+				//get client-data as per given client-id for getting client contact_no
+				$clientIdData = $clientModel->getData($billData[0]->client_id);
+				$decodedClientData = (json_decode($clientIdData));
+				$contactNo = $decodedClientData->clientData[0]->contact_no;
 			}
-			if($clientUpdateFlag==1 && is_object($clientJsonDecodedData) || $clientUpdateFlag==2 && strcmp($clientResultData,$msgArray['200'])==0)
+			//get client-data as per contact-no
+			$clientDataAsPerContactNo = $clientModel->getClientData($contactNo);
+			if(strcmp($clientDataAsPerContactNo,$msgArray['200'])!=0)
 			{
-				if($clientUpdateFlag==1)
+				$clientDecodedData = json_decode($clientDataAsPerContactNo);
+				//contact-no already exist...update client-data ..check ledger
+				//update client-data and check ledger
+				$ledgerData = $ledgerModel->getDataAsPerContactNo($billData[0]->company_id,$contactNo);
+				if(is_array(json_decode($ledgerData)))
 				{
-					$decodedClientData->clientData[0] = $clientJsonDecodedData;
-				}
-				else
-				{
-					//get client-data as per given client-id for getting client contact_no
-					$clientIdData = $clientModel->getData($billData[0]->client_id);
-					$decodedClientData = (json_decode($clientIdData));
-				}
-				//get ledgerId for update ledegerData 
-				$getLedgerData = $ledgerModel->getDataAsPerContactNo($billData[0]->company_id,$decodedClientData->clientData[0]->contact_no);
-				$decodedLedgerData = json_decode($getLedgerData);
-				
-				$ledgerArray = new LedgerArray();
-				$ledgerArrayData = $ledgerArray->getLedgerArrayData();
-				$ledgerData = array();
-				foreach($ledgerArrayData as $key => $value)
-				{
-					if(array_key_exists($value,$billTrimData))
+					//update client-ledger
+					$ledgerId = json_decode($ledgerData)[0]->ledger_id;
+					//update client-data
+					$encodedClientData = $clientDecodedData->clientData;
+					$clientId = $encodedClientData[0]->client_id;
+					$clientUpdateResult = $this->clientUpdate($clientData,$clientId);
+					if(strcmp($clientUpdateResult,$msgArray['200'])!=0)
 					{
-						$ledgerData[$key] = $billTrimData[$value];
+						return $clientUpdateResult;
 					}
-				}
-				$ledgerController = new LedgerController(new Container());
-				$ledgerMethod=$constantArray['postMethod'];
-				if(!empty($decodedLedgerData) && count($ledgerData)!=0)
-				{
-					//Now, we can update ledger data
-					$ledgerPath=$constantArray['ledgerUrl'].'/'.$decodedLedgerData[0]->ledger_id;
-					$ledgerRequest = Request::create($ledgerPath,$ledgerMethod,$ledgerData);
-					$ledgerStatus = $ledgerController->update($ledgerRequest,$decodedLedgerData[0]->ledger_id);
-					if(strcmp($ledgerStatus,$msgArray['200'])!=0)
+					//update ledger-data
+					$ledgerValidationResult = $this->ledgerUpdate($clientData,$ledgerId,$clientId);
+					if(strcmp($ledgerValidationResult,$msgArray['200'])!=0)
 					{
-						return $ledgerStatus;
+						return $ledgerValidationResult;
 					}
 				}
 				else
 				{
-					//insert ledger-data
-					$ledgerArray=array();
-					$ledgerArray['ledgerName']=$decodedClientData->clientData[0]->client_name;
-					$ledgerArray['emailId']=$decodedClientData->clientData[0]->email_id;
-					$ledgerArray['contactNo']=$decodedClientData->clientData[0]->contact_no;
-					$ledgerArray['invoiceNumber']=$billData[0]->invoice_number;
-					$ledgerArray['companyId']=$billData[0]->company_id;
-					$ledgerArray['balanceFlag']=$constantArray['openingBalance'];
-					$ledgerArray['amount']=0;
-					$ledgerArray['amountType']=$constantArray['credit'];
-					$ledgerArray['ledgerGroupId']=$constantArray['ledgerGroupSundryDebitors'];
-					$ledgerArray['address1']=$decodedClientData->clientData[0]->address1;
-					$ledgerArray['address2']='';
-					$ledgerArray['stateAbb']=$decodedClientData->clientData[0]->state_abb;
-					$ledgerArray['cityId']=$decodedClientData->clientData[0]->city_id;
-					$ledgerController = new LedgerController(new Container());
-					$method=$constantArray['postMethod'];
-					$path=$constantArray['ledgerUrl'];
-					$ledgerRequest = Request::create($path,$method,$ledgerArray);
-					$processedData = $ledgerController->store($ledgerRequest);	
-					//|| $processedData[0][0]=='[' error while validation error occur
-					if(strcmp($msgArray['500'],$processedData)==0 || strcmp($msgArray['content'],$processedData)==0 ||
-						 strcmp($msgArray['contact'],$processedData)==0)
-					{
-						return $processedData;
-					}
-					// $ledgerPath=$constantArray['ledgerUrl'].'/'.$decodedLedgerData[0]->ledger_id;
-					// $ledgerRequest = Request::create($ledgerPath,$ledgerMethod,$ledgerData);
-					// $ledgerStatus = $ledgerController->update($ledgerRequest,$decodedLedgerData[0]->ledger_id);
-					// if(strcmp($ledgerStatus,$msgArray['200'])!=0)
-					// {
-						// return $ledgerStatus;
-					// }
-					
+					return $msgArray['content'];
 				}
 			}
 			else
 			{
-				return $msgArray['content'];
+				//client insertion and ledger check
+				$ledgerData = $ledgerModel->getDataAsPerContactNo($billData[0]->company_id,$contactNo);
+				if(is_array(json_decode($ledgerData)))
+				{
+					$ledgerId = json_decode($ledgerData)[0]->ledger_id;
+					//client insert and ledger update
+					//client insertion
+					$clientResult = $this->clientInsertion($clientData);
+					if(strcmp($clientResult,$msgArray['content'])==0)
+					{
+						return $clientResult;
+					}
+					$clientId = json_decode($clientResult)->clientId;
+					//update ledger-data
+					$ledgerValidationResult = $this->ledgerUpdate($clientData,$ledgerId,$clientId);
+					if(strcmp($ledgerValidationResult,$msgArray['200'])!=0)
+					{
+						return $ledgerValidationResult;
+					}
+				}
+				else
+				{
+					//client insert and ledger insert
+					//ledger validation
+					$result = $this->ledgerValidationOfInsertion($billData[0]->company_id,$clientData['client_name'],$contactNo);
+					if(is_array($result))
+					{
+						//client insertion
+						$clientResult = $this->clientInsertion($clientData);
+						if(strcmp($clientResult,$msgArray['content'])==0)
+						{
+							return $clientResult;
+						}
+						$clientId = json_decode($clientResult)->clientId;
+						$ledgerInsertionResult = $this->ledgerInsertion($clientData,$clientId,$billData[0]->invoice_number);
+						//ledger insertion (|| $processedData[0][0]=='[' error while validation error occur)
+						if(strcmp($msgArray['500'],$ledgerInsertionResult)==0 || strcmp($msgArray['content'],$ledgerInsertionResult)==0)
+						{
+							return $ledgerInsertionResult;
+						}
+						$ledgerId = json_decode($ledgerInsertionResult)[0]->ledger_id;
+					}
+					else
+					{
+						return $result;
+					}
+				}
 			}
 		}
 		if(array_key_exists('inventory',$billTrimData))
@@ -1615,5 +1577,236 @@ class BillProcessor extends BaseProcessor
 		{
 			return $billPersistable;
 		}
+	}
+	
+	/**
+     * ledger validation for insert ledger-data
+     * $param company-id,ledger-name,contact-no
+     * @return result array/error-message
+     */	
+	public function ledgerValidationOfInsertion($companyId,$ledgerName,$contactNo)
+	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		$tRequest = array();
+		$businessResult = array();
+		$buisnessLogic = new BuisnessLogic();
+		$businessResult = $buisnessLogic->validateLedgerData($companyId,$ledgerName,$contactNo);
+		if(!is_array($businessResult))
+		{
+			$ledgerName = $ledgerName.$contactNo;
+			$innerBusinessResult = $buisnessLogic->validateLedgerData($companyId,$ledgerName,$contactNo);
+			if(!is_array($innerBusinessResult))
+			{
+				return $exceptionArray['content'];
+			}
+		}
+		return $tRequest;
+	}
+	
+	/**
+     * ledger validation for update ledger-data
+     * $param contact-no,ledger-name,ledger-id,trim request array
+     * @return result array/error-message
+     */	
+	public function ledgerValidationOfUpdate($contactNo,$ledgerName,$ledgerId,$inputArray)
+	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		$tRequest = array();
+		$buisnessLogic = new BuisnessLogic();
+		$businessResult = $buisnessLogic->validateUpdateLedgerData($ledgerName,$ledgerId,$inputArray);
+		if(!is_array($businessResult))
+		{
+			$ledgerName = $ledgerName.$contactNo;
+			$innerBusinessResult = $buisnessLogic->validateUpdateLedgerData($ledgerName,$ledgerId,$inputArray);
+			if(!is_array($innerBusinessResult))
+			{
+				return $exceptionArray['content'];
+			}
+		}
+		return $tRequest;
+	}
+	
+	/**
+     * client insertion
+     * $param trim request array
+     * @return result array/error-message
+     */	
+	public function clientInsertion($tRequest)
+	{
+		//get constant variables array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		$clientArray = array();
+		$clientArray['clientName']=$tRequest['client_name'];
+		$clientArray['companyName']=array_key_exists('company_name',$tRequest)?$tRequest['company_name']:'';
+		$clientArray['emailId']=array_key_exists('email_id',$tRequest)?$tRequest['email_id']:'';
+		$clientArray['contactNo']=$tRequest['contact_no'];
+		$clientArray['address1']=array_key_exists('address1',$tRequest)?$tRequest['address1']:'';
+		$clientArray['isDisplay']=array_key_exists('is_display',$tRequest)?$tRequest['is_display']:$constantArray['isDisplayYes'];
+		$clientArray['stateAbb']=$tRequest['state_abb'];
+		$clientArray['cityId']=$tRequest['city_id'];
+		if(array_key_exists('profession_id',$tRequest))
+		{
+			$clientArray['professionId']=$tRequest['profession_id'];
+		}
+		$clientController = new ClientController(new Container());
+		$method=$constantArray['postMethod'];
+		$path=$constantArray['clientUrl'];
+		$clientRequest = Request::create($path,$method,$clientArray);
+		$processedData = $clientController->store($clientRequest);
+		return $processedData;
+	}
+	
+	/**
+     * ledger insertion
+     * $param trim request array,client_id
+     * @return result array/error-message
+     */	
+	public function ledgerInsertion($tRequest,$clientId,$invoiceNumber)
+	{
+		//get constant variables array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		$ledgerArray=array();
+		$ledgerArray['ledgerName']=$tRequest['client_name'];
+		$ledgerArray['address1']=array_key_exists('address1',$tRequest)?$tRequest['address1']:'';
+		$ledgerArray['address2']='';
+		$ledgerArray['contactNo']=$tRequest['contact_no'];
+		$ledgerArray['emailId']=array_key_exists('email_id',$tRequest)?$tRequest['email_id']:'';
+		$ledgerArray['invoiceNumber']=$invoiceNumber;
+		$ledgerArray['stateAbb']=$tRequest['state_abb'];
+		$ledgerArray['cityId']=$tRequest['city_id'];
+		$ledgerArray['companyId']=$tRequest['company_id'];
+		$ledgerArray['balanceFlag']=$constantArray['openingBalance'];
+		$ledgerArray['amount']=0;
+		$ledgerArray['amountType']=$constantArray['credit'];
+		$ledgerArray['ledgerGroupId']=$constantArray['ledgerGroupSundryDebitors'];
+		$ledgerArray['clientName']=$tRequest['client_name'];
+		$ledgerArray['clientId']=$clientId;
+		$ledgerController = new LedgerController(new Container());
+		$method=$constantArray['postMethod'];
+		$path=$constantArray['ledgerUrl'];
+		$ledgerRequest = Request::create($path,$method,$ledgerArray);
+		$processedData = $ledgerController->store($ledgerRequest);
+		return $processedData;
+	}
+	
+	/**
+     * client update
+     * $param trim request array,client_id
+     * @return result array/error-message
+     */	
+	public function clientUpdate($tRequest,$clientId)
+	{
+		//get constant variables array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		// update client data
+		$clientArray = array();
+		if(array_key_exists('client_name',$tRequest))
+		{
+			$clientArray['clientName']=$tRequest['client_name'];
+		}
+		if(array_key_exists('company_name',$tRequest))
+		{
+			$clientArray['companyName']=$tRequest['company_name'];
+		}
+		if(array_key_exists('email_id',$tRequest))
+		{
+			$clientArray['emailId']=$tRequest['email_id'];
+		}
+		if(array_key_exists('contact_no',$tRequest))
+		{
+			$clientArray['contactNo']=$tRequest['contact_no'];
+		}
+		if(array_key_exists('address1',$tRequest))
+		{
+			$clientArray['address1']=$tRequest['address1'];
+		}
+		if(array_key_exists('is_display',$tRequest))
+		{
+			$clientArray['isDisplay']=$tRequest['is_display'];
+		}
+		if(array_key_exists('state_abb',$tRequest))
+		{
+			$clientArray['stateAbb']=$tRequest['state_abb'];
+		}
+		if(array_key_exists('profession_id',$tRequest))
+		{
+			$clientArray['professionId']=$tRequest['profession_id'];
+		}
+		if(array_key_exists('city_id',$tRequest))
+		{
+			$clientArray['cityId']=$tRequest['city_id'];
+		}
+		$clientController = new ClientController(new Container());
+		$method=$constantArray['postMethod'];
+		$path=$constantArray['clientUrl'].'/'.$clientId;
+		$clientRequest = Request::create($path,$method,$clientArray);
+		$processedData = $clientController->updateData($clientRequest,$clientId);
+		return $processedData;
+	}
+	
+	/**
+     * ledger update
+     * $param trim request array,ledger_id,client_id
+     * @return result array/error-message
+     */	
+	public function ledgerUpdate($tRequest,$ledgerId,$clientId)
+	{
+		//get constant variables array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		//update ledger data
+		$ledgerArray=array();
+		// $ledgerArray['ledgerName']=$tRequest['client_name'];
+		if(array_key_exists('address1',$tRequest))
+		{
+			$ledgerArray['address1']=$tRequest['address1'];
+		}
+		if(array_key_exists('contact_no',$tRequest))
+		{
+			$ledgerArray['contactNo']=$tRequest['contact_no'];
+		}
+		if(array_key_exists('email_id',$tRequest))
+		{
+			$ledgerArray['emailId']=$tRequest['email_id'];
+		}
+		if(array_key_exists('invoice_number',$tRequest))
+		{
+			$ledgerArray['invoiceNumber']=$tRequest['invoice_number'];
+		}
+		if(array_key_exists('state_abb',$tRequest))
+		{
+			$ledgerArray['stateAbb']=$tRequest['state_abb'];
+		}
+		if(array_key_exists('city_id',$tRequest))
+		{
+			$ledgerArray['cityId']=$tRequest['city_id'];
+		}
+		if(array_key_exists('company_id',$tRequest))
+		{
+			$ledgerArray['companyId']=$tRequest['company_id'];
+		}
+		if(array_key_exists('client_name',$tRequest))
+		{
+			$ledgerArray['clientName']=$tRequest['client_name'];
+		}
+		$ledgerArray['clientId']=$clientId;
+		$ledgerController = new LedgerController(new Container());
+		$method=$constantArray['postMethod'];
+		$path=$constantArray['ledgerUrl'].'/'.$ledgerId;
+		$ledgerRequest = Request::create($path,$method,$ledgerArray);
+		$processedData = $ledgerController->update($ledgerRequest,$ledgerId);
+		return $processedData;
 	}
 }

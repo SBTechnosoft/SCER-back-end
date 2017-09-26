@@ -22,6 +22,21 @@ class ClientArray
 		return $clientArray;
 	}
 	
+	public function getClientArrayDataForBill()
+	{
+		$clientArray = array();
+		$clientArray['client_name'] = 'client_name';
+		$clientArray['company_name'] = 'company_name';
+		$clientArray['contact_no'] = 'contact_no';
+		$clientArray['email_id'] = 'email_id';
+		$clientArray['address1'] = 'address1';
+		$clientArray['is_display'] = 'is_display';
+		$clientArray['profession_id'] = 'profession_id';
+		$clientArray['city_id'] = 'city_id';
+		$clientArray['state_abb'] = 'state_abb';
+		return $clientArray;
+	}
+	
 	public function searchClientData()
 	{
 		$clientArray = array();

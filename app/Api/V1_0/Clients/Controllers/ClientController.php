@@ -15,6 +15,8 @@ use ERP\Entities\Constants\ConstantClass;
 use ERP\Model\Clients\ClientModel;
 use ERP\Core\Clients\Entities\EncodeData;
 use ERP\Model\Accounting\Ledgers\LedgerModel;
+use ERP\Api\V1_0\Accounting\Ledgers\Controllers\LedgerController;
+use Illuminate\Container\Container;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -253,70 +255,124 @@ class ClientController extends BaseController implements ContainerInterface
 			$constantArray = $constantClass->constantVariable();
 			if(strcmp($constantArray['success'],$authenticationResult)==0)
 			{
-				$processor = new ClientProcessor();
-				$clientPersistable = new ClientPersistable();		
-				$clientService= new ClientService();			
-				$clientPersistable = $processor->createPersistableChange($request,$clientId);
-				
-				if(is_array($clientPersistable))
+				$ledgerModel = new LedgerModel();
+				$inputRequest = $request->input();
+				$clientModel = new ClientModel();
+				//get contact_no from database
+				$clientIdData = $clientModel->getData($clientId);
+				//check client by contact_no
+				if(array_key_exists('contactNo',$inputRequest))
 				{
-					$status = $clientService->update($clientPersistable);
-					if(strcmp($exceptionArray['200'],$status)==0)
+					$contactNo = trim($inputRequest['contactNo']);
+				}
+				else
+				{
+					$decodedClientData = (json_decode($clientIdData));
+					$contactNo = $decodedClientData->clientData[0]->contact_no;
+				}
+				//get client-data as per contact-no
+				$clientData = $clientModel->getClientContactNoData($contactNo,$clientId);
+				if(!is_array($clientData) && !is_object($clientData))
+				{
+					$ledgerData = $ledgerModel->getDataAsPerClientId($clientId);
+					if(strcmp($ledgerData,$exceptionArray['404'])!=0)
 					{
-						//get data from client-model as per given client-id
-						// $clientModel = new ClientModel();
-						// $clientData = $clientModel->getData($clientId);
-						// if(strcmp($clientData,$exceptionArray['404'])==0)
-						// {
-							// return $exceptionArray['404'];
-						// }
-						// $decodedClientData = json_decode($clientData);
-						// $companydId='';
-						// get ledgerId for update ledegerData 
-						// $ledgerModel = new LedgerModel();
-						// $getLedgerData = $ledgerModel->getDataAsPerContactNo($companydId,$decodedClientData->clientData[0]->contact_no);
-						// if(strcmp($getLedgerData,$exceptionArray['500'])==0)
-						// {
-							// return $exceptionArray['500'];
-						// }
-						// $decodedLedgerData = json_decode($getLedgerData);
-						// $ledgerId = $decodedLedgerData[0]->ledger_id;
-						//update ledger data
-						// $ledgerArray=array();
-						// $ledgerArray['ledgerName']=$decodedClientData->clientData[0]->client_name;
-						// $ledgerArray['address1']=$decodedClientData->clientData[0]->address1;
-						// $ledgerArray['address2']='';
-						// $ledgerArray['contactNo']=$decodedClientData->clientData[0]->contact_no;
-						// $ledgerArray['emailId']=$decodedClientData->clientData[0]->email_id;
-						// $ledgerArray['invoiceNumber']='';
-						// $ledgerArray['stateAbb']=$decodedClientData->clientData[0]->state_abb;
-						// $ledgerArray['cityId']=$decodedClientData->clientData[0]->city_id;
-						// $ledgerArray['companyId']='';
-						// $ledgerArray['balanceFlag']=$constantArray['openingBalance'];
-						// $ledgerArray['amount']=0;
-						// $ledgerArray['amountType']=$constantArray['credit'];
-						// $ledgerArray['ledgerGroupId']=$constantArray['ledgerGroupSundryDebitors'];
-						// $ledgerController = new LedgerController(new Container());
-						// $method=$constantArray['postMethod'];
-						// $path=$constantArray['ledgerUrl'].'/'.$ledgerId;
-						// $ledgerRequest = Request::create($path,$method,$ledgerArray);
-						// $processedData = $ledgerController->update($ledgerRequest,$ledgerId);
-						// if(strcmp($processedData,$exceptionArray['200'])!=0)
-						// {
-							// return $processedData;
-						// }
+						$jsonDecodedLedgerData = json_decode($ledgerData);
+						
+						// contact-no not exists(update client-data)
+						$processor = new ClientProcessor();
+						$clientPersistable = new ClientPersistable();		
+						$clientService= new ClientService();			
+						$clientPersistable = $processor->createPersistableChange($request,$clientId);
+						if(is_array($clientPersistable))
+						{
+							$status = $clientService->update($clientPersistable);
+							if(strcmp($status,$exceptionArray['500'])==0)
+							{
+								return $status;
+							}
+							else
+							{
+								// ledger update
+								$ledgerUpdateResult = $this->ledgerUpdate($inputRequest,$jsonDecodedLedgerData[0]->ledger_id,$clientId);
+								if(strcmp($ledgerUpdateResult,$exceptionArray['200'])!=0)
+								{
+									return $ledgerUpdateResult;
+								}	
+							}
+							return $exceptionArray['200'];
+						}
+						else
+						{
+							return $clientPersistable;
+						}
 					}
 					else
 					{
-						return $status;
+						return $exceptionArray['content'];
 					}
 				}
 				else
 				{
-					return $clientPersistable;
+					//contact-no exists
+					return $exceptionArray['contact'];
 				}
 			}
 		}
+	}
+	
+	/**
+     * ledger update
+     * $param trim request array,ledger_id,client_id
+     * @return result array/error-message
+     */	
+	public function ledgerUpdate($tRequest,$ledgerId,$clientId)
+	{
+		//get constant variables array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
 		
+		//update ledger data
+		$ledgerArray=array();
+		// $ledgerArray['ledgerName']=$tRequest['client_name'];
+		if(array_key_exists('address1',$tRequest))
+		{
+			$ledgerArray['address1']=$tRequest['address1'];
+		}
+		if(array_key_exists('contact_no',$tRequest))
+		{
+			$ledgerArray['contactNo']=$tRequest['contact_no'];
+		}
+		if(array_key_exists('email_id',$tRequest))
+		{
+			$ledgerArray['emailId']=$tRequest['email_id'];
+		}
+		if(array_key_exists('invoice_number',$tRequest))
+		{
+			$ledgerArray['invoiceNumber']=$tRequest['invoice_number'];
+		}
+		if(array_key_exists('state_abb',$tRequest))
+		{
+			$ledgerArray['stateAbb']=$tRequest['state_abb'];
+		}
+		if(array_key_exists('city_id',$tRequest))
+		{
+			$ledgerArray['cityId']=$tRequest['city_id'];
+		}
+		if(array_key_exists('company_id',$tRequest))
+		{
+			$ledgerArray['companyId']=$tRequest['company_id'];
+		}
+		if(array_key_exists('client_name',$tRequest))
+		{
+			$ledgerArray['clientName']=$tRequest['client_name'];
+		}
+		$ledgerArray['clientId']=$clientId;
+		$ledgerController = new LedgerController(new Container());
+		$method=$constantArray['postMethod'];
+		$path=$constantArray['ledgerUrl'].'/'.$ledgerId;
+		$ledgerRequest = Request::create($path,$method,$ledgerArray);
+		$processedData = $ledgerController->update($ledgerRequest,$ledgerId);
+		return $processedData;
 	}
 }

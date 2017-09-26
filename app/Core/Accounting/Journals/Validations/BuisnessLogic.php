@@ -22,7 +22,7 @@ class BuisnessLogic extends LedgerModel
      * @param trim-array
      * @return array/exception message
      */
-	public function validateLedgerData($trimRequest)
+	public function validateLedgerData($companyId,$ledgerName,$contactNo)
 	{
 		//get exception message
 		$exception = new ExceptionMessage();
@@ -30,10 +30,11 @@ class BuisnessLogic extends LedgerModel
 		
 		//get ledger-data from database
 		$ledgerModel = new BuisnessLogic();
-		$ledgerResult = $ledgerModel->getLedgerId($trimRequest['company_id'],$trimRequest['ledger_name']);
+		$ledgerResult = $ledgerModel->getLedgerDataId($companyId,$ledgerName,$contactNo);
 		
 		if(strcmp($ledgerResult,$exceptionArray['404'])==0)
 		{
+			$trimRequest = array();
 			return $trimRequest;
 		}
 		else
@@ -48,7 +49,7 @@ class BuisnessLogic extends LedgerModel
      * @param trim-array and ledgerId
      * @return array/exception message
      */
-	public function validateUpdateLedgerData($trimRequest,$ledgerId,$input)
+	public function validateUpdateLedgerData($ledgerName,$ledgerId,$input)
 	{
 		//get exception message
 		$exception = new ExceptionMessage();
@@ -69,7 +70,8 @@ class BuisnessLogic extends LedgerModel
 				$ledgerData = json_decode($ledgerCompanyData);
 				$contactNo = $ledgerData->contact_no;
 			}
-			$ledgerResult = $ledgerModel->getLedgerDataId(json_decode($ledgerCompanyData)->company_id,$trimRequest[0]['ledger_name'],$contactNo);
+			$ledgerResult = $ledgerModel->getLedgerDataId(json_decode($ledgerCompanyData)->company_id,$ledgerName,$contactNo);
+			$trimRequest = array();
 			if(strcmp($ledgerResult,$exceptionArray['404'])==0)
 			{
 				return $trimRequest;

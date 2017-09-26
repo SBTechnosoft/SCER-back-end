@@ -474,6 +474,51 @@ class ClientModel extends Model
 	
 	/**
 	 * get client data 
+	 * @param contact-no,client-id
+	 * returns the status/error-message
+	*/
+	public function getClientContactNoData($contactNo,$clientId)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();		
+		$raw = DB::connection($databaseName)->select("select 
+		client_id,
+		client_name,
+		email_id,
+		contact_no,
+		address1,
+		is_display,
+		state_abb,
+		city_id,
+		company_name,
+		profession_id,
+		created_at,
+		updated_at
+		from client_mst 
+		where deleted_at='0000-00-00 00:00:00' and 
+		contact_no='".$contactNo."' and
+		client_id!='".$clientId."'");
+		DB::commit();
+		
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(count($raw)==0)
+		{
+			return $exceptionArray['404'];
+		}
+		else
+		{
+			return $raw;
+		}
+	}
+	
+	/**
+	 * get client data 
 	 * @param client_name
 	 * returns the status/error-message
 	*/

@@ -54,63 +54,51 @@ class ClientProcessor extends BaseProcessor
 			{
 				return $msgArray['content'];
 			}	
-			else
+			//validation
+			$status = $clientValidate->validate($tRequest);
+			if($status=="Success")
 			{
-				// validation
-				$validationResult = $clientValidate->clientNameValidate($tRequest);
-			}
-			if(is_array($validationResult))
-			{
-				//validation
-				$status = $clientValidate->validate($tRequest);
-				if($status=="Success")
+				foreach ($tRequest as $key => $value)
 				{
-					foreach ($tRequest as $key => $value)
+					if(!is_numeric($value))
 					{
-						if(!is_numeric($value))
+						if (strpos($value, '\'') !== FALSE)
 						{
-							if (strpos($value, '\'') !== FALSE)
-							{
-								$clientValue[$data]= str_replace("'","\'",$value);
-								$keyName[$data] = $key;
-							}
-							else
-							{
-								$clientValue[$data] = $value;
-								$keyName[$data] = $key;
-							}
+							$clientValue[$data]= str_replace("'","\'",$value);
+							$keyName[$data] = $key;
 						}
 						else
 						{
-							$clientValue[$data]= $value;
+							$clientValue[$data] = $value;
 							$keyName[$data] = $key;
 						}
-						$data++;
 					}
-					// set data to the persistable object
-					for($data=0;$data<count($clientValue);$data++)
+					else
 					{
-						//set the data in persistable object
-						$clientPersistable = new ClientPersistable();	
-						$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
-						//make function name dynamically
-						$setFuncName = 'set'.$str;
-						$getFuncName[$data] = 'get'.$str;
-						$clientPersistable->$setFuncName($clientValue[$data]);
-						$clientPersistable->setName($getFuncName[$data]);
-						$clientPersistable->setKey($keyName[$data]);
-						$clientArray[$data] = array($clientPersistable);
+						$clientValue[$data]= $value;
+						$keyName[$data] = $key;
 					}
-					return $clientArray;
+					$data++;
 				}
-				else
+				// set data to the persistable object
+				for($data=0;$data<count($clientValue);$data++)
 				{
-					return $status;
+					//set the data in persistable object
+					$clientPersistable = new ClientPersistable();	
+					$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
+					//make function name dynamically
+					$setFuncName = 'set'.$str;
+					$getFuncName[$data] = 'get'.$str;
+					$clientPersistable->$setFuncName($clientValue[$data]);
+					$clientPersistable->setName($getFuncName[$data]);
+					$clientPersistable->setKey($keyName[$data]);
+					$clientArray[$data] = array($clientPersistable);
 				}
+				return $clientArray;
 			}
 			else
 			{
-				return $validationResult;
+				return $status;
 			}
 		}
 	}
@@ -153,20 +141,10 @@ class ClientProcessor extends BaseProcessor
 				{
 					return $exceptionArray['content'];
 				}
-				else
-				{
-					// get key value from trim array
-					$tKeyValue[$data] = array_keys($tRequest[0])[0];
-					$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
-					if(strcmp($tKeyValue[$data],"client_name")==0)
-					{
-						$validationResult = $clientValidate->clientNameValidateUpdate($tRequest[0],$clientId,$request->input());
-						if(!is_array($validationResult))
-						{
-							return $validationResult;
-						}
-					}
-				}
+				// get key value from trim array
+				$tKeyValue[$data] = array_keys($tRequest[0])[0];
+				$tValue[$data] = $tRequest[0][array_keys($tRequest[0])[0]];
+				
 				//validation
 				$status = $clientValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
 				if($status=="Success")

@@ -56,11 +56,11 @@ class LedgerProcessor extends BaseProcessor
 			{
 				$businessResult = array();
 				$buisnessLogic = new BuisnessLogic();
-				$businessResult = $buisnessLogic->validateLedgerData($tRequest);
+				$businessResult = $buisnessLogic->validateLedgerData($tRequest['company_id'],$tRequest['ledger_name'],$tRequest['contact_no']);
 				if(!is_array($businessResult))
 				{
 					$tRequest['ledger_name'] = $tRequest['ledger_name'].$tRequest['contact_no'];
-					$innerBusinessResult = $buisnessLogic->validateLedgerData($tRequest);
+					$innerBusinessResult = $buisnessLogic->validateLedgerData($tRequest['company_id'],$tRequest['ledger_name'],$tRequest['contact_no']);
 					if(!is_array($innerBusinessResult))
 					{
 						return $msgArray['content'];
@@ -179,12 +179,12 @@ class LedgerProcessor extends BaseProcessor
 						{
 							$buisnessFlag=1;
 							$buisnessLogic = new BuisnessLogic();
-							$businessResult = $buisnessLogic->validateUpdateLedgerData($tRequest,$ledgerId,$request->input());
+							$businessResult = $buisnessLogic->validateUpdateLedgerData($tRequest[0]['ledger_name'],$ledgerId,$request->input());
 							if(!is_array($businessResult))
 							{
 								$contactNo = json_decode($result)->contact_no;
 								$tRequest[0]['ledger_name'] = $tRequest[0]['ledger_name'].$contactNo;
-								$innerBusinessResult = $buisnessLogic->validateUpdateLedgerData($tRequest,$ledgerId,$request->input());
+								$innerBusinessResult = $buisnessLogic->validateUpdateLedgerData($tRequest[0]['ledger_name'],$ledgerId,$request->input());
 								if(!is_array($innerBusinessResult))
 								{
 									return $exceptionArray['content'];
