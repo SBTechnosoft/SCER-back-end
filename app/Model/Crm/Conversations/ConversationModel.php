@@ -7,6 +7,7 @@ use Carbon;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Entities\Constants\ConstantClass;
 use ERP\Model\Clients\ClientModel;
+use ERP\Model\Authenticate\AuthenticateModel;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -112,6 +113,50 @@ class ConversationModel extends Model
 		if($raw==1)
 		{
 			return $exceptionArray['200'];
+		}
+	}
+	
+	/**
+	 * insert bill-mail data 
+	 * @param  array
+	 * returns the status
+	*/
+	public function saveMailDataFromBill($emailId,$subject,$conversationType,$conversation,$documentName,$documentFormat,$documentPath,$comment,$companyId,$clientId,$headerData)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		$headerData['authenticationtoken'][0] = $_SERVER['HTTP_AUTHENTICATIONTOKEN'];
+		//get user-id
+		$authenticationModel = new AuthenticateModel();
+		$userData = $authenticationModel->getActiveUser($headerData);
+		if(!is_array($userData))
+		{
+			if(strcmp($exceptionArray['userLogin'],$userData)==0)
+			{
+				return $exceptionArray['userLogin'];
+			}
+		}
+		$userId = $userData[0]->user_id;
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->statement("insert into conversation_dtl
+		(email_id,subject,conversation,conversation_type,attachment_name,attachment_format,attachment_path,comment,client_id,
+		company_id,user_id)values('".$emailId."','".$subject."','".$conversation."','".$conversationType."','".$documentName."','".$documentFormat."','".$documentPath."',
+		'".$comment."','".$clientId."','".$companyId."','".$userId."')");
+		DB::commit();
+		
+		if($raw==1)
+		{
+			return $exceptionArray['200'];
+		}
+		else
+		{
+			return $exceptionArray['500'];
 		}
 	}
 }

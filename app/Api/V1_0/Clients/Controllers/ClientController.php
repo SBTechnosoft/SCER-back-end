@@ -219,14 +219,13 @@ class ClientController extends BaseController implements ContainerInterface
      */
 	public function updateData(Request $request,$clientId)
 	{
+		$clientService= new ClientService();
 		$requestUri = explode('/',$_SERVER['REQUEST_URI']);
 		if(strcmp($requestUri[1],"accounting")==0 && strcmp($requestUri[2],"bills")==0 || strcmp($_SERVER['REQUEST_URI'],"/accounting/quotations")==0 
 			|| strcmp($_SERVER['REQUEST_URI'],"/crm/job-form")==0)
 		{
-			
 			$processor = new ClientProcessor();
 			$clientPersistable = new ClientPersistable();		
-			$clientService= new ClientService();			
 			$clientPersistable = $processor->createPersistableChange($request,$clientId);
 			
 			if(is_array($clientPersistable))
@@ -278,11 +277,9 @@ class ClientController extends BaseController implements ContainerInterface
 					if(strcmp($ledgerData,$exceptionArray['404'])!=0)
 					{
 						$jsonDecodedLedgerData = json_decode($ledgerData);
-						
 						// contact-no not exists(update client-data)
 						$processor = new ClientProcessor();
 						$clientPersistable = new ClientPersistable();		
-						$clientService= new ClientService();			
 						$clientPersistable = $processor->createPersistableChange($request,$clientId);
 						if(is_array($clientPersistable))
 						{
@@ -300,7 +297,9 @@ class ClientController extends BaseController implements ContainerInterface
 									return $ledgerUpdateResult;
 								}	
 							}
-							return $exceptionArray['200'];
+							//get client-data as per given client-id
+							$clientData = $clientService->getClientData($clientId);
+							return $clientData;
 						}
 						else
 						{
@@ -309,7 +308,24 @@ class ClientController extends BaseController implements ContainerInterface
 					}
 					else
 					{
-						return $exceptionArray['content'];
+						// contact-no not exists(update client-data)
+						$processor = new ClientProcessor();
+						$clientPersistable = new ClientPersistable();		
+						$clientPersistable = $processor->createPersistableChange($request,$clientId);
+						if(is_array($clientPersistable))
+						{
+							$status = $clientService->update($clientPersistable);
+							if(strcmp($status,$exceptionArray['500'])==0)
+							{
+								return $status;
+							}
+							else
+							{
+								//get client-data as per given client-id
+								$clientData = $clientService->getClientData($clientId);
+								return $clientData;
+							}
+						}
 					}
 				}
 				else
@@ -339,33 +355,33 @@ class ClientController extends BaseController implements ContainerInterface
 		{
 			$ledgerArray['address1']=$tRequest['address1'];
 		}
-		if(array_key_exists('contact_no',$tRequest))
+		if(array_key_exists('contactNo',$tRequest))
 		{
-			$ledgerArray['contactNo']=$tRequest['contact_no'];
+			$ledgerArray['contactNo']=$tRequest['contactNo'];
 		}
-		if(array_key_exists('email_id',$tRequest))
+		if(array_key_exists('emailId',$tRequest))
 		{
-			$ledgerArray['emailId']=$tRequest['email_id'];
+			$ledgerArray['emailId']=$tRequest['emailId'];
 		}
-		if(array_key_exists('invoice_number',$tRequest))
+		if(array_key_exists('invoiceNumber',$tRequest))
 		{
-			$ledgerArray['invoiceNumber']=$tRequest['invoice_number'];
+			$ledgerArray['invoiceNumber']=$tRequest['invoiceNumber'];
 		}
-		if(array_key_exists('state_abb',$tRequest))
+		if(array_key_exists('stateAbb',$tRequest))
 		{
-			$ledgerArray['stateAbb']=$tRequest['state_abb'];
+			$ledgerArray['stateAbb']=$tRequest['stateAbb'];
 		}
-		if(array_key_exists('city_id',$tRequest))
+		if(array_key_exists('cityId',$tRequest))
 		{
-			$ledgerArray['cityId']=$tRequest['city_id'];
+			$ledgerArray['cityId']=$tRequest['cityId'];
 		}
-		if(array_key_exists('company_id',$tRequest))
+		if(array_key_exists('companyId',$tRequest))
 		{
-			$ledgerArray['companyId']=$tRequest['company_id'];
+			$ledgerArray['companyId']=$tRequest['companyId'];
 		}
-		if(array_key_exists('client_name',$tRequest))
+		if(array_key_exists('clientName',$tRequest))
 		{
-			$ledgerArray['clientName']=$tRequest['client_name'];
+			$ledgerArray['clientName']=$tRequest['clientName'];
 		}
 		$ledgerArray['clientId']=$clientId;
 		$ledgerController = new LedgerController(new Container());

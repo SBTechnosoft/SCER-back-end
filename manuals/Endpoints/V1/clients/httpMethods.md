@@ -65,3 +65,23 @@
 			}
 
 **NOTES:** List all the client
+##### `POST /clients/{clientId}`
++ Header
+	- Authentication Token
+
++ Body
+
+            {
+                ... Standard Client Persistable Object
+            }
++ Error Message
+
+			{
+				... Error Message
+			} 
++ Response
+
+            {
+                ... HTTP_Status:200
+            }
+              

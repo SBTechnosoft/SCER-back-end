@@ -21,3 +21,7 @@
 <IfModule mod_php5.c>
 php_value memory_limit 256M
 </IfModule>
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Methods "GET,POST,PUT,DELETE,OPTIONS,PATCH"
+Header set Access-Control-Allow-Credentials "true"
+Header set Access-Control-Allow-Headers "Origin,Content-Type,type,authenticationToken,operation,jfId,fromDate,toDate,ledgerGroup,ledgerName,productName,productCategoryId,productGroupId,salesType,productId,color,size,productCode,companyId,branchId,nextSaleId,previousSaleId,journalType,invoiceNumber,clientName,contactNo,quotationNumber,invoiceFromdate,invoiceToDate,jobCardFromDate,jobCardToDate,jobCardNumber,emailId,address,previousQuotationId,nextQuotationId,previousPurchaseId,nextPurchaseId,purchaseBillId,billNumber,professionId,saleId"

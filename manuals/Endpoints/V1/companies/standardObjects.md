@@ -32,6 +32,14 @@
 				"currencySymbol":int,
 				"isDefault": Enum,
 				"isDisplay": Enum,
+				"smsUser"::string,
+				"smsPassword"::string,
+				"smsSid"::string,
+				"emailUserid"::string,
+				"emailPassword"::string,
+				"emailPort"::string,
+				"emailHost"::string,
+				"emailSmtpsecure":string,
 				"createdAt" timestamp,
 				"updatedAt": datetime
             }
@@ -67,6 +75,14 @@
 			"currencySymbol":int,
 			"isDefault": Enum,
 			"isDisplay": Enum,
+			"smsUser"::string,
+			"smsPassword"::string,
+			"smsSid"::string,
+			"emailUserid"::string,
+			"emailPassword"::string,
+			"emailPort"::string,
+			"emailHost"::string,
+			"emailSmtpsecure":string,
 		}
 
 ##### Is Display Enum

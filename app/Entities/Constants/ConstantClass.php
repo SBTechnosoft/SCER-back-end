@@ -98,6 +98,7 @@ class ConstantClass
 		$constantArray['salesReturnType']="sales_return";
 		$constantArray['purchaseType']="purchase";
 		$constantArray['emailType']="email";
+		$constantArray['emailSubject']="Cycle Store";
 		$constantArray['smsType']="sms";
 		$constantArray['blankType']="blank";
 		$constantArray['quotationType']="quotation";

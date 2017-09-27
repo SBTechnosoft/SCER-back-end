@@ -48,7 +48,8 @@ class LedgerController extends BaseController implements ContainerInterface
 	*/
     public function store(Request $request)
     {
-		if(strcmp($_SERVER['REQUEST_URI'],"/accounting/bills")==0)
+		$requestUri = explode('/',$_SERVER['REQUEST_URI']);
+		if(strcmp($requestUri[1],"accounting")==0 && strcmp($requestUri[2],"bills")==0)
 		{
 			$this->request = $request;
 			// check the requested Http method

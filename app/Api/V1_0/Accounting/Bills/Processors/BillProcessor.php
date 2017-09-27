@@ -95,7 +95,7 @@ class BillProcessor extends BaseProcessor
 							return $clientResult;
 						}
 						$clientId = json_decode($clientResult)->clientId;
-						$ledgerInsertionResult = $this->ledgerInsertion($tRequest,$clientId,$tRequest['invoice_number']);
+						$ledgerInsertionResult = $this->ledgerInsertion($tRequest,$clientId,$tRequest['invoice_number'],$tRequest['company_id']);
 						//ledger insertion (|| $processedData[0][0]=='[' error while validation error occur)
 						if(strcmp($msgArray['500'],$ledgerInsertionResult)==0 || strcmp($msgArray['content'],$ledgerInsertionResult)==0)
 						{
@@ -163,7 +163,7 @@ class BillProcessor extends BaseProcessor
 									return $clientUpdateResult;
 								}
 								//insert ledger
-								$ledgerInsertionResult = $this->ledgerInsertion($tRequest,$clientId,$tRequest['invoice_number']);
+								$ledgerInsertionResult = $this->ledgerInsertion($tRequest,$clientId,$tRequest['invoice_number'],$tRequest['company_id']);
 								//ledger insertion (|| $processedData[0][0]=='[' error while validation error occur)
 								if(strcmp($msgArray['500'],$ledgerInsertionResult)==0 || strcmp($msgArray['content'],$ledgerInsertionResult)==0)
 								{
@@ -211,7 +211,7 @@ class BillProcessor extends BaseProcessor
 									return $clientResult;
 								}
 								$clientId = json_decode($clientResult)->clientId;
-								$ledgerInsertionResult = $this->ledgerInsertion($tRequest,$clientId,$tRequest['invoice_number']);
+								$ledgerInsertionResult = $this->ledgerInsertion($tRequest,$clientId,$tRequest['invoice_number'],$tRequest['company_id']);
 								// ledger insertion (|| $processedData[0][0]=='[' error while validation error occur)
 								if(strcmp($msgArray['500'],$ledgerInsertionResult)==0 || strcmp($msgArray['content'],$ledgerInsertionResult)==0)
 								{
@@ -921,6 +921,7 @@ class BillProcessor extends BaseProcessor
      */
 	public function createPersistableChange(Request $request,$saleId,$billData)
 	{
+		$ledgerId='';
 		$balanceFlag=0;
 		//get constant variables array
 		$constantClass = new ConstantClass();
@@ -949,19 +950,23 @@ class BillProcessor extends BaseProcessor
 		//get clientId as per given saleId
 		$billData = json_decode($billData);
 		$journalController = new JournalController(new Container());
+		
+		//get client-data as per given client-id for getting client contact_no
+		$clientIdData = $clientModel->getData($billData[0]->client_id);
+		$decodedClientData = (json_decode($clientIdData));
+		$contactNo = $decodedClientData->clientData[0]->contact_no;
+		
+		$ledgerData = $ledgerModel->getDataAsPerContactNo($billData[0]->company_id,$contactNo);
+		if(is_array(json_decode($ledgerData)))
+		{
+			$ledgerId = json_decode($ledgerData)[0]->ledger_id;
+		}
 		if(count($clientData)!=0)
 		{
 			//check contact_no exist or not
 			if(array_key_exists("contact_no",$clientData))
 			{
 				$contactNo = $clientData['contact_no'];
-			}
-			else
-			{
-				//get client-data as per given client-id for getting client contact_no
-				$clientIdData = $clientModel->getData($billData[0]->client_id);
-				$decodedClientData = (json_decode($clientIdData));
-				$contactNo = $decodedClientData->clientData[0]->contact_no;
 			}
 			//get client-data as per contact-no
 			$clientDataAsPerContactNo = $clientModel->getClientData($contactNo);
@@ -992,7 +997,31 @@ class BillProcessor extends BaseProcessor
 				}
 				else
 				{
-					return $msgArray['content'];
+					//ledger validation
+					$result = $this->ledgerValidationOfInsertion($billData[0]->company_id,$clientData['client_name'],$contactNo);
+					if(is_array($result))
+					{
+						//update client-data
+						$encodedClientData = $clientDecodedData->clientData;
+						$clientId = $encodedClientData[0]->client_id;
+						$clientUpdateResult = $this->clientUpdate($clientData,$clientId);
+						if(strcmp($clientUpdateResult,$msgArray['200'])!=0)
+						{
+							return $clientUpdateResult;
+						}
+						//ledger insertion
+						$ledgerInsertionResult = $this->ledgerInsertion($clientData,$clientId,$billData[0]->invoice_number,$billData[0]->company_id);
+						//ledger insertion (|| $processedData[0][0]=='[' error while validation error occur)
+						if(strcmp($msgArray['500'],$ledgerInsertionResult)==0 || strcmp($msgArray['content'],$ledgerInsertionResult)==0)
+						{
+							return $ledgerInsertionResult;
+						}
+						$ledgerId = json_decode($ledgerInsertionResult)[0]->ledger_id;
+					}
+					else
+					{
+						return $result;
+					}
 				}
 			}
 			else
@@ -1031,7 +1060,8 @@ class BillProcessor extends BaseProcessor
 							return $clientResult;
 						}
 						$clientId = json_decode($clientResult)->clientId;
-						$ledgerInsertionResult = $this->ledgerInsertion($clientData,$clientId,$billData[0]->invoice_number);
+						$ledgerInsertionResult = $this->ledgerInsertion($clientData,$clientId,$billData[0]->invoice_number,$billData[0]->company_id);
+						
 						//ledger insertion (|| $processedData[0][0]=='[' error while validation error occur)
 						if(strcmp($msgArray['500'],$ledgerInsertionResult)==0 || strcmp($msgArray['content'],$ledgerInsertionResult)==0)
 						{
@@ -1060,7 +1090,7 @@ class BillProcessor extends BaseProcessor
 			if(is_array(json_decode($ledgerResult)))
 			{
 				$paymentLedgerId = json_decode($ledgerResult)[0]->ledger_id;
-			}			
+			}		
 			//get jf_id
 			$journalMethod=$constantArray['getMethod'];
 			$journalPath=$constantArray['journalUrl'];
@@ -1072,7 +1102,6 @@ class BillProcessor extends BaseProcessor
 			$generalLedgerData = $ledgerModel->getLedger($billData[0]->company_id);
 			$generalLedgerArray = json_decode($generalLedgerData);
 			$salesTypeEnum = new SalesTypeEnum();
-						
 			$salesTypeEnumArray = $salesTypeEnum->enumArrays();		
 			if(strcmp($billData[0]->sales_type,$salesTypeEnumArray['retailSales'])==0)
 			{
@@ -1089,16 +1118,15 @@ class BillProcessor extends BaseProcessor
 			$ledgerTaxAcId = $generalLedgerArray[0][0]->ledger_id;
 			$ledgerSaleAcId = $decodedLedgerId[0]->ledger_id;
 			$ledgerDiscountAcId = $generalLedgerArray[1][0]->ledger_id;
-			if(count($decodedLedgerData)!=0)
-			{
-				$ledgerId = $decodedLedgerData[0]->ledger_id;
-			}
-					
+			// if(count($decodedLedgerData)!=0)
+			// {
+				// $ledgerId = $decodedLedgerData[0]->ledger_id;
+			// }
 			$amountTypeEnum = new AmountTypeEnum();
 			$amountTypeArray = $amountTypeEnum->enumArrays();
 			$ledgerAmount = $billTrimData['total']-$billTrimData['advance'];		
 			$discountTotal=0;
-			$inventoryArray = $billTrimData['inventory'];		
+			$inventoryArray = $billTrimData['inventory'];	
 			for($discountArray=0;$discountArray<count($inventoryArray);$discountArray++)
 			{
 				if(strcmp($inventoryArray[$discountArray]['discountType'],"flat")==0)
@@ -1477,7 +1505,6 @@ class BillProcessor extends BaseProcessor
 				}
 			}
 		}
-		
 		$dateFlag=0;
 		if(count($billTrimData)==1 && array_key_exists('entry_date',$billTrimData))
 		{
@@ -1668,12 +1695,11 @@ class BillProcessor extends BaseProcessor
      * $param trim request array,client_id
      * @return result array/error-message
      */	
-	public function ledgerInsertion($tRequest,$clientId,$invoiceNumber)
+	public function ledgerInsertion($tRequest,$clientId,$invoiceNumber,$companyId)
 	{
 		//get constant variables array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-		
 		$ledgerArray=array();
 		$ledgerArray['ledgerName']=$tRequest['client_name'];
 		$ledgerArray['address1']=array_key_exists('address1',$tRequest)?$tRequest['address1']:'';
@@ -1683,7 +1709,7 @@ class BillProcessor extends BaseProcessor
 		$ledgerArray['invoiceNumber']=$invoiceNumber;
 		$ledgerArray['stateAbb']=$tRequest['state_abb'];
 		$ledgerArray['cityId']=$tRequest['city_id'];
-		$ledgerArray['companyId']=$tRequest['company_id'];
+		$ledgerArray['companyId']=$companyId;
 		$ledgerArray['balanceFlag']=$constantArray['openingBalance'];
 		$ledgerArray['amount']=0;
 		$ledgerArray['amountType']=$constantArray['credit'];

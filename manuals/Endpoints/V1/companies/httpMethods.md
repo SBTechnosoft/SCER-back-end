@@ -52,7 +52,7 @@
 
 ##### Updates Company    
        
-##### `PATCH /companies/{companyId}`
+##### `POST /companies/{companyId}`
 + Header
 	- Authentication Token
 
