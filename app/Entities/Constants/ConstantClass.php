@@ -173,6 +173,7 @@ class ConstantClass
 		$commentObject = new stdClass();
 		// $commentObject->mailSend = "Your Mail Is Successfully Send";
 		$commentObject->billMailSend = "Your Mail Is Successfully Send From Sale-Bill";
+		$commentObject->quotationMailSend = "Your Mail Is Successfully Send From Quotation";
 		$commentObject->crmMailSend = "Your Mail Is Successfully Send From Crm";
 		$commentObject->crmSmsSend = "Your Mail Is Successfully Send From Crm";
 		return $commentObject;

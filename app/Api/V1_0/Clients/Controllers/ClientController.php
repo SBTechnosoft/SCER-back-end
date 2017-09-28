@@ -55,10 +55,9 @@ class ClientController extends BaseController implements ContainerInterface
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		// print_r($_SERVER['REQUEST_URI']);
 		$requestUri = explode('/',$_SERVER['REQUEST_URI']);
 		if(strcmp($requestUri[1],"accounting")==0 && strcmp($requestUri[2],"bills")==0 || strcmp($_SERVER['REQUEST_URI'],"/accounting/quotations")==0 
-			|| strcmp($_SERVER['REQUEST_URI'],"/crm/job-form")==0)
+			|| strcmp($_SERVER['REQUEST_URI'],"/crm/job-form")==0 || strcmp($requestUri[1],"accounting")==0 && strcmp($requestUri[2],"quotations")==0)
 		{
 			$this->request = $request;
 			// check the requested Http method
@@ -221,8 +220,9 @@ class ClientController extends BaseController implements ContainerInterface
 	{
 		$clientService= new ClientService();
 		$requestUri = explode('/',$_SERVER['REQUEST_URI']);
+		
 		if(strcmp($requestUri[1],"accounting")==0 && strcmp($requestUri[2],"bills")==0 || strcmp($_SERVER['REQUEST_URI'],"/accounting/quotations")==0 
-			|| strcmp($_SERVER['REQUEST_URI'],"/crm/job-form")==0)
+			|| strcmp($_SERVER['REQUEST_URI'],"/crm/job-form")==0 || strcmp($requestUri[1],"accounting")==0 && strcmp($requestUri[2],"quotations")==0)
 		{
 			$processor = new ClientProcessor();
 			$clientPersistable = new ClientPersistable();		

@@ -624,7 +624,7 @@ class BillModel extends Model
 			where sales_type='".$data['salestype'][0]."' and 
 			company_id='".$companyId."' and 
 			deleted_at='0000-00-00 00:00:00' and 
-			(invoice_number='".$data['invoicenumber'][0]."' or client_id in ( select client_id from client_mst where contact_no = '".$data['invoicenumber'][0]."') or client_id in ( select client_id from client_mst where email_id = '".$data['invoicenumber'][0]."')) ");
+			(invoice_number='".$data['invoicenumber'][0]."' or client_id in ( select client_id from client_mst where contact_no = '".$data['invoicenumber'][0]."') or client_id in ( select client_id from client_mst where email_id = '".$data['invoicenumber'][0]."') or client_id in ( select client_id from client_mst where client_name like '%".$data['invoicenumber'][0]."%')) ");
 			DB::commit();
 			if(count($raw)==0)
 			{

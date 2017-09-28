@@ -406,20 +406,14 @@ class CompanyModel extends Model
 		$enumIsDefArray = array();
 		$isDefEnum = new IsDefaultEnum();
 		$enumIsDefArray = $isDefEnum->enumArrays();
+		$isDefaultString='';
 		for($keyData=0;$keyData<count($key);$keyData++)
 		{
 		    if(strcmp($key[array_keys($key)[$keyData]],"is_default")==0)
 			{
 				if(strcmp($companyData[$keyData],$enumIsDefArray['default'])==0)
 				{
-					$raw  = DB::connection($databaseName)->statement("update company_mst 
-					set is_default='".$enumIsDefArray['notDefault']."',
-					updated_at='".$mytime."' 
-					where deleted_at = '0000-00-00 00:00:00'");
-					if($raw==0)
-					{
-						return $exceptionArray['500'];
-					}
+					$isDefaultString = "is_default='".$enumIsDefArray['notDefault']."',";
 				}
 			}	
 		}
@@ -430,6 +424,7 @@ class CompanyModel extends Model
 		}
 		$raw  = DB::connection($databaseName)->statement("update company_mst 
 		set ".$keyValueString."updated_at='".$mytime."',
+		'".$isDefaultString."'
 		document_name='".$documentData[0][0]."',
 		document_size='".$documentData[0][1]."',
 		document_format='".$documentData[0][2]."' 

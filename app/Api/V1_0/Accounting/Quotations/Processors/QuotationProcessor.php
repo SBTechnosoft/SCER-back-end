@@ -70,27 +70,14 @@ class QuotationProcessor extends BaseProcessor
 				}
 				if($contactNo=="" || $contactNo==0)
 				{
-					$clientArray = array();
-					$clientArray['clientName']=$tRequest['client_name'];
-					$clientArray['professionId']=$tRequest['profession_id'];
-					$clientArray['companyName']=$tRequest['company_name'];
-					$clientArray['emailId']=$tRequest['email_id'];
-					$clientArray['contactNo']=$tRequest['contact_no'];
-					$clientArray['address1']=$tRequest['address1'];
-					$clientArray['isDisplay']=$tRequest['is_display'];
-					$clientArray['stateAbb']=$tRequest['state_abb'];
-					$clientArray['cityId']=$tRequest['city_id'];
-					$clientController = new ClientController(new Container());
-					$method=$constantArray['postMethod'];
-					$path=$constantArray['clientUrl'];
-					$clientRequest = Request::create($path,$method,$clientArray);
-					$processedData = $clientController->store($clientRequest);
-					
-					if(strcmp($processedData,$msgArray['content'])==0)
+					//client insertion
+					$clientResult = $this->clientInsertion($tRequest);
+					if(strcmp($clientResult,$msgArray['content'])==0)
 					{
-						return $processedData;
+						return $clientResult;
 					}
-					$clientId = json_decode($processedData)->clientId;
+					$clientId = json_decode($clientResult)->clientId;
+						
 				}
 				else
 				{
@@ -98,54 +85,34 @@ class QuotationProcessor extends BaseProcessor
 					$clientModel = new ClientModel();
 					$clientArrayData = $clientModel->getClientData($contactNo);
 					$clientData = (json_decode($clientArrayData));
-					
-					if(is_array($clientData))
+					if(is_array($clientData) || is_object($clientData))
 					{
-						$encodedClientData = $clientData['clientData'];
-						$clientId = $encodedClientData[0]->client_id;
-						//update client data
-						$clientArray = array();
-						$clientArray['clientName']=$tRequest['client_name'];
-						$clientArray['professionId']=$tRequest['profession_id'];
-						$clientArray['companyName']=$tRequest['company_name'];
-						$clientArray['emailId']=$tRequest['email_id'];
-						$clientArray['contactNo']=$tRequest['contact_no'];
-						$clientArray['address1']=$tRequest['address1'];
-						$clientArray['isDisplay']=$tRequest['is_display'];
-						$clientArray['stateAbb']=$tRequest['state_abb'];
-						$clientArray['cityId']=$tRequest['city_id'];
-						$clientController = new ClientController(new Container());
-						$method=$constantArray['postMethod'];
-						$path=$constantArray['clientUrl'].'/'.$clientId;
-						$clientRequest = Request::create($path,$method,$clientArray);
-						$processedData = $clientController->updateData($clientRequest,$clientId);
-						if(strcmp($processedData,$msgArray['200'])!=0)
+						if(is_object($clientData))
 						{
-							return $processedData;
+							$clientObjectData = $clientData->clientData;
+						}
+						else if(is_array($clientData))
+						{
+							$clientObjectData = $clientData['clientData'];
+						}
+						//update client-data
+						$encodedClientData = $clientObjectData;
+						$clientId = $encodedClientData[0]->client_id;
+						$clientUpdateResult = $this->clientUpdate($tRequest,$clientId);
+						if(strcmp($clientUpdateResult,$msgArray['200'])!=0)
+						{
+							return $clientUpdateResult;
 						}
 					}
 					else
 					{
-						$clientArray = array();
-						$clientArray['clientName']=$tRequest['client_name'];
-						$clientArray['professionId']=$tRequest['profession_id'];
-						$clientArray['companyName']=$tRequest['company_name'];
-						$clientArray['contactNo']=$tRequest['contact_no'];
-						$clientArray['emailId']=$tRequest['email_id'];
-						$clientArray['address1']=$tRequest['address1'];
-						$clientArray['isDisplay']=$tRequest['is_display'];
-						$clientArray['stateAbb']=$tRequest['state_abb'];
-						$clientArray['cityId']=$tRequest['city_id'];
-						$clientController = new ClientController(new Container());
-						$method=$constantArray['postMethod'];
-						$path=$constantArray['clientUrl'];
-						$clientRequest = Request::create($path,$method,$clientArray);
-						$processedData = $clientController->store($clientRequest);
-						if(strcmp($processedData,$msgArray['content'])==0)
+						//client insertion
+						$clientResult = $this->clientInsertion($tRequest);
+						if(strcmp($clientResult,$msgArray['content'])==0)
 						{
-							return $processedData;
+							return $clientResult;
 						}
-						$clientId = json_decode($processedData)->clientId;
+						$clientId = json_decode($clientResult)->clientId;
 					}
 				}
 			}
@@ -167,6 +134,12 @@ class QuotationProcessor extends BaseProcessor
 			$tInventoryArray[$trimData][5] = trim($request->input()['inventory'][$trimData]['color']);
 			$tInventoryArray[$trimData][6] = trim($request->input()['inventory'][$trimData]['frameNo']);
 			$tInventoryArray[$trimData][7] = trim($request->input()['inventory'][$trimData]['size']);
+			$tInventoryArray[$trimData][8] = array_key_exists("cgstPercentage",$request->input()['inventory'][$trimData]) ? trim($request->input()['inventory'][$trimData]['cgstPercentage']):0;
+			$tInventoryArray[$trimData][9] = array_key_exists("cgstAmount",$request->input()['inventory'][$trimData]) ? trim($request->input()['inventory'][$trimData]['cgstAmount']):0;
+			$tInventoryArray[$trimData][10] = array_key_exists("sgstPercentage",$request->input()['inventory'][$trimData]) ? trim($request->input()['inventory'][$trimData]['sgstPercentage']):0;
+			$tInventoryArray[$trimData][11] = array_key_exists("sgstAmount",$request->input()['inventory'][$trimData]) ? trim($request->input()['inventory'][$trimData]['sgstAmount']):0;
+			$tInventoryArray[$trimData][12] = array_key_exists("igstPercentage",$request->input()['inventory'][$trimData]) ? trim($request->input()['inventory'][$trimData]['igstPercentage']):0;
+			$tInventoryArray[$trimData][13] = array_key_exists("igstAmount",$request->input()['inventory'][$trimData]) ? trim($request->input()['inventory'][$trimData]['igstAmount']):0;
 			array_push($request->input()['inventory'][$trimData],$tInventoryArray[$trimData]);
 		}
 		$productArray['inventory'] = $request->input()['inventory'];
@@ -219,21 +192,45 @@ class QuotationProcessor extends BaseProcessor
 			{
 				$clientData[$value] = $quotationTrimData[$key];
 			}
-		}		
-		//get clientId as per given quotationBillId
+		}	
+		$contactFlag=0;
+		$clientModel = new ClientModel();
+		//get quotation-data as per given quotationBillId
 		$quotationData = json_decode($quotationData);	
-
+		//get client-data as per given client-id for getting client contact_no
+		$clientIdData = $clientModel->getData($quotationData[0]->client_id);
+		$decodedClientData = (json_decode($clientIdData));
+		$contactNo = $decodedClientData->clientData[0]->contact_no;
 		if(count($clientData)!=0)
 		{
-			//call controller of client for updating of client data
-			$clientController = new ClientController(new Container());
-			$clientMethod=$constantArray['postMethod'];
-			$clientPath=$constantArray['clientUrl'].'/'.$quotationData[0]->client_id;
-			$clientRequest = Request::create($clientPath,$clientMethod,$clientData);
-			$clientData = $clientController->updateData($clientRequest,$quotationData[0]->client_id);			
-			if(strcmp($clientData,$msgArray['200'])!=0)
+			//check contact_no exist or not
+			if(array_key_exists("contact_no",$clientData))
 			{
-				return $clientData;
+				$contactNo = $clientData['contact_no'];
+			}
+			//get client-data as per contact-no
+			$clientDataAsPerContactNo = $clientModel->getClientData($contactNo);
+			if(strcmp($clientDataAsPerContactNo,$msgArray['200'])!=0)
+			{
+				$clientDecodedData = json_decode($clientDataAsPerContactNo);
+				//update client-data
+				$encodedClientData = $clientDecodedData->clientData;
+				$clientId = $encodedClientData[0]->client_id;
+				$clientUpdateResult = $this->clientUpdate($clientData,$clientId);
+				if(strcmp($clientUpdateResult,$msgArray['200'])!=0)
+				{
+					return $clientUpdateResult;
+				}
+			}
+			else
+			{
+				//client insertion
+				$clientResult = $this->clientInsertion($clientData);
+				if(strcmp($clientResult,$msgArray['content'])==0)
+				{
+					return $clientResult;
+				}
+				$clientId = json_decode($clientResult)->clientId;
 			}
 		}
 		//validate bill data
@@ -278,6 +275,12 @@ class QuotationProcessor extends BaseProcessor
 				{
 					$quotationTrimData['inventory'][$inventoryData]['amount'] = $request->input()['inventory'][$inventoryData]['amount'];
 					$quotationTrimData['inventory'][$inventoryData]['productName'] = $request->input()['inventory'][$inventoryData]['productName'];
+					$quotationTrimData['inventory'][$inventoryData]['cgstPercentage'] = array_key_exists("cgstPercentage",$request->input()['inventory'][$inventoryData])?trim($request->input()['inventory'][$inventoryData]['cgstPercentage']):0;
+					$quotationTrimData['inventory'][$inventoryData]['cgstAmount'] = array_key_exists("cgstAmount",$request->input()['inventory'][$inventoryData]) ? trim($request->input()['inventory'][$inventoryData]['cgstAmount']):0;
+					$quotationTrimData['inventory'][$inventoryData]['sgstPercentage'] = array_key_exists("sgstPercentage",$request->input()['inventory'][$inventoryData]) ? trim($request->input()['inventory'][$inventoryData]['sgstPercentage']):0;
+					$quotationTrimData['inventory'][$inventoryData]['sgstAmount'] = array_key_exists("sgstAmount",$request->input()['inventory'][$inventoryData]) ? trim($request->input()['inventory'][$inventoryData]['sgstAmount']):0;
+					$quotationTrimData['inventory'][$inventoryData]['igstPercentage'] = array_key_exists("igstPercentage",$request->input()['inventory'][$inventoryData]) ? trim($request->input()['inventory'][$inventoryData]['igstPercentage']):0;
+					$quotationTrimData['inventory'][$inventoryData]['igstAmount'] = array_key_exists("igstAmount",$request->input()['inventory'][$inventoryData]) ? trim($request->input()['inventory'][$inventoryData]['igstAmount']):0;
 				}
 				$quoFlag=1;
 				$decodedProductArrayData = json_decode($quotationData[0]->product_array);
@@ -296,5 +299,93 @@ class QuotationProcessor extends BaseProcessor
 		}
 		return $quotationPersistable;
 		
+	}
+	
+	/**
+     * client insertion
+     * $param trim request array
+     * @return result array/error-message
+     */	
+	public function clientInsertion($tRequest)
+	{
+		//get constant variables array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		$clientArray = array();
+		$clientArray['clientName']=$tRequest['client_name'];
+		$clientArray['companyName']=array_key_exists('company_name',$tRequest)?$tRequest['company_name']:'';
+		$clientArray['emailId']=array_key_exists('email_id',$tRequest)?$tRequest['email_id']:'';
+		$clientArray['contactNo']=$tRequest['contact_no'];
+		$clientArray['address1']=array_key_exists('address1',$tRequest)?$tRequest['address1']:'';
+		$clientArray['isDisplay']=array_key_exists('is_display',$tRequest)?$tRequest['is_display']:$constantArray['isDisplayYes'];
+		$clientArray['stateAbb']=$tRequest['state_abb'];
+		$clientArray['cityId']=$tRequest['city_id'];
+		if(array_key_exists('profession_id',$tRequest))
+		{
+			$clientArray['professionId']=$tRequest['profession_id'];
+		}
+		$clientController = new ClientController(new Container());
+		$method=$constantArray['postMethod'];
+		$path=$constantArray['clientUrl'];
+		$clientRequest = Request::create($path,$method,$clientArray);
+		$processedData = $clientController->store($clientRequest);
+		return $processedData;
+	}
+	
+	/**
+     * client update
+     * $param trim request array,client_id
+     * @return result array/error-message
+     */	
+	public function clientUpdate($tRequest,$clientId)
+	{
+		//get constant variables array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		// update client data
+		$clientArray = array();
+		if(array_key_exists('clientName',$tRequest))
+		{
+			$clientArray['clientName']=$tRequest['clientName'];
+		}
+		if(array_key_exists('companyName',$tRequest))
+		{
+			$clientArray['companyName']=$tRequest['companyName'];
+		}
+		if(array_key_exists('emailId',$tRequest))
+		{
+			$clientArray['emailId']=$tRequest['emailId'];
+		}
+		if(array_key_exists('contactNo',$tRequest))
+		{
+			$clientArray['contactNo']=$tRequest['contactNo'];
+		}
+		if(array_key_exists('address1',$tRequest))
+		{
+			$clientArray['address1']=$tRequest['address1'];
+		}
+		if(array_key_exists('isDisplay',$tRequest))
+		{
+			$clientArray['isDisplay']=$tRequest['isDisplay'];
+		}
+		if(array_key_exists('stateAbb',$tRequest))
+		{
+			$clientArray['stateAbb']=$tRequest['stateAbb'];
+		}
+		if(array_key_exists('professionId',$tRequest))
+		{
+			$clientArray['professionId']=$tRequest['professionId'];
+		}
+		if(array_key_exists('cityId',$tRequest))
+		{
+			$clientArray['cityId']=$tRequest['cityId'];
+		}
+		$clientController = new ClientController(new Container());
+		$method=$constantArray['postMethod'];
+		$path=$constantArray['clientUrl'].'/'.$clientId;
+		$clientRequest = Request::create($path,$method,$clientArray);
+		$processedData = $clientController->updateData($clientRequest,$clientId);
+		return $processedData;
 	}
 }

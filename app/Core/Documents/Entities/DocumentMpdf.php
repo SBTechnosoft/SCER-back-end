@@ -170,7 +170,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 		}
 		else
 		{
-			$totalCm = 12;
+			$totalCm = 12-0.7;
 			for($productArray=0;$productArray<count($decodedArray->inventory);$productArray++)
 			{
 				//get product-data
@@ -321,7 +321,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$billArray['REMARK']=$decodedBillData->remark;
 		$billArray['TotalDiscount']=$totalDiscount;
 		// $mpdf = new mPDF('A4','landscape');
-		 $mpdf = new mPDF('','A4','','','0','0','0','0','0','0','landscape');
+		 $mpdf = new mPDF('','A4','','agency','0','0','0','0','0','0','landscape');
 		// $mpdf = new mPDF('','', 0, '', 10, 5, 5, 10, 0, 0, 'L');
 		$mpdf->SetDisplayMode('fullpage');
 		foreach($billArray as $key => $value)
@@ -393,7 +393,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 			if($decodedBillData->client->emailId!="")
 			{
 				// mail send
-				$result = $this->mailSending($decodedBillData->client->emailId,$documentPathName,$emailTemplateData,$decodedBillData->client->clientName,$decodedBillData->company->companyName,$decodedBillData->invoiceNumber);
+				$result = $this->mailSending($decodedBillData->client->emailId,$documentPathName,$emailTemplateData,$decodedBillData->client->clientName,$decodedBillData->company->companyName,$decodedBillData->invoiceNumber,$documentType);
 				if(strcmp($result,$exceptionArray['Email'])==0)
 				{
 					return $result;
@@ -416,29 +416,75 @@ class DocumentMpdf extends CurrencyToWordConversion
 			//sms send
 			if($decodedBillData->client->contactNo!=0 || $decodedBillData->client->contactNo!="")
 			{
-				//if($decodedBillData->company->companyId==9)
-				//{
-					//$smsTemplateBody = json_decode($smsTemplateData)[0]->templateBody;
-					//$smsArray = array();
-					//$smsArray['ClientName'] = $decodedBillData->client->clientName;
-					//foreach($smsArray as $key => $value)
-					//{
-						//$smsHtmlBody = str_replace('['.$key.']', $value, $smsTemplateBody);
-					//}
+				if($decodedBillData->company->companyId==7)
+				{
+					$smsTemplateBody = json_decode($smsTemplateData)[0]->templateBody;
+					$smsArray = array();
+					$smsArray['ClientName'] = $decodedBillData->client->clientName;
+					foreach($smsArray as $key => $value)
+					{
+						$smsHtmlBody = str_replace('['.$key.']', $value, $smsTemplateBody);
+					}
 					//replace 'p' tag
-					//$smsHtmlBody = str_replace('<p>','', $smsHtmlBody);
-					//$smsHtmlBody = str_replace('</p>','', $smsHtmlBody);
-					//$data = array(
-						//'user' => "siliconbrain",
-						//'password' => "demo54321",
-						//'msisdn' => $decodedBillData->client->contactNo,
-						//'sid' => "ERPJSC",
-						//'msg' => $smsHtmlBody,
-						//'fl' =>"0",
-						//'gwid'=>"2"
-					//);
+					$smsHtmlBody = str_replace('<p>','', $smsHtmlBody);
+					$smsHtmlBody = str_replace('</p>','', $smsHtmlBody);
+					$data = array(
+						'user' => "siliconbrain",
+						'password' => "demo54321",
+						'msisdn' => $decodedBillData->client->contactNo,
+						'sid' => "ERPAKC",
+						'msg' => $smsHtmlBody,
+						'fl' =>"0",
+						'gwid'=>"2"
+					);
 					// list($header,$content) = $this->postRequest("http://login.arihantsms.com//vendorsms/pushsms.aspx",$data);
-				//}
+				}
+				else if($decodedBillData->company->companyId==9)
+				{
+					$smsTemplateBody = json_decode($smsTemplateData)[0]->templateBody;
+					$smsArray = array();
+					$smsArray['ClientName'] = $decodedBillData->client->clientName;
+					foreach($smsArray as $key => $value)
+					{
+						$smsHtmlBody = str_replace('['.$key.']', $value, $smsTemplateBody);
+					}
+					//replace 'p' tag	
+					$smsHtmlBody = str_replace('<p>','', $smsHtmlBody);
+					$smsHtmlBody = str_replace('</p>','', $smsHtmlBody);
+					$data = array(
+						'user' => "siliconbrain",
+						'password' => "demo54321",
+						'msisdn' => $decodedBillData->client->contactNo,
+						'sid' => "ERPJSC",
+						'msg' => $smsHtmlBody,
+						'fl' =>"0",
+						'gwid'=>"2"
+					);
+					// list($header,$content) = $this->postRequest("http://login.arihantsms.com//vendorsms/pushsms.aspx",$data);
+				}
+				else if($decodedBillData->company->companyId==8)
+				{
+					$smsTemplateBody = json_decode($smsTemplateData)[0]->templateBody;
+					$smsArray = array();
+					$smsArray['ClientName'] = $decodedBillData->client->clientName;
+					foreach($smsArray as $key => $value)
+					{
+						$smsHtmlBody = str_replace('['.$key.']', $value, $smsTemplateBody);
+					}
+					//replace 'p' tag
+					$smsHtmlBody = str_replace('<p>','', $smsHtmlBody);
+					$smsHtmlBody = str_replace('</p>','', $smsHtmlBody);
+					$data = array(
+						'user' => "siliconbrain",
+						'password' => "demo54321",
+						'msisdn' => $decodedBillData->client->contactNo,
+						'sid' => "ERPPMC",
+						'msg' => $smsHtmlBody,
+						'fl' =>"0",
+						'gwid'=>"2"
+					);
+					// list($header,$content) = $this->postRequest("http://login.arihantsms.com//vendorsms/pushsms.aspx",$data);
+				}
 			}
 			return $pathArray;
 		}	
@@ -559,14 +605,13 @@ class DocumentMpdf extends CurrencyToWordConversion
      * @param mail-address
      * @return error-message/status
      */
-	public function mailSending($emailId,$documentPathName,$emailTemplate,$clientName,$companyName,$invoiceNumber)
+	public function mailSending($emailId,$documentPathName,$emailTemplate,$clientName,$companyName,$invoiceNumber,$documentType)
 	{
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
 		$mytime = Carbon\Carbon::now();
-		
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
 		$constantEmailArray = $constantClass->setEmailPassword();
@@ -600,19 +645,29 @@ class DocumentMpdf extends CurrencyToWordConversion
 		 // Add a recipient
 		$splitedTime = explode(' ',$mytime);
 		$documentName = explode("/",$documentPathName);
-		$documentPathName = 'Storage/Bill/'.$documentName[2];
-		$name = "Invoice#".$invoiceNumber."(".$splitedTime.").pdf";
+		
+		if(strcmp("quotation",$documentType)==0)
+		{
+			$name = "Quotation#".$invoiceNumber."(".$splitedTime.").pdf";
+			$documentPathName = $constantArray['quotationDocUrl'].$documentName[2];
+		}
+		else
+		{
+			$name = "Invoice#".$invoiceNumber."(".$splitedTime.").pdf";
+			$documentPathName = $constantArray['billUrl'].$documentName[2];
+		}
 		$mail->AddAddress($email); 
 		$mail->AddAttachment($documentPathName,$name,'base64','application/octet-stream');	
 		$mail->isHTML(true);                                  // Set email format to HTML
 		$mail->Subject = $constantArray['emailSubject'];
 		$mail->Body    = $message;
 		$mail->AltBody = $message;
-		
 		if(!$mail->Send()) {
 		 	
+			// print_r($mail->ErrorInfo);
 		   return $exceptionArray['Email'];
 		}
+		return $message;
 	}
 	
 	public function postRequest($url,$_data) 
@@ -668,7 +723,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 	* @param template-data and quotation data
 	* @return error-message/document-path
 	*/
-	public function quotationMpdfGenerate($templateData,$quotationData)
+	public function quotationMpdfGenerate($templateData,$quotationData,$emailTemplateData,$headerData)
 	{		
 		//get exception message
 		$exception = new ExceptionMessage();
@@ -676,7 +731,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 		
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-		
+		$commentArray = $constantClass->getCommentMessage();
 		$htmlBody = json_decode($templateData)[0]->templateBody;
 		
 		$quotationBillId = $quotationData->quotationBillId;
@@ -815,6 +870,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 		{
 			$htmlBody = str_replace('['.$key.']', $value, $htmlBody);
 		}
+		ini_set('memory_limit', '256M');
 		$mpdf->WriteHTML($htmlBody);
 		$path = $constantArray['quotationDocUrl'];
 		//change the name of document-name
@@ -828,7 +884,6 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$documentType ="quotation";
 		//pdf generate
 		$mpdf->Output($documentPathName,'F');
-		
 		//insertion quotation document data into database
 		$quotationModel = new QuotationModel();
 		$quotationDocumentStatus = $quotationModel->quotationDocumentData($quotationBillId,$documentName,$documentFormat,$documentType);
@@ -841,8 +896,31 @@ class DocumentMpdf extends CurrencyToWordConversion
 		{
 			$pathArray = array();
 			$pathArray['documentPath'] = $documentPathName;
-			return $pathArray;
+			if($quotationData->client->emailId!="")
+			{
+				// mail send
+				$result = $this->mailSending($quotationData->client->emailId,$documentPathName,$emailTemplateData,$quotationData->client->clientName,$quotationData->company->companyName,$quotationData->quotationNumber,$documentType);
+				if(strcmp($result,$exceptionArray['Email'])==0)
+				{
+					return $result;
+				}	
+				else
+				{
+					$subject = $constantArray['emailSubject'];
+					$conversationType = $constantArray['emailType'];
+					$conversation = $result;
+					$documentPath = $documentPathName;
+					$comment = $commentArray->quotationMailSend;
+					$emailId = $quotationData->client->emailId;
+					$companyId = $quotationData->company->companyId;
+					$clientId = $quotationData->client->clientId;
+					// mail description saved in conversation-database
+					$conversationModel = new ConversationModel();
+					$conversationResult = $conversationModel->saveMailDataFromBill($emailId,$subject,$conversationType,$conversation,$documentName,$documentFormat,$documentPath,$comment,$companyId,$clientId,$headerData);
+				}		
+			}
 		}	
+		return $pathArray;
 	}
 	
 	/**

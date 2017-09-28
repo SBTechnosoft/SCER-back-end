@@ -113,11 +113,12 @@ class DocumentController extends BaseController implements ContainerInterface
 		$RequestUri = explode("/", $_SERVER['REQUEST_URI']);
 		if(strcmp($RequestUri[1],"accounting")==0 || strcmp($RequestUri[2],"quotations")==0)
 		{
+			$headerData = $request->header();
 			//get quotations data as per given quotationBillId
 			$documentProcessor = new DocumentProcessor();
 			$documentService= new DocumentService();	
 			$processedData = $documentProcessor->createPersistableData($request);
-			$serviceData = $documentService->getQuotationData($processedData[array_keys($request->input())[0]],$request->input()['companyId'],$request->input()['quotationData']);
+			$serviceData = $documentService->getQuotationData($processedData[array_keys($request->input())[0]],$request->input()['companyId'],$request->input()['quotationData'],$headerData);
 			return $serviceData;
 		}
 	}

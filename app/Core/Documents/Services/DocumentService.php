@@ -97,7 +97,7 @@ class DocumentService extends BillModel
      * get all the data and call the model for database selection opertation
      * @return status
      */
-	public function getQuotationData($quotationBillId,$companyId,$quotationData)
+	public function getQuotationData($quotationBillId,$companyId,$quotationData,$headerData)
 	{
 		//get exception message
 		$exception = new ExceptionMessage();
@@ -106,16 +106,19 @@ class DocumentService extends BillModel
 		$templateType = new TemplateTypeEnum();
 		$templateArray = $templateType->enumArrays();
 		$templateType = $templateArray['quotationTemplate'];
+		$emailTemplateType = $templateArray['emailTemplate'];
 		$templateService = new TemplateService();
 		$templateData = $templateService->getSpecificData($companyId,$templateType);
+		$emailTemplateData = $templateService->getSpecificData($companyId,$emailTemplateType);
 		if(strcmp($templateData,$exceptionArray['404'])==0)
 		{
 			return $templateData;
 		}
 		else
 		{
+			$headerArray = $headerData;
 			$documentMpdf = new DocumentMpdf();
-			$documentMpdf = $documentMpdf->quotationMpdfGenerate($templateData,$quotationData);
+			$documentMpdf = $documentMpdf->quotationMpdfGenerate($templateData,$quotationData,$emailTemplateData,$headerArray);
 			return $documentMpdf;
 		}
 		
