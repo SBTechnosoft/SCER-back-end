@@ -750,6 +750,62 @@ class BillModel extends Model
 	}
 	
 	/**
+	 * get bill-draft data
+	 * @param 
+	 * returns the exception-message/sales data
+	*/
+	public function getBillDraftData()
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->select("select 
+		sale_id,
+		product_array,
+		payment_mode,
+		bank_name,
+		invoice_number,
+		job_card_number,
+		check_number,
+		total,
+		total_discounttype,
+		total_discount,
+		extra_charge,
+		tax,
+		grand_total,
+		advance,
+		balance,
+		remark,
+		entry_date,
+		client_id,
+		sales_type,
+		refund,
+		company_id,
+		jf_id,
+		created_at,
+		updated_at 
+		from sales_bill 
+		where deleted_at='0000-00-00 00:00:00' and is_draft='yes'");
+		DB::commit();
+		if(count($raw)==0)
+		{
+			return $exceptionArray['404']; 
+		}
+		else
+		{
+			$encodedData = json_encode($raw);
+			return $encodedData;
+		}
+	}
+	
+	/**
 	 * get bill data
 	 * @param  sale_id
 	 * returns the exception-message/sales data

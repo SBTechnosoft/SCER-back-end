@@ -942,8 +942,8 @@ include ('connection.php');
 				
 				$http({
                         url: url,
-                        // method: 'get',
-						 method: 'post',
+                        method: 'get',
+						 // method: 'post',
 						 // method: 'patch',
 						// enctype:'multipart/formdata',
 						 // _method: 'patch',

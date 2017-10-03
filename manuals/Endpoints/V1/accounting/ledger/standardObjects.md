@@ -29,7 +29,9 @@
 				"company": {
 					... Standard Company Object
 				},
-				openingBalance:decimal,
+				"outstandingLimit":decimal,
+				"outstandingLimitType":Enum,
+                openingBalance:decimal,
 				openingBalanceType:Enum,
 				currentBalance:decimal,
 				currentBalanceType:Enum
@@ -52,6 +54,8 @@
 				"balanceFlag":Enum,
 				"amount":decimal,
 				"amountType":Enum,
+				"outstandingLimit":decimal,
+				"outstandingLimitType":Enum,
                 "stateAbb":char,
                 "cityId":int,
                 "ledgerGroupId":int,
@@ -69,6 +73,11 @@
 				{
 					... Standard Ledger Object
 				}
+			}
+##### Outstanding Limit Type Enum
+			{
+				outstandingLimitCredit:'credit',
+				outstandingLimitDebit:'debit'
 			}
 ##### Inventory Affected Enum
 			{

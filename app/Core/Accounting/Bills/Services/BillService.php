@@ -8,6 +8,7 @@ use ERP\Core\Shared\Options\UpdateOptions;
 use ERP\Core\User\Entities\User;
 use ERP\Core\Accounting\Bills\Entities\EncodeData;
 use ERP\Core\Accounting\Bills\Entities\EncodeAllData;
+use ERP\Core\Accounting\Bills\Entities\EncodeAllDraftData;
 use ERP\Exceptions\ExceptionMessage;
 use Illuminate\Container\Container;
 use ERP\Http\Requests;
@@ -170,6 +171,31 @@ class BillService
 		else
 		{
 			$encodeAllData = new EncodeAllData();
+			$encodingResult = $encodeAllData->getEncodedAllData($billResult);
+			return $encodingResult;
+		}
+	}
+
+	/**
+     * get the data from persistable object and call the model for database get opertation
+     * @param BillPersistable $persistable
+     * @return status/error message
+     */
+	public function getDraftData()
+	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		//data pass to the model object for getData
+		$billModel = new BillModel();
+		$billResult = $billModel->getBillDraftData();
+		if(strcmp($billResult,$exceptionArray['500'])==0)
+		{
+			return $billResult;
+		}
+		else
+		{
+			$encodeAllData = new EncodeAllDraftData();
 			$encodingResult = $encodeAllData->getEncodedAllData($billResult);
 			return $encodingResult;
 		}

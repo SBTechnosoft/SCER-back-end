@@ -328,11 +328,35 @@ class BillController extends BaseController implements ContainerInterface
 	}
 	
 	/**
+	 * get the specified resource 
+	 * @param  Request object[Request $request]
+	 * store data in database
+	*/
+	public function getDraftData(Request $request)
+	{
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		// get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$billService= new BillService();
+			$status = $billService->getDraftData();
+			return $status;
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+	}
+	
+	/**
 	 * store the specified resource 
 	 * @param  Request object[Request $request]
 	 * store data in database
 	*/
-	
 	public function storeDraftData(Request $request)
 	{
 		//Authentication
