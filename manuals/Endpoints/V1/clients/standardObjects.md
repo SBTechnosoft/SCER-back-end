@@ -7,6 +7,9 @@
 				"emailId": string,
 				"address1": string,
 				"isDisplay": Enum,
+				"birthDate":date,
+				"anniversaryDate":date,
+				"otherDate":date,
 				"createdAt": timestamp,
 				"updatedAt": datetime,
 				"profession":
@@ -36,6 +39,9 @@
 				"emailId": string,
 				"address1": string,
 				"professionId":int,
+				"birthDate":date,
+				"anniversaryDate":date,
+				"otherDate":date,
 				"isDisplay": Enum,
 				"cityId":int, 
 				"stateAbb":char

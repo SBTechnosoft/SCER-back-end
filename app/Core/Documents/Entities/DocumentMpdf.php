@@ -187,7 +187,8 @@ class DocumentMpdf extends CurrencyToWordConversion
 												: ($decodedArray->inventory[$productArray]->discount/100)*$totalPrice[$productArray];
 				$finalDiscount = $finalDiscount + $discountValue[$productArray];
 				$finalVatValue = $totalPrice[$productArray]-$discountValue[$productArray];
-				
+				$discountInPercentage = strcmp($decodedArray->inventory[$productArray]->discountType,"flat")==0 
+										? "-" : $decodedArray->inventory[$productArray]->discount;
 				//calculate vat value;
 				$vatValue[$productArray]=$decodedArray->inventory[$productArray]->cgstAmount;
 				$vatValue[$productArray] = number_format($vatValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
@@ -223,21 +224,26 @@ class DocumentMpdf extends CurrencyToWordConversion
 				$additionalTaxValue[$productArray] = number_format($additionalTaxValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);				
 				$total[$productArray] = number_format($total[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
 				$price = number_format($decodedArray->inventory[$productArray]->price,$decodedData[$productArray]->company->noOfDecimalPoints);
+				$mainPrice = $decodedArray->inventory[$productArray]->price * $decodedArray->inventory[$productArray]->qty;
+				$mainPrice = number_format($mainPrice,$decodedData[$productArray]->company->noOfDecimalPoints);
+				$finalVatValue = number_format($finalVatValue,$decodedData[$productArray]->company->noOfDecimalPoints);
 				
-				$output =$output."".
-				'<tr class="trhw" style="font-family: Calibri; text-align: left; height:  0.7cm; background-color: transparent;">
-				   <td class="tg-m36b thsrno" style="font-size: 14px; height: 0.7cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;">'.$index.'</td>
-				   <td class="tg-m36b theqp" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid black;" colspan="3">'. $decodedData[$productArray]->productName.'</td>
-				   <!--td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid black;">'. $decodedArray->inventory[$productArray]->color.' | '.$decodedArray->inventory[$productArray]->size.'</td-->
-				   <td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid black;">'. $product_hsnCode.'</td>
-				   <td class="tg-ullm thsrno" style="font-size: 14px;   height:  0.7cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black;">'. $decodedArray->inventory[$productArray]->qty.'</td>
-				   <td class="tg-ullm thsrno" style="font-size: 14px; height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid black;">'. $price.'</td>
-				   <!--td class="tg-ullm thsrno" style="font-size: 14px;  height:  0.7cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black;">'. $discountValue[$productArray].'</td-->
-				   <td class="tg-ullm thamt" style="font-size: 14px;  height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid black;">'. $decodedData[$productArray]->vat.'%</td>
-				   <td class="tg-ullm thamt" style="font-size: 14px; height: 0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid black;">'.$vatValue[$productArray].'</td>
-				   <td class="tg-ullm thamt" style="font-size: 14px;  height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid black;">'.$decodedData[$productArray]->additionalTax.'%</td>
-				   <td class="tg-ullm thamt" style="font-size: 14px;   height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid black;">'.$additionalTaxValue[$productArray].'</td>
-				   <td class="tg-ullm thamt" style="font-size: 14px;  height: 0.7cm; text-align: right; padding:0 5px 0 0;">'.$total[$productArray].$trClose;
+				$totalTax = $decodedArray->inventory[$productArray]->cgstPercentage +$decodedArray->inventory[$productArray]->sgstPercentage;
+				
+				$output = $output."<tr  style='font-family: Calibri; text-align: left; height:  0.7cm; background-color: transparent;'><td  style='font-size: 14px; height: 0.7cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;'>". $index .
+				"</td><td colspan='3' style='font-size: 14px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid black;' >&nbsp;"
+				. $decodedData[$productArray]->productName .
+				"</td><td  style='font-size: 14px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid black;text-align:center'>". $product_hsnCode .
+				"</td><td colspan='2' style='font-size: 14px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid black;text-align:center'>". $decodedArray->inventory[$productArray]->color ." | ". $decodedArray->inventory[$productArray]->size .
+				"</td><td  style='font-size: 14px;  height:  0.7cm; padding:0 0 0 0; text-align: center;border-right: 1px solid black;'>". $decodedArray->inventory[$productArray]->frameNo .
+				"</td><td  style='font-size: 14px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid black;text-align:center'>". $decodedArray->inventory[$productArray]->qty .
+				"</td><td  style='font-size: 14px;   height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid black;'>". $price .
+				"&nbsp;</td><td  style='font-size: 14px;   height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid black;'>". $mainPrice .
+				"&nbsp;</td><td  style='font-size: 14px; height:  0.7cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black;'>". $discountInPercentage .
+				"</td><td class='tg-ullm thamt' style='font-size: 14px;  height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid black;'>". $discountValue[$productArray] .
+				"&nbsp;</td><td class='tg-ullm thamt' style='font-size: 14px;  height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid black;'>". $finalVatValue .
+				"&nbsp;</td><td class='tg-ullm thamt' style='font-size: 14px; height: 0.7cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black;'>". $totalTax .
+				"%</td><td class='tg-ullm thamt' style='font-size: 14px;  height: 0.7cm; text-align: right; padding:0 0 0 0;'>". $total[$productArray]."&nbsp;".$trClose;
 				// if($productArray != count($decodedArray->inventory)-1)
 				// {
 					// $output = $output.$trClose;
@@ -248,17 +254,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 					$totalProductSpace = $index*0.7;	
 					
 					$finalProductBlankSpace = $totalCm-$totalProductSpace;
-					$output =$output."<tr class='trhw' style='font-family: Calibri; text-align: left; height:  ".$finalProductBlankSpace."cm;background-color: transparent;'>
-				   <td class='tg-m36b thsrno' style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black'></td>
-				   <td class='tg-m36b theqp' style='font-size: 12px;  height:  ".$finalProductBlankSpace."cm; padding:0 0 0 0;border-right: 1px solid black' colspan='3'></td>
-				   <td class='tg-ullm thsrno' style='font-size: 12px;   height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black'></td>
-				   <td class='tg-ullm thsrno' style='font-size: 12px; height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black'></td>
-				   <td class='tg-ullm thsrno' style='font-size: 12px;  height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black'></td>
-				   <td class='tg-ullm thamt' style='font-size: 12px;  height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black'></td>
-				   <td class='tg-ullm thamt' style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black'></td>
-				   <td class='tg-ullm thamt' style='font-size: 12px;  height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black'></td>
-				   <td class='tg-ullm thamt' style='font-size: 12px;   height:  ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black'></td>
-				   <td class='tg-ullm thamt' style='font-size: 12px;  height: ".$finalProductBlankSpace."cm; text-align: center; padding:0 0 0 0;'>";
+					$output = $output . "<tr  style='height:".$finalProductBlankSpace."cm; background-color: transparent;'><td style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' colspan='3' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' ></td><td colspan='2' style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' ></td></tr>";
 
 				}
 				$index++;
@@ -266,8 +262,8 @@ class DocumentMpdf extends CurrencyToWordConversion
 		}
 		//calculation of total-discount 
 		$totalDiscount = strcmp($decodedBillData->totalDiscounttype,'flat')==0
-						? $decodedBillData->totalDiscount+$finalDiscount 
-						: (($decodedBillData->totalDiscount/100)*$decodedBillData->total)+$finalDiscount;
+						? $decodedBillData->totalDiscount
+						: (($decodedBillData->totalDiscount/100)*$decodedBillData->total);
 		$address = $decodedBillData->client->address1;
 		$companyAddress = $decodedBillData->company->address1.",".$decodedBillData->company->address2;
 		
