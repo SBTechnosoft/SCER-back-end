@@ -104,7 +104,7 @@ class ProductModel extends Model
 			$productId = DB::connection($databaseName)->select("select 
 			product_id 
 			from product_mst 
-			group by product_id desc limit 1");
+			order by product_id desc limit 1");
 			DB::commit();
 			
 			//update document-data into database

@@ -21,6 +21,26 @@
             {
                 "documentPath":''
             }
+
+##### `POST /accounting/bills/draftBill`
++ Header
+	- Authentication Token
++ Body
+
+            {
+                ... Standard Bill Persistable Object
+            }
+
++ Error Message
+
+			{
+				... Error Message
+			}            
++ Response
+
+            {
+                ... HTTP_Status:200
+            }
 			
 ##### `GET /accounting/bills/company/{companyId}`
 + Header
@@ -48,6 +68,20 @@
 	- "nextSaleId":"int",
 	- "companyId":"int",
 	- "operation":"first/last"
++ Error Message
+
+			{
+				... Error Message
+			}            
++ Response
+
+            {
+                ... Standard Bill Object
+            }
+			
+##### `GET /accounting/bills/draftBill`
++ Header
+	- Authentication Token
 + Error Message
 
 			{

@@ -13,6 +13,8 @@ use Illuminate\Container\Container;
 use ERP\Http\Requests;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
+use ERP\Model\Clients\ClientModel;
+use ERP\Core\Clients\Entities\ClientArray;
 use stdClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -45,7 +47,7 @@ class BillModel extends Model
 			job_card_number 
 			from sales_bill 
 			where job_card_number='".$jobCardNumber."' and 
-			deleted_at='0000-00-00 00:00:00'");
+			deleted_at='0000-00-00 00:00:00' and is_draft='no'");
 			DB::commit();
 		}
 		else
@@ -125,7 +127,7 @@ class BillModel extends Model
 			DB::beginTransaction();
 			$saleId = DB::connection($databaseName)->select("SELECT 
 			max(sale_id) sale_id
-			FROM sales_bill where deleted_at='0000-00-00 00:00:00'");
+			FROM sales_bill where deleted_at='0000-00-00 00:00:00' and is_draft='no'");
 			DB::commit();
 			
 			DB::beginTransaction();
@@ -211,7 +213,7 @@ class BillModel extends Model
 					jf_id,
 					created_at,
 					updated_at 
-					from sales_bill where sale_id=(select MAX(sale_id) as sale_id from sales_bill) and deleted_at='0000-00-00 00:00:00'"); 
+					from sales_bill where sale_id=(select MAX(sale_id) as sale_id from sales_bill) and deleted_at='0000-00-00 00:00:00' and is_draft='no'"); 
 					DB::commit();
 					if(count($billResult)==1)
 					{
@@ -258,7 +260,7 @@ class BillModel extends Model
 			job_card_number 
 			from sales_bill 
 			where job_card_number='".$jobCardNumber."' and 
-			deleted_at='0000-00-00 00:00:00'");
+			deleted_at='0000-00-00 00:00:00' and is_draft='no'");
 			DB::commit();
 		}
 		else
@@ -337,7 +339,7 @@ class BillModel extends Model
 			DB::beginTransaction();
 			$saleId = DB::connection($databaseName)->select("SELECT 
 			max(sale_id) sale_id
-			FROM sales_bill where deleted_at='0000-00-00 00:00:00'");
+			FROM sales_bill where deleted_at='0000-00-00 00:00:00' and is_draft='no'");
 			DB::commit();
 			
 			//insertion in sale bill transaction
@@ -392,7 +394,7 @@ class BillModel extends Model
 			jf_id,
 			created_at,
 			updated_at 
-			from sales_bill where sale_id=(select MAX(sale_id) as sale_id from sales_bill) and deleted_at='0000-00-00 00:00:00'"); 
+			from sales_bill where sale_id=(select MAX(sale_id) as sale_id from sales_bill) and deleted_at='0000-00-00 00:00:00' and is_draft='no'"); 
 			DB::commit();
 			if(count($billResult)==1)
 			{
@@ -407,6 +409,80 @@ class BillModel extends Model
 		{
 			return $exceptionArray['500'];
 		}
+	}
+	
+	/**
+	 * insertion of draft-bill data
+	 * @param  request-input array
+	 * returns the exception-message/status
+	*/
+	public function insertBillDraftData()
+	{
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		$inputData = func_get_arg(0);
+		$clientFlag=0;
+		$clientId=0;
+		if(array_key_exists('contactNo',$inputData))
+		{
+			if($inputData['contactNo']!=0 && $inputData['contactNo']!='')
+			{
+				//get client-id of this contact-no
+				//check client is exists by contact-number
+				$clientModel = new ClientModel();
+				$clientArrayData = $clientModel->getClientData($inputData['contactNo']);
+				$clientData = (json_decode($clientArrayData));
+				if(is_array($clientData) || is_object($clientData))
+				{
+					$clientFlag=1;
+					$clientId = $clientData->clientData[0]->client_id;
+				}
+			}
+		}
+		$clientArray = new ClientArray();
+		$clientBillArrayData = $clientArray->getBillClientArrayData();
+		//splice data from trim array
+		for($index=0;$index<count($clientBillArrayData);$index++)
+		{
+			if(array_key_exists($clientBillArrayData[array_keys($clientBillArrayData)[$index]],$inputData))
+			{
+				unset($inputData[$clientBillArrayData[array_keys($clientBillArrayData)[$index]]]);
+			}
+		}
+		$inventoryDecodedData = json_encode($inputData['inventory']);
+		unset($inputData['inventory']);	
+		$inputDataCount = count($inputData);
+		$newInputArray = array();
+		$keyString='';
+		$valueString='';
+		for($billData=0;$billData<$inputDataCount;$billData++)
+		{
+			$conversion= preg_replace('/(?<!\ )[A-Z]/', '_$0', array_keys($inputData)[$billData]);
+			$lowerCase = strtolower($conversion);
+			// $newInputArray[$lowerCase] = $inputData[array_keys($inputData)[$billData]];
+			$keyString = $keyString.$lowerCase.",";
+			$valueString = $valueString."'".$inputData[array_keys($inputData)[$billData]]."',";
+		}	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		//insert dsale-bill draft data
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->statement("insert into sales_bill
+		(".$keyString."product_array,client_id,is_draft)
+		values(".$valueString."'".$inventoryDecodedData."','".$clientId."','yes')");
+		DB::commit();
+		if($raw==1)
+		{
+			return $exceptionArray['200'];
+		}
+		else
+		{
+			return $exceptionArray['500'];
+		}			
 	}
 	
 	/**
@@ -453,6 +529,7 @@ class BillModel extends Model
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		//insert document data into sale-bill-document table
+		DB::beginTransaction();
 		$raw = DB::connection($databaseName)->statement("insert into sales_bill_doc_dtl(
 		sale_id,
 		document_name,
@@ -466,7 +543,7 @@ class BillModel extends Model
 		$saleBillData = DB::connection($databaseName)->select("SELECT 
 		sale_id,
 		client_id
-		FROM sales_bill where sale_id='".$saleId."' and deleted_at='0000-00-00 00:00:00'");
+		FROM sales_bill where sale_id='".$saleId."' and deleted_at='0000-00-00 00:00:00' and is_draft='no'");
 		DB::commit();
 		
 		//insert document data into client-document table
@@ -545,7 +622,7 @@ class BillModel extends Model
 			where sales_type='".$salesType."' and
 			(entry_date BETWEEN '".$fromDate."' AND '".$toDate."') and 
 			company_id='".$companyId."' and 
-			deleted_at='0000-00-00 00:00:00'");
+			deleted_at='0000-00-00 00:00:00' and is_draft='no'");
 			DB::commit();
 			if(count($raw)==0)
 			{
@@ -621,7 +698,7 @@ class BillModel extends Model
 			created_at,
 			updated_at 
 			from sales_bill 
-			where sales_type='".$data['salestype'][0]."' and 
+			where sales_type='".$data['salestype'][0]."' and is_draft='no' and 
 			company_id='".$companyId."' and 
 			deleted_at='0000-00-00 00:00:00' and 
 			(invoice_number='".$data['invoicenumber'][0]."' or client_id in ( select client_id from client_mst where contact_no = '".$data['invoicenumber'][0]."') or client_id in ( select client_id from client_mst where email_id = '".$data['invoicenumber'][0]."') or client_id in ( select client_id from client_mst where client_name like '%".$data['invoicenumber'][0]."%')) ");
@@ -716,7 +793,7 @@ class BillModel extends Model
 		updated_at 
 		from sales_bill 
 		where sale_id='".$saleId."' and 
-		deleted_at='0000-00-00 00:00:00'");
+		deleted_at='0000-00-00 00:00:00' and is_draft='no'");
 		DB::commit();
 		if(count($raw)==0)
 		{
@@ -778,7 +855,7 @@ class BillModel extends Model
 				from sales_bill 
 				where sales_type='".$headerData['salestype'][0]."' and
 				company_id = '".$headerData['companyid'][0]."' and
-				deleted_at='0000-00-00 00:00:00'
+				deleted_at='0000-00-00 00:00:00' and is_draft='no'
 				order by sale_id desc limit 1");
 				DB::commit();
 				if(count($raw)==0)
@@ -803,7 +880,7 @@ class BillModel extends Model
 					from sales_bill 
 					where sales_type='".$headerData['salestype'][0]."' and
 					company_id = '".$headerData['companyid'][0]."' and
-					deleted_at='0000-00-00 00:00:00'
+					deleted_at='0000-00-00 00:00:00' and is_draft='no'
 					order by sale_id asc limit 1");
 					DB::commit();
 					if($saleId<$previousAscId[0]->sale_id)
@@ -848,7 +925,7 @@ class BillModel extends Model
 				from sales_bill 
 				where sales_type='".$headerData['salestype'][0]."' and
 				company_id = '".$headerData['companyid'][0]."' and
-				deleted_at='0000-00-00 00:00:00' 
+				deleted_at='0000-00-00 00:00:00' and is_draft='no'
 				order by sale_id desc limit 1");
 				DB::commit();
 				if($saleId>$nextDescId[0]->sale_id)
@@ -913,7 +990,7 @@ class BillModel extends Model
 				from sales_bill 
 				where sales_type='".$headerData['salestype'][0]."' and
 				company_id = '".$headerData['companyid'][0]."' and
-				deleted_at='0000-00-00 00:00:00'  order by sale_id asc limit 1");
+				deleted_at='0000-00-00 00:00:00' and is_draft='no' order by sale_id asc limit 1");
 				DB::commit();
 				
 				$saleDataResult = $this->getDocumentData($fistSaleDataResult);
@@ -950,7 +1027,7 @@ class BillModel extends Model
 				from sales_bill 
 				where sales_type='".$headerData['salestype'][0]."' and
 				company_id = '".$headerData['companyid'][0]."' and
-				deleted_at='0000-00-00 00:00:00' order by sale_id desc limit 1");
+				deleted_at='0000-00-00 00:00:00' and is_draft='no' order by sale_id desc limit 1");
 				DB::commit();
 				
 				$saleDataResult = $this->getDocumentData($lastSaleDataResult);
@@ -1000,8 +1077,8 @@ class BillModel extends Model
 		from sales_bill 
 		where sales_type='".$headerData['salestype'][0]."' and
 		company_id = '".$headerData['companyid'][0]."' and
-		deleted_at='0000-00-00 00:00:00' and
-		sale_id='".$saleId."'");
+		deleted_at='0000-00-00 00:00:00' and 
+		sale_id='".$saleId."' and is_draft='no'");
 		DB::commit();
 		return $saleData;
 	}
@@ -1247,7 +1324,7 @@ class BillModel extends Model
 				$saleBillData = DB::connection($databaseName)->select("SELECT 
 				sale_id,
 				client_id
-				FROM sales_bill where sale_id='".$saleId."' and deleted_at='0000-00-00 00:00:00'");
+				FROM sales_bill where sale_id='".$saleId."' and deleted_at='0000-00-00 00:00:00' and is_draft='no'");
 				DB::commit();
 				
 				//insert document data into client-document table
@@ -1478,7 +1555,10 @@ class BillModel extends Model
 				$saleBillData = DB::connection($databaseName)->select("SELECT 
 				sale_id,
 				client_id
-				FROM sales_bill where sale_id='".$saleId."' and deleted_at='0000-00-00 00:00:00'");
+				FROM sales_bill 
+				where sale_id='".$saleId."' and 
+				deleted_at='0000-00-00 00:00:00' 
+				and is_draft='no'");
 				DB::commit();
 				
 				//insert document data into client-document table
@@ -1610,7 +1690,8 @@ class BillModel extends Model
 		updated_at 
 		from sales_bill 
 		where invoice_number='".$invoiceNumber."' and
-		deleted_at='0000-00-00 00:00:00'");
+		deleted_at='0000-00-00 00:00:00' and 
+		is_draft='no'");
 		DB::commit();
 		if(count($billData)!=0)
 		{
@@ -1666,7 +1747,7 @@ class BillModel extends Model
 		updated_at 
 		from sales_bill 
 		where (entry_Date BETWEEN '".$fromDate."' AND '".$toDate."') and
-		deleted_at='0000-00-00 00:00:00'");
+		deleted_at='0000-00-00 00:00:00' and is_draft='no'");
 		DB::commit();
 		if(count($billData)!=0)
 		{

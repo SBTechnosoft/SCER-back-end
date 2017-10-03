@@ -51,7 +51,7 @@ class PolishReportModel extends Model
 		from sales_bill 
 		where (entry_date BETWEEN '".$fromDate."' AND '".$toDate."') and 
 		company_id='".$companyId."' and 
-		deleted_at='0000-00-00 00:00:00'");
+		deleted_at='0000-00-00 00:00:00' and is_draft='no'");
 		DB::commit();
 		if(count($raw)==0)
 		{

@@ -411,9 +411,12 @@ class CompanyModel extends Model
 		{
 		    if(strcmp($key[array_keys($key)[$keyData]],"is_default")==0)
 			{
-				if(strcmp($companyData[$keyData],$enumIsDefArray['default'])==0)
+				$raw  = DB::connection($databaseName)->statement("update company_mst 
+				set is_default='".$enumIsDefArray['notDefault']."',updated_at='".$mytime."' 
+				where deleted_at = '0000-00-00 00:00:00'");
+				if($raw==0)
 				{
-					$isDefaultString = "is_default='".$enumIsDefArray['notDefault']."',";
+					return $exceptionArray['500'];
 				}
 			}	
 		}

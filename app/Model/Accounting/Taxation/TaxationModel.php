@@ -62,7 +62,7 @@ class TaxationModel extends Model
 		from sales_bill
 		where deleted_at='0000-00-00 00:00:00' and 
 		sales_type='whole_sales' and ".$dateString."
-		company_id='".$companyId."'"); 
+		company_id='".$companyId."' and is_draft='no'"); 
 		DB::commit();
 		if(count($saleTaxResult)!=0)
 		{
@@ -276,7 +276,7 @@ class TaxationModel extends Model
 		from sales_bill
 		where deleted_at='0000-00-00 00:00:00' and 
 		sales_type='whole_sales' and ".$dateString."
-		company_id='".$companyId."'"); 
+		company_id='".$companyId."' and is_draft='no'"); 
 		DB::commit();
 		if(count($purchaseResult)!=0)
 		{
@@ -338,7 +338,7 @@ class TaxationModel extends Model
 		where deleted_at='0000-00-00 00:00:00' and 
 		sales_type='whole_sales' and
 		entry_date>='".$fromDate."' and entry_date<='".$toDate."' and
-		company_id='".$companyId."'"); 
+		company_id='".$companyId."' and is_draft='no'"); 
 		DB::commit();
 		if(count($purchaseResult)!=0)
 		{

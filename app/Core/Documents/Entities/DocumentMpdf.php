@@ -189,11 +189,11 @@ class DocumentMpdf extends CurrencyToWordConversion
 				$finalVatValue = $totalPrice[$productArray]-$discountValue[$productArray];
 				
 				//calculate vat value;
-				$vatValue[$productArray]=($decodedData[$productArray]->vat/100)*$finalVatValue;
+				$vatValue[$productArray]=$decodedArray->inventory[$productArray]->cgstAmount;
 				$vatValue[$productArray] = number_format($vatValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
 				
 				//calculate additional tax
-				$additionalTaxValue[$productArray] = ($decodedData[$productArray]->additionalTax/100)*$finalVatValue;
+				$additionalTaxValue[$productArray] = $decodedArray->inventory[$productArray]->sgstAmount;
 				$additionalTaxValue[$productArray] = number_format($additionalTaxValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);				
 				
 				$total[$productArray] = $finalVatValue+$vatValue[$productArray]+$additionalTaxValue[$productArray];

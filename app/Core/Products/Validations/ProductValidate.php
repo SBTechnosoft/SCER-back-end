@@ -27,8 +27,8 @@ class ProductValidate extends ProductModel
 			'margin'=> 'regex:/^[0-9 .]+$/', 
 			'vat'=> 'regex:/^[0-9 .]+$/', 
 			'mrp'=> 'required|regex:/^[0-9 .]+$/', 
-			'color'=> 'required|regex:/^[a-zA-Z0-9 .\/()-]+$/', 
-			'size'=> 'required|regex:/^[a-zA-Z0-9 .\/()-]+$/', 
+			'color'=> 'required', 
+			'size'=> 'required', 
 			'minimum_stock_level'=> 'regex:/^[0-9]+$/', 
 		);
 		$messages = [
@@ -40,8 +40,6 @@ class ProductValidate extends ProductModel
 			'margin.regex' => 'margin contains character from "0-9" only',
 			'vat.regex' => 'vat contains character from "0-9" only',
 			'mrp.regex' => 'mrp contains character from "0-9" only',
-			'color.regex' => 'color contains character from "a-zA-Z0-9 ./-" only',
-			'size.regex' => 'size contains character from "a-zA-Z0-9 .()" only',
 			'minimum_stock_level.regex' => 'size contains character from "0-9" only',
 		];
 		$validator = Validator::make($request,$rules,$messages);
@@ -135,8 +133,8 @@ class ProductValidate extends ProductModel
 				'margin'=> 'regex:/^[0-9 .]+$/', 
 				'vat'=> 'regex:/^[0-9 .]+$/', 
 				'mrp'=> 'required|regex:/^[0-9 .]+$/', 
-				'color'=> 'required|regex:/^[a-zA-Z0-9 .\/()-]+$/', 
-				'size'=> 'required|regex:/^[a-zA-Z0-9 .\/()-]+$/', 
+				'color'=> 'required', 
+				'size'=> 'required', 
 				'minimum_stock_level'=> 'regex:/^[0-9]+$/',
 			);
 		$rules =array();
@@ -162,8 +160,6 @@ class ProductValidate extends ProductModel
 				'margin.regex' => 'margin contains character from "0-9" only',
 				'vat.regex' => 'vat contains character from "0-9" only',
 				'mrp.regex' => 'mrp contains character from "0-9" only',
-				'color.regex' => 'color contains character from "a-zA-Z0-9 ./-" only',
-				'size.regex' => 'size contains character from "a-zA-Z0-9 .()" only',
 				'minimum_stock_level.regex' => 'size contains character from "0-9" only',
 			];
 			$validator = Validator::make($request,$rules,$messages);
