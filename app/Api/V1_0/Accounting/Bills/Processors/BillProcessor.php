@@ -25,6 +25,7 @@ use ERP\Core\Clients\Entities\ClientArray;
 use ERP\Core\Accounting\Ledgers\Entities\LedgerArray;
 use ERP\Model\Accounting\Journals\JournalModel;
 use ERP\Core\Accounting\Journals\Validations\BuisnessLogic;
+use ERP\Core\Accounting\Journals\Entities\AmountTypeEnum;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -1697,6 +1698,8 @@ class BillProcessor extends BaseProcessor
      */	
 	public function ledgerInsertion($tRequest,$clientId,$invoiceNumber,$companyId)
 	{
+		$amountTypeEnum = new AmountTypeEnum();
+		$enumAmountTypeArray = $amountTypeEnum->enumArrays();
 		//get constant variables array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
@@ -1715,6 +1718,8 @@ class BillProcessor extends BaseProcessor
 		$ledgerArray['amountType']=$constantArray['credit'];
 		$ledgerArray['ledgerGroupId']=$constantArray['ledgerGroupSundryDebitors'];
 		$ledgerArray['clientName']=$tRequest['client_name'];
+		$ledgerArray['outstandingLimit']='0.0000';
+		$ledgerArray['outstandingLimit']=$enumAmountTypeArray['creditType'];
 		$ledgerArray['clientId']=$clientId;
 		$ledgerController = new LedgerController(new Container());
 		$method=$constantArray['postMethod'];

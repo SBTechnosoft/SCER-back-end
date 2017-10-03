@@ -23,6 +23,7 @@ class LedgerTransformer
 		$inventoryAffectedFlag=0;
 		$balanceTypeFlag=0;
 		$amountTypeFlag=0;
+		$outstandingTypeFlag=0;
 		//data get from body
 		$ledgerName = $request->input('ledgerName'); 
 		$alias = $request->input('alias'); 
@@ -44,6 +45,8 @@ class LedgerTransformer
 		$cityId = $request->input('cityId'); 			
 		$ledgerGrpId = $request->input('ledgerGroupId');  
 		$companyId = $request->input('companyId');  
+		$outstandingLimit = $request->input('outstandingLimit');  
+		$outstandingLimitType = $request->input('outstandingLimitType');  
 		$clientId = array_key_exists('clientId',$request->input())?$request->input('clientId'):'';  
 		$clientName = array_key_exists('clientName',$request->input())?$request->input('clientName'):'';  
 		
@@ -70,6 +73,8 @@ class LedgerTransformer
 		$tcompanyId = trim($companyId);
 		$tClientId = trim($clientId);
 		$tClientName = trim($clientName);
+		$tOutstandingLimit = trim($outstandingLimit);
+		$tOutstandingLimitType = trim($outstandingLimitType);
 		if($tInventoryAffected!="")
 		{
 			$enumInventoryAffectedArray = array();
@@ -125,12 +130,12 @@ class LedgerTransformer
 				}
 			}
 		}
+		//check enum type[amount-type]
+		$enumAmountTypeArray = array();
+		$amountTypeEnum = new AmountTypeEnum();
+		$enumAmountTypeArray = $amountTypeEnum->enumArrays();
 		if($tAmountType!=="")
 		{
-			//check enum type[amount-type]
-			$enumAmountTypeArray = array();
-			$amountTypeEnum = new AmountTypeEnum();
-			$enumAmountTypeArray = $amountTypeEnum->enumArrays();
 			foreach ($enumAmountTypeArray as $key => $value)
 			{
 				if(strcmp($value,$tAmountType)==0)
@@ -143,8 +148,23 @@ class LedgerTransformer
 					$amountTypeFlag=2;
 				}
 			}
+		}
+		if($tOutstandingLimitType!=="")
+		{
+			foreach ($enumAmountTypeArray as $key => $value)
+			{
+				if(strcmp($value,$tOutstandingLimitType)==0)
+				{
+					$outstandingTypeFlag=1;
+					break;
+				}
+				else
+				{
+					$outstandingTypeFlag=2;
+				}
+			}
 		}	
-		if($inventoryAffectedFlag==2 || $balanceTypeFlag==2 || $amountTypeFlag==2 || $isDealerFlag==2)
+		if($inventoryAffectedFlag==2 || $balanceTypeFlag==2 || $amountTypeFlag==2 || $isDealerFlag==2 || $outstandingTypeFlag==2)
 		{
 			return "1";
 		}
@@ -174,6 +194,9 @@ class LedgerTransformer
 			$data['company_id'] = $tcompanyId;
 			$data['client_id'] = $tClientId;
 			$data['client_name'] = $tClientName;
+			$data['client_name'] = $tClientName;
+			$data['outstanding_limit'] = $tOutstandingLimit;
+			$data['outstanding_limit_type'] = $tOutstandingLimitType;
 			return $data;
 		}
 	}

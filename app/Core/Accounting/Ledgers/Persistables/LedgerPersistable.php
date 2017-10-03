@@ -27,6 +27,8 @@ use ERP\Core\Accounting\Journals\Properties\FromDatePropertyTrait;
 use ERP\Core\Accounting\Journals\Properties\ToDatePropertyTrait;
 use ERP\Core\Accounting\Ledgers\Properties\InvoiceNumberPropertyTrait;
 use ERP\Core\Accounting\Ledgers\Properties\IsDealerPropertyTrait;
+use ERP\Core\Accounting\Ledgers\Properties\OutstandingLimitTrait;
+use ERP\Core\Accounting\Ledgers\Properties\OutstandingLimitTypeTrait;
 use ERP\Core\Clients\Properties\ClientIdPropertyTrait;
 use ERP\Core\Clients\Properties\ClientNamePropertyTrait;
 /**
@@ -62,4 +64,6 @@ class LedgerPersistable
 	use IsDealerPropertyTrait;
 	use ClientNamePropertyTrait;
     use ClientIdPropertyTrait;
+    use OutstandingLimitTrait;
+    use OutstandingLimitTypeTrait;
 }
