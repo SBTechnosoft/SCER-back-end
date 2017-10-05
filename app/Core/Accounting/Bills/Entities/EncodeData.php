@@ -31,6 +31,7 @@ class EncodeData extends ClientService
 		$grandTotal= $decodedJson[0]['grand_total'];
 		$advance = $decodedJson[0]['advance'];
 		$balance = $decodedJson[0]['balance'];
+		$poNumber = $decodedJson[0]['po_number'];
 		$remark= $decodedJson[0]['remark'];
 		$entryDate= $decodedJson[0]['entry_date'];
 		$clientId= $decodedJson[0]['client_id'];
@@ -98,6 +99,7 @@ class EncodeData extends ClientService
 		$data['grandTotal'] = $grandTotal;
 		$data['advance'] = $advance;
 		$data['balance'] = $balance;
+		$data['poNumber'] = $poNumber;
 		$data['createdAt'] = $getCreatedDate;
 		$data['remark'] = $remark;
 		$data['entryDate'] = $getEntryDate;

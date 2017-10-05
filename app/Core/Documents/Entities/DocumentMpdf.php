@@ -16,6 +16,7 @@ use ERP\Model\Accounting\Quotations\QuotationModel;
 use ERP\Model\Crm\JobForm\JobFormModel;
 use ERP\Model\Crm\Conversations\ConversationModel;
 use Carbon;
+use stdClass;
 // use ERP\Core\Documents\Entities\CssStyleMpdf;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -69,6 +70,9 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$totalAdditionalTax=0;
 		$totalQty=0;
 		$finalDiscount = 0;
+		$gstSummarySizeManage = 0;
+		$trClose = "</td></tr>";
+		$gstSummaryArray = array();
 		if(strcmp($decodedBillData->salesType,"retail_sales")==0)
 		{
 			$totalCm = 12;
@@ -102,7 +106,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 				$total[$productArray] =($totalPrice)-$discountValue[$productArray]+$vatValue[$productArray] +$additionalTaxValue[$productArray];
 				
 				$price = number_format($decodedArray->inventory[$productArray]->price,$decodedData[$productArray]->company->noOfDecimalPoints,'.','');
-				$trClose = "</td></tr>";
+				
 				if($productArray==0)
 				{
 					$output =$output.$trClose;
@@ -171,7 +175,8 @@ class DocumentMpdf extends CurrencyToWordConversion
 		else
 		{
 			$totalCm = 12-0.7;
-			for($productArray=0;$productArray<count($decodedArray->inventory);$productArray++)
+			$inventoryCount = count($decodedArray->inventory);
+			for($productArray=0;$productArray<$inventoryCount;$productArray++)
 			{
 				//get product-data
 				$productData[$productArray] = $productService->getProductData($decodedArray->inventory[$productArray]->productId);
@@ -192,7 +197,6 @@ class DocumentMpdf extends CurrencyToWordConversion
 				//calculate vat value;
 				$vatValue[$productArray]=$decodedArray->inventory[$productArray]->cgstAmount;
 				$vatValue[$productArray] = number_format($vatValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
-				
 				//calculate additional tax
 				$additionalTaxValue[$productArray] = $decodedArray->inventory[$productArray]->sgstAmount;
 				$additionalTaxValue[$productArray] = number_format($additionalTaxValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);				
@@ -214,56 +218,152 @@ class DocumentMpdf extends CurrencyToWordConversion
 				$product_hsnCode = $decodedData[$productArray]->hsn
 								   ? $decodedData[$productArray]->hsn : "";
 				
-				$totalAmount=$totalAmount+$total[$productArray];
+				$totalAmount=$totalAmount+$decodedArray->inventory[$productArray]->amount;
 				$totalAdditionalTax=$totalAdditionalTax+$additionalTaxValue[$productArray]+$vatValue[$productArray];
 				$totalQty=$totalQty+$decodedArray->inventory[$productArray]->qty;
-				
 				// convert (number_format)as per company's selected decimal points
 				$totalPrice[$productArray] = number_format($totalPrice[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
-				$vatValue[$productArray] = number_format($vatValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
-				$additionalTaxValue[$productArray] = number_format($additionalTaxValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);				
 				$total[$productArray] = number_format($total[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
-				$price = number_format($decodedArray->inventory[$productArray]->price,$decodedData[$productArray]->company->noOfDecimalPoints);
+				$rate = number_format($decodedArray->inventory[$productArray]->price,$decodedData[$productArray]->company->noOfDecimalPoints);
+				$discountValue[$productArray] = number_format($this->checkValue($discountValue[$productArray]),$decodedData[$productArray]->company->noOfDecimalPoints);
+				$amount[$productArray] = number_format($decodedArray->inventory[$productArray]->amount,$decodedData[$productArray]->company->noOfDecimalPoints);
 				$mainPrice = $decodedArray->inventory[$productArray]->price * $decodedArray->inventory[$productArray]->qty;
 				$mainPrice = number_format($mainPrice,$decodedData[$productArray]->company->noOfDecimalPoints);
-				$finalVatValue = number_format($finalVatValue,$decodedData[$productArray]->company->noOfDecimalPoints);
-				
-				$totalTax = $decodedArray->inventory[$productArray]->cgstPercentage +$decodedArray->inventory[$productArray]->sgstPercentage;
-				
-				$output = $output."<tr  style='font-family: Calibri; text-align: left; height:  0.7cm; background-color: transparent;'><td  style='font-size: 14px; height: 0.7cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;'>". $index .
-				"</td><td colspan='3' style='font-size: 14px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid black;' >&nbsp;"
+				$finalVatValue1 = number_format($finalVatValue,$decodedData[$productArray]->company->noOfDecimalPoints);
+				$cgst = $this->checkValue($decodedArray->inventory[$productArray]->cgstPercentage);
+				$sgst = $this->checkValue($decodedArray->inventory[$productArray]->sgstPercentage);
+				$igst = $this->checkValue($decodedArray->inventory[$productArray]->igstPercentage);
+				$totalTax = $cgst + $sgst + $igst;
+				$product_hsnCode1 = $product_hsnCode=="" ? "-" :$product_hsnCode;
+				$output = $output."<tr  style='font-family: Calibri; text-align: left; height:  0.7cm; background-color: transparent;'><td  style='font-size: 11px; height: 0.7cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;'>". $index .
+				"</td><td colspan='3' style='font-size: 11px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);' >&nbsp;"
 				. $decodedData[$productArray]->productName .
-				"</td><td  style='font-size: 14px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid black;text-align:center'>". $product_hsnCode .
-				"</td><td colspan='2' style='font-size: 14px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid black;text-align:center'>". $decodedArray->inventory[$productArray]->color ." | ". $decodedArray->inventory[$productArray]->size .
-				"</td><td  style='font-size: 14px;  height:  0.7cm; padding:0 0 0 0; text-align: center;border-right: 1px solid black;'>". $decodedArray->inventory[$productArray]->frameNo .
-				"</td><td  style='font-size: 14px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid black;text-align:center'>". $decodedArray->inventory[$productArray]->qty .
-				"</td><td  style='font-size: 14px;   height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid black;'>". $price .
-				"&nbsp;</td><td  style='font-size: 14px;   height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid black;'>". $mainPrice .
-				"&nbsp;</td><td  style='font-size: 14px; height:  0.7cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black;'>". $discountInPercentage .
-				"</td><td class='tg-ullm thamt' style='font-size: 14px;  height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid black;'>". $discountValue[$productArray] .
-				"&nbsp;</td><td class='tg-ullm thamt' style='font-size: 14px;  height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid black;'>". $finalVatValue .
-				"&nbsp;</td><td class='tg-ullm thamt' style='font-size: 14px; height: 0.7cm; text-align: center; padding:0 0 0 0;border-right: 1px solid black;'>". $totalTax .
-				"%</td><td class='tg-ullm thamt' style='font-size: 14px;  height: 0.7cm; text-align: right; padding:0 0 0 0;'>". $total[$productArray]."&nbsp;".$trClose;
+				"</td><td  style='font-size: 11px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);text-align:center'>". $product_hsnCode1 .
+				"</td><td colspan='2' style='font-size: 11px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);text-align:center'>". $decodedArray->inventory[$productArray]->color ." | ". $decodedArray->inventory[$productArray]->size .
+				"</td><td  style='font-size: 11px;  height:  0.7cm; padding:0 0 0 0; text-align: center;border-right: 1px solid rgba(0, 0, 0, .3);'>". $decodedArray->inventory[$productArray]->frameNo .
+				"</td><td  style='font-size: 14px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);text-align:center'>". $decodedArray->inventory[$productArray]->qty .
+				"</td><td  style='font-size: 11px;   height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);'>". $rate .
+				"&nbsp;</td><td  style='font-size: 11px;   height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);'>". $mainPrice .
+				"&nbsp;</td><td  style='font-size: 11px; height:  0.7cm; text-align: center; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);'>". $discountInPercentage .
+				"</td><td class='tg-ullm thamt' style='font-size: 11px;  height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);'>". $discountValue[$productArray] .
+				"&nbsp;</td><td class='tg-ullm thamt' style='font-size: 11px;  height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);'>". $finalVatValue1 .
+				"&nbsp;</td><td class='tg-ullm thamt' style='font-size: 11px; height: 0.7cm; text-align: center; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);'>". $totalTax .
+				"%</td><td class='tg-ullm thamt' style='font-size: 11px;  height: 0.7cm; text-align: right; padding:0 0 0 0;'>". $amount[$productArray] ."&nbsp;".$trClose;
 				// if($productArray != count($decodedArray->inventory)-1)
 				// {
 					// $output = $output.$trClose;
 				
 				// }
+				
+				$copyFlag=0;
+				$gstSummaryLength = count($gstSummaryArray);
+				if($gstSummaryLength>1 && $product_hsnCode!='')
+				{
+					$summaryIndex=0;
+					while($summaryIndex<$gstSummaryLength)
+					{
+						if(strcmp($gstSummaryArray[$summaryIndex]->hsnCode,$product_hsnCode)==0)
+						{
+							$copyFlag=1;
+							$gstSummaryArray[$summaryIndex]->taxableValue = $gstSummaryArray[$summaryIndex]->taxableValue+$finalVatValue;
+							$gstSummaryArray[$summaryIndex]->cgstAmount = ($gstSummaryArray[$summaryIndex]->taxableValue*$gstSummaryArray[$summaryIndex]->cgstPercentage)/100;
+							$gstSummaryArray[$summaryIndex]->sgstAmount = ($gstSummaryArray[$summaryIndex]->taxableValue*$gstSummaryArray[$summaryIndex]->sgstPercentage)/100;
+							$gstSummaryArray[$summaryIndex]->igstAmount = ($gstSummaryArray[$summaryIndex]->taxableValue*$gstSummaryArray[$summaryIndex]->igstPercentage)/100;
+							break;
+						}
+						$summaryIndex++;
+					}
+				}
+				if($copyFlag==0)
+				{
+					if($cgst>0 || $sgst>0 || $igst>0)
+					{
+						$tempObject = new stdClass();
+						$tempObject->hsnCode = $product_hsnCode;
+						$tempObject->taxableValue = $finalVatValue;
+						$tempObject->cgstPercentage = $cgst;
+						$tempObject->cgstAmount = $decodedArray->inventory[$productArray]->cgstAmount;
+						$tempObject->sgstPercentage = $sgst;
+						$tempObject->sgstAmount = $decodedArray->inventory[$productArray]->sgstAmount;
+						$tempObject->igstPercentage = $igst;
+						$tempObject->igstAmount = $decodedArray->inventory[$productArray]->igstAmount;
+						array_push($gstSummaryArray,$tempObject);
+						$gstSummarySizeManage++;
+					}
+				}
 				if($productArray==(count($decodedArray->inventory)-1))
 				{
-					$totalProductSpace = $index*0.7;	
+					$lastManageSpace = $index+$gstSummarySizeManage;
+					$totalProductSpace = $lastManageSpace*0.7;	
 					
 					$finalProductBlankSpace = $totalCm-$totalProductSpace;
-					$output = $output . "<tr  style='height:".$finalProductBlankSpace."cm; background-color: transparent;'><td style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' colspan='3' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' ></td><td colspan='2' style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;' ></td></tr>";
-
+					$output = $output . "<tr  style='height:".$finalProductBlankSpace."cm; background-color: transparent;'><td style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);' colspan='3' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);' ></td><td colspan='2' style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);' ></td><td  style='font-size: 12px; height: ".$finalProductBlankSpace."cm; text-align:center; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);' ></td></tr>";
 				}
 				$index++;
-		    }    
+			}    
 		}
+		$totalTaxableAmount =0;
+		$totalCgst =0;
+		$totalCgstAmount =0;
+		$totalSgst =0;
+		$totalSgstAmount =0;
+		$totalIgst =0;
+		$totalIgstAmount =0;
+		$gstIndex=0;
+		$gstOutput='';
+		$gstSummaryLength = count($gstSummaryArray);
+		while($gstIndex < $gstSummaryLength)
+		{
+			$singleGstData = $gstSummaryArray[$gstIndex];
+
+			$totalTaxableAmount = $totalTaxableAmount+$singleGstData->taxableValue;
+			$totalCgst = $totalCgst+$singleGstData->cgstPercentage;
+			$totalCgstAmount = $totalCgstAmount+$singleGstData->cgstAmount;
+			$totalSgst = $totalSgst+$singleGstData->sgstPercentage;
+			$totalSgstAmount = $totalSgstAmount+$singleGstData->sgstAmount;
+			$totalIgst = $totalIgst+$singleGstData->igstPercentage;
+			$totalIgstAmount = $totalIgstAmount+$singleGstData->igstAmount;
+			$taxableValue = $singleGstData->taxableValue;
+			$cgstAmount = number_format($singleGstData->cgstAmount,$decodedData[0]->company->noOfDecimalPoints);
+			$sgstAmount = number_format($singleGstData->sgstAmount,$decodedData[0]->company->noOfDecimalPoints);
+			$igstAmount = number_format($singleGstData->igstAmount,$decodedData[0]->company->noOfDecimalPoints);
+			$taxableValue = number_format($taxableValue,$decodedData[0]->company->noOfDecimalPoints);
+			if($gstIndex==0)
+			{
+				$gstOutput = $gstOutput.$trClose;
+			}
+			$hsnCode = $singleGstData->hsnCode=="" || $singleGstData->hsnCode==null || strcmp($singleGstData->hsnCode,'undefined')==0 ? '-': $singleGstData->hsnCode;
+			// gstSummary Array
+			$gstOutput = $gstOutput . '<tr style="background-color: transparent; height: 15px;"><td colspan=2  align="center" valign=middle  style="border-right: 1px solid rgba(0, 0, 0, .3);font-size:11px">'
+			. $hsnCode.
+			'</td><td colspan=2 align="right" valign=bottom  style="border-right: 1px solid rgba(0, 0, 0, .3);font-size:11px">'
+			. $taxableValue.
+			'&nbsp;</td><td align="center" valign=bottom  style="border-right: 1px solid rgba(0, 0, 0, .3);font-size:11px">'
+			. $singleGstData->cgstPercentage.
+			'</td><td colspan=2 align="right" valign=bottom  style="border-right: 1px solid rgba(0, 0, 0, .3);font-size:11px">'
+			. $cgstAmount.
+			'&nbsp;</td><td align="center" valign=bottom style="border-right: 1px solid rgba(0, 0, 0, .3);font-size:11px">'
+			. $singleGstData->sgstPercentage.
+			'</td><td colspan=2 align="right" valign=bottom style="border-right: 1px solid rgba(0, 0, 0, .3);font-size:11px">'
+			. $sgstAmount.
+			'&nbsp;</td><td align="center" valign=bottom style="border-right: 1px solid rgba(0, 0, 0, .3);font-size:11px" >'
+			.$singleGstData->igstPercentage.
+			'</td><td colspan=2 align="right" valign=bottom style="border-right: 1px solid rgba(0, 0, 0, .3);font-size:11px" >'
+			. $igstAmount.
+			'&nbsp;</td><td align="center" valign=bottom style="border-right: 1px solid rgba(0, 0, 0, .3);font-size:11px" ></td><td colspan=2 align="right" valign=bottom style="" >&nbsp;</td>';
+
+			// End
+			if($gstIndex != $gstSummaryLength-1)
+			{
+				$gstOutput = $gstOutput.$trClose;
+			}
+			$gstIndex++;
+		}
+		$discountableValue = $totalAmount+$decodedBillData->extraCharge;
 		//calculation of total-discount 
 		$totalDiscount = strcmp($decodedBillData->totalDiscounttype,'flat')==0
 						? $decodedBillData->totalDiscount
-						: (($decodedBillData->totalDiscount/100)*$decodedBillData->total);
+						: (($decodedBillData->totalDiscount/100)*$discountableValue);
 		$address = $decodedBillData->client->address1;
 		$companyAddress = $decodedBillData->company->address1.",".$decodedBillData->company->address2;
 		
@@ -277,13 +377,20 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$totalTax = $totalVatValue+$totalAdditionalTax;
 		// convert amount(number_format) into their company's selected decimal points
 		$totalTax = number_format($totalTax,$decodedData[0]->company->noOfDecimalPoints,'.','');
-		$totalAmount = number_format($totalAmount,$decodedData[0]->company->noOfDecimalPoints,'.','');
-		$roundTotal = round($totalAmount);
-		$roundUpFigure = $roundTotal-$totalAmount;
-		$roundUpFigure = number_format($roundUpFigure,$decodedData[0]->company->noOfDecimalPoints,'.','');
+		
+		$roundAmountTotal = ($totalAmount+$decodedBillData->extraCharge)-$totalDiscount;
+		$roundTotal = round($roundAmountTotal);
+		
+		$roundUpFigure = $roundTotal-$roundAmountTotal;
 		//calculation of currecy to word conversion
 		$currecyToWordConversion = new DocumentMpdf();
 		$currencyResult = $currecyToWordConversion->conversion($roundTotal);
+		
+		$roundUpFigure = number_format($roundUpFigure,$decodedData[0]->company->noOfDecimalPoints);
+		$totalAmount = number_format($totalAmount,$decodedData[0]->company->noOfDecimalPoints);
+		$roundTotal = number_format($roundTotal,$decodedData[0]->company->noOfDecimalPoints);
+		$roundAmountTotal = number_format($roundAmountTotal,$decodedData[0]->company->noOfDecimalPoints);
+		$extraCharge = number_format($decodedBillData->extraCharge,$decodedData[0]->company->noOfDecimalPoints);
 		$billArray = array();
 		$billArray['Description']=$output;
 		$billArray['ClientName']=$decodedBillData->client->clientName;
@@ -316,8 +423,20 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$billArray['GCLRNO']="";
 		$billArray['REMARK']=$decodedBillData->remark;
 		$billArray['TotalDiscount']=$totalDiscount;
+		$billArray['TotalRoundableAmount']=$roundAmountTotal;
+		$billArray['ExtraCharge']=$extraCharge;
+		
+		//gst-summary
+		$billArray['gstSummary']=$gstOutput;
+		$billArray['TotalTaxableAmt']=number_format($totalTaxableAmount,$decodedData[0]->company->noOfDecimalPoints);
+		$billArray['TotalCgst']=$totalCgst;
+		$billArray['TotalCgstAmt']=number_format($totalCgstAmount,$decodedData[0]->company->noOfDecimalPoints);
+		$billArray['TotalSgst']=$totalSgst;
+		$billArray['TotalSgstAmt']=number_format($totalSgstAmount,$decodedData[0]->company->noOfDecimalPoints);
+		$billArray['TotalIgst']=$totalIgst;
+		$billArray['TotalIgstAmt']=number_format($totalIgstAmount,$decodedData[0]->company->noOfDecimalPoints);
 		// $mpdf = new mPDF('A4','landscape');
-		 $mpdf = new mPDF('','A4','','agency','0','0','0','0','0','0','landscape');
+		 $mpdf = new mPDF('','A4','','agency','5','5','0','0','0','0','landscape');
 		// $mpdf = new mPDF('','', 0, '', 10, 5, 5, 10, 0, 0, 'L');
 		$mpdf->SetDisplayMode('fullpage');
 		foreach($billArray as $key => $value)
@@ -336,7 +455,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$documentFormat="pdf";
 		$documentType ="bill";
 		//pdf generate
-		$mpdf->Output($documentPathName,'F');
+		$mpdf->Output($documentPathName,"F");
 		//insertion bill document data into database
 		$billModel = new BillModel();
 		$billDocumentStatus = $billModel->billDocumentData($saleId,$documentName,$documentFormat,$documentType);
@@ -1131,6 +1250,19 @@ class DocumentMpdf extends CurrencyToWordConversion
 			$pathArray['documentPath'] = $documentPathName;
 			return json_encode($pathArray);
 		}	
-		
-	} 
+	}
+
+	/**
+	* check value
+	* @param integer value
+	* @return tax-value/0
+	*/
+	public function checkValue($tax)
+	{
+		if($tax=='' || strcmp($tax,'undefined')==0 || is_NaN(floatval($tax)) || $tax==null)
+		{
+			return 0;
+		}
+		return $tax;	
+	}
 }

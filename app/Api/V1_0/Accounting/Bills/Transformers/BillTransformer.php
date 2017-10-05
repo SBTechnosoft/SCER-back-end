@@ -25,61 +25,22 @@ class BillTransformer
 		$billArrayData=array();
 		//data get from body
 		$billArrayData = $request->input(); 
+		$paymentModeArray = array();
+		$paymentModeEnum = new PaymentModeEnum();
+		$paymentModeArray = $paymentModeEnum->enumArrays();
 		
 		//trim an input
 		$tCompanyId = trim($billArrayData['companyId']);
 		$tEntryDate = trim($billArrayData['entryDate']);
-		
-		if(!array_key_exists('professionId',$billArrayData))
-		{
-			$tProfessionId = "";
-		}
-		else
-		{
-			$tProfessionId = trim($billArrayData['professionId']);
-		}
-		if(!array_key_exists('contactNo',$request->input()))
-		{
-			$tContactNo = "";
-		}
-		else
-		{
-			$tContactNo = trim($billArrayData['contactNo']);
-		}
-		if(!array_key_exists('emailId',$request->input()))
-		{
-			$tEmailId = "";
-		}
-		else
-		{
-			$tEmailId = trim($billArrayData['emailId']);
-		}
-		if(!array_key_exists('companyName',$request->input()))
-		{
-			$tCompanyName = "";
-		}
-		else
-		{
-			$tCompanyName = trim($billArrayData['companyName']);
-		}
-		if(!array_key_exists('jobCardNumber',$request->input()))
-		{
-			$tJobCardNumber = "";
-		}
-		else
-		{
-			$tJobCardNumber = trim($billArrayData['jobCardNumber']);
-		}
+		$tProfessionId = array_key_exists('professionId',$billArrayData)?trim($billArrayData['professionId']):"";
+		$tContactNo = array_key_exists('contactNo',$billArrayData)?trim($billArrayData['contactNo']):"";
+		$tEmailId = array_key_exists('emailId',$billArrayData)?trim($billArrayData['emailId']):"";
+		$tCompanyName = array_key_exists('companyName',$billArrayData)?trim($billArrayData['companyName']):"";
+		$tJobCardNumber = array_key_exists('jobCardNumber',$billArrayData)?trim($billArrayData['jobCardNumber']):"";
+		$tAddress1 = array_key_exists('address1',$billArrayData)?trim($billArrayData['address1']):"";
+		$tPoNumber = array_key_exists('poNumber',$billArrayData)?trim($billArrayData['poNumber']):"";
 		$tClientName = trim($billArrayData['clientName']);
 		$tInvoiceNumber = trim($billArrayData['invoiceNumber']);
-		if(!array_key_exists('address1',$request->input()))
-		{
-			$tAddress1 = "";
-		}
-		else
-		{
-			$tAddress1 = trim($billArrayData['address1']);
-		}
 		$tStateAbb = trim($billArrayData['stateAbb']);
 		$tCityId = trim($billArrayData['cityId']);
 		$tTotal = trim($billArrayData['total']);
@@ -93,29 +54,32 @@ class BillTransformer
 			if($billArrayData['totalDiscounttype']=='flat' || $billArrayData['totalDiscounttype']=='percentage')
 			{
 				$tTotalDiscounttype = trim($billArrayData['totalDiscounttype']);
-				$tTotalDiscount = trim($billArrayData['totalDiscount']);
+				$tTotalDiscount = $this->checkValue(trim($billArrayData['totalDiscount']));
 			}
 			else
 			{
 				return "1";
 			}
 		}
-		
 		if(!array_key_exists('extraCharge',$request->input()))
 		{
 			$tExtraCharge = 0;
 		}
 		else
 		{
-			$tExtraCharge = trim($billArrayData['extraCharge']);
+			$tExtraCharge = $this->checkValue(trim($billArrayData['extraCharge']));
 		}
-		$tTax = trim($billArrayData['tax']);
-		$tGrandTotal = trim($billArrayData['grandTotal']);
-		$tAdvance = trim($billArrayData['advance']);
-		
-		$tBalance = trim($billArrayData['balance']);
-		$tPaymentMode = trim($billArrayData['paymentMode']);
-		if(strcmp($tPaymentMode,"bank")==0)
+		$tTax = $this->checkValue(trim($billArrayData['tax']));
+		$tGrandTotal = $this->checkValue(trim($billArrayData['grandTotal']));
+		$tAdvance = $this->checkValue(trim($billArrayData['advance']));
+		$tBalance = $this->checkValue(trim($billArrayData['balance']));
+		$tPaymentMode = $trim($billArrayData['paymentMode']);
+		if(strcmp($tPaymentMode,$paymentModeArray['bankPayment'])==0 || 
+			strcmp($tPaymentMode,$paymentModeArray['neftPayment'])==0 ||
+			strcmp($tPaymentMode,$paymentModeArray['rtgsPayment'])==0 ||
+			strcmp($tPaymentMode,$paymentModeArray['impsPayment'])==0 ||
+			strcmp($tPaymentMode,$paymentModeArray['nachPayment'])==0 ||
+			strcmp($tPaymentMode,$paymentModeArray['achPayment'])==0)
 		{
 			$tBankName = trim($billArrayData['bankName']);
 			$tCheckNumber = trim($billArrayData['checkNumber']);
@@ -129,23 +93,8 @@ class BillTransformer
 				$tPaymentMode=$paymentModeArray['cashPayment'];
 			}
 		}
-
-		if(array_key_exists("remark",$billArrayData))
-		{
-			$tRemark = trim($billArrayData['remark']);
-		}
-		else
-		{
-			$tRemark ="";
-		}
-		if(array_key_exists('isDisplay',$request->input()))
-		{
-			$tIsDisplay = trim($billArrayData['isDisplay']);
-		}
-		else
-		{
-			$tIsDisplay="yes";
-		}
+		$tRemark = array_key_exists("remark",$billArrayData) ? trim($billArrayData['remark']) :"";
+		$tIsDisplay = array_key_exists("isDisplay",$billArrayData) ? trim($billArrayData['isDisplay']):"";
 		$isDisplayEnum = new IsDisplayEnum();
 		$isDisplayArray = $isDisplayEnum->enumArrays();
 		if($tIsDisplay=="")
@@ -168,10 +117,6 @@ class BillTransformer
 				return "1";
 			}
 		}
-		$paymentModeArray = array();
-		$paymentModeEnum = new PaymentModeEnum();
-		$paymentModeArray = $paymentModeEnum->enumArrays();
-		
 		$discountFlag=0;
 		$discountTypeEnum = new DiscountTypeEnum();
 		for($trimInventory=0;$trimInventory<count($billArrayData['inventory']);$trimInventory++)
@@ -197,7 +142,7 @@ class BillTransformer
 			$tInventoryArray[$trimInventory][0] = trim($billArrayData['inventory'][$trimInventory]['productId']);
 			$tInventoryArray[$trimInventory][1] = trim($billArrayData['inventory'][$trimInventory]['discount']);
 			$tInventoryArray[$trimInventory][2] = trim($billArrayData['inventory'][$trimInventory]['discountType']);
-			$tInventoryArray[$trimInventory][3] = trim($billArrayData['inventory'][$trimInventory]['price']);
+			$tInventoryArray[$trimInventory][3] = $this->checkValue(trim($billArrayData['inventory'][$trimInventory]['price']));
 			$tInventoryArray[$trimInventory][4] = trim($billArrayData['inventory'][$trimInventory]['qty']);
 		}
 		//check paymentmode enum type
@@ -240,6 +185,7 @@ class BillTransformer
 			$data['bank_name'] = $tBankName;
 			$data['payment_mode'] = $tPaymentMode;
 			$data['check_number'] = $tCheckNumber;
+			$data['po_number'] = $tPoNumber;
 			$data['remark'] = $tRemark;
 			$data['total_discounttype'] = $tTotalDiscounttype;
 			$data['total_discount'] = $tTotalDiscount;
@@ -408,9 +354,12 @@ class BillTransformer
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
+		$paymentModeEnum = new PaymentModeEnum();
+		$paymentModeArray = $paymentModeEnum->enumArrays();
 		if(array_key_exists('paymentMode',$billArrayData))
 		{
-			if(strcmp($billArrayData['paymentMode'],'cash')==0 || strcmp($billArrayData['paymentMode'],'card')==0)
+			if(strcmp($billArrayData['paymentMode'],$paymentModeArray['cashPayment'])==0 || 
+			strcmp($billArrayData['paymentMode'],$paymentModeArray['cardPayment'])==0)
 			{
 				$billArrayData['bankName'] = "";
 				$billArrayData['checkNumber'] = "";
@@ -527,5 +476,19 @@ class BillTransformer
 			$tBillArray['inventory'] = $tempArray;
 		}
 		return $tBillArray;
+	}
+	
+	/**
+	* check value
+	* @param integer value
+	* @return tax-value/0
+	*/
+	public function checkValue($tax)
+	{
+		if($tax=='' || strcmp($tax,'undefined')==0 || is_NaN(floatval($tax)) || $tax==null)
+		{
+			return 0;
+		}
+		return $tax;	
 	}
 }

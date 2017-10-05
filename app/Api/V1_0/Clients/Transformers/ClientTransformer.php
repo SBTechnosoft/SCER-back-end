@@ -26,8 +26,29 @@ class ClientTransformer
 		$professionId = $request->input('professionId'); 
 		$isDisplay = $request->input('isDisplay'); 			
 		$stateAbb = $request->input('stateAbb'); 			
-		$cityId = $request->input('cityId'); 			
-		
+		$cityId = $request->input('cityId'); 	
+		$birthDate = array_key_exists('birthDate',$request->input())?$request->input('birthDate'):'0000-00-00'; 			
+		$anniversaryDate=array_key_exists('anniversaryDate',$request->input())
+		? $request->input('anniversaryDate'):'0000-00-00';
+		$otherDate=array_key_exists('otherDate',$request->input())?$request->input('otherDate'):'0000-00-00'; 			
+		//birth-date conversion
+		if(strcmp($birthDate,'0000-00-00')!=0)
+		{
+			$splitedDate = explode("-",trim($birthDate));
+			$birthDate = $splitedDate[2]."-".$splitedDate[1]."-".$splitedDate[0];
+		}
+		//anniversary-date conversion
+		if(strcmp($anniversaryDate,'0000-00-00')!=0)
+		{
+			$splitedDate = explode("-",trim($anniversaryDate));
+			$anniversaryDate = $splitedDate[2]."-".$splitedDate[1]."-".$splitedDate[0];
+		}
+		// other-date conversion
+		if(strcmp($anniversaryDate,'0000-00-00')!=0)
+		{
+			$splitedDate = explode("-",trim($otherDate));
+			$otherDate = $splitedDate[2]."-".$splitedDate[1]."-".$splitedDate[0];
+		}
 		//trim an input
 		$tClientName = trim($clientName);
 		$tCompanyName = trim($companyName);
@@ -93,6 +114,9 @@ class ClientTransformer
 			$data['is_display'] = $tIsDisplay;
 			$data['state_abb'] = $tStateAbb;
 			$data['city_id'] = $tCityId;
+			$data['birth_date'] = $birthDate;
+			$data['anniversary_date'] = $anniversaryDate;
+			$data['other_date'] = $otherDate;
 			return $data;
 		}
 	}

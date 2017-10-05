@@ -77,6 +77,13 @@ class EncodeAllData extends StateService
 				$client->setUpdated_at($convertedUpdatedDate[$decodedData]);
 				$getUpdatedDate[$decodedData] = $client->getUpdated_at();
 			}
+			
+			$birthDate[$decodedData]=$decodedJson[$decodedData]['birth_date']=='0000-00-00' ? "00-00-0000"
+			 : Carbon\Carbon::createFromFormat('Y-m-d',$decodedJson[$decodedData]['birth_date'])->format('d-m-Y');
+			$anniversaryDate[$decodedData]=$decodedJson[$decodedData]['anniversary_date']=="0000-00-00" ? "00-00-0000"
+			 : Carbon\Carbon::createFromFormat('Y-m-d',$decodedJson[$decodedData]['anniversary_date'])->format('d-m-Y');
+			$otherDate[$decodedData]=$decodedJson[$decodedData]['other_date']=='0000-00-00' ? "00-00-0000"
+			 : Carbon\Carbon::createFromFormat('Y-m-d',$decodedJson[$decodedData]['other_date'])->format('d-m-Y');
 		}
 		$data = array();
 		$professionDecodedDetail = array();
@@ -161,6 +168,9 @@ class EncodeAllData extends StateService
 				'emailId' => $emailId[$jsonData],
 				'address1' => $address1[$jsonData],
 				'isDisplay' => $isDisplay[$jsonData],
+				'birthDate' => $birthDate[$jsonData],
+				'anniversaryDate' => $anniversaryDate[$jsonData],
+				'otherDate' => $otherDate[$jsonData],
 				'createdAt' => $getCreatedDate[$jsonData],
 				'updatedAt' => $getUpdatedDate[$jsonData],
 				

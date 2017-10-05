@@ -128,8 +128,8 @@ class ClientController extends BaseController implements ContainerInterface
 						if(strcmp($clientData,$exceptionArray['200'])==0)
 						{
 							$processor = new ClientProcessor();
-							$clientPersistable = new ClientPersistable();		
-							$clientService= new ClientService();			
+							$clientPersistable = new ClientPersistable();
+							$clientService= new ClientService();
 							$clientPersistable = $processor->createPersistable($this->request);
 							if($clientPersistable[0][0]=='[')
 							{

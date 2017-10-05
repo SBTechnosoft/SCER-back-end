@@ -644,6 +644,7 @@ class BillProcessor extends BaseProcessor
 			$billPersistable->setCompanyId($tRequest['company_id']);
 			$billPersistable->setTotalDiscounttype($tRequest['total_discounttype']);
 			$billPersistable->setTotalDiscount($tRequest['total_discount']);
+			$billPersistable->setPoNumber($tRequest['po_number']);
 			$billPersistable->setJfId($jsonDecodedJfId);
 			if(strcmp($request->header()['salestype'][0],$salesTypeEnumArray['retailSales'])==0 || strcmp($request->header()['salestype'][0],$salesTypeEnumArray['wholesales'])==0)
 			{
@@ -1676,6 +1677,9 @@ class BillProcessor extends BaseProcessor
 		$clientArray['emailId']=array_key_exists('email_id',$tRequest)?$tRequest['email_id']:'';
 		$clientArray['contactNo']=$tRequest['contact_no'];
 		$clientArray['address1']=array_key_exists('address1',$tRequest)?$tRequest['address1']:'';
+		$clientArray['birthDate']=array_key_exists('birth_date',$tRequest)?$tRequest['birth_date']:'0000-00-00';
+		$clientArray['anniversaryDate']=array_key_exists('anniversary_date',$tRequest)?$tRequest['anniversary_date']:'0000-00-00';
+		$clientArray['otherDate']=array_key_exists('other_date',$tRequest)?$tRequest['other_date']:'0000-00-00';
 		$clientArray['isDisplay']=array_key_exists('is_display',$tRequest)?$tRequest['is_display']:$constantArray['isDisplayYes'];
 		$clientArray['stateAbb']=$tRequest['state_abb'];
 		$clientArray['cityId']=$tRequest['city_id'];
@@ -1777,6 +1781,18 @@ class BillProcessor extends BaseProcessor
 		if(array_key_exists('city_id',$tRequest))
 		{
 			$clientArray['cityId']=$tRequest['city_id'];
+		}
+		if(array_key_exists('birth_date',$tRequest))
+		{
+			$clientArray['birthDate']=$tRequest['birth_date'];
+		}
+		if(array_key_exists('anniversary_date',$tRequest))
+		{
+			$clientArray['anniversaryDate']=$tRequest['anniversary_date'];
+		}
+		if(array_key_exists('other_date',$tRequest))
+		{
+			$clientArray['otherDate']=$tRequest['other_date'];
 		}
 		$clientController = new ClientController(new Container());
 		$method=$constantArray['postMethod'];

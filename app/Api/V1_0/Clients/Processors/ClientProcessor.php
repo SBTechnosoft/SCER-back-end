@@ -48,7 +48,6 @@ class ClientProcessor extends BaseProcessor
 			//trim an input 
 			$clientTransformer = new ClientTransformer();
 			$tRequest = $clientTransformer->trimInsertData($this->request);
-			
 			$clientValidate = new ClientValidate();
 			if($tRequest==1)
 			{

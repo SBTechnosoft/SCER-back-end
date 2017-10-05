@@ -13,6 +13,12 @@ class PaymentModeEnum
 		$enumArray['cashPayment'] = "cash";
 		$enumArray['bankPayment'] = "bank";
 		$enumArray['cardPayment'] = "card";
+		$enumArray['creditPayment'] = "credit";
+		$enumArray['neftPayment'] = "neft";
+		$enumArray['rtgsPayment'] = "rtgs";
+		$enumArray['impsPayment'] = "imps";
+		$enumArray['nachPayment'] = "nach";
+		$enumArray['achPayment'] = "ach";
 		return $enumArray;
 	}
 }

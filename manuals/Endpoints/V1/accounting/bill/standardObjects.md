@@ -15,6 +15,7 @@
 				"balance":decimal,
 				"salesType":Enum,
 				"remark":string,
+				"poNumber":string,
 				"entryDate":datetime,
 				"createdAt":timestamp,
 				"updatedAt":datetime,
@@ -74,6 +75,7 @@
 				"paymentMode":Enum,
 				"bankName":string,
 				"checkNumber":string,
+				"poNumber":string,
 				"remark":string,
 				"file":
 				{

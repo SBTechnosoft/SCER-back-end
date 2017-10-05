@@ -83,6 +83,9 @@ class ClientModel extends Model
 			email_id,
 			address1,
 			profession_id,
+			birth_date,
+			anniversary_date,
+			other_date,
 			is_display,
 			created_at,
 			updated_at,
@@ -138,6 +141,9 @@ class ClientModel extends Model
 		email_id,
 		address1,
 		profession_id,
+		birth_date,
+		anniversary_date,
+		other_date,
 		is_display,
 		created_at,
 		updated_at,
@@ -206,7 +212,6 @@ class ClientModel extends Model
 				$queryParameter = $queryParameter." client_id IN('".$decodedBillData[0]->client_id."'";
 			}
 		}
-		
 		if(array_key_exists('jobcardnumber',$headerData) && $headerData['jobcardnumber'][0]!='')
 		{
 			$jobFormResult = $jobFormModel->getData($headerData['jobcardnumber'][0]);
@@ -322,7 +327,40 @@ class ClientModel extends Model
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
-		
+		$clientIdParam='';
+		if(array_key_exists('operation',$headerData))
+		{
+			DB::beginTransaction();		
+			$clientAllData = DB::connection($databaseName)->select("select 
+			client_id,
+			birth_date,
+			anniversary_date,
+			other_date
+			from client_mst 
+			where deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+			if(count($clientAllData)!=0)
+			{
+				$mytime = Carbon::now();
+				$currentDate = explode(' ',$mytime);
+				$totalClientData = count($clientAllData);
+				for($dateSearchIndex=0;$dateSearchIndex<$totalClientData;$dateSearchIndex++)
+				{
+					if(strcmp($clientAllData[$dateSearchIndex]->birth_date,$currentDate[0])==0 || 
+					   strcmp($clientAllData[$dateSearchIndex]->anniversary_date,$currentDate[0])==0 ||
+					   strcmp($clientAllData[$dateSearchIndex]->other_date,$currentDate[0])==0)
+					{
+						$clientIdParam = $clientIdParam." client_id =".$clientAllData[$dateSearchIndex]->client_id." OR";
+					}
+				}
+			}
+		}
+		if($clientIdParam!='')
+		{
+			$clientIdParam = rtrim($clientIdParam,"OR");
+			$clientIdParam = $clientIdParam." and";
+			$queryParameter='';
+		}
 		DB::beginTransaction();		
 		$clientData = DB::connection($databaseName)->select("select 
 		client_id,
@@ -332,13 +370,16 @@ class ClientModel extends Model
 		email_id,
 		address1,
 		profession_id,
+		birth_date,
+		anniversary_date,
+		other_date,
 		is_display,
 		created_at,
 		updated_at,
 		deleted_at,
 		state_abb,
 		city_id			
-		from client_mst where ".$queryParameter." deleted_at='0000-00-00 00:00:00'");
+		from client_mst where ".$queryParameter.$clientIdParam." deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
 		if(count($clientData)==0)
@@ -399,6 +440,9 @@ class ClientModel extends Model
 		city_id,
 		company_name,
 		profession_id,
+		birth_date,
+		anniversary_date,
+		other_date,
 		created_at,
 		updated_at
 		from client_mst 
@@ -496,6 +540,9 @@ class ClientModel extends Model
 		city_id,
 		company_name,
 		profession_id,
+		birth_date,
+		anniversary_date,
+		other_date,
 		created_at,
 		updated_at
 		from client_mst 

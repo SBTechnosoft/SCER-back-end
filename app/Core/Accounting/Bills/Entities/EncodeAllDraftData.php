@@ -37,6 +37,7 @@ class EncodeAllDraftData extends ClientService
 			$grandTotal[$decodedData] = $deocodedJsonData[$decodedData]['grand_total'];
 			$advance[$decodedData] = $deocodedJsonData[$decodedData]['advance'];
 			$balance[$decodedData] = $deocodedJsonData[$decodedData]['balance'];
+			$poNumber[$decodedData] = $deocodedJsonData[$decodedData]['po_number'];
 			$remark[$decodedData] = $deocodedJsonData[$decodedData]['remark'];
 			$refund[$decodedData] = $deocodedJsonData[$decodedData]['refund'];
 			$entryDate[$decodedData] = $deocodedJsonData[$decodedData]['entry_date'];
@@ -107,6 +108,7 @@ class EncodeAllDraftData extends ClientService
 				'grandTotal'=>$grandTotal[$jsonData],
 				'advance'=>$advance[$jsonData],
 				'balance'=>$balance[$jsonData],
+				'poNumber'=>$poNumber[$jsonData],
 				'remark'=>$remark[$jsonData],
 				'salesType'=>$salesType[$jsonData],
 				'refund'=>$refund[$jsonData],

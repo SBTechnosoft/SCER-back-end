@@ -27,6 +27,7 @@ use ERP\Core\Accounting\Bills\Properties\SaleIdArrayPropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\ExtraChargePropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\TotalDiscounttypeTrait;
 use ERP\Core\Accounting\Bills\Properties\TotalDiscountTrait;
+use ERP\Core\Accounting\Bills\Properties\PoNumberTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -58,4 +59,5 @@ class BillPersistable
 	use ExtraChargePropertyTrait;
 	use TotalDiscounttypeTrait;
 	use TotalDiscountTrait;
+	use PoNumberTrait;
 }

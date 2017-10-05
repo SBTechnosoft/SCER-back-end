@@ -317,6 +317,9 @@ class QuotationProcessor extends BaseProcessor
 		$clientArray['emailId']=array_key_exists('email_id',$tRequest)?$tRequest['email_id']:'';
 		$clientArray['contactNo']=$tRequest['contact_no'];
 		$clientArray['address1']=array_key_exists('address1',$tRequest)?$tRequest['address1']:'';
+		$clientArray['birthDate']=array_key_exists('birth_date',$tRequest)?$tRequest['birth_date']:'0000-00-00';
+		$clientArray['anniversaryDate']=array_key_exists('anniversary_date',$tRequest)?$tRequest['anniversary_date']:'0000-00-00';
+		$clientArray['otherDate']=array_key_exists('other_date',$tRequest)?$tRequest['other_date']:'0000-00-00';
 		$clientArray['isDisplay']=array_key_exists('is_display',$tRequest)?$tRequest['is_display']:$constantArray['isDisplayYes'];
 		$clientArray['stateAbb']=$tRequest['state_abb'];
 		$clientArray['cityId']=$tRequest['city_id'];
@@ -380,6 +383,18 @@ class QuotationProcessor extends BaseProcessor
 		if(array_key_exists('cityId',$tRequest))
 		{
 			$clientArray['cityId']=$tRequest['cityId'];
+		}
+		if(array_key_exists('birthDate',$tRequest))
+		{
+			$clientArray['birthDate']=$tRequest['birthDate'];
+		}
+		if(array_key_exists('anniversaryDate',$tRequest))
+		{
+			$clientArray['anniversaryDate']=$tRequest['anniversaryDate'];
+		}
+		if(array_key_exists('otherDate',$tRequest))
+		{
+			$clientArray['otherDate']=$tRequest['otherDate'];
 		}
 		$clientController = new ClientController(new Container());
 		$method=$constantArray['postMethod'];

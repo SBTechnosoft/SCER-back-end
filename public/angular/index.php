@@ -305,7 +305,7 @@ include ('connection.php');
 				// formdata.append('companyId',$scope.formAdata.company_id);
 				
 				//ledger
-				$scope.formAdata.ledger_name = " fsdgsdgfhjgfjfg";
+				// $scope.formAdata.ledger_name = " fsdgsdgfhjgfjfg";
 				// $scope.formAdata.alias = ' ddsafS ';
 				// $scope.formAdata.inventory_affected=' no ';
 				// $scope.formAdata.address1 =" sdx czS ";
@@ -326,10 +326,10 @@ include ('connection.php');
 				// $scope.formAdata.company_id='1';
 				// $scope.formAdata.client_id='1';
 				// $scope.formAdata.client_name='heelllloiul';
-				$scope.formAdata.outstandingLimit='2000';
-				$scope.formAdata.outstandingLimitType='credit';
+				// $scope.formAdata.outstandingLimit='2000';
+				// $scope.formAdata.outstandingLimitType='credit';
 				
-				formdata.append('ledgerName',$scope.formAdata.ledger_name);
+				// formdata.append('ledgerName',$scope.formAdata.ledger_name);
 				// formdata.append('alias',$scope.formAdata.alias);
 				// formdata.append('inventoryAffected',$scope.formAdata.inventory_affected);
 				// formdata.append('address1',$scope.formAdata.address1);
@@ -348,13 +348,13 @@ include ('connection.php');
 				// formdata.append('cityId',$scope.formAdata.city_id);
 				// formdata.append('ledgerGroupId',$scope.formAdata.ledger_grp_id);
 				// formdata.append('companyId',$scope.formAdata.company_id);
-				formdata.append('outstandingLimit',$scope.formAdata.outstandingLimit);
-				formdata.append('outstandingLimitType',$scope.formAdata.outstandingLimitType);
+				// formdata.append('outstandingLimit',$scope.formAdata.outstandingLimit);
+				// formdata.append('outstandingLimitType',$scope.formAdata.outstandingLimitType);
 				
 				//client
-				// $scope.formAdata.client_name = "frgdfsopopooooppp";
+				// $scope.formAdata.client_name = "frgdfsopopoooopppffd";
 				// $scope.formAdata.company_name = "abcd";
-				// $scope.formAdata.contact_no = "8758384084";
+				// $scope.formAdata.contact_no = "8758384089";
 				// $scope.formAdata.work_no = "87654534546";
 				// $scope.formAdata.email_id = "abcd@a.fc";
 				// $scope.formAdata.address1 ="";
@@ -362,6 +362,8 @@ include ('connection.php');
 				// $scope.formAdata.is_display = 'yes';
 				// $scope.formAdata.state_abb= 'IN-AG';
 				// $scope.formAdata.city_id= 1;
+				// $scope.formAdata.birthDate= '09-01-2016';
+				// $scope.formAdata.anniversaryDate= '04-02-2017';
 				
 				// formdata.append('clientName',$scope.formAdata.client_name);
 				// formdata.append('companyName',$scope.formAdata.company_name);
@@ -373,6 +375,8 @@ include ('connection.php');
 				// formdata.append('isDisplay',$scope.formAdata.is_display);
 				// formdata.append('stateAbb',$scope.formAdata.state_abb);
 				// formdata.append('cityId',$scope.formAdata.city_id);
+				// formdata.append('birthDate',$scope.formAdata.birthDate);
+				// formdata.append('anniversaryDate',$scope.formAdata.anniversaryDate);
 				
 				//User
 				// $scope.formAdata.user_name = "palak";
@@ -814,7 +818,7 @@ include ('connection.php');
 				// var invoiceId=7;
 				// var quotationId=3;
 				// var ledgerGrpId=9;
-				var ledgerId=102;
+				// var ledgerId=102;
 				// var jfId=52;
 				// var journalId=207;
 				// var saleId = 130;
@@ -889,7 +893,7 @@ include ('connection.php');
 				
 				// var url= "http://www.scerp1.com/clients/export"; //header:operation:pdf/excel and searching criteria..that send in client
 				// var url = "http://www.scerp1.com/clients/"+clientId;
-				// var url = "http://www.scerp1.com/clients";
+				var url = "http://www.scerp1.com/clients";
 				
 				// var url = "http://www.scerp1.com/documents/bill";
 				// var url="http://www.scerp1.com/products/inward"; 
@@ -903,7 +907,7 @@ include ('connection.php');
 				
 				// var url="http://www.scerp1.com/accounting/ledgers/"+ledgerId+"/transactions";
 				// var url="http://www.scerp1.com/accounting/ledgers/company/"+companyId;
-				var url="http://www.scerp1.com/accounting/ledgers/"+ledgerId;
+				// var url="http://www.scerp1.com/accounting/ledgers/"+ledgerId;
 				// var url="http://www.scerp1.com/accounting/ledgers/ledgerGrp/"+ledgerGrpId;
 				// var url="http://www.scerp1.com/accounting/ledgers";
 				
@@ -946,8 +950,8 @@ include ('connection.php');
 				
 				$http({
                         url: url,
-                        // method: 'get',
-						 method: 'post',
+                        method: 'get',
+						 // method: 'post',
 						 // method: 'patch',
 						// enctype:'multipart/formdata',
 						 // _method: 'patch',
@@ -957,7 +961,7 @@ include ('connection.php');
 						processData: false,
 						
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
-                        headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372'},
+                        headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','operation':'specialDate'},
                         //,"saleId":131
 						// headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','clientName':'reemapatell','contactNo':'9998989899','emailId':'reemas@gmail.com','address':'address2','invoiceFromDate':'12-01-2017','invoiceNumber':'myCompany44','jobCardNumber':'2'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','salesType':'retail_sales','operation':'excel'},//

@@ -79,10 +79,11 @@ class BillService
 			$companyId = $billArray->getCompanyId();
 			$ClientId = $billArray->getClientId();
 			$salesType = $billArray->getSalesType();
+			$poNumber = $billArray->getPoNumber();
 			$jfId= $billArray->getJfId();
 			//data pass to the model object for insert
 			$billModel = new BillModel();
-			$status = $billModel->insertData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$jfId,$totalDiscounttype,$totalDiscount);
+			$status = $billModel->insertData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$jfId,$totalDiscounttype,$totalDiscount,$poNumber);
 			//get exception message
 			$exception = new ExceptionMessage();
 			$exceptionArray = $exception->messageArrays();
@@ -121,6 +122,7 @@ class BillService
 			$companyId = $billArray[count($billArray)-1]->getCompanyId();
 			$ClientId = $billArray[count($billArray)-1]->getClientId();
 			$salesType = $billArray[count($billArray)-1]->getSalesType();
+			$poNumber = $billArray[count($billArray)-1]->getPoNumber();
 			$jfId = $billArray[count($billArray)-1]->getJfId();
 			for($doc=0;$doc<(count($billArray)-1);$doc++)
 			{
@@ -129,7 +131,7 @@ class BillService
 			
 			//data pass to the model object for insert
 			$billModel = new BillModel();
-			$status = $billModel->insertAllData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray,$jfId,$totalDiscounttype,$totalDiscount);
+			$status = $billModel->insertAllData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray,$jfId,$totalDiscounttype,$totalDiscount,$poNumber);
 			//get exception message
 			$exception = new ExceptionMessage();
 			$exceptionArray = $exception->messageArrays();

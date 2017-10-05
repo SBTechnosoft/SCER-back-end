@@ -15,6 +15,9 @@ use ERP\Core\Shared\Properties\IsDisplayPropertyTrait;
 use ERP\Core\States\Properties\StateAbbPropertyTrait;
 use ERP\Core\Shared\Properties\KeyPropertyTrait;
 use ERP\Core\Cities\Properties\CityIdPropertyTrait;
+use ERP\Core\Clients\Properties\BirthDateTrait;
+use ERP\Core\Clients\Properties\AnniversaryDateTrait;
+use ERP\Core\Clients\Properties\OtherDateTrait;
 
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -35,4 +38,7 @@ class ClientPersistable
 	use WorkNoPropertyTrait;
 	use EmailIdPropertyTrait;
 	use ProfessionIdTrait;
+	use BirthDateTrait;
+	use AnniversaryDateTrait;
+	use OtherDateTrait;
 }
