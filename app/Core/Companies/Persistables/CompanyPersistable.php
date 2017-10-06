@@ -5,6 +5,7 @@ use ERP\Core\Shared\Properties\NamePropertyTrait;
 use ERP\Core\Companies\Properties\CompanyIdPropertyTrait;
 use ERP\Core\Companies\Properties\CompanyDispNamePropertyTrait;
 use ERP\Core\Companies\Properties\CompanyNamePropertyTrait;
+use ERP\Core\Companies\Properties\WebsiteNameTrait;
 use ERP\Core\Properties\Address1PropertyTrait;
 use ERP\Core\Properties\PincodePropertyTrait;
 use ERP\Core\Properties\Address2PropertyTrait;
@@ -60,4 +61,5 @@ class CompanyPersistable
 	use CustomerCarePropertyTrait;
 	use CessPropertyTrait;
 	use PrintTypePropertyTrait;
+	use WebsiteNameTrait;
 }

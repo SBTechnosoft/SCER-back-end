@@ -39,6 +39,7 @@ class ExceptionMessage
 		$msgArray['invalidGroupName'] = "Category-Name is invalid";
 		$msgArray['invalidBranchName'] = "Branch-Name is invalid";
 		$msgArray['invalidCompanyName'] = "Company-Name is invalid";
+		$msgArray['ExistCompanyName'] = "Company-Name is alredy exists";
 		$msgArray['invalidClientName'] = "Client-Name is invalid";
 		$msgArray['invalidEntryDate'] = "entry-date is invalid";
 		$msgArray['invalidDeliveryDate'] = "delivery-date is invalid";

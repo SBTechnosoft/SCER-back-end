@@ -68,13 +68,7 @@ class CompanyController extends BaseController implements ContainerInterface
 				$processor = new CompanyProcessor();
 				$companyPersistable = new CompanyPersistable();		
 				$companyService= new CompanyService();		
-						
 				$companyPersistable = $processor->createPersistable($this->request);
-				
-				//get exception message
-				$exception = new ExceptionMessage();
-				$fileSizeArray = $exception->messageArrays();
-				
 				if($companyPersistable[0][0]=='[')
 				{
 					return $companyPersistable;

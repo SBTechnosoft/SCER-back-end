@@ -72,7 +72,6 @@ class CompanyProcessor extends BaseProcessor
 		//trim an input 
 		$companyTransformer = new CompanyTransformer();
 		$tRequest = $companyTransformer->trimInsertData($this->request);
-		
 		//validation
 		$companyValidate = new CompanyValidate();
 		if($tRequest==1)
@@ -143,7 +142,8 @@ class CompanyProcessor extends BaseProcessor
 		}
 		else
 		{
-			return $validateResult;
+			//entered company-name is already exists..
+			return $msgArray['ExistCompanyName'];
 		}
 	}
 	

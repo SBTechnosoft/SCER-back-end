@@ -19,9 +19,11 @@ class CompanyTransformer
     {
 		$isDisplayFlag=0;
 		$isDefaultFlag=0;
+		$printFlag=0;
 		//data get from body
 		$companyName = $request->input('companyName'); 
 		$companyDispName = $request->input('companyDisplayName'); 
+		$websiteName = $request->input('websiteName');
 		$address1 = $request->input('address1'); 
 		$address2 = $request->input('address2'); 
 		$emailId = $request->input('emailId'); 
@@ -43,10 +45,10 @@ class CompanyTransformer
 		$printType = $request->input('printType'); 			
 		$stateAbb = $request->input('stateAbb'); 			
 		$cityId = $request->input('cityId');  
-		
 		//trim an input
 		$tCompanyName = trim($companyName);
 		$tCompanyDispName = trim($companyDispName);
+		$tWebsiteName = trim($websiteName);
 		$tAddress1 = trim($address1);
 		$tAddress2 = trim($address2);
 		$tEmailId = trim($emailId);
@@ -144,6 +146,7 @@ class CompanyTransformer
 			$data = array();
 			$data['company_name'] = $tCompanyName;
 			$data['company_display_name'] = $tCompanyDispName;
+			$data['website_name'] = $tWebsiteName;
 			$data['address1'] = $tAddress1;
 			$data['address2'] = $tAddress2;
 			$data['email_id'] = $tEmailId;
