@@ -887,7 +887,7 @@ include ('connection.php');
 				
 				// var url = "http://www.scerp1.com/accounting/bills/"+saleId;
 				// var url = "http://www.scerp1.com/accounting/bills/"+saleId+"/payment";
-				// var url = "http://www.scerp1.com/accounting/bills/draftBill";
+				// var url = "http://www.scerp1.com/accounting/bills/draft-bill";
 				// var url = "http://www.scerp1.com/accounting/bills";
 				// var url = "http://www.scerp1.com/accounting/bills/company/"+companyId;
 				

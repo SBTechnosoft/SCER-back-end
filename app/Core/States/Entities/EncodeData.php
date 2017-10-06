@@ -18,6 +18,7 @@ class EncodeData
 		$isDisplay= $decodedJson[0]['is_display'];
 		$stateAbb= $decodedJson[0]['state_abb'];
 		$stateName= $decodedJson[0]['state_name'];
+		$stateCode= $decodedJson[0]['state_code'];
 		
 		//date format conversion
 		$state = new State();
@@ -40,6 +41,7 @@ class EncodeData
 		$data['stateName'] = $stateName;
 		$data['stateAbb'] = $stateAbb;
 		$data['isDisplay'] = $isDisplay;
+		$data['stateCode'] = $stateCode;
 		$data['createdAt'] = $getCreatedDate;
 		$data['updatedAt'] = $getUpdatedDate;	
 		

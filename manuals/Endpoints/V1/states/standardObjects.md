@@ -4,6 +4,7 @@
                 "stateAbb": char,
                 "stateName": string,
 				"isDisplay": Enum,
+				"stateCode": int,
 				"createdAt" timestamp,
 				"updatedAt": datetime
                 
@@ -14,6 +15,7 @@
  			{
             	"stateName": string,
 				"isDisplay": Enum,
+				"stateCode": int,
 				"createdAt" timestamp,
 				"updatedAt": datetime,
 				"deletedAt":datetime	

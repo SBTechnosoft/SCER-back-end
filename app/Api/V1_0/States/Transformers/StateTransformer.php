@@ -19,10 +19,12 @@ class StateTransformer
 		$stateName = $request->input('stateName'); 
 		$stateAbb = $request->input('stateAbb'); 
 		$isDisplay = $request->input('isDisplay'); 
+		$stateCode = $request->input('stateCode'); 
 		//trim an input
 		$tStateName = trim($stateName);
 		$tStateAbb = trim($stateAbb);
 		$tIsDisplay = trim($isDisplay);
+		$tStateCode = trim($stateCode);
 		
 		$enumIsDispArray = array();
 		$isDispEnum = new IsDisplayEnum();
@@ -57,6 +59,7 @@ class StateTransformer
 			$data['state_name'] = $tStateName;
 			$data['state_abb'] = $tStateAbb;
 			$data['is_display'] = $tIsDisplay;
+			$data['state_code'] = $tStateCode;
 			return $data;
 		}
 	}

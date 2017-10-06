@@ -57,6 +57,7 @@ class StateProcessor extends BaseProcessor
 				$tStateAbb = $tRequest['state_abb'];
 				$tStateName = $tRequest['state_name'];
 				$tIsDisplay = $tRequest['is_display'];
+				$tStateCode = $tRequest['state_code'];
 				
 				//validation
 				$stateValidate = new StateValidate();

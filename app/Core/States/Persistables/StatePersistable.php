@@ -2,6 +2,7 @@
 namespace ERP\Core\States\Persistables;
 
 use ERP\Core\States\Properties\StateNamePropertyTrait;
+use ERP\Core\States\Properties\StateCodeTrait;
 use ERP\Core\Shared\Properties\IsDisplayPropertyTrait;
 use ERP\Core\States\Properties\StateAbbPropertyTrait;
 use ERP\Core\Shared\Properties\NamePropertyTrait;
@@ -16,4 +17,5 @@ class StatePersistable
     use StateAbbPropertyTrait;
     use NamePropertyTrait;
     use KeyPropertyTrait;
+    use StateCodeTrait;
 }

@@ -23,6 +23,7 @@ class EncodeAllData
 			$stateName[$decodedData] = $decodedJson[$decodedData]['state_name'];
 			$stateAbb[$decodedData] = $decodedJson[$decodedData]['state_abb'];
 			$isDisplay[$decodedData] = $decodedJson[$decodedData]['is_display'];
+			$stateCode[$decodedData] = $decodedJson[$decodedData]['state_code'];
 			
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
@@ -47,6 +48,7 @@ class EncodeAllData
 				'stateName' => $stateName[$jsonData],
 				'stateAbb' =>$stateAbb[$jsonData],
 				'isDisplay' => $isDisplay[$jsonData],
+				'stateCode' => $stateCode[$jsonData],
 				'createdAt' => $getCreatedDate[$jsonData],
 				'updatedAt' =>$getUpdatedDate[$jsonData]
 				

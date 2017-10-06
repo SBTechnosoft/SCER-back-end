@@ -115,6 +115,7 @@ class StateModel extends Model
 		$raw = DB::connection($databaseName)->select("select 
 		state_abb,
 		state_name,
+		state_code,
 		is_display,
 		created_at,
 		updated_at
@@ -151,6 +152,7 @@ class StateModel extends Model
 		$raw = DB::connection($databaseName)->select("select 
 		state_abb,
 		state_name,
+		state_code,
 		is_display,
 		created_at,
 		updated_at
