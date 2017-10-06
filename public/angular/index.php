@@ -159,48 +159,48 @@ include ('connection.php');
 				// formdata.append('companyId',$scope.formAdata.company_id);
 				
 				//company
-				// $scope.formAdata.company_name = "reema2232323222222222222222222222222222222222222";
-				// $scope.formAdata.company_name = " Swaminarayan Cycle Store"; //0-9 not allow(error:allow)
-				// $scope.formAdata.company_display_name = " SCS ";
-				// $scope.formAdata.company_name = " abfcgfggfdldddhvh";
-				// $scope.formAdata.address1 =" address";
-				// $scope.formAdata.address2 = " address2 ";
-				// $scope.formAdata.pincode = 311411;
-				// $scope.formAdata.pan= ' qqqas1122a ';
-				// $scope.formAdata.tin= ' 42aa3dgg778 ';
-				// $scope.formAdata.vat_no= ' aadgg78w1a0 ';
-				// $scope.formAdata.sgst= ' aadgg78w1a3 ';
-				// $scope.formAdata.cgst= ' aadgg78w1a4 ';
-				// $scope.formAdata.service_tax_no = ' 71j0rg778a22b01 ';
-				// $scope.formAdata.basic_currency_symbol= " ALR ";
-				// $scope.formAdata.formal_name = " qgfrd-&_().\'frtgfrta ";
-				// $scope.formAdata.no_of_decimal_points ='4'; 
-				// $scope.formAdata.currency_symbol = ' prefix ';
-				// $scope.formAdata.is_display = ' no ';
-				// $scope.formAdata.is_default = ' ok ';
-				// $scope.formAdata.state_abb= ' IN-AN ';
-				// $scope.formAdata.city_id= 1;
+				$scope.formAdata.company_name = "xfdsafsdfsdgsdg";
+				$scope.formAdata.company_name = " Swaminarayan Cycle Store"; //0-9 not allow(error:allow)
+				$scope.formAdata.company_display_name = " SCS ";
+				$scope.formAdata.company_name = " abfcgfggfdldddhvh";
+				$scope.formAdata.address1 =" address";
+				$scope.formAdata.address2 = " address2 ";
+				$scope.formAdata.pincode = 311411;
+				$scope.formAdata.pan= ' qqqas1122a ';
+				$scope.formAdata.tin= ' 42aa3dgg778 ';
+				$scope.formAdata.vat_no= ' aadgg78w1a0 ';
+				$scope.formAdata.sgst= ' aadgg78w1a3 ';
+				$scope.formAdata.cgst= ' aadgg78w1a4 ';
+				$scope.formAdata.service_tax_no = ' 71j0rg778a22b01 ';
+				$scope.formAdata.basic_currency_symbol= " ALR ";
+				$scope.formAdata.formal_name = " qgfrd-&_().\'frtgfrta ";
+				$scope.formAdata.no_of_decimal_points ='4'; 
+				$scope.formAdata.currency_symbol = ' prefix ';
+				$scope.formAdata.is_display = ' no ';
+				$scope.formAdata.is_default = ' ok ';
+				$scope.formAdata.state_abb= ' IN-AN ';
+				$scope.formAdata.city_id= 1;
 				
 				
-				// formdata.append('companyDisplayName',$scope.formAdata.company_display_name);
-				// formdata.append('companyName',$scope.formAdata.company_name);
-				// formdata.append('address1',$scope.formAdata.address1);
-				// formdata.append('address2',$scope.formAdata.address2);
-				// formdata.append('pincode',$scope.formAdata.pincode);
-				// formdata.append('pan',$scope.formAdata.pan);
-				// formdata.append('tin',$scope.formAdata.tin);
-				// formdata.append('vatNo',$scope.formAdata.vat_no);
-				// formdata.append('sgst',$scope.formAdata.sgst);
-				// formdata.append('cgst',$scope.formAdata.cgst);
-				// formdata.append('serviceTaxNo',$scope.formAdata.service_tax_no);
-				// formdata.append('basicCurrencySymbol',$scope.formAdata.basic_currency_symbol);
-				// formdata.append('formalName',$scope.formAdata.formal_name);
-				// formdata.append('noOfDecimalPoints',$scope.formAdata.no_of_decimal_points);
-				// formdata.append('currencySymbol',$scope.formAdata.currency_symbol);
-				// formdata.append('isDisplay',$scope.formAdata.is_display);
-				// formdata.append('isDefault',$scope.formAdata.is_default);
-				// formdata.append('stateAbb',$scope.formAdata.state_abb);
-				// formdata.append('cityId',$scope.formAdata.city_id);
+				formdata.append('companyDisplayName',$scope.formAdata.company_display_name);
+				formdata.append('companyName',$scope.formAdata.company_name);
+				formdata.append('address1',$scope.formAdata.address1);
+				formdata.append('address2',$scope.formAdata.address2);
+				formdata.append('pincode',$scope.formAdata.pincode);
+				formdata.append('pan',$scope.formAdata.pan);
+				formdata.append('tin',$scope.formAdata.tin);
+				formdata.append('vatNo',$scope.formAdata.vat_no);
+				formdata.append('sgst',$scope.formAdata.sgst);
+				formdata.append('cgst',$scope.formAdata.cgst);
+				formdata.append('serviceTaxNo',$scope.formAdata.service_tax_no);
+				formdata.append('basicCurrencySymbol',$scope.formAdata.basic_currency_symbol);
+				formdata.append('formalName',$scope.formAdata.formal_name);
+				formdata.append('noOfDecimalPoints',$scope.formAdata.no_of_decimal_points);
+				formdata.append('currencySymbol',$scope.formAdata.currency_symbol);
+				formdata.append('isDisplay',$scope.formAdata.is_display);
+				formdata.append('isDefault',$scope.formAdata.is_default);
+				formdata.append('stateAbb',$scope.formAdata.state_abb);
+				formdata.append('cityId',$scope.formAdata.city_id);
 				
 				//productCategory
 				// $scope.formAdata.productCatName = "abcd";
@@ -893,7 +893,7 @@ include ('connection.php');
 				
 				// var url= "http://www.scerp1.com/clients/export"; //header:operation:pdf/excel and searching criteria..that send in client
 				// var url = "http://www.scerp1.com/clients/"+clientId;
-				var url = "http://www.scerp1.com/clients";
+				// var url = "http://www.scerp1.com/clients";
 				
 				// var url = "http://www.scerp1.com/documents/bill";
 				// var url="http://www.scerp1.com/products/inward"; 
@@ -929,7 +929,7 @@ include ('connection.php');
 				// var url="http://www.scerp1.com/settings/templates/company/"+companyId;
 				// var url="http://www.scerp1.com/settings/templates";
 				// var url="http://www.scerp1.com/companies/"+companyId;
-				// var url="http://www.scerp1.com/companies";	
+				var url="http://www.scerp1.com/companies";	
 				// var url="http://www.scerp1.com/branches";	
 				 // var url="http://www.scerp1.com/branches/"+branchId;
 				// var url="http://www.scerp1.com/branches/company/"+companyId;
@@ -950,8 +950,8 @@ include ('connection.php');
 				
 				$http({
                         url: url,
-                        method: 'get',
-						 // method: 'post',
+                        // method: 'get',
+						 method: 'post',
 						 // method: 'patch',
 						// enctype:'multipart/formdata',
 						 // _method: 'patch',
@@ -961,7 +961,7 @@ include ('connection.php');
 						processData: false,
 						
                         // headers: {'Content-Type': undefined,'fromDate':'2-10-2016','toDate':'30-12-2016','type':'sales'},
-                        headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','operation':'specialDate'},
+                        headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372'},
                         //,"saleId":131
 						// headers: {'Content-Type': undefined,'authenticationToken':'eb22240d835fc40bfa6eb0f203d89372','clientName':'reemapatell','contactNo':'9998989899','emailId':'reemas@gmail.com','address':'address2','invoiceFromDate':'12-01-2017','invoiceNumber':'myCompany44','jobCardNumber':'2'},
                         // headers: {'Content-Type': undefined,'authenticationToken':'b3315489a0b0cfdba014cf56a5deaeb6','salesType':'retail_sales','operation':'excel'},//

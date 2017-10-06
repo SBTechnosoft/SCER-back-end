@@ -4,6 +4,7 @@
                 "companyId": int,
                 "companyName": string,
 				"companyDisplayName": string,
+				"websiteName": string,
                 "address1": string,
                 "address2": string,
 				"emailId":string,
@@ -50,6 +51,7 @@
          {
             "companyName": string,
 			"companyDisplayName": string,
+			"websiteName": string,
 			"address1": string,
 			"address2": string,
 			"emailId":string,
