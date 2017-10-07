@@ -72,7 +72,7 @@ class EncodeData extends ClientService
 			$bill->setUpdated_at($convertedUpdatedDate);
 			$getUpdatedDate = $bill->getUpdated_at();
 		}
-		if(strcmp($entryDate,'0000-00-00 00:00:00')==0)
+		if(strcmp($entryDate,'0000-00-00')==0)
 		{
 			$getEntryDate = "00-00-0000";
 		}

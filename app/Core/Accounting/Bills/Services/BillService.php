@@ -56,6 +56,7 @@ class BillService
 		$keyName = array();
 		$funcName = array();
 		$billArray = func_get_arg(0);
+		$requestInput = func_get_arg(1);
 		
 		//only data insertion
 		if(is_object($billArray))
@@ -83,7 +84,7 @@ class BillService
 			$jfId= $billArray->getJfId();
 			//data pass to the model object for insert
 			$billModel = new BillModel();
-			$status = $billModel->insertData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$jfId,$totalDiscounttype,$totalDiscount,$poNumber);
+			$status = $billModel->insertData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$jfId,$totalDiscounttype,$totalDiscount,$poNumber,$requestInput);
 			//get exception message
 			$exception = new ExceptionMessage();
 			$exceptionArray = $exception->messageArrays();
@@ -131,7 +132,7 @@ class BillService
 			
 			//data pass to the model object for insert
 			$billModel = new BillModel();
-			$status = $billModel->insertAllData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray,$jfId,$totalDiscounttype,$totalDiscount,$poNumber);
+			$status = $billModel->insertAllData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray,$jfId,$totalDiscounttype,$totalDiscount,$poNumber,$requestInput);
 			//get exception message
 			$exception = new ExceptionMessage();
 			$exceptionArray = $exception->messageArrays();
@@ -183,15 +184,15 @@ class BillService
      * @param BillPersistable $persistable
      * @return status/error message
      */
-	public function getDraftData()
+	public function getDraftData($companyId)
 	{
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		//data pass to the model object for getData
 		$billModel = new BillModel();
-		$billResult = $billModel->getBillDraftData();
-		if(strcmp($billResult,$exceptionArray['500'])==0)
+		$billResult = $billModel->getBillDraftData($companyId);
+		if(strcmp($billResult,$exceptionArray['204'])==0)
 		{
 			return $billResult;
 		}

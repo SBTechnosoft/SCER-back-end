@@ -28,6 +28,11 @@ class LedgerArray
 		$ledgerGeneralArray[14] = "whole_sales";
 		$ledgerGeneralArray[15] = "card";
 		$ledgerGeneralArray[16] = "purchase_tax";
+		$ledgerGeneralArray[17] = "neft";
+		$ledgerGeneralArray[18] = "rtgs";
+		$ledgerGeneralArray[19] = "imps";
+		$ledgerGeneralArray[20] = "nach";
+		$ledgerGeneralArray[21] = "ach";
 		return $ledgerGeneralArray;
 	}
 	
@@ -62,6 +67,11 @@ class LedgerArray
 		$ledgerGeneralArray[14] = 28;
 		$ledgerGeneralArray[15] = 9;
 		$ledgerGeneralArray[16] = 26;
+		$ledgerGeneralArray[17] = 9;
+		$ledgerGeneralArray[18] = 9;
+		$ledgerGeneralArray[19] = 9;
+		$ledgerGeneralArray[20] = 9;
+		$ledgerGeneralArray[21] = 9;
 		return $ledgerGeneralArray;
 	}
 	

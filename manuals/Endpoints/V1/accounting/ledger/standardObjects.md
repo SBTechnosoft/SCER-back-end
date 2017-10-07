@@ -31,10 +31,10 @@
 				},
 				"outstandingLimit":decimal,
 				"outstandingLimitType":Enum,
-                openingBalance:decimal,
-				openingBalanceType:Enum,
-				currentBalance:decimal,
-				currentBalanceType:Enum
+                "openingBalance":decimal,
+				"openingBalanceType":Enum,
+				"currentBalance":decimal,
+				"currentBalanceType":Enum
 			}
             
 ##### Standard Ledger Persistable Object

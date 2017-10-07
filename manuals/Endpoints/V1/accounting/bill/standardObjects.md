@@ -48,7 +48,8 @@
 ##### Standard Bill Persistable Object
 			{
             	"companyId":String,
-                "entryDate":date,
+				"isDraft":int,
+				"entryDate":date,
 				"contactNo":string,
 				"emailId":string,
 				"companyName":string,

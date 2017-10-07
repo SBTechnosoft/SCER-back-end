@@ -73,7 +73,7 @@ class BillTransformer
 		$tGrandTotal = $this->checkValue(trim($billArrayData['grandTotal']));
 		$tAdvance = $this->checkValue(trim($billArrayData['advance']));
 		$tBalance = $this->checkValue(trim($billArrayData['balance']));
-		$tPaymentMode = $trim($billArrayData['paymentMode']);
+		$tPaymentMode = trim($billArrayData['paymentMode']);
 		if(strcmp($tPaymentMode,$paymentModeArray['bankPayment'])==0 || 
 			strcmp($tPaymentMode,$paymentModeArray['neftPayment'])==0 ||
 			strcmp($tPaymentMode,$paymentModeArray['rtgsPayment'])==0 ||

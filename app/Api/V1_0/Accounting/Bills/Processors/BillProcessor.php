@@ -25,7 +25,6 @@ use ERP\Core\Clients\Entities\ClientArray;
 use ERP\Core\Accounting\Ledgers\Entities\LedgerArray;
 use ERP\Model\Accounting\Journals\JournalModel;
 use ERP\Core\Accounting\Journals\Validations\BuisnessLogic;
-use ERP\Core\Accounting\Journals\Entities\AmountTypeEnum;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -54,7 +53,6 @@ class BillProcessor extends BaseProcessor
 		//get exception message
 		$exception = new ExceptionMessage();
 		$msgArray = $exception->messageArrays();
-
 		//get constant variables array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();	
@@ -235,10 +233,28 @@ class BillProcessor extends BaseProcessor
 			}
 		}
 		$paymentMode = $tRequest['payment_mode'];
-		$ledgerResult = $ledgerModel->getLedgerId($tRequest['company_id'],$paymentMode);
-		if(is_array(json_decode($ledgerResult)))
+		if(strcmp($paymentMode,$constantArray['credit'])==0)
 		{
-			$paymentLedgerId = json_decode($ledgerResult)[0]->ledger_id;
+			if($tRequest['total']!=$tRequest['advance'])
+			{
+				$ledgerResult = $ledgerModel->getLedgerId($tRequest['company_id'],$constantArray['cashLedger']);
+				if(is_array(json_decode($ledgerResult)))
+				{
+					$paymentLedgerId = json_decode($ledgerResult)[0]->ledger_id;
+				}
+			}
+			else
+			{
+				return $msgArray['paymentMode'];
+			}
+		}
+		else
+		{
+			$ledgerResult = $ledgerModel->getLedgerId($tRequest['company_id'],$paymentMode);
+			if(is_array(json_decode($ledgerResult)))
+			{
+				$paymentLedgerId = json_decode($ledgerResult)[0]->ledger_id;
+			}
 		}
 		// get jf_id
 		$journalController = new JournalController(new Container());
@@ -1087,12 +1103,30 @@ class BillProcessor extends BaseProcessor
 			else
 			{
 				$paymentMode = $billData[0]->payment_mode;
-			}		
-			$ledgerResult = $ledgerModel->getLedgerId($billData[0]->company_id,$paymentMode);
-			if(is_array(json_decode($ledgerResult)))
+			}
+			if(strcmp($paymentMode,$constantArray['credit'])==0)
 			{
-				$paymentLedgerId = json_decode($ledgerResult)[0]->ledger_id;
-			}		
+				if($billTrimData['total']!=$billTrimData['advance'])
+				{
+					$ledgerResult = $ledgerModel->getLedgerId($billData[0]->company_id,$constantArray['cashLedger']);
+					if(is_array(json_decode($ledgerResult)))
+					{
+						$paymentLedgerId = json_decode($ledgerResult)[0]->ledger_id;
+					}
+				}
+				else
+				{
+					return $msgArray['paymentMode'];
+				}
+			}
+			else
+			{
+				$ledgerResult = $ledgerModel->getLedgerId($billData[0]->company_id,$paymentMode);
+				if(is_array(json_decode($ledgerResult)))
+				{
+					$paymentLedgerId = json_decode($ledgerResult)[0]->ledger_id;
+				}
+			}
 			//get jf_id
 			$journalMethod=$constantArray['getMethod'];
 			$journalPath=$constantArray['journalUrl'];

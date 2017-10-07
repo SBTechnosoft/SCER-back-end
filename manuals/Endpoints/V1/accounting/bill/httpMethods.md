@@ -79,7 +79,7 @@
                 ... Standard Bill Object
             }
 			
-##### `GET /accounting/bills/draftBill`
+##### `GET /accounting/bills/draftBill/{companyId}`
 + Header
 	- Authentication Token
 + Error Message

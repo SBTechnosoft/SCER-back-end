@@ -4,6 +4,7 @@ namespace ERP\Api\V1_0\Clients\Transformers;
 use Illuminate\Http\Request;
 use ERP\Http\Requests;
 use ERP\Entities\EnumClasses\IsDisplayEnum;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -127,6 +128,8 @@ class ClientTransformer
      */
 	public function trimUpdateData()
 	{
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
 		$tClientArray = array();
 		$clientValue;
 		$keyValue = func_get_arg(0);
@@ -147,6 +150,18 @@ class ClientTransformer
 		$clientValue = func_get_arg(1);
 		for($data=0;$data<count($clientValue);$data++)
 		{
+			if(strcmp($convertedValue,"birth_date")==0)
+			{
+				$transformEntryDate=trim($clientValue);
+				$splitedDate = explode("-",$transformEntryDate);
+				$clientValue = $splitedDate[2]."-".$splitedDate[1]."-".$splitedDate[0];
+			}
+			if(strcmp($convertedValue,"anniversary_date")==0)
+			{
+				$transformAniDate=trim($clientValue);
+				$splitedDate = explode("-",$transformAniDate);
+				$clientValue = $splitedDate[2]."-".$splitedDate[1]."-".$splitedDate[0];
+			}
 			$tClientArray[$data]= array($convertedValue=> trim($clientValue));
 			$clientEnumArray = array_keys($tClientArray[$data])[0];
 		}

@@ -87,7 +87,7 @@ class BillController extends BaseController implements ContainerInterface
 					if(is_array($billPersistable) || is_object($billPersistable))
 					{
 						$billService= new BillService();
-						$status = $billService->insert($billPersistable);
+						$status = $billService->insert($billPersistable,$this->request->input());
 						if(strcmp($status,$msgArray['500'])==0)
 						{
 							return $status;
@@ -332,7 +332,7 @@ class BillController extends BaseController implements ContainerInterface
 	 * @param  Request object[Request $request]
 	 * store data in database
 	*/
-	public function getDraftData(Request $request)
+	public function getDraftData(Request $request,$companyId)
 	{
 		//Authentication
 		$tokenAuthentication = new TokenAuthentication();
@@ -343,7 +343,7 @@ class BillController extends BaseController implements ContainerInterface
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
 			$billService= new BillService();
-			$status = $billService->getDraftData();
+			$status = $billService->getDraftData($companyId);
 			return $status;
 		}
 		else

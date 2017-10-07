@@ -159,6 +159,7 @@ class EncodeData extends ProductCategoryService
 			'companyId' => $getCompanyDetails['companyId'],	
 			'companyName' => $getCompanyDetails['companyName'],
 			'companyDisplayName' => $getCompanyDetails['companyDisplayName'],
+			'websiteName' => $getCompanyDetails['websiteName'],
 			'address1' => $getCompanyDetails['address1'],	
 			'address2' => $getCompanyDetails['address2'],	
 			'emailId' => $getCompanyDetails['emailId'],	

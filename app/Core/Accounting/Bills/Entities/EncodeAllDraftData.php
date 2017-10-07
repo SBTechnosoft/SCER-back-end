@@ -77,7 +77,7 @@ class EncodeAllDraftData extends ClientService
 				$bill->setUpdated_at($convertedUpdatedDate);
 				$getUpdatedDate[$decodedData] = $bill->getUpdated_at();
 			}
-			if(strcmp($entryDate[$decodedData],'0000-00-00 00:00:00')==0)
+			if(strcmp($entryDate[$decodedData],'0000-00-00')==0)
 			{
 				$getEntryDate[$decodedData] = "00-00-0000";
 			}

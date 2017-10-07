@@ -46,6 +46,7 @@ class ExceptionMessage
 		$msgArray['contact'] = "contact already exists";
 		$msgArray['emailExist'] = "email-address is not exist";
 		$msgArray['userLogin'] = "user is not logged-in";
+		$msgArray['paymentMode'] = "Enter the proper payment-mode";
 		return $msgArray;
 	}
 }

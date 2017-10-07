@@ -147,6 +147,7 @@ class EncodeProductTrnAllData extends ProductService
 					'companyId' => $getCompanyDetails[$jsonData]['companyId'],	
 					'companyName' => $getCompanyDetails[$jsonData]['companyName'],	
 					'companyDisplayName' => $getCompanyDetails[$jsonData]['companyDisplayName'],	
+					'websiteName' => $getCompanyDetails[$jsonData]['websiteName'],	
 					'address1' => $getCompanyDetails[$jsonData]['address1'],	
 					'address2'=> $getCompanyDetails[$jsonData]['address2'],	
 					'emailId'=> $getCompanyDetails[$jsonData]['emailId'],	

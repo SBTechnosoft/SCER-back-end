@@ -28,7 +28,7 @@ class BillModel extends Model
 	 * @param  array
 	 * returns the status
 	*/
-	public function insertAllData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray,$jfId,$totalDiscounttype,$totalDiscount,$poNumber)
+	public function insertAllData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray,$jfId,$totalDiscounttype,$totalDiscount,$poNumber,$requestInput)
 	{
 		//database selection
 		$database = "";
@@ -54,7 +54,14 @@ class BillModel extends Model
 		{
 			$getJobCardNumber = array();
 		}
-			
+		if(array_key_exists("isDraft",$requestInput))
+		{
+			//delete draft data
+			DB::beginTransaction();
+			$deleteSaleBillData = DB::connection($databaseName)->statement("delete 
+			from sales_bill 
+			where sale_id='".$requestInput['isDraft']."'");
+		}
 		//if job-card-number is exists then update bill data otherwise insert bill data
 		if(count($getJobCardNumber)==0)
 		{
@@ -245,7 +252,7 @@ class BillModel extends Model
 	 * @param  array
 	 * returns the status
 	*/
-	public function insertData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$jfId,$totalDiscounttype,$totalDiscount,$poNumber)
+	public function insertData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$jfId,$totalDiscounttype,$totalDiscount,$poNumber,$requestInput)
 	{
 		//database selection
 		$database = "";
@@ -431,24 +438,24 @@ class BillModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		
 		$inputData = func_get_arg(0);
-		$clientFlag=0;
-		$clientId=0;
-		if(array_key_exists('contactNo',$inputData))
-		{
-			if($inputData['contactNo']!=0 && $inputData['contactNo']!='')
-			{
-				//get client-id of this contact-no
-				//check client is exists by contact-number
-				$clientModel = new ClientModel();
-				$clientArrayData = $clientModel->getClientData($inputData['contactNo']);
-				$clientData = (json_decode($clientArrayData));
-				if(is_array($clientData) || is_object($clientData))
-				{
-					$clientFlag=1;
-					$clientId = $clientData->clientData[0]->client_id;
-				}
-			}
-		}
+		// $clientFlag=0;
+		// $clientId=0;
+		// if(array_key_exists('contactNo',$inputData))
+		// {
+			// if($inputData['contactNo']!=0 && $inputData['contactNo']!='')
+			// {
+				// get client-id of this contact-no
+				// check client is exists by contact-number
+				// $clientModel = new ClientModel();
+				// $clientArrayData = $clientModel->getClientData($inputData['contactNo']);
+				// $clientData = (json_decode($clientArrayData));
+				// if(is_array($clientData) || is_object($clientData))
+				// {
+					// $clientFlag=1;
+					// $clientId = $clientData->clientData[0]->client_id;
+				// }
+			// }
+		// }
 		$clientArray = new ClientArray();
 		$clientBillArrayData = $clientArray->getBillClientArrayData();
 		//splice data from trim array
@@ -459,14 +466,23 @@ class BillModel extends Model
 				unset($inputData[$clientBillArrayData[array_keys($clientBillArrayData)[$index]]]);
 			}
 		}
-		$inventoryDecodedData = json_encode($inputData['inventory']);
+		$inventoryArray = array();
+		$inventoryArray['inventory'] = $inputData['inventory'];
+		$inventoryDecodedData = json_encode($inventoryArray);
 		unset($inputData['inventory']);	
 		$inputDataCount = count($inputData);
 		$newInputArray = array();
 		$keyString='';
 		$valueString='';
+		
 		for($billData=0;$billData<$inputDataCount;$billData++)
 		{
+			if(strcmp(array_keys($inputData)[$billData],"entryDate")==0)
+			{
+				//entry-date conversion
+				$splitedEntryDate = explode("-",$inputData[array_keys($inputData)[$billData]]);
+				$inputData[array_keys($inputData)[$billData]] = $splitedEntryDate[2]."-".$splitedEntryDate[1]."-".$splitedEntryDate[0];
+			}
 			$conversion= preg_replace('/(?<!\ )[A-Z]/', '_$0', array_keys($inputData)[$billData]);
 			$lowerCase = strtolower($conversion);
 			// $newInputArray[$lowerCase] = $inputData[array_keys($inputData)[$billData]];
@@ -480,8 +496,8 @@ class BillModel extends Model
 		//insert dsale-bill draft data
 		DB::beginTransaction();
 		$raw = DB::connection($databaseName)->statement("insert into sales_bill
-		(".$keyString."product_array,client_id,is_draft)
-		values(".$valueString."'".$inventoryDecodedData."','".$clientId."','yes')");
+		(".$keyString."product_array,is_draft)
+		values(".$valueString."'".$inventoryDecodedData."','yes')");
 		DB::commit();
 		if($raw==1)
 		{
@@ -764,7 +780,7 @@ class BillModel extends Model
 	 * @param 
 	 * returns the exception-message/sales data
 	*/
-	public function getBillDraftData()
+	public function getBillDraftData($companyId)
 	{
 		//database selection
 		$database = "";
@@ -803,11 +819,11 @@ class BillModel extends Model
 		created_at,
 		updated_at 
 		from sales_bill 
-		where deleted_at='0000-00-00 00:00:00' and is_draft='yes'");
+		where deleted_at='0000-00-00 00:00:00' and is_draft='yes' and company_id='".$companyId."'");
 		DB::commit();
 		if(count($raw)==0)
 		{
-			return $exceptionArray['404']; 
+			return $exceptionArray['204']; 
 		}
 		else
 		{

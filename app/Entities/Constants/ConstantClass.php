@@ -63,6 +63,7 @@ class ConstantClass
 		$constantArray['ledgerGroupSundryDebitors']="32";
 		$constantArray['Flatdiscount']="flat";
 		$constantArray['operation']="pdf";
+		$constantArray['cashLedger']="cash";
 		
 		//from header data
 		$constantArray['sales']="sales";
@@ -86,6 +87,7 @@ class ConstantClass
 		$constantArray['isDisplay']="is_display";
 		$constantArray['isDisplayYes']="yes";
 		$constantArray['transactionDate']="transaction_date";
+		
 		
 		$constantArray['entry_date']="entry_date";
 		$constantArray['company_id']="company_id";
