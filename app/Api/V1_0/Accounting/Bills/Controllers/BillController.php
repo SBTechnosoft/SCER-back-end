@@ -302,32 +302,6 @@ class BillController extends BaseController implements ContainerInterface
 	}
 	
 	/**
-	 * update the specified resource 
-	 * @param  Request object[Request $request]
-	 * method calls the processor for creating persistable object & setting the data
-	*/
-	public function destroy(Request $request,$saleId)
-	{
-		//Authentication
-		$tokenAuthentication = new TokenAuthentication();
-		$authenticationResult = $tokenAuthentication->authenticate($request->header());
-		
-		// get constant array
-		$constantClass = new ConstantClass();
-		$constantArray = $constantClass->constantVariable();
-		if(strcmp($constantArray['success'],$authenticationResult)==0)
-		{
-			$billModel = new BillModel();
-			$deleteBillResult = $billModel->deleteBillData($saleId);
-			return $deleteBillResult;
-		}
-		else
-		{
-			return $authenticationResult;
-		}
-	}
-	
-	/**
 	 * get the specified resource 
 	 * @param  Request object[Request $request]
 	 * store data in database
@@ -369,8 +343,60 @@ class BillController extends BaseController implements ContainerInterface
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
 			$billModel = new BillModel();
-			$draftBillResult = $billModel->insertBillDraftData($request->input());
+			$draftBillResult = $billModel->insertBillDraftData($request);
 			return $draftBillResult;
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+	}
+	
+	/**
+	 * update the specified resource 
+	 * @param  Request object[Request $request]
+	 * method calls the processor for creating persistable object & setting the data
+	*/
+	public function destroy(Request $request,$saleId)
+	{
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		// get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$billModel = new BillModel();
+			$deleteBillResult = $billModel->deleteBillData($saleId);
+			return $deleteBillResult;
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+	}
+	
+	/**
+	 * update the specified resource 
+	 * @param  Request object[Request $request]
+	 * method calls the processor for creating persistable object & setting the data
+	*/
+	public function destroyDraftData(Request $request,$saleId)
+	{
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		// get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$billModel = new BillModel();
+			$deleteBillResult = $billModel->deleteBillDraftData($saleId);
+			return $deleteBillResult;
 		}
 		else
 		{

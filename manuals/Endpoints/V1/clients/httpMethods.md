@@ -53,7 +53,8 @@
 	- "emailId":"",
 	- "address":"",
 	- "professionId":""
-	- "operation":"specialDate"
+	- "operation":"birthDate"
+	- "operation":"anniversaryDate"
 + Error Message
 
 			{

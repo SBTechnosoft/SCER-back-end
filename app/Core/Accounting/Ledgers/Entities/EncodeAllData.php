@@ -35,6 +35,8 @@ class EncodeAllData extends StateService
 			$contactNo[$decodedData] = $decodedJson[$decodedData]['contact_no'];
 			$emailId[$decodedData] = $decodedJson[$decodedData]['email_id'];
 			$invoiceNumber[$decodedData] = $decodedJson[$decodedData]['invoice_number'];
+			$outstandingLimit[$decodedData] = $decodedJson[$decodedData]['outstanding_limit'];
+			$outstandingLimitType[$decodedData] = $decodedJson[$decodedData]['outstanding_limit_type'];
 			$panNo[$decodedData] = $decodedJson[$decodedData]['pan'];
 			$tinNo[$decodedData] = $decodedJson[$decodedData]['tin'];
 			$cgst[$decodedData] = $decodedJson[$decodedData]['cgst'];
@@ -72,6 +74,7 @@ class EncodeAllData extends StateService
 			//convert amount(number_format) into their company's selected decimal points
 			$openingBalance[$decodedData] = number_format($openingBalance[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
 			$currentBalance[$decodedData] = number_format($currentBalance[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
+			$outstandingLimit[$decodedData] = number_format($outstandingLimit[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
 				
 			//date format conversion
 			$convertedCreatedDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $createdAt[$decodedData])->format('d-m-Y');
@@ -102,6 +105,8 @@ class EncodeAllData extends StateService
 				'contactNo' => $contactNo[$jsonData],
 				'emailId' => $emailId[$jsonData],
 				'invoiceNumber' => $invoiceNumber[$jsonData],
+				'outstandingLimit' => $outstandingLimit[$jsonData],
+				'outstandingLimitType' => $outstandingLimitType[$jsonData],
 				'pan'=> $panNo[$jsonData],
 				'tin'=> $tinNo[$jsonData],
 				'cgst'=> $cgst[$jsonData],

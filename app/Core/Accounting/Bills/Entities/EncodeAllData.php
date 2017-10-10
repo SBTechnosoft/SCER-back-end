@@ -220,6 +220,8 @@ class EncodeAllData extends ClientService
 					'companyName' => $getCompanyDetails[$jsonData]['companyName'],	
 					'companyDisplayName' => $getCompanyDetails[$jsonData]['companyDisplayName'],	
 					'websiteName' => $getCompanyDetails[$jsonData]['websiteName'],	
+					'customerCare' => $getCompanyDetails[$jsonData]['customerCare'],	
+					'emailId' => $getCompanyDetails[$jsonData]['emailId'],	
 					'address1' => $getCompanyDetails[$jsonData]['address1'],	
 					'address2'=> $getCompanyDetails[$jsonData]['address2'],	
 					'pincode' => $getCompanyDetails[$jsonData]['pincode'],	

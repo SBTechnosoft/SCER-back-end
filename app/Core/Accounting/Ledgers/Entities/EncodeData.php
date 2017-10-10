@@ -28,6 +28,8 @@ class EncodeData extends StateService
 		$contactNo= $decodedJson['contact_no'];
 		$emailId= $decodedJson['email_id'];
 		$invoiceNumber = $decodedJson['invoice_number'];
+		$outstandingLimit = $decodedJson['outstanding_limit'];
+		$outstandingLimitType = $decodedJson['outstanding_limit_type'];
 		$panNo = $decodedJson['pan'];
 		$tinNo = $decodedJson['tin'];
 		$cgst= $decodedJson['cgst'];
@@ -77,6 +79,7 @@ class EncodeData extends StateService
 		//convert amount(number_format) into their company's selected decimal points
 		$openingBalance = number_format($openingBalance,$companyDetails['noOfDecimalPoints'],'.','');
 		$currentBalance = number_format($currentBalance,$companyDetails['noOfDecimalPoints'],'.','');
+		$outstandingLimit = number_format($outstandingLimit,$companyDetails['noOfDecimalPoints'],'.','');
 				
 		//set all data into json array
 		$data = array();
@@ -90,6 +93,8 @@ class EncodeData extends StateService
 		$data['contactNo'] = $contactNo;
 		$data['emailId'] = $emailId;
 		$data['invoiceNumber'] = $invoiceNumber;
+		$data['outstandingLimit'] = $outstandingLimit;
+		$data['outstandingLimitType'] = $outstandingLimitType;
 		$data['pan'] = $panNo;
 		$data['tin'] = $tinNo;
 		$data['cgst'] = $cgst;

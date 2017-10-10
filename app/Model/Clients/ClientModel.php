@@ -328,8 +328,10 @@ class ClientModel extends Model
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		$clientIdParam='';
+		$clientFlag=0;
 		if(array_key_exists('operation',$headerData))
 		{
+			$clientFlag=1;
 			DB::beginTransaction();		
 			$clientAllData = DB::connection($databaseName)->select("select 
 			client_id,
@@ -343,23 +345,40 @@ class ClientModel extends Model
 			{
 				$mytime = Carbon::now();
 				$currentDate = explode(' ',$mytime);
+				$splitedCurrentDate = explode('-',$currentDate[0]);
+				$finalDate = $splitedCurrentDate[1]."-".$splitedCurrentDate[2];
 				$totalClientData = count($clientAllData);
 				for($dateSearchIndex=0;$dateSearchIndex<$totalClientData;$dateSearchIndex++)
 				{
-					if(strcmp($clientAllData[$dateSearchIndex]->birth_date,$currentDate[0])==0 || 
-					   strcmp($clientAllData[$dateSearchIndex]->anniversary_date,$currentDate[0])==0 ||
-					   strcmp($clientAllData[$dateSearchIndex]->other_date,$currentDate[0])==0)
+					$splitedBirthDate = explode('-',$clientAllData[$dateSearchIndex]->birth_date);
+					$birthDate = $splitedBirthDate[1]."-".$splitedBirthDate[2];
+					$splitedAnniDate = explode('-',$clientAllData[$dateSearchIndex]->anniversary_date);
+					$anniDate = $splitedAnniDate[1]."-".$splitedAnniDate[2];
+					if(strcmp($birthDate,$finalDate)==0 &&
+						strcmp("birthDate",$headerData['operation'][0])==0) 
+					{
+						$clientIdParam = $clientIdParam." client_id =".$clientAllData[$dateSearchIndex]->client_id." OR";
+					}
+					if(strcmp($anniDate,$finalDate)==0 &&
+						strcmp("anniversaryDate",$headerData['operation'][0])==0) 
 					{
 						$clientIdParam = $clientIdParam." client_id =".$clientAllData[$dateSearchIndex]->client_id." OR";
 					}
 				}
 			}
 		}
-		if($clientIdParam!='')
+		if($clientFlag==1)
 		{
-			$clientIdParam = rtrim($clientIdParam,"OR");
-			$clientIdParam = $clientIdParam." and";
-			$queryParameter='';
+			if($clientIdParam!='')
+			{
+				$clientIdParam = rtrim($clientIdParam,"OR");
+				$clientIdParam = $clientIdParam." and";
+				$queryParameter='';
+			}
+			else
+			{
+				return $exceptionArray['204'];
+			}
 		}
 		DB::beginTransaction();		
 		$clientData = DB::connection($databaseName)->select("select 

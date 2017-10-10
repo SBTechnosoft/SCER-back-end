@@ -134,6 +134,8 @@ class EncodeAllDraftData extends ClientService
 					'companyId' => $getCompanyDetails[$jsonData]['companyId'],
 					'companyName' => $getCompanyDetails[$jsonData]['companyName'],	
 					'companyDisplayName' => $getCompanyDetails[$jsonData]['companyDisplayName'],	
+					'customerCare' => $getCompanyDetails[$jsonData]['customerCare'],	
+					'emailId' => $getCompanyDetails[$jsonData]['emailId'],	
 					'address1' => $getCompanyDetails[$jsonData]['address1'],	
 					'address2'=> $getCompanyDetails[$jsonData]['address2'],	
 					'pincode' => $getCompanyDetails[$jsonData]['pincode'],	

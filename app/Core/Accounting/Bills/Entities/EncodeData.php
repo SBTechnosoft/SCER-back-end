@@ -126,6 +126,8 @@ class EncodeData extends ClientService
 			'companyName' => $companyDetails['companyName'],	
 			'companyDisplayName' => $companyDetails['companyDisplayName'],	
 			'websiteName' => $companyDetails['websiteName'],	
+			'customerCare' => $companyDetails['customerCare'],	
+			'emailId' => $companyDetails['emailId'],	
 			'address1' => $companyDetails['address1'],	
 			'address2' => $companyDetails['address2'],	
 			'pincode' => $companyDetails['pincode'],

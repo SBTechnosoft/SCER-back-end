@@ -156,6 +156,8 @@ class EncodeTrnAllData extends LedgerService
 					'contactNo' => $ledgerDecodedJson[$jsonData]['contactNo'],
 					'emailId' => $ledgerDecodedJson[$jsonData]['emailId'],
 					'invoiceNumber' => $ledgerDecodedJson[$jsonData]['invoiceNumber'],
+					'outstandingLimit' => $ledgerDecodedJson[$jsonData]['outstandingLimit'],
+					'outstandingLimitType' => $ledgerDecodedJson[$jsonData]['outstandingLimitType'],
 					'pan' => $ledgerDecodedJson[$jsonData]['pan'],
 					'tin' => $ledgerDecodedJson[$jsonData]['tin'],
 					'cgst' => $ledgerDecodedJson[$jsonData]['cgst'],

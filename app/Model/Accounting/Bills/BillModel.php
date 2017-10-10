@@ -30,15 +30,14 @@ class BillModel extends Model
 	*/
 	public function insertAllData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray,$jfId,$totalDiscounttype,$totalDiscount,$poNumber,$requestInput)
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
-		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		
 		if($jobCardNumber!="")
 		{
 			//get job-card-number for checking job-card-number is exist or not
@@ -47,7 +46,7 @@ class BillModel extends Model
 			job_card_number 
 			from sales_bill 
 			where job_card_number='".$jobCardNumber."' and 
-			deleted_at='0000-00-00 00:00:00' and is_draft='no'");
+			deleted_at='0000-00-00 00:00:00' and is_draft='no' and is_salesorder='not'");
 			DB::commit();
 		}
 		else
@@ -56,39 +55,33 @@ class BillModel extends Model
 		}
 		if(array_key_exists("isDraft",$requestInput))
 		{
-			//delete draft data
 			DB::beginTransaction();
-			$deleteSaleBillData = DB::connection($databaseName)->statement("delete 
-			from sales_bill 
+			$raw = DB::connection($databaseName)->statement("update sales_bill set
+			product_array='".$productArray."',
+			payment_mode='".$paymentMode."',
+			invoice_number='".$invoiceNumber."',
+			job_card_number='".$jobCardNumber."',
+			bank_name='".$bankName."',
+			check_number='".$checkNumber."',
+			total='".$total."',
+			total_discounttype='".$totalDiscounttype."',
+			total_discount='".$totalDiscount."',
+			extra_charge='".$extraCharge."',
+			tax='".$tax."',
+			grand_total='".$grandTotal."',
+			advance='".$advance."',
+			balance='".$balance."',
+			po_number='".$poNumber."',
+			remark='".$remark."',
+			entry_date='".$entryDate."',
+			company_id='".$companyId."',
+			sales_type='".$salesType."',
+			client_id='".$ClientId."',
+			jf_id='".$jfId."',
+			updated_at='".$mytime."',
+			is_draft='no',
+			is_salesorder='not'
 			where sale_id='".$requestInput['isDraft']."'");
-		}
-		//if job-card-number is exists then update bill data otherwise insert bill data
-		if(count($getJobCardNumber)==0)
-		{
-			DB::beginTransaction();
-			$raw = DB::connection($databaseName)->statement("insert into sales_bill(
-			product_array,
-			payment_mode,
-			invoice_number,
-			job_card_number,
-			bank_name,
-			check_number,
-			total,
-			total_discounttype,
-			total_discount,
-			extra_charge,
-			tax,
-			grand_total,
-			advance,
-			balance,
-			po_number,
-			remark,
-			entry_date,
-			company_id,
-			sales_type,
-			client_id,
-			jf_id) 
-			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$poNumber."','".$remark."','".$entryDate."','".$companyId."','".$salesType."','".$ClientId."','".$jfId."')");
 			DB::commit();
 			
 			//update invoice-number
@@ -100,35 +93,73 @@ class BillModel extends Model
 		}
 		else
 		{
-			$mytime = Carbon\Carbon::now();
-			//update bill data
-			DB::beginTransaction();
-			$raw = DB::connection($databaseName)->statement("update 
-			sales_bill set 
-			product_array='".$productArray."',
-			payment_mode='".$paymentMode."',
-			job_card_number='".$jobCardNumber."',
-			bank_name='".$bankName."',
-			check_number='".$checkNumber."',
-			total='".$total."',
-			total_discounttype='".$totalDiscounttype."',
-			total_discount='".$totalDiscount."',
-			extra_total='".$extraCharge."',
-			tax='".$tax."',
-			grand_total='".$grandTotal."',
-			advance='".$advance."',
-			balance='".$balance."',
-			remark='".$remark."',
-			entry_date='".$entryDate."',
-			company_id='".$companyId."',
-			client_id='".$ClientId."',
-			sales_type='".$salesType."',
-			po_number='".$poNumber."',
-			jf_id='".$jfId."',
-			updated_at='".$mytime."' 
-			where job_card_number='".$jobCardNumber."' and
-			deleted_at='0000-00-00 00:00:00'");
-			DB::commit();
+			//if job-card-number is exists then update bill data otherwise insert bill data
+			if(count($getJobCardNumber)==0)
+			{
+				DB::beginTransaction();
+				$raw = DB::connection($databaseName)->statement("insert into sales_bill(
+				product_array,
+				payment_mode,
+				invoice_number,
+				job_card_number,
+				bank_name,
+				check_number,
+				total,
+				total_discounttype,
+				total_discount,
+				extra_charge,
+				tax,
+				grand_total,
+				advance,
+				balance,
+				po_number,
+				remark,
+				entry_date,
+				company_id,
+				sales_type,
+				client_id,
+				jf_id) 
+				values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$poNumber."','".$remark."','".$entryDate."','".$companyId."','".$salesType."','".$ClientId."','".$jfId."')");
+				DB::commit();
+				
+				//update invoice-number
+				$invoiceResult = $this->updateInvoiceNumber($companyId);
+				if(strcmp($invoiceResult,$exceptionArray['200'])!=0)
+				{
+					return $invoiceResult;
+				}
+			}
+			else
+			{
+				//update bill data
+				DB::beginTransaction();
+				$raw = DB::connection($databaseName)->statement("update 
+				sales_bill set 
+				product_array='".$productArray."',
+				payment_mode='".$paymentMode."',
+				job_card_number='".$jobCardNumber."',
+				bank_name='".$bankName."',
+				check_number='".$checkNumber."',
+				total='".$total."',
+				total_discounttype='".$totalDiscounttype."',
+				total_discount='".$totalDiscount."',
+				extra_total='".$extraCharge."',
+				tax='".$tax."',
+				grand_total='".$grandTotal."',
+				advance='".$advance."',
+				balance='".$balance."',
+				remark='".$remark."',
+				entry_date='".$entryDate."',
+				company_id='".$companyId."',
+				client_id='".$ClientId."',
+				sales_type='".$salesType."',
+				po_number='".$poNumber."',
+				jf_id='".$jfId."',
+				updated_at='".$mytime."' 
+				where job_card_number='".$jobCardNumber."' and
+				deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+			}
 		}
 		if($raw==1)
 		{
@@ -136,7 +167,7 @@ class BillModel extends Model
 			DB::beginTransaction();
 			$saleId = DB::connection($databaseName)->select("SELECT 
 			max(sale_id) sale_id
-			FROM sales_bill where deleted_at='0000-00-00 00:00:00' and is_draft='no'");
+			FROM sales_bill where deleted_at='0000-00-00 00:00:00' and is_draft='no' and is_salesorder='not'");
 			DB::commit();
 			
 			DB::beginTransaction();
@@ -224,7 +255,7 @@ class BillModel extends Model
 					jf_id,
 					created_at,
 					updated_at 
-					from sales_bill where sale_id=(select MAX(sale_id) as sale_id from sales_bill) and deleted_at='0000-00-00 00:00:00' and is_draft='no'"); 
+					from sales_bill where sale_id=(select MAX(sale_id) as sale_id from sales_bill) and deleted_at='0000-00-00 00:00:00' and is_draft='no' and is_salesorder='not'"); 
 					DB::commit();
 					if(count($billResult)==1)
 					{
@@ -254,15 +285,14 @@ class BillModel extends Model
 	*/
 	public function insertData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$jfId,$totalDiscounttype,$totalDiscount,$poNumber,$requestInput)
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
-		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		
 		if($jobCardNumber!="")
 		{
 			//get job-card-number for checking job-card-number is exist or not
@@ -271,59 +301,20 @@ class BillModel extends Model
 			job_card_number 
 			from sales_bill 
 			where job_card_number='".$jobCardNumber."' and 
-			deleted_at='0000-00-00 00:00:00' and is_draft='no'");
+			deleted_at='0000-00-00 00:00:00' and is_draft='no' and is_salesorder='not'");
 			DB::commit();
 		}
 		else
 		{
 			$getJobCardNumber = array();
 		}
-		//if job-card-number is exists then update bill data otherwise insert bill data
-		if(count($getJobCardNumber)==0)
+		if(array_key_exists("isDraft",$requestInput))
 		{
-			//insert bill data
 			DB::beginTransaction();
-			$raw = DB::connection($databaseName)->statement("insert into sales_bill(
-			product_array,
-			payment_mode,
-			invoice_number,
-			job_card_number,
-			bank_name,
-			check_number,
-			total,
-			total_discounttype,
-			total_discount,
-			extra_charge,
-			tax,
-			grand_total,
-			advance,
-			balance,
-			po_number,
-			remark,
-			entry_date,
-			company_id,
-			client_id,
-			sales_type,
-			jf_id) 
-			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$poNumber."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$salesType."','".$jfId."')");
-			DB::commit();
-			
-			//update invoice-number
-			$invoiceResult = $this->updateInvoiceNumber($companyId);
-			if(strcmp($invoiceResult,$exceptionArray['200'])!=0)
-			{
-				return $invoiceResult;
-			}
-		}
-		else
-		{
-			$mytime = Carbon\Carbon::now();
-			//update bill data
-			DB::beginTransaction();
-			$raw = DB::connection($databaseName)->statement("update 
-			sales_bill set 
+			$raw = DB::connection($databaseName)->statement("update sales_bill set
 			product_array='".$productArray."',
 			payment_mode='".$paymentMode."',
+			invoice_number='".$invoiceNumber."',
 			job_card_number='".$jobCardNumber."',
 			bank_name='".$bankName."',
 			check_number='".$checkNumber."',
@@ -339,20 +330,99 @@ class BillModel extends Model
 			remark='".$remark."',
 			entry_date='".$entryDate."',
 			company_id='".$companyId."',
-			client_id='".$ClientId."',
 			sales_type='".$salesType."',
+			client_id='".$ClientId."',
 			jf_id='".$jfId."',
-			updated_at='".$mytime."' 
-			where job_card_number='".$jobCardNumber."' and 
-			deleted_at='0000-00-00 00:00:00'");
+			updated_at='".$mytime."',
+			is_draft='no',
+			is_salesorder='not'
+			where sale_id='".$requestInput['isDraft']."'");
 			DB::commit();
+			
+			//update invoice-number
+			$invoiceResult = $this->updateInvoiceNumber($companyId);
+			if(strcmp($invoiceResult,$exceptionArray['200'])!=0)
+			{
+				return $invoiceResult;
+			}
+		}
+		else
+		{
+			//if job-card-number is exists then update bill data otherwise insert bill data
+			if(count($getJobCardNumber)==0)
+			{
+				//insert bill data
+				DB::beginTransaction();
+				$raw = DB::connection($databaseName)->statement("insert into sales_bill(
+				product_array,
+				payment_mode,
+				invoice_number,
+				job_card_number,
+				bank_name,
+				check_number,
+				total,
+				total_discounttype,
+				total_discount,
+				extra_charge,
+				tax,
+				grand_total,
+				advance,
+				balance,
+				po_number,
+				remark,
+				entry_date,
+				company_id,
+				client_id,
+				sales_type,
+				jf_id) 
+				values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$poNumber."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$salesType."','".$jfId."')");
+				DB::commit();
+				
+				//update invoice-number
+				$invoiceResult = $this->updateInvoiceNumber($companyId);
+				if(strcmp($invoiceResult,$exceptionArray['200'])!=0)
+				{
+					return $invoiceResult;
+				}
+			}
+			else
+			{
+				//update bill data
+				DB::beginTransaction();
+				$raw = DB::connection($databaseName)->statement("update 
+				sales_bill set 
+				product_array='".$productArray."',
+				payment_mode='".$paymentMode."',
+				job_card_number='".$jobCardNumber."',
+				bank_name='".$bankName."',
+				check_number='".$checkNumber."',
+				total='".$total."',
+				total_discounttype='".$totalDiscounttype."',
+				total_discount='".$totalDiscount."',
+				extra_charge='".$extraCharge."',
+				tax='".$tax."',
+				grand_total='".$grandTotal."',
+				advance='".$advance."',
+				balance='".$balance."',
+				po_number='".$poNumber."',
+				remark='".$remark."',
+				entry_date='".$entryDate."',
+				company_id='".$companyId."',
+				client_id='".$ClientId."',
+				sales_type='".$salesType."',
+				jf_id='".$jfId."',
+				updated_at='".$mytime."' 
+				where job_card_number='".$jobCardNumber."' and 
+				deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+			}
 		}
 		if($raw==1)
 		{
 			DB::beginTransaction();
 			$saleId = DB::connection($databaseName)->select("SELECT 
 			max(sale_id) sale_id
-			FROM sales_bill where deleted_at='0000-00-00 00:00:00' and is_draft='no'");
+			FROM sales_bill where deleted_at='0000-00-00 00:00:00' and is_draft='no' and is_salesorder='not'");
 			DB::commit();
 			
 			//insertion in sale bill transaction
@@ -409,7 +479,7 @@ class BillModel extends Model
 			jf_id,
 			created_at,
 			updated_at 
-			from sales_bill where sale_id=(select MAX(sale_id) as sale_id from sales_bill) and deleted_at='0000-00-00 00:00:00' and is_draft='no'"); 
+			from sales_bill where sale_id=(select MAX(sale_id) as sale_id from sales_bill) and deleted_at='0000-00-00 00:00:00' and is_draft='no' and is_salesorder='not'"); 
 			DB::commit();
 			if(count($billResult)==1)
 			{
@@ -431,31 +501,14 @@ class BillModel extends Model
 	 * @param  request-input array
 	 * returns the exception-message/status
 	*/
-	public function insertBillDraftData()
+	public function insertBillDraftData(Request $request)
 	{
+		$mytime = Carbon\Carbon::now();
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
-		$inputData = func_get_arg(0);
-		// $clientFlag=0;
-		// $clientId=0;
-		// if(array_key_exists('contactNo',$inputData))
-		// {
-			// if($inputData['contactNo']!=0 && $inputData['contactNo']!='')
-			// {
-				// get client-id of this contact-no
-				// check client is exists by contact-number
-				// $clientModel = new ClientModel();
-				// $clientArrayData = $clientModel->getClientData($inputData['contactNo']);
-				// $clientData = (json_decode($clientArrayData));
-				// if(is_array($clientData) || is_object($clientData))
-				// {
-					// $clientFlag=1;
-					// $clientId = $clientData->clientData[0]->client_id;
-				// }
-			// }
-		// }
+		$inputData = $request->input();
 		$clientArray = new ClientArray();
 		$clientBillArrayData = $clientArray->getBillClientArrayData();
 		//splice data from trim array
@@ -474,7 +527,7 @@ class BillModel extends Model
 		$newInputArray = array();
 		$keyString='';
 		$valueString='';
-		
+		$updateString='';
 		for($billData=0;$billData<$inputDataCount;$billData++)
 		{
 			if(strcmp(array_keys($inputData)[$billData],"entryDate")==0)
@@ -488,17 +541,32 @@ class BillModel extends Model
 			// $newInputArray[$lowerCase] = $inputData[array_keys($inputData)[$billData]];
 			$keyString = $keyString.$lowerCase.",";
 			$valueString = $valueString."'".$inputData[array_keys($inputData)[$billData]]."',";
+			
+			$updateString = $updateString.$lowerCase."='".$inputData[array_keys($inputData)[$billData]]."',";
 		}	
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
-		//insert dsale-bill draft data
-		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into sales_bill
-		(".$keyString."product_array,is_draft)
-		values(".$valueString."'".$inventoryDecodedData."','yes')");
-		DB::commit();
+		if(array_key_exists("saleid",$request->header()))
+		{
+			$saleId = $request->header()['saleid'][0];
+			//update sale-bill draft data
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->statement("update sales_bill
+			set ".$updateString."updated_at='".$mytime."',product_array='".$inventoryDecodedData."' 
+			where sale_id=".$saleId);
+			DB::commit();
+		}
+		else
+		{
+			//insert sale-bill draft data
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->statement("insert into sales_bill
+			(".$keyString."product_array,is_draft)
+			values(".$valueString."'".$inventoryDecodedData."','yes')");
+			DB::commit();
+		}
 		if($raw==1)
 		{
 			return $exceptionArray['200'];
@@ -567,7 +635,7 @@ class BillModel extends Model
 		$saleBillData = DB::connection($databaseName)->select("SELECT 
 		sale_id,
 		client_id
-		FROM sales_bill where sale_id='".$saleId."' and deleted_at='0000-00-00 00:00:00' and is_draft='no'");
+		FROM sales_bill where sale_id='".$saleId."' and deleted_at='0000-00-00 00:00:00' and is_draft='no' and is_salesorder='not'");
 		DB::commit();
 		
 		//insert document data into client-document table
@@ -647,7 +715,7 @@ class BillModel extends Model
 			where sales_type='".$salesType."' and
 			(entry_date BETWEEN '".$fromDate."' AND '".$toDate."') and 
 			company_id='".$companyId."' and 
-			deleted_at='0000-00-00 00:00:00' and is_draft='no'");
+			deleted_at='0000-00-00 00:00:00' and is_draft='no' and is_salesorder='not'");
 			DB::commit();
 			if(count($raw)==0)
 			{
@@ -724,7 +792,9 @@ class BillModel extends Model
 			created_at,
 			updated_at 
 			from sales_bill 
-			where sales_type='".$data['salestype'][0]."' and is_draft='no' and 
+			where sales_type='".$data['salestype'][0]."' 
+			and is_draft='no' and 
+			is_salesorder='not' and 
 			company_id='".$companyId."' and 
 			deleted_at='0000-00-00 00:00:00' and 
 			(invoice_number='".$data['invoicenumber'][0]."' or client_id in ( select client_id from client_mst where contact_no = '".$data['invoicenumber'][0]."') or client_id in ( select client_id from client_mst where email_id = '".$data['invoicenumber'][0]."') or client_id in ( select client_id from client_mst where client_name like '%".$data['invoicenumber'][0]."%')) ");
@@ -877,7 +947,7 @@ class BillModel extends Model
 		updated_at 
 		from sales_bill 
 		where sale_id='".$saleId."' and 
-		deleted_at='0000-00-00 00:00:00' and is_draft='no'");
+		deleted_at='0000-00-00 00:00:00' and is_draft='no' and is_salesorder='not'");
 		DB::commit();
 		if(count($raw)==0)
 		{
@@ -940,7 +1010,7 @@ class BillModel extends Model
 				from sales_bill 
 				where sales_type='".$headerData['salestype'][0]."' and
 				company_id = '".$headerData['companyid'][0]."' and
-				deleted_at='0000-00-00 00:00:00' and is_draft='no'
+				deleted_at='0000-00-00 00:00:00' and is_draft='no' and is_salesorder='not'
 				order by sale_id desc limit 1");
 				DB::commit();
 				if(count($raw)==0)
@@ -965,7 +1035,7 @@ class BillModel extends Model
 					from sales_bill 
 					where sales_type='".$headerData['salestype'][0]."' and
 					company_id = '".$headerData['companyid'][0]."' and
-					deleted_at='0000-00-00 00:00:00' and is_draft='no'
+					deleted_at='0000-00-00 00:00:00' and is_draft='no' and is_salesorder='not'
 					order by sale_id asc limit 1");
 					DB::commit();
 					if($saleId<$previousAscId[0]->sale_id)
@@ -1010,7 +1080,7 @@ class BillModel extends Model
 				from sales_bill 
 				where sales_type='".$headerData['salestype'][0]."' and
 				company_id = '".$headerData['companyid'][0]."' and
-				deleted_at='0000-00-00 00:00:00' and is_draft='no'
+				deleted_at='0000-00-00 00:00:00' and is_draft='no' and is_salesorder='not'
 				order by sale_id desc limit 1");
 				DB::commit();
 				if($saleId>$nextDescId[0]->sale_id)
@@ -1076,7 +1146,7 @@ class BillModel extends Model
 				from sales_bill 
 				where sales_type='".$headerData['salestype'][0]."' and
 				company_id = '".$headerData['companyid'][0]."' and
-				deleted_at='0000-00-00 00:00:00' and is_draft='no' order by sale_id asc limit 1");
+				deleted_at='0000-00-00 00:00:00' and is_draft='no' and is_salesorder='not' order by sale_id asc limit 1");
 				DB::commit();
 				
 				$saleDataResult = $this->getDocumentData($fistSaleDataResult);
@@ -1114,7 +1184,7 @@ class BillModel extends Model
 				from sales_bill 
 				where sales_type='".$headerData['salestype'][0]."' and
 				company_id = '".$headerData['companyid'][0]."' and
-				deleted_at='0000-00-00 00:00:00' and is_draft='no' order by sale_id desc limit 1");
+				deleted_at='0000-00-00 00:00:00' and is_draft='no' and is_salesorder='not' order by sale_id desc limit 1");
 				DB::commit();
 				
 				$saleDataResult = $this->getDocumentData($lastSaleDataResult);
@@ -1166,7 +1236,7 @@ class BillModel extends Model
 		where sales_type='".$headerData['salestype'][0]."' and
 		company_id = '".$headerData['companyid'][0]."' and
 		deleted_at='0000-00-00 00:00:00' and 
-		sale_id='".$saleId."' and is_draft='no'");
+		sale_id='".$saleId."' and is_draft='no' and is_salesorder='not'");
 		DB::commit();
 		return $saleData;
 	}
@@ -1414,7 +1484,7 @@ class BillModel extends Model
 				$saleBillData = DB::connection($databaseName)->select("SELECT 
 				sale_id,
 				client_id
-				FROM sales_bill where sale_id='".$saleId."' and deleted_at='0000-00-00 00:00:00' and is_draft='no'");
+				FROM sales_bill where sale_id='".$saleId."' and deleted_at='0000-00-00 00:00:00' and is_draft='no' and is_salesorder='not'");
 				DB::commit();
 				
 				//insert document data into client-document table
@@ -1652,7 +1722,7 @@ class BillModel extends Model
 				FROM sales_bill 
 				where sale_id='".$saleId."' and 
 				deleted_at='0000-00-00 00:00:00' 
-				and is_draft='no'");
+				and is_draft='no' and is_salesorder='not'");
 				DB::commit();
 				
 				//insert document data into client-document table
@@ -1786,7 +1856,7 @@ class BillModel extends Model
 		from sales_bill 
 		where invoice_number='".$invoiceNumber."' and
 		deleted_at='0000-00-00 00:00:00' and 
-		is_draft='no'");
+		is_draft='no' and is_salesorder='not'");
 		DB::commit();
 		if(count($billData)!=0)
 		{
@@ -1843,7 +1913,7 @@ class BillModel extends Model
 		updated_at 
 		from sales_bill 
 		where (entry_Date BETWEEN '".$fromDate."' AND '".$toDate."') and
-		deleted_at='0000-00-00 00:00:00' and is_draft='no'");
+		deleted_at='0000-00-00 00:00:00' and is_draft='no' and is_salesorder='not'");
 		DB::commit();
 		if(count($billData)!=0)
 		{
@@ -1971,6 +2041,39 @@ class BillModel extends Model
 		
 		
 		if($deleteJournalData==1 && $deleteProductTrnData==1 && $deleteBillData==1 && $deleteBillTrnData==1)
+		{
+			return $exceptionArray['200'];
+		}
+		else
+		{
+			return $exceptionArray['500'];
+		}
+	}
+	
+	/**
+	 * delete bill-draft data
+	 * @param  sale-id
+	 * returns the exception-message/status
+	*/
+	function deleteBillDraftData($saleId)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		$mytime = Carbon\Carbon::now();
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		//delete bill data 
+		DB::beginTransaction();
+		$deleteBillData = DB::connection($databaseName)->statement("update
+		sales_bill set
+		deleted_at = '".$mytime."'
+		where sale_id = ".$saleId." and
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		if( $deleteBillData==1)
 		{
 			return $exceptionArray['200'];
 		}

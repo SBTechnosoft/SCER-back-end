@@ -22,9 +22,10 @@
                 "documentPath":''
             }
 
-##### `POST /accounting/bills/draftBill`
+##### `POST /accounting/bills/draft-bill`
 + Header
 	- Authentication Token
+	- 'saleId':int
 + Body
 
             {
@@ -79,7 +80,7 @@
                 ... Standard Bill Object
             }
 			
-##### `GET /accounting/bills/draftBill/{companyId}`
+##### `GET /accounting/bills/draft-bill/{companyId}`
 + Header
 	- Authentication Token
 + Error Message
@@ -147,4 +148,16 @@
             {
                 ... HTTP_Status:200
             }
-			
+##### `DELETE /accounting/bills/draft-bill/{saleId}`
++ Header
+	- Authentication Token
++ Error Message
+
+			{
+				... Error Message
+			}            
++ Response
+
+            {
+                ... HTTP_Status:200
+            }			

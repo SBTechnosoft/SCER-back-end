@@ -241,7 +241,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 				"</td><td  style='font-size: 11px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);text-align:center'>". $product_hsnCode1 .
 				"</td><td colspan='2' style='font-size: 11px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);text-align:center'>". $decodedArray->inventory[$productArray]->color ." | ". $decodedArray->inventory[$productArray]->size .
 				"</td><td  style='font-size: 11px;  height:  0.7cm; padding:0 0 0 0; text-align: center;border-right: 1px solid rgba(0, 0, 0, .3);'>". $decodedArray->inventory[$productArray]->frameNo .
-				"</td><td  style='font-size: 14px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);text-align:center'>". $decodedArray->inventory[$productArray]->qty .
+				"</td><td  style='font-size: 11px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);text-align:center'>". $decodedArray->inventory[$productArray]->qty .
 				"</td><td  style='font-size: 11px;   height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);'>". $rate .
 				"&nbsp;</td><td  style='font-size: 11px;   height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);'>". $mainPrice .
 				"&nbsp;</td><td  style='font-size: 11px; height:  0.7cm; text-align: center; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);'>". $discountInPercentage .
@@ -425,6 +425,11 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$billArray['TotalDiscount']=$totalDiscount;
 		$billArray['TotalRoundableAmount']=$roundAmountTotal;
 		$billArray['ExtraCharge']=$extraCharge;
+		$billArray['PONO']=$decodedBillData->poNumber;
+		$billArray['CompanyWebsite']=$decodedBillData->company->websiteName;
+		$billArray['CompanyContact']=$decodedBillData->company->customerCare;
+		$billArray['CompanyEmail']=$decodedBillData->company->emailId;
+		$billArray['BILLLABEL']="Tax Invoice";
 		
 		//gst-summary
 		$billArray['gstSummary']=$gstOutput;

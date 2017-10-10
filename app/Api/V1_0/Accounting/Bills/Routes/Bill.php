@@ -32,6 +32,7 @@ class Bill implements RouteRegistrarInterface
 		
 		//delete
 		Route::delete('Accounting/Bills/Bill/{saleId}', 'Accounting\Bills\Controllers\BillController@destroy');
+		Route::delete('Accounting/Bills/Bill/draft-bill/{saleId}', 'Accounting\Bills\Controllers\BillController@destroyDraftData');
 	}
 }
 
