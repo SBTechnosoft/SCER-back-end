@@ -311,6 +311,9 @@ class EncodeTransactionAllData extends LedgerService
 
 					'cgst' => $ledgerDecodedJson[$jsonData]['cgst'],
 					'sgst' => $ledgerDecodedJson[$jsonData]['sgst'],
+					'bankId' => $ledgerDecodedJson[$jsonData]['bankId'],
+					'bankDtlId' => $ledgerDecodedJson[$jsonData]['bankDtlId'],
+					'micrCode' => $ledgerDecodedJson[$jsonData]['micrCode'],
 
 					'createdAt' => $ledgerDecodedJson[$jsonData]['createdAt'],
 

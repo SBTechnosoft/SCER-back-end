@@ -15,6 +15,7 @@ use ERP\Exceptions\ExceptionMessage;
 use ERP\Entities\Constants\ConstantClass;
 use Carbon;
 use ERP\Core\Clients\Entities\ClientArray;
+use ERP\Api\V1_0\Documents\Controllers\DocumentController;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -47,7 +48,7 @@ class QuotationProcessor extends BaseProcessor
 		$constantArray = $constantClass->constantVariable();	
 		//trim an input 
 		$quotationTransformer = new QuotationTransformer();
-		$tRequest = $quotationTransformer->trimInsertData($this->request);	
+		$tRequest = $quotationTransformer->trimInsertData($this->request);
 		if($tRequest==1)
 		{
 			return $msgArray['content'];
@@ -123,7 +124,14 @@ class QuotationProcessor extends BaseProcessor
 			}
 		}
 		$productArray = array();
-		$productArray['quotationNumber']=$tRequest['quotation_number'];
+		if(array_key_exists("issalesorder",$request->header()))
+		{
+			$productArray['invoiceNumber']=$tRequest['invoice_number'];
+		}
+		else
+		{
+			$productArray['quotationNumber']=$tRequest['quotation_number'];
+		}
 		$productArray['transactionType']=$constantArray['journalOutward'];
 		$productArray['companyId']=$tRequest['company_id'];	
 		
@@ -143,6 +151,21 @@ class QuotationProcessor extends BaseProcessor
 			array_push($request->input()['inventory'][$trimData],$tInventoryArray[$trimData]);
 		}
 		$productArray['inventory'] = $request->input()['inventory'];
+		$docFlag=0;
+		$documentPath = $constantArray['billDocumentUrl'];
+		if(in_array(true,$request->file()) || array_key_exists('scanFile',$request->input()))
+		{
+			$documentController =new DocumentController(new Container());
+			$processedData = $documentController->insertUpdate($request,$documentPath);
+			if(is_array($processedData))
+			{
+				$docFlag=1;
+			}
+			else
+			{
+				return $processedData;
+			}
+		}
 		//entry date conversion
 		$transformEntryDate = Carbon\Carbon::createFromFormat('d-m-Y', $tRequest['entry_date'])->format('Y-m-d');
 		$quotationPersistable = new QuotationPersistable();
@@ -157,8 +180,24 @@ class QuotationProcessor extends BaseProcessor
 		$quotationPersistable->setRemark($tRequest['remark']);
 		$quotationPersistable->setEntryDate($transformEntryDate);
 		$quotationPersistable->setClientId($clientId);
-		$quotationPersistable->setCompanyId($tRequest['company_id']);		
-		$quotationPersistable->setJfId(0);		
+		$quotationPersistable->setCompanyId($tRequest['company_id']);	
+		$quotationPersistable->setInvoiceNumber($tRequest['invoice_number']);		
+		$quotationPersistable->setPoNumber($tRequest['po_number']);		
+		$quotationPersistable->setPaymentMode($tRequest['payment_mode']);		
+		$quotationPersistable->setBankName($tRequest['bank_name']);		
+		$quotationPersistable->setCheckNumber($tRequest['check_number']);		
+				
+		$quotationPersistable->setJfId(0);	
+		
+		if($docFlag==1)
+		{
+			array_push($processedData,$quotationPersistable);
+			return $processedData;	
+		}
+		else
+		{
+			return $quotationPersistable;
+		}		
 		return $quotationPersistable;
 	}
 	
@@ -181,7 +220,6 @@ class QuotationProcessor extends BaseProcessor
 		//trim quotation data
 		$quotationTransformer = new QuotationTransformer();
 		$quotationTrimData = $quotationTransformer->trimQuotationUpdateData($request);
-		
 		// $ledgerModel = new LedgerModel();
 		$clientArray = new ClientArray();
 		$clientArrayData = $clientArray->getClientArrayData();
@@ -285,7 +323,14 @@ class QuotationProcessor extends BaseProcessor
 				$quoFlag=1;
 				$decodedProductArrayData = json_decode($quotationData[0]->product_array);
 				$productArray = array();
-				$productArray['quotationNumber'] = $decodedProductArrayData->quotationNumber;
+				if(array_key_exists("issalesorder",$request->header()))
+				{
+					$productArray['invoiceNumber']=$decodedProductArrayData->invoiceNumber;
+				}
+				else
+				{
+					$productArray['quotationNumber'] = $decodedProductArrayData->quotationNumber;
+				}
 				$productArray['transactionType'] = $decodedProductArrayData->transactionType;
 				$productArray['companyId'] = $decodedProductArrayData->companyId;
 				$productArray['inventory'] = $quotationTrimData['inventory'];
@@ -293,11 +338,39 @@ class QuotationProcessor extends BaseProcessor
 				$quotationPersistable[$quotationArrayData]->setQuotationId($quotationBillId);
 			}
 		}
+		$docFlag=0;
+		$documentPath = $constantArray['billDocumentUrl'];
+		if(in_array(true,$request->file()))
+		{
+			$documentController = new DocumentController(new Container());
+			$processedData = $documentController->insertUpdate($request,$documentPath);
+			if(is_array($processedData))
+			{
+				$docFlag=1;
+			}
+			else
+			{
+				return $processedData;
+			}
+		}
+		if($docFlag==1)
+		{
+			if($quoFlag==1)
+			{
+				$quotationPersistable[count($quotationPersistable)] = 'flag';
+			}
+			array_push($processedData,$quotationPersistable);
+			return $processedData;
+		}
 		if($quoFlag==1)
 		{
 			$quotationPersistable[count($quotationPersistable)] = 'flag';
+			return $quotationPersistable;
 		}
-		return $quotationPersistable;
+		else
+		{
+			return $quotationPersistable;
+		}
 		
 	}
 	

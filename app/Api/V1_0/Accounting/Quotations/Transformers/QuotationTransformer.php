@@ -7,6 +7,7 @@ use  ERP\Entities\EnumClasses\IsDisplayEnum;
 use ERP\Core\Products\Entities\EnumClasses\DiscountTypeEnum;
 use ERP\Exceptions\ExceptionMessage;
 use Carbon;
+use ERP\Core\Accounting\Bills\Entities\PaymentModeEnum;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -22,8 +23,40 @@ class QuotationTransformer
 		$quotationArrayData=array();
 		//data get from body
 		$quotationArrayData = $request->input(); 
-		
+		$poNumber='';
+		$tPaymentMode='';
+		$tBankName='';
+		$tCheckNumber='';
+		$invoiceNumber='';
+		$paymentModeArray = array();
+		$paymentModeEnum = new PaymentModeEnum();
+		$paymentModeArray = $paymentModeEnum->enumArrays();
 		//trim an input
+		$poNumber = array_key_exists('poNumber',$quotationArrayData) ? trim($quotationArrayData['poNumber']):"";
+		if(array_key_exists('paymentMode',$quotationArrayData))
+		{
+			$tPaymentMode = trim($quotationArrayData['paymentMode']);
+			if(strcmp($tPaymentMode,$paymentModeArray['bankPayment'])==0 || 
+				strcmp($tPaymentMode,$paymentModeArray['neftPayment'])==0 ||
+				strcmp($tPaymentMode,$paymentModeArray['rtgsPayment'])==0 ||
+				strcmp($tPaymentMode,$paymentModeArray['impsPayment'])==0 ||
+				strcmp($tPaymentMode,$paymentModeArray['nachPayment'])==0 ||
+				strcmp($tPaymentMode,$paymentModeArray['achPayment'])==0)
+			{
+				$tBankName = trim($quotationArrayData['bankName']);
+				$tCheckNumber = trim($quotationArrayData['checkNumber']);
+			}
+			else
+			{
+				$tBankName='';
+				$tCheckNumber='';
+			}
+		}
+		else
+		{
+			$tPaymentMode='';
+		}
+		$invoiceNumber = array_key_exists('invoiceNumber',$quotationArrayData)?trim($quotationArrayData['invoiceNumber']):"";
 		$tCompanyId = trim($quotationArrayData['companyId']);
 		$tEntryDate = trim($quotationArrayData['entryDate']);
 		if(!array_key_exists('professionId',$request->input()))
@@ -59,7 +92,14 @@ class QuotationTransformer
 			$tCompanyName = trim($quotationArrayData['companyName']);
 		}
 		$tClientName = trim($quotationArrayData['clientName']);
-		$tQuotationNumber = trim($quotationArrayData['quotationNumber']);
+		if(array_key_exists("quotationNumber",$quotationArrayData))
+		{
+			$tQuotationNumber = trim($quotationArrayData['quotationNumber']);
+		}
+		else
+		{
+			$tQuotationNumber='';
+		}
 		if(!array_key_exists('address1',$request->input()))
 		{
 			$tAddress1 = "";
@@ -201,6 +241,11 @@ class QuotationTransformer
 			$data['tax'] = $tTax;
 			$data['grand_total'] = $tGrandTotal;
 			$data['remark'] = $tRemark;
+			$data['po_number'] = $poNumber;
+			$data['payment_mode'] = $tPaymentMode;
+			$data['invoice_number'] = $invoiceNumber;
+			$data['bank_name'] = $tBankName;
+			$data['check_number'] = $tCheckNumber;
 			$trimArray=array();
 			for($inventoryArray=0;$inventoryArray<count($quotationArrayData['inventory']);$inventoryArray++)
 			{

@@ -14,6 +14,8 @@ use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use stdClass;
 use ERP\Core\Accounting\Quotations\Entities\QuotationArray;
+use ERP\Model\Accounting\Bills\BillModel;
+use ERP\Core\Accounting\Bills\Entities\EncodeData;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -26,7 +28,7 @@ class QuotationModel extends Model
 	 * @param  array
 	 * returns the status
 	*/
-	public function insertData($productArray,$quotationNumber,$total,$extraCharge,$tax,$grandTotal,$remark,$entryDate,$companyId,$ClientId,$jfId,$totalDiscounttype,$totalDiscount)
+	public function insertData($productArray,$quotationNumber,$total,$extraCharge,$tax,$grandTotal,$remark,$entryDate,$companyId,$ClientId,$jfId,$totalDiscounttype,$totalDiscount,$documentArray,$headerData,$poNumber,$paymentMode,$invoiceNumber,$bankName,$checkNumber)
 	{
 		//database selection
 		$database = "";
@@ -37,11 +39,131 @@ class QuotationModel extends Model
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
+		if(array_key_exists("issalesorder",$headerData))
+		{
+			//insert sales-order data
+			$result = $this->insertSalesOrderData($productArray,$total,$extraCharge,$tax,$grandTotal,$remark,$entryDate,$companyId,$ClientId,$jfId,$totalDiscounttype,$totalDiscount,$documentArray,$headerData,$poNumber,$paymentMode,$invoiceNumber,$bankName,$checkNumber);
+			if(is_array($result))
+			{
+				$decodedData = json_encode($result);
+				$encoded = new EncodeData();
+				$encodeData = $encoded->getEncodedData($decodedData);
+				return $encodeData;
+			}
+			else
+			{
+				return $exceptionArray['500'];
+			}
+		}
+		else
+		{
+			//insert bill data
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->statement("insert into quotation_bill_dtl(
+			product_array,
+			quotation_number,
+			total,
+			total_discounttype,
+			total_discount,
+			extra_charge,
+			tax,
+			grand_total,
+			remark,
+			entry_date,
+			company_id,
+			client_id,
+			jf_id) 
+			values('".$productArray."','".$quotationNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$jfId."')");
+			DB::commit();
+			//update quotation-number
+			$quotationResult = $this->updateQuotationNumber($companyId);
+			if(strcmp($quotationResult,$exceptionArray['200'])!=0)
+			{
+				return $quotationResult;
+			}
+			if($raw==1)
+			{
+				DB::beginTransaction();
+				$quotationId = DB::connection($databaseName)->select("SELECT 
+				max(quotation_bill_id) quotation_bill_id
+				FROM quotation_bill_dtl where deleted_at='0000-00-00 00:00:00'");
+				DB::commit();
+				//insertion in quotation bill archives
+				DB::beginTransaction();
+				$raw = DB::connection($databaseName)->statement("insert into quotation_bill_archives(
+				product_array,
+				quotation_number,
+				total,
+				total_discounttype,
+				total_discount,
+				extra_charge,
+				tax,
+				grand_total,
+				remark,
+				entry_date,
+				company_id,
+				client_id,
+				quotation_bill_id,
+				jf_id) 
+				values('".$productArray."','".$quotationNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$quotationId[0]->quotation_bill_id."','".$jfId."')");
+				DB::commit();
+				
+				//get latest inserted quotation bill data
+				DB::beginTransaction();
+				$quotationResult = DB::connection($databaseName)->select("select
+				quotation_bill_id,
+				product_array,
+				quotation_number,
+				total,
+				total_discounttype,
+				total_discount,
+				extra_charge,
+				tax,
+				grand_total,
+				remark,
+				entry_date,
+				client_id,
+				company_id,
+				jf_id,
+				created_at,
+				updated_at 
+				from quotation_bill_dtl where quotation_bill_id=(select MAX(quotation_bill_id) as quotation_bill_id from quotation_bill_dtl) and deleted_at='0000-00-00 00:00:00'"); 
+				DB::commit();
+				if(count($quotationResult)==1)
+				{
+					return json_encode($quotationResult);
+				}
+				else
+				{
+					return $exceptionArray['500'];
+				}
+			}
+			else
+			{
+				return $exceptionArray['500'];
+			}
+		}
+	}
+	
+	/**
+	 * insert sales-order data
+	 * returns the exception-message/status
+	*/
+	
+	public function insertSalesOrderData($productArray,$total,$extraCharge,$tax,$grandTotal,$remark,$entryDate,$companyId,	 $ClientId,$jfId,$totalDiscounttype,$totalDiscount,$documentArrayData,$headerData,$poNumber,$paymentMode,$invoiceNumber,$bankName,$checkNumber)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
 		//insert bill data
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into quotation_bill_dtl(
+		$raw = DB::connection($databaseName)->statement("insert into sales_bill(
 		product_array,
-		quotation_number,
+		invoice_number,
 		total,
 		total_discounttype,
 		total_discount,
@@ -52,76 +174,68 @@ class QuotationModel extends Model
 		entry_date,
 		company_id,
 		client_id,
+		po_number,
+		payment_mode,
+		bank_name,
+		check_number,
+		is_salesorder,
 		jf_id) 
-		values('".$productArray."','".$quotationNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$jfId."')");
+		values('".$productArray."','".$invoiceNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."',
+		'".$poNumber."','".$paymentMode."','".$bankName."','".$checkNumber."','ok','".$jfId."')");
 		DB::commit();
-		//update quotation-number
-		$quotationResult = $this->updateQuotationNumber($companyId);
-		if(strcmp($quotationResult,$exceptionArray['200'])!=0)
+		//update invoice-number
+		$billModel = new BillModel();
+		$invoiceResult = $billModel->updateInvoiceNumber($companyId);
+		if(strcmp($invoiceResult,$exceptionArray['200'])!=0)
 		{
-			return $quotationResult;
+			return $invoiceResult;
 		}
-		if($raw==1)
+		//get sale-id
+		DB::beginTransaction();
+		$saleId = DB::connection($databaseName)->select("SELECT 
+		max(sale_id) as sale_id,
+		product_array,
+		payment_mode,
+		bank_name,
+		invoice_number,
+		job_card_number,
+		check_number,
+		total,
+		total_discounttype,
+		total_discount,
+		extra_charge,
+		tax,
+		grand_total,
+		advance,
+		balance,
+		po_number,
+		remark,
+		entry_date,
+		sales_type,
+		client_id,
+		company_id,
+		jf_id,
+		created_at,
+		updated_at
+		FROM sales_bill where deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+		$documentCount = count($documentArrayData);
+		if($documentCount!=0)
 		{
-			DB::beginTransaction();
-			$quotationId = DB::connection($databaseName)->select("SELECT 
-			max(quotation_bill_id) quotation_bill_id
-			FROM quotation_bill_dtl where deleted_at='0000-00-00 00:00:00'");
-			DB::commit();
-			//insertion in quotation bill archives
-			DB::beginTransaction();
-			$raw = DB::connection($databaseName)->statement("insert into quotation_bill_archives(
-			product_array,
-			quotation_number,
-			total,
-			total_discounttype,
-			total_discount,
-			extra_charge,
-			tax,
-			grand_total,
-			remark,
-			entry_date,
-			company_id,
-			client_id,
-			quotation_bill_id,
-			jf_id) 
-			values('".$productArray."','".$quotationNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$quotationId[0]->quotation_bill_id."','".$jfId."')");
-			DB::commit();
-			
-			//get latest inserted quotation bill data
-			DB::beginTransaction();
-			$quotationResult = DB::connection($databaseName)->select("select
-			quotation_bill_id,
-			product_array,
-			quotation_number,
-			total,
-			total_discounttype,
-			total_discount,
-			extra_charge,
-			tax,
-			grand_total,
-			remark,
-			entry_date,
-			client_id,
-			company_id,
-			jf_id,
-			created_at,
-			updated_at 
-			from quotation_bill_dtl where quotation_bill_id=(select MAX(quotation_bill_id) as quotation_bill_id from quotation_bill_dtl) and deleted_at='0000-00-00 00:00:00'"); 
-			DB::commit();
-			if(count($quotationResult)==1)
+			//insert document data
+			for($documentArray=0;$documentArray<$documentCount;$documentArray++)
 			{
-				return json_encode($quotationResult);
-			}
-			else
-			{
-				return $exceptionArray['500'];
+				DB::beginTransaction();
+				$raw = DB::connection($databaseName)->statement("insert into sales_bill_doc_dtl(
+				sale_id,
+				document_name,
+				document_format,
+				document_size)
+				values('".$saleId[0]->sale_id."','".$documentArrayData[$documentArray][0]."','".$documentArrayData[$documentArray][2]."','".$documentArrayData[$documentArray][1]."')");
+				DB::commit();
 			}
 		}
-		else
-		{
-			return $exceptionArray['500'];
-		}
+		return $saleId;
 	}
 	
 	/**
@@ -626,10 +740,9 @@ class QuotationModel extends Model
 	 * @param  quotation-bill-id and quotation-data array
 	 * returns the exception-message/status
 	*/
-	public function updateQuotationData($quotationArray,$quotationId)
+	public function updateQuotationData($quotationArray,$quotationId,$headerData,$documentData,$dataFlag)
 	{
 		$mytime = Carbon\Carbon::now();
-	
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -644,68 +757,31 @@ class QuotationModel extends Model
 		{
 			$keyValueString = $keyValueString.array_keys($quotationArray)[$quotationArrayData]." = '".$quotationArray[array_keys($quotationArray)[$quotationArrayData]]."',";
 		}
-		// update bill-date
-		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("update
-		quotation_bill_dtl set
-		".$keyValueString."
-		updated_at = '".$mytime."'
-		where quotation_bill_id = ".$quotationId." and
-		deleted_at='0000-00-00 00:00:00'");
-		DB::commit();
-		if($raw==1)
+		if(array_key_exists("issalesorder",$headerData))
 		{
-			$quotationData = $this->getQuotationIdData($quotationId);
-			$jsonDecodedQuotationData = json_decode($quotationData);
-			
-			//insert quotation data in quotation_bill_archives 
+			$salesOrderResult = $this->updateSalesOrderData($keyValueString,$mytime,$quotationId,$documentData,$dataFlag);
+			return $salesOrderResult;
+		}
+		else
+		{
+			// update quotation-data
 			DB::beginTransaction();
-			$quotaionInsertionResult = DB::connection($databaseName)->statement("insert
-			into quotation_bill_archives(
-			quotation_bill_id,
-			product_array,
-			quotation_number,
-			total,
-			total_discounttype,
-			total_discount,
-			extra_charge,
-			tax,
-			grand_total,
-			remark,
-			entry_date,
-			client_id,
-			company_id,
-			jf_id,
-			created_at,
-			updated_at)
-			values(
-			'".$jsonDecodedQuotationData[0]->quotation_bill_id."',
-			'".$jsonDecodedQuotationData[0]->product_array."',
-			'".$jsonDecodedQuotationData[0]->quotation_number."',
-			'".$jsonDecodedQuotationData[0]->total."',
-			'".$jsonDecodedQuotationData[0]->total_discounttype."',
-			'".$jsonDecodedQuotationData[0]->total_discount."',
-			'".$jsonDecodedQuotationData[0]->extra_charge."',
-			'".$jsonDecodedQuotationData[0]->tax."',
-			'".$jsonDecodedQuotationData[0]->grand_total."',
-			'".$jsonDecodedQuotationData[0]->remark."',
-			'".$jsonDecodedQuotationData[0]->entry_date."',
-			'".$jsonDecodedQuotationData[0]->client_id."',
-			'".$jsonDecodedQuotationData[0]->company_id."',
-			'".$jsonDecodedQuotationData[0]->jf_id."',
-			'".$jsonDecodedQuotationData[0]->created_at."',
-			'".$jsonDecodedQuotationData[0]->updated_at."')");
+			$raw = DB::connection($databaseName)->statement("update
+			quotation_bill_dtl set
+			".$keyValueString."
+			updated_at = '".$mytime."'
+			where quotation_bill_id = ".$quotationId." and
+			deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
-			
-			if($quotaionInsertionResult!=1)
+			if($raw==1)
 			{
-				return $exceptionArray['500']; 
-			}
-			else
-			{
-				//get latest inserted quotation bill data
+				$quotationData = $this->getQuotationIdData($quotationId);
+				$jsonDecodedQuotationData = json_decode($quotationData);
+				
+				//insert quotation data in quotation_bill_archives 
 				DB::beginTransaction();
-				$quotationResult = DB::connection($databaseName)->select("select
+				$quotaionInsertionResult = DB::connection($databaseName)->statement("insert
+				into quotation_bill_archives(
 				quotation_bill_id,
 				product_array,
 				quotation_number,
@@ -721,18 +797,150 @@ class QuotationModel extends Model
 				company_id,
 				jf_id,
 				created_at,
-				updated_at 
-				from quotation_bill_dtl where quotation_bill_id = ".$quotationId." and deleted_at='0000-00-00 00:00:00'"); 
+				updated_at)
+				values(
+				'".$jsonDecodedQuotationData[0]->quotation_bill_id."',
+				'".$jsonDecodedQuotationData[0]->product_array."',
+				'".$jsonDecodedQuotationData[0]->quotation_number."',
+				'".$jsonDecodedQuotationData[0]->total."',
+				'".$jsonDecodedQuotationData[0]->total_discounttype."',
+				'".$jsonDecodedQuotationData[0]->total_discount."',
+				'".$jsonDecodedQuotationData[0]->extra_charge."',
+				'".$jsonDecodedQuotationData[0]->tax."',
+				'".$jsonDecodedQuotationData[0]->grand_total."',
+				'".$jsonDecodedQuotationData[0]->remark."',
+				'".$jsonDecodedQuotationData[0]->entry_date."',
+				'".$jsonDecodedQuotationData[0]->client_id."',
+				'".$jsonDecodedQuotationData[0]->company_id."',
+				'".$jsonDecodedQuotationData[0]->jf_id."',
+				'".$jsonDecodedQuotationData[0]->created_at."',
+				'".$jsonDecodedQuotationData[0]->updated_at."')");
 				DB::commit();
-				if(count($quotationResult)!=0)
+				
+				if($quotaionInsertionResult!=1)
 				{
-					return json_encode($quotationResult);
+					return $exceptionArray['500']; 
 				}
 				else
 				{
-					return $exceptionArray['204']; 
+					//get latest inserted quotation bill data
+					DB::beginTransaction();
+					$quotationResult = DB::connection($databaseName)->select("select
+					quotation_bill_id,
+					product_array,
+					quotation_number,
+					total,
+					total_discounttype,
+					total_discount,
+					extra_charge,
+					tax,
+					grand_total,
+					remark,
+					entry_date,
+					client_id,
+					company_id,
+					jf_id,
+					created_at,
+					updated_at 
+					from quotation_bill_dtl where quotation_bill_id = ".$quotationId." and deleted_at='0000-00-00 00:00:00'"); 
+					DB::commit();
+					if(count($quotationResult)!=0)
+					{
+						return json_encode($quotationResult);
+					}
+					else
+					{
+						return $exceptionArray['204']; 
+					}
 				}
 			}
+		}
+	}
+	
+	/**
+	 * update sales-order data
+	 * @param  sale-bill-id and sales-data array
+	 * returns the exception-message/status
+	*/
+	public function updateSalesOrderData($keyValueString,$mytime,$quotationId,$documentData,$dataFlag)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if($dataFlag==1)
+		{
+			//data is available => update bill-data
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->statement("update
+			sales_bill set
+			".$keyValueString."
+			updated_at = '".$mytime."'
+			where sale_id = ".$quotationId." and
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+		}
+		//get last updated data from sales-bill
+		DB::beginTransaction();
+		$saleBillData = DB::connection($databaseName)->select("SELECT 
+		sale_id,
+		product_array,
+		payment_mode,
+		bank_name,
+		invoice_number,
+		job_card_number,
+		check_number,
+		total,
+		total_discounttype,
+		total_discount,
+		extra_charge,
+		tax,
+		grand_total,
+		advance,
+		balance,
+		po_number,
+		remark,
+		entry_date,
+		sales_type,
+		client_id,
+		company_id,
+		jf_id,
+		created_at,
+		updated_at
+		FROM sales_bill where deleted_at='0000-00-00 00:00:00' and sale_id='".$quotationId."'");
+		DB::commit();
+		if(count($documentData)!=0)
+		{
+			$documentCount = count($documentData);
+			//insert document data
+			for($documentArray=0;$documentArray<$documentCount;$documentArray++)
+			{
+				DB::beginTransaction();
+				$raw = DB::connection($databaseName)->statement("insert into sales_bill_doc_dtl(
+				sale_id,
+				document_name,
+				document_format,
+				document_size)
+				values('".$quotationId."','".$documentData[$documentArray][0]."','".$documentData[$documentArray][2]."','".$documentData[$documentArray][1]."')");
+				DB::commit();
+				// add documents in client database
+				DB::beginTransaction();
+				$clientDocumentResult = DB::connection($databaseName)->statement("insert into client_doc_dtl(
+				sale_id,
+				document_name,
+				document_format,
+				document_size,
+				client_id) 
+				values('".$quotationId."','".$documentData[$documentArray][0]."','".$documentData[$documentArray][2]."','".$documentData[$documentArray][1]."','".$saleBillData[0]->client_id."')");
+				DB::commit();
+			}
+		}
+		if(count($saleBillData)!=0)
+		{
+			return json_encode($saleBillData);
 		}
 	}
 }

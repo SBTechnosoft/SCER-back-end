@@ -25,6 +25,13 @@ use ERP\Core\Accounting\Quotations\Properties\QuotationNumberPropertyTrait;
 use ERP\Core\Accounting\Quotations\Properties\QuotationIdPropertyTrait;
 use ERP\Core\Accounting\Bills\Properties\TotalDiscounttypeTrait;
 use ERP\Core\Accounting\Bills\Properties\TotalDiscountTrait;
+use ERP\Core\Accounting\Bills\Properties\PaymentModePropertyTrait;
+use ERP\Core\Accounting\Bills\Properties\PoNumberTrait;
+use ERP\Core\Accounting\Bills\Properties\InvoiceNumberPropertyTrait;
+use ERP\Core\Accounting\Bills\Properties\CheckNumberPropertyTrait;
+use ERP\Core\Accounting\Bills\Properties\BankNamePropertyTrait;
+use ERP\Core\Accounting\Bills\Properties\BalancePropertyTrait;
+use ERP\Core\Accounting\Bills\Properties\AdvancePropertyTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -54,4 +61,11 @@ class QuotationPersistable
 	use SizePropertyTrait;
 	use TotalDiscountTrait;
 	use TotalDiscounttypeTrait;
+	use PaymentModePropertyTrait;
+	use PoNumberTrait;
+	use InvoiceNumberPropertyTrait;
+	use BankNamePropertyTrait;
+	use CheckNumberPropertyTrait;
+	use BalancePropertyTrait;
+	use AdvancePropertyTrait;
 }

@@ -87,7 +87,7 @@ class BillController extends BaseController implements ContainerInterface
 					if(is_array($billPersistable) || is_object($billPersistable))
 					{
 						$billService= new BillService();
-						$status = $billService->insert($billPersistable,$this->request->input());
+						$status = $billService->insert($billPersistable,$this->request);
 						if(strcmp($status,$msgArray['500'])==0)
 						{
 							return $status;
@@ -105,10 +105,15 @@ class BillController extends BaseController implements ContainerInterface
 							if(array_key_exists('operation',$request->header()))
 							{
 								$documentRequest->headers->set('operation',$request->header()['operation'][0]);
+								
 							}
 							else
 							{
 								$documentRequest->headers->set('key',$request->header());
+							}
+							if(array_key_exists("issalesorder",$request->header()))
+							{
+								$documentRequest->headers->set('issalesorder',$request->header()['issalesorder'][0]);
 							}
 							$processedData = $documentController->getData($documentRequest);
 							return $processedData;
@@ -271,16 +276,19 @@ class BillController extends BaseController implements ContainerInterface
 			{
 				//check saleId exist or not?
 				$billModel = new BillModel();
-				$billData = $billModel->getSaleIdData($saleId);
+				$billData = array_key_exists("issalesorder",$request->header()) 
+							? $billModel->getSaleOrderData($saleId) : $billModel->getSaleIdData($saleId) ;
 				if(strcmp($billData,$msgArray['404'])==0)
 				{
 					return $msgArray['404'];
 				}
+				echo "vv";
 				$processor = new BillProcessor();
 				$billPersistable = new BillPersistable();
 				$billPersistable = $processor->createPersistableChange($request,$saleId,$billData);
 				if(is_array($billPersistable) || is_object($billPersistable))
 				{
+					echo "ll";
 					$billService= new BillService();
 					$status = $billService->updateData($billPersistable,$saleId,$request->header());
 					return $status;

@@ -10,6 +10,7 @@ use ERP\Core\User\Entities\User;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Core\Banks\Entities\EncodeData;
 use ERP\Core\Banks\Entities\EncodeAllData;
+use ERP\Core\Banks\Entities\EncodeAllBranchData;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -83,6 +84,54 @@ class BankService extends AbstractService
 		else
 		{
 			$encoded = new EncodeData();
+			$encodeData = $encoded->getEncodedData($status);
+			return $encodeData;
+		}
+	}
+	
+	/**
+     * get all the data and call the model for database selection opertation
+     * @return status
+     */
+	public function getAllBranchData()
+	{
+		$bankModel = new BankModel();
+		$status = $bankModel->getAllBranchData();
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceltionArray = $exception->messageArrays();
+		if(strcmp($status,$exceltionArray['204'])==0)
+		{
+			return $status;
+		}
+		else
+		{
+			$encoded = new EncodeAllBranchData();
+			$encodeAllData = $encoded->getEncodedAllData($status);
+			return $encodeAllData;
+		}
+	}
+	
+	/**
+     * get all the data  as per given id and call the model for database selection opertation
+     * @param $bankId
+     * @return status
+     */
+	public function getBranchData($bankId)
+	{
+		$bankModel = new BankModel();
+		$status = $bankModel->getBranchData($bankId);
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($status,$exceptionArray['404'])==0)
+		{
+			return $status;
+		}
+		else
+		{
+			$encoded = new EncodeAllBranchData();
 			$encodeData = $encoded->getEncodedData($status);
 			return $encodeData;
 		}

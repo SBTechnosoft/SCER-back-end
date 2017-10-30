@@ -20,21 +20,23 @@ use ERP\Core\Settings\InvoiceNumbers\Services\InvoiceService;
 use Illuminate\Container\Container;
 use ERP\Api\V1_0\Documents\Controllers\DocumentController;
 use ERP\Model\Accounting\Quotations\QuotationModel;
+use ERP\Core\Accounting\Bills\Services\BillService;
+use ERP\Model\Accounting\Bills\BillModel;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
 class QuotationController extends BaseController implements ContainerInterface
 {
 	/**
-     * @var billService
+     * @var quotationService
      * @var processor
      * @var request
-     * @var billPersistable
+     * @var quotationPersistable
      */
-	private $billService;
+	private $quotationService;
 	private $processor;
 	private $request;
-	private $billPersistable;	
+	private $quotationPersistable;	
 	
 	/**
 	 * get and invoke method is of ContainerInterface method
@@ -84,29 +86,54 @@ class QuotationController extends BaseController implements ContainerInterface
 					$processor = new QuotationProcessor();
 					$quotationPersistable = new QuotationPersistable();
 					$quotationPersistable = $processor->createPersistable($this->request);
-					
-					if(is_object($quotationPersistable))
+					if(is_object($quotationPersistable) || is_array($quotationPersistable))
 					{
 						$quotationService= new QuotationService();
-						$status = $quotationService->insert($quotationPersistable);
+						$status = $quotationService->insert($quotationPersistable,$request->header());
 						if(strcmp($status,$msgArray['500'])==0)
 						{
 							return $status;
 						}
 						else
 						{
-							$decodedQuotationData = json_decode($status);
-							$quotationBillId = $decodedQuotationData->quotationBillId;
-							$quotationBillIdArray = array();
-							$quotationBillIdArray['quotationBillId'] = $quotationBillId;
-							$quotationBillIdArray['companyId'] = $decodedQuotationData->company->companyId;
-							$quotationBillIdArray['quotationData'] = $decodedQuotationData;
-							$documentController = new DocumentController(new Container());
-							$method=$constantArray['postMethod'];
-							$path=$constantArray['documentGenerateQuotationUrl'];
-							$documentRequest = Request::create($path,$method,$quotationBillIdArray);
-							$processedData = $documentController->getQuotationData($documentRequest);
-							return $processedData;
+							if(array_key_exists("issalesorder",$request->header()))
+							{
+								$decodedData = json_decode($status);
+								$saleId = $decodedData->saleId;
+								$saleIdArray = array();
+								$saleIdArray['saleId'] = $saleId;
+								$documentController = new DocumentController(new Container());
+								$method=$constantArray['postMethod'];
+								$path=$constantArray['documentGenerateUrl'];
+								$documentRequest = Request::create($path,$method,$saleIdArray);
+								if(array_key_exists('operation',$request->header()))
+								{
+									$documentRequest->headers->set('operation',$request->header()['operation'][0]);
+									$documentRequest->headers->set('issalesorder',"ok");
+								}
+								else
+								{
+									$documentRequest->headers->set('key',$request->header());
+									$documentRequest->headers->set('issalesorder',"ok");
+								}
+								$processedData = $documentController->getData($documentRequest);
+								return $processedData;
+							}
+							else
+							{
+								$decodedQuotationData = json_decode($status);
+								$quotationBillId = $decodedQuotationData->quotationBillId;
+								$quotationBillIdArray = array();
+								$quotationBillIdArray['quotationBillId'] = $quotationBillId;
+								$quotationBillIdArray['companyId'] = $decodedQuotationData->company->companyId;
+								$quotationBillIdArray['quotationData'] = $decodedQuotationData;
+								$documentController = new DocumentController(new Container());
+								$method=$constantArray['postMethod'];
+								$path=$constantArray['documentGenerateQuotationUrl'];
+								$documentRequest = Request::create($path,$method,$quotationBillIdArray);
+								$processedData = $documentController->getQuotationData($documentRequest);
+								return $processedData;
+							}
 						}
 					}
 					else
@@ -129,9 +156,32 @@ class QuotationController extends BaseController implements ContainerInterface
 	*/
 	public function getSearchingData(Request $request)
 	{
-		$quotationService = new QuotationService();
-		$status = $quotationService->getSearchingData($request->header());
-		return $status;
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		// get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			if(array_key_exists("issalesorder",$request->header()))
+			{
+				$billService = new BillService();
+				$billResult = $billService->getPreviousNextData($request->header());
+				return $billResult;
+			}
+			else
+			{
+				$quotationService = new QuotationService();
+				$status = $quotationService->getSearchingData($request->header());
+				return $status;
+			}
+		}
+		else
+		{
+			return $authenticationResult;
+		}	
 	}
 	
 	/**
@@ -157,16 +207,24 @@ class QuotationController extends BaseController implements ContainerInterface
 			//check the condition for image or data or both available
 			if(!empty($request->input()))
 			{
-				//check quotationId exist or not?
-				$quotationModel = new QuotationModel();
-				$quotationData = $quotationModel->getquotationIdData($quotationBillId);
-				if(strcmp($quotationData,$msgArray['404'])==0)
+				if(array_key_exists("issalesorder",$request->header()))
+				{
+					$billModel = new BillModel();
+					$result = $billModel->getSaleOrderIdData($quotationBillId);
+				}
+				else
+				{
+					//check quotationId exist or not?
+					$quotationModel = new QuotationModel();
+					$result = $quotationModel->getquotationIdData($quotationBillId);
+				}
+				if(strcmp($result,$msgArray['404'])==0)
 				{
 					return $msgArray['404'];
 				}
 				$processor = new QuotationProcessor();
 				$quotationPersistable = new QuotationPersistable();
-				$quotationPersistable = $processor->createPersistableChange($request,$quotationBillId,$quotationData);
+				$quotationPersistable = $processor->createPersistableChange($request,$quotationBillId,$result);
 				if(is_array($quotationPersistable))
 				{
 					$quotationService= new QuotationService();
@@ -182,6 +240,32 @@ class QuotationController extends BaseController implements ContainerInterface
 			{
 				return $msgArray['204'];
 			}
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+	}
+	
+	/**
+	 * update the specified resource 
+	 * @param  Request object[Request $request]
+	 * method calls the processor for creating persistable object & setting the data
+	*/
+	public function destroySalesOrderData(Request $request,$saleId)
+	{
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		// get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$billModel = new BillModel();
+			$deleteBillResult = $billModel->deleteSaleOrderData($saleId);
+			return $deleteBillResult;
 		}
 		else
 		{

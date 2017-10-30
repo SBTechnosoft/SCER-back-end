@@ -14,6 +14,9 @@
                 "tin":string,
                 "cgst":String,
                 "sgst":String,
+				"bankId":int,
+				"bankDtlId":int,
+				"micrCode":string,
 				"isDealer":enum,
 				"city":  {
 					... Standard City Object
@@ -54,6 +57,9 @@
 				"balanceFlag":Enum,
 				"amount":decimal,
 				"amountType":Enum,
+				"bankId":int,
+				"bankDtlId":int,
+				"micrCode":string,
 				"outstandingLimit":decimal,
 				"outstandingLimitType":Enum,
                 "stateAbb":char,

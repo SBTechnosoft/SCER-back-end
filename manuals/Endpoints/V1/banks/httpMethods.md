@@ -32,4 +32,21 @@
 				... Standard Bank Object
 			}
 
-**NOTES:** List all the banks 
+**NOTES:** List all the banks
+
+##### `GET /banks/branches/{bankId}`
++ Header 
+	- Authentication Token
+
++ Error Message
+
+			{
+				... Error Message
+			} 
++ Response
+
+			{
+				... Standard Bank-Branch Object
+			}
+
+**NOTES:** List all the branches of banks

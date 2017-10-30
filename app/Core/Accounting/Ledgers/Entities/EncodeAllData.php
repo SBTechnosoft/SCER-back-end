@@ -41,6 +41,9 @@ class EncodeAllData extends StateService
 			$tinNo[$decodedData] = $decodedJson[$decodedData]['tin'];
 			$cgst[$decodedData] = $decodedJson[$decodedData]['cgst'];
 			$sgst[$decodedData] = $decodedJson[$decodedData]['sgst'];
+			$bankId[$decodedData] = $decodedJson[$decodedData]['bank_id'];
+			$bankDtlId[$decodedData] = $decodedJson[$decodedData]['bank_dtl_id'];
+			$micrCode[$decodedData] = $decodedJson[$decodedData]['micr_code'];
 			$stateAbb[$decodedData] = $decodedJson[$decodedData]['state_abb'];
 			$cityId[$decodedData] = $decodedJson[$decodedData]['city_id'];
 			$ledgerGrpId[$decodedData] = $decodedJson[$decodedData]['ledger_group_id'];
@@ -111,6 +114,9 @@ class EncodeAllData extends StateService
 				'tin'=> $tinNo[$jsonData],
 				'cgst'=> $cgst[$jsonData],
 				'sgst'=> $sgst[$jsonData],
+				'bankId'=> $bankId[$jsonData],
+				'bankDtlId'=> $bankDtlId[$jsonData],
+				'micrCode'=> $micrCode[$jsonData],
 				'createdAt' => $getCreatedDate[$jsonData],
 				'updatedAt' => $getUpdatedDate[$jsonData],
 				'openingBalance' => $openingBalance[$jsonData],

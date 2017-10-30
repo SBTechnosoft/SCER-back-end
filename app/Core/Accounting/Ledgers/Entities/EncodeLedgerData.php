@@ -34,6 +34,9 @@ class EncodeLedgerData extends StateService
 		$tinNo = $decodedJson['tin'];
 		$cgst= $decodedJson['cgst'];
 		$sgst= $decodedJson['sgst'];
+		$bankId= $decodedJson['bank_id'];
+		$bankDtlId= $decodedJson['bank_dtl_id'];
+		$micrCode= $decodedJson['micr_code'];
 		$stateAbb= $decodedJson['state_abb'];
 		$cityId= $decodedJson['city_id'];
 		$ledgerGrpId= $decodedJson['ledger_group_id'];
@@ -90,6 +93,9 @@ class EncodeLedgerData extends StateService
 		$data['tin'] = $tinNo;
 		$data['cgst'] = $cgst;
 		$data['sgst'] = $sgst;
+		$data['bankId'] = $bankId;
+		$data['bankDtlId'] = $bankDtlId;
+		$data['micrCode'] = $micrCode;
 		$data['createdAt'] = $getCreatedDate;
 		$data['updatedAt'] = $getUpdatedDate;	
 		$data['ledgerGroup']= array(

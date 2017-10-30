@@ -38,6 +38,9 @@ class LedgerTransformer
 		$tin = $request->input('tin'); 
 		$cgst = $request->input('cgst'); 		
 		$sgst = $request->input('sgst'); 		
+		$bankId = $request->input('bankId'); 		
+		$bankDtlId = $request->input('bankDtlId'); 		
+		$micrCode = $request->input('micrCode'); 		
 		$balanceFlag = $request->input('balanceFlag'); 		
 		$amount = $request->input('amount'); 		
 		$amountType = $request->input('amountType'); 		
@@ -64,6 +67,9 @@ class LedgerTransformer
 		$tTin = trim($tin);
 		$tCgst = trim($cgst);
 		$tSgst = trim($sgst);
+		$tBankId = trim($bankId);
+		$tBankDtlId = trim($bankDtlId);
+		$tMicrCode = trim($micrCode);
 		$tBalanceFlag = trim($balanceFlag);
 		$tAmount = trim($amount);
 		$tAmountType = trim($amountType);
@@ -185,6 +191,9 @@ class LedgerTransformer
 			$data['tin'] = $tTin;
 			$data['cgst'] = $tCgst;
 			$data['sgst'] = $tSgst;
+			$data['bank_id'] = $tBankId;
+			$data['bank_dtl_id'] = $tBankDtlId;
+			$data['micr_code'] = $tMicrCode;
 			$data['balance_flag'] = $tBalanceFlag;
 			$data['amount'] = $tAmount;
 			$data['amount_type'] = $tAmountType;

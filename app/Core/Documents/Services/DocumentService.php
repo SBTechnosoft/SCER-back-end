@@ -38,8 +38,14 @@ class DocumentService extends BillModel
 	public function getSaleData($saleId,$headerData)
 	{
 		$documentService = new DocumentService();
-		$saleData = $documentService->getSaleIdData($saleId);
-		
+		if(array_key_exists("issalesorder",$headerData))
+		{
+			$saleData = $documentService->getSaleOrderIdData($saleId);
+		}
+		else
+		{
+			$saleData = $documentService->getSaleIdData($saleId);
+		}
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();

@@ -74,4 +74,73 @@ class BankModel extends Model
 			return json_encode($raw);
 		}
 	}
+	
+	/**
+	 * get All data 
+	 * returns the status
+	*/
+	public function getAllBranchData()
+	{	
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();		
+		$raw = DB::connection($databaseName)->select("select 
+		bank_dtl_id,
+		bank_id,
+		branch_name,
+		ifsc_code,
+		is_default
+		from bank_dtl");
+		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(count($raw)==0)
+		{
+			return $exceptionArray['204'];
+		}
+		else
+		{
+			return json_encode($raw);
+		}
+	}
+	
+	/**
+	 * get data as per given Bank Id
+	 * @param $bankId
+	 * returns the status
+	*/
+	public function getData($bankId)
+	{		
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->select("select 
+		bank_dtl_id,
+		bank_id,
+		branch_name,
+		ifsc_code,
+		is_default
+		from bank_dtl where bank_id = ".$bankId);
+		DB::commit();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(count($raw)==0)
+		{
+			return $exceptionArray['404'];
+		}
+		else
+		{
+			return json_encode($raw);
+		}
+	}
 }

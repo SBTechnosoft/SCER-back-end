@@ -429,8 +429,8 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$billArray['CompanyWebsite']=$decodedBillData->company->websiteName;
 		$billArray['CompanyContact']=$decodedBillData->company->customerCare;
 		$billArray['CompanyEmail']=$decodedBillData->company->emailId;
-		$billArray['BILLLABEL']="Tax Invoice";
-		
+		$billArray['BILLLABEL'] = array_key_exists("issalesorder",$headerData) ? "Sales Order" : "Tax Invoice";
+	
 		//gst-summary
 		$billArray['gstSummary']=$gstOutput;
 		$billArray['TotalTaxableAmt']=number_format($totalTaxableAmount,$decodedData[0]->company->noOfDecimalPoints);

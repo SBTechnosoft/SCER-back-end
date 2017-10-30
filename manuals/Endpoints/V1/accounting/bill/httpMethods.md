@@ -5,6 +5,7 @@
 	- Authentication Token
 	- 'salesType':'retail_sales/whole_sales'
 	- 'operation':'preprint'
+	- 'isSalesOrder':'ok'
 + Body
 
             {
@@ -69,6 +70,7 @@
 	- "nextSaleId":"int",
 	- "companyId":"int",
 	- "operation":"first/last"
+	- "isSalesOrder":"ok"
 + Error Message
 
 			{
@@ -117,6 +119,7 @@
 ##### `POST /accounting/bills/{saleId}`
 + Header
 	- Authentication Token
+	- "isSalesOrder":"ok"
 + Body
 
             {
@@ -149,6 +152,19 @@
                 ... HTTP_Status:200
             }
 ##### `DELETE /accounting/bills/draft-bill/{saleId}`
++ Header
+	- Authentication Token
++ Error Message
+
+			{
+				... Error Message
+			}            
++ Response
+
+            {
+                ... HTTP_Status:200
+            }
+##### `DELETE /accounting/bills/sales-order/{saleId}`
 + Header
 	- Authentication Token
 + Error Message

@@ -55,7 +55,8 @@ class QuotationService
 		$keyName = array();
 		$funcName = array();
 		$quotationArray = func_get_arg(0);
-		
+		$headerData = func_get_arg(1);
+		$documentArray=array();
 		//only data insertion
 		if(is_object($quotationArray))
 		{
@@ -72,15 +73,61 @@ class QuotationService
 			$companyId = $quotationArray->getCompanyId();
 			$ClientId = $quotationArray->getClientId();
 			$jfId= $quotationArray->getJfId();
+			$poNumber= $quotationArray->getPoNumber();
+			$paymentMode= $quotationArray->getPaymentMode();
+			$invoiceNumber= $quotationArray->getInvoiceNumber();
+			$bankName= $quotationArray->getBankName();
+			$checkNumber= $quotationArray->getCheckNumber();
+		}
+		else
+		{
+			$dataCount = count($quotationArray);
+			//data with document insertion
+			for($dataArray=0;$dataArray<$dataCount;$dataArray++)
+			{
+				if(is_array($quotationArray[$dataArray]))
+				{
+					//document
+					$documentArray[$dataArray] = $quotationArray[$dataArray];
+				}
+				else
+				{
+					$productArray = $quotationArray[$dataArray]->getProductArray();
+					$quotationNumber = $quotationArray[$dataArray]->getQuotationNumber();
+					$total = $quotationArray[$dataArray]->getTotal();
+					$totalDiscounttype = $quotationArray[$dataArray]->getTotalDiscounttype();
+					$totalDiscount = $quotationArray[$dataArray]->getTotalDiscount();
+					$extraCharge = $quotationArray[$dataArray]->getExtraCharge();
+					$tax = $quotationArray[$dataArray]->getTax();
+					$grandTotal = $quotationArray[$dataArray]->getGrandTotal();
+					$remark = $quotationArray[$dataArray]->getRemark();
+					$entryDate = $quotationArray[$dataArray]->getEntryDate();
+					$companyId = $quotationArray[$dataArray]->getCompanyId();
+					$ClientId = $quotationArray[$dataArray]->getClientId();
+					$jfId= $quotationArray[$dataArray]->getJfId();
+					$poNumber= $quotationArray[$dataArray]->getPoNumber();
+					$paymentMode= $quotationArray[$dataArray]->getPaymentMode();
+					$invoiceNumber= $quotationArray[$dataArray]->getInvoiceNumber();
+					$bankName= $quotationArray[$dataArray]->getBankName();
+					$checkNumber= $quotationArray[$dataArray]->getCheckNumber();
+				}
+			}
 			
-			//data pass to the model object for insert
-			$quotationModel = new QuotationModel();
-			$status = $quotationModel->insertData($productArray,$quotationNumber,$total,$extraCharge,$tax,$grandTotal,$remark,$entryDate,$companyId,$ClientId,$jfId,$totalDiscounttype,$totalDiscount);
-			
-			//get exception message
-			$exception = new ExceptionMessage();
-			$exceptionArray = $exception->messageArrays();
-			if(strcmp($status,$exceptionArray['500'])==0)
+		}
+		//data pass to the model object for insert
+		$quotationModel = new QuotationModel();
+		$status = $quotationModel->insertData($productArray,$quotationNumber,$total,$extraCharge,$tax,$grandTotal,$remark,$entryDate,$companyId,$ClientId,$jfId,$totalDiscounttype,$totalDiscount,$documentArray,$headerData,$poNumber,$paymentMode,$invoiceNumber,$bankName,$checkNumber);
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($status,$exceptionArray['500'])==0)
+		{
+			return $status;
+		}
+		else
+		{
+			if(array_key_exists("issalesorder",$headerData))
 			{
 				return $status;
 			}
@@ -132,8 +179,8 @@ class QuotationService
 		$flag=0;
 		$inventoryFlag=0;
 		$dataFlag=0;
+		$contentFlag=0;
 		$noDataFlag=0;
-		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -141,67 +188,101 @@ class QuotationService
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
 		$quotationModel = new QuotationModel();
-				
-		if(empty($persistableData))
+		if(empty($persistableData) && count($persistableData)==0)
 		{
 			$noDataFlag=1;
 		}
 		else if(is_array($persistableData))
 		{
-			if(count($persistableData)==0)
+			$documentFlag=0;
+			$persistableData1 = array();
+			$singleData=array();
+			$quotationId = $quotationBillId;
+			$documentArray=array();
+			$dataCount = count($persistableData);
+			for($dataArray=0;$dataArray<$dataCount;$dataArray++)
 			{
-				//almost only client data is available
-				$noDataFlag=1;
-			}
-			$arrayLength = count($persistableData);
-			$innerArrayLength = count($persistableData[$arrayLength-1]);
-			
-			if($innerArrayLength!=0)
-			{
-				if(!is_object($persistableData[$arrayLength-1]))
+				if(is_object($persistableData[$dataArray]))
 				{
-					// inventory is available
-					$flag=1;
+					$contentFlag=1;
+					$persistableData1 = $persistableData;
 				}
-				if($flag==1)
+				else
 				{
-					$quotationId = $quotationBillId;
-					$quotationCount = count($persistableData)-1;
-					for($arrayData=0;$arrayData<$quotationCount;$arrayData++)
+					if(is_object($persistableData[$dataArray][0]))
 					{
-						if($persistableData[$arrayData]->getProductArray())
+						$contentFlag=1;
+						if($documentFlag==1)
 						{
-							$inventoryFlag=1;
-							$singleData['product_array'] = $persistableData[$arrayData]->getProductArray();
+							$persistableData1 = $persistableData[$dataCount-1];
 						}
 						else
 						{
+							$persistableData1 = $persistableData[$dataCount-1];
+						}
+					}
+					else
+					{
+						if($contentFlag!=1)
+						{
+							$documentFlag=1;
+							//document is available
+							$documentArray[$dataArray] = $persistableData[$dataArray];
+						}
+					}
+				}
+			}
+			$arrayLength = count($persistableData1);
+			$innerArrayLength = count($persistableData1[$arrayLength-1]);
+			if(is_array($persistableData1))
+			{
+				if($innerArrayLength!=0)
+				{
+					if(!is_object($persistableData1[$arrayLength-1]))
+					{
+						//inventory is available
+						$flag=1;
+					}
+					if($flag==1)
+					{
+						$quotationId = $quotationBillId;
+						$quotationCount = count($persistableData1)-1;
+						for($arrayData=0;$arrayData<$quotationCount;$arrayData++)
+						{
+							if($persistableData1[$arrayData]->getProductArray())
+							{
+								$inventoryFlag=1;
+								$singleData['product_array'] = $persistableData1[$arrayData]->getProductArray();
+							}
+							else
+							{
+								$dataFlag=1;
+								$funcName = $persistableData1[$arrayData]->getName();
+								$value = $persistableData1[$arrayData]->$funcName();
+								$key = $persistableData1[$arrayData]->getKey();
+								$singleData[$key] = $value;
+							}
+						}
+					}
+					else
+					{
+						$quotationId = $quotationBillId;
+						$quotationCount = count($persistableData1);
+						for($arrayData=0;$arrayData<$quotationCount;$arrayData++)
+						{
 							$dataFlag=1;
-							$funcName = $persistableData[$arrayData]->getName();
-							$value = $persistableData[$arrayData]->$funcName();
-							$key = $persistableData[$arrayData]->getKey();
+							$funcName = $persistableData1[$arrayData]->getName();
+							$value = $persistableData1[$arrayData]->$funcName();
+							$key = $persistableData1[$arrayData]->getKey();
 							$singleData[$key] = $value;
 						}
 					}
 				}
-				else
-				{
-					$quotationId = $quotationBillId;
-					$quotationCount = count($persistableData);
-					for($arrayData=0;$arrayData<$quotationCount;$arrayData++)
-					{
-						$dataFlag=1;
-						$funcName = $persistableData[$arrayData]->getName();
-						$value = $persistableData[$arrayData]->$funcName();
-						$key = $persistableData[$arrayData]->getKey();
-						$singleData[$key] = $value;
-					}
-				}
-				$quotationUpdateResult = $quotationModel->updateQuotationData($singleData,$quotationId);
-				if(strcmp($quotationUpdateResult,$exceptionArray['204'])==0 || strcmp($quotationUpdateResult,$exceptionArray['500'])==0)
-				{
-					return $quotationUpdateResult;
-				}
+			}
+			$quotationUpdateResult = $quotationModel->updateQuotationData($singleData,$quotationId,$headerData,$documentArray,$contentFlag);
+			if(strcmp($quotationUpdateResult,$exceptionArray['204'])==0 || strcmp($quotationUpdateResult,$exceptionArray['500'])==0)
+			{
+				return $quotationUpdateResult;
 			}
 		}
 		else
@@ -264,38 +345,63 @@ class QuotationService
 				// return $processedData;
 			// }
 		}
-		if($noDataFlag==1)
+		if(array_key_exists("issalesorder",$headerData))
 		{
-			//get quotation data
-			$quotationUpdateResult = $quotationModel->getquotationIdData($quotationBillId);
-			if(strcmp($quotationUpdateResult,$exceptionArray['204'])==0)
+			$saleIdArray = array();
+			$saleIdArray['saleId'] = $quotationId;
+			$documentController = new DocumentController(new Container());
+			
+			$method=$constantArray['postMethod'];
+			$path=$constantArray['documentGenerateUrl'];
+			$documentRequest = Request::create($path,$method,$saleIdArray);
+			
+			if(array_key_exists('operation',$headerData))
 			{
-				return $exceptionArray['204'];
+				$documentRequest->headers->set('operation',$headerData['operation'][0]);
+				$documentRequest->headers->set('issalesorder',"ok");
 			}
-		}
-		//pdf generation for update quotation data
-		$documentController = new DocumentController(new Container());
-		$encoded = new EncodeData();
-		$encodeData = $encoded->getEncodedData($quotationUpdateResult);
-		$decodedQuotationData = json_decode($encodeData);
-		
-		$quotationBillIdArray = array();
-		$quotationBillIdArray['quotationBillId'] = $quotationBillId;
-		$quotationBillIdArray['companyId'] = $decodedQuotationData->company->companyId;
-		$quotationBillIdArray['quotationData'] = $decodedQuotationData;
-		$method=$constantArray['postMethod'];
-		$path=$constantArray['documentGenerateQuotationUrl'];
-		$documentRequest = Request::create($path,$method,$quotationBillIdArray);
-		if(array_key_exists('operation',$headerData))
-		{
-			$documentRequest->headers->set('operation',$headerData['operation'][0]);
+			else
+			{
+				$documentRequest->headers->set('key',$headerData);
+				$documentRequest->headers->set('issalesorder',"ok");
+			}
+			$processedData = $documentController->getData($documentRequest);
+			return $processedData;
 		}
 		else
 		{
-			$documentRequest->headers->set('key',$headerData);
+			if($noDataFlag==1)
+			{
+				//get quotation data
+				$quotationUpdateResult = $quotationModel->getquotationIdData($quotationBillId);
+				if(strcmp($quotationUpdateResult,$exceptionArray['204'])==0)
+				{
+					return $exceptionArray['204'];
+				}
+			}
+			//pdf generation for update quotation data
+			$documentController = new DocumentController(new Container());
+			$encoded = new EncodeData();
+			$encodeData = $encoded->getEncodedData($quotationUpdateResult);
+			$decodedQuotationData = json_decode($encodeData);
+			
+			$quotationBillIdArray = array();
+			$quotationBillIdArray['quotationBillId'] = $quotationBillId;
+			$quotationBillIdArray['companyId'] = $decodedQuotationData->company->companyId;
+			$quotationBillIdArray['quotationData'] = $decodedQuotationData;
+			$method=$constantArray['postMethod'];
+			$path=$constantArray['documentGenerateQuotationUrl'];
+			$documentRequest = Request::create($path,$method,$quotationBillIdArray);
+			if(array_key_exists('operation',$headerData))
+			{
+				$documentRequest->headers->set('operation',$headerData['operation'][0]);
+			}
+			else
+			{
+				$documentRequest->headers->set('key',$headerData);
+			}
+			$processedData = $documentController->getQuotationData($documentRequest);
+			return $processedData;
 		}
-		$processedData = $documentController->getQuotationData($documentRequest);
-		return $processedData;
-		
 	}
 }

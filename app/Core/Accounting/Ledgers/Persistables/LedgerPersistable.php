@@ -29,6 +29,9 @@ use ERP\Core\Accounting\Ledgers\Properties\InvoiceNumberPropertyTrait;
 use ERP\Core\Accounting\Ledgers\Properties\IsDealerPropertyTrait;
 use ERP\Core\Accounting\Ledgers\Properties\OutstandingLimitTrait;
 use ERP\Core\Accounting\Ledgers\Properties\OutstandingLimitTypeTrait;
+use ERP\Core\Accounting\Ledgers\Properties\bankIdTrait;
+use ERP\Core\Accounting\Ledgers\Properties\bankDtlIdTrait;
+use ERP\Core\Accounting\Ledgers\Properties\micrCodeTrait;
 use ERP\Core\Clients\Properties\ClientIdPropertyTrait;
 use ERP\Core\Clients\Properties\ClientNamePropertyTrait;
 /**
@@ -36,6 +39,9 @@ use ERP\Core\Clients\Properties\ClientNamePropertyTrait;
  */
 class LedgerPersistable
 {
+	use bankIdTrait;
+	use micrCodeTrait;
+	use bankDtlIdTrait;
 	use NamePropertyTrait;
     use LedgerNamePropertyTrait;
     use LedgerIdPropertyTrait;

@@ -1632,7 +1632,6 @@ class BillProcessor extends BaseProcessor
 		}
 		if($docFlag==1)
 		{
-			$array1 = array();
 			array_push($processedData,$billPersistable);
 			return $processedData;
 		}
