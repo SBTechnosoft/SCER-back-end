@@ -268,26 +268,25 @@ class BillProcessor extends BaseProcessor
 		$generalLedgerData = $ledgerModel->getLedger($tRequest['company_id']);
 		$generalLedgerArray = json_decode($generalLedgerData);
 		$salesTypeEnum = new SalesTypeEnum();
-		$salesTypeEnumArray = $salesTypeEnum->enumArrays();		
-		if(strcmp($request->header()['salestype'][0],$salesTypeEnumArray['retailSales'])==0)
-		{
-			//get ledger-id of retail_sales as per given company_id
-			$ledgerIdData = $ledgerModel->getLedgerId($tRequest['company_id'],$request->header()['salestype'][0]);
-			$decodedLedgerId = json_decode($ledgerIdData);
-		}
-		else if(strcmp($request->header()['salestype'][0],$salesTypeEnumArray['wholesales'])==0)
-		{
+		$salesTypeEnumArray = $salesTypeEnum->enumArrays();
+		// if(strcmp($request->header()['salestype'][0],$salesTypeEnumArray['retailSales'])==0)
+		// {
+			// get ledger-id of retail_sales as per given company_id
+			// $ledgerIdData = $ledgerModel->getLedgerId($tRequest['company_id'],$request->header()['salestype'][0]);
+			// $decodedLedgerId = json_decode($ledgerIdData);
+		// }
+		// else
+		// {
 			//get ledger-id of whole sales as per given company_id
-			$ledgerIdData = $ledgerModel->getLedgerId($tRequest['company_id'],$request->header()['salestype'][0]);
+			$ledgerIdData = $ledgerModel->getLedgerId($tRequest['company_id'],$salesTypeEnumArray['wholesales']);
 			$decodedLedgerId = json_decode($ledgerIdData);
-		}
+		// }
 		$ledgerTaxAcId = $generalLedgerArray[0][0]->ledger_id;
 		$ledgerSaleAcId = $decodedLedgerId[0]->ledger_id;
 		$ledgerDiscountAcId = $generalLedgerArray[1][0]->ledger_id;
 		
 		$amountTypeEnum = new AmountTypeEnum();
 		$amountTypeArray = $amountTypeEnum->enumArrays();
-		
 		$ledgerAmount = $tRequest['total']-$tRequest['advance'];		
 		$discountTotal=0;
 		for($discountArray=0;$discountArray<count($tRequest[0]);$discountArray++)
@@ -662,14 +661,14 @@ class BillProcessor extends BaseProcessor
 			$billPersistable->setTotalDiscount($tRequest['total_discount']);
 			$billPersistable->setPoNumber($tRequest['po_number']);
 			$billPersistable->setJfId($jsonDecodedJfId);
-			if(strcmp($request->header()['salestype'][0],$salesTypeEnumArray['retailSales'])==0 || strcmp($request->header()['salestype'][0],$salesTypeEnumArray['wholesales'])==0)
-			{
-				$billPersistable->setSalesType($request->header()['salestype'][0]);
-			}
-			else
-			{
-				return $msgArray['content'];
-			}
+			// if(strcmp($request->header()['salestype'][0],$salesTypeEnumArray['retailSales'])==0 || strcmp($request->header()['salestype'][0],$salesTypeEnumArray['wholesales'])==0)
+			// {
+				$billPersistable->setSalesType($salesTypeEnumArray['wholesales']);
+			// }
+			// else
+			// {
+				// return $msgArray['content'];
+			// }
 			if($docFlag==1)
 			{
 				$array1 = array();
@@ -1632,6 +1631,7 @@ class BillProcessor extends BaseProcessor
 		}
 		if($docFlag==1)
 		{
+			$array1 = array();
 			array_push($processedData,$billPersistable);
 			return $processedData;
 		}

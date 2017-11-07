@@ -25,7 +25,6 @@ class PolishReportModel extends Model
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		
 		DB::beginTransaction();
 		$raw = DB::connection($databaseName)->select("select 
 		sale_id,
@@ -34,18 +33,23 @@ class PolishReportModel extends Model
 		bank_name,
 		invoice_number,
 		check_number,
+		job_card_number,
 		total,
+		total_discounttype,
+		total_discount,
+		extra_charge,
 		tax,
 		grand_total,
 		advance,
 		balance,
+		po_number,
 		remark,
 		entry_date,
 		client_id,
 		sales_type,
 		refund,
-		jf_id,
 		company_id,
+		jf_id,
 		created_at,
 		updated_at 
 		from sales_bill 

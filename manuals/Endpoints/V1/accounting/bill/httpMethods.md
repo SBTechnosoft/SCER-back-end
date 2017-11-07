@@ -119,7 +119,7 @@
 ##### `POST /accounting/bills/{saleId}`
 + Header
 	- Authentication Token
-	- "isSalesOrder":"ok"
+	- "isSalesOrderUpdate":"ok"
 + Body
 
             {

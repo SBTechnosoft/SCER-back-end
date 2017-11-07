@@ -365,7 +365,6 @@ class BillService
 								$transformEntryDates = $splitedEntryDate[2]."-".$splitedEntryDate[1]."-".$splitedEntryDate[0];
 								$singleData['entry_date'] = $transformEntryDates;
 							}
-							echo "1";
 							$billModel = new BillModel();
 							$billUpdateResult = $billModel->updateBillData($singleData,$saleId,$imageArrayData,$headerData);
 							if(strcmp($billUpdateResult,$exceptionArray['200'])==0)
@@ -394,7 +393,6 @@ class BillService
 						}
 						else
 						{
-							echo "2";
 							// only image is available
 							$billModel = new BillModel();
 							$billUpdateResult = $billModel->updateImageData($saleId,$imageArrayData);
@@ -472,7 +470,6 @@ class BillService
 							$transformEntryDate = $splitedEntryDate[2]."-".$splitedEntryDate[1]."-".$splitedEntryDate[0];
 							$singleData['entry_date'] = $transformEntryDate;
 						}
-						echo "3";
 						$billModel = new BillModel();
 						$billUpdateResult = $billModel->updateBillData($singleData,$saleId,$imageArrayData,$headerData);
 						if(strcmp($billUpdateResult,$exceptionArray['200'])==0)
@@ -509,14 +506,10 @@ class BillService
 				//entry-date conversion
 				$splitedEntryDate = explode("-",$entryDate);
 				$transformEntryDate = $splitedEntryDate[2]."-".$splitedEntryDate[1]."-".$splitedEntryDate[0];
-				echo "3";
 				$billModel = new BillModel();
-				echo "qwet";
 				$billUpdateResult = $billModel->updateBillEntryData($transformEntryDate,$saleId,$headerData);
-				echo "wert";
 				if(strcmp($billUpdateResult,$exceptionArray['200'])==0)
 				{
-					echo "kk";
 					$saleIdArray = array();
 					$saleIdArray['saleId'] = $saleId;
 					$documentController = new DocumentController(new Container());
@@ -533,12 +526,10 @@ class BillService
 					{
 						$documentRequest->headers->set('key',$headerData);
 					}
-					echo "sss";
 					if(array_key_exists("issalesorder",$headerData))
 					{
 						$documentRequest->headers->set('issalesorder',$headerData['issalesorder'][0]);
 					}
-					echo "vv";
 					$processedData = $documentController->getData($documentRequest);
 					return $processedData;
 				}

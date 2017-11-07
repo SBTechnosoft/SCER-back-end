@@ -39,7 +39,6 @@ class BillModel extends Model
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		$requestInput = $requestData->input();
-		
 		$isSalesOrder = array_key_exists("issalesorder",$requestData->header())?"is_salesorder='ok'":"is_salesorder='not'";
 		$isSalesOrderInsert = array_key_exists("issalesorder",$requestData->header())?"ok":"not";
 		if($jobCardNumber!="")
@@ -173,9 +172,8 @@ class BillModel extends Model
 			DB::beginTransaction();
 			$saleId = DB::connection($databaseName)->select("SELECT 
 			max(sale_id) sale_id
-			FROM sales_bill where deleted_at='0000-00-00 00:00:00' and is_draft='no' and ".$isSalesOrderInsert);
+			FROM sales_bill where deleted_at='0000-00-00 00:00:00' and ".$isSalesOrder);
 			DB::commit();
-			
 			DB::beginTransaction();
 			$salesTrnData = DB::connection($databaseName)->statement("insert into sales_bill_trn(
 			product_array,
@@ -203,7 +201,6 @@ class BillModel extends Model
 			jf_id) 
 			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$poNumber."','".$isSalesOrderInsert."','".$remark."','".$entryDate."','".$companyId."','".$salesType."','".$ClientId."','".$saleId[0]->sale_id."','".$jfId."')");
 			DB::commit();
-			
 			if(is_array($saleId))
 			{
 				for($docArray=0;$docArray<count($documentArray);$docArray++)
@@ -262,7 +259,7 @@ class BillModel extends Model
 					jf_id,
 					created_at,
 					updated_at 
-					from sales_bill where sale_id=(select MAX(sale_id) as sale_id from sales_bill) and deleted_at='0000-00-00 00:00:00' and is_draft='no' and ".$isSalesOrderInsert); 
+					from sales_bill where sale_id=(select MAX(sale_id) as sale_id from sales_bill) and deleted_at='0000-00-00 00:00:00' and is_draft='no' and ".$isSalesOrder); 
 					DB::commit();
 					if(count($billResult)==1)
 					{
@@ -1318,6 +1315,44 @@ class BillModel extends Model
 				$saleDataResult = $this->getDocumentData($lastSaleDataResult);
 				return $saleDataResult;
 			}
+		}
+		else
+		{
+			DB::beginTransaction();
+			$allSalesOrderData = DB::connection($databaseName)->select("select 
+			sale_id,
+			product_array,
+			payment_mode,
+			bank_name,
+			invoice_number,
+			job_card_number,
+			check_number,
+			total,
+			total_discounttype,
+			total_discount,
+			extra_charge,
+			tax,
+			grand_total,
+			advance,
+			balance,
+			po_number,
+			remark,
+			entry_date,
+			client_id,
+			sales_type,
+			refund,
+			company_id,
+			jf_id,
+			created_at,
+			updated_at 
+			from sales_bill 
+			where ".$salesType."
+			company_id = '".$headerData['companyid'][0]."' and
+			deleted_at='0000-00-00 00:00:00' ".$isSalesOrder);
+			DB::commit();
+			
+			$saleDataResult = $this->getDocumentData($allSalesOrderData);
+			return $saleDataResult;
 		}
 	}
 	

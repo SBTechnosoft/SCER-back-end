@@ -276,19 +276,17 @@ class BillController extends BaseController implements ContainerInterface
 			{
 				//check saleId exist or not?
 				$billModel = new BillModel();
-				$billData = array_key_exists("issalesorder",$request->header()) 
-							? $billModel->getSaleOrderData($saleId) : $billModel->getSaleIdData($saleId) ;
+				$billData = array_key_exists("issalesorderupdate",$request->header()) 
+							? $billModel->getSaleOrderData($saleId) : $billModel->getSaleIdData($saleId);
 				if(strcmp($billData,$msgArray['404'])==0)
 				{
 					return $msgArray['404'];
 				}
-				echo "vv";
 				$processor = new BillProcessor();
 				$billPersistable = new BillPersistable();
 				$billPersistable = $processor->createPersistableChange($request,$saleId,$billData);
 				if(is_array($billPersistable) || is_object($billPersistable))
 				{
-					echo "ll";
 					$billService= new BillService();
 					$status = $billService->updateData($billPersistable,$saleId,$request->header());
 					return $status;
