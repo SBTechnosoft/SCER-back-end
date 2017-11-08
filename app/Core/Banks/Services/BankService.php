@@ -48,7 +48,6 @@ class BankService extends AbstractService
 	{
 		$bankModel = new BankModel();
 		$status = $bankModel->getAllData();
-		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$fileSizeArray = $exception->messageArrays();
@@ -97,7 +96,7 @@ class BankService extends AbstractService
 	{
 		$bankModel = new BankModel();
 		$status = $bankModel->getAllBranchData();
-		//get exception message
+		// get exception message
 		$exception = new ExceptionMessage();
 		$exceltionArray = $exception->messageArrays();
 		if(strcmp($status,$exceltionArray['204'])==0)
@@ -122,7 +121,7 @@ class BankService extends AbstractService
 		$bankModel = new BankModel();
 		$status = $bankModel->getBranchData($bankId);
 		
-		//get exception message
+		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		if(strcmp($status,$exceptionArray['404'])==0)
@@ -132,7 +131,7 @@ class BankService extends AbstractService
 		else
 		{
 			$encoded = new EncodeAllBranchData();
-			$encodeData = $encoded->getEncodedData($status);
+			$encodeData = $encoded->getEncodedAllData($status);
 			return $encodeData;
 		}
 	}

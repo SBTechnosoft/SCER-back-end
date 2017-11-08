@@ -9,6 +9,7 @@
 				"contactNo":string,
 				"address":string,
 				"pincode":int,
+				"permissionArray":string,
 				"state": {
                     ... Standard State Object
 				},
@@ -36,6 +37,7 @@
 				"contactNo":string,
 				"address":string,
 				"pincode":int,
+				"permissionArray":string,
 				"stateAbb":char,
 				"cityId": int,
 				"companyId":int,

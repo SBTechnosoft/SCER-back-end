@@ -29,7 +29,6 @@ class BankModel extends Model
 		bank_name
 		from bank_mst where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
-		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -81,11 +80,11 @@ class BankModel extends Model
 	*/
 	public function getAllBranchData()
 	{	
-		//database selection
+		// database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
-		
+		ini_set('memory_limit', '256M');
 		DB::beginTransaction();		
 		$raw = DB::connection($databaseName)->select("select 
 		bank_dtl_id,
@@ -95,8 +94,7 @@ class BankModel extends Model
 		is_default
 		from bank_dtl");
 		DB::commit();
-		
-		//get exception message
+		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)
@@ -114,9 +112,9 @@ class BankModel extends Model
 	 * @param $bankId
 	 * returns the status
 	*/
-	public function getData($bankId)
+	public function getBranchData($bankId)
 	{		
-		//database selection
+		// database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
@@ -131,7 +129,7 @@ class BankModel extends Model
 		from bank_dtl where bank_id = ".$bankId);
 		DB::commit();
 		
-		//get exception message
+		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		if(count($raw)==0)

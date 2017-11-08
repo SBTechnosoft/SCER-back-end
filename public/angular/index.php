@@ -722,21 +722,21 @@ include ('connection.php');
 				// "clientName":"kgjkbkt","quotationNumber":"INV/2016-15/30","address1":"sfja,sa1",
 				// "stateAbb":"IN-AG","cityId":1,"total":101,"tax":11,"grandTotal":131,"remark":"adsfsf afasf1"}]}];
 				
-				// $scope.inventory=[{"productId": 6 ,"discount":11,"discountType":"flat","price":1301,"qty":41,'color':'ddd1',
-				// 'frameNo':'fff1','size':'12T1'},{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":40,'color':'hh',
-				// 'frameNo':'dsfds','size':'12T1'}];
+				$scope.inventory=[{"productId": 6 ,"discount":11,"discountType":"flat","price":1301,"qty":41,'color':'ddd1',
+				'frameNo':'fff1','size':'12T1'},{"productId": 6 ,"discount":12,"discountType":"flat","price":1300,"qty":40,'color':'hh',
+				'frameNo':'dsfds','size':'12T1'}];
 				
 				// angular.forEach($scope.user[0]['billData'][0], function (input,key) {
 					
 					// formdata.append(key,input);
 				// });
-				// for(var i=0;i<$scope.inventory.length;i++)
-				// {
-					// angular.forEach($scope.inventory[i], function (input,key) {
+				for(var i=0;i<$scope.inventory.length;i++)
+				{
+					angular.forEach($scope.inventory[i], function (input,key) {
 						
-						// formdata.append('inventory['+i+']['+key+']',input);
-					// });
-				// }
+						formdata.append('inventory['+i+']['+key+']',input);
+					});
+				}
 	//----------------------------------------------- bill -------------------------------------------------------------//
 				// $scope.user = [{"billData":[{"companyId":83,"entryDate":"22-12-2015",
 				// "contactNo":"8758384084","isDisplay":"no","emailId":"reemapatel25@gmail.co.in",
