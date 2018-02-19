@@ -37,6 +37,12 @@ class SettingTransformer
 			$data['paymentdate_no_of_days'] = trim($request->input('paymentdateNoOfDays'));
 			$data['paymentdate_status'] = trim($request->input('paymentdateStatus'));
 		}
+		else if(array_key_exists('productColorStatus',$request->input()))
+		{
+			$data['product_color_status'] = trim($request->input('productColorStatus'));
+			$data['product_size_status'] = trim($request->input('productSizeStatus'));
+			$data['product_best_before_status'] = trim($request->input('productBestBeforeStatus'));
+		}
 		else if(array_key_exists('chequeno',$request->input()))
 		{
 			$chequeNoEnum = new ChequeNoEnum();

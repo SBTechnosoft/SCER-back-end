@@ -37,6 +37,7 @@ class SettingModel extends Model
 		$chequeNoArray = array();
 		$serviceDateArray = array();
 		$serviceDateArray = array();
+		$productArray = array();
 		
 		$barcodeFlag=0;
 		$chequeNoFlag=0;
@@ -44,6 +45,8 @@ class SettingModel extends Model
 		$birthDateFlag=0;
 		$anniDateFlag=0;
 		$paymaneDateFlag=0;
+		$productFlag=0;
+		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -80,6 +83,11 @@ class SettingModel extends Model
 			{
 				$paymaneDateFlag=1;
 				$paymaneDateArray[$getSettingKey[$data]] = $getSettingData[$data];
+			}
+			else if(strcmp($constantArray['productSetting'],$explodedSetting[0])==0)
+			{
+				$productFlag=1;
+				$productArray[$getSettingKey[$data]] = $getSettingData[$data];
 			}
 		}
 		if($barcodeFlag==1)
@@ -136,6 +144,13 @@ class SettingModel extends Model
 			values('".$constantArray['anniDateReminderSetting']."','".json_encode($anniDateArray)."')");
 			DB::commit();
 		}
+		else if($productFlag==1)
+		{
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->statement("insert into setting_mst(setting_type,setting_data) 
+			values('".$constantArray['productSetting']."','".json_encode($productArray)."')");
+			DB::commit();
+		}
 
 		if($raw==1)
 		{
@@ -165,6 +180,7 @@ class SettingModel extends Model
 		$paymentDateArray = array();
 		$birthDateArray = array();
 		$anniDateArray = array();
+		$productArray = array();
 		date_default_timezone_set("Asia/Calcutta");
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
@@ -175,6 +191,7 @@ class SettingModel extends Model
 		$paymentDateFlag=0;
 		$birthDateFlag=0;
 		$anniDateFlag=0;
+		$productFlag=0;
 
 		$constantArray = $constantDatabase->constantVariable();
 		for($data=0;$data<count($settingData);$data++)
@@ -209,6 +226,11 @@ class SettingModel extends Model
 			{
 				$anniDateFlag=1;
 				$anniDateArray[$key[$data]] = $settingData[$data];
+			}
+			else if(strcmp($constantArray['productSetting'],$explodedSetting[0])==0)
+			{
+				$productFlag=1;
+				$productArray[$key[$data]] = $settingData[$data];
 			}
 		}
 		
@@ -275,6 +297,17 @@ class SettingModel extends Model
 			set setting_data = '".json_encode($anniDateArray)."',
 			updated_at = '".$mytime."'
 			where setting_type='".$constantArray['anniDateReminderSetting']."' and
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+		}
+		else if($productFlag==1)
+		{
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->statement("update
+			setting_mst 
+			set setting_data = '".json_encode($productArray)."',
+			updated_at = '".$mytime."'
+			where setting_type='".$constantArray['productSetting']."' and
 			deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
 		}

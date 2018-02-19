@@ -108,6 +108,18 @@ class EncodeAllData extends Setting
 					'updatedAt' => $getUpdatedDate[$decodedData]
 				);
 			}
+			else if(strcmp($decodedJson[$decodedData]['setting_type'],$constantArray['productSetting'])==0)
+			{
+				$data[$decodedData]= array(
+					'settingId' => $decodedJson[$decodedData]['setting_id'],
+					'settingType' => $decodedJson[$decodedData]['setting_type'],
+					'productBestBeforeStatus' => $decodedSettingData->product_best_before_status,
+					'productSizeStatus' => $decodedSettingData->product_size_status,
+					'productColorStatus' => $decodedSettingData->product_color_status,
+					'createdAt' => $getCreatedDate[$decodedData],
+					'updatedAt' => $getUpdatedDate[$decodedData]
+				);
+			}
 		}
 		return json_encode($data);
 	}

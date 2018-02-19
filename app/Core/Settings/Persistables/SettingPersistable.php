@@ -19,6 +19,10 @@ use ERP\Core\Settings\Properties\AnnireminderTypeTrait;
 use ERP\Core\Settings\Properties\AnnireminderTimeTrait;
 use ERP\Core\Settings\Properties\AnnireminderNotifyByTrait;
 use ERP\Core\Settings\Properties\AnnireminderStatusTrait;
+
+use ERP\Core\Settings\Properties\ProductColorStatusTrait;
+use ERP\Core\Settings\Properties\ProductSizeStatusTrait;
+use ERP\Core\Settings\Properties\ProductBestBeforeStatusTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -42,4 +46,8 @@ class SettingPersistable
     use AnnireminderTimeTrait;
     use AnnireminderNotifyByTrait;
     use AnnireminderStatusTrait;
+    
+    use ProductColorStatusTrait;
+    use ProductSizeStatusTrait;
+    use ProductBestBeforeStatusTrait;
 }
