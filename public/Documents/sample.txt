@@ -82,3 +82,5 @@ Swaminarayan : ALTER TABLE `template_mst` CHANGE `template_type` `template_type`
 13-feb-2018(silicon Done,swaminarayan done,arihant done)
 1. ALTER TABLE `template_mst` CHANGE `template_name` `template_name` VARCHAR(500) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL COMMENT 'name of template';
 
+19-feb-2018 (pending)
+1. ALTER TABLE `product_mst` ADD `best_before_time` INT(11) NULL DEFAULT NULL AFTER `max_sale_qty`, ADD `best_before_type` ENUM('day','month','year') NULL DEFAULT NULL AFTER `best_before_time`, ADD `cess_flat` DECIMAL(20,4) NOT NULL DEFAULT '0' AFTER `best_before_type`, ADD `cess_percentage` DECIMAL(20,4) NOT NULL DEFAULT '0' AFTER `cess_flat`;

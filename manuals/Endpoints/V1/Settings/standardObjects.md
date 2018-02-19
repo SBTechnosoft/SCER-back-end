@@ -13,6 +13,9 @@
 				"annireminderType": Enum,
 				"annireminderTime": Enum,
 				"annireminderNotifyBy": Enum,
+				"productColor":varchar,
+				"productSize":varchar,
+				"productBestBeforeStatus":Enum,
 				"status":Enum,
 				"createdAt":timestamp,
 				"updatedAt":datetime
@@ -66,7 +69,7 @@
 				notifyByNone : 'none'
 			}
 
-##### status Enum
+##### status/ProductBestBeforeStatus Enum
 			{
 				onStatus:'on',
 				offStatus:'off'
