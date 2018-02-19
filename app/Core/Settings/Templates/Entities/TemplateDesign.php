@@ -22,7 +22,7 @@ class TemplateDesign
 
 		$templateArray = array();
 
-		$templateArray['invoice'] =  "<table style=''height: 1296px; width: 775px; margin-left: auto; margin-right: auto; font-family: calibri; border: 1px solid black; border-collapse: collapse; border-padding: 0;'' cellspacing=''0'' cellpadding=''0''>
+		$templateArray['Invoice'] =  "<table style=''height: 1296px; width: 775px; margin-left: auto; margin-right: auto; font-family: calibri; border: 1px solid black; border-collapse: collapse; border-padding: 0;'' cellspacing=''0'' cellpadding=''0''>
 									<tbody>
 									<tr style=''height: 10px; padding: 0px; padding-top: 5px;''>
 									<td style=''height: 10px; text-align: left; vertical-align: top; font-size: 12px; padding-top: 5px;'' colspan=''1''>Original</td>
@@ -117,7 +117,7 @@ class TemplateDesign
 									</table>
 									<p>&nbsp;</p>";
 
-		$templateArray['payment'] = "<div style=''background-image: url(''http://4.bp.blogspot.com/-J9g2UmC8cJk/UCyoyj24VMI/AAAAAAAAEDg/Q3oUk33685w/s1600/Indian+Flag+Wallpapers-03.jpg''); background-size: 100% 100%;''>
+		$templateArray['Payment'] = "<div style=''background-image: url(''http://4.bp.blogspot.com/-J9g2UmC8cJk/UCyoyj24VMI/AAAAAAAAEDg/Q3oUk33685w/s1600/Indian+Flag+Wallpapers-03.jpg''); background-size: 100% 100%;''>
 
 
 
@@ -291,7 +291,7 @@ class TemplateDesign
 
 									</div>";
 
-		$templateArray['email'] = " <p>Dear [ClientName],</p>
+		$templateArray['Email_NewOrder'] = " <p>Dear [ClientName],</p>
 
 									<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Welcome to [Company] Family.</p>
 
@@ -300,12 +300,33 @@ class TemplateDesign
 									<p>Thanks &amp; Regards</p>
 
 									<p>The Team [Company].</p>";
+		$templateArray['Email_DuePayment'] = "<p>Dear [ClientName],</p> 
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Welcome to [Company] Family.<
+									/p> <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Thank you for shopping with 
+									us.Your remaining amount =&nbsp;[RemainingPayment]</p> <p>Thanks &amp; Regards</p> <p>The 
+									Team [Company].</p>";
 
-		$templateArray['sms'] = "<p>Dear [ClientName],</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		$templateArray['Email_BirthDay'] = "<p>Dear [ClientName] ,</p>
+									<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;Wish u a many many happy returns of the day.Happy BirthDay.</p>";
+
+		$templateArray['Email_AnniversaryDay'] = "<p>Dear [ClientName],</p>
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Wish u a happy Anniversary.Happy Anniversary.</p>";
+
+		$templateArray['Sms_NewOrder'] = "<p>Dear [ClientName],</p><
+									p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
 									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Thank you for shopping with us.</p>";
 
-		$templateArray['blank'] = "<div style=''background-size: 100% 100%; height: 29cm; width: 20.5cm;''>
+		$templateArray['Sms_DuePayment'] = "<p>Dear [ClientName],</p>
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Your remaining payment =&nbsp;[RemainingPayment]</p>";
+
+		$templateArray['Sms_BirthDay'] = "<p>Dear [ClientName],</p>
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Happy Birthday</p>";
+
+		$templateArray['Sms_AnniversaryDay'] = "<p>Dear [ClientName],</p>
+									<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Happy Anniversary</p>";
+
+		$templateArray['Blank'] =  "<div style=''background-size: 100% 100%; height: 29cm; width: 20.5cm;''>
 									<table style=''border-collapse: collapse; border-spacing: 0px; margin-left: auto; margin-right: auto; height: 29cm; width: 21.3cm;'' cellspacing=''0''>
 									<tbody>
 									<tr style=''height: 6cm;''>
@@ -378,7 +399,7 @@ class TemplateDesign
 									</tbody>
 									</table>
 									</div>";
-		$templateArray['quotation'] = "<div style=''background-size: 100% 100%; height: 29cm; width: 20.5cm;''>
+		$templateArray['Quotation'] = "<div style=''background-size: 100% 100%; height: 29cm; width: 20.5cm;''>
 										<table style=''border-collapse: collapse; border-spacing: 0px; margin-left: auto; margin-right: auto; height: 29cm; width: 21.3cm;'' border=''1'' cellspacing=''0''>
 										<tbody>
 										<tr style=''height: 5cm;''>

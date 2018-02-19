@@ -549,7 +549,7 @@ class ProductController extends BaseController implements ContainerInterface
      */
 	public function update(Request $request,$productId)
     {   
-		//Authentication
+    	//Authentication
 		$tokenAuthentication = new TokenAuthentication();
 		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
@@ -592,7 +592,50 @@ class ProductController extends BaseController implements ContainerInterface
 			return $authenticationResult;
 		}
 	}
+
+	/**
+     * Update the specified resource in storage.
+     * @param  Request object[Request $request]
+     */
+	public function batchUpdate(Request $request)
+    {   
+    	//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$this->request = $request;
+			$processor = new ProductProcessor();
+			$productPersistable = new ProductPersistable();		
+			$productService= new ProductService();			
+			//get exception message
+			$exception = new ExceptionMessage();
+			$exceptionArray = $exception->messageArrays();
+			
+				$productPersistable = $processor->createPersistableBatchUpdateChange($this->request);
+				if(is_array($productPersistable))
+				{
+					$status = $productService->updateBatchData($productPersistable);
+					return $status;
+				}
+				else
+				{
+					return $productPersistable;
+				}
+			
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+	}
 	
+
     /**
      * Remove the specified resource from storage.
      * @param  Request object[Request $request]     

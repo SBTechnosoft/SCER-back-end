@@ -185,6 +185,7 @@ class EncodeAllData extends ClientService
 					'clientName'=>$clientData->clientName,
 					'companyName'=>$clientData->companyName,
 					'contactNo'=>$clientData->contactNo,
+					'contactNo1'=>$clientData->contactNo1,
 					'emailId'=>$clientData->emailId,
 					'professionId'=>$clientData->professionId,
 					'address1'=>$clientData->address1,

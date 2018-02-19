@@ -7,6 +7,9 @@ use Carbon;
 use ERP\Exceptions\ExceptionMessage;
 use ERP\Entities\Constants\ConstantClass;
 use stdClass;
+use ERP\Model\Accounting\ProfitLoss\ProfitLossModel;
+use ERP\Model\Accounting\BalanceSheet\BalanceSheetModel;
+use ERP\Model\Accounting\Bills\BillModel;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -192,12 +195,108 @@ class TaxationModel extends Model
 	}
 	
 	/**
+	 * get income-expense data
+	 * returns the array-data/exception message
+	*/
+	public function getIncomeExpenseData($companyId,$headerData)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+
+		$mytime = Carbon\Carbon::now();
+		$dateString='';
+		$transformFromDate='';
+		if(array_key_exists('fromdate',$headerData) && array_key_exists('todate',$headerData))
+		{
+			//date conversion
+			//from-date conversion
+			$splitedFromDate = explode("-",$headerData['fromdate'][0]);
+			$transformFromDate = $splitedFromDate[2]."-".$splitedFromDate[1]."-".$splitedFromDate[0];
+			//to-date conversion
+			$splitedToDate = explode("-",$headerData['todate'][0]);
+			$transformToDate = $splitedToDate[2]."-".$splitedToDate[1]."-".$splitedToDate[0];
+			$dateString = "(entry_date BETWEEN '".$transformFromDate."' AND '".$transformToDate."') and";
+		}
+		//get purchase data from purchase-bill
+		DB::beginTransaction();	
+		$purchaseResult = DB::connection($databaseName)->select("select
+		SUM(grand_total) as grand_total,
+		purchase_id,
+		vendor_id,
+		product_array,
+		bill_number,
+		total,
+		tax,
+		entry_date,
+		company_id,
+		jf_id
+		from purchase_bill
+		where bill_type='purchase_bill' and ".$dateString."
+		company_id='".$companyId."' and
+		deleted_at='0000-00-00 00:00:00'"); 
+		DB::commit();
+
+		//get sales data from sales-bill
+		DB::beginTransaction();	
+		$saleResult = DB::connection($databaseName)->select("select
+		SUM(grand_total) as grand_total,
+		sale_id,
+		product_array,
+		invoice_number,
+		total,
+		tax,
+		entry_date,
+		company_id,
+		jf_id
+		from sales_bill
+		where sales_type='whole_sales' and ".$dateString."
+		company_id='".$companyId."' and
+		deleted_at='0000-00-00 00:00:00'"); 
+		DB::commit();
+		if(count($purchaseResult)!=0 && count($saleResult)!=0)
+		{
+			$tradingAmount = $purchaseResult[0]->grand_total - $saleResult[0]->grand_total;
+		}
+		else if(count($purchaseResult)==0 && count($saleResult)==0)
+		{
+			$tradingAmount =0;
+		}
+		else if(count($purchaseResult)==0)
+		{
+			$tradingAmount = - $saleResult[0]->grand_total;
+		}
+		else if(count($saleResult)==0)
+		{
+			$tradingAmount =  $purchaseResult[0]->grand_total;
+		}
+		else
+		{
+			$tradingAmount = 0;
+		}
+		$profitLoassModal = new ProfitLossModel();
+		$profitLossData = $profitLoassModal->getProfitLossDataForInEx($transformFromDate,$transformToDate,$companyId);
+
+		$balancesheetModal = new BalanceSheetModel();
+		$balancesheetData = $balancesheetModal->getBalanceSheetDataOfInEx($transformFromDate,$transformToDate,$companyId);
+		$profitLossArray = array();
+		$profitLossArray['tradingAmount'] = $tradingAmount;
+		$profitLossArray['profitLossAmount'] = $profitLossData;
+		$profitLossArray['balancesheetAmount'] = $balancesheetData;
+		return json_encode($profitLossArray);
+	}
+
+	/**
 	 * get data
 	 * returns the array-data/exception message
 	*/
 	public function getStockDetailData($companyId,$headerData)
 	{
-		echo "model";
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -221,11 +320,9 @@ class TaxationModel extends Model
 			$transformToDate = $splitedToDate[2]."-".$splitedToDate[1]."-".$splitedToDate[0];
 			$dateString = "(entry_date BETWEEN '".$transformFromDate."' AND '".$transformToDate."') and";
 		}
-		echo "iiii";
+		$openingBalance = array();
 		//get opening balance
 		$openingBalance = $this->getOpeningBalance($transformFromDate,$companyId);
-		print_r($openingBalance);
-		exit;
 		//get purchase data from purchase bill 
 		DB::beginTransaction();	
 		$purchaseResult = DB::connection($databaseName)->select("select
@@ -252,7 +349,6 @@ class TaxationModel extends Model
 		company_id='".$companyId."' and
 		deleted_at='0000-00-00 00:00:00'"); 
 		DB::commit();
-		
 		//get sales data from sale bill 
 		DB::beginTransaction();	
 		$saleResult = DB::connection($databaseName)->select("select
@@ -278,24 +374,142 @@ class TaxationModel extends Model
 		sales_type='whole_sales' and ".$dateString."
 		company_id='".$companyId."' and is_draft='no' and is_salesorder='not'"); 
 		DB::commit();
+		$calculationPurchaseResult = array();
+		$calculationSaleResult = array();
 		if(count($purchaseResult)!=0)
 		{
-			$purchaseDataCount = count($purchaseResult);
-			for($purchaseArray=0;$purchaseArray<$purchaseDataCount;$purchaseArray++)
-			{
-				
-			}
-			print_r($purchaseResult);
-			// return json_encode($purchaseTaxResult);
+			$calculationPurchaseResult = $this->calculationOfQty($purchaseResult);
 		}
 		if(count($saleResult)!=0)
 		{
-			print_r($saleResult);
+			$calculationSaleResult = $this->calculationOfQty($saleResult);
 		}
-		// else
-		// {
-			// return $exceptionArray['204'];
-		// }
+		$openingBalanceCount = count($openingBalance);
+		$stockArray = array();
+		//loop for opening balance data(comparing with sale-purchase data)
+		for($openingBalanceArray=0;$openingBalanceArray<$openingBalanceCount;$openingBalanceArray++)
+		{
+			$stockArray[$openingBalanceArray]['openingQty'] = $openingBalance[$openingBalanceArray]['qty'];	
+			$stockArray[$openingBalanceArray]['openingPrice'] = $openingBalance[$openingBalanceArray]['price'];
+			$stockArray[$openingBalanceArray]['productId'] = $openingBalance[$openingBalanceArray]['productId'];
+			if(count($calculationPurchaseResult)!=0)
+			{
+				$calPurchaseResult = array_search($openingBalance[$openingBalanceArray]['productId'], array_column($calculationPurchaseResult, 'productId'));
+				if($calPurchaseResult!='')
+				{
+					$stockArray[$openingBalanceArray]['purchaseQty'] = $calculationPurchaseResult[$calPurchaseResult]['qty'];	
+					$stockArray[$openingBalanceArray]['purchasePrice'] = $calculationPurchaseResult[$calPurchaseResult]['price'];
+					array_splice($calculationPurchaseResult,$calPurchaseResult,1);
+				}
+				else
+				{
+					$stockArray[$openingBalanceArray]['purchaseQty'] = 0;	
+					$stockArray[$openingBalanceArray]['purchasePrice'] = 0;	
+				}
+			}
+			else
+			{
+				$stockArray[$openingBalanceArray]['purchaseQty'] = 0;	
+				$stockArray[$openingBalanceArray]['purchasePrice'] = 0;	
+			}
+			if(count($calculationSaleResult)!=0)
+			{
+				$calSaleResult = array_search($openingBalance[$openingBalanceArray]['productId'], array_column($calculationSaleResult, 'productId'));
+				if($calSaleResult!='')
+				{
+					$stockArray[$openingBalanceArray]['saleQty'] = $calculationSaleResult[$calSaleResult]['qty'];	
+					$stockArray[$openingBalanceArray]['salePrice'] = $calculationSaleResult[$calSaleResult]['price'];
+					array_splice($calculationSaleResult,$calSaleResult,1);
+				}
+				else
+				{
+					$stockArray[$openingBalanceArray]['saleQty'] = 0;	
+					$stockArray[$openingBalanceArray]['salePrice'] = 0;
+				}	
+			}	
+			else
+			{
+				$stockArray[$openingBalanceArray]['saleQty'] = 0;	
+				$stockArray[$openingBalanceArray]['salePrice'] = 0;
+			}	
+		}
+		
+		$purchaseResultCount = count($calculationPurchaseResult);
+		//loop for purchase-data(comparing with sale-data)
+		for($purchaseResultArray=0;$purchaseResultArray<$purchaseResultCount;$purchaseResultArray++)
+		{
+			$stockArray[$purchaseResultArray+$openingBalanceCount]['openingQty'] = 0;	
+			$stockArray[$purchaseResultArray+$openingBalanceCount]['openingPrice'] = 0;
+			$stockArray[$purchaseResultArray+$openingBalanceCount]['purchaseQty']=$calculationPurchaseResult[$purchaseResultArray]['qty'];
+			$stockArray[$purchaseResultArray+$openingBalanceCount]['purchasePrice'] = $calculationPurchaseResult[$purchaseResultArray]['price'];
+			$stockArray[$purchaseResultArray+$openingBalanceCount]['productId'] = $calculationPurchaseResult[$purchaseResultArray]['productId'];
+			if(count($calculationSaleResult)!=0)
+			{
+				$calSaleResult = array_search($calculationPurchaseResult[$purchaseResultArray]['productId'], array_column($calculationSaleResult, 'productId'));
+				if($calSaleResult!='' || $calSaleResult==0)
+				{
+					$stockArray[$purchaseResultArray+$openingBalanceCount]['saleQty'] = $calculationSaleResult[$calSaleResult]['qty'];	
+					$stockArray[$purchaseResultArray+$openingBalanceCount]['salePrice'] = $calculationSaleResult[$calSaleResult]['price'];
+					array_splice($calculationSaleResult,$calSaleResult,1);
+				}
+				else
+				{
+					$stockArray[$purchaseResultArray+$openingBalanceCount]['saleQty'] = 0;	
+					$stockArray[$purchaseResultArray+$openingBalanceCount]['salePrice'] = 0;
+				}	
+			}	
+			else
+			{
+				$stockArray[$purchaseResultArray+$openingBalanceCount]['saleQty'] = 0;	
+				$stockArray[$purchaseResultArray+$openingBalanceCount]['salePrice'] = 0;
+			}
+		}
+		
+		$saleResultCount = count($calculationSaleResult);
+		$totalNumber = $purchaseResultCount+$openingBalanceCount-2;
+		//loop for sales-data
+		for($saleResultArray=0;$saleResultArray<$saleResultCount;$saleResultArray++)
+		{
+			$stockArray[$saleResultArray+$totalNumber]['openingQty'] = 0;	
+			$stockArray[$saleResultArray+$totalNumber]['openingPrice'] = 0;
+			$stockArray[$saleResultArray+$totalNumber]['purchaseQty']=0;
+			$stockArray[$saleResultArray+$totalNumber]['purchasePrice'] = 0;
+			$stockArray[$saleResultArray+$totalNumber]['saleQty']=$calculationSaleResult[$saleResultArray]['qty'];
+			$stockArray[$saleResultArray+$totalNumber]['salePrice'] = $calculationSaleResult[$saleResultArray]['price'];
+			$stockArray[$saleResultArray+$totalNumber]['productId'] = $calculationSaleResult[$saleResultArray]['productId'];
+		}
+		$stockCount = count($stockArray);
+		for($stockDataArray=0;$stockDataArray<$stockCount;$stockDataArray++)
+		{
+			//get hsn-code of product
+			DB::beginTransaction();	
+			$stockResult = DB::connection($databaseName)->select("select 
+			product_id,
+			product_name,
+			hsn,
+			created_at,
+			updated_at,
+			deleted_at,
+			product_category_id,
+			product_group_id,
+			branch_id,
+			company_id			
+			from product_mst 
+			where deleted_at='0000-00-00 00:00:00' and 
+			product_id=".$stockArray[$stockDataArray]['productId']); 
+			DB::commit();
+			if(count($stockResult)!=0)
+			{
+				$stockArray[$stockDataArray]['hsn'] = $stockResult[0]->hsn;
+				$stockArray[$stockDataArray]['productName'] = $stockResult[0]->product_name;
+			}
+			else
+			{
+				$stockArray[$stockDataArray]['hsn'] ="";
+				$stockArray[$stockDataArray]['productName'] ="";
+			}
+		}
+		return json_encode($stockArray);
 	}
 	
 	/**
@@ -307,10 +521,12 @@ class TaxationModel extends Model
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
-		$finantialDate = $constantDatabase->constantAccountingDate();
-		$fromDate = $finantialDate['fromDate'];
-		$toDate = $transformFromDate;
+		$splitedFromDate = explode("-",$transformFromDate);
 		
+		// $finantialDate = $constantDatabase->constantAccountingDate();
+		$fromDate = $splitedFromDate[0]."-04-01";
+		$toDate = $transformFromDate;
+		// $toDate = $transformToDate;
 		$databaseName = $constantDatabase->constantDatabase();
 		//get purchase data from purchase-bill 
 		DB::beginTransaction();	
@@ -340,6 +556,8 @@ class TaxationModel extends Model
 		entry_date>='".$fromDate."' and entry_date<='".$toDate."' and
 		company_id='".$companyId."' and is_draft='no' and is_salesorder='not'"); 
 		DB::commit();
+		$calculationPurchaseResult = array();
+		$calculationSaleResult = array();
 		if(count($purchaseResult)!=0)
 		{
 			$calculationPurchaseResult = $this->calculationOfQty($purchaseResult);
@@ -348,39 +566,17 @@ class TaxationModel extends Model
 		{
 			$calculationSaleResult = $this->calculationOfQty($saleResult);
 		}
-		$calculationSaleResult[0]['productId'] = 1242;
-		if(count($purchaseResult)!=0 && count($saleResult)!=0)
-		{
+		// $calculationSaleResult[0]['productId'] = 1242;
 			$intersectArray = array();
 			$data=0;
-			foreach($calculationPurchaseResult as $key=>$value)
+			if(count($purchaseResult)!=0 && count($saleResult)!=0)
 			{
-				$result = array_search($calculationPurchaseResult[$key]['productId'], array_column($calculationSaleResult, 'productId'));
-				if(count($intersectArray)==0)
+				foreach($calculationPurchaseResult as $key=>$value)
 				{
-					if($result=='')
+					$result = array_search($calculationPurchaseResult[$key]['productId'], array_column($calculationSaleResult, 'productId'));
+					if(count($intersectArray)==0)
 					{
-						$intersectArray[$data]['productId']=$calculationPurchaseResult[$key]['productId'];
-						$intersectArray[$data]['qty']=$calculationPurchaseResult[$key]['qty'];
-						$intersectArray[$data]['price']=$calculationPurchaseResult[$key]['price'];
-						// unset($calculationPurchaseResult[$key]);
-						$data++;
-					}
-					else
-					{
-						$intersectArray[$data]['productId']=$calculationPurchaseResult[$key]['productId'];
-						$intersectArray[$data]['qty']=$calculationPurchaseResult[$key]['qty']-$calculationSaleResult[$result]['qty'];
-						$intersectArray[$data]['price']=$calculationPurchaseResult[$key]['price']-$calculationSaleResult[$result]['price'];
-						// unset($calculationPurchaseResult[$key]);
-						array_splice($calculationSaleResult,$result,1);
-						$data++;
-					}
-				}
-				else if($result=='')
-				{
-					if(array_key_exists('0',$calculationSaleResult))
-					{
-						if($calculationPurchaseResult[$key]['productId']!=$calculationSaleResult[0]['productId'])
+						if($result=='')
 						{
 							$intersectArray[$data]['productId']=$calculationPurchaseResult[$key]['productId'];
 							$intersectArray[$data]['qty']=$calculationPurchaseResult[$key]['qty'];
@@ -398,28 +594,51 @@ class TaxationModel extends Model
 							$data++;
 						}
 					}
+					else if($result=='')
+					{
+						if(array_key_exists('0',$calculationSaleResult))
+						{
+							if($calculationPurchaseResult[$key]['productId']!=$calculationSaleResult[0]['productId'])
+							{
+								$intersectArray[$data]['productId']=$calculationPurchaseResult[$key]['productId'];
+								$intersectArray[$data]['qty']=$calculationPurchaseResult[$key]['qty'];
+								$intersectArray[$data]['price']=$calculationPurchaseResult[$key]['price'];
+								// unset($calculationPurchaseResult[$key]);
+								$data++;
+							}
+							else
+							{
+								$intersectArray[$data]['productId']=$calculationPurchaseResult[$key]['productId'];
+								$intersectArray[$data]['qty']=$calculationPurchaseResult[$key]['qty']-$calculationSaleResult[$result]['qty'];
+								$intersectArray[$data]['price']=$calculationPurchaseResult[$key]['price']-$calculationSaleResult[$result]['price'];
+								// unset($calculationPurchaseResult[$key]);
+								array_splice($calculationSaleResult,$result,1);
+								$data++;
+							}
+						}
+						else
+						{
+							$intersectArray[$data]['productId']=$calculationPurchaseResult[$key]['productId'];
+							$intersectArray[$data]['qty']=$calculationPurchaseResult[$key]['qty'];
+							$intersectArray[$data]['price']=$calculationPurchaseResult[$key]['price'];
+							// unset($calculationPurchaseResult[$key]);
+							$data++;
+						}
+					}
 					else
 					{
 						$intersectArray[$data]['productId']=$calculationPurchaseResult[$key]['productId'];
-						$intersectArray[$data]['qty']=$calculationPurchaseResult[$key]['qty'];
-						$intersectArray[$data]['price']=$calculationPurchaseResult[$key]['price'];
+						$intersectArray[$data]['qty']=$calculationPurchaseResult[$key]['qty']-$calculationSaleResult[$result]['qty'];
+						$intersectArray[$data]['price']=$calculationPurchaseResult[$key]['price']-$calculationSaleResult[$result]['price'];
 						// unset($calculationPurchaseResult[$key]);
+						array_splice($calculationSaleResult,$result,1);
 						$data++;
 					}
 				}
-				else
-				{
-					$intersectArray[$data]['productId']=$calculationPurchaseResult[$key]['productId'];
-					$intersectArray[$data]['qty']=$calculationPurchaseResult[$key]['qty']-$calculationSaleResult[$result]['qty'];
-					$intersectArray[$data]['price']=$calculationPurchaseResult[$key]['price']-$calculationSaleResult[$result]['price'];
-					// unset($calculationPurchaseResult[$key]);
-					array_splice($calculationSaleResult,$result,1);
-					$data++;
-				}
 			}
-			
 			$saleCount = count($calculationSaleResult);
-			if($saleCount!=0)
+
+			if($saleCount!=0 && count($purchaseResult)==0)
 			{
 				foreach($calculationSaleResult as $key=>$value)
 				{
@@ -429,7 +648,17 @@ class TaxationModel extends Model
 					$data++;
 				}
 			}
-		}
+			$purchaseCount = count($calculationPurchaseResult);
+			if($purchaseCount!=0 && count($saleResult)==0)
+			{
+				foreach($calculationPurchaseResult as $key=>$value)
+				{
+					$intersectArray[$data]['productId']=$calculationPurchaseResult[$key]['productId'];
+					$intersectArray[$data]['qty']=$calculationPurchaseResult[$key]['qty'];
+					$intersectArray[$data]['price']=$calculationPurchaseResult[$key]['price'];
+					$data++;
+				}
+			}
 		return $intersectArray;
 	}
 	
@@ -467,12 +696,86 @@ class TaxationModel extends Model
 					}
 					else
 					{
-						$mainArray[$key]['qty'] = $mainArray[$key]['qty']+$inventoryArray[$inventoryDataArray]->qty;
-						$mainArray[$key]['price'] = ($mainArray[$key]['qty']*$mainArray[$key]['price'])+($inventoryArray[$inventoryDataArray]->qty*$inventoryArray[$inventoryDataArray]->price);
+						$mainArray[$data]['qty'] = $mainArray[$key]['qty']+$inventoryArray[$inventoryDataArray]->qty;
+						$mainArray[$data]['price'] = ($mainArray[$key]['qty']*$mainArray[$key]['price'])+($inventoryArray[$inventoryDataArray]->qty*$inventoryArray[$inventoryDataArray]->price);
 					}
 				}
 			}
 		}
 		return $mainArray;
+	}
+
+	/**
+	 * get data
+	 * returns the array-data/exception message
+	*/
+	public function getGstr2Data($companyId,$headerData)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+
+		$dateString='';
+		$transformFromDate='';
+		if(array_key_exists('fromdate',$headerData) && array_key_exists('todate',$headerData))
+		{
+			//date conversion
+			//from-date conversion
+			$splitedFromDate = explode("-",$headerData['fromdate'][0]);
+			$transformFromDate = $splitedFromDate[2]."-".$splitedFromDate[1]."-".$splitedFromDate[0];
+			//to-date conversion
+			$splitedToDate = explode("-",$headerData['todate'][0]);
+			$transformToDate = $splitedToDate[2]."-".$splitedToDate[1]."-".$splitedToDate[0];
+			$dateString = "(entry_date BETWEEN '".$transformFromDate."' AND '".$transformToDate."') and";
+		}
+		$billModel = new BillModel();
+		$billData = $billModel->getFromToDateCompanyData($transformFromDate,$transformToDate,$companyId);
+		$billImpsData = $billModel->getImpsData($transformFromDate,$transformToDate,$companyId);
+		$gstr2Array = array();
+		$gstr2Array['b2b'] = json_decode($billData);
+		$gstr2Array['imps'] = json_decode($billImpsData);
+		return json_encode($gstr2Array);
+	}
+
+	/**
+	 * get data
+	 * returns the array-data/exception message
+	*/
+	public function getGstr3Data($companyId,$headerData)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+
+		$dateString='';
+		$transformFromDate='';
+		if(array_key_exists('fromdate',$headerData) && array_key_exists('todate',$headerData))
+		{
+			//date conversion
+			//from-date conversion
+			$splitedFromDate = explode("-",$headerData['fromdate'][0]);
+			$transformFromDate = $splitedFromDate[2]."-".$splitedFromDate[1]."-".$splitedFromDate[0];
+			//to-date conversion
+			$splitedToDate = explode("-",$headerData['todate'][0]);
+			$transformToDate = $splitedToDate[2]."-".$splitedToDate[1]."-".$splitedToDate[0];
+			$dateString = "(entry_date BETWEEN '".$transformFromDate."' AND '".$transformToDate."') and";
+		}
+		$billModel = new BillModel();
+		$billData = $billModel->getFromToDateCompanyData($transformFromDate,$transformToDate,$companyId);
+		$billImpsData = $billModel->getImpsData($transformFromDate,$transformToDate,$companyId);
+		$gstr3Array = array();
+		$gstr3Array['gstr1Invoice'] = json_decode($billData);
+		// $gstr2Array['imps'] = json_decode($billImpsData);
+		return json_encode($gstr3Array);
 	}
 }

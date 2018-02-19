@@ -1,0 +1,82 @@
+silicon-swaminarayan-arihant completed
+-- Alter table ledger_mst add `bank_id` INT(11) NULL DEFAULT NULL AFTER CGST, ADD `bank_dtl_id` INT(11) NULL DEFAULT NULL AFTER `bank_id` , ADD `micr_code` INT(11) NULL DEFAULT NULL AFTER `bank_dtl_id`
+
+
+local done..(silicon-swaminarayan pending...product_doc_dtl all pending)
+-- ALTER TABLE `product_mst` ADD `not_for_sale` ENUM('on','off') NOT NULL DEFAULT 'on' AFTER `minimum_stock_level`, ADD `max_sale_qty` DECIMAL(20,4) NOT NULL AFTER `not_for_sale`, ADD `product_cover_id` INT(11) NOT NULL AFTER `max_sale_qty`, ADD `created_by` INT(11) NOT NULL AFTER `product_cover_id`, ADD `updated_by` INT(11) NOT NULL AFTER `created_by`, ADD `deleted_by` INT(11) NOT NULL AFTER `updated_by`	
+
+10-jan-2018(swaminarayan-silicon-arihant done)
+1. ALTER TABLE user_mst add permission_array varchar(5000) NULL DEFAULT NULL AFTER pincode
+
+
+21-jan-2018 (silicon-swaminarayan done-arihant done)
+1. ALTER TABLE `client_mst` ADD `contact_no1` VARCHAR(15) NULL DEFAULT NULL AFTER `contact_no`;
+
+22-jan-2018 (silicon-swaminarayan-arihant done)
+1. create table expense_type_mst : 
+   CREATE TABLE `expense_type_mst` (
+ `expense_id` int(11) NOT NULL AUTO_INCREMENT,
+ `expense_name` varchar(100) DEFAULT NULL,
+ `expense_type` enum('flat','percentage') NOT NULL DEFAULT 'flat',
+ `expense_value` decimal(20,4) NOT NULL DEFAULT '0.0000',
+ `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ `updated_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+ `deleted_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+ `company_id` int(11) NOT NULL,
+ PRIMARY KEY (`expense_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8
+
+23-jan-2018 (silicon-swaminarayan-arihant done)
+1. create table sale_expense_dtl :
+   CREATE TABLE `sale_expense_dtl` (
+ `sale_expense_id` int(11) NOT NULL AUTO_INCREMENT,
+ `expense_name` varchar(100) DEFAULT NULL,
+ `expense_type` enum('flat','percentage') NOT NULL DEFAULT 'flat',
+ `expense_value` decimal(20,4) NOT NULL DEFAULT '0.0000',
+ `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ `updated_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+ `deleted_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+ `sale_id` int(11) NOT NULL,
+ `expense_id` int(11) NOT NULL,
+ PRIMARY KEY (`sale_expense_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=81 DEFAULT CHARSET=utf8
+
+
+27-jan-2018 (silicon-swaminarayan-arihant done)
+1. create table purchase_expense_dtl :
+   CREATE TABLE `purchase_expense_dtl` (
+ `purchase_expense_id` int(11) NOT NULL AUTO_INCREMENT,
+ `expense_name` varchar(100) DEFAULT NULL,
+ `expense_type` enum('flat','percentage') NOT NULL DEFAULT 'flat',
+ `expense_value` decimal(20,4) NOT NULL DEFAULT '0.0000',
+ `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ `updated_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+ `deleted_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+ `purchase_id` int(11) NOT NULL,
+ `expense_id` int(11) NOT NULL,
+ PRIMARY KEY (`purchase_expense_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8	
+
+29-jan-2018 (silicon-swaminarayan-arihant done)
+1. ALTER TABLE `sales_bill` ADD `service_date` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `po_number`;
+2. ALTER TABLE `sales_bill_trn` ADD `service_date` DATETIME NULL DEFAULT '0000-00-00 00:00:00' AFTER `is_salesorder`;
+3. ALTER TABLE `sales_bill_trn` CHANGE `service_date` `service_date` DATE NULL DEFAULT '0000-00-00';
+4. ALTER TABLE `sales_bill` CHANGE `service_date` `service_date` DATE NOT NULL DEFAULT '0000-00-00';
+
+1-feb-2018 (local-arihant done...silicon-swaminarayan pending)
+ALTER TABLE `product_mst` CHANGE `max_sale_qty` `max_sale_qty` DECIMAL(20,4) NULL DEFAULT NULL, CHANGE `product_cover_id` `product_cover_id` INT(11) NULL DEFAULT NULL;
+
+09-feb-2018 (silicon Done,swaminarayan done)Pending
+1. ALTER TABLE `template_mst` CHANGE `template_type` `template_type` ENUM('general','quotation','email_newOrder','sms_newOrder','invoice','payment','receipt','blank','job_card','email_duePayment','email_birthDay','email_anniversary','sms_duePayment','sms_birthDay','sms_anniversary') CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT 'general' COMMENT 'type of template(general,sms,quatation,email))';
+2. change template_type of email & sms manually from all database : 
+	query => update template_mst set template_type='sms_newOrder' where template_type='sms'
+                 update template_mst set template_type='email_newOrder' where template_type='email' 
+3. insert templates of already created company
+
+problem occurs in 1. query : change column type manually
+Silicon : ALTER TABLE `template_mst` CHANGE `template_type` `template_type` VARCHAR(400) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL COMMENT 'type of template(general,sms,quatation,email))';
+Swaminarayan : ALTER TABLE `template_mst` CHANGE `template_type` `template_type` VARCHAR(400) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL;
+
+13-feb-2018(silicon Done,swaminarayan done)
+1. ALTER TABLE `template_mst` CHANGE `template_name` `template_name` VARCHAR(500) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL COMMENT 'name of template';
+

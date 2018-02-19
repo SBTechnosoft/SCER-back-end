@@ -22,6 +22,7 @@ class ClientTransformer
 		$clientName = $request->input('clientName'); 
 		$companyName = $request->input('companyName'); 
 		$contactNo = $request->input('contactNo'); 
+		$contactNo1 = $request->input('contactNo1'); 
 		$emailId = $request->input('emailId'); 
 		$address1 = $request->input('address1'); 
 		$professionId = $request->input('professionId'); 
@@ -54,6 +55,7 @@ class ClientTransformer
 		$tClientName = trim($clientName);
 		$tCompanyName = trim($companyName);
 		$tContactNo = trim($contactNo);
+		$tContactNo1 = trim($contactNo1);
 		$tEmailId = trim($emailId);
 		$tAddress1 = trim($address1);
 		$tProfessionId = trim($professionId);
@@ -109,6 +111,7 @@ class ClientTransformer
 			$data['client_name'] = $tClientName;
 			$data['company_name'] = $tCompanyName;
 			$data['contact_no'] = $tContactNo;
+			$data['contact_no1'] = $tContactNo1;
 			$data['email_id'] = $tEmailId;
 			$data['address1'] = $tAddress1;
 			$data['profession_id'] = $tProfessionId;

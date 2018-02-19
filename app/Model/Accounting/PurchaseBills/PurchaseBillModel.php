@@ -38,31 +38,67 @@ class PurchaseBillModel extends Model
 		
 		$purchaseData="";
 		$keyData="";
+		$purchaseExpenseData="";
+		$purchaseExpenseKey="";
+		$decodedJsonExpense = array();
 		for($data=0;$data<count($getData);$data++)
 		{
-			if($data == (count($getData)-1))
+			if(strcmp($keyName[$data],'expense')==0)
 			{
-				$purchaseData = $purchaseData."'".$getData[$data]."'";
-				$keyData =$keyData.$keyName[$data];
+				$decodedJsonExpense = json_decode($getData[$data]);
 			}
 			else
 			{
-				$purchaseData = $purchaseData."'".$getData[$data]."',";
-				$keyData =$keyData.$keyName[$data].",";
+				if($data == (count($getData)-1))
+				{
+					$purchaseData = $purchaseData."'".$getData[$data]."'";
+					$keyData =$keyData.$keyName[$data];
+				}
+				else
+				{
+					$purchaseData = $purchaseData."'".$getData[$data]."',";
+					$keyData =$keyData.$keyName[$data].",";
+				}
 			}
 		}
+		//purchase-data save
 		DB::beginTransaction();
 		$purchaseBillResult = DB::connection($databaseName)->statement("insert into purchase_bill(".$keyData.") 
 		values(".$purchaseData.")");
 		DB::commit();
+
+		//get latest purchase-id from database
+		DB::beginTransaction();
+		$purchaseIdResult = DB::connection($databaseName)->select("SELECT 
+		max(purchase_id) purchase_id
+		FROM purchase_bill where deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+
+		if(count($decodedJsonExpense)!=0)
+		{
+			$expenseCount = count($decodedJsonExpense);
+			for($expenseData=0;$expenseData<$expenseCount;$expenseData++)
+			{
+				//insertion in purchase_expense_dtl
+				DB::beginTransaction();
+				$raw = DB::connection($databaseName)->statement("insert into purchase_expense_dtl(
+				expense_name,
+				expense_type,
+				expense_value,
+				purchase_id,
+				expense_id)
+				values(
+				'".$decodedJsonExpense[$expenseData]->expenseName."',
+				'".$decodedJsonExpense[$expenseData]->expenseType."',
+				'".$decodedJsonExpense[$expenseData]->expenseValue."',
+				'".$purchaseIdResult[0]->purchase_id."',
+				'".$decodedJsonExpense[$expenseData]->expenseId."')");
+				DB::commit();
+			}
+		}
+		
 		if(count($documentArray)!=0)
 		{
-			//get latest purchase-id from database
-			DB::beginTransaction();
-			$purchaseIdResult = DB::connection($databaseName)->select("SELECT 
-			max(purchase_id) purchase_id
-			FROM purchase_bill where deleted_at='0000-00-00 00:00:00'");
-			DB::commit();
 			$documentCount = count($documentArray);
 			//document insertion
 			for($documentData=0;$documentData<$documentCount;$documentData++)
@@ -110,12 +146,51 @@ class PurchaseBillModel extends Model
 		$keyValueString="";
 		for($data=0;$data<count($getData);$data++)
 		{
-			$keyValueString=$keyValueString.$keyName[$data]."='".$getData[$data]."',";
+			if(strcmp($keyName[$data],'expense')==0)
+			{
+				$decodedExpenseData = json_decode($getData[$data]);
+			}
+			else
+			{
+				$keyValueString=$keyValueString.$keyName[$data]."='".$getData[$data]."',";
+			}
+			
 		}
 		DB::beginTransaction();
 		$purchaseBillResult = DB::connection($databaseName)->statement("update purchase_bill
 		set ".$keyValueString."updated_at='".$mytime."' where purchase_id='".$purchaseId."'");
 		DB::commit();
+		
+		//delete expense data
+		DB::beginTransaction();
+		$deleteExpenseData = DB::connection($databaseName)->statement("update
+		purchase_expense_dtl set
+		deleted_at = '".$mytime."'
+		where purchase_id = ".$purchaseId);
+		DB::commit();
+		$expenseCount = count($decodedExpenseData);
+		if($expenseCount!=0)
+		{
+			for($expenseData=0;$expenseData<$expenseCount;$expenseData++)
+			{
+				//insert expense data for update expense data
+				DB::beginTransaction();
+				$insertExpenseData = DB::connection($databaseName)->statement("insert into
+				purchase_expense_dtl(
+				expense_type,
+				expense_name,
+				expense_value,
+				purchase_id,
+				expense_id)
+				values('".$decodedExpenseData[$expenseData]->expenseType."',
+				'".$decodedExpenseData[$expenseData]->expenseName."',
+				'".$decodedExpenseData[$expenseData]->expenseValue."',
+				'".$purchaseId."',
+				'".$decodedExpenseData[$expenseData]->expenseId."')");
+				DB::commit();
+			}
+		}
+
 		$documentCount = count($documentArray);
 		if($documentCount!=0)
 		{
@@ -211,7 +286,6 @@ class PurchaseBillModel extends Model
 			purchase_id = '".$headerData['purchasebillid'][0]."' and
 			deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
-			
 			if(count($purchaseIdDataResult)==0)
 			{
 				return $exceptionArray['204'];
@@ -596,6 +670,20 @@ class PurchaseBillModel extends Model
 		for($purchaseData=0;$purchaseData<count($purchaseArrayData);$purchaseData++)
 		{
 			DB::beginTransaction();
+			$purchaseExpenseResult[$purchaseData] = DB::connection($databaseName)->select("select 
+			purchase_expense_id as purchaseExpenseId,
+			expense_id as expenseId,
+			expense_name as expenseName,
+			expense_type as expenseType,
+			expense_value as expenseValue,
+			purchase_id as purchaseId
+			from purchase_expense_dtl 
+			where deleted_at='0000-00-00 00:00:00' and 
+			purchase_id = ".$purchaseArrayData[$purchaseData]->purchase_id);
+			DB::commit();
+			$purchaseArrayData[$purchaseData]->expense = $purchaseExpenseResult[$purchaseData];
+			
+			DB::beginTransaction();
 			$documentResult[$purchaseData] = DB::connection($databaseName)->select("select
 			document_id,
 			purchase_id,
@@ -724,7 +812,7 @@ class PurchaseBillModel extends Model
 			where bill_type='purchase_bill' and
 			company_id='".$companyId."' and 
 			deleted_at='0000-00-00 00:00:00' and 
-			(bill_number='".$data['billnumber'][0]."')");
+			(bill_number='".$data['billnumber'][0]."' or vendor_id in (select ledger_id from ledger_mst where ledger_name like '%".$data['billnumber'][0]."%'))");
 			DB::commit();
 			if(count($raw)==0)
 			{
@@ -836,6 +924,15 @@ class PurchaseBillModel extends Model
 		DB::beginTransaction();
 		$deleteBillData = DB::connection($databaseName)->statement("update
 		purchase_bill set
+		deleted_at = '".$mytime."'
+		where purchase_id = ".$purchaseId." and
+		deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+
+		//delete purchase-expense-bill data 
+		DB::beginTransaction();
+		$deleteBillData = DB::connection($databaseName)->statement("update
+		purchase_expense_dtl set
 		deleted_at = '".$mytime."'
 		where purchase_id = ".$purchaseId." and
 		deleted_at='0000-00-00 00:00:00'");

@@ -82,9 +82,11 @@ class BillService
 			$salesType = $billArray->getSalesType();
 			$poNumber = $billArray->getPoNumber();
 			$jfId= $billArray->getJfId();
+			$expense= $billArray->getExpense();
+			$serviceDate= $billArray->getServiceDate();
 			//data pass to the model object for insert
 			$billModel = new BillModel();
-			$status = $billModel->insertData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$jfId,$totalDiscounttype,$totalDiscount,$poNumber,$requestInput);
+			$status = $billModel->insertData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$jfId,$totalDiscounttype,$totalDiscount,$poNumber,$requestInput,$expense,$serviceDate);
 			//get exception message
 			$exception = new ExceptionMessage();
 			$exceptionArray = $exception->messageArrays();
@@ -94,7 +96,6 @@ class BillService
 			}
 			else
 			{
-				
 				$encoded = new EncodeData();
 				$encodeData = $encoded->getEncodedData($status);
 				return $encodeData;
@@ -125,6 +126,9 @@ class BillService
 			$salesType = $billArray[count($billArray)-1]->getSalesType();
 			$poNumber = $billArray[count($billArray)-1]->getPoNumber();
 			$jfId = $billArray[count($billArray)-1]->getJfId();
+			$expense = $billArray[count($billArray)-1]->getExpense();
+			$serviceDate = $billArray[count($billArray)-1]->getServiceDate();
+
 			for($doc=0;$doc<(count($billArray)-1);$doc++)
 			{
 				array_push($documentArray,$billArray[$doc]);	
@@ -132,7 +136,7 @@ class BillService
 			
 			//data pass to the model object for insert
 			$billModel = new BillModel();
-			$status = $billModel->insertAllData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray,$jfId,$totalDiscounttype,$totalDiscount,$poNumber,$requestInput);
+			$status = $billModel->insertAllData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray,$jfId,$totalDiscounttype,$totalDiscount,$poNumber,$requestInput,$expense,$serviceDate);
 			//get exception message
 			$exception = new ExceptionMessage();
 			$exceptionArray = $exception->messageArrays();
@@ -365,6 +369,14 @@ class BillService
 								$transformEntryDates = $splitedEntryDate[2]."-".$splitedEntryDate[1]."-".$splitedEntryDate[0];
 								$singleData['entry_date'] = $transformEntryDates;
 							}
+							if(array_key_exists('service_date',$singleData))
+							{
+								// date conversion 
+								// entry-date conversion
+								$splitedServiceDate = explode("-",$singleData['service_date']);
+								$transformServiceDates = $splitedServiceDate[2]."-".$splitedServiceDate[1]."-".$splitedServiceDate[0];
+								$singleData['service_date'] = $transformServiceDates;
+							}
 							$billModel = new BillModel();
 							$billUpdateResult = $billModel->updateBillData($singleData,$saleId,$imageArrayData,$headerData);
 							if(strcmp($billUpdateResult,$exceptionArray['200'])==0)
@@ -469,6 +481,14 @@ class BillService
 							$splitedEntryDate = explode("-",$singleData['entry_date']);
 							$transformEntryDate = $splitedEntryDate[2]."-".$splitedEntryDate[1]."-".$splitedEntryDate[0];
 							$singleData['entry_date'] = $transformEntryDate;
+						}
+						if(array_key_exists('service_date',$singleData))
+						{
+							//date conversion 
+							//entry-date conversion
+							$splitedServiceDate = explode("-",$singleData['service_date']);
+							$transformServiceDate = $splitedServiceDate[2]."-".$splitedServiceDate[1]."-".$splitedServiceDate[0];
+							$singleData['service_date'] = $transformServiceDate;
 						}
 						$billModel = new BillModel();
 						$billUpdateResult = $billModel->updateBillData($singleData,$saleId,$imageArrayData,$headerData);

@@ -64,6 +64,7 @@ class UserController extends BaseController implements ContainerInterface
 			//get user-type from active_session & user_mst for checking user is admin or not?
 			$authenticationModel = new AuthenticateModel();
 			$userType = $authenticationModel->getUserType($request->header());
+
 			if(strcmp($userType,$exceptionArray['content'])==0)
 			{
 				return $userType;
@@ -80,7 +81,6 @@ class UserController extends BaseController implements ContainerInterface
 					$userPersistable = new UserPersistable();	
 					$userService= new UserService();
 					$userPersistable = $processor->createPersistable($this->request);
-					
 					if($userPersistable[0][0]=='[')
 					{
 						return $userPersistable;
@@ -160,25 +160,23 @@ class UserController extends BaseController implements ContainerInterface
 		//get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-		
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
 			//get user-type from active_session & user_mst for checking user is admin or not?
 			$authenticationModel = new AuthenticateModel();
-			$userType = $authenticationModel->getUserType($request->header());
+			$userType = $authenticationModel->getUserTypeForPermission($request->header());
 			if(strcmp($userType,$exceptionArray['content'])==0)
 			{
 				return $userType;
 			}
 			else
 			{
-				$this->request = $request;
+				$this->request = $request;	
 				$processor = new UserProcessor();
 				$userPersistable = new UserPersistable();		
 				$userService= new UserService();
 				$userModel = new UserModel();	
 				$result = $userModel->getData($userId);
-				
 				// get exception message
 				$exception = new ExceptionMessage();
 				$exceptionArray = $exception->messageArrays();

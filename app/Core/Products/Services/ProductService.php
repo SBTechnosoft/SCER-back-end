@@ -448,6 +448,31 @@ class ProductService extends AbstractService
 		$status = $productModel->updateData($getData,$keyName,$productId);
 		return $status;
 	}
+
+	/**
+     * get the data from persistable object and call the model for database update opertation
+     * @param ProductPersistable $persistable
+     * @param updateOptions $options [optional]
+     * @return status
+     */
+    public function updateBatchData()
+    {
+		$productArray = array();
+		$getData = array();
+		$funcName = array();
+		$productArray = func_get_arg(0);
+		for($data=0;$data<count($productArray);$data++)
+		{
+			$funcName[$data] = $productArray[$data][0]->getName();
+			$getData[$data] = $productArray[$data][0]->$funcName[$data]();
+			$keyName[$data] = $productArray[$data][0]->getkey();
+		}
+		$productId = $productArray[0][0]->getProductId();
+		//data pass to the model object for update
+		$productModel = new ProductModel();
+		$status = $productModel->updateBatchData($getData,$keyName,$productId);
+		return $status;
+	}
 	
 	/**
      * get the data from persistable object and call the model for database update opertation

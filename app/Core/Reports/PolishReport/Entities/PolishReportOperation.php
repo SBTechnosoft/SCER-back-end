@@ -53,13 +53,12 @@ class PolishReportOperation extends ProductModel
 					$flag=1;
 					$documentUrl = $fileData[$arrayData][$documentArray]->documentUrl. $fileData[$arrayData][$documentArray]->documentName;
 					$bodyPart = $bodyPart."	<tr>
-								<td rowspan='".$countOfRaw."' style='width:50%;padding:20px;'><img src=".$documentUrl." width='200' height='200' alt='img'/></td>";
+								<td rowspan='".$countOfRaw."' style='width:50%;'><img src=".$documentUrl." width='340px' height='200px' alt='img'/></td>";
 					break;
 				}
 			}
 			if($flag==0)
 			{
-				
 				$bodyPart = $bodyPart."<tr><td rowspan='".$countOfRaw."' style='width:50%;padding:20px;'><img src=".$constantArray['noImage']." width='200' height='200' alt='img'/></td>";
 			}
 			$bodyPart = $bodyPart. "<td style='width:30%;text-align:center;border-left: 1px solid black;'>Invoice No: ".$decodedData[$arrayData]->invoiceNumber."</td>
@@ -92,6 +91,10 @@ class PolishReportOperation extends ProductModel
 			$footerPart = "</tbody></table>";
 			$tableData = $tableData.$headerPart.$bodyPart.$footerPart;
 		}
+		// ini_set('memory_limit', '256M');
+		// ini_set('upload_max_filesize', '256M');
+		// ini_set('post_max_size', '256M');
+		$htmlBody="";
 		$htmlBody = $heading.$tableData;
 		
 		// generate pdf
@@ -100,15 +103,20 @@ class PolishReportOperation extends ProductModel
 		$splitDateTime = explode("-",$convertedDateTime);
 		$combineDateTime = $splitDateTime[0].$splitDateTime[1].$splitDateTime[2].$splitDateTime[3].$splitDateTime[4].$splitDateTime[5];
 		$documentName = $combineDateTime.mt_rand(1,9999).mt_rand(1,9999)."_PolishReport.pdf";
-		
 		$path = $constantArray['polishReportUrl'];
 		$documentPathName = $path.$documentName;
 		$mpdf = new mPDF('A4','landscape');
 		$mpdf->SetDisplayMode('fullpage');
+		ini_set('memory_limit', '1024M');
+		// echo $htmlBody;
 		$mpdf->WriteHTML($htmlBody);
+		// ini_set('memory_limit', '256M');
+		
 		$mpdf->Output($documentPathName,'F');
+		
 		$pathArray = array();
 		$pathArray['documentPath'] = $documentPathName;
+		
 		return $pathArray;
 	}
 }

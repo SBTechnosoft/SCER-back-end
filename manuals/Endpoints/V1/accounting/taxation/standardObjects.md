@@ -101,3 +101,11 @@
 				"closingStockQty":int,
 				"closingStockAmount":decimal
             }
+
+##### Standard Income-Expense Object
+			{
+				"tradingAmount":decimal,
+				"profitLossAmount":decimal,
+				"balancesheetAmount":decimal,
+				
+            }

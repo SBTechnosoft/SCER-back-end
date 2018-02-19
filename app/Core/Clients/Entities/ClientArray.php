@@ -13,6 +13,7 @@ class ClientArray
 		$clientArray['client_name'] = 'clientName';
 		$clientArray['company_name'] = 'companyName';
 		$clientArray['contact_no'] = 'contactNo';
+		$clientArray['contact_no1'] = 'contactNo1';
 		$clientArray['email_id'] = 'emailId';
 		$clientArray['address1'] = 'address1';
 		$clientArray['is_display'] = 'isDisplay';
@@ -28,6 +29,7 @@ class ClientArray
 		$clientArray['client_name'] = 'client_name';
 		$clientArray['company_name'] = 'company_name';
 		$clientArray['contact_no'] = 'contact_no';
+		$clientArray['contact_no1'] = 'contact_no1';
 		$clientArray['email_id'] = 'email_id';
 		$clientArray['address1'] = 'address1';
 		$clientArray['is_display'] = 'is_display';
@@ -42,6 +44,7 @@ class ClientArray
 		$clientArray = array();
 		$clientArray['client_name'] = 'clientname';
 		$clientArray['contact_no'] = 'contactno';
+		$clientArray['contact_no1'] = 'contactno1';
 		$clientArray['address1'] = 'address';
 		$clientArray['email_id'] = 'emailid';
 		$clientArray['profession_id'] = 'professionid';
@@ -54,6 +57,7 @@ class ClientArray
 		$clientArray['client_name'] = 'clientName';
 		$clientArray['company_name'] = 'companyName';
 		$clientArray['contact_no'] = 'contactNo';
+		$clientArray['contact_no1'] = 'contactNo1';
 		$clientArray['email_id'] = 'emailId';
 		$clientArray['address1'] = 'address1';
 		$clientArray['is_display'] = 'isDisplay';

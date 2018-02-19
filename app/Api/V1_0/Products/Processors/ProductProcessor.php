@@ -1111,4 +1111,110 @@ class ProductProcessor extends BaseProcessor
 		$productPersistable->setToDate($transformToDate);
 		return $productPersistable;
 	}
+
+	/**
+     * process request-input data for batch-update
+     * $param request-input data
+     * @return persistable object of header data
+     */
+	public function createPersistableBatchUpdateChange(Request $request)
+	{
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		// if data is not available in update request
+		if(count($request->input())==1 || count($request->input())==0)
+		{
+			$status = $exceptionArray['204'];
+			return $status;
+		}
+		// data is avalilable for update
+		else
+		{	
+			$flag=0;
+			$productValue = array();
+			$productArray = array();
+			$productValidate = new ProductValidate();
+			$productData = $request->input()['product'];
+			$inputData = $request->input();
+			unset($inputData['product']);
+			$productTransformer = new ProductTransformer();
+			$tRequest = $productTransformer->trimUpdateData($inputData);
+			if(!is_array($tRequest))
+			{
+				return $exceptionArray['content'];
+			}
+			// $tRequest[count($tRequest)]['product'] = $productData;
+			$requestCount = count($tRequest);
+			for($data=0;$data<$requestCount;$data++)
+			{
+				// data get from body
+				$productPersistable = new ProductPersistable();
+				
+				// get key value from trim array
+				$tKeyValue[$data] = array_keys($tRequest[$data])[0];
+				$tValue[$data] = $tRequest[$data][array_keys($tRequest[$data])[0]];
+				// validation
+				$status = $productValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[$data]);
+				// enter data is valid(one data validate status return)
+				if($status=="Success")
+				{
+					// check data is string or not
+					if(!is_numeric($tValue[$data]))
+					{
+						if (strpos($tValue[$data], '\'') !== FALSE)
+						{
+							$productValue[$data] = str_replace("'","\'",$tValue[$data]);
+						}
+						else
+						{
+							$productValue[$data] = $tValue[$data];
+						}
+					}
+					else
+					{
+						$productValue[$data] = $tValue[$data];
+					}
+					// flag=0...then data is valid(consider one data at a time)
+					if($flag==0)
+					{
+						$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $tKeyValue[$data])));
+						// make function name dynamically
+						$setFuncName = 'set'.$str;
+						$getFuncName[$data] = 'get'.$str;
+						$productPersistable->$setFuncName($productValue[$data]);
+						
+						$productPersistable->setName($getFuncName[$data]);
+						
+						$productPersistable->setKey($tKeyValue[$data]);
+						$productPersistable->setProductId($productData);
+						
+						$productArray[$data] = array($productPersistable);
+					}
+				}
+				// enter data is not valid
+				else
+				{
+					// if flag==1 then enter data is not valid ..so error return(consider one data at a time)
+					$flag=1;
+					if(!empty($status[0]))
+					{
+						$errorStatus[$errorCount]=$status[0];
+						$errorCount++;
+					}
+				}
+				if($data==(count($tRequest)-1))
+				{
+					if($flag==1)
+					{
+						return json_encode($errorStatus);
+					}
+					else
+					{
+						return $productArray;
+					}
+				}
+			}
+		}	
+	}
 }

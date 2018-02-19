@@ -41,6 +41,7 @@ class EncodeAllDraftData extends ClientService
 			$remark[$decodedData] = $deocodedJsonData[$decodedData]['remark'];
 			$refund[$decodedData] = $deocodedJsonData[$decodedData]['refund'];
 			$entryDate[$decodedData] = $deocodedJsonData[$decodedData]['entry_date'];
+			$serviceDate[$decodedData] = $deocodedJsonData[$decodedData]['service_date'];
 			$clientId[$decodedData] = $deocodedJsonData[$decodedData]['client_id'];
 			$jfId[$decodedData] = $deocodedJsonData[$decodedData]['jf_id'];
 			$salesType[$decodedData] = $deocodedJsonData[$decodedData]['sales_type'];
@@ -87,6 +88,15 @@ class EncodeAllDraftData extends ClientService
 				$bill->setEntryDate($convertedEntryDate);
 				$getEntryDate[$decodedData] = $bill->getEntryDate();
 			}
+			if(strcmp($serviceDate[$decodedData],'0000-00-00')==0)
+			{
+				$serviceDate[$decodedData] = "00-00-0000";
+			}
+			else
+			{
+				$serviceDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d', $serviceDate[$decodedData])->format('d-m-Y');
+				
+			}
 		}
 		$data = array();
 		for($jsonData=0;$jsonData<count($deocodedJsonData);$jsonData++)
@@ -116,11 +126,13 @@ class EncodeAllDraftData extends ClientService
 				'createdAt'=>$getCreatedDate[$jsonData],
 				'updatedAt'=>$getUpdatedDate[$jsonData],
 				'entryDate'=>$getEntryDate[$jsonData],
+				'serviceDate'=>$serviceDate[$jsonData],
 				'client' => array(
 					'clientId'=>$clientData->clientId,
 					'clientName'=>$clientData->clientName,
 					'companyName'=>$clientData->companyName,
 					'contactNo'=>$clientData->contactNo,
+					'contactNo1'=>$clientData->contactNo1,
 					'emailId'=>$clientData->emailId,
 					'address1'=>$clientData->address1,
 					'isDisplay'=>$clientData->isDisplay,

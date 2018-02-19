@@ -47,7 +47,6 @@ class UserModel extends Model
 				$keyName =$keyName.$getUserKey[$data].",";
 			}
 		}
-		
 		DB::beginTransaction();
 		$raw = DB::connection($databaseName)->statement("insert into user_mst(".$keyName.") 
 		values(".$userData.")");
@@ -140,6 +139,7 @@ class UserModel extends Model
 			city_id,
 			company_id,
 			branch_id,
+			permission_array,
 			created_at,
 			updated_at
 			from user_mst where ".$querySet." deleted_at='0000-00-00 00:00:00' ");
@@ -161,12 +161,12 @@ class UserModel extends Model
 			city_id,
 			company_id,
 			branch_id,
+			permission_array,
 			created_at,
 			updated_at
 			from user_mst where deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
 		}
-		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -207,6 +207,7 @@ class UserModel extends Model
 		city_id,
 		company_id,
 		branch_id,
+		permission_array,
 		created_at,
 		updated_at
 		from user_mst where user_id = '".$userId."' and deleted_at='0000-00-00 00:00:00'");

@@ -287,7 +287,7 @@
 
 ##### Updates Products    
        
-##### `PATCH /products/{productId}`
+##### `POST /products/{productId}`
 + Header
 	- 'authenticationToken':''
 
@@ -306,7 +306,29 @@
 
 			{
 				... HTTP_Status:200
+			}
+
+##### Updates batch-Products 
+##### `POST /products/batch-update`
++ Header
+	- 'authenticationToken':''
+
++ Body
+
+            {
+                ... Standard Products-batch Persistable Object
+            }
++ Error Message
+
+			{
+				... Error Message
 			}            
++ Response
+
+			{
+				... HTTP_Status:200
+			}       
+
 ##### Deletes Products    
        
 ##### `DELETE /products/{productId}`

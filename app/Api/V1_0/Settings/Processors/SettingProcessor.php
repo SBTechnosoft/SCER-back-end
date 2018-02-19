@@ -47,6 +47,13 @@ class SettingProcessor extends BaseProcessor
 			//trim an input 
 			$settingTransformer = new SettingTransformer();
 			$tRequest = $settingTransformer->trimInsertData($this->request);
+			if(!is_array($tRequest))
+			{
+				if(strcmp($msgArray['content'],$tRequest)==0)
+				{
+					return $tRequest;
+				}
+			}
 			// validation
 			$settingValidate = new SettingValidate();
 			$status = $settingValidate->validate($tRequest);
@@ -81,7 +88,7 @@ class SettingProcessor extends BaseProcessor
 					$settingPersistable = new SettingPersistable();	
 					$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $keyName[$data])));
 					// make function name dynamically
-					$setFuncName = 'set'.$str;
+					 $setFuncName = 'set'.$str;
 					$getFuncName[$data] = 'get'.$str;
 					$settingPersistable->$setFuncName($settingValue[$data]);
 					$settingPersistable->setName($getFuncName[$data]);

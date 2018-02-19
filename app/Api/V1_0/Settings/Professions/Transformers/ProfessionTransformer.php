@@ -14,8 +14,6 @@ class ProfessionTransformer
      */
     public function trimInsertData(Request $request)
     {
-		$templayeTypeFlag=0;
-		
 		//data get from body
 		$professionName = $request->input('professionName'); 
 		$description = $request->input('description'); 
@@ -41,8 +39,8 @@ class ProfessionTransformer
      */
    public function trimUpdateData()
 	{
-		$tTemplateArray = array();
-		$templateValue;
+		$tProfessionArray = array();
+		$professionValue;
 		$keyValue = func_get_arg(0);
 		$convertedValue="";
 		for($asciiChar=0;$asciiChar<strlen($keyValue);$asciiChar++)
@@ -57,12 +55,12 @@ class ProfessionTransformer
 				$convertedValue=$convertedValue.$keyValue[$asciiChar];
 			}
 		}
-		$templateValue = func_get_arg(1);
-		for($data=0;$data<count($templateValue);$data++)
+		$professionValue = func_get_arg(1);
+		for($data=0;$data<count($professionValue);$data++)
 		{
-			$tTemplateArray[$data]= array($convertedValue=> trim($templateValue));
+			$tProfessionArray[$data]= array($convertedValue=> trim($professionValue));
 		}
-		return $tTemplateArray;
+		return $tProfessionArray;
 		
 	}
 }

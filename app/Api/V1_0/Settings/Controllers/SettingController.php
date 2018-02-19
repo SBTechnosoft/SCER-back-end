@@ -11,7 +11,8 @@ use ERP\Core\Settings\Persistables\SettingPersistable;
 use ERP\Core\Support\Service\ContainerInterface;
 use ERP\Entities\AuthenticationClass\TokenAuthentication;
 use ERP\Entities\Constants\ConstantClass;
-use DB;
+use ERP\Model\Settings\SettingModel;
+use ERP\Exceptions\ExceptionMessage;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -47,14 +48,13 @@ class SettingController extends BaseController implements ContainerInterface
 	*/
 	public function store(Request $request)
     {
-		// Authentication
+  		// Authentication
 		$tokenAuthentication = new TokenAuthentication();
 		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
 		// get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-		
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
 			$this->request = $request;
@@ -63,22 +63,58 @@ class SettingController extends BaseController implements ContainerInterface
 			// insert
 			if($requestMethod == 'POST')
 			{
-				$processor = new SettingProcessor();
-				$settingPersistable = new SettingPersistable();		
-				$settingService= new SettingService();			
-				$settingPersistable = $processor->createPersistable($this->request);
-				if($settingPersistable[0][0]=='[')
+				//get exception message
+				$exception = new ExceptionMessage();
+				$exceptionArray = $exception->messageArrays();
+				$settingModel = new SettingModel();
+				$settingData = $settingModel->getAllData();
+
+				$settingFlag=0;
+				// $exploadedString = array();
+				// echo $str = str_replace('_', ' ', array_keys($request->input())[0]);
+				// echo " \n";
+				// $exploadedString = explode(' ',$str);
+				// if(strcmp($settingData,$exceptionArray['204'])!=0)
+				// {
+				// 	$decodedSettingData = json_decode($settingData);
+				// 	foreach ($decodedSettingData as $key => $value) 
+				// 	{
+				// 		// echo $value->setting_type.'Type';
+				// 		// echo " - ";
+				// 		// echo $exploadedString[0];
+				// 		if(strcmp($value->setting_type,$exploadedString[0])==0)
+				// 		{
+				// 			$settingFlag=1;
+				// 		}
+				// 		echo " \n";
+				// 	}
+				// }
+				// echo $settingFlag;
+				// exit;
+				if($settingFlag==0)
 				{
-					return $settingPersistable;
-				}
-				else if(is_array($settingPersistable))
-				{
-					$status = $settingService->insert($settingPersistable);
-					return $status;
+					$processor = new SettingProcessor();
+					$settingPersistable = new SettingPersistable();		
+					$settingService= new SettingService();		
+					$settingPersistable = $processor->createPersistable($this->request);
+					if($settingPersistable[0][0]=='[')
+					{
+						return $settingPersistable;
+					}
+					else if(is_array($settingPersistable))
+					{
+						print_r($settingPersistable);
+						$status = $settingService->insert($settingPersistable);
+						return $status;
+					}
+					else
+					{
+						return $settingPersistable;
+					}
 				}
 				else
 				{
-					return $settingPersistable;
+					return $exceptionArray['updateSetting'];
 				}
 			}
 		}
@@ -95,7 +131,7 @@ class SettingController extends BaseController implements ContainerInterface
 	*/
 	public function update(Request $request)
     {
-		// Authentication
+    	// Authentication
 		$tokenAuthentication = new TokenAuthentication();
 		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
@@ -222,5 +258,32 @@ class SettingController extends BaseController implements ContainerInterface
 			}
 		}
 		return $data;
+	}
+
+	/**
+	 * get payment-remaniing data
+	*/
+	public function getPaymentData(Request $request)
+	{
+		// Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		// get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			//get exception message
+	        $exception = new ExceptionMessage();
+	        $exceptionArray = $exception->messageArrays();
+
+			$settingModel= new SettingModel();
+			$status = $settingModel->getRemainingPaymentData();
+			return $status;
+		}
+		else
+		{
+			return $authenticationResult;
+		}
 	}
 }

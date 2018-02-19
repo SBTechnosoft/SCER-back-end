@@ -329,7 +329,6 @@ class JournalController extends BaseController implements ContainerInterface
 			//get exception message
 			$exception = new ExceptionMessage();
 			$exceptionArray = $exception->messageArrays();
-			
 			//check array exists
 			if(array_key_exists($constantArray['data'], $this->request->input()))
 			{
@@ -343,7 +342,6 @@ class JournalController extends BaseController implements ContainerInterface
 					}
 				}
 			}
-			
 			//check journal-data is available in database as per given jf-id
 			if(strcmp($jfIdArrayData,$exceptionArray['404'])==0)
 			{
@@ -415,7 +413,6 @@ class JournalController extends BaseController implements ContainerInterface
 							$productArray['inventory'][$inventoryArray]['qty']=$inputArray['inventory'][$inventoryArray]['qty'];
 						}
 					}
-					
 					//journal data is available in sale/purchase for update
 					if($entryDateFlag==1 || $companyIdFlag==1 || $journalArrayFlag==1)
 					{

@@ -62,6 +62,7 @@ class EncodeAllData extends UserService
 					'address' => $userDecodedData[$jsonData]->address,
 					'password' => $userDecodedData[$jsonData]->password,
 					'pincode' => $userDecodedData[$jsonData]->pincode,
+					'permissionArray' => $userDecodedData[$jsonData]->permissionArray,
 					'createdAt' => $userDecodedData[$jsonData]->createdAt,
 					'updatedAt' => $userDecodedData[$jsonData]->updatedAt,
 					'stateAbb' => $userDecodedData[$jsonData]->state->stateAbb,

@@ -638,8 +638,10 @@ class BillProcessor extends BaseProcessor
 					return $processedData;
 				}
 			}
-			//entry date conversion
+			//entry date/service date conversion
 			$transformEntryDate = Carbon\Carbon::createFromFormat('d-m-Y', $tRequest['entry_date'])->format('Y-m-d');
+			$transformServiceDate = $tRequest['service_date']=="" ? "0000-00-00":
+													Carbon\Carbon::createFromFormat('d-m-Y', $tRequest['service_date'])->format('Y-m-d');
 			$billPersistable = new BillPersistable();
 			$billPersistable->setProductArray(json_encode($productArray));
 			$billPersistable->setPaymentMode($tRequest['payment_mode']);
@@ -655,11 +657,13 @@ class BillProcessor extends BaseProcessor
 			$billPersistable->setBalance($tRequest['balance']);
 			$billPersistable->setRemark($tRequest['remark']);
 			$billPersistable->setEntryDate($transformEntryDate);
+			$billPersistable->setServiceDate($transformServiceDate);
 			$billPersistable->setClientId($clientId);
 			$billPersistable->setCompanyId($tRequest['company_id']);
 			$billPersistable->setTotalDiscounttype($tRequest['total_discounttype']);
 			$billPersistable->setTotalDiscount($tRequest['total_discount']);
 			$billPersistable->setPoNumber($tRequest['po_number']);
+			$billPersistable->setExpense($tRequest['expense']);
 			$billPersistable->setJfId($jsonDecodedJfId);
 			// if(strcmp($request->header()['salestype'][0],$salesTypeEnumArray['retailSales'])==0 || strcmp($request->header()['salestype'][0],$salesTypeEnumArray['wholesales'])==0)
 			// {
@@ -948,8 +952,14 @@ class BillProcessor extends BaseProcessor
 		$msgArray = $exception->messageArrays();
 		//trim bill data
 		$billTransformer = new BillTransformer();
-		$billTrimData = $billTransformer->trimBillUpdateData($request);
-	
+		$billTrimData = $billTransformer->trimBillUpdateData($request,$saleId);
+		if(!is_array($billTrimData))
+		{
+			if(strcmp($billTrimData,$msgArray['content'])==0)
+			{
+				return $msgArray['content'];
+			}
+		}
 		$ledgerModel = new LedgerModel();
 		$clientArray = new ClientArray();
 		$clientArrayData = $clientArray->getClientArrayDataForBill();
@@ -1709,6 +1719,7 @@ class BillProcessor extends BaseProcessor
 		$clientArray['companyName']=array_key_exists('company_name',$tRequest)?$tRequest['company_name']:'';
 		$clientArray['emailId']=array_key_exists('email_id',$tRequest)?$tRequest['email_id']:'';
 		$clientArray['contactNo']=$tRequest['contact_no'];
+		$clientArray['contactNo1']=array_key_exists('contact_no1',$tRequest)?$tRequest['contact_no1']:'';
 		$clientArray['address1']=array_key_exists('address1',$tRequest)?$tRequest['address1']:'';
 		$clientArray['birthDate']=array_key_exists('birth_date',$tRequest)?$tRequest['birth_date']:'0000-00-00';
 		$clientArray['anniversaryDate']=array_key_exists('anniversary_date',$tRequest)?$tRequest['anniversary_date']:'0000-00-00';
@@ -1794,6 +1805,10 @@ class BillProcessor extends BaseProcessor
 		if(array_key_exists('contact_no',$tRequest))
 		{
 			$clientArray['contactNo']=$tRequest['contact_no'];
+		}
+		if(array_key_exists('contact_no1',$tRequest))
+		{
+			$clientArray['contactNo1']=$tRequest['contact_no1'];
 		}
 		if(array_key_exists('address1',$tRequest))
 		{

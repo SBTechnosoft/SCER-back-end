@@ -239,6 +239,7 @@ class QuotationProcessor extends BaseProcessor
 		$clientIdData = $clientModel->getData($quotationData[0]->client_id);
 		$decodedClientData = (json_decode($clientIdData));
 		$contactNo = $decodedClientData->clientData[0]->contact_no;
+
 		if(count($clientData)!=0)
 		{
 			//check contact_no exist or not
@@ -254,7 +255,7 @@ class QuotationProcessor extends BaseProcessor
 				//update client-data
 				$encodedClientData = $clientDecodedData->clientData;
 				$clientId = $encodedClientData[0]->client_id;
-				$clientUpdateResult = $this->clientUpdate($clientData,$clientId);
+				$clientUpdateResult = $this->clientUpdateData($clientData,$clientId);
 				if(strcmp($clientUpdateResult,$msgArray['200'])!=0)
 				{
 					return $clientUpdateResult;
@@ -389,6 +390,7 @@ class QuotationProcessor extends BaseProcessor
 		$clientArray['companyName']=array_key_exists('company_name',$tRequest)?$tRequest['company_name']:'';
 		$clientArray['emailId']=array_key_exists('email_id',$tRequest)?$tRequest['email_id']:'';
 		$clientArray['contactNo']=$tRequest['contact_no'];
+		$clientArray['contactNo1']=array_key_exists('contactNo1',$tRequest)?$tRequest['contact_no1']:'';
 		$clientArray['address1']=array_key_exists('address1',$tRequest)?$tRequest['address1']:'';
 		$clientArray['birthDate']=array_key_exists('birth_date',$tRequest)?$tRequest['birth_date']:'0000-00-00';
 		$clientArray['anniversaryDate']=array_key_exists('anniversary_date',$tRequest)?$tRequest['anniversary_date']:'0000-00-00';
@@ -421,6 +423,79 @@ class QuotationProcessor extends BaseProcessor
 		
 		// update client data
 		$clientArray = array();
+		if(array_key_exists('client_name',$tRequest))
+		{
+			$clientArray['clientName']=$tRequest['client_name'];
+		}
+		if(array_key_exists('company_name',$tRequest))
+		{
+			$clientArray['companyName']=$tRequest['company_name'];
+		}
+		if(array_key_exists('email_id',$tRequest))
+		{
+			$clientArray['emailId']=$tRequest['email_id'];
+		}
+		if(array_key_exists('contact_no',$tRequest))
+		{
+			$clientArray['contactNo']=$tRequest['contact_no'];
+		}
+		if(array_key_exists('contact_no1',$tRequest))
+		{
+			$clientArray['contactNo1']=$tRequest['contact_no1'];
+		}
+		if(array_key_exists('address1',$tRequest))
+		{
+			$clientArray['address1']=$tRequest['address1'];
+		}
+		if(array_key_exists('is_display',$tRequest))
+		{
+			$clientArray['isDisplay']=$tRequest['is_display'];
+		}
+		if(array_key_exists('state_abb',$tRequest))
+		{
+			$clientArray['stateAbb']=$tRequest['state_abb'];
+		}
+		if(array_key_exists('profession_id',$tRequest))
+		{
+			$clientArray['professionId']=$tRequest['profession_id'];
+		}
+		if(array_key_exists('city_id',$tRequest))
+		{
+			$clientArray['cityId']=$tRequest['city_id'];
+		}
+		if(array_key_exists('birth_date',$tRequest))
+		{
+			$clientArray['birthDate']=$tRequest['birth_date'];
+		}
+		if(array_key_exists('anniversary_date',$tRequest))
+		{
+			$clientArray['anniversaryDate']=$tRequest['anniversary_date'];
+		}
+		if(array_key_exists('other_date',$tRequest))
+		{
+			$clientArray['otherDate']=$tRequest['other_date'];
+		}
+		$clientController = new ClientController(new Container());
+		$method=$constantArray['postMethod'];
+		$path=$constantArray['clientUrl'].'/'.$clientId;
+		$clientRequest = Request::create($path,$method,$clientArray);
+		$processedData = $clientController->updateData($clientRequest,$clientId);
+		return $processedData;
+	}
+
+	/**
+     * client update
+     * $param trim request array,client_id
+     * @return result array/error-message
+     */	
+	public function clientUpdateData($tRequest,$clientId)
+	{
+		//get constant variables array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		
+		// update client data
+		$clientArray = array();
 		if(array_key_exists('clientName',$tRequest))
 		{
 			$clientArray['clientName']=$tRequest['clientName'];
@@ -436,6 +511,10 @@ class QuotationProcessor extends BaseProcessor
 		if(array_key_exists('contactNo',$tRequest))
 		{
 			$clientArray['contactNo']=$tRequest['contactNo'];
+		}
+		if(array_key_exists('contactNo1',$tRequest))
+		{
+			$clientArray['contactNo1']=$tRequest['contactNo1'];
 		}
 		if(array_key_exists('address1',$tRequest))
 		{

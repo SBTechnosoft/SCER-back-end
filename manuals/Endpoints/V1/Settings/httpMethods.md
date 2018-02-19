@@ -60,4 +60,22 @@
             {
                ... HTTP_Status:200
             }
-**NOTES:** Update settings Data 
+**NOTES:** Update settings Data
+
+##### get remaining-payment Settings           
+            
+##### `GET /settings/payment`
++ Header 
+	- Authentication Token
+	
++ Error Message
+
+			{
+				... Error Message
+			}             
++ Response
+
+            {
+               ... Standard Payment-Data Object
+            }
+**NOTES:** get remaining-payment Data 

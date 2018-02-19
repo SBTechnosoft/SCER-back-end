@@ -15,14 +15,14 @@ class ConversationTransformer
      */
     public function trimInsertData(Request $request,$conversationType)
     {
-		$data = array();
+    	$data = array();
 		// data get from body and trim an input
 		$data['email_id'] = array_key_exists('emailId',$request->input())?trim($request->input('emailId')):'';
 		$data['cc_email_id'] = array_key_exists('ccEmailId',$request->input())?trim($request->input('ccEmailId')):'';
 		$data['bcc_email_id'] = array_key_exists('bccEmailId',$request->input())?trim($request->input('bccEmailId')):'';
-		$data['subject'] = array_key_exists('subject',$request->input())?trim($request->input('subject')):'';
+		$data['subject'] = array_key_exists('subject',$request->input())?trim($request->input('subject')):'ERP';
 		$data['conversation'] = array_key_exists('conversation',$request->input())?trim($request->input('conversation')):'';
-		$data['company_id'] = trim($request->input('companyId'));
+		// $data['company_id'] = trim($request->input('companyId'));
 		$data['branch_id'] = array_key_exists('branchId',$request->input()) ?trim($request->input('branchId')):'';
 		$data['contact_no'] = array_key_exists('contactNo',$request->input()) ? trim($request->input('contactNo')):'';
 		$data['conversation_type'] = trim($conversationType);

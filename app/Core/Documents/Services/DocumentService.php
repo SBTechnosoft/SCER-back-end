@@ -69,9 +69,9 @@ class DocumentService extends BillModel
 			{
 				$templateType = $templateArray['invoiceTemplate'];
 			}
-			$emailTemplateType = $templateArray['emailTemplate'];
+			$emailTemplateType = $templateArray['emailNewOrderTemplate'];
 			$blankTemplateType = $templateArray['blankTemplate'];
-			$smsTemplateType = $templateArray['smsTemplate'];
+			$smsTemplateType = $templateArray['smsNewOrderTemplate'];
 			
 			$templateService = new TemplateService();
 			$templateData = $templateService->getSpecificData($decodedSaleData->company->companyId,$templateType);
@@ -112,7 +112,7 @@ class DocumentService extends BillModel
 		$templateType = new TemplateTypeEnum();
 		$templateArray = $templateType->enumArrays();
 		$templateType = $templateArray['quotationTemplate'];
-		$emailTemplateType = $templateArray['emailTemplate'];
+		$emailTemplateType = $templateArray['emailNewOrderTemplate'];
 		$templateService = new TemplateService();
 		$templateData = $templateService->getSpecificData($companyId,$templateType);
 		$emailTemplateData = $templateService->getSpecificData($companyId,$emailTemplateType);

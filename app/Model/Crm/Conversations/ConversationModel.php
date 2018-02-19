@@ -159,4 +159,52 @@ class ConversationModel extends Model
 			return $exceptionArray['500'];
 		}
 	}
+
+	/**
+	 * insert bill-mail data 
+	 * @param  array
+	 * returns the status
+	*/
+	public function getExistingConversationData($clientId,$commentMessage,$type)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+
+		//get today date
+		$afterDate = date("Y-m-d", time() + 86400);
+		$beforeDate = date("Y-m-d", time() - 86400);
+		DB::beginTransaction();
+		$conversationData = DB::connection($databaseName)->select("select
+        conversation_id,
+        email_id,
+        conversation,
+        conversation_type,
+        comment,
+        created_at,
+        deleted_at,
+        company_id,
+        client_id
+        from conversation_dtl
+        where deleted_at='0000-00-00 00:00:00' and 
+        client_id='".$clientId."' and 
+        conversation_type='".$type."' and 
+        comment='".$commentMessage."' and
+        DATE_FORMAT(created_at, '%m-%d-&Y') >= DATE_FORMAT('".$beforeDate."', '%m-%d-&Y') and
+        DATE_FORMAT(created_at, '%m-%d-&Y') <= DATE_FORMAT('".$afterDate."', '%m-%d-&Y')");
+        DB::commit();
+        if(count($conversationData)!=0)
+        {
+        	return $exceptionArray['500'];
+        }
+        else
+        {
+        	return $exceptionArray['200'];
+        }
+	}
 }

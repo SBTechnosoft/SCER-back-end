@@ -271,7 +271,6 @@ class BuisnessLogic extends LedgerModel
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
 		$ledgerService = new LedgerService();
-		
 		//tax and array both exist
 		if(array_key_exists("tax",$productData) && array_key_exists("0",$productData))
 		{
@@ -323,10 +322,18 @@ class BuisnessLogic extends LedgerModel
 					}
 					if(trim(json_decode($ledgerResult)->ledgerGroup->ledgerGroupId)!=16 && trim($discountTotal)==0)
 					{
+						if($disFlag==(count($trimData)-1))
+						{
+							$discountFlag=1;
+						}
 						$disFlag++;
 					}
 					if(trim(json_decode($ledgerResult)->ledgerGroup->ledgerGroupId)!=17 && trim($productData['tax'])==0)
 					{
+						if($disFlag1==(count($trimData)-1))
+						{
+							$taxFlag=1;
+						}
 						$disFlag1++;
 					}
 				}
@@ -350,10 +357,18 @@ class BuisnessLogic extends LedgerModel
 					}
 					if(trim(json_decode($ledgerResult)->ledgerGroup->ledgerGroupId)!=17 && trim($discountTotal)==0)
 					{
+						if($disFlag==(count($trimData)-1))
+						{
+							$discountFlag=1;
+						}
 						$disFlag++;
 					}
 					if(trim(json_decode($ledgerResult)->ledgerGroup->ledgerGroupId)!=16 && trim($productData['tax'])==0)
 					{
+						if($disFlag1==(count($trimData)-1))
+						{
+							$taxFlag=1;
+						}
 						$disFlag1++;
 					}
 				}

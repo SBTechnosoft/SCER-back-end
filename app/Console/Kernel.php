@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        Commands\Reminder::class,
         // Commands\Inspire::class,
     ];
 
@@ -26,7 +27,16 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('reminder')
+                 ->everyMinute();
+                 
+        //testing...
         // $schedule->command('inspire')
-        //          ->hourly();
+        //         ->everyMinute()
+        //         ->appendOutputTo(storage_path('logs/output.log'));
+
+        // $schedule->command('reminder:cron')
+        //          ->everyMinute();
+       
     }
 }

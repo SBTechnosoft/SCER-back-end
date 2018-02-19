@@ -6,6 +6,7 @@ use ERP\Core\Clients\Properties\ClientIdPropertyTrait;
 use ERP\Core\Clients\Properties\ClientNamePropertyTrait;
 use ERP\Core\Clients\Properties\CompanyNamePropertyTrait;
 use ERP\Core\Clients\Properties\ContactNoPropertyTrait;
+use ERP\Core\Clients\Properties\ContactNo1PropertyTrait;
 use ERP\Core\Clients\Properties\WorkNoPropertyTrait;
 use ERP\Core\Clients\Properties\EmailIdPropertyTrait;
 use ERP\Core\Clients\Properties\ProfessionIdTrait;
@@ -35,6 +36,7 @@ class ClientPersistable
 	use CityIdPropertyTrait;
 	use CompanyNamePropertyTrait;
 	use ContactNoPropertyTrait;
+	use ContactNo1PropertyTrait;
 	use WorkNoPropertyTrait;
 	use EmailIdPropertyTrait;
 	use ProfessionIdTrait;

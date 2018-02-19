@@ -4,11 +4,12 @@ namespace ERP\Api\V1_0\Accounting\Bills\Transformers;
 use Illuminate\Http\Request;
 use ERP\Http\Requests;
 use ERP\Core\Accounting\Bills\Entities\PaymentModeEnum;
-use  ERP\Entities\EnumClasses\IsDisplayEnum;
+use ERP\Entities\EnumClasses\IsDisplayEnum;
 use ERP\Core\Accounting\Bills\Entities\SalesTypeEnum;
 use ERP\Core\Products\Entities\EnumClasses\DiscountTypeEnum;
 use ERP\Core\Accounting\Bills\Entities\PaymentTransactionEnum;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Model\Accounting\Bills\BillModel;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -29,16 +30,23 @@ class BillTransformer
 		$paymentModeEnum = new PaymentModeEnum();
 		$paymentModeArray = $paymentModeEnum->enumArrays();
 		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+
 		//trim an input
 		$tCompanyId = trim($billArrayData['companyId']);
 		$tEntryDate = trim($billArrayData['entryDate']);
 		$tProfessionId = array_key_exists('professionId',$billArrayData)?trim($billArrayData['professionId']):"";
 		$tContactNo = array_key_exists('contactNo',$billArrayData)?trim($billArrayData['contactNo']):"";
 		$tEmailId = array_key_exists('emailId',$billArrayData)?trim($billArrayData['emailId']):"";
+		$tContactNo1 = array_key_exists('contactNo1',$billArrayData)?trim($billArrayData['contactNo1']):"";
 		$tCompanyName = array_key_exists('companyName',$billArrayData)?trim($billArrayData['companyName']):"";
 		$tJobCardNumber = array_key_exists('jobCardNumber',$billArrayData)?trim($billArrayData['jobCardNumber']):"";
 		$tAddress1 = array_key_exists('address1',$billArrayData)?trim($billArrayData['address1']):"";
 		$tPoNumber = array_key_exists('poNumber',$billArrayData)?trim($billArrayData['poNumber']):"";
+		$tServiceDate = array_key_exists('serviceDate',$billArrayData)?trim($billArrayData['serviceDate']):"";
+		$tExpense = array_key_exists('expense',$billArrayData)?json_encode($billArrayData['expense']):"";
 		$tClientName = trim($billArrayData['clientName']);
 		$tInvoiceNumber = trim($billArrayData['invoiceNumber']);
 		$tStateAbb = trim($billArrayData['stateAbb']);
@@ -83,6 +91,13 @@ class BillTransformer
 		{
 			$tBankName = trim($billArrayData['bankName']);
 			$tCheckNumber = trim($billArrayData['checkNumber']);
+			//validate cheque number
+			$billModel = new BillModel();
+			$result = $billModel->validateChequeNo($tCheckNumber);
+			if(strcmp($result,$exceptionArray['500'])==0)
+			{
+				return "1";
+			}
 		}
 		else
 		{
@@ -166,7 +181,9 @@ class BillTransformer
 			$data['company_id'] = $tCompanyId;
 			$data['profession_id'] = $tProfessionId;
 			$data['entry_date'] = $tEntryDate;
+			$data['service_date'] = $tServiceDate;
 			$data['contact_no'] = $tContactNo;
+			$data['contact_no1'] = $tContactNo1;
 			$data['email_id'] = $tEmailId;
 			$data['is_display'] = $tIsDisplay;
 			$data['company_name'] = $tCompanyName;
@@ -189,6 +206,7 @@ class BillTransformer
 			$data['remark'] = $tRemark;
 			$data['total_discounttype'] = $tTotalDiscounttype;
 			$data['total_discount'] = $tTotalDiscount;
+			$data['expense'] = $tExpense;
 			$trimArray=array();
 			for($inventoryArray=0;$inventoryArray<count($billArrayData['inventory']);$inventoryArray++)
 			{
@@ -339,7 +357,7 @@ class BillTransformer
 	 * @param request data 
      * @return array/error message
      */
-	public function trimBillUpdateData(Request $request)
+	public function trimBillUpdateData(Request $request,$saleId)
 	{
 		$convertedValue="";
 		$dataFlag=0;
@@ -364,7 +382,18 @@ class BillTransformer
 				$billArrayData['bankName'] = "";
 				$billArrayData['checkNumber'] = "";
 			}
+			else
+			{
+				//validate cheque number
+				$billModel = new BillModel();
+				$result = $billModel->validateChequeNo($billArrayData['checkNumber'],$saleId);
+				if(strcmp($result,$exceptionArray['500'])==0)
+				{
+					return $exceptionArray['content'];
+				}
+			}
 		}			
+		
 		for($inputArrayData=0;$inputArrayData<count($billArrayData);$inputArrayData++)
 		{
 			if(strcmp(array_keys($billArrayData)[$inputArrayData],'inventory')==0)
@@ -459,6 +488,10 @@ class BillTransformer
 					{
 						return $exceptionArray['content'];
 					}
+				}
+				else if(strcmp('expense',$convertedValue)==0)
+				{
+					$tBillArray[$convertedValue]=json_encode($value);
 				}
 				else
 				{

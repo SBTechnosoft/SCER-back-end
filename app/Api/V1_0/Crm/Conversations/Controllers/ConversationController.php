@@ -47,16 +47,18 @@ class ConversationController extends BaseController implements ContainerInterfac
 	*/
     public function storeEmail(Request $request)
     {
-		//Authentication
+    	//Authentication
 		$tokenAuthentication = new TokenAuthentication();
 		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
 		//get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
+		$commentMessage = $constantClass->getCommentMessage();
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
 			$this->request = $request;
+
 			// check the requested Http method
 			$requestMethod = $_SERVER['REQUEST_METHOD'];
 			// insert
@@ -66,7 +68,7 @@ class ConversationController extends BaseController implements ContainerInterfac
 				$conversationPersistable = new ConversationPersistable();
 				$conversationService= new ConversationService();
 				$conversationType=$constantArray['conversationEmailType'];
-				$conversationPersistable = $processor->createPersistable($this->request,$conversationType);
+				$conversationPersistable = $processor->createPersistable($this->request,$conversationType,$commentMessage->crmMailSend,$commentMessage->crmSmsSend);
 				if(is_array($conversationPersistable))
 				{
 					$status='';
@@ -95,6 +97,81 @@ class ConversationController extends BaseController implements ContainerInterfac
 		}
 	}
 	
+	public function storeEmailFromReminder(Request $request)
+	{
+		$this->request = $request;
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		$commentMessage = $constantClass->getCommentMessage();
+		$processor = new ConversationProcessor();
+		$conversationPersistable = new ConversationPersistable();
+		$conversationService= new ConversationService();
+		$conversationType=$constantArray['conversationEmailType'];
+		$conversationPersistable = $processor->createPersistable($this->request,$conversationType,$commentMessage->reminderMailSend,$commentMessage->reminderSmsSend);
+		if(is_array($conversationPersistable))
+		{
+			$status='';
+			if(array_key_exists('clientSuccessData',$conversationPersistable))
+			{
+				$status = $conversationService->insert($conversationPersistable['clientSuccessData'],$conversationType,$request->header());
+			}
+			if(array_key_exists('clientFailData',$conversationPersistable))
+			{
+				return $conversationPersistable['clientFailData'];
+			}
+			else if($status!='')
+			{
+				return $status;
+			}
+		}
+		else
+		{
+			return $conversationPersistable;
+		}
+	}
+
+	/**
+	 * insert the specified resource 
+	 * @param  Request object[Request $request]
+	 * method calls the processor for creating persistable object & setting the data
+	*/
+    public function storeSmsForReminder(Request $request)
+    {
+    	//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		$commentMessage = $constantClass->getCommentMessage();
+		$this->request = $request;
+		
+		$processor = new ConversationProcessor();
+		$conversationPersistable = new ConversationPersistable();
+		$conversationService= new ConversationService();
+		$conversationType=$constantArray['conversationSmsType'];
+		$conversationPersistable = $processor->createPersistable($this->request,$conversationType,$commentMessage->reminderMailSend,$commentMessage->reminderSmsSend);
+		if(is_array($conversationPersistable))
+		{
+			$status='';
+			if(array_key_exists('clientSuccessData',$conversationPersistable))
+			{
+				$status = $conversationService->insert($conversationPersistable['clientSuccessData'],$conversationType,$request->header());
+			}
+			if(array_key_exists('clientFailData',$conversationPersistable))
+			{
+				return $conversationPersistable['clientFailData'];
+			}
+			else if($status!='')
+			{
+				return $status;
+			}
+		}
+		else
+		{
+			return $conversationPersistable;
+		}
+		
+	}
+
 	/**
 	 * insert the specified resource 
 	 * @param  Request object[Request $request]
@@ -109,7 +186,7 @@ class ConversationController extends BaseController implements ContainerInterfac
 		//get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-		
+		$commentMessage = $constantClass->getCommentMessage();
 		if(strcmp($constantArray['success'],$authenticationResult)==0)
 		{
 			$this->request = $request;
@@ -122,7 +199,7 @@ class ConversationController extends BaseController implements ContainerInterfac
 				$conversationPersistable = new ConversationPersistable();
 				$conversationService= new ConversationService();
 				$conversationType=$constantArray['conversationSmsType'];
-				$conversationPersistable = $processor->createPersistable($this->request,$conversationType);
+				$conversationPersistable = $processor->createPersistable($this->request,$conversationType,$commentMessage->crmMailSend,$commentMessage->crmSmsSend);
 				if(is_array($conversationPersistable))
 				{
 					$status='';

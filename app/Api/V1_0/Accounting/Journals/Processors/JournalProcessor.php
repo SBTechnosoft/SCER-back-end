@@ -377,7 +377,6 @@ class JournalProcessor extends BaseProcessor
 				$journalMultipleArray = array();
 				
 				$journalSingleArray = array();
-				
 				//trim an input 
 				$journalTransformer = new JournalTransformer();
 				$tRequest = $journalTransformer->trimUpdateData($journalArray);
@@ -437,7 +436,6 @@ class JournalProcessor extends BaseProcessor
 						}
 					}
 				}
-				
 				//get data from trim array
 				if(is_array($tRequest))
 				{

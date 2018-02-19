@@ -16,7 +16,7 @@ class Product implements RouteRegistrarInterface
      */
     public function register(RegistrarInterface $Registrar)
     {
-		ini_set('memory_limit', '256M');
+    	ini_set('memory_limit', '256M');
 		// all the possible get request 
 		Route::group(['as' => 'get'], function ()
 		{
@@ -34,9 +34,10 @@ class Product implements RouteRegistrarInterface
 		Route::post('Products/Product/inward', 'Products\Controllers\ProductController@inwardStore');
 		Route::post('Products/Product/outward', 'Products\Controllers\ProductController@outwardStore');
 		Route::post('Products/Product/batch', 'Products\Controllers\ProductController@multipleDataStore');
-		
+		Route::post('Products/Product/batchupdate', 'Products\Controllers\ProductController@batchUpdate');
 		// update data post request
 		Route::post('Products/Product/{productId}', 'Products\Controllers\ProductController@update');
+		
 		
 		//delete data delete request
 		Route::delete('Products/Product/{productId}', 'Products\Controllers\ProductController@Destroy');

@@ -31,6 +31,7 @@ class EncodeData extends StateService
 		$stateAbb= $decodedJson[0]['state_abb'];
 		$companyId= $decodedJson[0]['company_id'];
 		$branchId= $decodedJson[0]['branch_id'];
+		$permissionArray= json_decode($decodedJson[0]['permission_array']);
 		
 		//password decoding
 		$decodedPassword = base64_decode($password);
@@ -78,6 +79,7 @@ class EncodeData extends StateService
 		$data['address'] = $address;	
 		$data['password'] = $decodedPassword;	
 		$data['pincode'] = $pincode;	
+		$data['permissionArray'] = $permissionArray;	
 		$data['createdAt'] = $getCreatedDate;	
 		$data['updatedAt'] = $getUpdatedDate;	
 		$data['state'] = array(

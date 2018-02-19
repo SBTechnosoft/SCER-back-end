@@ -64,17 +64,19 @@ class TaxationController extends BaseController implements ContainerInterface
     {
 		$saleTaxResult = $this->getSaleTaxData($request,$companyId);
 		$purchaseTaxResult = $this->getPurchaseTaxData($request,$companyId);
+		$stockResult = $this->getStockDetailData($request,$companyId);
+		$incomeExpenseResult = $this->getIncomeExpenseData($request,$companyId);
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		if(strcmp($saleTaxResult,$exceptionArray['204'])==0 || strcmp($purchaseTaxResult,$exceptionArray['204'])==0)
+		if(strcmp($saleTaxResult,$exceptionArray['204'])==0 && strcmp($purchaseTaxResult,$exceptionArray['204'])==0 && strcmp($stockResult,$exceptionArray['204'])==0)
 		{
 			return $saleTaxResult;
 		}
 		else
 		{
 			$encodeTaxationData = new EncodeTaxationData();
-			$resultData = $encodeTaxationData->getGstReturnExcelPath($saleTaxResult,$purchaseTaxResult);
+			$resultData = $encodeTaxationData->getGstReturnExcelPath($saleTaxResult,$purchaseTaxResult,$stockResult,$incomeExpenseResult);
 			return $resultData;
 		}	
 	}
@@ -86,7 +88,7 @@ class TaxationController extends BaseController implements ContainerInterface
 	*/
     public function getStockDetailData(Request $request,$companyId)
     {
-		//Authentication
+    	//Authentication
 		$tokenAuthentication = new TokenAuthentication();
 		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		//get constant array
@@ -96,6 +98,31 @@ class TaxationController extends BaseController implements ContainerInterface
 		{
 			$taxationService = new TaxationService();
 			$resultData = $taxationService->getStockDetailData($request,$companyId);
+			return $resultData;
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+	}
+
+	/**
+	 * get the specified resource 
+	 * @param  Request $request
+	 * method calls the model and get the data
+	*/
+    public function getIncomeExpenseData(Request $request,$companyId)
+    {
+    	//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$taxationService = new TaxationService();
+			$resultData = $taxationService->getIncomeExpenseData($request,$companyId);
 			return $resultData;
 		}
 		else
@@ -152,5 +179,84 @@ class TaxationController extends BaseController implements ContainerInterface
 		{
 			return $authenticationResult;
 		}
+	}
+
+	/**
+	 * get the specified resource 
+	 * @param  Request $request
+	 * method calls the model and get the data
+	*/
+	public function getGstR2Data(Request $request,$companyId)
+	{
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$taxationService = new TaxationService();
+			$resultData = $taxationService->getGstr2Data($request,$companyId);
+			if(strcmp($resultData,$exceptionArray['204'])==0)
+			{
+				return $resultData;
+			}
+			else if(array_key_exists('operation', $request->header()))
+			{
+				$encodeTaxationData = new EncodeTaxationData();
+				$documentPath = $encodeTaxationData->getGstR2ExcelPath($resultData);
+				return $documentPath;
+			}
+			return $resultData;
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+
+	}
+
+	/**
+	 * get the specified resource 
+	 * @param  Request $request
+	 * method calls the model and get the data
+	*/
+	public function getGstR3Data(Request $request,$companyId)
+	{
+		//Authentication
+		$tokenAuthentication = new TokenAuthentication();
+		$authenticationResult = $tokenAuthentication->authenticate($request->header());
+		//get constant array
+		$constantClass = new ConstantClass();
+		$constantArray = $constantClass->constantVariable();
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($constantArray['success'],$authenticationResult)==0)
+		{
+			$taxationService = new TaxationService();
+			$resultData = $taxationService->getGstr3Data($request,$companyId);
+
+			if(strcmp($resultData,$exceptionArray['204'])==0)
+			{
+				return $resultData;
+			}
+			else if(array_key_exists('operation', $request->header()))
+			{
+				$encodeTaxationData = new EncodeTaxationData();
+				$documentPath = $encodeTaxationData->getGstR3ExcelPath($resultData);
+				return $documentPath;
+			}
+			return $resultData;
+		}
+		else
+		{
+			return $authenticationResult;
+		}
+
 	}
 }

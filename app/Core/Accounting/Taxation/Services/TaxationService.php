@@ -97,6 +97,28 @@ class TaxationService extends AbstractService
 		//get data
 		$taxationModel = new TaxationModel();
 		$stockDetailData = $taxationModel->getStockDetailData($companyId,$request->header());
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($stockDetailData,$exceptionArray['204'])==0)
+		{
+			return $stockDetailData;
+		}
+		else
+		{
+			return $stockDetailData;
+		}
+	}
+
+	/**
+     * get all the data and call the model for database selection opertation
+     * @return status
+     */
+	public function getIncomeExpenseData(Request $request,$companyId)
+	{
+		//get data
+		$taxationModel = new TaxationModel();
+		$stockDetailData = $taxationModel->getIncomeExpenseData($companyId,$request->header());
 		
 		//get exception message
 		$exception = new ExceptionMessage();
@@ -107,12 +129,7 @@ class TaxationService extends AbstractService
 		}
 		else
 		{
-			echo "else";
-			print_r($stockDetailData);
-			exit;
-			$encoded = new EncodeTaxationData();
-			$encodeAllData = $encoded->getPurchaseTaxEncodedAllData($stockDetailData,$request->header());
-			return $encodeAllData;
+			return $stockDetailData;
 		}
 	}
 	
@@ -141,6 +158,58 @@ class TaxationService extends AbstractService
 		}
 	}
 	
+	/**
+     * get all the data and call the model for database selection opertation
+     * @return status
+     */
+	public function getGstr2Data(Request $request,$companyId)
+	{
+		//get data
+		$taxationModel = new TaxationModel();
+		$taxationData = $taxationModel->getGstr2Data($companyId,$request->header());
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($taxationData,$exceptionArray['204'])==0)
+		{
+			return $taxationData;
+		}
+		else
+		{
+			$encoded = new EncodeTaxationData();
+			$encodeAllData = $encoded->getGstr2Data($taxationData);
+			return $encodeAllData;
+			
+		}
+	}
+
+	/**
+     * get all the data and call the model for database selection opertation
+     * @return status
+     */
+	public function getGstr3Data(Request $request,$companyId)
+	{
+		//get data
+		$taxationModel = new TaxationModel();
+		$taxationData = $taxationModel->getGstr3Data($companyId,$request->header());
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if(strcmp($taxationData,$exceptionArray['204'])==0)
+		{
+			return $taxationData;
+		}
+		else
+		{
+			$encoded = new EncodeTaxationData();
+			$encodeAllData = $encoded->getGstr3Data($taxationData);
+			return $encodeAllData;
+			
+		}
+	}
+
 	/**
      * get and invoke method is of Container Interface method
      * @param int $id,$name

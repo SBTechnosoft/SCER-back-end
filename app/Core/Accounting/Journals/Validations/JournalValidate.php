@@ -113,7 +113,7 @@ class JournalValidate
 	{
 		// echo "journal validate";
 		$validationArray = array(
-			'amount'=> 'regex:/^[0-9]*$/'
+			'amount'=> 'regex:/^[0-9 .]*$/'
 		);
 		$rules =array();
 		foreach ($validationArray as $key => $value) 
@@ -130,7 +130,7 @@ class JournalValidate
 				$key=> $rules[$key],
 			);
 			$messages = [
-				'amount.regex' => 'amount contains character from "0-9" only'
+				'amount.regex' => 'amount contains character from "0-9 ." only'
 			];
 			$validator = Validator::make($request,$rules,$messages);
 			

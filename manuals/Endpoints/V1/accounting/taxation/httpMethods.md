@@ -91,3 +91,60 @@
             {
                 ... Standard Stock-Detail Object
             }
+
+##### Creates income-expense
+
+##### `GET /accounting/taxation/income-expense/company/{companyId}`
++ Header
+	- Authentication Token
+	- 'fromDate':'',
+	- 'toDate':''
++ Error Message
+
+			{
+				... Error Message
+			}            
++ Response
+
+            {
+                ... Standard Income-Expense Object
+            }
+
+##### Creates Taxation of GSTR2
+
+##### `GET /accounting/taxation/gstr2/company/{companyId}`
++ Header
+	- Authentication Token
+	- 'operation':'gst-r2-excel'
+	- 'fromDate':'',
+	- 'toDate':''
++ Error Message
+
+			{
+				... Error Message
+			}            
++ Response
+
+            {
+                ... Document Path
+            }
+
+##### Creates Taxation of GSTR3
+
+##### `GET /accounting/taxation/gstr3/company/{companyId}`
++ Header
+	- Authentication Token
+	- 'operation':'gst-r3-excel'
+	- 'fromDate':'',
+	- 'toDate':''
++ Error Message
+
+			{
+				... Error Message
+			}            
++ Response
+
+            {
+                ... Document Path
+            }
+			

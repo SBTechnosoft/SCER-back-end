@@ -57,6 +57,7 @@ class EncodeData extends UserService
 			'address' => $userDecodedData->address,
 			'password' => $userDecodedData->password,
 			'pincode' => $userDecodedData->pincode,
+			'permissionArray' => $userDecodedData->permissionArray,
 			'createdAt' => $userDecodedData->createdAt,
 			'updatedAt' => $userDecodedData->updatedAt,
 			'stateAbb' => $userDecodedData->state->stateAbb,

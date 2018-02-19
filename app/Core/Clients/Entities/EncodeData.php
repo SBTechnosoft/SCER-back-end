@@ -31,6 +31,7 @@ class EncodeData extends StateService
 		$clientName= $decodedJson[0]['client_name'];
 		$companyName= $decodedJson[0]['company_name'];
 		$contactNo= $decodedJson[0]['contact_no'];
+		$contactNo1= $decodedJson[0]['contact_no1'];
 		$emailId= $decodedJson[0]['email_id'];
 		$address1= $decodedJson[0]['address1'];
 		$professionId= $decodedJson[0]['profession_id'];
@@ -80,6 +81,7 @@ class EncodeData extends StateService
 		$data['clientName'] = $clientName;
 		$data['companyName'] = $companyName;
 		$data['contactNo'] = $contactNo;
+		$data['contactNo1'] = $contactNo1;
 		$data['emailId'] = $emailId;
 		$data['address1'] = $address1;
 		$data['isDisplay'] = $isDisplay;
@@ -128,6 +130,7 @@ class EncodeData extends StateService
 			'stateAbb'=> $getCityDetail['state']['stateAbb']
 		);
 		$decodedDocumentJson = $decodedArrayJson['clientDocumentData'];
+		$documentCount = count($decodedDocumentJson);
 		if(count($decodedDocumentJson)==0)
 		{
 			$data['document']= array(
@@ -144,27 +147,31 @@ class EncodeData extends StateService
 		}
 		else
 		{
-			if(strcmp($decodedDocumentJson[0]['updated_at'],'0000-00-00 00:00:00')==0)
+			$data['file'] = array();
+			for($documentArray=0;$documentArray<$documentCount;$documentArray++)
 			{
-				$convertedUpdatedDate = "00-00-0000";
+				if(strcmp($decodedDocumentJson[$documentArray]['updated_at'],'0000-00-00 00:00:00')==0)
+				{
+					$convertedUpdatedDate = "00-00-0000";
+				}
+				else
+				{
+					$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $decodedDocumentJson[$documentArray]['updated_at'])->format('d-m-Y');
+				}
+				$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $decodedDocumentJson[$documentArray]['created_at'])->format('d-m-Y');
+				
+				$data['file'][$documentArray]= array(
+					'documentId' => $decodedDocumentJson[$documentArray]['document_id'],
+					'documentName' => $decodedDocumentJson[$documentArray]['document_name'],
+					'documentSize' => $decodedDocumentJson[$documentArray]['document_size'],	
+					'documentFormat' => $decodedDocumentJson[$documentArray]['document_format'],	
+					'documentType' => $decodedDocumentJson[$documentArray]['document_type'],	
+					'documentUrl' => $constantArray['billDocumentUrl'],	
+					'createdAt' => $convertedCreatedDate,
+					'updatedAt'=> $convertedUpdatedDate,
+					'clientId'=> $decodedDocumentJson[$documentArray]['client_id']
+				);
 			}
-			else
-			{
-				$convertedUpdatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $decodedDocumentJson[0]['updated_at'])->format('d-m-Y');
-			}
-			$convertedCreatedDate = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $decodedDocumentJson[0]['created_at'])->format('d-m-Y');
-			
-			$data['document']= array(
-				'documentId' => $decodedDocumentJson[0]['document_id'],
-				'documentName' => $decodedDocumentJson[0]['document_name'],
-				'documentSize' => $decodedDocumentJson[0]['document_size'],	
-				'documentFormat' => $decodedDocumentJson[0]['document_format'],	
-				'documentType' => $decodedDocumentJson[0]['document_type'],	
-				'documentUrl' => $constantArray['billDocumentUrl'],	
-				'createdAt' => $convertedCreatedDate,
-				'updatedAt'=> $convertedUpdatedDate,
-				'clientId'=> $decodedDocumentJson[0]['client_id']
-			);
 		}
 		$encodeData = json_encode($data);
 		return $encodeData;

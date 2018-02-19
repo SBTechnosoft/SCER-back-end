@@ -17,7 +17,7 @@ class Taxation implements RouteRegistrarInterface
      */
     public function register(RegistrarInterface $Registrar)
     {
-		// all the possible get request 
+    	// all the possible get request 
 		Route::group(['as' => 'get'], function ()
 		{
 			Route::get('Accounting/Taxation/Taxation/gst-return/company/{companyId}', 'Accounting\Taxation\Controllers\TaxationController@getGstReturnExcel');
@@ -25,6 +25,10 @@ class Taxation implements RouteRegistrarInterface
 			Route::get('Accounting/Taxation/Taxation/purchase-tax/company/{companyId}', 'Accounting\Taxation\Controllers\TaxationController@getPurchaseTaxData');
 			Route::get('Accounting/Taxation/Taxation/purchase-detail/company/{companyId}', 'Accounting\Taxation\Controllers\TaxationController@getPurchaseData');
 			Route::get('Accounting/Taxation/Taxation/stock-detail/company/{companyId}', 'Accounting\Taxation\Controllers\TaxationController@getStockDetailData');
+			Route::get('Accounting/Taxation/Taxation/income-expense/company/{companyId}', 'Accounting\Taxation\Controllers\TaxationController@getIncomeExpenseData');
+
+			Route::get('Accounting/Taxation/Taxation/gst-r2/company/{companyId}','Accounting\Taxation\Controllers\TaxationController@getGstR2Data');
+			Route::get('Accounting/Taxation/Taxation/gst-r3/company/{companyId}', 'Accounting\Taxation\Controllers\TaxationController@getGstR3Data');
 		});
 		
 	}

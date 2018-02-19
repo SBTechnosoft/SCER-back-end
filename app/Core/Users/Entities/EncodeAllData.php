@@ -36,6 +36,7 @@ class EncodeAllData extends StateService
 			$cityId[$decodedData] = $decodedJson[$decodedData]['city_id'];
 			$companyId[$decodedData] = $decodedJson[$decodedData]['company_id'];
 			$branchId[$decodedData] = $decodedJson[$decodedData]['branch_id'];
+			$permissionArray[$decodedData] = json_decode($decodedJson[$decodedData]['permission_array']);
 			
 			//password decoding
 			$decodedPassword[$decodedData] = base64_decode($password[$decodedData]);
@@ -90,6 +91,7 @@ class EncodeAllData extends StateService
 				'contactNo' =>$contactNo[$jsonData],
 				'address' =>$address[$jsonData],
 				'pincode' =>$pincode[$jsonData],
+				'permissionArray' =>$permissionArray[$jsonData],
 				'createdAt' =>$getCreatedDate[$jsonData],
 				'updatedAt' =>$getUpdatedDate[$jsonData],
 				'state' => array(
@@ -152,8 +154,8 @@ class EncodeAllData extends StateService
 				)
 			);	
 		}
-		
-		return json_encode($data);
+		$encodedData = json_encode($data);
+		return $encodedData;
 		// return $data;
 	}
 }

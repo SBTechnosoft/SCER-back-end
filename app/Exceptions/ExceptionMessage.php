@@ -27,7 +27,7 @@ class ExceptionMessage
 		$msgArray['EmailFail'] = "Mail could not be sent";
 		$msgArray['SmsFail'] = "Sms is not successfully sent";
 		$msgArray['successSms'] = "Sms is successfully send";
-		$msgArray['successEmail'] = "Message is successfully send";
+		$msgArray['successEmail'] = "Email is successfully send";
 		$msgArray['requiredEmail'] = "Email-Address is required";
 		$msgArray['noAccess'] = "Don't Have Access Right";
 		$msgArray['mapping'] = "mapping is not proper";
@@ -47,6 +47,8 @@ class ExceptionMessage
 		$msgArray['emailExist'] = "email-address is not exist";
 		$msgArray['userLogin'] = "user is not logged-in";
 		$msgArray['paymentMode'] = "Enter the proper payment-mode";
+		$msgArray['reminderData'] = "Enter the proper reminder-data";
+		$msgArray['updateSetting'] = "Please,Update the setting data";
 		return $msgArray;
 	}
 }

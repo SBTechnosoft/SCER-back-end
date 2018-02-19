@@ -71,6 +71,26 @@
             "branchId" : int,
 			"isDisplay": Enum,
 		}
+##### Standard Products-batch Persistable Object
+		{
+			"measurementUnit": Enum,
+			"purchasePrice": decimal,
+			"wholesaleMargin": decimal,
+			"wholesaleMarginFlat": decimal,
+			"semiWholesaleMargin": decimal,
+			"vat": decimal,
+			"purchaseCgst":decimal,
+			"purchaseSgst":decimal,
+			"purchaseIgst":decimal,
+			"margin": decimal,
+			"marginFlat":decimal,
+			"mrp": decimal,
+			"igst":decimal,
+			"hsn":string,
+			"additionalTax":decimal,
+			"minimumStockLevel":int,
+			"productId":array
+		}
 ##### Standard Product-Trnsaction-Summary Object
 		{
 			"productTrnSummaryId":int,

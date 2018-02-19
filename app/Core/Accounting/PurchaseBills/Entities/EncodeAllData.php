@@ -43,6 +43,7 @@ class EncodeAllData extends LedgerService
 			$balance[$decodedData] = $deocodedJsonData[$decodedData]->balance;
 			$remark[$decodedData] = $deocodedJsonData[$decodedData]->remark;
 			$jfId[$decodedData] = $deocodedJsonData[$decodedData]->jf_id;
+			$expense[$decodedData] = $deocodedJsonData[$decodedData]->expense;
 			$companyId[$decodedData] = $deocodedJsonData[$decodedData]->company_id;
 			$createdAt[$decodedData] = $deocodedJsonData[$decodedData]->created_at;
 			$updatedAt[$decodedData] = $deocodedJsonData[$decodedData]->updated_at;
@@ -168,6 +169,7 @@ class EncodeAllData extends LedgerService
 				'balance'=>$balance[$jsonData],
 				'remark'=>$remark[$jsonData],
 				'jfId'=>$jfId[$jsonData],
+				'expense'=>$expense[$jsonData],
 				'createdAt'=>$getCreatedDate[$jsonData],
 				'updatedAt'=>$getUpdatedDate[$jsonData],
 				'transactionDate'=>$getTransactionDate[$jsonData],

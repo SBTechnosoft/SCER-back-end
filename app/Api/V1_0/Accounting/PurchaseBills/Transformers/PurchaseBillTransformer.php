@@ -50,16 +50,17 @@ class PurchaseBillTransformer
 		$purchaseBillArray['vendorId'] = array_key_exists('vendorId',$request->input())? trim($request->input()['vendorId']):0;
 		$purchaseBillArray['companyId'] = array_key_exists('companyId',$request->input())? trim($request->input()['companyId']):0;
 		$purchaseBillArray['billNumber'] = array_key_exists('billNumber',$request->input())? trim($request->input()['billNumber']):'';
-		$purchaseBillArray['total'] = array_key_exists('total',$request->input())? trim($request->input()['total']):0;
-		$purchaseBillArray['tax'] = array_key_exists('tax',$request->input())? trim($request->input()['tax']):0;
-		$purchaseBillArray['grandTotal'] = array_key_exists('grandTotal',$request->input())? trim($request->input()['grandTotal']):0;
-		$purchaseBillArray['advance'] = array_key_exists('advance',$request->input())? trim($request->input()['advance']):0;
-		$purchaseBillArray['balance'] = array_key_exists('balance',$request->input())? trim($request->input()['balance']):0;
-		$purchaseBillArray['extraCharge'] = array_key_exists('extraCharge',$request->input())? trim($request->input()['extraCharge']):0;
+		$purchaseBillArray['total'] = array_key_exists('total',$request->input())? $this->checkValue(trim($request->input()['total'])):0;
+		$purchaseBillArray['tax'] = array_key_exists('tax',$request->input())? $this->checkValue(trim($request->input()['tax'])):0;
+		$purchaseBillArray['grandTotal'] = array_key_exists('grandTotal',$request->input())? $this->checkValue(trim($request->input()['grandTotal'])):0;
+		$purchaseBillArray['advance'] = array_key_exists('advance',$request->input())? $this->checkValue(trim($request->input()['advance'])):0;
+		$purchaseBillArray['balance'] = array_key_exists('balance',$request->input())? $this->checkValue(trim($request->input()['balance'])):0;
+		$purchaseBillArray['extraCharge'] = array_key_exists('extraCharge',$request->input())? $this->checkValue(trim($request->input()['extraCharge'])):0;
 		$purchaseBillArray['bankName'] = array_key_exists('bankName',$request->input())? trim($request->input()['bankName']):'';
 		$purchaseBillArray['checkNumber'] = array_key_exists('checkNumber',$request->input())? trim($request->input()['checkNumber']):'';
 		$purchaseBillArray['remark'] = array_key_exists('remark',$request->input())? trim($request->input()['remark']):'';
 		$purchaseBillArray['totalDiscount'] = array_key_exists('totalDiscount',$request->input())? trim($request->input()['totalDiscount']):0;
+		$purchaseBillArray['expense'] = array_key_exists('expense',$request->input())?json_encode($request->input()['expense']):"";
 		$purchaseBillArray['billType'] = $billTypeEnumArray['purchaseBillType'];
 		$purchaseBillArray['transactionType'] = 'purchase_tax';
 		if(array_key_exists('totalDiscounttype',$request->input()))
@@ -188,6 +189,12 @@ class PurchaseBillTransformer
 						}
 					}
 				}
+				else if(strcmp(array_keys($input)[$arrayData],'expense')==0)
+				{
+					$key = array_keys($input)[$arrayData];
+					$value = $input[$key];
+					$purchaseBillArray[$key]=json_encode($value);
+				}
 				else
 				{
 					$key = array_keys($input)[$arrayData];
@@ -264,5 +271,19 @@ class PurchaseBillTransformer
 		$trimArray['fromDate'] = $transformFromDate;	
 		$trimArray['toDate'] = $transformToDate;	
 		return $trimArray;
+	}
+
+	/**
+	* check value
+	* @param integer value
+	* @return tax-value/0
+	*/
+	public function checkValue($tax)
+	{
+		if($tax=='' || strcmp($tax,'undefined')==0 || is_NaN(floatval($tax)) || $tax==null)
+		{
+			return 0;
+		}
+		return $tax;	
 	}
 }

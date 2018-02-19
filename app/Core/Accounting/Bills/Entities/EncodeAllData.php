@@ -44,8 +44,10 @@ class EncodeAllData extends ClientService
 			$remark[$decodedData] = $deocodedJsonData[$decodedData]->remark;
 			$refund[$decodedData] = $deocodedJsonData[$decodedData]->refund;
 			$entryDate[$decodedData] = $deocodedJsonData[$decodedData]->entry_date;
+			$serviceDate[$decodedData] = $deocodedJsonData[$decodedData]->service_date;
 			$clientId[$decodedData] = $deocodedJsonData[$decodedData]->client_id;
 			$jfId[$decodedData] = $deocodedJsonData[$decodedData]->jf_id;
+			$expense[$decodedData] = $deocodedJsonData[$decodedData]->expense;
 			$salesType[$decodedData] = $deocodedJsonData[$decodedData]->sales_type;
 			$companyId[$decodedData] = $deocodedJsonData[$decodedData]->company_id;
 			$createdAt[$decodedData] = $deocodedJsonData[$decodedData]->created_at;
@@ -91,6 +93,14 @@ class EncodeAllData extends ClientService
 				$convertedEntryDate = Carbon\Carbon::createFromFormat('Y-m-d', $entryDate[$decodedData])->format('d-m-Y');
 				$bill->setEntryDate($convertedEntryDate);
 				$getEntryDate[$decodedData] = $bill->getEntryDate();
+			}
+			if(strcmp($serviceDate[$decodedData],'0000-00-00')==0)
+			{
+				$serviceDate[$decodedData] = "00-00-0000";
+			}
+			else
+			{
+				$serviceDate[$decodedData] = Carbon\Carbon::createFromFormat('Y-m-d', $serviceDate[$decodedData])->format('d-m-Y');
 			}
 			$documentId[$decodedData] = array();
 			$documentSaleId[$decodedData] = array();
@@ -201,11 +211,14 @@ class EncodeAllData extends ClientService
 				'createdAt'=>$getCreatedDate[$jsonData],
 				'updatedAt'=>$getUpdatedDate[$jsonData],
 				'entryDate'=>$getEntryDate[$jsonData],
+				'serviceDate'=>$serviceDate[$jsonData],
+				'expense'=>$expense[$jsonData],
 				'client' => array(
 					'clientId'=>$clientData->clientId,
 					'clientName'=>$clientData->clientName,
 					'companyName'=>$clientData->companyName,
 					'contactNo'=>$clientData->contactNo,
+					'contactNo1'=>$clientData->contactNo1,
 					'emailId'=>$clientData->emailId,
 					'address1'=>$clientData->address1,
 					'isDisplay'=>$clientData->isDisplay,

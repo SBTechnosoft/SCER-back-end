@@ -34,11 +34,12 @@ class EncodeData extends ClientService
 		$poNumber = $decodedJson[0]['po_number'];
 		$remark= $decodedJson[0]['remark'];
 		$entryDate= $decodedJson[0]['entry_date'];
+		$serviceDate= $decodedJson[0]['service_date'];
 		$clientId= $decodedJson[0]['client_id'];
 		$jfId= $decodedJson[0]['jf_id'];
 		$companyId= $decodedJson[0]['company_id'];
 		$salesType= $decodedJson[0]['sales_type'];
-		
+		$expense= $decodedJson[0]['expense'];
 		//get the client details from database
 		$encodeStateDataClass = new EncodeData();
 		$clientStatus = $encodeStateDataClass->getClientData($clientId);
@@ -82,6 +83,14 @@ class EncodeData extends ClientService
 			$bill->setEntryDate($convertedEntryDate);
 			$getEntryDate = $bill->getEntryDate();
 		}
+		if(strcmp($serviceDate,'0000-00-00')==0)
+		{
+			$serviceDate = "00-00-0000";
+		}
+		else
+		{
+			$serviceDate = Carbon\Carbon::createFromFormat('Y-m-d', $serviceDate)->format('d-m-Y');
+		}
 		//set all data into json array
 		$data = array();
 		$data['saleId'] = $saleId;
@@ -103,8 +112,10 @@ class EncodeData extends ClientService
 		$data['createdAt'] = $getCreatedDate;
 		$data['remark'] = $remark;
 		$data['entryDate'] = $getEntryDate;
+		$data['service'] = $serviceDate;
 		$data['clientId'] = $clientId;
 		$data['jfId'] = $jfId;
+		$data['expense'] = $expense;
 		$data['salesType'] = $salesType;
 		$data['updatedAt'] = $getUpdatedDate;	
 		$data['client']= array(
@@ -112,6 +123,7 @@ class EncodeData extends ClientService
 			'clientName' => $clientDecodedJson['clientName'],	
 			'companyName' => $clientDecodedJson['companyName'],	
 			'contactNo' => $clientDecodedJson['contactNo'],	
+			'contactNo1' => $clientDecodedJson['contactNo1'],	
 			'emailId' => $clientDecodedJson['emailId'],	
 			'address1' => $clientDecodedJson['address1'],		
 			'isDisplay' => $clientDecodedJson['isDisplay'],	

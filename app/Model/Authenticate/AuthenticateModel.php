@@ -180,7 +180,41 @@ class AuthenticateModel extends Model
 		ON a.user_id=u.user_id
 		where token='".$headerData['authenticationtoken'][0]."'");
 		DB::commit();
-		if(strcmp($raw[0]->user_type,'admin')==0 || strcmp($raw[0]->user_type,'staff'))
+		if(count($raw)!=0)
+		{
+			return $exceptionArray['200'];
+		}
+		else
+		{
+			return $exceptionArray['content'];
+		}
+	}
+
+	/**
+	 * get user-type 
+	 * @param header-data
+	 * returns the exception-message/user-type
+	*/
+	public function getUserTypeForPermission($headerData)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		
+		DB::beginTransaction();
+		$raw = DB::connection($databaseName)->select("select
+		u.user_type
+		from active_session a  
+		RIGHT JOIN user_mst u
+		ON a.user_id=u.user_id
+		where token='".$headerData['authenticationtoken'][0]."'");
+		DB::commit();
+		if(count($raw)!=0)
 		{
 			return $exceptionArray['200'];
 		}
@@ -206,13 +240,27 @@ class AuthenticateModel extends Model
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
 		
-		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->select("select
-		user_id
-		from active_session
-		where token='".$headerData['authenticationtoken'][0]."'");
-		DB::commit();
-		if(count($raw)==1)
+		if(array_key_exists('authenticationtoken', $headerData))
+		{
+			$authenticationtoken = $headerData['authenticationtoken'][0];
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->select("select
+			user_id
+			from active_session
+			where token='".$authenticationtoken."'");
+			DB::commit();
+		}
+		else
+		{
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->select("select
+			user_id
+			from active_session
+			where user_id=(select user_id from user_mst where user_type='superadmin')");
+			DB::commit();
+		}
+		
+		if(count($raw)!==0)
 		{
 			return $raw;
 		}

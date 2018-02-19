@@ -656,7 +656,6 @@ class ProductTransformer extends ExceptionMessage
 			$enumMeasurementUnitArray = array();
 			$measurementUnitEnum = new measurementUnitEnum();
 			$enumMeasurementUnitArray = $measurementUnitEnum->enumArrays();
-			
 			if(strcmp($constantArray['measurementUnit'],$productEnumArray)==0)
 			{
 				foreach ($enumMeasurementUnitArray as $innerKey => $innerValue)

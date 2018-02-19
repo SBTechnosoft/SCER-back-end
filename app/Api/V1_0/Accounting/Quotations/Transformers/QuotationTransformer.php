@@ -75,6 +75,8 @@ class QuotationTransformer
 		{
 			$tContactNo = trim($quotationArrayData['contactNo']);
 		}
+
+		$tContactNo1 = array_key_exists('contactNo1',$request->input())?trim($quotationArrayData['contactNo1']) :'';
 		if(!array_key_exists('emailId',$request->input()))
 		{
 			$tEmailId = "";
@@ -225,6 +227,7 @@ class QuotationTransformer
 			$data['company_id'] = $tCompanyId;
 			$data['entry_date'] = $tEntryDate;
 			$data['contact_no'] = $tContactNo;
+			$data['contact_no1'] = $tContactNo1;
 			$data['email_id'] = $tEmailId;
 			$data['is_display'] = $tIsDisplay;
 			$data['company_name'] = $tCompanyName;

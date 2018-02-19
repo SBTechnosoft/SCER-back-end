@@ -240,7 +240,8 @@ return [
 		'JobFormNumber',
 		'Quotations',
 		'Conversations',
-		'Professions',
+        'Professions',
+		'Expenses',
 		'PurchaseBills'
 	],
 

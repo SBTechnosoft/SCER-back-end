@@ -92,7 +92,6 @@ class CompanyService extends AbstractService
 			// data pass to the model object for insert
 			$companyModel = new CompanyModel();
 			$status = $companyModel->insertAllData($getData,$keyName,$document);
-			
 			if(is_array($status))
 			{
 				$ledgerResult = $ledgerModel->insertGeneralLedger($status);

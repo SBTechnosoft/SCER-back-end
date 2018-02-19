@@ -1052,6 +1052,7 @@ class JournalModel extends Model
 		
 	}
 	
+
 	/**
 	 * update array with data 
 	 * @param array,data,jf_id
@@ -1283,4 +1284,32 @@ class JournalModel extends Model
 			return $exceptionArray['200'];
 		}
 	}
+
+	/*
+	 * get current finantialyear data of remaining payment
+	*/
+	public function getReminingPayment()
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		$finantialyearData = $constantDatabase->constantAccountingDate();
+		$journalDocumentResult = array();
+		//get purchase document
+		DB::beginTransaction();
+		$journalDocumentResult = DB::connection($databaseName)->select("select 
+		sum(j.amount) as amount,
+		j.ledger_id,
+		j.amount_type
+		from journal_dtl as j 
+		INNER JOIN ledger_mst as l ON l.ledger_id=j.ledger_id
+		where (j.entry_date BETWEEN '".$finantialyearData['fromDate']."' AND '".$finantialyearData['toDate']."') and 
+		j.deleted_at='0000-00-00 00:00:00' and 
+		l.ledger_group_id=32 
+		GROUP by ledger_id,amount_type
+		ORDER by j.ledger_id");
+		DB::commit();
+		return json_encode($journalDocumentResult);
+	}	
 }

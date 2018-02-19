@@ -37,7 +37,7 @@
 				... Standard Profession Object
 			}
 
-**NOTES:** List all the Profession as per given template_id 
+**NOTES:** List all the Profession as per given profession_id 
 
 ##### `GET /settings/professions`
 + Header 

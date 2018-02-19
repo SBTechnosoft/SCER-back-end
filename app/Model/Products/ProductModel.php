@@ -553,6 +553,47 @@ class ProductModel extends Model
 	}
 	
 	/**
+	 * update product-batch data 
+	 * returns the status/exception-message
+	*/
+	
+	public function updateBatchData($productData,$key,$productId)
+	{
+		$productCodeFlag=0;
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		
+		$mytime = Carbon\Carbon::now();
+		$keyValueString="";
+
+		for($data=0;$data<count($productData);$data++)
+		{
+			$keyValueString=$keyValueString.$key[$data]."='".$productData[$data]."',";
+		}
+		for($data=0;$data<count($productId);$data++)
+		{
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->statement("update product_mst 
+			set ".$keyValueString."updated_at='".$mytime."'
+			where product_id = '".$productId[$data]."' and deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+		}
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		if($raw==1)
+		{
+			return $exceptionArray['200'];
+		}
+		else
+		{
+			return $exceptionArray['500'];
+		}
+	}
+
+	/**
 	 * update transaction data 
 	 * returns the status
 	*/

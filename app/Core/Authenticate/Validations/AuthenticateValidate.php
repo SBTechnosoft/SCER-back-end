@@ -23,7 +23,6 @@ class AuthenticateValidate extends UserService
 		
 		//convert password into base64_encode
 		$decodedPassword = base64_decode($tRequest['password']);
-		
 		//get user data
 		$userService = new AuthenticateValidate();
 		$getAllData = $userService->getAllUserData($request);

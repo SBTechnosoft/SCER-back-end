@@ -105,7 +105,6 @@ class BillController extends BaseController implements ContainerInterface
 							if(array_key_exists('operation',$request->header()))
 							{
 								$documentRequest->headers->set('operation',$request->header()['operation'][0]);
-								
 							}
 							else
 							{
@@ -213,7 +212,6 @@ class BillController extends BaseController implements ContainerInterface
 		// get exception message
 		$exception = new ExceptionMessage();
 		$msgArray = $exception->messageArrays();
-		
 		// get constant array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
@@ -222,7 +220,6 @@ class BillController extends BaseController implements ContainerInterface
 			$processor = new BillProcessor();
 			$billPersistable = new BillPersistable();
 			$billPersistable = $processor->getPersistablePaymentData($request,$saleId);
-			
 			if(is_object($billPersistable))
 			{
 				$billService= new BillService();

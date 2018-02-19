@@ -15,7 +15,7 @@ class UserTransformer
      */
     public function trimInsertData(Request $request)
     {
-		$userTypeFlag=0;
+    	$userTypeFlag=0;
 		$userName = $request->input('userName'); 
 		$userType = $request->input('userType'); 
 		$emailId = $request->input('emailId'); 
@@ -27,6 +27,7 @@ class UserTransformer
 		$cityId = $request->input('cityId'); 
 		$companyId = $request->input('companyId'); 
 		$branchId = $request->input('branchId'); 
+		$permissionArray = $request->input('permissionArray'); 
 		
 		//trim an input
 		$tUserName = trim($userName);
@@ -40,6 +41,7 @@ class UserTransformer
 		$tCityId = trim($cityId);
 		$tCompanyId = trim($companyId);
 		$tBranchId = trim($branchId);
+		$tPermissionArray = trim($permissionArray);
 		
 		//check enum user type
 		$userType = new UserTypeEnum();
@@ -69,6 +71,7 @@ class UserTransformer
 			$data['city_id'] = $tCityId;
 			$data['company_id'] = $tCompanyId;
 			$data['branch_id'] = $tBranchId;
+			$data['permission_array'] = $tPermissionArray;
 			return $data;
 		}
 		else
@@ -135,6 +138,13 @@ class UserTransformer
 			{
 				//convert password into base64_encode
 				$tUserArray[0]['password'] = base64_encode($tUserArray[0]['password']);
+			}
+			// echo "vvv";
+			// print_r($tUserArray);
+			if(array_key_exists("permission",$tUserArray[0]))
+			{
+				//convert password into base64_encode
+				$tUserArray[0]['permission_array'] = json_encode($tUserArray[0]['permission']);
 			}
 			return $tUserArray;
 		}

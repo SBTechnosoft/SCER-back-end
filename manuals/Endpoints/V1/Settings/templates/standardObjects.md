@@ -23,8 +23,18 @@
 ##### Template type Enum
 			{
 				generalTemplate:'general', 
-				generalTemplate:'invoice', 
+				invoiceTemplate:'invoice', 
 				quotationTemplate:'quotation',
-				emailTemplate :'email', 
-				smsTemplate:'sms'
+				blankTemplate:'blank',
+				jobCardTemplate:'job_card',
+				paymentTemplate:'payment',
+				receiptTemplate:'receipt',
+				emailNewOrderTemplate :'email_newOrder', 
+				emailDuePaymentTemplate:'email_duePayment',
+				emailBirthDayTemplate:'email_birthDay',
+				emailAnniTemplate:'email_anniversary',
+				smsNewOrderTemplate:'sms_newOrder',
+				smsDuePaymentTemplate:'sms_duePayment',
+				smsBirthDayTemplate:'sms_birthDay',
+				smsAnniTemplate:'sms_anniversary',
 			}

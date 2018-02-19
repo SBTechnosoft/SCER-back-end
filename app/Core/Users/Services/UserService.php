@@ -67,7 +67,6 @@ class UserService extends AbstractService
 	{
 		$userModel = new UserModel();
 		$status = $userModel->getAllData($request);
-		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();

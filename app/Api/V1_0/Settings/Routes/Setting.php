@@ -17,6 +17,13 @@ class Setting implements RouteRegistrarInterface
 	
     public function register(RegistrarInterface $Registrar)
     {
+    	Route::get('Settings/Setting/reminder', function () {
+			/* php artisan migrate */
+		    \Artisan::call('reminder');
+		});
+		// get remaining payment-data
+		Route::get('Settings/Setting/payment', 'Settings\Controllers\SettingController@getPaymentData');
+		
 		// insert data post request
 		Route::get('Settings/Setting', 'Settings\Controllers\SettingController@getData');
 		
@@ -25,6 +32,7 @@ class Setting implements RouteRegistrarInterface
 		
 		// update data post request
 		Route::patch('Settings/Setting', 'Settings\Controllers\SettingController@update');
+		
 	}
 }
 

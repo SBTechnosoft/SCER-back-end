@@ -39,7 +39,6 @@ class EncodeAllData extends Setting
 				$getUpdatedDate[$decodedData] = $setting->getUpdated_at();
 			}
 			$settingData[$decodedData] = $decodedJson[$decodedData]['setting_data'];
-			
 			$decodedSettingData = json_decode($settingData[$decodedData]);
 			if(strcmp($decodedJson[$decodedData]['setting_type'],$constantArray['barcodeSetting'])==0)
 			{
@@ -49,7 +48,54 @@ class EncodeAllData extends Setting
 					'barcodeWidth' => $decodedSettingData->barcode_width,
 					'barcodeHeight' => $decodedSettingData->barcode_height,
 					'createdAt' => $getCreatedDate[$decodedData],
-					'updatedAt' => $getUpdatedDate[$decodedData],
+					'updatedAt' => $getUpdatedDate[$decodedData]
+				);
+			}
+			else if(strcmp($decodedJson[$decodedData]['setting_type'],$constantArray['serviceDateSetting'])==0)
+			{
+				$data[$decodedData]= array(
+					'settingId' => $decodedJson[$decodedData]['setting_id'],
+					'settingType' => $decodedJson[$decodedData]['setting_type'],
+					'servicedateNoOfDays' => $decodedSettingData->servicedate_no_of_days,
+					'createdAt' => $getCreatedDate[$decodedData],
+					'updatedAt' => $getUpdatedDate[$decodedData]
+				);
+			}
+			else if(strcmp($decodedJson[$decodedData]['setting_type'],$constantArray['paymentDateSetting'])==0)
+			{
+				$data[$decodedData]= array(
+					'settingId' => $decodedJson[$decodedData]['setting_id'],
+					'settingType' => $decodedJson[$decodedData]['setting_type'],
+					'paymentdateNoOfDays' => $decodedSettingData->paymentdate_no_of_days,
+					'paymentdateStatus' => $decodedSettingData->paymentdate_status,
+					'createdAt' => $getCreatedDate[$decodedData],
+					'updatedAt' => $getUpdatedDate[$decodedData]
+				);
+			}
+			else if(strcmp($decodedJson[$decodedData]['setting_type'],$constantArray['birthDateReminderSetting'])==0)
+			{
+				$data[$decodedData]= array(
+					'settingId' => $decodedJson[$decodedData]['setting_id'],
+					'settingType' => $decodedJson[$decodedData]['setting_type'],
+					'birthreminderType' => $decodedSettingData->birthreminder_type,
+					'birthreminderTime' => $decodedSettingData->birthreminder_time,
+					'birthreminderNotifyBy' => $decodedSettingData->birthreminder_notify_by,
+					'birthreminderStatus' => $decodedSettingData->birthreminder_status,
+					'createdAt' => $getCreatedDate[$decodedData],
+					'updatedAt' => $getUpdatedDate[$decodedData]
+				);
+			}
+			else if(strcmp($decodedJson[$decodedData]['setting_type'],$constantArray['anniDateReminderSetting'])==0)
+			{
+				$data[$decodedData]= array(
+					'settingId' => $decodedJson[$decodedData]['setting_id'],
+					'settingType' => $decodedJson[$decodedData]['setting_type'],
+					'annireminderType' => $decodedSettingData->annireminder_type,
+					'annireminderTime' => $decodedSettingData->annireminder_time,
+					'annireminderNotifyBy' => $decodedSettingData->annireminder_notify_by,
+					'annireminderStatus' => $decodedSettingData->annireminder_status,
+					'createdAt' => $getCreatedDate[$decodedData],
+					'updatedAt' => $getUpdatedDate[$decodedData]
 				);
 			}
 			else if(strcmp($decodedJson[$decodedData]['setting_type'],$constantArray['chequeNoSetting'])==0)
@@ -59,7 +105,7 @@ class EncodeAllData extends Setting
 					'settingType' => $decodedJson[$decodedData]['setting_type'],
 					'chequeno' => $decodedSettingData->chequeno_status,
 					'createdAt' => $getCreatedDate[$decodedData],
-					'updatedAt' => $getUpdatedDate[$decodedData],
+					'updatedAt' => $getUpdatedDate[$decodedData]
 				);
 			}
 		}

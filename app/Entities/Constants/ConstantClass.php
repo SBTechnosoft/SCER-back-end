@@ -21,6 +21,10 @@ class ConstantClass
 		$constantArray['barcodeHeight'] = 60;
 		$constantArray['barcodeSetting'] = "barcode";
 		$constantArray['chequeNoSetting'] = "chequeno";
+		$constantArray['birthDateReminderSetting'] = "birthreminder";
+		$constantArray['anniDateReminderSetting'] = "annireminder";
+		$constantArray['paymentDateSetting'] = "paymentdate";
+		$constantArray['serviceDateSetting'] = "servicedate";
 		$constantArray['noImage'] = "Storage/No-Image/no-image.jpg";
 		$constantArray['productBarcode'] = "Storage/Barcode/";
 		$constantArray['documentUrl'] = "Storage/Document/";
@@ -28,6 +32,7 @@ class ConstantClass
 		$constantArray['purchaseTaxationUrl'] = "Storage/Taxation/PurchaseDetail/";
 		$constantArray['purchaseTaxUrl'] = "Storage/Taxation/PurchaseTax/";
 		$constantArray['taxReturnUrl'] = "Storage/Taxation/GstReturn/";
+		$constantArray['taxHtmlUrl'] = "Storage/Taxation/GstHtmlFile/";
 		$constantArray['saleTaxUrl'] = "Storage/Taxation/SaleTax/";
 		$constantArray['mainLogo'] = "Storage/Logo/";
 		$constantArray['polishReportUrl'] = "Storage/Reports/Polish-Report/";
@@ -129,6 +134,28 @@ class ConstantClass
 	}
 
 	/**
+	 * making an array contains constant data of template-type
+	 * @param (no parameter)
+	*/
+	public function templateConstants()
+	{
+		$constantArray = array();
+		$constantArray['Invoice'] = "invoice";
+		$constantArray['Payment'] = "payment";
+		$constantArray['Blank'] = "blank";
+		$constantArray['Quotation'] = "quotation";
+		$constantArray['Email_NewOrder'] = "email_newOrder";
+		$constantArray['Email_DuePayment'] = "email_duePayment";
+		$constantArray['Email_BirthDay'] = "email_birthDay";
+		$constantArray['Email_AnniversaryDay'] = "email_anniversary";
+		$constantArray['Sms_NewOrder'] = "sms_newOrder";
+		$constantArray['Sms_DuePayment'] = "sms_duePayment";
+		$constantArray['Sms_BirthDay'] = "sms_birthDay";
+		$constantArray['Sms_AnniversaryDay'] = "sms_anniversary";
+		return $constantArray;
+	}
+
+	/**
 	 * making an array contains constant data 
 	 * @param (no parameter)
 	*/
@@ -163,6 +190,9 @@ class ConstantClass
 		$mailPasswordArray = array();
 		$mailPasswordArray['emailId'] = 'farhan.s@siliconbrain.in';
 		$mailPasswordArray['password'] = 'Abcd@1234';
+
+		// $mailPasswordArray['emailId'] = 'nrana1551@gmail.com';
+		// $mailPasswordArray['password'] = 'nrana1551';
 		return $mailPasswordArray;
 	}
 	
@@ -177,26 +207,57 @@ class ConstantClass
 		$commentObject->billMailSend = "Your Mail Is Successfully Send From Sale-Bill";
 		$commentObject->quotationMailSend = "Your Mail Is Successfully Send From Quotation";
 		$commentObject->crmMailSend = "Your Mail Is Successfully Send From Crm";
+		$commentObject->crmSmsSend = "Your Sms Is Successfully Send From Crm";
+		$commentObject->emailIdExists = "Entered Email-id is already exists";
+		$commentObject->reminderMailSend = "Your Mail Is Successfully Send From Reminder";
+		$commentObject->reminderSmsSend = "Your Sms Is Successfully Send From Reminder";
+		$commentObject->alreadyMailSend = "Your Mail Is already Successfully Send From Reminder";
+		$commentObject->alreadySmsSend = "Your Sms Is already Successfully Send From Reminder";
+		return $commentObject;
+	}
+
+	/**
+	 * making an array contains comment data 
+	 * @param (no parameter)
+	*/
+    public function getReminderTimeForPayment()
+	{
+		$commentObject = new stdClass();
+		// $commentObject->mailSend = "Your Mail Is Successfully Send";
+		$commentObject->billMailSend = "Your Mail Is Successfully Send From Sale-Bill";
+		$commentObject->quotationMailSend = "Your Mail Is Successfully Send From Quotation";
+		$commentObject->crmMailSend = "Your Mail Is Successfully Send From Crm";
 		$commentObject->crmSmsSend = "Your Mail Is Successfully Send From Crm";
+		$commentObject->emailIdExists = "Entered Email-id is already exists";
 		return $commentObject;
 	}
 	
+
 	/**
 	 * check the incoming request url and give them respected database name
 	 * @param (no parameter)
 	*/
 	public function constantDatabase()
 	{
-		if(strcmp("www.scerp1.com",$_SERVER['HTTP_HOST'])==0)
-		{
+		// if(strcmp("http://localhost/SCER-back-end/public/",$_SERVER['HTTP_HOST'])==0)
+		// {
 			$database = "mysql";
 			return $database;
-		}
+		// }
 		// else
 		// {
 			// $database = "mysql_silicon";
 			// return $database;
 		// }
 	}
-	 
+
+	/**
+	 * check the incoming request url and give them respected database name
+	 * @param (no parameter)
+	*/
+	public function constantDatabaseForCron()
+	{
+		$database = "mysql";
+		return $database;
+	}
 }

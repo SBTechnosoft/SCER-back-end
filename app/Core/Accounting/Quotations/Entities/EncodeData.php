@@ -92,6 +92,7 @@ class EncodeData extends ClientService
 			'clientName' => $clientDecodedJson['clientName'],	
 			'companyName' => $clientDecodedJson['companyName'],	
 			'contactNo' => $clientDecodedJson['contactNo'],	
+			'contactNo1' => $clientDecodedJson['contactNo1'],	
 			'emailId' => $clientDecodedJson['emailId'],	
 			'professionId' => $clientDecodedJson['professionId'],	
 			'address1' => $clientDecodedJson['address1'],		

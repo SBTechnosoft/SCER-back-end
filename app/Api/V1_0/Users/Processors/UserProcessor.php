@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use ERP\Core\Users\Validations\UserValidate;
 use ERP\Api\V1_0\Users\Transformers\UserTransformer;
 use ERP\Exceptions\ExceptionMessage;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -44,7 +45,6 @@ class UserProcessor extends BaseProcessor
 		else
 		{
 			$userValidate = new UserValidate();
-			
 			//trim an input 
 			$userTransformer = new UserTransformer();
 			$tRequest = $userTransformer->trimInsertData($this->request);
@@ -58,12 +58,13 @@ class UserProcessor extends BaseProcessor
 				$emailIdResult = $userValidate->emailIdCheck($tRequest,$this->request);
 				if(!is_array($emailIdResult))
 				{
-					return $emailIdResult;
+					$constantClass = new ConstantClass();
+					$constantResult = $constantClass->getCommentMessage();
+					return $constantResult->emailIdExists;
 				}
 			}
 			if(is_array($emailIdResult))
 			{
-				
 				//validation
 				$status = $userValidate->validate($tRequest);
 				
@@ -168,7 +169,7 @@ class UserProcessor extends BaseProcessor
 						//check emailId is exist or not?
 						if(array_key_exists("email_id",$tRequest[0]))
 						{
-							$emailIdResult = $userValidate->emailIdCheck($tRequest[0]);
+							$emailIdResult = $userValidate->emailIdCheck($tRequest[0],$request);
 							if(!is_array($emailIdResult))
 							{
 								return $emailIdResult;
@@ -181,7 +182,6 @@ class UserProcessor extends BaseProcessor
 					
 					//validation
 					$status = $userValidate->validateUpdateData($tKeyValue[$data],$tValue[$data],$tRequest[0]);
-					
 					//enter data is valid(one data validate status return)
 					if($status=="Success")
 					{

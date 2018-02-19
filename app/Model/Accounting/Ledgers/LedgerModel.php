@@ -720,6 +720,8 @@ class LedgerModel extends Model
 		bank_id,
 		bank_dtl_id,
 		micr_code,
+		client_id,
+		client_name,
 		created_at,
 		updated_at,
 		deleted_at,

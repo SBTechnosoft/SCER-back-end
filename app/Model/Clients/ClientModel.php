@@ -80,6 +80,7 @@ class ClientModel extends Model
 			client_name,
 			company_name,
 			contact_no,
+			contact_no1,
 			email_id,
 			address1,
 			profession_id,
@@ -138,6 +139,7 @@ class ClientModel extends Model
 		client_name,
 		company_name,
 		contact_no,
+		contact_no1,
 		email_id,
 		address1,
 		profession_id,
@@ -180,7 +182,6 @@ class ClientModel extends Model
 			$clientArraydata = array();
 			$clientArraydata['clientData'] = $clientData;
 			$clientArraydata['clientDocumentData'] = $clientDocumentData;
-		
 			$enocodedData = json_encode($clientArraydata,true); 	
 			return $enocodedData;
 		}
@@ -386,6 +387,7 @@ class ClientModel extends Model
 		client_name,
 		company_name,
 		contact_no,
+		contact_no1,
 		email_id,
 		address1,
 		profession_id,
@@ -453,6 +455,7 @@ class ClientModel extends Model
 		client_name,
 		email_id,
 		contact_no,
+		contact_no1,
 		address1,
 		is_display,
 		state_abb,
@@ -553,6 +556,7 @@ class ClientModel extends Model
 		client_name,
 		email_id,
 		contact_no,
+		contact_no1,
 		address1,
 		is_display,
 		state_abb,

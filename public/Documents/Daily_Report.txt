@@ -1,0 +1,377 @@
+_https://www.screencast.com/t/cqcOyxXsxKW
+$2y$10$xLXs8Y2EJB66JAiLY./QDuAaAMo7cu.YM.Te45bla7USNhuC9sf.W
+F:\xampp\newOne\htdocs\tutionClass\assets\plugins\tinymce\plugins\advlist
+
+Daily Report,
+
+Completed,
+12-01-2018
+-- save data of pwfms
+-- push in branch
+-- working on paid in accounting
+-- erp :
+   -- problem solved of not showing tax-invoice & tax-purchase(angular side)
+   -- working on gstR2 (back-end)
+
+Question :
+-- delete before data from db
+-- excel-sheet of gstr1-gstr3
+-- cgst,sgst and all taxes management
+-- discuss about already available sheet gstr3 
+
+11-01-2018
+-- testing & analysis of suvarnkar site...
+   -- write detail in excel-sheet   
+-- admin side structure of all chep deals is ready(folder structure & configuration)
+-- server uploading & db changes in all the server including v2
+-- v2 server problem solved
+   -- cant login
+
+
+pending,
+-- copy-paste functionality in bill
+-- mass update in product
+
+problems:
+--- address should contain special character
+--- update client data
+--- no of decimal point and formating in excel-pdf
+--- bill update
+-- journal update
+-- bill insert not properly work(alredy exist ph_no ->client name only change..cant insert)
+-- remove unneccessary client data from bill/client api
+-- add one field client name in purchase form
+
+-------------------------------------------------------------- New Laravel Project -------------------------------------------------------------------
+
+C Panel Access:
+
+URL: www.payglobel.com/cpanel
+User id: globelmo
+password: waqas@123@
+
+Admin Access:
+
+URL: https://www.payglobel.com/admin/login/
+User ID: tonny@gmail.com
+password : 123456
+
+User Access:
+ 
+User ID: pradip.zeviion@gmail.com
+Password: Pradip@123
+
+---------------------------------------------------------------- End ---------------------------------------------------------------------------------
+smartclass cpanel Access 
+dealsinbongo.com
+Hosting ISP: https://www.tmdhosting.com
+User Name: glomantiss@gmail.com
+Password: Hex666$$%%
+
+Demo.classconnect.cloud (Sub-Domin)
+
+FTP Access
+Host: ftp.dealsinbongo.com
+FTP Username: sbraindev@classconnect.cloud
+Password: c!a5sconu3c+.ciOnDf+p
+
+Smartclass dB Access 
+
+
+Database Name: dealsinb_ccdemo
+User name: dealsinb_ccdemousr
+Password: ceb3n0u5rdb
+------------------------------------------------------------------------------------------------------------------------------------------------------
+-- prabandhak -> url should not changedd...
+----------------laravel changes----------------
+@Reema "https://payglobel.com/login"
+Username: bharat@zeviiontechnology.com
+Password: bjg@123
+
+
+cPanel Access :https://secuream16.sgcpanel.com:2083
+username: globelmo 
+Password: 4881189w
+
+-------------------------------------------------
+Disha Tution Class :
+Password: Disha8485
+TP-LINK_AD4B54
+
+webmail address:
+https://sg2plcpnl0073.prod.sin2.secureserver.net:2096/cpsess0594292542/webmail/
+
+Air link:(internet)
+haresh Gauswami
+9909906509
+
+skype:
+reema.patel.sb
+reema.p@siliconbrain.co.in
+
+blog url : 
+http://blogs.siliconbrain.co.in/wp-admin
+
+Git :
+https://github.com/SBTechnosoft/SCER-back-end
+username:reema1((not an id)reemap79@gmail.com)
+
+
+jing :
+reema.p@siliconbrain.co.in
+reema.p
+reema123456
+
+inventory management(accounting):
+http://www.managementstudyguide.com/inventory-management.htm
+
+Amazon:
+FTP Access :siliconbrain@ftp.siliconbrain.co.in
+Db name:- amezon_db
+username:- maaandbaby
+password:- @m@z0n_B1b25
+
+ IP 166.62.27.63
+ Host Name ftp.siliconbrain.co.in
+ Port 21
+ User Name siliconbrain
+ Password Sb22102015
+
+pwfms cpanel access:
+URL: https://siliconbrain.in:2083/
+Username: sbinin1
+Password: S!l!C0N@1216913
+
+*** FTP Access****
+Host Name: 166.62.33.199
+Username: dev@siliconbrain.in
+Password: s!il50hd@ain
+
+****betapwfms database access****
+Database Name: sbinin1_db_betapwfms
+Database Username: sbinin1_betapwfms
+Databse Password: Beta_Pw613$@$!l!c0n
+
+*** Database Access****
+Database Name: sbinin1_db_pwfms
+Database Username: sbinin1_pwfms
+Databse Password: Pw613$@$!l!c0n
+
+swaminarayancycles.com/cpanel
+** CPanel Access*****
+URL: swaminarayancycles.com
+User Name: swamicycles
+Password: 3yCle$@Swamin@ray@n
+
+** FTP Access*****
+Host Name: 166.62.33.199
+Username: dev@swaminarayancycles.com
+Password: sm@w|na@ayci53
+--------------------------------------------------------
+siliconbrainerp:
+
+sapi.siliconbrain.in
+DB_DATABASE=sbinin1_erp
+DB_USERNAME=sbinin1_erp
+DB_PASSWORD='$!|!C0N5|2|)'
+--------------------------------------------------------
+contact us:
+email:reemapatel25@gmail.com
+pass: reema123456
+
+basic commands of git:
+git status
+git pull
+
+git add .
+git commit -m "message: heelllo"
+git push origin master
+
+header("Access-Control-Allow-Origin: *");
+
+mysql tool
+id:Abcd@1234
+pass:Abcd@1234
+root
+3307
+
+postman
+reemapatel
+reema.p@siliconbrain.in
+Abcd@1234
+---------------------------------------------------
+C:\Windows\System32\drivers\etc\hosts
+D:\xampp\apache\conf\extra\httpd-vhosts.conf
+D:\xampp\apache\logs
+www.scerp.com
+
+-------------------------------------------Laravel---------------------------------------
+
+php artisan make:controller --resource ERP\Http\Controllers\Sample\SampleController
+
+
+
+---server setup (TulsiMovies)
+	Winscp download
+	criteria insert(login,host)
+	IP 166.62.27.63
+	Host Name ftp.siliconbrain.co.in
+	Port 21
+	User Name siliconbrain
+	Password Sb22102015
+admin
+YWRtaW4=
+2016-10-12 10:01:19
+--- laravel server set up
+	hostname: 166.62.27.63
+	port: 21
+	FTP User: subdomain@siliconbrain.co.in
+	Password: 5ubd0ma!n
+
+--- Database credentials 
+
+	Database Name: er_beta
+	User Name: er_beta
+	Password: 3pr-b3+a
+
+public_html->shreetulsimovies.com
+--- dev@prabandhak.co.in ---------
+Cpanel Access : 
+prabandhak.co.in/cpnael
+CPanel URL:https://166.62.33.199:2083
+User Name: prabandhakur
+Password: P16@2an+4h1k
+
+IP: 166.62.33.199
+FTP: dev@prabandhak.co.in
+Password: pr5dahdna!
+New Password: k1h4n@2Arp2018
+
+@Reema Set ERP Demo 
+URL:- demo.prabandhak.co.in
+
+Database: 
+DBname :- prabandh_demo_erp
+Username:- prabandh_userdmo
+Password:- Dm021s5r
+
+arnexim.prabandhak.co.in
+DB name:- prabandh_arnexim_erp
+Username:- prabandh_pranex 
+Password:- 2QT.l%_3EdH_
+
+arnknits.prabandhak.co.in
+prabandh_arnknits_erp
+Username:- prabandh_praknit
+Password:- wIxP-84m%4Df
+--- dev@siliconbrain.in ---------
+
+IP: 166.62.33.199
+FTP: dev@siliconbrain.in
+Password: s!ile0hd+ain 
+DOCUMENT ROOT: /home/sbinin1/public_html/ERP/front-end/
+DOCUMENT ROOT: /home/sbinin1/public_html/ERP/back-end/public/
+
+Root : 	v2api.siliconbrain.in
+	v2erp.siliconbrain.in
+Database Name: sbinin1_v2erp
+User Name: v2erpusr 
+Password: v23+rqu5r
+
+--- Email Configuration :-------
+
+Email Configuration for Swaminarayan ERP
+
+Email-id: support@swaminarayancycles.com
+Password: Abcd@1234
+Configuration: https://www.screencast.com/t/PJ1cZo9u
+
+--- Prabandhak access ---
+UserId is common for all 3:   
+userId: prabandhak@gmail.com
+
+password:
+ntc =ptc+ra3n
+ntce = ptce+ra3n
+sunshine = pun+ra3s
+bracsaindia = pacs+ra3br
+beta = bce+ra3ta
+
+url:
+ntc: ntc.prabandhak.co.in
+ntce: ntce.prabandhak.co.in
+sunshine: sunshine.prabandhak.co.in
+bracsindia: bracsaindia.prabandhak.co.in
+beta: beta.prabandhak.co.in
+
+Subdomain: beta.prabandhak.co.in
+Database Name: prabandh_beta
+User Name: prabandh_beuser
+Password: dbe3n5r+
+
+Subdomain: bracsaindia.prabandhak.co.in
+Database Name: prabandh_bracsaindia
+User Name: prabandh_bracusr
+Password: d+ae5sa!nbi=
+
+Login access for SMS integration 
+
+url: http://login.arihantsms.com/
+username: siliconbrain
+password: demo54321
+
+//.net 
+Link: https://win58.papaki.gr:8443/smb/
+ftp: 138.201.31.82
+User: e80912imti
+pass: 6Lj3t_a2
+
+Root : webacc.ibgreece.com
+Ftp acc name: web_account
+pass: g!s4f1axw3@s
+
+Final Ftp Access:
+Get Access From:
+-- https://sg2nwvpweb028.shr.prod.sin2.secureserver.net:8443/login_up.php3
+-- UserId: dskhalas88
+-- Password: pariislucky89E
+Url:microsoftlinux.co.in
+Username: ibgreece
+Host Name: ftp.microsoftlinux.co.in
+Password: Abcd@1234
+---------------------------------------------------------------------------------------
+
+FTP Details 
+ Host Name: 97.74.238.110 
+ Username: dev@joindigitalindia.com
+ Password: Bharat+J0!n
+
+cpanel Access
+Domain: www.joindigitalindia.com/cpanel
+Username: joindigitalin
+Password: J0!n42!Gt1L
+https://joindigitalindia.com/
+Admin:
+admin@gmail.com
+abc123
+
+front side login:
+admin@gmail.com
+123
+
+-------------------------------------------------------------
+convocation detail = http://screencast.com/t/DT0ZmIVFolV
+
+
+
+Git Bash Procedure:
+-- branch-name : ReemaP-<asana_task_no>-asana_task_title
+-- git status
+1. git checkout -b branch_name(creating a branch)
+2. git checkout branch_name(show already created branch or go to the branch)
+3. git pull origin master
+4. git add "."
+5. git commit -m "<asana_task_no>/b|/bmessage"
+6. git push origin branch_name
+7. git cherry-pick 88123973a61f9d17e5f1e5ae6552d2968ecef3c0
+

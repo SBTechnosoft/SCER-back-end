@@ -16,13 +16,23 @@
 				"salesType":Enum,
 				"remark":string,
 				"poNumber":string,
-				"entryDate":datetime,
+				"entryDate":date,
+				"serviceDate":date,
 				"orderConfirmationDate":datetime,
 				"createdAt":timestamp,
 				"updatedAt":datetime,
 				"jf_id":int,
 				"client":{
 					... standard client object
+				}
+				"expense":{
+					{
+						"expenseName":string,
+						"expenseType":enum,
+						"expenseValue":decimal,
+						"expenseId":int,
+					}
+					...
 				}
             	"company":{
 					... standard company object
@@ -51,6 +61,7 @@
             	"companyId":String,
 				"isDraft":int,
 				"entryDate":date,
+				"serviceDate":date,
 				"contactNo":string,
 				"emailId":string,
 				"companyName":string,
@@ -65,6 +76,15 @@
 				"quotationNumber":string,	
 				"jobCardNumber":string,
 				...Standard Product Transaction Persistable Object,
+				"expense":{
+					{
+						"expenseName":string,
+						"expenseType":enum,
+						"expenseValue":decimal,
+						"expenseId":int,
+					}
+					...
+				}
 				"transactionDate":date,
 				"total":decimal,
 				"totalDiscounttype":enum,
@@ -110,4 +130,9 @@
 				"cashPayment":'cash',
 				"bankPayment":'bank',
 				"cardPayment":'card'
+			}
+#####  Discount Type Enum
+			{
+				"flatType":"flat",
+				"perCentageType":"percentage"
 			}
