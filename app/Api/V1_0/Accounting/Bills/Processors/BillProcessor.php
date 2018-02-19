@@ -25,6 +25,7 @@ use ERP\Core\Clients\Entities\ClientArray;
 use ERP\Core\Accounting\Ledgers\Entities\LedgerArray;
 use ERP\Model\Accounting\Journals\JournalModel;
 use ERP\Core\Accounting\Journals\Validations\BuisnessLogic;
+use ERP\Core\Entities\CompanyDetail;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -281,6 +282,13 @@ class BillProcessor extends BaseProcessor
 			$ledgerIdData = $ledgerModel->getLedgerId($tRequest['company_id'],$salesTypeEnumArray['wholesales']);
 			$decodedLedgerId = json_decode($ledgerIdData);
 		// }
+		//get the company details from database
+		$companyDetail = new CompanyDetail();
+		$companyDetails = $companyDetail->getCompanyDetails($tRequest['company_id']);
+		//convert total to no-of decimal point
+		$tRequest['total'] = number_format($tRequest['total'],$companyDetails['noOfDecimalPoints'],'.','');	
+		$tRequest['advance'] = number_format($tRequest['advance'],$companyDetails['noOfDecimalPoints'],'.','');	
+
 		$ledgerTaxAcId = $generalLedgerArray[0][0]->ledger_id;
 		$ledgerSaleAcId = $decodedLedgerId[0]->ledger_id;
 		$ledgerDiscountAcId = $generalLedgerArray[1][0]->ledger_id;
@@ -301,6 +309,8 @@ class BillProcessor extends BaseProcessor
 			}	
 			$discountTotal = $discount+$discountTotal;
 		}
+		
+
 		// if(strcmp($tRequest['total_discounttype'],'flat')==0)
 		// {
 			// $totalDiscount = $tRequest['total_discount'];

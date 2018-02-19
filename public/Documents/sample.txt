@@ -2,7 +2,7 @@ silicon-swaminarayan-arihant completed
 -- Alter table ledger_mst add `bank_id` INT(11) NULL DEFAULT NULL AFTER CGST, ADD `bank_dtl_id` INT(11) NULL DEFAULT NULL AFTER `bank_id` , ADD `micr_code` INT(11) NULL DEFAULT NULL AFTER `bank_dtl_id`
 
 
-local done..(silicon-swaminarayan pending...product_doc_dtl all pending)
+local-arihant done..(silicon-swaminarayan pending...product_doc_dtl all pending)
 -- ALTER TABLE `product_mst` ADD `not_for_sale` ENUM('on','off') NOT NULL DEFAULT 'on' AFTER `minimum_stock_level`, ADD `max_sale_qty` DECIMAL(20,4) NOT NULL AFTER `not_for_sale`, ADD `product_cover_id` INT(11) NOT NULL AFTER `max_sale_qty`, ADD `created_by` INT(11) NOT NULL AFTER `product_cover_id`, ADD `updated_by` INT(11) NOT NULL AFTER `created_by`, ADD `deleted_by` INT(11) NOT NULL AFTER `updated_by`	
 
 10-jan-2018(swaminarayan-silicon-arihant done)
@@ -66,8 +66,8 @@ local done..(silicon-swaminarayan pending...product_doc_dtl all pending)
 1-feb-2018 (local-arihant done...silicon-swaminarayan pending)
 ALTER TABLE `product_mst` CHANGE `max_sale_qty` `max_sale_qty` DECIMAL(20,4) NULL DEFAULT NULL, CHANGE `product_cover_id` `product_cover_id` INT(11) NULL DEFAULT NULL;
 
-09-feb-2018 (silicon Done,swaminarayan done)Pending
-1. ALTER TABLE `template_mst` CHANGE `template_type` `template_type` ENUM('general','quotation','email_newOrder','sms_newOrder','invoice','payment','receipt','blank','job_card','email_duePayment','email_birthDay','email_anniversary','sms_duePayment','sms_birthDay','sms_anniversary') CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT 'general' COMMENT 'type of template(general,sms,quatation,email))';
+09-feb-2018 (silicon Done,swaminarayan done,arihant done)
+//1. ALTER TABLE `template_mst` CHANGE `template_type` `template_type` ENUM('general','quotation','email_newOrder','sms_newOrder','invoice','payment','receipt','blank','job_card','email_duePayment','email_birthDay','email_anniversary','sms_duePayment','sms_birthDay','sms_anniversary') CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT 'general' COMMENT 'type of template(general,sms,quatation,email))';
 2. change template_type of email & sms manually from all database : 
 	query => update template_mst set template_type='sms_newOrder' where template_type='sms'
                  update template_mst set template_type='email_newOrder' where template_type='email' 
@@ -76,7 +76,9 @@ ALTER TABLE `product_mst` CHANGE `max_sale_qty` `max_sale_qty` DECIMAL(20,4) NUL
 problem occurs in 1. query : change column type manually
 Silicon : ALTER TABLE `template_mst` CHANGE `template_type` `template_type` VARCHAR(400) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL COMMENT 'type of template(general,sms,quatation,email))';
 Swaminarayan : ALTER TABLE `template_mst` CHANGE `template_type` `template_type` VARCHAR(400) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL;
+-- update `template_mst` set template_type='email_newOrder' where template_type='email'
+-- update `template_mst` set template_type='sms_newOrder' where template_type='sms'
 
-13-feb-2018(silicon Done,swaminarayan done)
+13-feb-2018(silicon Done,swaminarayan done,arihant done)
 1. ALTER TABLE `template_mst` CHANGE `template_name` `template_name` VARCHAR(500) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL COMMENT 'name of template';
 

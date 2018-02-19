@@ -19,6 +19,12 @@
 			"mrp": decimal,
 			"igst":decimal,
 			"hsn":string,
+			"maxSaleQty":int,
+			"notForSale":Enum,
+			"bestBeforeTime":int,
+			"bestBeforeType":Enum,
+			"cessFlat":decimal,
+			"cessPercentage":decimal,
 			"additionalTax":decimal,
 			"minimumStockLevel":int,
 			"documentName":string,
@@ -64,6 +70,12 @@
 			"mrp": decimal,
 			"igst":decimal,
 			"hsn":string,
+			"maxSaleQty":int,
+			"notForSale":Enum,
+			"bestBeforeTime":int,
+			"bestBeforeType":Enum,
+			"cessFlat":decimal,
+			"cessPercentage":decimal,
 			"additionalTax":decimal,
 			"minimumStockLevel":int,
 			"productDescription":string,
@@ -219,4 +231,15 @@
 			{
 				"purchaseTaxType":"'purchase_tax",
 				"purchaseType":"purchase"
+			}
+##### Not For Sale Enum
+			{
+				"onSale":"on",
+				"offSale":"off"
+			}
+##### Best Before Type Enum
+			{
+				"beforeDay":"day",
+				"beforeMonth":"month"
+				"beforeYear":"year"
 			}

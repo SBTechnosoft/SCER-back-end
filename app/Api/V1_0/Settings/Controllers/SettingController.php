@@ -103,7 +103,6 @@ class SettingController extends BaseController implements ContainerInterface
 					}
 					else if(is_array($settingPersistable))
 					{
-						print_r($settingPersistable);
 						$status = $settingService->insert($settingPersistable);
 						return $status;
 					}

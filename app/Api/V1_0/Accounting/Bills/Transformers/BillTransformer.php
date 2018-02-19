@@ -382,18 +382,17 @@ class BillTransformer
 				$billArrayData['bankName'] = "";
 				$billArrayData['checkNumber'] = "";
 			}
-			else
+		}
+		if(array_key_exists('checkNumber',$billArrayData))		
+		{
+			//validate cheque number
+			$billModel = new BillModel();
+			$result = $billModel->validateChequeNo($billArrayData['checkNumber'],$saleId);
+			if(strcmp($result,$exceptionArray['500'])==0)
 			{
-				//validate cheque number
-				$billModel = new BillModel();
-				$result = $billModel->validateChequeNo($billArrayData['checkNumber'],$saleId);
-				if(strcmp($result,$exceptionArray['500'])==0)
-				{
-					return $exceptionArray['content'];
-				}
+				return $exceptionArray['content'];
 			}
-		}			
-		
+		}	
 		for($inputArrayData=0;$inputArrayData<count($billArrayData);$inputArrayData++)
 		{
 			if(strcmp(array_keys($billArrayData)[$inputArrayData],'inventory')==0)
