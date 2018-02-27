@@ -310,7 +310,6 @@ class BillProcessor extends BaseProcessor
 			$discountTotal = $discount+$discountTotal;
 		}
 		
-
 		// if(strcmp($tRequest['total_discounttype'],'flat')==0)
 		// {
 			// $totalDiscount = $tRequest['total_discount'];
@@ -613,7 +612,7 @@ class BillProcessor extends BaseProcessor
 		$journalRequest->headers->set('type',$constantArray['sales']);
 		$processedData = $journalController->store($journalRequest);
 		if(strcmp($processedData,$msgArray['200'])==0)
-		{	
+		{
 			$productArray = array();
 			$productArray['invoiceNumber']=$tRequest['invoice_number'];
 			$productArray['transactionType']=$constantArray['journalOutward'];
@@ -622,9 +621,10 @@ class BillProcessor extends BaseProcessor
 			for($trimData=0;$trimData<count($request->input()['inventory']);$trimData++)
 			{
 				$tInventoryArray[$trimData] = array();
-				$tInventoryArray[$trimData][5] = trim($request->input()['inventory'][$trimData]['color']);
-				$tInventoryArray[$trimData][6] = trim($request->input()['inventory'][$trimData]['frameNo']);
-				$tInventoryArray[$trimData][7] = trim($request->input()['inventory'][$trimData]['size']);
+
+				$tInventoryArray[$trimData][5] = array_key_exists('color', $request->input()['inventory'][$trimData]) ? trim($request->input()['inventory'][$trimData]['color']) : "XX";
+				$tInventoryArray[$trimData][6] = array_key_exists('frameNo', $request->input()['inventory'][$trimData]) ? trim($request->input()['inventory'][$trimData]['frameNo']) : "";
+				$tInventoryArray[$trimData][7] = array_key_exists('size', $request->input()['inventory'][$trimData]) ? trim($request->input()['inventory'][$trimData]['size']) : "ZZ";
 				$tInventoryArray[$trimData][8] = array_key_exists("cgstPercentage",$request->input()['inventory'][$trimData]) ? trim($request->input()['inventory'][$trimData]['cgstPercentage']):0;
 				$tInventoryArray[$trimData][9] = array_key_exists("cgstAmount",$request->input()['inventory'][$trimData]) ? trim($request->input()['inventory'][$trimData]['cgstAmount']):0;
 				$tInventoryArray[$trimData][10] = array_key_exists("sgstPercentage",$request->input()['inventory'][$trimData]) ? trim($request->input()['inventory'][$trimData]['sgstPercentage']):0;
@@ -1728,6 +1728,7 @@ class BillProcessor extends BaseProcessor
 		$clientArray['clientName']=$tRequest['client_name'];
 		$clientArray['companyName']=array_key_exists('company_name',$tRequest)?$tRequest['company_name']:'';
 		$clientArray['emailId']=array_key_exists('email_id',$tRequest)?$tRequest['email_id']:'';
+		$clientArray['gst']=array_key_exists('gst',$tRequest)?$tRequest['gst']:'';
 		$clientArray['contactNo']=$tRequest['contact_no'];
 		$clientArray['contactNo1']=array_key_exists('contact_no1',$tRequest)?$tRequest['contact_no1']:'';
 		$clientArray['address1']=array_key_exists('address1',$tRequest)?$tRequest['address1']:'';
@@ -1811,6 +1812,10 @@ class BillProcessor extends BaseProcessor
 		if(array_key_exists('email_id',$tRequest))
 		{
 			$clientArray['emailId']=$tRequest['email_id'];
+		}
+		if(array_key_exists('gst',$tRequest))
+		{
+			$clientArray['gst']=$tRequest['gst'];
 		}
 		if(array_key_exists('contact_no',$tRequest))
 		{
