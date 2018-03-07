@@ -630,12 +630,13 @@ class BillModel extends Model
 		$updateString='';
 		for($billData=0;$billData<$inputDataCount;$billData++)
 		{
-			if(strcmp(array_keys($inputData)[$billData],"entryDate")==0)
+			if(strcmp(array_keys($inputData)[$billData],"entryDate")==0 || strcmp(array_keys($inputData)[$billData],"serviceDate")==0)
 			{
 				//entry-date conversion
 				$splitedEntryDate = explode("-",$inputData[array_keys($inputData)[$billData]]);
 				$inputData[array_keys($inputData)[$billData]] = $splitedEntryDate[2]."-".$splitedEntryDate[1]."-".$splitedEntryDate[0];
 			}
+
 			$conversion= preg_replace('/(?<!\ )[A-Z]/', '_$0', array_keys($inputData)[$billData]);
 			$lowerCase = strtolower($conversion);
 			// $newInputArray[$lowerCase] = $inputData[array_keys($inputData)[$billData]];

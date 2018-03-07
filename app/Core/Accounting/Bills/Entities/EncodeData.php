@@ -112,7 +112,7 @@ class EncodeData extends ClientService
 		$data['createdAt'] = $getCreatedDate;
 		$data['remark'] = $remark;
 		$data['entryDate'] = $getEntryDate;
-		$data['service'] = $serviceDate;
+		$data['serviceDate'] = $serviceDate;
 		$data['clientId'] = $clientId;
 		$data['jfId'] = $jfId;
 		$data['expense'] = $expense;
@@ -125,6 +125,7 @@ class EncodeData extends ClientService
 			'contactNo' => $clientDecodedJson['contactNo'],	
 			'contactNo1' => $clientDecodedJson['contactNo1'],	
 			'emailId' => $clientDecodedJson['emailId'],	
+			'gst' => $clientDecodedJson['gst'],	
 			'address1' => $clientDecodedJson['address1'],		
 			'isDisplay' => $clientDecodedJson['isDisplay'],	
 			'createdAt' => $clientDecodedJson['createdAt'],	

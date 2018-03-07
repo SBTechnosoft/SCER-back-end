@@ -96,9 +96,9 @@ class PurchaseBillTransformer
 				$purchaseBillArray['inventory'][$inventoryArray]['discount'] = array_key_exists('discount',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['discount']) : 0;
 				$purchaseBillArray['inventory'][$inventoryArray]['price'] = array_key_exists('price',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['price']) : 0;
 				$purchaseBillArray['inventory'][$inventoryArray]['qty'] = array_key_exists('qty',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['qty']) : 0;
-				$purchaseBillArray['inventory'][$inventoryArray]['color'] = array_key_exists('color',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['color']) : '';
+				$purchaseBillArray['inventory'][$inventoryArray]['color'] = array_key_exists('color',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['color']) : 'XX';
 				$purchaseBillArray['inventory'][$inventoryArray]['frameNo'] = array_key_exists('frameNo',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['frameNo']) : '';
-				$purchaseBillArray['inventory'][$inventoryArray]['size'] = array_key_exists('size',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['size']) : '';
+				$purchaseBillArray['inventory'][$inventoryArray]['size'] = array_key_exists('size',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['size']) : 'ZZ';
 				$purchaseBillArray['inventory'][$inventoryArray]['amount'] = array_key_exists('amount',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['amount']) : 0;
 				$purchaseBillArray['inventory'][$inventoryArray]['cgstPercentage'] = array_key_exists('cgstPercentage',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['cgstPercentage']) : 0;
 				$purchaseBillArray['inventory'][$inventoryArray]['cgstAmount'] = array_key_exists('cgstAmount',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['cgstAmount']) : 0;
@@ -214,9 +214,9 @@ class PurchaseBillTransformer
 				$purchaseBillArray['inventory'][$inventoryArray]['discount'] = array_key_exists('discount',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['discount']) : 0;
 				$purchaseBillArray['inventory'][$inventoryArray]['price'] = array_key_exists('price',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['price']) : 0;
 				$purchaseBillArray['inventory'][$inventoryArray]['qty'] = array_key_exists('qty',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['qty']) : 0;
-				$purchaseBillArray['inventory'][$inventoryArray]['color'] = array_key_exists('color',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['color']) : '';
+				$purchaseBillArray['inventory'][$inventoryArray]['color'] = array_key_exists('color',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['color']) : 'XX';
 				$purchaseBillArray['inventory'][$inventoryArray]['frameNo'] = array_key_exists('frameNo',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['frameNo']) : '';
-				$purchaseBillArray['inventory'][$inventoryArray]['size'] = array_key_exists('size',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['size']) : '';
+				$purchaseBillArray['inventory'][$inventoryArray]['size'] = array_key_exists('size',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['size']) : 'ZZ';
 				$purchaseBillArray['inventory'][$inventoryArray]['amount'] = array_key_exists('amount',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['amount']) : '';
 				$purchaseBillArray['inventory'][$inventoryArray]['cgstPercentage'] = array_key_exists('cgstPercentage',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['cgstPercentage']) : 0;
 				$purchaseBillArray['inventory'][$inventoryArray]['cgstAmount'] = array_key_exists('cgstAmount',$inventoryData[$inventoryArray])? trim($inventoryData[$inventoryArray]['cgstAmount']) : 0;

@@ -87,6 +87,7 @@ class ClientModel extends Model
 			birth_date,
 			anniversary_date,
 			other_date,
+			gst,
 			is_display,
 			created_at,
 			updated_at,
@@ -146,6 +147,7 @@ class ClientModel extends Model
 		birth_date,
 		anniversary_date,
 		other_date,
+		gst,
 		is_display,
 		created_at,
 		updated_at,
@@ -394,6 +396,7 @@ class ClientModel extends Model
 		birth_date,
 		anniversary_date,
 		other_date,
+		gst,
 		is_display,
 		created_at,
 		updated_at,
@@ -465,6 +468,7 @@ class ClientModel extends Model
 		birth_date,
 		anniversary_date,
 		other_date,
+		gst,
 		created_at,
 		updated_at
 		from client_mst 
@@ -566,6 +570,7 @@ class ClientModel extends Model
 		birth_date,
 		anniversary_date,
 		other_date,
+		gst,
 		created_at,
 		updated_at
 		from client_mst 

@@ -54,15 +54,39 @@ class ProductService extends AbstractService
 		$keyName = array();
 		$funcName = array();
 		$productArray = func_get_arg(0);
+		$documentFlag=0;
+		$document = array();
+		//check document is available
+		if(is_array($productArray[count($productArray)-1][0]))
+		{
+			$documentCount = count($productArray[count($productArray)-1]);
+			//get document data
+			for($documentArray=0;$documentArray<$documentCount;$documentArray++)
+			{
+				$document[$documentArray] = array();
+				$document[$documentArray][0] = $productArray[count($productArray)-1][$documentArray][0];
+				$document[$documentArray][1] = $productArray[count($productArray)-1][$documentArray][1];
+				$document[$documentArray][2] = $productArray[count($productArray)-1][$documentArray][2];
+				$document[$documentArray][3] = $productArray[count($productArray)-1][$documentArray][3];
+			}
+			$documentFlag=1;
+		}
 		for($data=0;$data<count($productArray);$data++)
 		{
-			$funcName[$data] = $productArray[$data][0]->getName();
-			$getData[$data] = $productArray[$data][0]->$funcName[$data]();
-			$keyName[$data] = $productArray[$data][0]->getkey();
+			if($documentFlag==1 && $data==(count($productArray)-1))
+			{
+				break;
+			}
+			else
+			{
+				$funcName[$data] = $productArray[$data][0]->getName();
+				$getData[$data] = $productArray[$data][0]->$funcName[$data]();
+				$keyName[$data] = $productArray[$data][0]->getkey();
+			}
 		}
 		//data pass to the model object for insert
 		$productModel = new ProductModel();
-		$status = $productModel->insertData($getData,$keyName);
+		$status = $productModel->insertData($getData,$keyName,$document);
 		return $status;
 	} 
 	
@@ -151,7 +175,6 @@ class ProductService extends AbstractService
 	{
 		$productModel = new ProductModel();
 		$status = $productModel->getAllData();
-		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -435,17 +458,42 @@ class ProductService extends AbstractService
 		$productArray = array();
 		$getData = array();
 		$funcName = array();
+		$documentFlag=0;
+		$dataFlag=0;
+		$document = array();
 		$productArray = func_get_arg(0);
+		if(is_array($productArray[count($productArray)-1][0]))
+		{
+			$documentCount = count($productArray[count($productArray)-1]);
+			//get document data
+			for($documentArray=0;$documentArray<$documentCount;$documentArray++)
+			{
+				$document[$documentArray] = array();
+				$document[$documentArray][0] = $productArray[count($productArray)-1][$documentArray][0];
+				$document[$documentArray][1] = $productArray[count($productArray)-1][$documentArray][1];
+				$document[$documentArray][2] = $productArray[count($productArray)-1][$documentArray][2];
+				$document[$documentArray][3] = $productArray[count($productArray)-1][$documentArray][3];
+			}
+			$documentFlag=1;
+		}
 		for($data=0;$data<count($productArray);$data++)
 		{
-			$funcName[$data] = $productArray[$data][0]->getName();
-			$getData[$data] = $productArray[$data][0]->$funcName[$data]();
-			$keyName[$data] = $productArray[$data][0]->getkey();
+			if($documentFlag==1 && $data==(count($productArray)-1))
+			{
+				break;
+			}
+			else
+			{
+				$dataFlag=1;
+				$funcName[$data] = $productArray[$data][0]->getName();
+				$getData[$data] = $productArray[$data][0]->$funcName[$data]();
+				$keyName[$data] = $productArray[$data][0]->getkey();
+			}
 		}
 		$productId = $productArray[0][0]->getProductId();
 		//data pass to the model object for update
 		$productModel = new ProductModel();
-		$status = $productModel->updateData($getData,$keyName,$productId);
+		$status = $productModel->updateData($getData,$keyName,$productId,$document);
 		return $status;
 	}
 

@@ -25,63 +25,80 @@ class ProductTransformer extends ExceptionMessage
      */
     public function trimInsertData(Request $request)
     {
-		$isDisplayFlag=0;
-		$measurementUnitFlag=0;
-		
-		//data get from body
-		$productName = $request->input('productName'); 
-		$measurementUnit = $request->input('measurementUnit'); 
-		$color = $request->input('color'); 
-		$size = $request->input('size'); 
-		$isDisplay = $request->input('isDisplay'); 			
-		$purchasePrice = $request->input('purchasePrice'); 			
-		$wholeSaleMargin = $request->input('wholesaleMargin'); 			
-		$wholeSaleMarginFlat = $request->input('wholesaleMarginFlat'); 			
-		$semiWholeSaleMargin = $request->input('semiWholesaleMargin'); 			
-		$vat = $request->input('vat'); 			
-		$purchaseCgst = $request->input('purchaseCgst'); 			
-		$purchaseSgst = $request->input('purchaseSgst'); 			
-		$purchaseIgst = $request->input('purchaseIgst'); 			
-		$mrp = $request->input('mrp'); 			
-		$igst= $request->input('igst'); 			 			
-		$hsn = $request->input('hsn'); 			
-		$margin = $request->input('margin'); 			
-		$marginFlat = $request->input('marginFlat'); 			
-		$productDescription = $request->input('productDescription'); 			
-		$additionalTax = $request->input('additionalTax'); 			
-		$minimumStockLevel = $request->input('minimumStockLevel'); 			
-		$companyId = $request->input('companyId'); 			
-		$productCatId = $request->input('productCategoryId'); 			
-		$productGrpId = $request->input('productGroupId'); 			
-		$branchId = $request->input('branchId'); 	 
+    	$isDisplayFlag=0;
+		$measurementUnitFlag=0;	 
 		
 		//trim an input
-		$tProductName = trim($productName);
-		$tMeasUnit = trim($measurementUnit);
-		$tColor = trim($color);
-		$tSize = trim($size);
-		$tIsDisplay = trim($isDisplay);
-		$tPurchasePrice = trim($purchasePrice);
-		$tWholeSaleMargin = trim($wholeSaleMargin);
-		$tWholeSaleMarginFlat = trim($wholeSaleMarginFlat);
-		$tSemiWholeSaleMargin = trim($semiWholeSaleMargin);
-		$tVat = trim($vat);
-		$tPurchaseCgst = trim($purchaseCgst);
-		$tPurchaseSgst = trim($purchaseSgst);
-		$tPurchaseIgst = trim($purchaseIgst);
-		$tMrp = trim($mrp);
-		$tIgst = trim($igst);
-		$tHsn = trim($hsn);
-		$tMargin = trim($margin);
-		$tMarginFlat = trim($marginFlat);
-		$tProductDescription = trim($productDescription);
-		$tAdditionalTax = trim($additionalTax);
-		$tMinimumStockLevel = trim($minimumStockLevel);
-		$tCompanyId = trim($companyId);
-		$tProductCatId = trim($productCatId);
-		$tProductGrpId = trim($productGrpId);
-		$tBranchId = trim($branchId);
-		
+		$tProductName = trim($request->input('productName'));
+		$tMeasUnit = trim($request->input('measurementUnit'));
+		$tColor = trim($request->input('color'));
+		$tSize = trim($request->input('size'));
+		$tIsDisplay = trim($request->input('isDisplay'));
+		$tPurchasePrice = trim($request->input('purchasePrice'));
+		$tWholeSaleMargin = trim($request->input('wholesaleMargin'));
+		$tWholeSaleMarginFlat = trim($request->input('wholesaleMarginFlat'));
+		$tSemiWholeSaleMargin = trim($request->input('semiWholesaleMargin'));
+		$tVat = trim($request->input('vat'));
+		$tPurchaseCgst = trim($request->input('purchaseCgst'));
+		$tPurchaseSgst = trim($request->input('purchaseSgst'));
+		$tPurchaseIgst = trim($request->input('purchaseIgst'));
+		$tMrp = trim($request->input('mrp'));
+		$tIgst = trim($request->input('igst'));
+		$tHsn = trim($request->input('hsn'));
+		$tMargin = trim($request->input('margin'));
+		$tMarginFlat = trim($request->input('marginFlat'));
+		$tProductDescription = trim($request->input('productDescription'));
+		$tAdditionalTax = trim($request->input('additionalTax'));
+		$tMinimumStockLevel = trim($request->input('minimumStockLevel'));
+		$tCompanyId = trim($request->input('companyId'));
+		$tProductCatId = trim($request->input('productCategoryId'));
+		$tProductGrpId = trim($request->input('productGroupId'));
+		$tBranchId = trim($request->input('branchId'));
+
+		if(strcmp("product",trim($request->input('productType')))==0 || strcmp("accessories",trim($request->input('productType')))==0 || 
+			strcmp("service",trim($request->input('productType')))==0 || strcmp("",trim($request->input('productType')))==0)
+		{
+			$tProductType =  trim($request->input('productType'));
+		}
+		else
+		{
+			return "1";
+		}
+		if(strcmp("ok",trim($request->input('productMenu')))==0 || strcmp("not",trim($request->input('productMenu')))==0 || 
+			strcmp("",trim($request->input('productMenu')))==0)
+		{
+			$tProductMenu =  trim($request->input('productMenu'));
+		}
+		else
+		{
+			return "1";
+		}
+		if(strcmp("true",trim($request->input('notForSale')))==0 || strcmp("false",trim($request->input('notForSale')))==0 || 
+			strcmp("",trim($request->input('notForSale')))==0)
+		{
+			$tNotForSale =  trim($request->input('notForSale'));
+		}
+		else
+		{
+			return "1";
+		}
+		if(strcmp("day",trim($request->input('bestBeforeType')))==0 || strcmp("month",trim($request->input('bestBeforeType')))==0 || 
+			strcmp("year",trim($request->input('bestBeforeType')))==0 || strcmp("",trim($request->input('bestBeforeType')))==0)
+		{
+			$tBestBeforeType =  trim($request->input('bestBeforeType'));
+		}
+		else
+		{
+			return "1";
+		}
+
+		// $tNotForSale = trim($request->input('notForSale'));
+		$tMaxSaleQty = trim($request->input('maxSaleQty'));
+		$tBestBeforeTime = trim($request->input('bestBeforeTime'));
+		// $tBestBeforeType = trim($request->input('bestBeforeType'));
+		$tCessFlat = trim($request->input('cessFlat'));
+		$tCessPercentage = trim($request->input('cessPercentage'));
+
 		$enumIsDispArray = array();
 		$isDispEnum = new IsDisplayEnum();
 		$enumIsDispArray = $isDispEnum->enumArrays();
@@ -156,6 +173,14 @@ class ProductTransformer extends ExceptionMessage
 			$data['product_category_id'] = $tProductCatId;
 			$data['product_group_id'] = $tProductGrpId;
 			$data['branch_id'] = $tBranchId;
+			$data['product_type'] = $tProductType;
+			$data['product_menu'] = $tProductMenu;
+			$data['not_for_sale'] = $tNotForSale;
+			$data['max_sale_qty'] = $tMaxSaleQty;
+			$data['best_before_time'] = $tBestBeforeTime;
+			$data['best_before_type'] = $tBestBeforeType;
+			$data['cess_flat'] = $tCessFlat;
+			$data['cess_percentage'] = $tCessPercentage;
 			return $data;
 		}
 	}
@@ -166,7 +191,7 @@ class ProductTransformer extends ExceptionMessage
      */
     public function trimInsertBatchData(Request $request)
     {
-		$transformerClass = new ProductTransformer();
+    	$transformerClass = new ProductTransformer();
 		$exceptionArray = $transformerClass->messageArrays();
 		
 		//data mapping
@@ -184,11 +209,16 @@ class ProductTransformer extends ExceptionMessage
 				$tIsDisplay='';
 				$isDisplayFlag=0;
 				$measurementUnitFlag=0;
+				$notForSale=0;
+				$productType=0;
+				$productMenu=0;
+				$bestBeforeType=0;
+
 				//trim an input
 				$tProductName = trim($inputRequestData[$arrayData]['productName']);
 				$tMeasUnit = trim($inputRequestData[$arrayData]['measurementUnit']);
-				$tColor = trim($inputRequestData[$arrayData]['color']);
-				$tSize = trim($inputRequestData[$arrayData]['size']);
+				$tColor = array_key_exists("color",$inputRequestData[$arrayData]) ? trim($inputRequestData[$arrayData]['color']) : "XX";
+				$tSize = array_key_exists("size",$inputRequestData[$arrayData]) ? trim($inputRequestData[$arrayData]['size']) : "ZZ";
 				// $tIsDisplay = trim($inputRequestData[$arrayData]['isDisplay']);
 				$tPurchasePrice = trim($inputRequestData[$arrayData]['purchasePrice']);
 				$tWholeSaleMargin = trim($inputRequestData[$arrayData]['wholesaleMargin']);
@@ -203,13 +233,63 @@ class ProductTransformer extends ExceptionMessage
 				$tProductDescription = trim($inputRequestData[$arrayData]['productDescription']);
 				$tAdditionalTax = trim($inputRequestData[$arrayData]['additionalTax']);
 				$tMinimumStockLevel = trim($inputRequestData[$arrayData]['minimumStockLevel']);
+
+				if(strcmp("product",strtolower(trim($inputRequestData[$arrayData]['productType'])))==0 || strcmp("accessories",strtolower(trim($inputRequestData[$arrayData]['productType'])))==0 || 
+					strcmp("service",strtolower(trim($inputRequestData[$arrayData]['productType'])))==0 || strcmp("",trim($inputRequestData[$arrayData]['productType']))==0)
+				{
+					$tProductType =  trim($inputRequestData[$arrayData]['productType']);
+				}
+				else
+				{
+					$tProductType =  trim($inputRequestData[$arrayData]['productType']);
+					$productType=2;
+				}
+				if(strcmp("ok",strtolower(trim($inputRequestData[$arrayData]['productMenu'])))==0 || strcmp("not",strtolower(trim($inputRequestData[$arrayData]['productMenu'])))==0 || 
+					strcmp("",trim($inputRequestData[$arrayData]['productMenu']))==0)
+				{
+					$tProductMenu =  trim($inputRequestData[$arrayData]['productMenu']);
+				}
+				else
+				{
+					$tProductMenu =  trim($inputRequestData[$arrayData]['productMenu']);
+					$productMenu=2;
+				}
+				if(strcmp("true",strtolower(trim($inputRequestData[$arrayData]['notForSale'])))==0 || strcmp("false",strtolower(trim($inputRequestData[$arrayData]['notForSale'])))==0 || 
+					strcmp("",trim($inputRequestData[$arrayData]['notForSale']))==0)
+				{
+					$tNotForSale =  trim($inputRequestData[$arrayData]['notForSale']);
+				}
+				else
+				{
+					$tNotForSale =  trim($inputRequestData[$arrayData]['notForSale']);
+					$notForSale=2;
+				}
+				if(strcmp("day",strtolower(trim($inputRequestData[$arrayData]['bestBeforeType'])))==0 || strcmp("month",strtolower(trim($inputRequestData[$arrayData]['bestBeforeType'])))==0 || 
+					strcmp("year",strtolower(trim($inputRequestData[$arrayData]['bestBeforeType'])))==0 || strcmp("",trim($inputRequestData[$arrayData]['bestBeforeType']))==0)
+				{
+					$tBestBeforeType =  trim($inputRequestData[$arrayData]['bestBeforeType']);
+				}
+				else
+				{
+					$tBestBeforeType =  trim($inputRequestData[$arrayData]['bestBeforeType']);
+					$bestBeforeType=2;
+				}
+
+				// $tProductMenu = trim($inputRequestData[$arrayData]['productMenu']);
+				// $tProductType = trim($inputRequestData[$arrayData]['productType']);
+				$tMaxSaleQty = trim($inputRequestData[$arrayData]['maxSaleQty']);
+				// $tNotForSale = trim($inputRequestData[$arrayData]['notForSale']);
+				$tBestBeforeTime = trim($inputRequestData[$arrayData]['bestBeforeTime']);
+				// $tBestBeforeType= trim($inputRequestData[$arrayData]['bestBeforeType']);
+				$tCessFlat = trim($inputRequestData[$arrayData]['cessFlat']);
+				$tCessPercentage = trim($inputRequestData[$arrayData]['cessPercentage']);
+
 				$tCompanyId = trim($inputRequestData[$arrayData]['companyId']);
 				$tProductCatId = trim($inputRequestData[$arrayData]['productCategoryId']);
 				$tProductGrpId = trim($inputRequestData[$arrayData]['productGroupId']);
 				$tBranchId = trim($inputRequestData[$arrayData]['branchId']);
 				
 				$tProductName = preg_replace('/[^a-zA-Z0-9 &,\/_`#().\'-]/', '',$tProductName);
-				
 				$enumIsDispArray = array();
 				$isDispEnum = new IsDisplayEnum();
 				$enumIsDispArray = $isDispEnum->enumArrays();
@@ -251,7 +331,7 @@ class ProductTransformer extends ExceptionMessage
 						}
 					}
 				}
-				if($isDisplayFlag==2 || $measurementUnitFlag==2)
+				if($isDisplayFlag==2 || $measurementUnitFlag==2 || $notForSale==2 || $productType==2 || $productMenu==2 || $bestBeforeType==2)
 				{
 					$errorArray[$errorIndex] = array();
 					$errorArray[$errorIndex]['productName'] = $tProductName;
@@ -272,6 +352,14 @@ class ProductTransformer extends ExceptionMessage
 					$errorArray[$errorIndex]['productDescription'] = $tProductDescription;
 					$errorArray[$errorIndex]['additionalTax'] = $tAdditionalTax;
 					$errorArray[$errorIndex]['minimumStockLevel'] = $tMinimumStockLevel;
+					$errorArray[$errorIndex]['productMenu'] = $tProductMenu;
+					$errorArray[$errorIndex]['productType'] = $tProductType;
+					$errorArray[$errorIndex]['maxSaleQty'] = $tMaxSaleQty;
+					$errorArray[$errorIndex]['notForSale'] = $tNotForSale;
+					$errorArray[$errorIndex]['bestBeforeTime'] = $tBestBeforeTime;
+					$errorArray[$errorIndex]['bestBeforeType'] = $tBestBeforeType;
+					$errorArray[$errorIndex]['cessFlat'] = $tCessFlat;
+					$errorArray[$errorIndex]['cessPercentage'] = $tCessPercentage;
 					$errorArray[$errorIndex]['companyId'] = $tCompanyId;
 					$errorArray[$errorIndex]['productCategoryId'] = $tProductCatId;
 					$errorArray[$errorIndex]['productGroupId'] = $tProductGrpId;
@@ -279,7 +367,23 @@ class ProductTransformer extends ExceptionMessage
 					if($isDisplayFlag==2)
 					{
 						$errorArray[$errorIndex]['remark'] = $exceptionArray['isDisplayEnum'];
-					}		
+					}	
+					else if($notForSale==2)
+					{
+						$errorArray[$errorIndex]['remark'] = $exceptionArray['notForSale'];
+					}
+					else if($productType==2)
+					{
+						$errorArray[$errorIndex]['remark'] = $exceptionArray['productType'];
+					}
+					else if($productMenu==2)
+					{
+						$errorArray[$errorIndex]['remark'] = $exceptionArray['productMenu'];
+					}
+					else if($bestBeforeType==2)
+					{
+						$errorArray[$errorIndex]['remark'] = $exceptionArray['bestBeforeType'];
+					}
 					else
 					{
 						$errorArray[$errorIndex]['remark'] = $exceptionArray['measurementUnitEnum'];
@@ -307,6 +411,14 @@ class ProductTransformer extends ExceptionMessage
 					$data[$dataIndex]['product_description'] = $tProductDescription;
 					$data[$dataIndex]['additional_tax'] = $tAdditionalTax;
 					$data[$dataIndex]['minimum_stock_level'] = $tMinimumStockLevel;
+					$data[$dataIndex]['product_menu'] = $tProductMenu;
+					$data[$dataIndex]['product_type'] = $tProductType;
+					$data[$dataIndex]['max_sale_qty'] = $tMaxSaleQty;
+					$data[$dataIndex]['not_for_sale'] = $tNotForSale;
+					$data[$dataIndex]['best_before_time'] = $tBestBeforeTime;
+					$data[$dataIndex]['best_before_type'] = $tBestBeforeType;
+					$data[$dataIndex]['cess_flat'] = $tCessFlat;
+					$data[$dataIndex]['cess_percentage'] = $tCessPercentage;
 					$data[$dataIndex]['semi_wholesale_margin'] = $tSemiWholeSaleMargin;
 					$data[$dataIndex]['company_id'] = $tCompanyId;
 					$data[$dataIndex]['product_category_id'] = $tProductCatId;
@@ -349,8 +461,7 @@ class ProductTransformer extends ExceptionMessage
 				return $exceptionArray['mapping'];
 			}
 		}
-		
-		if(count($mappingArray)!=19)
+		if(count($mappingArray)!=27)
 		{
 			return $exceptionArray['missingField'];
 		}
@@ -491,8 +602,14 @@ class ProductTransformer extends ExceptionMessage
 				$requestArray[$arrayData][array_keys($keyNameCount)[16]] = $dataArray[$arrayData][16];
 				$requestArray[$arrayData][array_keys($keyNameCount)[17]] = $dataArray[$arrayData][17];
 				$requestArray[$arrayData][array_keys($keyNameCount)[18]] = $dataArray[$arrayData][18];
-				// $requestArray[$arrayData][array_keys($keyNameCount)[19]] = $dataArray[$arrayData][19];
-				// $requestArray[$arrayData][array_keys($keyNameCount)[20]] = $dataArray[$arrayData][20];
+				$requestArray[$arrayData][array_keys($keyNameCount)[19]] = $dataArray[$arrayData][19];
+				$requestArray[$arrayData][array_keys($keyNameCount)[20]] = $dataArray[$arrayData][20];
+				$requestArray[$arrayData][array_keys($keyNameCount)[21]] = $dataArray[$arrayData][21];
+				$requestArray[$arrayData][array_keys($keyNameCount)[22]] = $dataArray[$arrayData][22];
+				$requestArray[$arrayData][array_keys($keyNameCount)[23]] = $dataArray[$arrayData][23];
+				$requestArray[$arrayData][array_keys($keyNameCount)[24]] = $dataArray[$arrayData][24];
+				$requestArray[$arrayData][array_keys($keyNameCount)[25]] = $dataArray[$arrayData][25];
+				$requestArray[$arrayData][array_keys($keyNameCount)[26]] = $dataArray[$arrayData][26];
 			}
 		}
 		return $requestArray;

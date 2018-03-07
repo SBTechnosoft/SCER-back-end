@@ -145,6 +145,6 @@ class EncodeAllData extends StateService
 				)
 			);
 		}
-		return json_encode($data);
+		return $documentArray['prefixConstant'].json_encode($data);
 	}
 }

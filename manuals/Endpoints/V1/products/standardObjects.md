@@ -3,6 +3,8 @@
         {
             "productId": int,
             "productName": string,
+            "productType": Enum,
+            "productMenu": Enum,
             "measurementUnit": Enum,
 			"color":string,
 			"size":string,
@@ -25,7 +27,15 @@
 			"bestBeforeType":Enum,
 			"cessFlat":decimal,
 			"cessPercentage":decimal,
-			"productCoverId":int,
+			"coverImage":{
+				... Standard Document Object
+			},
+			"file":{
+				{
+					... Standard Document Object
+				}
+				...
+			},
 			"createdBy":int,
 			"updatedBy":int,
 			"deletedBy":int,
@@ -56,6 +66,8 @@
 
         {
             "productName": string,
+            "productType": Enum,
+            "productMenu": Enum,
             "measurementUnit": Enum,
 			"color":string,
 			"size":string,
@@ -82,6 +94,15 @@
 			"cessPercentage":decimal,
 			"additionalTax":decimal,
 			"minimumStockLevel":int,
+			"coverImage":{
+				... single image file
+			},
+			"file":{
+				{
+					... single image file
+				}
+				...
+			},
 			"productDescription":string,
             "companyId": int,
             "branchId" : int,
@@ -89,6 +110,8 @@
 		}
 ##### Standard Products-batch Persistable Object
 		{
+			"productType": Enum,
+            "productMenu": Enum,
 			"measurementUnit": Enum,
 			"purchasePrice": decimal,
 			"wholesaleMargin": decimal,
@@ -103,6 +126,12 @@
 			"mrp": decimal,
 			"igst":decimal,
 			"hsn":string,
+			"maxSaleQty":int,
+			"notForSale":Enum,
+			"bestBeforeTime":int,
+			"bestBeforeType":Enum,
+			"cessFlat":decimal,
+			"cessPercentage":decimal,
 			"additionalTax":decimal,
 			"minimumStockLevel":int,
 			"productId":array
@@ -246,4 +275,15 @@
 				"beforeDay":"day",
 				"beforeMonth":"month"
 				"beforeYear":"year"
+			}
+##### productType Enum
+			{
+				"productType": "product",
+				"acceType": "accessories",
+				"serviceType": "service",
+			}
+##### productMenu Enum
+			{
+				"okMenu":"ok",
+				"notMenu":"not"
 			}

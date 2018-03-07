@@ -49,39 +49,46 @@ class DocumentProcessor extends BaseProcessor
 		$documentArray = $constDocumentUrl->constantVariable();
 		if(in_array(true,$request->file()))
 		{
-			$countDocument = count($request->file()['file']);
-			$file = $request->file();
-			//get document data and store documents in folder		
-			for($fileArray=0;$fileArray<count($request->file()['file']);$fileArray++)
+			if(array_key_exists("file", $request->file()))
 			{
-				$documentPersistable = array();
-				$documentPersistable[$fileArray] = new DocumentPersistable();
-				
-				$documentUrl[$fileArray] = $documentPath;
-				$documentFormat[$fileArray] = $file['file'][$fileArray]->getClientOriginalExtension();
-				$documentName[$fileArray] = $combineDateTime.mt_rand(1,9999).$fileArray.mt_rand(1,9999).".".$documentFormat[$fileArray];
-				$documentSize[$fileArray] = $file['file'][$fileArray]->getClientSize();
-				$file['file'][$fileArray]->move($documentUrl[$fileArray],$documentName[$fileArray]);
-				$documentFormat[$fileArray] = strtolower($documentFormat[$fileArray]);
-				if($documentFormat[$fileArray]=='jpg' || $documentFormat[$fileArray]=='jpeg' || $documentFormat[$fileArray]=='gif' || $documentFormat[$fileArray]=='png' || $documentFormat[$fileArray]=='pdf' || $documentFormat[$fileArray]=='bmp')
-				{	
-					if(($documentSize[$fileArray]/1048576)<=5)
-					{
-						$documentPersistable[$fileArray]->setDocumentName($documentName[$fileArray]);
-						$documentPersistable[$fileArray]->setDocumentSize($documentSize[$fileArray]);
-						$documentPersistable[$fileArray]->setDocumentFormat($documentFormat[$fileArray]);
-						$documentPersistable[$fileArray]->setDocumentUrl($documentUrl[$fileArray]);
-						$persistableArray[$fileArray] = $documentPersistable[$fileArray];
+				$countDocument = count($request->file()['file']);
+				$file = $request->file();
+				//get document data and store documents in folder		
+				for($fileArray=0;$fileArray<count($request->file()['file']);$fileArray++)
+				{
+					$documentPersistable = array();
+					$documentPersistable[$fileArray] = new DocumentPersistable();
+					
+					$documentUrl[$fileArray] = $documentPath;
+					$documentFormat[$fileArray] = $file['file'][$fileArray]->getClientOriginalExtension();
+					$documentName[$fileArray] = $combineDateTime.mt_rand(1,9999).$fileArray.mt_rand(1,9999).".".$documentFormat[$fileArray];
+					$documentSize[$fileArray] = $file['file'][$fileArray]->getClientSize();
+					$file['file'][$fileArray]->move($documentUrl[$fileArray],$documentName[$fileArray]);
+					$documentFormat[$fileArray] = strtolower($documentFormat[$fileArray]);
+					if($documentFormat[$fileArray]=='jpg' || $documentFormat[$fileArray]=='jpeg' || $documentFormat[$fileArray]=='gif' || $documentFormat[$fileArray]=='png' || $documentFormat[$fileArray]=='pdf' || $documentFormat[$fileArray]=='bmp')
+					{	
+						if(($documentSize[$fileArray]/1048576)<=5)
+						{
+							$documentPersistable[$fileArray]->setDocumentName($documentName[$fileArray]);
+							$documentPersistable[$fileArray]->setDocumentSize($documentSize[$fileArray]);
+							$documentPersistable[$fileArray]->setDocumentFormat($documentFormat[$fileArray]);
+							$documentPersistable[$fileArray]->setDocumentUrl($documentUrl[$fileArray]);
+							$persistableArray[$fileArray] = $documentPersistable[$fileArray];
+						}
+						else
+						{
+							return $msgArray['fileSize'];
+						}
 					}
 					else
 					{
-						return $msgArray['fileSize'];
+						return $msgArray['415'];
 					}
 				}
-				else
-				{
-					return $msgArray['415'];
-				}
+			}
+			else
+			{
+				$countDocument = 0;
 			}
 		}
 		else
@@ -110,6 +117,39 @@ class DocumentProcessor extends BaseProcessor
 				$documentPersistable[$scanFileArray]->setDocumentUrl($documentPath);
 				$persistableArray[$totalCount] = $documentPersistable[$scanFileArray];
 			}
+		}
+		else if(array_key_exists('coverImage',$request->file()))
+		{
+			$totalCount = $countDocument+0;
+			$coverFile = $request->file()['coverImage'];
+			$documentPersistable = array();
+			$documentPersistable = new DocumentPersistable();
+			$documentUrl = $documentPath."CoverImage/";
+			$documentFormat = $coverFile[0]->getClientOriginalExtension();
+			$documentName = $combineDateTime.mt_rand(1,9999).'cover'.mt_rand(1,9999).".".$documentFormat;
+			$documentSize = $coverFile[0]->getClientSize();
+			$coverFile[0]->move($documentUrl,$documentName);
+			$documentFormat = strtolower($documentFormat);
+			if($documentFormat=='jpg' || $documentFormat=='jpeg' || $documentFormat=='gif' || $documentFormat=='png' || $documentFormat=='pdf' || $documentFormat=='bmp')
+			{	
+				if(($documentSize/1048576)<=5)
+				{
+					$documentPersistable->setDocumentName($documentName);
+					$documentPersistable->setDocumentSize($documentSize);
+					$documentPersistable->setDocumentFormat($documentFormat);
+					$documentPersistable->setDocumentUrl($documentUrl);
+					$persistableArray[$totalCount] = $documentPersistable;
+				}
+				else
+				{
+					return $msgArray['fileSize'];
+				}
+			}
+			else
+			{
+				return $msgArray['415'];
+			}
+
 		}
 		return $persistableArray;
 	}

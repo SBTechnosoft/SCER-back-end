@@ -15,6 +15,7 @@ class ClientArray
 		$clientArray['contact_no'] = 'contactNo';
 		$clientArray['contact_no1'] = 'contactNo1';
 		$clientArray['email_id'] = 'emailId';
+		$clientArray['gst'] = 'gst';
 		$clientArray['address1'] = 'address1';
 		$clientArray['is_display'] = 'isDisplay';
 		$clientArray['profession_id'] = 'professionId';
@@ -31,6 +32,7 @@ class ClientArray
 		$clientArray['contact_no'] = 'contact_no';
 		$clientArray['contact_no1'] = 'contact_no1';
 		$clientArray['email_id'] = 'email_id';
+		$clientArray['gst'] = 'gst';
 		$clientArray['address1'] = 'address1';
 		$clientArray['is_display'] = 'is_display';
 		$clientArray['profession_id'] = 'profession_id';
@@ -59,6 +61,7 @@ class ClientArray
 		$clientArray['contact_no'] = 'contactNo';
 		$clientArray['contact_no1'] = 'contactNo1';
 		$clientArray['email_id'] = 'emailId';
+		$clientArray['gst'] = 'gst';
 		$clientArray['address1'] = 'address1';
 		$clientArray['is_display'] = 'isDisplay';
 		$clientArray['profession_id'] = 'professionId';

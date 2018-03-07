@@ -377,6 +377,7 @@ class BillService
 								$transformServiceDates = $splitedServiceDate[2]."-".$splitedServiceDate[1]."-".$splitedServiceDate[0];
 								$singleData['service_date'] = $transformServiceDates;
 							}
+							echo "www";
 							$billModel = new BillModel();
 							$billUpdateResult = $billModel->updateBillData($singleData,$saleId,$imageArrayData,$headerData);
 							if(strcmp($billUpdateResult,$exceptionArray['200'])==0)
@@ -526,6 +527,7 @@ class BillService
 				//entry-date conversion
 				$splitedEntryDate = explode("-",$entryDate);
 				$transformEntryDate = $splitedEntryDate[2]."-".$splitedEntryDate[1]."-".$splitedEntryDate[0];
+				echo "ggg";
 				$billModel = new BillModel();
 				$billUpdateResult = $billModel->updateBillEntryData($transformEntryDate,$saleId,$headerData);
 				if(strcmp($billUpdateResult,$exceptionArray['200'])==0)

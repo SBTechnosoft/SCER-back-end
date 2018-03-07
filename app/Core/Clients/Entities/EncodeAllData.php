@@ -41,6 +41,7 @@ class EncodeAllData extends StateService
 			$contactNo1[$decodedData] = $decodedJson[$decodedData]['contact_no1'];
 			$emailId[$decodedData] = $decodedJson[$decodedData]['email_id'];
 			$address1[$decodedData] = $decodedJson[$decodedData]['address1'];
+			$gst[$decodedData] = $decodedJson[$decodedData]['gst'];
 			$isDisplay[$decodedData] = $decodedJson[$decodedData]['is_display'];
 			$stateAbb[$decodedData] = $decodedJson[$decodedData]['state_abb'];
 			$cityId[$decodedData] = $decodedJson[$decodedData]['city_id'];
@@ -167,6 +168,7 @@ class EncodeAllData extends StateService
 				'companyName' => $companyName[$jsonData],
 				'contactNo' => $contactNo[$jsonData],
 				'contactNo1' => $contactNo1[$jsonData],
+				'gst' => $gst[$jsonData],
 				'emailId' => $emailId[$jsonData],
 				'address1' => $address1[$jsonData],
 				'isDisplay' => $isDisplay[$jsonData],

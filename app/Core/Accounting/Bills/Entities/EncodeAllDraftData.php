@@ -134,6 +134,7 @@ class EncodeAllDraftData extends ClientService
 					'contactNo'=>$clientData->contactNo,
 					'contactNo1'=>$clientData->contactNo1,
 					'emailId'=>$clientData->emailId,
+					'gst'=>$clientData->gst,
 					'address1'=>$clientData->address1,
 					'isDisplay'=>$clientData->isDisplay,
 					'createdAt'=>$clientData->createdAt,

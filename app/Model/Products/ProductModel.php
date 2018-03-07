@@ -29,13 +29,17 @@ class ProductModel extends Model
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
-		
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
 		$mytime = Carbon\Carbon::now();
 		
 		$getProductData = array();
 		$getproductKey = array();
 		$getProductData = func_get_arg(0);
 		$getProductKey = func_get_arg(1);
+		$documentData = func_get_arg(2);
+
 		$productData="";
 		$keyName = "";
 		for($data=0;$data<count($getProductData);$data++)
@@ -55,17 +59,30 @@ class ProductModel extends Model
 				$keyName =$keyName.$getProductKey[$data].",";
 			}
 		}
-		
 		DB::beginTransaction();
 		$raw = DB::connection($databaseName)->statement("insert into product_mst(".$keyName.") 
 		values(".$productData.")");
 		DB::commit();
-		
-		//get exception message
-		$exception = new ExceptionMessage();
-		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
+			DB::beginTransaction();
+			$productId = DB::connection($databaseName)->select("select 
+			product_id 
+			from product_mst 
+			order by product_id desc limit 1");
+			DB::commit();
+			if(is_array($documentData))
+			{
+				if(count($documentData)!=0)
+				{
+					//document-data save to database
+					$documentResult = $this->saveProductDocument($documentData,$productId[0]->product_id);
+					if(strcmp($documentResult,$exceptionArray['500'])==0)
+					{
+						return $exceptionArray['500'];
+					}
+				}
+			}
 			//get constant array
 			$constantArray = $constantDatabase->constantVariable();
 			$path = $constantArray['productBarcode'];
@@ -94,18 +111,9 @@ class ProductModel extends Model
 				$width = $decodedSetting->barcode_width;
 				$height =$decodedSetting->barcode_height;
 			}
-			
-			
 			//insert barcode image
 			$barcodeobj = new TCPDFBarcode($productCode, 'C128','C');
 			file_put_contents($documentPath,$barcodeobj->getBarcodeSVGcode($width ,$height, 'black'));
-			
-			DB::beginTransaction();
-			$productId = DB::connection($databaseName)->select("select 
-			product_id 
-			from product_mst 
-			order by product_id desc limit 1");
-			DB::commit();
 			
 			//update document-data into database
 			DB::beginTransaction();
@@ -121,6 +129,60 @@ class ProductModel extends Model
 		}
 	}
 	
+	/**
+	 * insert product-document data 
+	 * @param  array
+	 * returns the status
+	*/
+	public function saveProductDocument($documentData,$productId)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		$constantArray = $constantDatabase->constantVariable();
+		//get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+
+		$documentCount = count($documentData);
+		for($documentArray=0;$documentArray<$documentCount;$documentArray++)
+		{
+			//insert documents in product_doc_dtl table
+			DB::beginTransaction();
+			$documentResult = DB::connection($databaseName)->statement("insert into product_doc_dtl(
+			document_name,
+			document_size,
+			document_format,
+			product_id) 
+			values('".$documentData[$documentArray][0]."',
+			".$documentData[$documentArray][1].",
+			'".$documentData[$documentArray][2]."',
+			".$productId.")");
+			DB::commit();
+
+			if(strcmp($documentData[$documentArray][3],$constantArray['productDocumentUrl']."CoverImage/")==0)
+			{
+				$mytime = Carbon\Carbon::now();
+				//update document-data in product-mst
+				DB::beginTransaction();
+				$productResult = DB::connection($databaseName)->statement("update
+				product_mst set 
+				product_cover_id=(select document_id from product_doc_dtl order by document_id desc limit 1) 
+				where product_id='".$productId."'");
+				DB::commit();
+			}
+		}
+		if($documentResult!=1)
+		{
+			return $exceptionArray['500'];
+		}
+		else
+		{
+			return $exceptionArray['200'];
+		}
+	}
+
 	/**
 	 * insert batch data 
 	 * @param  array
@@ -472,7 +534,7 @@ class ProductModel extends Model
 	 * @param  product data,key and product id
 	 * returns the status
 	*/
-	public function updateData($productData,$key,$productId)
+	public function updateData($productData,$key,$productId,$documentData)
 	{
 		$productCodeFlag=0;
 		//database selection
@@ -503,6 +565,18 @@ class ProductModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
+			if(is_array($documentData))
+			{
+				if(count($documentData)!=0)
+				{
+					//document-data save to database
+					$documentResult = $this->saveProductDocument($documentData,$productId);
+					if(strcmp($documentResult,$exceptionArray['500'])==0)
+					{
+						return $exceptionArray['500'];
+					}
+				}
+			}
 			if($productCodeFlag==1)
 			{
 				//get constant array
@@ -1053,6 +1127,15 @@ class ProductModel extends Model
 		product_description,
 		minimum_stock_level,
 		additional_tax,
+		product_type,
+		product_menu,
+		product_cover_id,
+		not_for_sale,
+		max_sale_qty,
+		best_before_time,
+		best_before_type,
+		cess_flat,
+		cess_percentage,
 		document_name,
 		document_format,
 		is_display,
@@ -1065,7 +1148,6 @@ class ProductModel extends Model
 		company_id			
 		from product_mst where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
-		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -1075,11 +1157,62 @@ class ProductModel extends Model
 		}
 		else
 		{
-			$enocodedData = json_encode($raw);
+			//get product-document data
+			$productResult = $this->getProductDocumentData($raw);
+			$enocodedData = json_encode($productResult);
 			return $enocodedData;
 		}
 	}
 	
+	/**
+	 * get document-data as per given product-id
+	 * returns error-message/data
+	*/
+	public function getProductDocumentData($productData)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		// get exception message
+		$exception = new ExceptionMessage();
+		$exceptionArray = $exception->messageArrays();
+		$productDataCount = count($productData);
+		for($productArray=0;$productArray<$productDataCount;$productArray++)
+		{
+			$documentResult = array();
+			DB::beginTransaction();
+			$documentResult = DB::connection($databaseName)->select("select 
+			document_id,
+			document_name,
+			document_size,
+			document_format,
+			created_at,
+			updated_at,
+			deleted_at,
+			product_id 
+			from product_doc_dtl 
+			where deleted_at='0000-00-00 00:00:00' and 
+			product_id='".$productData[$productArray]->product_id."'");
+			DB::commit();
+			if(count($documentResult)!=0)
+			{
+				foreach ($documentResult as $key => $value) {
+					if($productData[$productArray]->product_cover_id==$value->document_id)
+					{
+						$documentResult[$key]->document_type = "CoverImage";
+					}
+					else
+					{
+						$documentResult[$key]->document_type = "";
+					}
+				}
+			}
+			$productData[$productArray]->document = $documentResult;
+		}
+		return $productData;
+	}
+
 	/**
 	 * get data as per given header data and company-id
 	 * returns error-message/data
@@ -1266,6 +1399,15 @@ class ProductModel extends Model
 		product_description,
 		minimum_stock_level,
 		additional_tax,
+		product_type,
+		product_menu,
+		product_cover_id,
+		not_for_sale,
+		max_sale_qty,
+		best_before_time,
+		best_before_type,
+		cess_flat,
+		cess_percentage,
 		document_name,
 		document_format,
 		created_at,
@@ -1287,7 +1429,9 @@ class ProductModel extends Model
 		}
 		else
 		{
-			$enocodedData = json_encode($raw,true); 	
+			//get product-document data
+			$productResult = $this->getProductDocumentData($raw);
+			$enocodedData = json_encode($productResult);
 			return $enocodedData;
 		}
 	}
@@ -1326,6 +1470,15 @@ class ProductModel extends Model
 		product_description,
 		minimum_stock_level,
 		additional_tax,
+		product_type,
+		product_menu,
+		product_cover_id,
+		not_for_sale,
+		max_sale_qty,
+		best_before_time,
+		best_before_type,
+		cess_flat,
+		cess_percentage,
 		document_name,
 		document_format,
 		created_at,
@@ -1347,7 +1500,9 @@ class ProductModel extends Model
 		}
 		else
 		{
-			$enocodedData = json_encode($raw);
+			//get product-document data
+			$productResult = $this->getProductDocumentData($raw);
+			$enocodedData = json_encode($productResult);
 			return $enocodedData;
 		}
 	}
@@ -1387,6 +1542,15 @@ class ProductModel extends Model
 		product_description,
 		minimum_stock_level,
 		additional_tax,
+		product_type,
+		product_menu,
+		product_cover_id,
+		not_for_sale,
+		max_sale_qty,
+		best_before_time,
+		best_before_type,
+		cess_flat,
+		cess_percentage,
 		document_name,
 		document_format,
 		created_at,
@@ -1408,7 +1572,9 @@ class ProductModel extends Model
 		}
 		else
 		{
-			$enocodedData = json_encode($raw);
+			//get product-document data
+			$productResult = $this->getProductDocumentData($raw);
+			$enocodedData = json_encode($productResult);
 			return $enocodedData;
 		}
 	}
@@ -1448,6 +1614,15 @@ class ProductModel extends Model
 		product_description,
 		minimum_stock_level,
 		additional_tax,
+		product_type,
+		product_menu,
+		product_cover_id,
+		not_for_sale,
+		max_sale_qty,
+		best_before_time,
+		best_before_type,
+		cess_flat,
+		cess_percentage,
 		document_name,
 		document_format,
 		created_at,
@@ -1469,7 +1644,9 @@ class ProductModel extends Model
 		}
 		else
 		{
-			$enocodedData = json_encode($raw);
+			//get product-document data
+			$productResult = $this->getProductDocumentData($raw);
+			$enocodedData = json_encode($productResult);
 			return $enocodedData;
 		}
 	}
@@ -1522,6 +1699,15 @@ class ProductModel extends Model
 		product_description,
 		minimum_stock_level,
 		additional_tax,
+		product_type,
+		product_menu,
+		product_cover_id,
+		not_for_sale,
+		max_sale_qty,
+		best_before_time,
+		best_before_type,
+		cess_flat,
+		cess_percentage,
 		document_name,
 		document_format,
 		created_at,
@@ -1544,7 +1730,9 @@ class ProductModel extends Model
 		}
 		else
 		{
-			$enocodedData = json_encode($raw);
+			//get product-document data
+			$productResult = $this->getProductDocumentData($raw);
+			$enocodedData = json_encode($productResult);
 			return $enocodedData;
 		}
 	}
@@ -1684,6 +1872,15 @@ class ProductModel extends Model
 		margin_flat,
 		product_description,
 		additional_tax,
+		product_type,
+		product_menu,
+		product_cover_id,
+		not_for_sale,
+		max_sale_qty,
+		best_before_time,
+		best_before_type,
+		cess_flat,
+		cess_percentage,
 		document_name,
 		document_format,
 		minimum_stock_level,
@@ -1705,7 +1902,10 @@ class ProductModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if(count($raw)!=0)
 		{
-			return json_encode($raw);
+			//get product-document data
+			$productResult = $this->getProductDocumentData($raw);
+			$enocodedData = json_encode($productResult);
+			return $enocodedData;
 		}
 		else
 		{
@@ -1774,6 +1974,11 @@ class ProductModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
+			DB::beginTransaction();
+			$documentResult = DB::connection($databaseName)->statement("update product_doc_dtl 
+			set deleted_at='".$mytime."' 
+			where product_id=".$productId);
+			DB::commit();
 			return $exceptionArray['200'];
 		}
 		else

@@ -1,3 +1,17 @@
+Url: erp.siliconbrain.co.in
+UserId: Vijay@gmail.com
+password: vijay123  
+
+Url: v2erp.siliconbrain.in   & Arihant
+UserId: superadmin@gmail.com
+password: n4!sJdq0@Adv
+
+Url: erp.swaminarayancycles.com
+UserId: superadmin@gmail.com
+password: n4!sJdq0@Adv
+
+
+
 _https://www.screencast.com/t/cqcOyxXsxKW
 $2y$10$xLXs8Y2EJB66JAiLY./QDuAaAMo7cu.YM.Te45bla7USNhuC9sf.W
 F:\xampp\newOne\htdocs\tutionClass\assets\plugins\tinymce\plugins\advlist
@@ -68,6 +82,10 @@ Hosting ISP: https://www.tmdhosting.com
 User Name: glomantiss@gmail.com
 Password: Hex666$$%%
 
+new : my.tmdhosting.com
+username : glomantiss@gmail.com
+password : Hex2666$$%%NB$0
+
 Demo.classconnect.cloud (Sub-Domin)
 
 FTP Access
@@ -114,13 +132,9 @@ http://blogs.siliconbrain.co.in/wp-admin
 
 Git :
 https://github.com/SBTechnosoft/SCER-back-end
-username:reema1((not an id)reemap79@gmail.com..p!f512)
+username:reema1
 
 
-jing :
-reema.p@siliconbrain.co.in
-reema.p
-reema123456
 
 inventory management(accounting):
 http://www.managementstudyguide.com/inventory-management.htm
@@ -140,7 +154,7 @@ password:- @m@z0n_B1b25
 pwfms cpanel access:
 URL: https://siliconbrain.in:2083/
 Username: sbinin1
-Password: S!l!C0N@1216913
+Password: $|!|3OI\I@240218
 
 *** FTP Access****
 Host Name: 166.62.33.199
@@ -163,10 +177,29 @@ URL: swaminarayancycles.com
 User Name: swamicycles
 Password: 3yCle$@Swamin@ray@n
 
-** FTP Access*****
+FTP Access
 Host Name: 166.62.33.199
 Username: dev@swaminarayancycles.com
-Password: sm@w|na@ayci53
+Password: (!_\/@$\/\//\!\/!_Cy3les
+
+Seaminarayan erp DB access
+
+Database Access
+Database Name: swamicyc_erp_db
+Database User: swamicyc_erp
+Database Password: (!_\/@$\/\//\!\/!_Cy3les
+--------------------------------------------------------
+
+prabandhak.co.in
+CPanel URL:
+User Name: prabandhakur
+Password: P16@2an+4h1k
+
+FTP Access
+Host Name: 166.62.33.199
+Username: dev@prabandhak.co.in
+Password: k1h4n@2Arp2018
+
 --------------------------------------------------------
 siliconbrainerp:
 
@@ -175,9 +208,6 @@ DB_DATABASE=sbinin1_erp
 DB_USERNAME=sbinin1_erp
 DB_PASSWORD='$!|!C0N5|2|)'
 --------------------------------------------------------
-contact us:
-email:reemapatel25@gmail.com
-pass: reema123456
 
 basic commands of git:
 git status
@@ -374,4 +404,6 @@ Git Bash Procedure:
 5. git commit -m "<asana_task_no>/b|/bmessage"
 6. git push origin branch_name
 7. git cherry-pick 88123973a61f9d17e5f1e5ae6552d2968ecef3c0
+8. git stash
+9. git stash apply(pop is automatically drop changes where by using apply we can manually drop our changes)
 

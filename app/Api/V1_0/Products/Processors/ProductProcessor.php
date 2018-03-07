@@ -15,6 +15,8 @@ use ERP\Model\Companies\CompanyModel;
 use ERP\Model\ProductGroups\ProductGroupModel;
 use ERP\Model\ProductCategories\ProductCategoryModel;
 use Carbon;
+use Illuminate\Container\Container;
+use ERP\Api\V1_0\Documents\Controllers\DocumentController;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -41,16 +43,37 @@ class ProductProcessor extends BaseProcessor
 		$value = array();
 		$data=0;
 		$codeFlag=0;
+		$docFlag=0;
+		$documentName="";
+		$documentUrl="";
+		$documentFormat="";
+		$documentSize="";
 		
 		// get exception message
 		$exception = new ExceptionMessage();
 		$msgArray = $exception->messageArrays();
+		$file = $request->file();
 		if(count($_POST)==0)
 		{
 			return $msgArray['204'];
 		}
 		else
 		{
+			if(in_array(true,$file))
+			{
+				$constantClass = new ConstantClass();
+				$constantArray = $constantClass->constantVariable();
+				$documentController = new DocumentController(new Container());
+				$processedData = $documentController->insertUpdate($request,$constantArray['productDocumentUrl']);
+				if(is_array($processedData))
+				{
+					$docFlag=1;
+				}
+				else
+				{
+					return $processedData;
+				}
+			}
 			$productValidate = new ProductValidate();
 			
 			// trim an input 
@@ -173,6 +196,13 @@ class ProductProcessor extends BaseProcessor
 						$productPersistable->setName($getFuncName[$data]);
 						$productPersistable->setKey($keyName[$data]);
 						$productArray[$data] = array($productPersistable);
+						if($data==(count($productValue)-1))
+						{
+							if($docFlag==1)
+							{
+								$productArray[$data+1]=$processedData;
+							}
+						}
 					}
 					return $productArray;
 				}
@@ -208,7 +238,6 @@ class ProductProcessor extends BaseProcessor
 		else
 		{
 			$productValidate = new ProductValidate();
-			
 			// trim an input 
 			$productTransformer = new ProductTransformer();
 			$trimData = $productTransformer->trimInsertBatchData($request);
@@ -222,6 +251,7 @@ class ProductProcessor extends BaseProcessor
 				$newProductArray = array();
 				for($dataArray=0;$dataArray<count($tRequestData);$dataArray++)
 				{
+
 					$data=0;
 					$codeFlag=0;
 					$keyName = array();
@@ -354,6 +384,15 @@ class ProductProcessor extends BaseProcessor
 						$trimData['errorArray'][$totalErrorArray]['productDescription'] = $trimData['dataArray'][$dataArray]['product_description'];
 						$trimData['errorArray'][$totalErrorArray]['additionalTax'] = $trimData['dataArray'][$dataArray]['additional_tax'];
 						$trimData['errorArray'][$totalErrorArray]['minimumStockLevel'] = $trimData['dataArray'][$dataArray]['minimum_stock_level'];
+						$trimData['errorArray'][$totalErrorArray]['productMenu'] = $trimData['dataArray'][$dataArray]['product_menu'];
+						$trimData['errorArray'][$totalErrorArray]['productType'] = $trimData['dataArray'][$dataArray]['product_type'];
+						$trimData['errorArray'][$totalErrorArray]['maxSaleQty'] = $trimData['dataArray'][$dataArray]['max_sale_qty'];
+						$trimData['errorArray'][$totalErrorArray]['notForSale'] = $trimData['dataArray'][$dataArray]['not_for_sale'];
+						$trimData['errorArray'][$totalErrorArray]['bestBeforeTime'] = $trimData['dataArray'][$dataArray]['best_before_time'];
+						$trimData['errorArray'][$totalErrorArray]['bestBeforeType'] = $trimData['dataArray'][$dataArray]['best_before_type'];
+						$trimData['errorArray'][$totalErrorArray]['cessFlat'] = $trimData['dataArray'][$dataArray]['cess_flat'];
+						$trimData['errorArray'][$totalErrorArray]['cessPercentage'] = $trimData['dataArray'][$dataArray]['cess_percentage'];
+
 						$trimData['errorArray'][$totalErrorArray]['semiWholesaleMargin'] = $trimData['dataArray'][$dataArray]['semi_wholesale_margin'];
 						$trimData['errorArray'][$totalErrorArray]['companyId'] = $trimData['dataArray'][$dataArray]['company_id'];
 						$trimData['errorArray'][$totalErrorArray]['productCategoryId'] = $trimData['dataArray'][$dataArray]['product_category_id'];
@@ -496,8 +535,12 @@ class ProductProcessor extends BaseProcessor
 			$productArray = array();
 			$productValidate = new ProductValidate();
 			$status;
+			$docFlag=0;
+			$documentName="";
+			$documentArray = array();
+			$file = $request->file();
 			// if data is not available in update request
-			if(count($request->input())==0)
+			if(count($request->input())==0  && count($file)==0)
 			{
 				$status = $exceptionArray['204'];
 				return $status;
@@ -505,6 +548,20 @@ class ProductProcessor extends BaseProcessor
 			// data is avalilable for update
 			else
 			{
+				//file uploading
+				if(in_array(true,$file))
+				{
+					$documentController =new DocumentController(new Container());
+					$processedData = $documentController->insertUpdate($request,$constantArray['productDocumentUrl']);
+					if(is_array($processedData))
+					{
+						$docFlag=1;
+					}
+					else
+					{
+						return $processedData;
+					}
+				}
 				$productTransformer = new ProductTransformer();
 				$tRequest = $productTransformer->trimUpdateData($request->input());
 				
@@ -587,14 +644,19 @@ class ProductProcessor extends BaseProcessor
 							$setFuncName = 'set'.$str;
 							$getFuncName[$data] = 'get'.$str;
 							$productPersistable->$setFuncName($productValue[$data]);
-							
 							$productPersistable->setName($getFuncName[$data]);
 							
 							$productPersistable->setKey($tKeyValue[$data]);
 							$productPersistable->setProductId($productId);
 							
 							$productArray[$data] = array($productPersistable);
-							
+							if($data==(count($_POST)-1))
+							{
+								if($docFlag==1)
+								{
+									$productArray[$data+1]=$processedData;
+								}
+							}
 						}
 					}
 					// enter data is not valid

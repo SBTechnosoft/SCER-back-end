@@ -14,7 +14,6 @@ use ERP\Entities\Constants\ConstantClass;
  */
 class EncodeData extends ProductCategoryService 
 {
-	
     public function getEncodedData($status)
 	{
 		$decodedJson = json_decode($status,true);
@@ -42,6 +41,17 @@ class EncodeData extends ProductCategoryService
 		$productDescription= $decodedJson[0]['product_description'];
 		$additionalTax= $decodedJson[0]['additional_tax'];
 		$minimumStockLevel= $decodedJson[0]['minimum_stock_level'];
+
+		$productMenu = $decodedJson[0]['product_menu'];
+		$productType = $decodedJson[0]['product_type'];
+		$notForSale = $decodedJson[0]['not_for_sale'];
+		$maxSaleQty = $decodedJson[0]['max_sale_qty'];
+		$bestBeforeTime = $decodedJson[0]['best_before_time'];
+		$bestBeforeType = $decodedJson[0]['best_before_type'];
+		$cessFlat = $decodedJson[0]['cess_flat'];
+		$cessPercentage = $decodedJson[0]['cess_percentage'];
+		$productCoverId = $decodedJson[0]['product_cover_id'];
+
 		$documentName= $decodedJson[0]['document_name'];
 		$documentFormat= $decodedJson[0]['document_format'];
 		$productCatId= $decodedJson[0]['product_category_id'];
@@ -53,13 +63,6 @@ class EncodeData extends ProductCategoryService
 		$encodeProductCatDataClass = new EncodeData();
 		$productCatStatus = $encodeProductCatDataClass->getProductCatData($productCatId);
 		$productCatDecodedJson = json_decode($productCatStatus,true);
-		$pCatId= $productCatDecodedJson['productCategoryId'];
-		$pCatName= $productCatDecodedJson['productCategoryName'];
-		$pCatDesc= $productCatDecodedJson['productCategoryDescription'];
-		$pCatIsDisplay= $productCatDecodedJson['isDisplay'];
-		$pParentCatId= $productCatDecodedJson['productParentCategoryId'];
-		$pCatCreatedAt= $productCatDecodedJson['createdAt'];
-		$pCatUpdatedAt= $productCatDecodedJson['updatedAt'];
 		//get the product group detail from database
 		$productGroupDetail  = new ProductGroupDetail();
 		$getProductGrpDetails = $productGroupDetail->getProductGrpDetails($productGrpId);
@@ -102,7 +105,28 @@ class EncodeData extends ProductCategoryService
 			$product->setUpdated_at($convertedUpdatedDate);
 			$getUpdatedDate = $product->getUpdated_at();
 		}
-		
+		$documentDataArray = array();
+		$documentCount = count($decodedJson[0]['document']);
+		if($documentCount!=0)
+		{
+			for($documentArray=0;$documentArray<$documentCount;$documentArray++)
+			{
+				$documentDataArray[$documentArray]['documentName'] = $decodedJson[0]['document'][$documentArray]['document_name'];
+				$documentDataArray[$documentArray]['documentSize'] = $decodedJson[0]['document'][$documentArray]['document_size'];
+				$documentDataArray[$documentArray]['documentFormat'] = $decodedJson[0]['document'][$documentArray]['document_format'];
+				$documentDataArray[$documentArray]['documentType'] = $decodedJson[0]['document'][$documentArray]['document_type'];
+				$documentDataArray[$documentArray]['productId'] = $decodedJson[0]['document'][$documentArray]['product_id'];
+				$documentDataArray[$documentArray]['createdAt'] = 
+				$decodedJson[0]['document'][$documentArray]['created_at'] == "0000-00-00 00:00:00" ? "0000-00-00" : Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$decodedJson[0]['document'][$documentArray]['created_at'])->format('d-m-Y');
+
+				$documentDataArray[$documentArray]['updatedAt'] = 
+				$decodedJson[0]['document'][$documentArray]['updated_at'] == "0000-00-00 00:00:00" ? "0000-00-00" : Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$decodedJson[0]['document'][$documentArray]['updated_at'])->format('d-m-Y');
+			}	
+		}
+		else
+		{
+			$documentDataArray = array();
+		}
 		$constantArray = new ConstantClass();
 		$constantArrayData = $constantArray->constantVariable();
 		$documentPath = $constantArrayData['productBarcode'];
@@ -131,79 +155,26 @@ class EncodeData extends ProductCategoryService
 		$data['productDescription'] = $productDescription;
 		$data['additionalTax'] = $additionalTax;
 		$data['minimumStockLevel'] = $minimumStockLevel;
+		$data['productMenu'] = $productMenu;
+		$data['productType'] = $productType;
+		$data['notForSale'] = $notForSale;
+		$data['maxSaleQty'] = $maxSaleQty;
+		$data['bestBeforeTime'] = $bestBeforeTime;
+		$data['bestBeforeType'] = $bestBeforeType;
+		$data['cessFlat'] = $cessFlat;
+		$data['cessPercentage'] = $cessPercentage;
+		$data['cessPercentage'] = $cessPercentage;
+		$data['productCoverId'] = $productCoverId;
 		$data['documentName'] = $documentName;
 		$data['documentFormat'] = $documentFormat;
 		$data['documentPath'] = $documentPath;
 		$data['createdAt'] = $getCreatedDate;
 		$data['updatedAt'] = $getUpdatedDate;	
-		
-		$data['productCategory'] = array(
-			'productCategoryName' => $pCatName,	
-			'productCategoryId' => $pCatId,
-			'productCategoryDescription' => $pCatDesc,	
-			'isDisplay' => $pCatIsDisplay,
-			'productParentCategoryId' => $pParentCatId,	
-			'createdAt' => $pCatCreatedAt,	
-			'updatedAt' => $pCatUpdatedAt
-		);
-		$data['productGroup'] = array(
-			'productGroupName' => $getProductGrpDetails['productGroupName'],	
-			'productGroupId' => $getProductGrpDetails['productGroupId'],	
-			'productGroupDescription' => $getProductGrpDetails['productGroupDescription'],	
-			'productParentGroupId' => $getProductGrpDetails['productGroupParentId'],
-			'isDisplay' => $getProductGrpDetails['isDisplay'],	
-			'createdAt' => $getProductGrpDetails['createdAt'],	
-			'updatedAt' => $getProductGrpDetails['updatedAt']	
-		);	
-		$data['company'] = array(
-			'companyId' => $getCompanyDetails['companyId'],	
-			'companyName' => $getCompanyDetails['companyName'],
-			'companyDisplayName' => $getCompanyDetails['companyDisplayName'],
-			'websiteName' => $getCompanyDetails['websiteName'],
-			'address1' => $getCompanyDetails['address1'],	
-			'address2' => $getCompanyDetails['address2'],	
-			'emailId' => $getCompanyDetails['emailId'],	
-			'customerCare' => $getCompanyDetails['customerCare'],	
-			'pincode' => $getCompanyDetails['pincode'],
-			'pan' => $getCompanyDetails['pan'],	
-			'tin' => $getCompanyDetails['tin'],	
-			'vatNo' => $getCompanyDetails['vatNo'],	
-			'cgst' => $getCompanyDetails['cgst'],	
-			'sgst' => $getCompanyDetails['sgst'],	
-			'cess' => $getCompanyDetails['cess'],	
-			'serviceTaxNo' => $getCompanyDetails['serviceTaxNo'],	
-			'basicCurrencySymbol' => $getCompanyDetails['basicCurrencySymbol'],
-			'formalName' => $getCompanyDetails['formalName'],	
-			'noOfDecimalPoints' => $getCompanyDetails['noOfDecimalPoints'],
-			'currencySymbol' => $getCompanyDetails['currencySymbol'],
-			'printType' => $getCompanyDetails['printType'],
-			'logo' => array(
-				'documentName' => $getCompanyDetails['logo']['documentName'],	
-				'documentUrl' => $getCompanyDetails['logo']['documentUrl'],	
-				'documentSize' => $getCompanyDetails['logo']['documentSize'],	
-				'documentFormat' => $getCompanyDetails['logo']['documentFormat']
-			),
-			'isDisplay' => $getCompanyDetails['isDisplay'],	
-			'isDefault' => $getCompanyDetails['isDefault'],	
-			'createdAt' => $getCompanyDetails['createdAt'],	
-			'updatedAt' => $getCompanyDetails['updatedAt'],
-			'stateAbb' => $getCompanyDetails['state']['stateAbb'],	
-			'cityId' => $getCompanyDetails['city']['cityId']
-		);
-		$data['branch'] = array(
-			'branchId' => $getBranchDetails['branchId'],
-			'branchName' => $getBranchDetails['branchName'],	
-			'address1' => $getBranchDetails['address1'],	
-			'address2' => $getBranchDetails['address2'],	
-			'pincode' => $getBranchDetails['pincode'],	
-			'isDisplay' => $getBranchDetails['isDisplay'],	
-			'isDefault' => $getBranchDetails['isDefault'],	
-			'createdAt' => $getBranchDetails['createdAt'],	
-			'updatedAt' => $getBranchDetails['updatedAt'],	
-			'stateAbb' => $getBranchDetails['state']['stateAbb'],	
-			'cityId' => $getBranchDetails['city']['cityId'],	
-			'companyId' => $getBranchDetails['company']['companyId']
-		);	
+		$data['productCategory'] = $productCatDecodedJson;
+		$data['productGroup'] = $getProductGrpDetails;
+		$data['company'] = $getCompanyDetails;
+		$data['branch'] = $getBranchDetails;
+		$data['document'] = $documentDataArray;
 		$encodeData = json_encode($data);
 		return $encodeData;
 	}

@@ -409,9 +409,10 @@ class BillTransformer
 					$tempArray[$inventoryArray]['discountType'] = trim($billArrayData['inventory'][$inventoryArray]['discountType']);
 					$tempArray[$inventoryArray]['price'] = trim($billArrayData['inventory'][$inventoryArray]['price']);
 					$tempArray[$inventoryArray]['qty'] = trim($billArrayData['inventory'][$inventoryArray]['qty']);
-					$tempArray[$inventoryArray]['color'] = trim($billArrayData['inventory'][$inventoryArray]['color']);
+
+					$tempArray[$inventoryArray]['color'] = array_key_exists("color",$billArrayData['inventory'][$inventoryArray]) ? trim($billArrayData['inventory'][$inventoryArray]['color']) : "XX";
 					$tempArray[$inventoryArray]['frameNo'] = trim($billArrayData['inventory'][$inventoryArray]['frameNo']);
-					$tempArray[$inventoryArray]['size'] = trim($billArrayData['inventory'][$inventoryArray]['size']);
+					$tempArray[$inventoryArray]['size'] = array_key_exists("size",$billArrayData['inventory'][$inventoryArray]) ? trim($billArrayData['inventory'][$inventoryArray]['size']) : "ZZ";
 					foreach ($enumDiscountTypeArray as $key => $value)
 					{
 						if(strcmp($value,$tempArray[$inventoryArray]['discountType'])==0)

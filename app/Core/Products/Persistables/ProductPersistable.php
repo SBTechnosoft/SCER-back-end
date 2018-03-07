@@ -44,11 +44,29 @@ use ERP\Core\Products\Properties\HsnPropertyTrait;
 use ERP\Core\Products\Properties\PurchaseCgstTrait;
 use ERP\Core\Products\Properties\PurchaseSgstTrait;
 use ERP\Core\Products\Properties\PurchaseIgstTrait;
+
+use ERP\Core\Products\Properties\ProductTypeTrait;
+use ERP\Core\Products\Properties\ProductMenuTrait;
+use ERP\Core\Products\Properties\NotForSaleTrait;
+use ERP\Core\Products\Properties\MaxSaleQtyTrait;
+use ERP\Core\Products\Properties\BestBeforeTimeTrait;
+use ERP\Core\Products\Properties\BestBeforeTypeTrait;
+use ERP\Core\Products\Properties\CessFlatTrait;
+use ERP\Core\Products\Properties\CessPercentageTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
 class productPersistable
 {
+	use ProductTypeTrait;
+	use ProductMenuTrait;
+	use NotForSaleTrait;
+	use MaxSaleQtyTrait;
+	use BestBeforeTimeTrait;
+	use BestBeforeTypeTrait;
+	use CessFlatTrait;
+	use CessPercentageTrait;
+
     use NamePropertyTrait;
 	use IsDisplayPropertyTrait;
 	use CompanyIdPropertyTrait;

@@ -33,6 +33,7 @@ class EncodeData extends StateService
 		$contactNo= $decodedJson[0]['contact_no'];
 		$contactNo1= $decodedJson[0]['contact_no1'];
 		$emailId= $decodedJson[0]['email_id'];
+		$gst= $decodedJson[0]['gst'];
 		$address1= $decodedJson[0]['address1'];
 		$professionId= $decodedJson[0]['profession_id'];
 		$birthDate= $decodedJson[0]['birth_date'];
@@ -83,6 +84,7 @@ class EncodeData extends StateService
 		$data['contactNo'] = $contactNo;
 		$data['contactNo1'] = $contactNo1;
 		$data['emailId'] = $emailId;
+		$data['gst'] = $gst;
 		$data['address1'] = $address1;
 		$data['isDisplay'] = $isDisplay;
 		$data['professionId'] = $professionId;

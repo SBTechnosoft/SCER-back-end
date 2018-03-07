@@ -34,6 +34,10 @@ class ExceptionMessage
 		$msgArray['missingField'] = "mapping field is missing";
 		$msgArray['isDisplayEnum'] = "is display value is not proper";
 		$msgArray['measurementUnitEnum'] = "measurement value is not proper";
+		$msgArray['productMenu'] = "Product Menu value is not proper (ok/not)";
+		$msgArray['productType'] = "Product Type value is not proper(product/accessories/service)";
+		$msgArray['bestBeforeType'] = "Best Before Type value is not proper(day/month/year)";
+		$msgArray['notForSale'] = "Not For Sale value is not proper(true/false)";
 		$msgArray['invalidProductCode'] = "Enter Diffrenet product-name/color/size";
 		$msgArray['invalidCategoryName'] = "Brand-Name is invalid";
 		$msgArray['invalidGroupName'] = "Category-Name is invalid";

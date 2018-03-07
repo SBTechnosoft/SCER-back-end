@@ -385,7 +385,6 @@ class DocumentMpdf extends CurrencyToWordConversion
 		//calculation of currecy to word conversion
 		$currecyToWordConversion = new DocumentMpdf();
 		$currencyResult = $currecyToWordConversion->conversion($roundTotal);
-		
 		$roundUpFigure = number_format($roundUpFigure,$decodedData[0]->company->noOfDecimalPoints);
 		$totalAmount = number_format($totalAmount,$decodedData[0]->company->noOfDecimalPoints);
 		$roundTotal = number_format($roundTotal,$decodedData[0]->company->noOfDecimalPoints);
@@ -396,6 +395,8 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$billArray['ClientName']=$decodedBillData->client->clientName;
 		$billArray['Company']="<span style='font-size:22px'>".$decodedBillData->company->companyName."</span>";
 		$billArray['Total']=$totalAmount;
+		$billArray['serviceDate']=$decodedBillData->serviceDate;
+		$billArray['CLIENTTINNO']=$decodedBillData->client->gst;
 		$billArray['RoundTotal']=$roundTotal;
 		$billArray['RoundFigure']=$roundUpFigure;
 		$billArray['Mobile']=$decodedBillData->client->contactNo;
@@ -414,7 +415,6 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$billArray['ExpireDate']=$expiryDate;
 		$billArray['CompanySGST']=$decodedBillData->company->sgst;
 		$billArray['CompanyCGST']=$decodedBillData->company->cgst;
-		$billArray['CLIENTTINNO']="";
 		$billArray['ChallanNo']="";
 		$billArray['ChallanDate']="";
 		$billArray['Transport']="";
@@ -430,7 +430,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$billArray['CompanyContact']=$decodedBillData->company->customerCare;
 		$billArray['CompanyEmail']=$decodedBillData->company->emailId;
 		$billArray['BILLLABEL'] = array_key_exists("issalesorder",$headerData) ? "Sales Order" : "Tax Invoice";
-	
+		
 		//gst-summary
 		$billArray['gstSummary']=$gstOutput;
 		$billArray['TotalTaxableAmt']=number_format($totalTaxableAmount,$decodedData[0]->company->noOfDecimalPoints);

@@ -300,9 +300,10 @@ class QuotationTransformer
 					$tempArray[$inventoryArray]['discountType'] = trim($quotationArrayData['inventory'][$inventoryArray]['discountType']);
 					$tempArray[$inventoryArray]['price'] = trim($quotationArrayData['inventory'][$inventoryArray]['price']);
 					$tempArray[$inventoryArray]['qty'] = trim($quotationArrayData['inventory'][$inventoryArray]['qty']);
-					$tempArray[$inventoryArray]['color'] = trim($quotationArrayData['inventory'][$inventoryArray]['color']);
-					$tempArray[$inventoryArray]['frameNo'] = trim($quotationArrayData['inventory'][$inventoryArray]['frameNo']);
-					$tempArray[$inventoryArray]['size'] = trim($quotationArrayData['inventory'][$inventoryArray]['size']);
+
+					$tempArray[$inventoryArray]['color'] = array_key_exists("color",$quotationArrayData['inventory'][$inventoryArray]) ? trim($quotationArrayData['inventory'][$inventoryArray]['color']) : "XX";
+					$tempArray[$inventoryArray]['frameNo'] = array_key_exists("frameNo",$quotationArrayData['inventory'][$inventoryArray]) ? trim($quotationArrayData['inventory'][$inventoryArray]['frameNo']) : "";
+					$tempArray[$inventoryArray]['size'] = array_key_exists("size",$quotationArrayData['inventory'][$inventoryArray]) ? trim($quotationArrayData['inventory'][$inventoryArray]['size']) : "ZZ";
 					foreach ($enumDiscountTypeArray as $key => $value)
 					{
 						if(strcmp($value,$tempArray[$inventoryArray]['discountType'])==0)

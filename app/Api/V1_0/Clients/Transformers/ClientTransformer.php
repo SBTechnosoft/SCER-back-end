@@ -29,6 +29,7 @@ class ClientTransformer
 		$isDisplay = $request->input('isDisplay'); 			
 		$stateAbb = $request->input('stateAbb'); 			
 		$cityId = $request->input('cityId'); 	
+		$gst = $request->input('gst'); 	
 		$birthDate = array_key_exists('birthDate',$request->input())?$request->input('birthDate'):'0000-00-00'; 			
 		$anniversaryDate=array_key_exists('anniversaryDate',$request->input())
 		? $request->input('anniversaryDate'):'0000-00-00';
@@ -58,6 +59,7 @@ class ClientTransformer
 		$tContactNo1 = trim($contactNo1);
 		$tEmailId = trim($emailId);
 		$tAddress1 = trim($address1);
+		$tGst = trim($gst);
 		$tProfessionId = trim($professionId);
 		$tIsDisplay = trim($isDisplay);
 		$tStateAbb = trim($stateAbb);
@@ -114,6 +116,7 @@ class ClientTransformer
 			$data['contact_no1'] = $tContactNo1;
 			$data['email_id'] = $tEmailId;
 			$data['address1'] = $tAddress1;
+			$data['gst'] = $tGst;
 			$data['profession_id'] = $tProfessionId;
 			$data['is_display'] = $tIsDisplay;
 			$data['state_abb'] = $tStateAbb;

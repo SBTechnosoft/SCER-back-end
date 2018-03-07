@@ -751,7 +751,7 @@ class ConversationProcessor extends BaseProcessor
 					'gwid'=>"2"
 
 				);
-				// list($header,$content) = $this->postRequest("http://login.arihantsms.com//vendorsms/pushsms.aspx",$data);
+				list($header,$content) = $this->postRequest("http://login.arihantsms.com//vendorsms/pushsms.aspx",$data);
 
 				$contactDataArray[$clientArray]['client_id'] = $trimRequest['client_id'][$clientArray]; 
 

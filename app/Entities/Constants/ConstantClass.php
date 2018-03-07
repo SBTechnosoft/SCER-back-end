@@ -29,6 +29,7 @@ class ConstantClass
 		$constantArray['noImage'] = "Storage/No-Image/no-image.jpg";
 		$constantArray['productBarcode'] = "Storage/Barcode/";
 		$constantArray['documentUrl'] = "Storage/Document/";
+		$constantArray['productDocumentUrl'] = "Storage/Product/Document/";
 		$constantArray['emailDocumentUrl'] = "Storage/Email/";
 		$constantArray['purchaseTaxationUrl'] = "Storage/Taxation/PurchaseDetail/";
 		$constantArray['purchaseTaxUrl'] = "Storage/Taxation/PurchaseTax/";
@@ -121,6 +122,7 @@ class ConstantClass
 		//crm
 		$constantArray['conversationEmailType']="email";
 		$constantArray['conversationSmsType']="sms";
+		$constantArray['prefixConstant']=")]}',\n";
 		
 		$constantArray['clientUrl']="http://www.scerp1.com/clients";
 		$constantArray['documentGenerateUrl']="http://www.scerp1.com/documents/bill";

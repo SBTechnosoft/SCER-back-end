@@ -98,7 +98,7 @@ class ProductController extends BaseController implements ContainerInterface
 	*/
     public function multipleDataStore(Request $request)
     {
-		//Authentication
+    	//Authentication
 		$tokenAuthentication = new TokenAuthentication();
 		$authenticationResult = $tokenAuthentication->authenticate($request->header());
 		
@@ -114,11 +114,12 @@ class ProductController extends BaseController implements ContainerInterface
 			// insert
 			if($requestMethod == "POST")
 			{
+
 				$processor = new ProductProcessor();
 				$productPersistable = new ProductPersistable();		
-				$productService= new ProductService();					
+				$productService= new ProductService();
+
 				$productPersistable = $processor->createPersistableBatchData($this->request);
-				
 				if(is_array($productPersistable))
 				{
 					$status = $productService->insertBatchData($productPersistable);

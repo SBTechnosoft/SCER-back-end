@@ -19,6 +19,7 @@ use ERP\Core\Cities\Properties\CityIdPropertyTrait;
 use ERP\Core\Clients\Properties\BirthDateTrait;
 use ERP\Core\Clients\Properties\AnniversaryDateTrait;
 use ERP\Core\Clients\Properties\OtherDateTrait;
+use ERP\Core\Clients\Properties\GstTrait;
 
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -43,4 +44,5 @@ class ClientPersistable
 	use BirthDateTrait;
 	use AnniversaryDateTrait;
 	use OtherDateTrait;
+	use GstTrait;
 }

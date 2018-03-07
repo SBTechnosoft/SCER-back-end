@@ -19,7 +19,7 @@ class EncodeProductTrnAllData extends ProductService
 		$convertedUpdatedDate =  array();
 		$encodeAllData =  array();
 		$decodedJson = json_decode($status,true);
-		
+		$productDecodedJson = array();
 		$ledger = new Ledger();
 		for($decodedData=0;$decodedData<count($decodedJson);$decodedData++)
 		{
@@ -110,39 +110,7 @@ class EncodeProductTrnAllData extends ProductService
 				'createdAt' => $getCreatedDate[$jsonData],
 				'updatedAt' => $getUpdatedDate[$jsonData],
 				
-				'product' => array(
-					'productId' => $productDecodedJson[$jsonData]['productId'],
-					'productName' => $productDecodedJson[$jsonData]['productName'],
-					'measurementUnit' => $productDecodedJson[$jsonData]['measurementUnit'],
-					'isDisplay' => $productDecodedJson[$jsonData]['isDisplay'],
-					'purchasePrice' => $productDecodedJson[$jsonData]['purchasePrice'],
-					'wholesaleMargin' => $productDecodedJson[$jsonData]['wholesaleMargin'],
-					'wholesaleMarginFlat' => $productDecodedJson[$jsonData]['wholesaleMarginFlat'],
-					'semiWholesaleMargin' => $productDecodedJson[$jsonData]['semiWholesaleMargin'],
-					'vat' => $productDecodedJson[$jsonData]['vat'],
-					'purchaseCgst' => $productDecodedJson[$jsonData]['purchaseCgst'],
-					'purchaseSgst' => $productDecodedJson[$jsonData]['purchaseSgst'],
-					'purchaseIgst' => $productDecodedJson[$jsonData]['purchaseIgst'],
-					'mrp' => $productDecodedJson[$jsonData]['mrp'],
-					'igst' => $productDecodedJson[$jsonData]['igst'],
-					'hsn' => $productDecodedJson[$jsonData]['hsn'],
-					'color' => $productDecodedJson[$jsonData]['color'],
-					'size' => $productDecodedJson[$jsonData]['size'],
-					'margin' => $productDecodedJson[$jsonData]['margin'],
-					'marginFlat' => $productDecodedJson[$jsonData]['marginFlat'],
-					'productDescription' => $productDecodedJson[$jsonData]['productDescription'],
-					'additionalTax' => $productDecodedJson[$jsonData]['additionalTax'],
-					'minimumStockLevel' => $productDecodedJson[$jsonData]['minimumStockLevel'],
-					'documentName' => $productDecodedJson[$jsonData]['documentName'],
-					'documentFormat' => $productDecodedJson[$jsonData]['documentFormat'],
-					'documentPath' => $documentPath,
-					'createdAt' => $productDecodedJson[$jsonData]['createdAt'],
-					'updatedAt' => $productDecodedJson[$jsonData]['updatedAt'],
-					'productCategoryId' => $productDecodedJson[$jsonData]['productCategory']['productCategoryId'],
-					'productGroupId' => $productDecodedJson[$jsonData]['productGroup']['productGroupId'],
-					'companyId' => $productDecodedJson[$jsonData]['company']['companyId'],
-					'branchId' => $productDecodedJson[$jsonData]['branch']['branchId']
-				),
+				'product' => $productDecodedJson[$jsonData],
 				'company' => array(
 					'companyId' => $getCompanyDetails[$jsonData]['companyId'],	
 					'companyName' => $getCompanyDetails[$jsonData]['companyName'],	
