@@ -157,3 +157,7 @@ CREATE TABLE `product_doc_dtl` (
 43. ALTER TABLE `template_mst` CHANGE `template_id` `template_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique id of template';
 44. ALTER TABLE `trial_balance_dtl` CHANGE `trial_balance_id` `trial_balance_id` INT(11) NOT NULL AUTO_INCREMENT;
 45. ALTER TABLE `user_mst` CHANGE `user_id` `user_id` INT(11) NOT NULL AUTO_INCREMENT;
+
+10-march-2018(pending)
+1. ALTER TABLE `sale_expense_dtl` ADD `expense_operation` ENUM('plus','minus') NOT NULL DEFAULT 'plus' AFTER `expense_name`;
+

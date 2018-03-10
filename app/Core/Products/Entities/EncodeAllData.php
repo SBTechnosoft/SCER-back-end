@@ -52,6 +52,7 @@ class EncodeAllData extends ProductCategoryService
 			$additionalTax[$decodedData] = $decodedJson[$decodedData]['additional_tax'];
 			$minimumStockLevel[$decodedData] = $decodedJson[$decodedData]['minimum_stock_level'];
 
+			$productCode[$decodedData] = $decodedJson[$decodedData]['product_code'];
 			$productMenu[$decodedData] = $decodedJson[$decodedData]['product_menu'];
 			$productType[$decodedData] = $decodedJson[$decodedData]['product_type'];
 			$notForSale[$decodedData] = $decodedJson[$decodedData]['not_for_sale'];
@@ -169,6 +170,7 @@ class EncodeAllData extends ProductCategoryService
 				'documentFormat' => $documentFormat[$jsonData],
 				'documentPath' => $documentPath,
 				'measurementUnit' => $measurementUnit[$jsonData],
+				'productCode' => $productCode[$jsonData],
 				'productMenu' => $productMenu[$jsonData],
 				'productType' => $productType[$jsonData],
 				'notForSale' => $notForSale[$jsonData],

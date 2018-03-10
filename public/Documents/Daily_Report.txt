@@ -78,13 +78,10 @@ Password: Pradip@123
 ---------------------------------------------------------------- End ---------------------------------------------------------------------------------
 smartclass cpanel Access 
 dealsinbongo.com
+new : my.tmdhosting.com
 Hosting ISP: https://www.tmdhosting.com
 User Name: glomantiss@gmail.com
-Password: Hex666$$%%
-
-new : my.tmdhosting.com
-username : glomantiss@gmail.com
-password : Hex2666$$%%NB$0
+Password: Hex2666$$%%NB$0
 
 Demo.classconnect.cloud (Sub-Domin)
 
@@ -191,7 +188,7 @@ Database Password: (!_\/@$\/\//\!\/!_Cy3les
 --------------------------------------------------------
 
 prabandhak.co.in
-CPanel URL:
+CPanel URL:166.62.33.199:2083
 User Name: prabandhakur
 Password: P16@2an+4h1k
 
