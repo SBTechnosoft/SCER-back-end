@@ -4,6 +4,7 @@ namespace ERP\Core\Authenticate\Entities;
 use ERP\Core\Authenticate\Entities\Authenticate;
 use ERP\Core\Users\Services\UserService;
 use Carbon;
+use ERP\Entities\Constants\ConstantClass;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -20,6 +21,9 @@ class EncodeData extends UserService
 		$userId= $decodedJson[0]['user_id'];
 		$token= $decodedJson[0]['token'];
 		
+		//get constant document-url from document
+		$documentUrl =  new ConstantClass();
+		$documentArray = $documentUrl->constantVariable();
 		//get user data
 		$encodeData = new EncodeData();
 		$userData = $encodeData->getUserData($userId);
@@ -65,7 +69,7 @@ class EncodeData extends UserService
 			'companyId' => $userDecodedData->company->companyId,
 			'branchId' => $userDecodedData->branch->branchId
 		);
-		$encodeData = json_encode($data);
+		$encodeData = $documentArray['prefixConstant'].json_encode($data);
 		return $encodeData;
 	}
 }

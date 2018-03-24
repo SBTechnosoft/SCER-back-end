@@ -10,8 +10,6 @@ Url: erp.swaminarayancycles.com
 UserId: superadmin@gmail.com
 password: n4!sJdq0@Adv
 
-
-
 _https://www.screencast.com/t/cqcOyxXsxKW
 $2y$10$xLXs8Y2EJB66JAiLY./QDuAaAMo7cu.YM.Te45bla7USNhuC9sf.W
 F:\xampp\newOne\htdocs\tutionClass\assets\plugins\tinymce\plugins\advlist
@@ -77,24 +75,23 @@ Password: Pradip@123
 
 ---------------------------------------------------------------- End ---------------------------------------------------------------------------------
 smartclass cpanel Access 
-dealsinbongo.com
 Hosting ISP: https://www.tmdhosting.com
-User Name: glomantiss@gmail.com
-Password: Hex666$$%%
-
-new : my.tmdhosting.com
-username : glomantiss@gmail.com
-password : Hex2666$$%%NB$0
+User Name: cosmicblissss@gmail.com 
+Password: yUfvUd5YaH
 
 Demo.classconnect.cloud (Sub-Domin)
 
-FTP Access
+FTP Acces
 Host: ftp.dealsinbongo.com
 FTP Username: sbraindev@classconnect.cloud
-Password: c!a5sconu3c+.ciOnDf+p
+Password: $!\/!@|)\1T@$!|!C0|\|_Chg30611820
+
+Webmail Access
+URL: https://demo.classconnect.cloud:2096/
+Email: support@demo.classconnect.cloud
+Password: $||/\1R@t_C|@$$_Chg1632018
 
 Smartclass dB Access 
-
 
 Database Name: dealsinb_ccdemo
 User name: dealsinb_ccdemousr
@@ -110,6 +107,35 @@ Password: bjg@123
 cPanel Access :https://secuream16.sgcpanel.com:2083
 username: globelmo 
 Password: 4881189w
+
+FTP Access
+Host Name: 97.74.238.110
+Username: dev@prabandhak.co.in
+Password: k1h4n@2Arp2018
+
+DB Access
+prabandh_demo_erp
+prabandh_erpusr
+R5lA4qwGZ1!p
+-------------------------------------------------
+
+New Server ERP test Domian 
+
+
+ayka.co.in
+CPanel URL:
+Username: aykaco
+Password: @YkaExp0Rt
+
+FTP Access
+Host Name: 132.148.153.176
+Username: dev@ayka.co.in
+Password: [_aC~;fk#RkO
+
+*** Database Access****
+Database Name: aykaco_er_db
+Database Username: aykaco_erpusr 
+Database Password: (~?J%e?2k*R?
 
 -------------------------------------------------
 Disha Tution Class :
@@ -178,7 +204,7 @@ User Name: swamicycles
 Password: 3yCle$@Swamin@ray@n
 
 FTP Access
-Host Name: 166.62.33.199
+Host Name: 166.62.38.66
 Username: dev@swaminarayancycles.com
 Password: (!_\/@$\/\//\!\/!_Cy3les
 
@@ -189,17 +215,6 @@ Database Name: swamicyc_erp_db
 Database User: swamicyc_erp
 Database Password: (!_\/@$\/\//\!\/!_Cy3les
 --------------------------------------------------------
-
-prabandhak.co.in
-CPanel URL:
-User Name: prabandhakur
-Password: P16@2an+4h1k
-
-FTP Access
-Host Name: 166.62.33.199
-Username: dev@prabandhak.co.in
-Password: k1h4n@2Arp2018
-
 --------------------------------------------------------
 siliconbrainerp:
 
@@ -209,6 +224,60 @@ DB_USERNAME=sbinin1_erp
 DB_PASSWORD='$!|!C0N5|2|)'
 --------------------------------------------------------
 
+FTP Access Of Creativeoffice
+Host Name: 97.74.238.110
+Username: dev@creativeoffice.co.in
+Password: 31k+r0Qx5
+
+--------------------------------------------------------
+@Reema Update the Access 
+
+
+Sub-domain: erp.siliconbrain.in 
+
+URL: https://siliconbrain.in:2083/
+Username: sbinin1
+Password: S!l!C0N@1216913
+
+FTP Access
+Host Name: 166.62.38.66
+Username: dev@siliconbrain.in
+Password: s!il50hd@ain
+
+Database Access
+Database Name: sbinin1_erp
+Database Username: sbinin1_erpusr
+Database Password: $!|!C0N5|2|)
+
+*********************************************************
+
+Sub-domain: arihant.siliconbrain.in 
+
+URL: https://siliconbrain.in:2083/
+Username: sbinin1
+Password: S!l!C0N@1216913
+
+FTP Access
+Host Name: 166.62.38.66
+Username: dev@siliconbrain.in
+Password: s!il50hd@ain
+
+Database Access
+Database Name: sbinin1_erp_arihant
+Database Username: sbinin1_arihant
+Database Password: @r!8An20
+
+--------------------------------------------------------
+creativeoffice.co.in/cpanel
+Cpanel URL: 
+User Name: creativeofficeco
+Password: 3R5@|_!ve0ffice
+
+FTP Access
+Host Name: 166.62.38.66
+Username: dev@creativeoffice.co.in
+Password: 31k+r0Qx5
+--------------------------------------------------------
 basic commands of git:
 git status
 git pull
@@ -267,18 +336,14 @@ YWRtaW4=
 public_html->shreetulsimovies.com
 --- dev@prabandhak.co.in ---------
 Cpanel Access : 
-prabandhak.co.in/cpnael
-CPanel URL:https://166.62.33.199:2083
+prabandhak.co.in/cpanel
 User Name: prabandhakur
-Password: P16@2an+4h1k
+Password: p|)\B@!\!Dh@K_8318 
 
 IP: 166.62.33.199
 FTP: dev@prabandhak.co.in
 Password: pr5dahdna!
 New Password: k1h4n@2Arp2018
-
-@Reema Set ERP Demo 
-URL:- demo.prabandhak.co.in
 
 Database: 
 DBname :- prabandh_demo_erp

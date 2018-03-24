@@ -53,7 +53,6 @@ class JournalModel extends Model
 		// get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
-		
 		for($data=0;$data<count($jfIdArray);$data++)
 		{
 			DB::beginTransaction();

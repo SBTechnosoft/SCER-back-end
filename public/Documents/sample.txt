@@ -2,7 +2,7 @@ silicon-swaminarayan-arihant completed
 -- Alter table ledger_mst add `bank_id` INT(11) NULL DEFAULT NULL AFTER CGST, ADD `bank_dtl_id` INT(11) NULL DEFAULT NULL AFTER `bank_id` , ADD `micr_code` INT(11) NULL DEFAULT NULL AFTER `bank_dtl_id`
 
 
-local-arihant done..(silicon done-swaminarayan-done, pending...product_doc_dtl all pending)
+local-arihant done..(silicon done-swaminarayan-done)
 -- ALTER TABLE `product_mst` ADD `not_for_sale` ENUM('on','off') NOT NULL DEFAULT 'on' AFTER `minimum_stock_level`, ADD `max_sale_qty` DECIMAL(20,4) NOT NULL AFTER `not_for_sale`, ADD `product_cover_id` INT(11) NOT NULL AFTER `max_sale_qty`, ADD `created_by` INT(11) NOT NULL AFTER `product_cover_id`, ADD `updated_by` INT(11) NOT NULL AFTER `created_by`, ADD `deleted_by` INT(11) NOT NULL AFTER `updated_by`	
 
 10-jan-2018(swaminarayan-silicon-arihant done)
@@ -63,7 +63,7 @@ local-arihant done..(silicon done-swaminarayan-done, pending...product_doc_dtl a
 3. ALTER TABLE `sales_bill_trn` CHANGE `service_date` `service_date` DATE NULL DEFAULT '0000-00-00';
 4. ALTER TABLE `sales_bill` CHANGE `service_date` `service_date` DATE NOT NULL DEFAULT '0000-00-00';
 
-1-feb-2018 (local-arihant done...silicon-swaminarayan pending)
+1-feb-2018 (local-arihant done...silicon-swaminarayan)
 ALTER TABLE `product_mst` CHANGE `max_sale_qty` `max_sale_qty` DECIMAL(20,4) NULL DEFAULT NULL, CHANGE `product_cover_id` `product_cover_id` INT(11) NULL DEFAULT NULL;
 
 09-feb-2018 (silicon Done,swaminarayan done,arihant done)
@@ -84,13 +84,13 @@ Swaminarayan : ALTER TABLE `template_mst` CHANGE `template_type` `template_type`
 
 
 
-19-feb-2018 (silicon done,swaminarayan done,pending)
+19-feb-2018 (silicon done,swaminarayan done,arihant)
 1. ALTER TABLE `product_mst` ADD `best_before_time` INT(11) NULL DEFAULT NULL AFTER `max_sale_qty`, ADD `best_before_type` ENUM('day','month','year') NULL DEFAULT NULL AFTER `best_before_time`, ADD `cess_flat` DECIMAL(20,4) NOT NULL DEFAULT '0' AFTER `best_before_type`, ADD `cess_percentage` DECIMAL(20,4) NOT NULL DEFAULT '0' AFTER `cess_flat`;
 
-22-feb-2018(silicon done,swaminarayan done,pending)
+22-feb-2018(silicon done,swaminarayan done,arihant)
 1. ALTER TABLE `product_mst` ADD `product_type` ENUM('product','accessories','service') NOT NULL DEFAULT 'product' AFTER `product_name`, ADD `product_menu` ENUM('ok','not') NOT NULL DEFAULT 'not' AFTER `product_type`;
 
-23-feb-2018(silicon done,swaminarayan done,pending)
+23-feb-2018(silicon done,swaminarayan done,arihant)
 1. ALTER TABLE `product_mst` CHANGE `is_display` `is_display` ENUM('yes','no') CHARACTER SET utf16 COLLATE utf16_general_ci NOT NULL DEFAULT 'yes';
 2. ALTER TABLE `product_mst` CHANGE `product_menu` `product_menu` ENUM('ok','not') CHARACTER SET utf16 COLLATE utf16_general_ci NOT NULL DEFAULT 'not';
 3. ALTER TABLE `product_mst` CHANGE `not_for_sale` `not_for_sale` ENUM('on','off') CHARACTER SET utf16 COLLATE utf16_general_ci NOT NULL DEFAULT 'off';
@@ -109,51 +109,56 @@ CREATE TABLE `product_doc_dtl` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1
 6. ALTER TABLE `product_mst` CHANGE `max_sale_qty` `max_sale_qty` INT(11) NULL DEFAULT NULL;
 
-26-feb-2018(silicon done,swaminarayan done,...pending)
+26-feb-2018(silicon done,swaminarayan done,arihant)
 1. ALTER TABLE `client_mst` ADD `gst` VARCHAR(100) NULL DEFAULT NULL AFTER `address1`;
 
 
-2. ALTER TABLE `client_mst` CHANGE `client_id` `client_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique id of client';
-3. ALTER TABLE `active_session` CHANGE `session_id` `session_id` INT(11) NOT NULL AUTO_INCREMENT;
-4. ALTER TABLE `balance_sheet_dtl` CHANGE `balance_sheet_id` `balance_sheet_id` INT(11) NOT NULL AUTO_INCREMENT;
-5. ALTER TABLE `bank_dtl` CHANGE `bank_dtl_id` `bank_dtl_id` INT(11) NOT NULL AUTO_INCREMENT;
-6. ALTER TABLE `bank_mst` CHANGE `bank_id` `bank_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique id of bank';
-7. ALTER TABLE `branch_mst` CHANGE `branch_id` `branch_id` INT(11) NOT NULL AUTO_INCREMENT;
-8. ALTER TABLE `cash_flow_dtl` CHANGE `cash_flow_id` `cash_flow_id` INT(11) NOT NULL AUTO_INCREMENT;
-9. ALTER TABLE `city_mst` CHANGE `city_id` `city_id` INT(11) NOT NULL AUTO_INCREMENT;
-10. ALTER TABLE `client_doc_dtl` CHANGE `document_id` `document_id` INT(11) NOT NULL AUTO_INCREMENT;
-11. ALTER TABLE `company_document_dtl` CHANGE `document_id` `document_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique id of document';
-12. ALTER TABLE `company_mst` CHANGE `company_id` `company_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'primary key';
-13. ALTER TABLE `conversation_dtl` CHANGE `conversation_id` `conversation_id` INT(11) NOT NULL AUTO_INCREMENT;
-14. ALTER TABLE `expense_type_mst` CHANGE `expense_id` `expense_id` INT(11) NOT NULL AUTO_INCREMENT;
-15. ALTER TABLE `invoice_dtl` CHANGE `invoice_id` `invoice_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique id of invoice';
-16. ALTER TABLE `job_card_doc_dtl` CHANGE `document_id` `document_id` INT(11) NOT NULL AUTO_INCREMENT;
-17. ALTER TABLE `job_card_dtl` CHANGE `job_card_id` `job_card_id` INT(11) NOT NULL AUTO_INCREMENT;
-18. ALTER TABLE `job_card_number_dtl` CHANGE `job_card_number_id` `job_card_number_id` INT(11) NOT NULL AUTO_INCREMENT;
-19. ALTER TABLE `journal_dtl` CHANGE `journal_id` `journal_id` INT(11) NOT NULL AUTO_INCREMENT;
-20. ALTER TABLE `ledger_grp_mst` CHANGE `ledger_group_id` `ledger_group_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique group ledger id';
-21. ALTER TABLE `ledger_mst` CHANGE `ledger_id` `ledger_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique id of ledger';
-22. ALTER TABLE `product_category_mst` CHANGE `product_category_id` `product_category_id` INT(11) NOT NULL AUTO_INCREMENT;
-23. ALTER TABLE `product_doc_dtl` CHANGE `document_id` `document_id` INT(11) NOT NULL AUTO_INCREMENT;
-24. ALTER TABLE `product_group_mst` CHANGE `product_group_id` `product_group_id` INT(11) NOT NULL AUTO_INCREMENT;
-25. ALTER TABLE `product_mst` CHANGE `product_id` `product_id` INT(11) NOT NULL AUTO_INCREMENT;
-26. ALTER TABLE `product_trn` CHANGE `product_trn_id` `product_trn_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique transaction id';
-27. ALTER TABLE `product_trn_summary` CHANGE `product_trn_summary_id` `product_trn_summary_id` INT(11) NOT NULL AUTO_INCREMENT;
-28. ALTER TABLE `profession_mst` CHANGE `profession_id` `profession_id` INT(11) NOT NULL AUTO_INCREMENT;
-29. ALTER TABLE `profit_loss_dtl` CHANGE `profit_loss_id` `profit_loss_id` INT(11) NOT NULL AUTO_INCREMENT;
-30. ALTER TABLE `purchase_bill` CHANGE `purchase_id` `purchase_id` INT(11) NOT NULL AUTO_INCREMENT;
-31. ALTER TABLE `purchase_doc_dtl` CHANGE `document_id` `document_id` INT(11) NOT NULL AUTO_INCREMENT;
-32. ALTER TABLE `purchase_expense_dtl` CHANGE `purchase_expense_id` `purchase_expense_id` INT(11) NOT NULL AUTO_INCREMENT;
-33. ALTER TABLE `quotation_bill_archives` CHANGE `quotation_archive_id` `quotation_archive_id` INT(11) NOT NULL AUTO_INCREMENT;
-34. ALTER TABLE `quotation_bill_doc_dtl` CHANGE `document_id` `document_id` INT(11) NOT NULL AUTO_INCREMENT;
-35. ALTER TABLE `quotation_bill_dtl` CHANGE `quotation_bill_id` `quotation_bill_id` INT(11) NOT NULL AUTO_INCREMENT;
-36. ALTER TABLE `quotation_dtl` CHANGE `quotation_id` `quotation_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique id of quatation';
-37. ALTER TABLE `sales_bill` CHANGE `sale_id` `sale_id` INT(11) NOT NULL AUTO_INCREMENT;
-38. ALTER TABLE `sales_bill_doc_dtl` CHANGE `document_id` `document_id` INT(11) NOT NULL AUTO_INCREMENT;
-39. ALTER TABLE `sales_bill_trn` CHANGE `sale_trn_id` `sale_trn_id` INT(11) NOT NULL AUTO_INCREMENT;
-40. ALTER TABLE `sale_doc_dtl` CHANGE `document_id` `document_id` INT(11) NOT NULL AUTO_INCREMENT;
-41. ALTER TABLE `sale_expense_dtl` CHANGE `sale_expense_id` `sale_expense_id` INT(11) NOT NULL AUTO_INCREMENT;
-42. ALTER TABLE `setting_mst` CHANGE `setting_id` `setting_id` INT(11) NOT NULL AUTO_INCREMENT;
-43. ALTER TABLE `template_mst` CHANGE `template_id` `template_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique id of template';
-44. ALTER TABLE `trial_balance_dtl` CHANGE `trial_balance_id` `trial_balance_id` INT(11) NOT NULL AUTO_INCREMENT;
-45. ALTER TABLE `user_mst` CHANGE `user_id` `user_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `client_mst` CHANGE `client_id` `client_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique id of client';
+ ALTER TABLE `active_session` CHANGE `session_id` `session_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `balance_sheet_dtl` CHANGE `balance_sheet_id` `balance_sheet_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `bank_dtl` CHANGE `bank_dtl_id` `bank_dtl_id` INT(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `bank_mst` CHANGE `bank_id` `bank_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique id of bank';
+ ALTER TABLE `branch_mst` CHANGE `branch_id` `branch_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `cash_flow_dtl` CHANGE `cash_flow_id` `cash_flow_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `city_mst` CHANGE `city_id` `city_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `client_doc_dtl` CHANGE `document_id` `document_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `company_document_dtl` CHANGE `document_id` `document_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique id of document';
+ ALTER TABLE `company_mst` CHANGE `company_id` `company_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'primary key';
+ ALTER TABLE `conversation_dtl` CHANGE `conversation_id` `conversation_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `expense_type_mst` CHANGE `expense_id` `expense_id` INT(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `invoice_dtl` CHANGE `invoice_id` `invoice_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique id of invoice';
+ ALTER TABLE `job_card_doc_dtl` CHANGE `document_id` `document_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `job_card_dtl` CHANGE `job_card_id` `job_card_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `job_card_number_dtl` CHANGE `job_card_number_id` `job_card_number_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `journal_dtl` CHANGE `journal_id` `journal_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `ledger_grp_mst` CHANGE `ledger_group_id` `ledger_group_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique group ledger id';
+ ALTER TABLE `ledger_mst` CHANGE `ledger_id` `ledger_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique id of ledger';
+ ALTER TABLE `product_category_mst` CHANGE `product_category_id` `product_category_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `product_doc_dtl` CHANGE `document_id` `document_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `product_group_mst` CHANGE `product_group_id` `product_group_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `product_mst` CHANGE `product_id` `product_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `product_trn` CHANGE `product_trn_id` `product_trn_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique transaction id';
+ ALTER TABLE `product_trn_summary` CHANGE `product_trn_summary_id` `product_trn_summary_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `profession_mst` CHANGE `profession_id` `profession_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `profit_loss_dtl` CHANGE `profit_loss_id` `profit_loss_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `purchase_bill` CHANGE `purchase_id` `purchase_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `purchase_doc_dtl` CHANGE `document_id` `document_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `purchase_expense_dtl` CHANGE `purchase_expense_id` `purchase_expense_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `quotation_bill_archives` CHANGE `quotation_archive_id` `quotation_archive_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `quotation_bill_doc_dtl` CHANGE `document_id` `document_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `quotation_bill_dtl` CHANGE `quotation_bill_id` `quotation_bill_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `quotation_dtl` CHANGE `quotation_id` `quotation_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique id of quatation';
+ALTER TABLE `sales_bill` CHANGE `sale_id` `sale_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `sales_bill_doc_dtl` CHANGE `document_id` `document_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `sales_bill_trn` CHANGE `sale_trn_id` `sale_trn_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `sale_doc_dtl` CHANGE `document_id` `document_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `sale_expense_dtl` CHANGE `sale_expense_id` `sale_expense_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `setting_mst` CHANGE `setting_id` `setting_id` INT(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `template_mst` CHANGE `template_id` `template_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'unique id of template';
+ ALTER TABLE `trial_balance_dtl` CHANGE `trial_balance_id` `trial_balance_id` INT(11) NOT NULL AUTO_INCREMENT;
+ ALTER TABLE `user_mst` CHANGE `user_id` `user_id` INT(11) NOT NULL AUTO_INCREMENT;
+
+10-march-2018(arihant done,swaminarayan done, pending)
+1. ALTER TABLE `sale_expense_dtl` ADD `expense_operation` ENUM('plus','minus') NOT NULL DEFAULT 'plus' AFTER `expense_name`;
+2. ALTER TABLE `purchase_expense_dtl` ADD `expense_operation` ENUM('plus','minus') NOT NULL DEFAULT 'plus' AFTER `expense_name`;
+

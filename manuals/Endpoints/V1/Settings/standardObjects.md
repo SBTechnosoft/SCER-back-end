@@ -16,6 +16,12 @@
 				"productColorStatus":Enum,
 				"productSizeStatus":Enum,
 				"productBestBeforeStatus":Enum,
+				"productFrameNoStatus":Enum,
+				"clientWorkNoStatus":Enum,
+				"clientAddressStatus":Enum,
+				"clientStateStatus":Enum,
+				"clientCityStatus":Enum,
+				"clientEmailIdStatus":Enum,
 				"status":Enum,
 				"createdAt":timestamp,
 				"updatedAt":datetime
@@ -32,6 +38,15 @@
 				"annireminderType": Enum,
 				"annireminderTime": Enum,
 				"annireminderNotifyBy": Enum,
+				"productColorStatus":Enum,
+				"productSizeStatus":Enum,
+				"productBestBeforeStatus":Enum,
+				"productFrameNoStatus":Enum,
+				"clientWorkNoStatus":Enum,
+				"clientAddressStatus":Enum,
+				"clientStateStatus":Enum,
+				"clientCityStatus":Enum,
+				"clientEmailIdStatus":Enum,
 				"chequeno": Enum
             }
 ##### Standard Setting Object
@@ -69,7 +84,7 @@
 				notifyByNone : 'none'
 			}
 
-##### status/ProductBestBeforeStatus/ProductColor/ProductSize Enum
+##### status/ProductBestBeforeStatus/ProductColor/ProductSize/ProductFrameNo/ClientAddress/ClientState/ClientCity/ClientEmailId/ClientWorkNo Enum
 			{
 				onStatus:'on',
 				offStatus:'off'

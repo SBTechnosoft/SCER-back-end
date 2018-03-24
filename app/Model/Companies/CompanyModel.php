@@ -238,6 +238,7 @@ class CompanyModel extends Model
 		$templateCount = count($templateData);
 		for($templateArrayData=0;$templateArrayData<$templateCount;$templateArrayData++)
 		{
+			
 			DB::beginTransaction();
 			$templateInsertion = DB::connection($databaseName)->statement("insert
 			into template_mst(

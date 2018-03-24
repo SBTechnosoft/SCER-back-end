@@ -85,12 +85,14 @@ class PurchaseBillModel extends Model
 				expense_name,
 				expense_type,
 				expense_value,
+				expense_operation,
 				purchase_id,
 				expense_id)
 				values(
 				'".$decodedJsonExpense[$expenseData]->expenseName."',
 				'".$decodedJsonExpense[$expenseData]->expenseType."',
 				'".$decodedJsonExpense[$expenseData]->expenseValue."',
+				'".$decodedJsonExpense[$expenseData]->expenseOperation."',
 				'".$purchaseIdResult[0]->purchase_id."',
 				'".$decodedJsonExpense[$expenseData]->expenseId."')");
 				DB::commit();
@@ -180,11 +182,13 @@ class PurchaseBillModel extends Model
 				expense_type,
 				expense_name,
 				expense_value,
+				expense_operation,
 				purchase_id,
 				expense_id)
 				values('".$decodedExpenseData[$expenseData]->expenseType."',
 				'".$decodedExpenseData[$expenseData]->expenseName."',
 				'".$decodedExpenseData[$expenseData]->expenseValue."',
+				'".$decodedExpenseData[$expenseData]->expenseOperation."',
 				'".$purchaseId."',
 				'".$decodedExpenseData[$expenseData]->expenseId."')");
 				DB::commit();
@@ -676,6 +680,7 @@ class PurchaseBillModel extends Model
 			expense_name as expenseName,
 			expense_type as expenseType,
 			expense_value as expenseValue,
+			expense_operation as expenseOperation,
 			purchase_id as purchaseId
 			from purchase_expense_dtl 
 			where deleted_at='0000-00-00 00:00:00' and 

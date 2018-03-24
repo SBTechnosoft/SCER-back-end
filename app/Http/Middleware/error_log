@@ -1,0 +1,4 @@
+[03-Dec-2017 14:12:02 America/Chicago] PHP Fatal error:  Class 'Illuminate\Cookie\Middleware\EncryptCookies' not found in /home/sbinin1/public_html/arihant/api.siliconbrain.in/app/Http/Middleware/EncryptCookies.php on line 10
+[03-Dec-2017 18:28:51 America/Chicago] PHP Fatal error:  Class 'Illuminate\Foundation\Http\Middleware\VerifyCsrfToken' not found in /home/sbinin1/public_html/arihant/api.siliconbrain.in/app/Http/Middleware/VerifyCsrfToken.php on line 10
+[31-Jan-2018 21:07:36 America/Chicago] PHP Fatal error:  Class 'Illuminate\Cookie\Middleware\EncryptCookies' not found in /home/sbinin1/public_html/arihant/api.siliconbrain.in/app/Http/Middleware/EncryptCookies.php on line 10
+[31-Jan-2018 21:18:26 America/Chicago] PHP Fatal error:  Class 'Illuminate\Foundation\Http\Middleware\VerifyCsrfToken' not found in /home/sbinin1/public_html/arihant/api.siliconbrain.in/app/Http/Middleware/VerifyCsrfToken.php on line 10

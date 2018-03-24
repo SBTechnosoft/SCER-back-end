@@ -42,6 +42,15 @@ class SettingTransformer
 			$data['product_color_status'] = trim($request->input('productColorStatus'));
 			$data['product_size_status'] = trim($request->input('productSizeStatus'));
 			$data['product_best_before_status'] = trim($request->input('productBestBeforeStatus'));
+			$data['product_frame_no_status'] = trim($request->input('productFrameNoStatus'));
+		}
+		else if(array_key_exists('clientAddressStatus',$request->input()))
+		{
+			$data['client_address_status'] = trim($request->input('clientAddressStatus'));
+			$data['client_email_id_status'] = trim($request->input('clientEmailIdStatus'));
+			$data['client_work_no_status'] = trim($request->input('clientWorkNoStatus'));
+			$data['client_state_status'] = trim($request->input('clientStateStatus'));
+			$data['client_city_status'] = trim($request->input('clientCityStatus'));
 		}
 		else if(array_key_exists('chequeno',$request->input()))
 		{

@@ -23,11 +23,24 @@ use ERP\Core\Settings\Properties\AnnireminderStatusTrait;
 use ERP\Core\Settings\Properties\ProductColorStatusTrait;
 use ERP\Core\Settings\Properties\ProductSizeStatusTrait;
 use ERP\Core\Settings\Properties\ProductBestBeforeStatusTrait;
+use ERP\Core\Settings\Properties\ProductFrameNoStatusTrait;
+
+use ERP\Core\Settings\Properties\ClientWorkNoStatusTrait;
+use ERP\Core\Settings\Properties\ClientAddressStatusTrait;
+use ERP\Core\Settings\Properties\ClientEmailIdStatusTrait;
+use ERP\Core\Settings\Properties\ClientStateStatusTrait;
+use ERP\Core\Settings\Properties\ClientCityStatusTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
 class SettingPersistable
 {
+    use ClientWorkNoStatusTrait;
+    use ClientAddressStatusTrait;
+    use ClientEmailIdStatusTrait;
+    use ClientStateStatusTrait;
+    use ClientCityStatusTrait;
+    
     use NamePropertyTrait;
 	use KeyPropertyTrait;
     use BarcodeWidthPropertyTrait;
@@ -50,4 +63,5 @@ class SettingPersistable
     use ProductColorStatusTrait;
     use ProductSizeStatusTrait;
     use ProductBestBeforeStatusTrait;
+    use ProductFrameNoStatusTrait;
 }

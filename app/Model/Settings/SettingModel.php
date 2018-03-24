@@ -38,6 +38,7 @@ class SettingModel extends Model
 		$serviceDateArray = array();
 		$serviceDateArray = array();
 		$productArray = array();
+		$clientArray = array();
 		
 		$barcodeFlag=0;
 		$chequeNoFlag=0;
@@ -46,6 +47,7 @@ class SettingModel extends Model
 		$anniDateFlag=0;
 		$paymaneDateFlag=0;
 		$productFlag=0;
+		$clientFlag=0;
 		
 		//get exception message
 		$exception = new ExceptionMessage();
@@ -88,6 +90,11 @@ class SettingModel extends Model
 			{
 				$productFlag=1;
 				$productArray[$getSettingKey[$data]] = $getSettingData[$data];
+			}
+			else if(strcmp($constantArray['clientSetting'],$explodedSetting[0])==0)
+			{
+				$clientFlag=1;
+				$clientArray[$getSettingKey[$data]] = $getSettingData[$data];
 			}
 		}
 		if($barcodeFlag==1)
@@ -151,6 +158,13 @@ class SettingModel extends Model
 			values('".$constantArray['productSetting']."','".json_encode($productArray)."')");
 			DB::commit();
 		}
+		else if($clientFlag==1)
+		{
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->statement("insert into setting_mst(setting_type,setting_data) 
+			values('".$constantArray['clientSetting']."','".json_encode($clientArray)."')");
+			DB::commit();
+		}
 
 		if($raw==1)
 		{
@@ -181,6 +195,7 @@ class SettingModel extends Model
 		$birthDateArray = array();
 		$anniDateArray = array();
 		$productArray = array();
+		$clientArray = array();
 		date_default_timezone_set("Asia/Calcutta");
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
@@ -192,6 +207,7 @@ class SettingModel extends Model
 		$birthDateFlag=0;
 		$anniDateFlag=0;
 		$productFlag=0;
+		$clientFlag=0;
 
 		$constantArray = $constantDatabase->constantVariable();
 		for($data=0;$data<count($settingData);$data++)
@@ -231,6 +247,11 @@ class SettingModel extends Model
 			{
 				$productFlag=1;
 				$productArray[$key[$data]] = $settingData[$data];
+			}
+			else if(strcmp($constantArray['clientSetting'],$explodedSetting[0])==0)
+			{
+				$clientFlag=1;
+				$clientArray[$key[$data]] = $settingData[$data];
 			}
 		}
 		
@@ -311,6 +332,17 @@ class SettingModel extends Model
 			deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
 		}
+		else if($clientFlag==1)
+		{
+			DB::beginTransaction();
+			$raw = DB::connection($databaseName)->statement("update
+			setting_mst 
+			set setting_data = '".json_encode($clientArray)."',
+			updated_at = '".$mytime."'
+			where setting_type='".$constantArray['clientSetting']."' and
+			deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+		}
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -346,7 +378,6 @@ class SettingModel extends Model
 		from setting_mst
 		where deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
-		
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();

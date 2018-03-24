@@ -1875,7 +1875,6 @@ class BillProcessor extends BaseProcessor
 		//get constant variables array
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
-		
 		//update ledger data
 		$ledgerArray=array();
 		// $ledgerArray['ledgerName']=$tRequest['client_name'];

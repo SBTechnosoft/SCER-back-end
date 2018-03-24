@@ -17,11 +17,11 @@
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+
 </IfModule>
 <IfModule mod_php5.c>
-php_value memory_limit 1024M
-php_value post_max_size 256M
-php_value upload_max_filesize 256M
+php_value memory_limit 256M
 </IfModule>
 RewriteCond %{REQUEST_METHOD} OPTIONS
 RewriteRule ^(.*)$ index.php [QSA,L]

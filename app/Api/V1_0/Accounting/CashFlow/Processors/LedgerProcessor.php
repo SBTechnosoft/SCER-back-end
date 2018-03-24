@@ -142,13 +142,13 @@ class LedgerProcessor extends BaseProcessor
 			//data is avalilable for update
 			else
 			{
-				for($data=0;$data<count($_POST);$data++)
+				for($data=0;$data<count($request->input());$data++)
 				{
 					$buisnessFlag=0;
 					//data get from body
 					$ledgerPersistable = new LedgerPersistable();
-					$value[$data] = $_POST[array_keys($_POST)[$data]];
-					$key[$data] = array_keys($_POST)[$data];
+					$value[$data] = $request->input()[array_keys($request->input())[$data]];
+					$key[$data] = array_keys($request->input())[$data];
 					
 					//trim an input 
 					$ledgerTransformer = new LedgerTransformer();
@@ -222,7 +222,7 @@ class LedgerProcessor extends BaseProcessor
 								$errorCount++;
 							}
 						}
-						if($data==(count($_POST)-1))
+						if($data==(count($request->input())-1))
 						{
 							if($flag==1)
 							{

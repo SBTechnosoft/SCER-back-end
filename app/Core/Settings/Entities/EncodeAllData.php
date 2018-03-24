@@ -116,6 +116,21 @@ class EncodeAllData extends Setting
 					'productBestBeforeStatus' => $decodedSettingData->product_best_before_status,
 					'productSizeStatus' => $decodedSettingData->product_size_status,
 					'productColorStatus' => $decodedSettingData->product_color_status,
+					'productFrameNoStatus' => $decodedSettingData->product_frame_no_status,
+					'createdAt' => $getCreatedDate[$decodedData],
+					'updatedAt' => $getUpdatedDate[$decodedData]
+				);
+			}
+			else if(strcmp($decodedJson[$decodedData]['setting_type'],$constantArray['clientSetting'])==0)
+			{
+				$data[$decodedData]= array(
+					'settingId' => $decodedJson[$decodedData]['setting_id'],
+					'settingType' => $decodedJson[$decodedData]['setting_type'],
+					'clientAddressStatus' => $decodedSettingData->client_address_status,
+					'clientEmailIdStatus' => $decodedSettingData->client_email_id_status,
+					'clientWorkNoStatus' => $decodedSettingData->client_work_no_status,
+					'clientStateStatus' => $decodedSettingData->client_state_status,
+					'clientCityStatus' => $decodedSettingData->client_city_status,
 					'createdAt' => $getCreatedDate[$decodedData],
 					'updatedAt' => $getUpdatedDate[$decodedData]
 				);

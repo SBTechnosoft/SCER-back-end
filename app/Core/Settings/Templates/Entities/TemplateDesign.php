@@ -415,75 +415,76 @@ class TemplateDesign
 		$templateArray['Sms_AnniversaryDay'] = "<p>Dear [ClientName],</p>
 									<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Happy Anniversary</p>";
 
-		$templateArray['Blank'] =  "<div style=''background-size: 100% 100%; height: 29cm; width: 20.5cm;''>
+		$templateArray['Blank'] =  "<div style=''background-size: 100% 100%; height: 29cm; width: 21.7cm; padding-top: 12px;''>
 									<table style=''border-collapse: collapse; border-spacing: 0px; margin-left: auto; margin-right: auto; height: 29cm; width: 21.3cm;'' cellspacing=''0''>
 									<tbody>
 									<tr style=''height: 6cm;''>
-									<td style=''height: 6cm; text-align: center; vertical-align: top; font-size: 12px; padding-top: 8px;'' colspan=''3''><br />
+									<td style=''height: 6cm; text-align: center; vertical-align: top; font-size: 12px; padding-top: 8px;'' colspan=''6''><br />
 									<p><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [CompanySGST]</strong><br /><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [CompanyCGST]<br /></strong></p>
 									</td>
-									<td style=''height: 6cm; text-align: left;'' colspan=''5''>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>[Company]</strong><br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=''font-family: Agency FB; font-size: 12px;''>[CompanyAdd]</span></td>
-									<td style=''height: 6cm; font-family: Agency FB; text-align: left; font-size: 19px;'' colspan=''4''>&nbsp;<br /> &nbsp;<br /> &nbsp;<br /> [CreditCashMemo]&nbsp;<span style=''text-transform: uppercase;''>MEMO</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[RetailOrTax]<span style=''text-transform: uppercase;''>&nbsp;INVOICE</span></td>
+									<td style=''height: 6cm; text-align: left;'' colspan=''6''>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>[Company]</strong><br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=''font-family: Agency FB; font-size: 12px;''>[CompanyAdd]</span></td>
+									<td style=''height: 6cm; font-family: Agency FB; text-align: left; font-size: 19px;'' colspan=''4''>&nbsp;<br /> &nbsp;<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br /> [CreditCashMemo]&nbsp;<span style=''text-transform: uppercase;''>MEMO</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[RetailOrTax]<span style=''text-transform: uppercase;''>&nbsp;INVOICE</span></td>
 									</tr>
 									<tr style=''background-color: transparent; height: 0.8cm; text-align: left;''>
-									<td style=''font-family: Agency FB; font-size: 15px; vertical-align: top; height: 0.8cm; width: 13.6cm; text-align: left;'' colspan=''7'' rowspan=''2''>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=''color: #000000; font-size: 18px;''><strong>[ClientName]</strong></span> <br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=''font-size: 16px;''>[CLIENTADD]</span></td>
-									<td style=''font-family: Agency FB; font-size: 14px; vertical-align: middle; color: black; text-align: left; height: 0.8cm; width: 7.7cm;'' colspan=''5''>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=''color: #000000;''>[INVID]</span></td>
+									<td style=''font-family: Agency FB; font-size: 15px; vertical-align: top; height: 0.75cm; text-align: left;'' colspan=''9'' rowspan=''2''>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=''color: #000000; font-size: 18px;''><strong>[ClientName]</strong></span> <br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=''font-size: 16px;''>[CLIENTADD]</span></td>
+									<td style=''font-family: Agency FB; font-size: 14px; vertical-align: middle; color: black; height: 0.75cm;'' colspan=''7''>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=''color: #000000;''>[INVID]</span></td>
 									</tr>
 									<tr class=''trhw'' style=''height: 0.8cm; text-align: left;''>
-									<td class=''tg-vi9z'' style=''font-family: Agency FB; font-size: 14px; vertical-align: middle; color: black; height: 0.8cm;'' colspan=''12''>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[OrderDate]</td>
+									<td class=''tg-vi9z'' style=''font-family: Agency FB; font-size: 14px; vertical-align: middle; color: black; height: 0.8cm;'' colspan=''16''>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[OrderDate]</td>
 									</tr>
 									<tr class=''trhw'' style=''background-color: transparent; height: 0.8cm; text-align: left;''>
-									<td class=''tg-vi9z'' style=''font-family: Agency FB; font-size: 14px; vertical-align: middle; color: black; height: 0.8cm;'' colspan=''7''>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[CLIENTTINNO] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Mobile No:</strong>&nbsp;&nbsp;[Mobile]</td>
-									<td class=''tg-vi9z'' style=''font-family: Agency FB; font-size: 14px; vertical-align: middle; color: black; height: 0.8cm;'' colspan=''5''>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.00</td>
+									<td class=''tg-vi9z'' style=''font-family: Agency FB; font-size: 14px; vertical-align: middle; color: black; height: 0.8cm;'' colspan=''9''>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[CLIENTTINNO] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>Mobile No:</strong>&nbsp;&nbsp;[Mobile]</td>
+									<td class=''tg-vi9z'' style=''font-family: Agency FB; font-size: 14px; vertical-align: middle; color: black; height: 0.8cm; text-align: left;'' colspan=''7''>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.00</td>
 									</tr>
 									<tr class=''trhw'' style=''font-family: Agency FB; height: 1.2cm; text-align: left;''>
 									<td class=''tg-m36b thsrno'' style=''font-size: 14px; padding: 5px; text-align: center; height: 1.2cm;''><span style=''color: #000000;''><strong>Sr.No</strong></span></td>
-									<td class=''tg-m36b theqp'' style=''font-size: 14px; padding: 5px; height: 1.2cm; text-align: left;''><span style=''color: #000000;''><strong>Particulars</strong></span></td>
-									<td class=''tg-ullm thsrno'' style=''font-size: 14px; height: 1.2cm; text-align: center; padding: 5px 2px 5px 2px;''><span style=''color: #000000;''><strong>Color | Size</strong></span></td>
+									<td class=''tg-m36b theqp'' style=''font-size: 14px; padding: 5px; height: 1.2cm; text-align: left;'' colspan=''3''><span style=''color: #000000;''><strong>Particulars</strong></span></td>
+									<td class=''tg-m36b theqp'' style=''font-size: 14px; padding: 5px; height: 1.2cm; text-align: left;''><strong>HSN</strong></td>
+									<td class=''tg-ullm thsrno'' style=''font-size: 14px; height: 1.2cm; text-align: center; padding: 5px 2px;'' colspan=''2''><span style=''color: #000000;''><strong>Color | Size</strong></span></td>
 									<td class=''tg-ullm thsrno'' style=''font-size: 14px; padding: 5px; height: 1.2cm; text-align: left;''><span style=''color: #000000;''><strong>Frame No</strong></span></td>
 									<td class=''tg-ullm thsrno'' style=''font-size: 14px; padding: 5px; height: 1.2cm; text-align: center;''><span style=''color: #000000;''><strong>Qty</strong></span></td>
 									<td class=''tg-ullm thsrno'' style=''font-size: 14px; padding: 5px; height: 1.2cm; text-align: center;''><span style=''color: #000000;''><strong>Rate</strong></span></td>
-									<td class=''tg-ullm thsrno'' style=''font-size: 14px; padding: 5px; height: 1.2cm; text-align: center;''><span style=''color: #000000;''><strong>Discount</strong></span></td>
-									<td class=''tg-ullm thamt'' style=''font-size: 14px; padding: 5px; height: 1.2cm; text-align: center;''><span style=''color: #000000;''><strong>CGST%</strong></span></td>
-									<td class=''tg-ullm thamt'' style=''font-size: 14px; padding: 5px; height: 1.2cm; text-align: center;''><span style=''color: #000000;''><strong>CGST</strong></span></td>
-									<td class=''tg-ullm thamt'' style=''font-size: 14px; padding: 5px; height: 1.2cm; text-align: center;''><span style=''color: #000000;''><strong>SGST%</strong></span></td>
-									<td class=''tg-ullm thamt'' style=''font-size: 14px; padding: 5px; height: 1.2cm; text-align: center;''><span style=''color: #000000;''><strong>SGST</strong></span></td>
+									<td class=''tg-ullm thsrno'' style=''font-size: 14px; padding: 5px; height: 1.2cm; text-align: center;''><span style=''color: #000000;''><strong>Amt</strong></span></td>
+									<td class=''tg-ullm thamt'' style=''font-size: 14px; padding: 5px; height: 1.2cm; text-align: center;''><span style=''color: #000000;''><strong>Dis Rate</strong></span></td>
+									<td class=''tg-ullm thamt'' style=''font-size: 14px; padding: 5px; height: 1.2cm; text-align: center;''><span style=''color: #000000;''><strong>Dis Amt</strong></span></td>
+									<td class=''tg-ullm thamt'' style=''font-size: 14px; padding: 5px; height: 1.2cm; text-align: center;''><span style=''color: #000000;''><strong>Taxable Amt</strong></span></td>
+									<td class=''tg-ullm thamt'' style=''font-size: 14px; padding: 5px; height: 1.2cm; text-align: center;''><span style=''color: #000000;''><strong>GST</strong></span></td>
 									<td class=''tg-ullm thamt'' style=''font-size: 14px; padding: 5px; height: 1.2cm; text-align: center;''><span style=''color: #000000;''><strong>Amount</strong></span></td>
 									</tr>
 									<tr class=''trhw'' style=''font-family: Agency FB; text-align: left; height: 0.1cm; background-color: transparent; display: [displayNone];''>
-									<td class=''tg-m36b thsrno'' style=''font-size: 12px; color: #000000; height: 0.1cm;'' colspan=''12''>[Description]</td>
+									<td class=''tg-m36b thsrno'' style=''font-size: 12px; color: #000000; height: 0.1cm;'' colspan=''16''>[Description]</td>
 									</tr>
 									<tr style=''height: 0.7cm; text-align: left;''>
-									<td class=''tg-jtyd'' style=''font-family: Agency FB; font-size: 12px; padding: 5px; height: 0.7cm; text-align: left; border-top: 1px solid black; border-bottom: 1px solid black; text-decoration: uppercase;'' colspan=''4''>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=''color: black;''><strong>[TotalInWord]</strong></span></td>
-									<td class=''tg-jtyd'' style=''font-family: Agency FB; font-size: 18px; padding: 5px; height: 0.7cm; text-align: left; border-top: 1px solid black; border-bottom: 1px solid black;'' colspan=''3''><span style=''color: #000000;''><strong>&nbsp;&nbsp;&nbsp;[TotalQty]</strong></span></td>
-									<td class=''tg-jtyd'' style=''text-align: right; font-size: 14px; padding: 5px; height: 0.7cm; border-top: 1px solid black; border-bottom: 1px solid black;'' colspan=''2''>&nbsp;</td>
+									<td class=''tg-jtyd'' style=''font-family: Agency FB; font-size: 12px; padding: 5px; height: 0.7cm; text-align: left; border-top: 1px solid black; border-bottom: 1px solid black; text-decoration: uppercase;'' colspan=''6''>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=''color: black;''><strong>[TotalInWord]</strong></span></td>
+									<td class=''tg-jtyd'' style=''font-family: Agency FB; font-size: 18px; padding: 5px; height: 0.7cm; text-align: left; border-top: 1px solid black; border-bottom: 1px solid black;'' colspan=''4''><span style=''color: #000000;''><strong>&nbsp;&nbsp;&nbsp;[TotalQty]</strong></span></td>
+									<td class=''tg-jtyd'' style=''text-align: right; font-size: 14px; padding: 5px; height: 0.7cm; border-top: 1px solid black; border-bottom: 1px solid black;'' colspan=''3''>&nbsp;</td>
 									<td class=''tg-jtyd'' style=''font-family: Agency FB; text-align: right; font-size: 18px; padding: 5px; height: 0.7cm; border-top: 1px solid black; border-bottom: 1px solid black;''><strong>Total</strong></td>
 									<td class=''tg-jtyd'' style=''text-align: right; font-family: Agency FB; font-size: 18px; padding: 5px; height: 0.7cm; border-top: 1px solid black; border-bottom: 1px solid black;''><span style=''color: #000000;''><strong>[TotalTax]</strong>&nbsp;</span></td>
 									<td class=''tg-3gzm'' style=''font-family: Agency FB; font-size: 18px; padding: 5px; color: black; height: 0.7cm; text-align: center; border-top: 1px solid black; border-bottom: 1px solid black;''><strong>&nbsp;[Total]</strong></td>
 									</tr>
 									<tr style=''background-color: transparent; height: 2.95cm; text-align: left;''>
-									<td class=''tg-3gzm'' style=''text-align: center; vertical-align: bottom; height: 2.85cm;'' colspan=''12''>&nbsp;</td>
+									<td class=''tg-3gzm'' style=''text-align: center; vertical-align: bottom; height: 2.85cm;'' colspan=''16''>&nbsp;</td>
 									</tr>
 									<tr class=''trhw'' style=''background-color: transparent; height: 3cm; text-align: left;''>
-									<td class=''tg-vi9z'' style=''height: 3cm; text-align: left; vertical-align: bottom;'' colspan=''4''>
+									<td class=''tg-vi9z'' style=''height: 3cm; text-align: left; vertical-align: bottom;'' colspan=''6''>
 									<p style=''visibility: hidden;''>&nbsp;</p>
 									<p style=''padding-top: 10px;''><span style=''font-family: Agency FB; color: #000000; font-size: 40px;''>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>[REMAINAMT]</strong></span></p>
 									</td>
-									<td class=''tg-vi9z'' style=''padding: 5px; height: 3cm; text-align: center; vertical-align: middle; visibility: hidden;'' colspan=''4''>
+									<td class=''tg-vi9z'' style=''padding: 5px; height: 3cm; text-align: center; vertical-align: middle; visibility: hidden;'' colspan=''6''>
 									<p>&nbsp;</p>
 									<p>&nbsp;</p>
 									</td>
 									<td class=''tg-vi9z'' style=''height: 3cm; text-align: left; vertical-align: bottom;'' colspan=''4''>
 									<p style=''padding: 0 0 5px 0; visibility: hidden;''>&nbsp;</p>
-									<p><span style=''color: #000000;''>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong style=''font-family: Agency FB; padding: 5px; font-size: 40px;''>&nbsp;&nbsp;&nbsp;[Total]</strong></span></p>
+									<p><span style=''color: #000000;''>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong style=''font-family: Agency FB; padding: 5px; font-size: 40px;''>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Total]</strong></span></p>
 									</td>
 									</tr>
-									<tr style=''background-color: transparent; height: 2.2cm; text-align: left;''>
-									<td style=''padding: 5px; height: 2.2cm; text-align: center; vertical-align: middle;'' colspan=''2''>&nbsp;</td>
-									<td style=''padding: 5px; height: 2.2cm; text-align: center; vertical-align: middle;'' colspan=''2''>&nbsp;</td>
-									<td style=''padding: 5px; height: 2.2cm; text-align: left; vertical-align: top; padding-top: 8px;'' colspan=''4''>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ExpireDate]<span style=''font-size: 12px;''><strong><br /></strong></span></td>
-									<td style=''padding: 5px; height: 2.2cm; text-align: center; vertical-align: middle;'' colspan=''2''>&nbsp;</td>
-									<td style=''padding: 5px; height: 2.2cm; text-align: center; vertical-align: middle;'' colspan=''2''>&nbsp;</td>
+									<tr style=''background-color: transparent; height: 2.1cm; text-align: left;''>
+									<td style=''padding: 5px; height: 2.1cm; text-align: center; vertical-align: middle;'' colspan=''4''>&nbsp;</td>
+									<td style=''padding: 5px; height: 2.1cm; text-align: center; vertical-align: middle;'' colspan=''2''>&nbsp;</td>
+									<td style=''padding: 5px; height: 2.1cm; text-align: center; vertical-align: top;'' colspan=''5''>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ExpireDate]</td>
+									<td style=''padding: 5px; height: 2.1cm; text-align: center; vertical-align: middle;'' colspan=''2''>&nbsp;</td>
+									<td style=''padding: 5px; height: 2.1cm; text-align: center; vertical-align: middle;'' colspan=''3''>&nbsp;</td>
 									</tr>
 									</tbody>
 									</table>

@@ -193,7 +193,8 @@ class DocumentMpdf extends CurrencyToWordConversion
 				$finalDiscount = $finalDiscount + $discountValue[$productArray];
 				$finalVatValue = $totalPrice[$productArray]-$discountValue[$productArray];
 				$discountInPercentage = strcmp($decodedArray->inventory[$productArray]->discountType,"flat")==0 
-										? "-" : $decodedArray->inventory[$productArray]->discount;
+										? $decodedArray->inventory[$productArray]->discount : $decodedArray->inventory[$productArray]->discount ." %";
+				$discount = $decodedArray->inventory[$productArray]->discount == "" ? "0.0" :$decodedArray->inventory[$productArray]->discount;
 				//calculate vat value;
 				$vatValue[$productArray]=$decodedArray->inventory[$productArray]->cgstAmount;
 				$vatValue[$productArray] = number_format($vatValue[$productArray],$decodedData[$productArray]->company->noOfDecimalPoints);
@@ -234,21 +235,22 @@ class DocumentMpdf extends CurrencyToWordConversion
 				$sgst = $this->checkValue($decodedArray->inventory[$productArray]->sgstPercentage);
 				$igst = $this->checkValue($decodedArray->inventory[$productArray]->igstPercentage);
 				$totalTax = $cgst + $sgst + $igst;
+				$frameNo = $decodedArray->inventory[$productArray]->frameNo==""? "null" :$decodedArray->inventory[$productArray]->frameNo;
 				$product_hsnCode1 = $product_hsnCode=="" ? "-" :$product_hsnCode;
 				$output = $output."<tr  style='font-family: Calibri; text-align: left; height:  0.7cm; background-color: transparent;'><td  style='font-size: 11px; height: 0.7cm; text-align:center; padding:0 0 0 0;border-right: 1px solid black;'>". $index .
 				"</td><td colspan='3' style='font-size: 11px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);' >&nbsp;"
 				. $decodedData[$productArray]->productName .
 				"</td><td  style='font-size: 11px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);text-align:center'>". $product_hsnCode1 .
 				"</td><td colspan='2' style='font-size: 11px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);text-align:center'>". $decodedArray->inventory[$productArray]->color ." | ". $decodedArray->inventory[$productArray]->size .
-				"</td><td  style='font-size: 11px;  height:  0.7cm; padding:0 0 0 0; text-align: center;border-right: 1px solid rgba(0, 0, 0, .3);'>". $decodedArray->inventory[$productArray]->frameNo .
+				"</td><td  style='font-size: 11px;  height:  0.7cm; padding:0 0 0 0; text-align: center;border-right: 1px solid rgba(0, 0, 0, .3);'>". $frameNo  .
 				"</td><td  style='font-size: 11px;  height:  0.7cm; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);text-align:center'>". $decodedArray->inventory[$productArray]->qty .
 				"</td><td  style='font-size: 11px;   height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);'>". $rate .
 				"&nbsp;</td><td  style='font-size: 11px;   height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);'>". $mainPrice .
-				"&nbsp;</td><td  style='font-size: 11px; height:  0.7cm; text-align: center; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);'>". $discountInPercentage .
+				"&nbsp;</td><td  style='font-size: 11px; height:  0.7cm; text-align: center; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);'>". $discount .
 				"</td><td class='tg-ullm thamt' style='font-size: 11px;  height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);'>". $discountValue[$productArray] .
 				"&nbsp;</td><td class='tg-ullm thamt' style='font-size: 11px;  height:  0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);'>". $finalVatValue1 .
 				"&nbsp;</td><td class='tg-ullm thamt' style='font-size: 11px; height: 0.7cm; text-align: center; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);'>". $totalTax .
-				"%</td><td class='tg-ullm thamt' style='font-size: 11px;  height: 0.7cm; text-align: right; padding:0 0 0 0;'>". $amount[$productArray] ."&nbsp;".$trClose;
+				"%</td><td class='tg-ullm thamt' style='font-size: 11px;  height: 0.7cm; text-align: right; padding:0 0 0 0;border-right: 1px solid rgba(0, 0, 0, .3);'>". $amount[$productArray] ."&nbsp;".$trClose;
 				// if($productArray != count($decodedArray->inventory)-1)
 				// {
 					// $output = $output.$trClose;

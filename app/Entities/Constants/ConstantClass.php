@@ -26,6 +26,7 @@ class ConstantClass
 		$constantArray['paymentDateSetting'] = "paymentdate";
 		$constantArray['serviceDateSetting'] = "servicedate";
 		$constantArray['productSetting'] = "product";
+		$constantArray['clientSetting'] = "client";
 		$constantArray['noImage'] = "Storage/No-Image/no-image.jpg";
 		$constantArray['productBarcode'] = "Storage/Barcode/";
 		$constantArray['documentUrl'] = "Storage/Document/";
@@ -124,18 +125,18 @@ class ConstantClass
 		$constantArray['conversationSmsType']="sms";
 		$constantArray['prefixConstant']=")]}',\n";
 		
-		$constantArray['clientUrl']="http://www.scerp1.com/clients";
-		$constantArray['documentGenerateUrl']="http://www.scerp1.com/documents/bill";
-		$constantArray['documentJobformUrl']="http://www.scerp1.com/crm/job-form";
-		$constantArray['documentGenerateQuotationUrl']="http://www.scerp1.com/accounting/quotations";
-		$constantArray['ledgerUrl']="http://www.scerp1.com/accounting/ledgers";
-		$constantArray['journalUrl']="http://www.scerp1.com/accounting/journals";
-		$constantArray['invoiceUrl']="http://www.scerp1.com/settings/invoice-numbers";
-		$constantArray['quotationUrl']="http://www.scerp1.com/settings/quotation-numbers";
-		$constantArray['productUrl']="http://www.scerp1.com/accounting/products";
+		$constantArray['clientUrl']="http://api.siliconbrain.in/clients";
+		$constantArray['documentGenerateQuotationUrl']="http://api.siliconbrain.in/documents/quotation";
+		$constantArray['documentGenerateUrl']="http://api.siliconbrain.in/documents/bill";
+		$constantArray['documentJobformUrl']="http://api.siliconbrain.in/crm/job-form";
+		$constantArray['ledgerUrl']="http://api.siliconbrain.in/accounting/ledgers";
+		$constantArray['journalUrl']="http://api.siliconbrain.in/accounting/journals";
+		$constantArray['invoiceUrl']="http://api.siliconbrain.in/settings/invoice-numbers";
+		$constantArray['quotationUrl']="http://api.siliconbrain.in/settings/quotation-numbers";
+		$constantArray['productUrl']="http://api.siliconbrain.in/accounting/products";
 		return $constantArray;
 	}
-
+	
 	/**
 	 * making an array contains constant data of template-type
 	 * @param (no parameter)
@@ -235,23 +236,23 @@ class ConstantClass
 		return $commentObject;
 	}
 	
-
 	/**
 	 * check the incoming request url and give them respected database name
 	 * @param (no parameter)
 	*/
 	public function constantDatabase()
 	{
-		// if(strcmp("http://localhost/SCER-back-end/public/",$_SERVER['HTTP_HOST'])==0)
-		// {
+		//if(strcmp("www.scerp1.com",$_SERVER['HTTP_HOST'])==0)
+		//{
+			// exit;
 			$database = "mysql";
 			return $database;
-		// }
-		// else
-		// {
-			// $database = "mysql_silicon";
-			// return $database;
-		// }
+		//}
+		//else
+		//{
+			//$database = "mysql_silicon";
+			//return $database;
+		//}
 	}
 
 	/**

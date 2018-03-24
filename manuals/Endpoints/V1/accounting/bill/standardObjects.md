@@ -31,6 +31,7 @@
 						"expenseType":enum,
 						"expenseValue":decimal,
 						"expenseId":int,
+						"expenseOperation":Enum
 					}
 					...
 				}
@@ -82,6 +83,7 @@
 						"expenseType":enum,
 						"expenseValue":decimal,
 						"expenseId":int,
+						"expenseOperation":Enum
 					}
 					...
 				}

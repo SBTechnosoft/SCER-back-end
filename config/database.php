@@ -56,7 +56,7 @@ return [
             'driver' => 'mysql',
             'host' => env('DB_HOST', 'localhost'),
             'port' => env('DB_PORT', '3306'),
-             'database' => env('DB_DATABASE', 'pwfms_beta'),
+            'database' => env('DB_DATABASE', 'erp_db'),
             'username' => env('DB_USERNAME', 'root'),
             'password' => env('DB_PASSWORD', ''),
             'charset' => 'utf8',
@@ -65,7 +65,7 @@ return [
             'strict' => false,
             'engine' => null,
         ],
-		'mysql_silicon' => [
+	'mysql_silicon' => [
             'driver' => 'mysql',
             'host' => env('DB_SILICON_HOST', 'localhost'),
             'port' => env('DB_SILICON_PORT', '3306'),
@@ -77,7 +77,7 @@ return [
             'prefix' => '',
             'strict' => false,
             'engine' => null,
-        ],
+        ],	
         'pgsql' => [
             'driver' => 'pgsql',
             'host' => env('DB_HOST', 'localhost'),

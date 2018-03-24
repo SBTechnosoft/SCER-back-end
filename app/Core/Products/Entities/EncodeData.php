@@ -43,6 +43,7 @@ class EncodeData extends ProductCategoryService
 		$minimumStockLevel= $decodedJson[0]['minimum_stock_level'];
 
 		$productMenu = $decodedJson[0]['product_menu'];
+		$productCode = $decodedJson[0]['product_code'];
 		$productType = $decodedJson[0]['product_type'];
 		$notForSale = $decodedJson[0]['not_for_sale'];
 		$maxSaleQty = $decodedJson[0]['max_sale_qty'];
@@ -156,6 +157,7 @@ class EncodeData extends ProductCategoryService
 		$data['additionalTax'] = $additionalTax;
 		$data['minimumStockLevel'] = $minimumStockLevel;
 		$data['productMenu'] = $productMenu;
+		$data['productCode'] = $productCode;
 		$data['productType'] = $productType;
 		$data['notForSale'] = $notForSale;
 		$data['maxSaleQty'] = $maxSaleQty;

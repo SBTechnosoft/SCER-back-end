@@ -193,12 +193,14 @@ class BillModel extends Model
 						expense_name,
 						expense_type,
 						expense_value,
+						expense_operation,
 						sale_id,
 						expense_id)
 						values(
 						'".$decodedJsonExpense[$expenseArray]->expenseName."',
 						'".$decodedJsonExpense[$expenseArray]->expenseType."',
 						'".$decodedJsonExpense[$expenseArray]->expenseValue."',
+						'".$decodedJsonExpense[$expenseArray]->expense_operation."',
 						'".$saleId[0]->sale_id."',
 						'".$decodedJsonExpense[$expenseArray]->expenseId."')");
 						DB::commit();
@@ -302,6 +304,7 @@ class BillModel extends Model
 					expense_id as expenseId,
 					expense_name as expenseName,
 					expense_value as expenseValue,
+					expense_operation as expenseOperation,
 					sale_id as saleId
 					from sale_expense_dtl
 					where deleted_at='0000-00-00 00:00:00' and
@@ -496,12 +499,14 @@ class BillModel extends Model
 						expense_name,
 						expense_type,
 						expense_value,
+						expense_operation,
 						sale_id,
 						expense_id)
 						values(
 						'".$decodedJsonExpense[$expenseArray]->expenseName."',
 						'".$decodedJsonExpense[$expenseArray]->expenseType."',
 						'".$decodedJsonExpense[$expenseArray]->expenseValue."',
+						'".$decodedJsonExpense[$expenseArray]->expenseOperation."',
 						'".$saleId[0]->sale_id."',
 						'".$decodedJsonExpense[$expenseArray]->expenseId."')");
 						DB::commit();
@@ -575,6 +580,7 @@ class BillModel extends Model
 			expense_id as expenseId,
 			expense_name as expenseName,
 			expense_value as expenseValue,
+			expense_operation as expenseOperation,
 			sale_id as saleId
 			from sale_expense_dtl
 			where deleted_at='0000-00-00 00:00:00' and
@@ -836,6 +842,7 @@ class BillModel extends Model
 					expense_id as expenseId,
 					expense_name as expenseName,
 					expense_value as expenseValue,
+					expense_operation as expenseOperation,
 					sale_id as saleId
 					from sale_expense_dtl
 					where deleted_at='0000-00-00 00:00:00' and
@@ -934,6 +941,7 @@ class BillModel extends Model
 					expense_id as expenseId,
 					expense_name as expenseName,
 					expense_value as expenseValue,
+					expense_operation as expenseOperation,
 					sale_id as saleId
 					from sale_expense_dtl
 					where deleted_at='0000-00-00 00:00:00' and
@@ -1042,6 +1050,7 @@ class BillModel extends Model
 				expense_id as expenseId,
 				expense_name as expenseName,
 				expense_value as expenseValue,
+				expense_operation as expenseOperation,
 				sale_id as saleId
 				from sale_expense_dtl
 				where deleted_at='0000-00-00 00:00:00' and
@@ -1116,6 +1125,7 @@ class BillModel extends Model
 			expense_id as expenseId,
 			expense_name as expenseName,
 			expense_value as expenseValue,
+			expense_operation as expenseOperation,
 			sale_id as saleId
 			from sale_expense_dtl
 			where deleted_at='0000-00-00 00:00:00' and
@@ -1189,6 +1199,7 @@ class BillModel extends Model
 			expense_id as expenseId,
 			expense_name as expenseName,
 			expense_value as expenseValue,
+			expense_operation as expenseOperation,
 			sale_id as saleId
 			from sale_expense_dtl
 			where deleted_at='0000-00-00 00:00:00' and
@@ -1255,6 +1266,7 @@ class BillModel extends Model
 		expense_id as expenseId,
 		expense_name as expenseName,
 		expense_value as expenseValue,
+		expense_operation as expenseOperation,
 		sale_id as saleId
 		from sale_expense_dtl
 		where deleted_at='0000-00-00 00:00:00' and
@@ -1623,6 +1635,7 @@ class BillModel extends Model
 			expense_id as expenseId,
 			expense_name as expenseName,
 			expense_value as expenseValue,
+			expense_operation as expenseOperation,
 			sale_id as saleId
 			from sale_expense_dtl
 			where deleted_at='0000-00-00 00:00:00' and
@@ -1901,11 +1914,13 @@ class BillModel extends Model
 				expense_type,
 				expense_name,
 				expense_value,
+				expense_operation,
 				sale_id,
 				expense_id)
 				values('".$decodedExpenseData[$expenseArray]->expenseType."',
 				'".$decodedExpenseData[$expenseArray]->expenseName."',
 				'".$decodedExpenseData[$expenseArray]->expenseValue."',
+				'".$decodedExpenseData[$expenseArray]->expenseOperation."',
 				'".$saleId."',
 				'".$decodedExpenseData[$expenseArray]->expenseId."')");
 				DB::commit();
