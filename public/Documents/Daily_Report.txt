@@ -79,6 +79,10 @@ Hosting ISP: https://www.tmdhosting.com
 User Name: cosmicblissss@gmail.com 
 Password: yUfvUd5YaH
 
+New cpanel access
+cpanel Username: dealsinb 
+Password: 2d>N^-H],
+
 Demo.classconnect.cloud (Sub-Domin)
 
 FTP Acces
@@ -471,4 +475,9 @@ Git Bash Procedure:
 7. git cherry-pick 88123973a61f9d17e5f1e5ae6552d2968ecef3c0
 8. git stash
 9. git stash apply(pop is automatically drop changes where by using apply we can manually drop our changes)
+
+for changes user-name and password
+git config --global user.email "Mona Lisa@gmail.com"
+git config --global user.name "Mona Lisa"
+
 

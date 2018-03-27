@@ -229,39 +229,7 @@ class EncodeAllData extends ClientService
 					'stateAbb'=>$clientData->state->stateAbb,
 					'cityId'=>$clientData->city->cityId
 				),
-				'company' => array(	
-					'companyId' => $getCompanyDetails[$jsonData]['companyId'],
-					'companyName' => $getCompanyDetails[$jsonData]['companyName'],	
-					'companyDisplayName' => $getCompanyDetails[$jsonData]['companyDisplayName'],	
-					'websiteName' => $getCompanyDetails[$jsonData]['websiteName'],	
-					'customerCare' => $getCompanyDetails[$jsonData]['customerCare'],	
-					'emailId' => $getCompanyDetails[$jsonData]['emailId'],	
-					'address1' => $getCompanyDetails[$jsonData]['address1'],	
-					'address2'=> $getCompanyDetails[$jsonData]['address2'],	
-					'pincode' => $getCompanyDetails[$jsonData]['pincode'],	
-					'pan' => $getCompanyDetails[$jsonData]['pan'],	
-					'tin'=> $getCompanyDetails[$jsonData]['tin'],	
-					'cgst'=> $getCompanyDetails[$jsonData]['cgst'],	
-					'sgst'=> $getCompanyDetails[$jsonData]['sgst'],	
-					'vatNo' => $getCompanyDetails[$jsonData]['vatNo'],	
-					'serviceTaxNo' => $getCompanyDetails[$jsonData]['serviceTaxNo'],	
-					'basicCurrencySymbol' => $getCompanyDetails[$jsonData]['basicCurrencySymbol'],	
-					'formalName' => $getCompanyDetails[$jsonData]['formalName'],	
-					'noOfDecimalPoints' => $getCompanyDetails[$jsonData]['noOfDecimalPoints'],	
-					'currencySymbol' => $getCompanyDetails[$jsonData]['currencySymbol'],	
-					'logo'=> array(
-						'documentName' => $getCompanyDetails[$jsonData]['logo']['documentName'],
-						'documentUrl' => $getCompanyDetails[$jsonData]['logo']['documentUrl'],	
-						'documentSize' =>$getCompanyDetails[$jsonData]['logo']['documentSize'],	
-						'documentFormat' => $getCompanyDetails[$jsonData]['logo']['documentFormat']
-					),
-					'isDisplay' => $getCompanyDetails[$jsonData]['isDisplay'],	
-					'isDefault' => $getCompanyDetails[$jsonData]['isDefault'],
-					'createdAt' => $getCompanyDetails[$jsonData]['createdAt'],
-					'updatedAt' => $getCompanyDetails[$jsonData]['updatedAt'],
-					'stateAbb' => $getCompanyDetails[$jsonData]['state']['stateAbb'],
-					'cityId' => $getCompanyDetails[$jsonData]['city']['cityId']	
-				)		
+				'company' => $getCompanyDetails[$jsonData]	
 			);
 			$data[$jsonData]['file'] = $arrayData[$jsonData];
 		}

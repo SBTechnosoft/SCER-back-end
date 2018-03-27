@@ -162,3 +162,6 @@ ALTER TABLE `template_mst` CHANGE `template_id` `template_id` INT(11) NOT NULL A
 1. ALTER TABLE `sale_expense_dtl` ADD `expense_operation` ENUM('plus','minus') NOT NULL DEFAULT 'plus' AFTER `expense_name`;
 2. ALTER TABLE `purchase_expense_dtl` ADD `expense_operation` ENUM('plus','minus') NOT NULL DEFAULT 'plus' AFTER `expense_name`;
 
+26-march-2018(arihant done,swaminarayan done,pending)
+1. ALTER TABLE `client_mst` CHANGE `city_id` `city_id` INT(11) NULL DEFAULT NULL, CHANGE `state_abb` `state_abb` CHAR(5) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL;
+2. ALTER TABLE `ledger_mst` CHANGE `state_abb` `state_abb` CHAR(5) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL COMMENT 'state_abb of ledger(FK)', CHANGE `city_id` `city_id` INT(11) NULL DEFAULT NULL COMMENT 'city_id of ledger(FK)';
