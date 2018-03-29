@@ -9,6 +9,8 @@ use ERP\Entities\Constants\ConstantClass;
 use ERP\Model\Accounting\Journals\JournalModel;
 use ERP\Model\Accounting\Ledgers\LedgerModel;
 use ERP\Core\Accounting\Ledgers\Entities\EncodeData;
+use TCPDFBarcode;
+use ERP\Model\Products\ProductModel;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -183,6 +185,11 @@ class SettingModel extends Model
 
 		if($raw==1)
 		{
+			if($barcodeFlag==1)
+			{
+				//update barcode of all productdata
+				$productBarcodeResult = $this->updateProductBarcode($barcodeArray);
+			}
 			return $exceptionArray['200'];
 		}
 		else
@@ -191,6 +198,45 @@ class SettingModel extends Model
 		}
 	}
 	
+	public function updateProductBarcode($productBarcodeData)
+	{
+		//database selection
+		$database = "";
+		$constantDatabase = new ConstantClass();
+		$databaseName = $constantDatabase->constantDatabase();
+		$mytime = Carbon\Carbon::now();	
+		$productModal = new ProductModel();
+		$productData = $productModal->getAllData();	
+		$decodedProductData = json_decode($productData);
+		$productCount = count($decodedProductData);
+		//get constant array
+		$constantArray = $constantDatabase->constantVariable();
+		$path = $constantArray['productBarcode'];
+		//get all product data
+		for($productArray=0;$productArray<$productCount;$productArray++)
+		{
+			//make unique name of barcode svg image
+			$dateTime = date("d-m-Y h-i-s");
+			$convertedDateTime = str_replace(" ","-",$dateTime);
+			$splitDateTime = explode("-",$convertedDateTime);
+			$combineDateTime = $splitDateTime[0].$splitDateTime[1].$splitDateTime[2].$splitDateTime[3].$splitDateTime[4].$splitDateTime[5];
+			$documentName = $combineDateTime."n".mt_rand(1,9999)."e".mt_rand(1,9999)."w.svg";
+			$documentPath = $path.$documentName;
+			// echo "fff";
+			echo $decodedProductData[$productArray]->product_code;
+			//insert barcode image
+			$barcodeobj = new TCPDFBarcode($decodedProductData[$productArray]->product_code, 'C128','C');
+			file_put_contents($documentPath,$barcodeobj->getBarcodeSVGcode($productBarcodeData['barcode_width'] ,$productBarcodeData['barcode_height'], 'black'));
+			//update document-data into database
+			DB::beginTransaction();
+			$documentStatus = DB::connection($databaseName)->statement("update
+			product_mst set document_name='".$documentName."',updated_at='".$mytime."'
+			where deleted_at='0000-00-00 00:00:00' and product_id='".$decodedProductData[$productArray]->product_id."'");
+			DB::commit();
+		}
+		return $exceptionArray['200'];
+	}
+
 	/**
 	 * update data 
 	 * @param  setting-data,key of setting-data
@@ -381,6 +427,11 @@ class SettingModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		if($raw==1)
 		{
+			if($barcodeFlag==1)
+			{
+				//update barcode of all productdata
+				$productBarcodeResult = $this->updateProductBarcode($barcodeArray);
+			}
 			return $exceptionArray['200'];
 		}
 		else
