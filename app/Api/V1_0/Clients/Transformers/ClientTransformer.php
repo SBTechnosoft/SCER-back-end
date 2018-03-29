@@ -34,6 +34,8 @@ class ClientTransformer
 		$anniversaryDate=array_key_exists('anniversaryDate',$request->input())
 		? $request->input('anniversaryDate'):'0000-00-00';
 		$otherDate=array_key_exists('otherDate',$request->input())?$request->input('otherDate'):'0000-00-00'; 			
+		$creditLimit=array_key_exists('creditLimit',$request->input())?$request->input('creditLimit'):''; 			
+		$creditDays=array_key_exists('creditDays',$request->input())?$request->input('creditDays'):''; 			
 		//birth-date conversion
 		if(strcmp($birthDate,'0000-00-00')!=0)
 		{
@@ -64,6 +66,8 @@ class ClientTransformer
 		$tIsDisplay = trim($isDisplay);
 		$tStateAbb = trim($stateAbb);
 		$tCityId = trim($cityId);
+		$tCreditLimit = trim($creditLimit);
+		$tCreditDays = trim($creditDays);
 		//check is_display is exist or not
 		for($clientData=0;$clientData<count($request->input());$clientData++)
 		{
@@ -124,6 +128,8 @@ class ClientTransformer
 			$data['birth_date'] = $birthDate;
 			$data['anniversary_date'] = $anniversaryDate;
 			$data['other_date'] = $otherDate;
+			$data['credit_limit'] = $tCreditLimit;
+			$data['credit_days'] = $tCreditDays;
 			return $data;
 		}
 	}

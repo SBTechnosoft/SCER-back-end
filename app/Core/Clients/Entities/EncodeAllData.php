@@ -42,6 +42,8 @@ class EncodeAllData extends StateService
 			$emailId[$decodedData] = $decodedJson[$decodedData]['email_id'];
 			$address1[$decodedData] = $decodedJson[$decodedData]['address1'];
 			$gst[$decodedData] = $decodedJson[$decodedData]['gst'];
+			$creditLimit[$decodedData] = $decodedJson[$decodedData]['credit_limit'];
+			$creditDays[$decodedData] = $decodedJson[$decodedData]['credit_days'];
 			$isDisplay[$decodedData] = $decodedJson[$decodedData]['is_display'];
 			$stateAbb[$decodedData] = $decodedJson[$decodedData]['state_abb'];
 			$cityId[$decodedData] = $decodedJson[$decodedData]['city_id'];
@@ -175,6 +177,8 @@ class EncodeAllData extends StateService
 				'birthDate' => $birthDate[$jsonData],
 				'anniversaryDate' => $anniversaryDate[$jsonData],
 				'otherDate' => $otherDate[$jsonData],
+				'creditLimit' => $creditLimit[$jsonData],
+				'creditDays' => $creditDays[$jsonData],
 				'createdAt' => $getCreatedDate[$jsonData],
 				'updatedAt' => $getUpdatedDate[$jsonData],
 				

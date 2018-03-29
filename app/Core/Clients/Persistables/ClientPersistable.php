@@ -20,6 +20,8 @@ use ERP\Core\Clients\Properties\BirthDateTrait;
 use ERP\Core\Clients\Properties\AnniversaryDateTrait;
 use ERP\Core\Clients\Properties\OtherDateTrait;
 use ERP\Core\Clients\Properties\GstTrait;
+use ERP\Core\Clients\Properties\CreditLimitTrait;
+use ERP\Core\Clients\Properties\CreditDaysTrait;
 
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
@@ -45,4 +47,6 @@ class ClientPersistable
 	use AnniversaryDateTrait;
 	use OtherDateTrait;
 	use GstTrait;
+	use CreditLimitTrait;
+	use CreditDaysTrait;
 }

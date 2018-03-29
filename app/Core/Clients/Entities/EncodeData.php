@@ -39,6 +39,8 @@ class EncodeData extends StateService
 		$birthDate= $decodedJson[0]['birth_date'];
 		$anniversaryDate= $decodedJson[0]['anniversary_date'];
 		$otherDate= $decodedJson[0]['other_date'];
+		$creditLimit= $decodedJson[0]['credit_limit'];
+		$creditDays= $decodedJson[0]['credit_days'];
 		$isDisplay= $decodedJson[0]['is_display'];
 		$stateAbb= $decodedJson[0]['state_abb'];
 		$cityId= $decodedJson[0]['city_id'];
@@ -91,6 +93,8 @@ class EncodeData extends StateService
 		$data['birthDate'] = $birthDate;
 		$data['anniversaryDate'] = $anniversaryDate;
 		$data['otherDate'] = $otherDate;
+		$data['creditLimit'] = $creditLimit;
+		$data['creditDays'] = $creditDays;
 		$data['createdAt'] = $getCreatedDate;
 		$data['updatedAt'] = $getUpdatedDate;	
 		$data['state']= array(

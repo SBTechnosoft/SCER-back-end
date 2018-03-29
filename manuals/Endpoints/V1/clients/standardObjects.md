@@ -12,6 +12,8 @@
 				"birthDate":date,
 				"anniversaryDate":date,
 				"otherDate":date,
+				"creditLimit":decimal,
+				"creditDays":decimal,
 				"createdAt": timestamp,
 				"updatedAt": datetime,
 				"profession":
@@ -46,6 +48,8 @@
 				"birthDate":date,
 				"anniversaryDate":date,
 				"otherDate":date,
+				"creditLimit":decimal,
+				"creditDays":decimal,
 				"isDisplay": Enum,
 				"cityId":int, 
 				"stateAbb":char

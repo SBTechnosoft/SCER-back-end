@@ -21,6 +21,8 @@ class ClientArray
 		$clientArray['profession_id'] = 'professionId';
 		$clientArray['city_id'] = 'cityId';
 		$clientArray['state_abb'] = 'stateAbb';
+		$clientArray['credit_limit'] = 'creditLimit';
+		$clientArray['credit_days'] = 'creditDays';
 		return $clientArray;
 	}
 	
