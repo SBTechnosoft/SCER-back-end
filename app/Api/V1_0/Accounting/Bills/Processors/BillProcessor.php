@@ -673,6 +673,7 @@ class BillProcessor extends BaseProcessor
 			$billPersistable->setTotalDiscounttype($tRequest['total_discounttype']);
 			$billPersistable->setTotalDiscount($tRequest['total_discount']);
 			$billPersistable->setPoNumber($tRequest['po_number']);
+			$billPersistable->setUserId($tRequest['user_id']);
 			$billPersistable->setExpense($tRequest['expense']);
 			$billPersistable->setJfId($jsonDecodedJfId);
 			// if(strcmp($request->header()['salestype'][0],$salesTypeEnumArray['retailSales'])==0 || strcmp($request->header()['salestype'][0],$salesTypeEnumArray['wholesales'])==0)

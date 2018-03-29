@@ -5,6 +5,7 @@ use ERP\Core\Accounting\Bills\Entities\Bill;
 use ERP\Core\Clients\Services\ClientService;
 use ERP\Core\Entities\CompanyDetail;
 use ERP\Entities\Constants\ConstantClass;
+use ERP\Core\Users\Services\UserService;
 use Carbon;
 /**
  *
@@ -41,6 +42,7 @@ class EncodeAllData extends ClientService
 			$advance[$decodedData] = $deocodedJsonData[$decodedData]->advance;
 			$balance[$decodedData] = $deocodedJsonData[$decodedData]->balance;
 			$poNumber[$decodedData] = $deocodedJsonData[$decodedData]->po_number;
+			$userId[$decodedData] = $deocodedJsonData[$decodedData]->user_id;
 			$remark[$decodedData] = $deocodedJsonData[$decodedData]->remark;
 			$refund[$decodedData] = $deocodedJsonData[$decodedData]->refund;
 			$entryDate[$decodedData] = $deocodedJsonData[$decodedData]->entry_date;
@@ -61,6 +63,11 @@ class EncodeAllData extends ClientService
 			$companyDetail  = new CompanyDetail();
 			$getCompanyDetails[$decodedData] = $companyDetail->getCompanyDetails($companyId[$decodedData]);
 			
+			//get the user detail from database
+			$userService = new UserService();
+			$userData = $userService->getUserData($userId[$decodedData]);
+			$decodedUserData[$decodedData] = json_decode($userData);
+
 			//convert amount(round) into their company's selected decimal points
 			$total[$decodedData] = number_format($total[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
 			$totalDiscount[$decodedData] = number_format($totalDiscount[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
@@ -204,6 +211,7 @@ class EncodeAllData extends ClientService
 				'advance'=>$advance[$jsonData],
 				'balance'=>$balance[$jsonData],
 				'poNumber'=>$poNumber[$jsonData],
+				'user'=>$decodedUserData[$jsonData],
 				'remark'=>$remark[$jsonData],
 				'salesType'=>$salesType[$jsonData],
 				'refund'=>$refund[$jsonData],

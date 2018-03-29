@@ -11,6 +11,7 @@ class UserTypeEnum
 		$enumArray = array();
 		$enumArray['adminType'] = "admin";
 		$enumArray['stffType'] = "staff";
+		$enumArray['salesmanType'] = "salesman";
 		return $enumArray;
 	}
 }

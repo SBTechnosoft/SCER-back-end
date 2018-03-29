@@ -29,7 +29,7 @@ class BillModel extends Model
 	 * @param  array
 	 * returns the status
 	*/
-	public function insertAllData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray,$jfId,$totalDiscounttype,$totalDiscount,$poNumber,$requestData,$expense,$serviceDate)
+	public function insertAllData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$documentArray,$jfId,$totalDiscounttype,$totalDiscount,$poNumber,$requestData,$expense,$serviceDate,$userId)
 	{
 		$mytime = Carbon\Carbon::now();
 		//database selection
@@ -76,6 +76,7 @@ class BillModel extends Model
 			advance='".$advance."',
 			balance='".$balance."',
 			po_number='".$poNumber."',
+			user_id='".$userId."',
 			remark='".$remark."',
 			entry_date='".$entryDate."',
 			service_date='".$serviceDate."',
@@ -118,6 +119,7 @@ class BillModel extends Model
 				advance,
 				balance,
 				po_number,
+				user_id,
 				is_salesorder,
 				remark,
 				entry_date,
@@ -126,7 +128,7 @@ class BillModel extends Model
 				sales_type,
 				client_id,
 				jf_id) 
-				values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$poNumber."','".$isSalesOrderInsert."','".$remark."','".$entryDate."','".$serviceDate."','".$companyId."','".$salesType."','".$ClientId."','".$jfId."')");
+				values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$poNumber."','".$userId."','".$isSalesOrderInsert."','".$remark."','".$entryDate."','".$serviceDate."','".$companyId."','".$salesType."','".$ClientId."','".$jfId."')");
 				DB::commit();
 				
 				//update invoice-number
@@ -163,6 +165,7 @@ class BillModel extends Model
 				".$isSalesOrderInsert.",
 				sales_type='".$salesType."',
 				po_number='".$poNumber."',
+				user_id='".$userId."',
 				jf_id='".$jfId."',
 				updated_at='".$mytime."' 
 				where job_card_number='".$jobCardNumber."' and
@@ -224,6 +227,7 @@ class BillModel extends Model
 			advance,
 			balance,
 			po_number,
+			user_id,
 			is_salesorder,
 			remark,
 			entry_date,
@@ -233,7 +237,7 @@ class BillModel extends Model
 			client_id,
 			sale_id,
 			jf_id) 
-			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$poNumber."','".$isSalesOrderInsert."','".$remark."','".$entryDate."','".$serviceDate."','".$companyId."','".$salesType."','".$ClientId."','".$saleId[0]->sale_id."','".$jfId."')");
+			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$poNumber."','".$userId."','".$isSalesOrderInsert."','".$remark."','".$entryDate."','".$serviceDate."','".$companyId."','".$salesType."','".$ClientId."','".$saleId[0]->sale_id."','".$jfId."')");
 			DB::commit();
 			if(is_array($saleId))
 			{
@@ -285,6 +289,7 @@ class BillModel extends Model
 					advance,
 					balance,
 					po_number,
+					user_id,
 					remark,
 					entry_date,
 					service_date,
@@ -337,7 +342,7 @@ class BillModel extends Model
 	 * @param  array
 	 * returns the status
 	*/
-	public function insertData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$jfId,$totalDiscounttype,$totalDiscount,$poNumber,$requestData,$expense,$serviceDate)
+	public function insertData($productArray,$paymentMode,$invoiceNumber,$jobCardNumber,$bankName,$checkNumber,$total,$extraCharge,$tax,$grandTotal,$advance,$balance,$remark,$entryDate,$companyId,$ClientId,$salesType,$jfId,$totalDiscounttype,$totalDiscount,$poNumber,$requestData,$expense,$serviceDate,$userId)
 	{
 		$mytime = Carbon\Carbon::now();
 		//database selection
@@ -384,6 +389,7 @@ class BillModel extends Model
 			advance='".$advance."',
 			balance='".$balance."',
 			po_number='".$poNumber."',
+			user_id='".$userId."',
 			remark='".$remark."',
 			entry_date='".$entryDate."',
 			service_date='".$serviceDate."',
@@ -427,6 +433,7 @@ class BillModel extends Model
 				advance,
 				balance,
 				po_number,
+				user_id,
 				is_salesorder,
 				remark,
 				entry_date,
@@ -435,7 +442,7 @@ class BillModel extends Model
 				client_id,
 				sales_type,
 				jf_id) 
-				values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$poNumber."','".$salesOrderInsert."','".$remark."','".$entryDate."','".$serviceDate."','".$companyId."','".$ClientId."','".$salesType."','".$jfId."')");
+				values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$poNumber."','".$userId."','".$salesOrderInsert."','".$remark."','".$entryDate."','".$serviceDate."','".$companyId."','".$ClientId."','".$salesType."','".$jfId."')");
 				DB::commit();
 				
 				//update invoice-number
@@ -465,6 +472,7 @@ class BillModel extends Model
 				advance='".$advance."',
 				balance='".$balance."',
 				po_number='".$poNumber."',
+				user_id='".$userId."',
 				remark='".$remark."',
 				entry_date='".$entryDate."',
 				service_date='".$serviceDate."',
@@ -531,6 +539,7 @@ class BillModel extends Model
 			advance,
 			balance,
 			po_number,
+			user_id,
 			is_salesorder,
 			remark,
 			entry_date,
@@ -540,7 +549,7 @@ class BillModel extends Model
 			sales_type,
 			sale_id,
 			jf_id) 
-			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$poNumber."','".$salesOrderInsert."','".$remark."','".$entryDate."','".$serviceDate."','".$companyId."','".$ClientId."','".$salesType."','".$saleId[0]->sale_id."','".$jfId."')");
+			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$poNumber."','".$userId."','".$salesOrderInsert."','".$remark."','".$entryDate."','".$serviceDate."','".$companyId."','".$ClientId."','".$salesType."','".$saleId[0]->sale_id."','".$jfId."')");
 			DB::commit();
 			//get latest inserted sale bill data
 			DB::beginTransaction();
@@ -561,6 +570,7 @@ class BillModel extends Model
 			advance,
 			balance,
 			po_number,
+			user_id,
 			remark,
 			entry_date,
 			service_date,
@@ -808,6 +818,7 @@ class BillModel extends Model
 			advance,
 			balance,
 			po_number,
+			user_id,
 			remark,
 			entry_date,
 			service_date,
@@ -905,6 +916,7 @@ class BillModel extends Model
 			advance,
 			balance,
 			po_number,
+			user_id,
 			remark,
 			entry_date,
 			service_date,
@@ -1019,6 +1031,7 @@ class BillModel extends Model
 		advance,
 		balance,
 		po_number,
+		user_id,
 		remark,
 		entry_date,
 		service_date,
@@ -1096,6 +1109,7 @@ class BillModel extends Model
 		advance,
 		balance,
 		po_number,
+		user_id,
 		remark,
 		entry_date,
 		service_date,
@@ -1171,6 +1185,7 @@ class BillModel extends Model
 		advance,
 		balance,
 		po_number,
+		user_id,
 		remark,
 		entry_date,
 		service_date,
@@ -1244,6 +1259,7 @@ class BillModel extends Model
 		advance,
 		balance,
 		po_number,
+		user_id,
 		remark,
 		entry_date,
 		service_date,
@@ -1324,6 +1340,7 @@ class BillModel extends Model
 				advance,
 				balance,
 				po_number,
+				user_id,
 				remark,
 				entry_date,
 				service_date,
@@ -1461,6 +1478,7 @@ class BillModel extends Model
 				advance,
 				balance,
 				po_number,
+				user_id,
 				remark,
 				entry_date,
 				service_date,
@@ -1500,6 +1518,7 @@ class BillModel extends Model
 				advance,
 				balance,
 				po_number,
+				user_id,
 				remark,
 				entry_date,
 				service_date,
@@ -1540,6 +1559,7 @@ class BillModel extends Model
 			advance,
 			balance,
 			po_number,
+			user_id,
 			remark,
 			entry_date,
 			service_date,
@@ -1592,6 +1612,7 @@ class BillModel extends Model
 		advance,
 		balance,
 		po_number,
+		user_id,
 		remark,
 		entry_date,
 		service_date,
@@ -1788,6 +1809,7 @@ class BillModel extends Model
 		advance,
 		balance,
 		po_number,
+		user_id,
 		remark,
 		payment_trn,
 		refund,
@@ -1814,6 +1836,7 @@ class BillModel extends Model
 		'".$jsonDecodedSaleData[0]->advance."',
 		'".$jsonDecodedSaleData[0]->balance."',
 		'".$jsonDecodedSaleData[0]->po_number."',
+		'".$jsonDecodedSaleData[0]->user_id."',
 		'".$jsonDecodedSaleData[0]->remark."',
 		'".$paymentTransaction."',
 		'".$jsonDecodedSaleData[0]->refund."',
@@ -1967,6 +1990,7 @@ class BillModel extends Model
 			advance,
 			balance,
 			po_number,
+			user_id,
 			is_salesorder,
 			remark,
 			entry_date,
@@ -1994,6 +2018,7 @@ class BillModel extends Model
 			'".$jsonDecodedSaleData[0]->advance."',
 			'".$jsonDecodedSaleData[0]->balance."',
 			'".$jsonDecodedSaleData[0]->po_number."',
+			'".$jsonDecodedSaleData[0]->user_id."',
 			'".$salesOrderInsert."',
 			'".$jsonDecodedSaleData[0]->remark."',
 			'".$jsonDecodedSaleData[0]->entry_date."',
@@ -2069,6 +2094,7 @@ class BillModel extends Model
 			advance,
 			balance,
 			po_number,
+			user_id,
 			is_salesorder,
 			remark,
 			entry_date,
@@ -2096,6 +2122,7 @@ class BillModel extends Model
 			'".$jsonDecodedSaleData[0]->advance."',
 			'".$jsonDecodedSaleData[0]->balance."',
 			'".$jsonDecodedSaleData[0]->po_number."',
+			'".$jsonDecodedSaleData[0]->user_id."',
 			'".$salesOrderInsert."',
 			'".$jsonDecodedSaleData[0]->remark."',
 			'".$jsonDecodedSaleData[0]->entry_date."',
@@ -2216,6 +2243,7 @@ class BillModel extends Model
 		advance,
 		balance,
 		po_number,
+		user_id,
 		remark,
 		entry_date,
 		service_date,
@@ -2278,6 +2306,7 @@ class BillModel extends Model
 		advance,
 		balance,
 		po_number,
+		user_id,
 		remark,
 		entry_date,
 		service_date,
@@ -2337,6 +2366,7 @@ class BillModel extends Model
 		advance,
 		balance,
 		po_number,
+		user_id,
 		remark,
 		entry_date,
 		service_date,
@@ -2395,6 +2425,7 @@ class BillModel extends Model
 		advance,
 		balance,
 		po_number,
+		user_id,
 		remark,
 		entry_date,
 		service_date,
@@ -2454,6 +2485,7 @@ class BillModel extends Model
 		advance,
 		balance,
 		po_number,
+		user_id,
 		remark,
 		entry_date,
 		service_date,

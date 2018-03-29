@@ -45,6 +45,7 @@ class BillTransformer
 		$tJobCardNumber = array_key_exists('jobCardNumber',$billArrayData)?trim($billArrayData['jobCardNumber']):"";
 		$tAddress1 = array_key_exists('address1',$billArrayData)?trim($billArrayData['address1']):"";
 		$tPoNumber = array_key_exists('poNumber',$billArrayData)?trim($billArrayData['poNumber']):"";
+		$tUserId = array_key_exists('userId',$billArrayData)?trim($billArrayData['userId']):"";
 		$tServiceDate = array_key_exists('serviceDate',$billArrayData)?trim($billArrayData['serviceDate']):"";
 		$tExpense = array_key_exists('expense',$billArrayData)?json_encode($billArrayData['expense']):"";
 		$tClientName = trim($billArrayData['clientName']);
@@ -203,6 +204,7 @@ class BillTransformer
 			$data['payment_mode'] = $tPaymentMode;
 			$data['check_number'] = $tCheckNumber;
 			$data['po_number'] = $tPoNumber;
+			$data['user_id'] = $tUserId;
 			$data['remark'] = $tRemark;
 			$data['total_discounttype'] = $tTotalDiscounttype;
 			$data['total_discount'] = $tTotalDiscount;

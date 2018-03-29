@@ -5,6 +5,7 @@ use ERP\Core\Accounting\Bills\Entities\Bill;
 use ERP\Core\Clients\Services\ClientService;
 use ERP\Core\Entities\CompanyDetail;
 use ERP\Entities\Constants\ConstantClass;
+use ERP\Core\Users\Services\UserService;
 use Carbon;
 /**
  *
@@ -38,6 +39,7 @@ class EncodeAllDraftData extends ClientService
 			$advance[$decodedData] = $deocodedJsonData[$decodedData]['advance'];
 			$balance[$decodedData] = $deocodedJsonData[$decodedData]['balance'];
 			$poNumber[$decodedData] = $deocodedJsonData[$decodedData]['po_number'];
+			$userId[$decodedData] = $deocodedJsonData[$decodedData]['user_id'];
 			$remark[$decodedData] = $deocodedJsonData[$decodedData]['remark'];
 			$refund[$decodedData] = $deocodedJsonData[$decodedData]['refund'];
 			$entryDate[$decodedData] = $deocodedJsonData[$decodedData]['entry_date'];
@@ -56,6 +58,11 @@ class EncodeAllDraftData extends ClientService
 			$companyDetail  = new CompanyDetail();
 			$getCompanyDetails[$decodedData] = $companyDetail->getCompanyDetails($companyId[$decodedData]);
 			
+			//get the user detail from database
+			$userService = new UserService();
+			$userData = $userService->getUserData($userId[$decodedData]);
+			$decodedUserData[$decodedData] = json_decode($userData);
+
 			//convert amount(round) into their company's selected decimal points
 			$total[$decodedData] = number_format($total[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
 			$totalDiscount[$decodedData] = number_format($totalDiscount[$decodedData],$getCompanyDetails[$decodedData]['noOfDecimalPoints'],'.','');
@@ -119,6 +126,7 @@ class EncodeAllDraftData extends ClientService
 				'advance'=>$advance[$jsonData],
 				'balance'=>$balance[$jsonData],
 				'poNumber'=>$poNumber[$jsonData],
+				'user'=>$decodedUserData[$jsonData],
 				'remark'=>$remark[$jsonData],
 				'salesType'=>$salesType[$jsonData],
 				'refund'=>$refund[$jsonData],
@@ -143,38 +151,7 @@ class EncodeAllDraftData extends ClientService
 					'stateAbb'=>$clientData->state->stateAbb,
 					'cityId'=>$clientData->city->cityId
 				),
-				'company' => array(	
-					'companyId' => $getCompanyDetails[$jsonData]['companyId'],
-					'companyName' => $getCompanyDetails[$jsonData]['companyName'],	
-					'companyDisplayName' => $getCompanyDetails[$jsonData]['companyDisplayName'],	
-					'customerCare' => $getCompanyDetails[$jsonData]['customerCare'],	
-					'emailId' => $getCompanyDetails[$jsonData]['emailId'],	
-					'address1' => $getCompanyDetails[$jsonData]['address1'],	
-					'address2'=> $getCompanyDetails[$jsonData]['address2'],	
-					'pincode' => $getCompanyDetails[$jsonData]['pincode'],	
-					'pan' => $getCompanyDetails[$jsonData]['pan'],	
-					'tin'=> $getCompanyDetails[$jsonData]['tin'],	
-					'cgst'=> $getCompanyDetails[$jsonData]['cgst'],	
-					'sgst'=> $getCompanyDetails[$jsonData]['sgst'],	
-					'vatNo' => $getCompanyDetails[$jsonData]['vatNo'],	
-					'serviceTaxNo' => $getCompanyDetails[$jsonData]['serviceTaxNo'],	
-					'basicCurrencySymbol' => $getCompanyDetails[$jsonData]['basicCurrencySymbol'],	
-					'formalName' => $getCompanyDetails[$jsonData]['formalName'],	
-					'noOfDecimalPoints' => $getCompanyDetails[$jsonData]['noOfDecimalPoints'],	
-					'currencySymbol' => $getCompanyDetails[$jsonData]['currencySymbol'],	
-					'logo'=> array(
-						'documentName' => $getCompanyDetails[$jsonData]['logo']['documentName'],
-						'documentUrl' => $getCompanyDetails[$jsonData]['logo']['documentUrl'],	
-						'documentSize' =>$getCompanyDetails[$jsonData]['logo']['documentSize'],	
-						'documentFormat' => $getCompanyDetails[$jsonData]['logo']['documentFormat']
-					),
-					'isDisplay' => $getCompanyDetails[$jsonData]['isDisplay'],	
-					'isDefault' => $getCompanyDetails[$jsonData]['isDefault'],
-					'createdAt' => $getCompanyDetails[$jsonData]['createdAt'],
-					'updatedAt' => $getCompanyDetails[$jsonData]['updatedAt'],
-					'stateAbb' => $getCompanyDetails[$jsonData]['state']['stateAbb'],
-					'cityId' => $getCompanyDetails[$jsonData]['city']['cityId']	
-				)		
+				'company' => $getCompanyDetails[$jsonData];	
 			);
 		}
 		$jsonEncodedData = json_encode($data);

@@ -4,6 +4,7 @@ namespace ERP\Core\Accounting\Bills\Entities;
 use ERP\Core\Accounting\Bills\Entities\Bill;
 use ERP\Core\Clients\Services\ClientService;
 use ERP\Core\Entities\CompanyDetail;
+use ERP\Core\Users\Services\UserService;
 use Carbon;
 /**
  *
@@ -32,6 +33,7 @@ class EncodeData extends ClientService
 		$advance = $decodedJson[0]['advance'];
 		$balance = $decodedJson[0]['balance'];
 		$poNumber = $decodedJson[0]['po_number'];
+		$userId = $decodedJson[0]['user_id'];
 		$remark= $decodedJson[0]['remark'];
 		$entryDate= $decodedJson[0]['entry_date'];
 		$serviceDate= $decodedJson[0]['service_date'];
@@ -48,6 +50,11 @@ class EncodeData extends ClientService
 		//get the company details from database
 		$companyDetail = new CompanyDetail();
 		$companyDetails = $companyDetail->getCompanyDetails($companyId);
+		
+		//get the user detail from database
+		$userService = new UserService();
+		$userData = $userService->getUserData($userId);
+		$decodedUserData = json_decode($userData);
 		
 		//convert amount(round) into their company's selected decimal points
 		$total = number_format($total,$companyDetails['noOfDecimalPoints'],'.','');
@@ -109,6 +116,7 @@ class EncodeData extends ClientService
 		$data['advance'] = $advance;
 		$data['balance'] = $balance;
 		$data['poNumber'] = $poNumber;
+		$data['user'] = $decodedUserData;
 		$data['createdAt'] = $getCreatedDate;
 		$data['remark'] = $remark;
 		$data['entryDate'] = $getEntryDate;
@@ -118,55 +126,8 @@ class EncodeData extends ClientService
 		$data['expense'] = $expense;
 		$data['salesType'] = $salesType;
 		$data['updatedAt'] = $getUpdatedDate;	
-		$data['client']= array(
-			'clientId' => $clientDecodedJson['clientId'],	
-			'clientName' => $clientDecodedJson['clientName'],	
-			'companyName' => $clientDecodedJson['companyName'],	
-			'contactNo' => $clientDecodedJson['contactNo'],	
-			'contactNo1' => $clientDecodedJson['contactNo1'],	
-			'emailId' => $clientDecodedJson['emailId'],	
-			'gst' => $clientDecodedJson['gst'],	
-			'address1' => $clientDecodedJson['address1'],		
-			'isDisplay' => $clientDecodedJson['isDisplay'],	
-			'createdAt' => $clientDecodedJson['createdAt'],	
-			'updatedAt' => $clientDecodedJson['updatedAt'],	
-			'professionId' => $clientDecodedJson['professionId'],	
-			'stateAbb' => $clientDecodedJson['state']['stateAbb'],	
-			'cityId' => $clientDecodedJson['city']['cityId']
-		);
-		$data['company']= array(
-			'companyId' => $companyId,
-			'companyName' => $companyDetails['companyName'],	
-			'companyDisplayName' => $companyDetails['companyDisplayName'],	
-			'websiteName' => $companyDetails['websiteName'],	
-			'customerCare' => $companyDetails['customerCare'],	
-			'emailId' => $companyDetails['emailId'],	
-			'address1' => $companyDetails['address1'],	
-			'address2' => $companyDetails['address2'],	
-			'pincode' => $companyDetails['pincode'],
-			'pan' => $companyDetails['pan'],	
-			'tin' => $companyDetails['tin'],
-			'cgst' => $companyDetails['cgst'],
-			'sgst' => $companyDetails['sgst'],
-			'vatNo' =>$companyDetails['vatNo'],
-			'serviceTaxNo' => $companyDetails['serviceTaxNo'],
-			'basicCurrencySymbol' => $companyDetails['basicCurrencySymbol'],
-			'formalName' => $companyDetails['formalName'],
-			'currencySymbol' => $companyDetails['currencySymbol'],	
-			'noOfDecimalPoints' => $companyDetails['noOfDecimalPoints'],	
-			'logo'=> array(
-				'documentName' => $companyDetails['logo']['documentName'],	
-				'documentUrl' => $companyDetails['logo']['documentUrl'],	
-				'documentSize' => $companyDetails['logo']['documentSize'],
-				'documentFormat' => $companyDetails['logo']['documentFormat']
-			),
-			'isDisplay' => $companyDetails['isDisplay'],	
-			'isDefault' => $companyDetails['isDefault'],	
-			'createdAt' => $companyDetails['createdAt'],	
-			'updatedAt' => $companyDetails['updatedAt'],	
-			'stateAbb' => $companyDetails['state']['stateAbb'],	
-			'cityId' => $companyDetails['city']['cityId']
-		);
+		$data['client']= $clientDecodedJson;
+		$data['company']= $companyDetails;
 		$encodeData = json_encode($data);
 		return $encodeData;
 	}

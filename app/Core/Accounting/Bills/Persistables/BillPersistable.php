@@ -30,11 +30,13 @@ use ERP\Core\Accounting\Bills\Properties\TotalDiscountTrait;
 use ERP\Core\Accounting\Bills\Properties\PoNumberTrait;
 use ERP\Core\Accounting\Bills\Properties\ExpenseTrait;
 use ERP\Core\Accounting\Bills\Properties\ServiceDateTrait;
+use ERP\Core\Accounting\Bills\Properties\UserIdTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
 class BillPersistable
 {
+	use UserIdTrait;
 	use ProductArrayPropertyTrait;
     use PaymentModePropertyTrait;
     use BankNamePropertyTrait;

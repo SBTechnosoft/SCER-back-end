@@ -46,5 +46,6 @@
 ##### user type enum
 			{
 				adminType :'admin',
-				staffType :'staff'
+				staffType :'staff',
+				salesmanType :'salesman'
 			}
