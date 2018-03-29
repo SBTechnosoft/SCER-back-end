@@ -22,6 +22,8 @@
 				"clientStateStatus":Enum,
 				"clientCityStatus":Enum,
 				"clientEmailIdStatus":Enum,
+				"clientProfessionStatus":Enum,
+				"billSalesmanStatus":Enum,
 				"status":Enum,
 				"createdAt":timestamp,
 				"updatedAt":datetime
@@ -47,6 +49,8 @@
 				"clientStateStatus":Enum,
 				"clientCityStatus":Enum,
 				"clientEmailIdStatus":Enum,
+				"clientProfessionStatus":Enum,
+				"billSalesmanStatus":Enum,
 				"chequeno": Enum
             }
 ##### Standard Setting Object
@@ -84,7 +88,7 @@
 				notifyByNone : 'none'
 			}
 
-##### status/ProductBestBeforeStatus/ProductColor/ProductSize/ProductFrameNo/ClientAddress/ClientState/ClientCity/ClientEmailId/ClientWorkNo Enum
+##### status/ProductBestBeforeStatus/ProductColor/ProductSize/ProductFrameNo/ClientAddress/ClientState/ClientCity/ClientEmailId/ClientWorkNo/ClientProfession/BillSalesman Enum
 			{
 				onStatus:'on',
 				offStatus:'off'

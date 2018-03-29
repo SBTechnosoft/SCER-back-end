@@ -131,6 +131,17 @@ class EncodeAllData extends Setting
 					'clientWorkNoStatus' => $decodedSettingData->client_work_no_status,
 					'clientStateStatus' => $decodedSettingData->client_state_status,
 					'clientCityStatus' => $decodedSettingData->client_city_status,
+					'clientProfessionStatus' => $decodedSettingData->client_profession_status,
+					'createdAt' => $getCreatedDate[$decodedData],
+					'updatedAt' => $getUpdatedDate[$decodedData]
+				);
+			}
+			else if(strcmp($decodedJson[$decodedData]['setting_type'],$constantArray['billSetting'])==0)
+			{
+				$data[$decodedData]= array(
+					'settingId' => $decodedJson[$decodedData]['setting_id'],
+					'settingType' => $decodedJson[$decodedData]['setting_type'],
+					'billSalesmanStatus' => $decodedSettingData->bill_salesman_status,
 					'createdAt' => $getCreatedDate[$decodedData],
 					'updatedAt' => $getUpdatedDate[$decodedData]
 				);

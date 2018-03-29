@@ -27,6 +27,7 @@ class ConstantClass
 		$constantArray['serviceDateSetting'] = "servicedate";
 		$constantArray['productSetting'] = "product";
 		$constantArray['clientSetting'] = "client";
+		$constantArray['billSetting'] = "bill";
 		$constantArray['noImage'] = "Storage/No-Image/no-image.jpg";
 		$constantArray['productBarcode'] = "Storage/Barcode/";
 		$constantArray['documentUrl'] = "Storage/Document/";

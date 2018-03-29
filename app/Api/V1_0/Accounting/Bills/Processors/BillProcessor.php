@@ -1736,8 +1736,8 @@ class BillProcessor extends BaseProcessor
 		$clientArray['anniversaryDate']=array_key_exists('anniversary_date',$tRequest)?$tRequest['anniversary_date']:'0000-00-00';
 		$clientArray['otherDate']=array_key_exists('other_date',$tRequest)?$tRequest['other_date']:'0000-00-00';
 		$clientArray['isDisplay']=array_key_exists('is_display',$tRequest)?$tRequest['is_display']:$constantArray['isDisplayYes'];
-		$clientArray['stateAbb']=$tRequest['state_abb'];
-		$clientArray['cityId']=$tRequest['city_id'];
+		$clientArray['stateAbb']=array_key_exists('state_abb',$tRequest)?$tRequest['state_abb']:'';
+		$clientArray['cityId']=array_key_exists('city_id',$tRequest)?$tRequest['city_id']:'';
 		if(array_key_exists('profession_id',$tRequest))
 		{
 			$clientArray['professionId']=$tRequest['profession_id'];
@@ -1769,8 +1769,8 @@ class BillProcessor extends BaseProcessor
 		$ledgerArray['contactNo']=$tRequest['contact_no'];
 		$ledgerArray['emailId']=array_key_exists('email_id',$tRequest)?$tRequest['email_id']:'';
 		$ledgerArray['invoiceNumber']=$invoiceNumber;
-		$ledgerArray['stateAbb']=$tRequest['state_abb'];
-		$ledgerArray['cityId']=$tRequest['city_id'];
+		$ledgerArray['stateAbb']=array_key_exists('state_abb',$tRequest) ? $tRequest['state_abb']:'';
+		$ledgerArray['cityId']=array_key_exists('city_id',$tRequest) ? $tRequest['city_id']:'';
 		$ledgerArray['companyId']=$companyId;
 		$ledgerArray['balanceFlag']=$constantArray['openingBalance'];
 		$ledgerArray['amount']=0;

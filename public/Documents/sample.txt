@@ -165,3 +165,10 @@ ALTER TABLE `template_mst` CHANGE `template_id` `template_id` INT(11) NOT NULL A
 26-march-2018(arihant done,swaminarayan done,pending)
 1. ALTER TABLE `client_mst` CHANGE `city_id` `city_id` INT(11) NULL DEFAULT NULL, CHANGE `state_abb` `state_abb` CHAR(5) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL;
 2. ALTER TABLE `ledger_mst` CHANGE `state_abb` `state_abb` CHAR(5) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL COMMENT 'state_abb of ledger(FK)', CHANGE `city_id` `city_id` INT(11) NULL DEFAULT NULL COMMENT 'city_id of ledger(FK)';
+
+28-march-2018(pending)
+1. `ALTER TABLE ledger_mst DROP FOREIGN KEY fk_ledger_cityId;`
+2. `ALTER TABLE ledger_mst DROP FOREIGN KEY fk_ledger_stateAbb;`
+
+29-march-2018(pending)
+1. ALTER TABLE `setting_mst` CHANGE `setting_data` `setting_data` TEXT CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL;

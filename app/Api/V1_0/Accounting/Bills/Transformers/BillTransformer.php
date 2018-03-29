@@ -49,8 +49,8 @@ class BillTransformer
 		$tExpense = array_key_exists('expense',$billArrayData)?json_encode($billArrayData['expense']):"";
 		$tClientName = trim($billArrayData['clientName']);
 		$tInvoiceNumber = trim($billArrayData['invoiceNumber']);
-		$tStateAbb = trim($billArrayData['stateAbb']);
-		$tCityId = trim($billArrayData['cityId']);
+		$tStateAbb = array_key_exists('stateAbb',$billArrayData)? $this->checkStringValue(trim($billArrayData['stateAbb'])):"";
+		$tCityId = array_key_exists('cityId',$billArrayData)? $this->checkValue(trim($billArrayData['cityId'])):"";
 		$tTotal = trim($billArrayData['total']);
 		if(!array_key_exists('totalDiscounttype',$request->input()) && !array_key_exists('totalDiscount',$request->input()))
 		{
@@ -493,6 +493,14 @@ class BillTransformer
 				{
 					$tBillArray[$convertedValue]=json_encode($value);
 				}
+				else if(strcmp('state_abb',$convertedValue)==0)
+				{
+					$tBillArray[$convertedValue]=$this->checkStringValue(trim($value));
+				}
+				else if(strcmp('city_id',$convertedValue)==0)
+				{
+					$tBillArray[$convertedValue]=$this->checkValue(trim($value));
+				}
 				else
 				{
 					$tBillArray[$convertedValue]=trim($value);
@@ -523,5 +531,19 @@ class BillTransformer
 			return 0;
 		}
 		return $tax;	
+	}
+
+	/**
+	* check value
+	* @param integer value
+	* @return tax-value/0
+	*/
+	public function checkStringValue($string)
+	{
+		if($string=='' || strcmp($string,'undefined')==0 || $string==null)
+		{
+			return '';
+		}
+		return $string;	
 	}
 }

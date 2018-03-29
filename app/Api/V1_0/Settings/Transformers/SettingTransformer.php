@@ -51,6 +51,11 @@ class SettingTransformer
 			$data['client_work_no_status'] = trim($request->input('clientWorkNoStatus'));
 			$data['client_state_status'] = trim($request->input('clientStateStatus'));
 			$data['client_city_status'] = trim($request->input('clientCityStatus'));
+			$data['client_profession_status'] = trim($request->input('clientProfessionStatus'));
+		}
+		else if(array_key_exists('billSalesmanStatus',$request->input()))
+		{
+			$data['bill_salesman_status'] = trim($request->input('billSalesmanStatus'));
 		}
 		else if(array_key_exists('chequeno',$request->input()))
 		{

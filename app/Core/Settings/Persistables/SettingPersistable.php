@@ -30,16 +30,22 @@ use ERP\Core\Settings\Properties\ClientAddressStatusTrait;
 use ERP\Core\Settings\Properties\ClientEmailIdStatusTrait;
 use ERP\Core\Settings\Properties\ClientStateStatusTrait;
 use ERP\Core\Settings\Properties\ClientCityStatusTrait;
+use ERP\Core\Settings\Properties\ClientProfessionStatusTrait;
+
+use ERP\Core\Settings\Properties\BillSalesmanStatusTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
 class SettingPersistable
 {
+    use BillSalesmanStatusTrait;
+    
     use ClientWorkNoStatusTrait;
     use ClientAddressStatusTrait;
     use ClientEmailIdStatusTrait;
     use ClientStateStatusTrait;
     use ClientCityStatusTrait;
+    use ClientProfessionStatusTrait;
     
     use NamePropertyTrait;
 	use KeyPropertyTrait;
