@@ -56,11 +56,7 @@ return [
             'driver' => 'mysql',
             'host' => env('DB_HOST', 'localhost'),
             'port' => env('DB_PORT', '3306'),
-<<<<<<< HEAD
             'database' => env('DB_DATABASE', 'erp_db'),
-=======
-             'database' => env('DB_DATABASE', 'erp_db'),
->>>>>>> ae6bc5e7bcbab811932ee8f2893947d4e05dfd63
             'username' => env('DB_USERNAME', 'root'),
             'password' => env('DB_PASSWORD', ''),
             'charset' => 'utf8',
