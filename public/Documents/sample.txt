@@ -172,3 +172,4 @@ ALTER TABLE `template_mst` CHANGE `template_id` `template_id` INT(11) NOT NULL A
 
 29-march-2018(pending)
 1. ALTER TABLE `setting_mst` CHANGE `setting_data` `setting_data` TEXT CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL;
+2. ALTER TABLE `client_mst` ADD `credit_limit` DECIMAL(20,4) NULL DEFAULT NULL AFTER `other_date`, ADD `credit_days` DECIMAL(50) NULL DEFAULT NULL AFTER `credit_limit`;
