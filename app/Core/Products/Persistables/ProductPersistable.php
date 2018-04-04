@@ -54,6 +54,7 @@ use ERP\Core\Products\Properties\BestBeforeTypeTrait;
 use ERP\Core\Products\Properties\CessFlatTrait;
 use ERP\Core\Products\Properties\CessPercentageTrait;
 use ERP\Core\Products\Properties\OpeningTrait;
+use ERP\Core\Products\Properties\RemarkTrait;
 /**
  * @author Reema Patel<reema.p@siliconbrain.in>
  */
@@ -68,6 +69,7 @@ class productPersistable
 	use CessFlatTrait;
 	use CessPercentageTrait;
 	use OpeningTrait;
+	use RemarkTrait;
 
     use NamePropertyTrait;
 	use IsDisplayPropertyTrait;

@@ -28,6 +28,7 @@
 			"cessFlat":decimal,
 			"cessPercentage":decimal,
 			"opening":decimal,
+			"remark":longtext,
 			"coverImage":{
 				... Standard Document Object
 			},
@@ -94,6 +95,7 @@
 			"cessFlat":decimal,
 			"cessPercentage":decimal,
 			"opening":decimal,
+			"remark":longtext,
 			"additionalTax":decimal,
 			"minimumStockLevel":int,
 			"coverImage":{
