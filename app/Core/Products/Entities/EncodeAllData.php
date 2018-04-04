@@ -61,6 +61,7 @@ class EncodeAllData extends ProductCategoryService
 			$bestBeforeType[$decodedData] = $decodedJson[$decodedData]['best_before_type'];
 			$cessFlat[$decodedData] = $decodedJson[$decodedData]['cess_flat'];
 			$cessPercentage[$decodedData] = $decodedJson[$decodedData]['cess_percentage'];
+			$opening[$decodedData] = $decodedJson[$decodedData]['opening'];
 			$productCoverId[$decodedData] = $decodedJson[$decodedData]['product_cover_id'];
 
 			$documentName[$decodedData] = $decodedJson[$decodedData]['document_name'];
@@ -180,6 +181,7 @@ class EncodeAllData extends ProductCategoryService
 				'cessFlat' => $cessFlat[$jsonData],
 				'cessPercentage' => $cessPercentage[$jsonData],
 				'cessPercentage' => $cessPercentage[$jsonData],
+				'opening' => $opening[$jsonData],
 				'productCoverId' => $productCoverId[$jsonData],
 				'createdAt' => $getCreatedDate[$jsonData],
 				'updatedAt' => $getUpdatedDate[$jsonData],

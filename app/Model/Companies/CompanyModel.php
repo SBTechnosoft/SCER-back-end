@@ -627,6 +627,15 @@ class CompanyModel extends Model
 		set deleted_at='".$mytime."' 
 		where company_id=".$companyId);
 		DB::commit();
+		
+		$mytime = Carbon\Carbon::now();
+		
+		DB::beginTransaction();
+		$mytime = Carbon\Carbon::now();
+		$conversationDtl = DB::connection($databaseName)->statement("update conversation_dtl 
+		set deleted_at='".$mytime."' 
+		where company_id=".$companyId);
+		DB::commit();
 		if($raw==1)
 		{
 			$ledgerId = DB::connection($databaseName)->select("select ledger_id 
@@ -638,58 +647,166 @@ class CompanyModel extends Model
 			$branch = DB::connection($databaseName)->statement("update branch_mst 
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
+
+			$productData = DB::connection($databaseName)->select("select product_id 
+			from product_mst 
+			where company_id=".$companyId." and deleted_at='0000-00-00 00:00:00'");
 			$product = DB::connection($databaseName)->statement("update product_mst 
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
+
+			$productCount = count($productData);
+			for($productIndex=0;$productIndex<$productCount;$productIndex++)
+			{
+				$productDocDtl = DB::connection($databaseName)->statement("update product_doc_dtl 
+				set deleted_at='".$mytime."' 
+				where product_id=".$productData[$productIndex]->product_id);
+			}
 			$template = DB::connection($databaseName)->statement("update template_mst 
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
 			$invoice = DB::connection($databaseName)->statement("update invoice_dtl 
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
+			
 			$quotation = DB::connection($databaseName)->statement("update quotation_dtl 
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
+			$quotationArchive = DB::connection($databaseName)->statement("update quotation_bill_archives
+			set deleted_at='".$mytime."' 
+			where company_id=".$companyId);
+			
+			$quotationData = DB::connection($databaseName)->select("select quotation_bill_id 
+			from quotation_bill_dtl 
+			where company_id=".$companyId." and deleted_at='0000-00-00 00:00:00'");
+			$quotationBillDtl = DB::connection($databaseName)->statement("update quotation_bill_dtl 
+			set deleted_at='".$mytime."' 
+			where company_id=".$companyId);
+			$quotationCount = count($quotationData);
+			for($quotationIndex=0;$quotationIndex<$quotationCount;$quotationIndex++)
+			{
+				$quotationBillDocDtl = DB::connection($databaseName)->statement("update quotation_bill_doc_dtl 
+				set deleted_at='".$mytime."' 
+				where quotation_bill_id=".$quotationData[$quotationIndex]->quotation_bill_id);
+
+			}
 			$journal = DB::connection($databaseName)->statement("update journal_dtl 
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
-			$ledger = DB::connection($databaseName)->statement("update ledger_mst 
-			set deleted_at='".$mytime."' 
-			where company_id=".$companyId);
+			
 			$productTrn = DB::connection($databaseName)->statement("update product_trn 
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
+			$productTrnSummary = DB::connection($databaseName)->statement("update product_trn_summary 
+			set deleted_at='".$mytime."' 
+			where company_id=".$companyId);
+			$saleBillData = DB::connection($databaseName)->select("select sale_id 
+			from sales_bill 
+			where company_id=".$companyId." and deleted_at='0000-00-00 00:00:00'");
 			$retailsalesDtl = DB::connection($databaseName)->statement("update sales_bill
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
-			$userMst = DB::connection($databaseName)->statement("update user_mst
+			$retailsalesTrnDtl = DB::connection($databaseName)->statement("update sales_bill_trn
 			set deleted_at='".$mytime."' 
 			where company_id=".$companyId);
-			//delete from active_session
-			for($userData=0;$userData<count($userId);$userData++)
+			$saleBillDataCount = count($saleBillData);
+			for($saleBillDataIndex=0;$saleBillDataIndex<$saleBillDataCount;$saleBillDataIndex++)
 			{
+				$retailsalesDocDtl = DB::connection($databaseName)->statement("update sales_bill_doc_dtl
+				set deleted_at='".$mytime."' 
+				where sale_id=".$saleBillData[$saleBillDataIndex]->sale_id);
+
+				$saleExpenseDtl = DB::connection($databaseName)->statement("update sale_expense_dtl
+				set deleted_at='".$mytime."' 
+				where sale_id=".$saleBillData[$saleBillDataIndex]->sale_id);
+			}
+			$purchaseBillData = DB::connection($databaseName)->select("select purchase_id 
+			from purchase_bill 
+			where company_id=".$companyId." and deleted_at='0000-00-00 00:00:00'");
+			$purchaseDtl = DB::connection($databaseName)->statement("update purchase_bill
+			set deleted_at='".$mytime."' 
+			where company_id=".$companyId);
+			$purchaseBillDataCount = count($purchaseBillData);
+			for($purchaseBillDataIndex=0;$purchaseBillDataIndex<$purchaseBillDataCount;$purchaseBillDataIndex++)
+			{
+				$purchaseDocDtl = DB::connection($databaseName)->statement("update purchase_doc_dtl
+				set deleted_at='".$mytime."' 
+				where purchase_id=".$purchaseBillData[$purchaseBillDataIndex]->purchase_id);
+
+				$purchaseExpenseDtl = DB::connection($databaseName)->statement("update purchase_expense_dtl
+				set deleted_at='".$mytime."' 
+				where purchase_id=".$purchaseBillData[$purchaseBillDataIndex]->purchase_id);
+			}
+			$jobCard = DB::connection($databaseName)->select("select job_card_id 
+			from job_card_dtl 
+			where company_id=".$companyId." and deleted_at='0000-00-00 00:00:00'");
+			$jobCardDtl = DB::connection($databaseName)->statement("update job_card_dtl
+			set deleted_at='".$mytime."' 
+			where company_id=".$companyId);
+			$jobCardCount = count($jobCard);
+			for($jobCardIndex=0;$jobCardIndex<$jobCardCount;$jobCardIndex++)
+			{
+				$jobCardDtl = DB::connection($databaseName)->statement("update job_card_number_dtl
+				set deleted_at='".$mytime."' 
+				where company_id=".$companyId);
+
+				$jobCardDocDtl = DB::connection($databaseName)->statement("update job_card_doc_dtl
+				set deleted_at='".$mytime."' 
+				where job_card_id=".$jobCard[$jobCardIndex]->job_card_id);
+			}
+			$userCount = count($userId);
+			//delete from active_session
+			for($userData=0;$userData<$userCount;$userData++)
+			{
+				DB::beginTransaction();
+				$userMst = DB::connection($databaseName)->statement("update user_mst
+				set deleted_at='".$mytime."' 
+				where company_id=".$companyId." and user_id='".$userId[$userData]->user_id."'");
+				DB::commit();
+				 
 				DB::beginTransaction();
 				$userId = DB::connection($databaseName)->statement("delete
 				from active_session
 				where user_id='".$userId[$userData]->user_id."'");
 				DB::commit();
 			}
+			$ledgerCount = count($ledgerId);
 			//ledegerId_ledger_dtl drop
-			for($ledgerArray=0;$ledgerArray<count($ledgerId);$ledgerArray++)
+			for($ledgerArray=0;$ledgerArray<$ledgerCount;$ledgerArray++)
 			{
 				DB::beginTransaction();
 				$dropLedger = DB::connection($databaseName)->statement("drop table
 				".$ledgerId[$ledgerArray]->ledger_id."_ledger_dtl");
 				DB::commit();
+
+				DB::beginTransaction();
+				$balanceSheetDtl = DB::connection($databaseName)->statement("update balance_sheet_dtl
+				set deleted_at='".$mytime."' 
+				where ledger_id=".$ledgerId[$ledgerArray]->ledger_id);
+				DB::commit();
+
+				DB::beginTransaction();
+				$cashFlowDtl = DB::connection($databaseName)->statement("update cash_flow_dtl
+				set deleted_at='".$mytime."' 
+				where ledger_id=".$ledgerId[$ledgerArray]->ledger_id);
+				DB::commit();
+				
+				DB::beginTransaction();
+				$trialBalanceDtl = DB::connection($databaseName)->statement("update trial_balance_dtl
+				set deleted_at='".$mytime."' 
+				where ledger_id=".$ledgerId[$ledgerArray]->ledger_id);
+				DB::commit();
+
+				DB::beginTransaction();
+				$profitLossDtl = DB::connection($databaseName)->statement("update profit_loss_dtl
+				set deleted_at='".$mytime."' 
+				where ledger_id=".$ledgerId[$ledgerArray]->ledger_id);
+				DB::commit();
 			}
-			if($branch==1 && $product==1 && $template==1 && $invoice==1 && $quotation==1 && $journal==1 && $ledger==1 && $productTrn==1 && $retailsalesDtl==1 && $userMst==1) 
-			{
-				return $exceptionArray['200'];
-			}
-			else
-			{
-				return $exceptionArray['500'];
-			}
+			$ledger = DB::connection($databaseName)->statement("update ledger_mst 
+			set deleted_at='".$mytime."' 
+			where company_id=".$companyId);
+			return $exceptionArray['200'];
 		}
 		else
 		{

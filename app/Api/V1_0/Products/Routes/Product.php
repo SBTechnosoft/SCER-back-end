@@ -17,6 +17,7 @@ class Product implements RouteRegistrarInterface
     public function register(RegistrarInterface $Registrar)
     {
     	ini_set('memory_limit', '256M');
+    	
 		// all the possible get request 
 		Route::group(['as' => 'get'], function ()
 		{

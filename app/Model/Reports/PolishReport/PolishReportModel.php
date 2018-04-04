@@ -32,8 +32,8 @@ class PolishReportModel extends Model
 		payment_mode,
 		bank_name,
 		invoice_number,
-		check_number,
 		job_card_number,
+		check_number,
 		total,
 		total_discounttype,
 		total_discount,
@@ -43,11 +43,13 @@ class PolishReportModel extends Model
 		advance,
 		balance,
 		po_number,
+		user_id,
 		remark,
+		refund,
 		entry_date,
+		service_date,
 		client_id,
 		sales_type,
-		refund,
 		company_id,
 		jf_id,
 		created_at,
@@ -57,6 +59,7 @@ class PolishReportModel extends Model
 		company_id='".$companyId."' and 
 		deleted_at='0000-00-00 00:00:00' and is_draft='no' and is_salesorder='not'");
 		DB::commit();
+		
 		if(count($raw)==0)
 		{
 			return $exceptionArray['404']; 
@@ -66,6 +69,23 @@ class PolishReportModel extends Model
 			$documentResult = array();
 			for($saleData=0;$saleData<count($raw);$saleData++)
 			{
+				$billExpenseResult = array();
+				//get expense sale data from database
+				DB::beginTransaction();
+				$billExpenseResult = DB::connection($databaseName)->select("select 
+				sale_expense_id as saleExpenseId,
+				expense_type as expenseType,
+				expense_id as expenseId,
+				expense_name as expenseName,
+				expense_value as expenseValue,
+				expense_operation as expenseOperation,
+				sale_id as saleId
+				from sale_expense_dtl
+				where deleted_at='0000-00-00 00:00:00' and
+				sale_id=".$raw[$saleData]->sale_id);
+				DB::commit();
+				$raw[$saleData]->expense = $billExpenseResult;
+
 				DB::beginTransaction();
 				$documentResult[$saleData] = DB::connection($databaseName)->select("select
 				document_id,

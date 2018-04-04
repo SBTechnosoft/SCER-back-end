@@ -164,6 +164,7 @@ class EncodeAllData extends StateService
 					$documentArrayData[$jsonData][$documentArray]['updatedAt']=$convertedUpdatedDate[$documentArray];
 				}
 			}
+			
 			$data[$jsonData]= array(
 				'clientId'=>$clientId[$jsonData],
 				'clientName' => $clientName[$jsonData],
@@ -198,17 +199,12 @@ class EncodeAllData extends StateService
 					'updatedAt' => $stateUpdatedAt[$jsonData]
 				),
 				
-				'city' => array(
-					'cityId' => $cityId[$jsonData],
-					'cityName' => $getCityDetail[$jsonData]['cityName'],
-					'isDisplay' => $getCityDetail[$jsonData]['isDisplay'],
-					'createdAt' => $getCityDetail[$jsonData]['createdAt'],
-					'updatedAt' => $getCityDetail[$jsonData]['updatedAt'],
-					'stateAbb' => $getCityDetail[$jsonData]['state']['stateAbb']
-				)
+				'city' => $getCityDetail[$jsonData]
 			);
 			$data[$jsonData]['file'] = $documentArrayData[$jsonData];
 		}
+		ini_set('memory_limit', '256M');
+		
 		return json_encode($data);
 	}
 }

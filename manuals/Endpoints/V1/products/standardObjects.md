@@ -27,6 +27,7 @@
 			"bestBeforeType":Enum,
 			"cessFlat":decimal,
 			"cessPercentage":decimal,
+			"opening":decimal,
 			"coverImage":{
 				... Standard Document Object
 			},
@@ -92,6 +93,7 @@
 			"bestBeforeType":Enum,
 			"cessFlat":decimal,
 			"cessPercentage":decimal,
+			"opening":decimal,
 			"additionalTax":decimal,
 			"minimumStockLevel":int,
 			"coverImage":{

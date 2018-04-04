@@ -67,9 +67,19 @@ class ProductModel extends Model
 		{
 			DB::beginTransaction();
 			$productId = DB::connection($databaseName)->select("select 
-			product_id 
+			product_id,
+			opening,
+			company_id,
+			branch_id
 			from product_mst 
 			order by product_id desc limit 1");
+			DB::commit();
+			
+			//insert into product-trn
+			$mytime = Carbon\Carbon::now();
+			DB::beginTransaction();
+			$productTrn = DB::connection($databaseName)->statement("insert into product_trn(transaction_date,transaction_type,qty,company_id,branch_id,product_id) 
+			values('.$mytime.','Balance','".$productId[0]->opening."','".$productId[0]->company_id."','".$productId[0]->branch_id."','".$productId[0]->product_id."')");
 			DB::commit();
 			if(is_array($documentData))
 			{
@@ -228,7 +238,7 @@ class ProductModel extends Model
 		$getProductData = func_get_arg(0);
 		$getProductKey = func_get_arg(1);
 		$getErrorArray = func_get_arg(2);
-		
+		$raw=0;
 		$getErrorCount = count($getErrorArray);
 		for($dataArray=0;$dataArray<count($getProductData);$dataArray++)
 		{
@@ -253,7 +263,6 @@ class ProductModel extends Model
 			//check product-code
 			$productCodeResult = $this->batchRepeatProductCodeValidate($productCode,$companyId,$indexNumber);
 			$getProductData[$dataArray][$index] = $productCodeResult;
-			
 			for($data=0;$data<count($getProductData[$dataArray]);$data++)
 			{
 				if($data == (count($getProductData[$dataArray])-1))
@@ -285,6 +294,23 @@ class ProductModel extends Model
 			$raw = DB::connection($databaseName)->statement("insert into product_mst(".$keyName.",document_name,document_format) 
 			values (".$productData.",'".$documentName."','svg')");
 			DB::commit();
+
+			DB::beginTransaction();
+			$productId = DB::connection($databaseName)->select("select 
+			product_id,
+			opening,
+			company_id,
+			branch_id
+			from product_mst 
+			order by product_id desc limit 1");
+			DB::commit();
+			
+			$mytime = Carbon\Carbon::now();
+			DB::beginTransaction();
+			$productTrn = DB::connection($databaseName)->statement("insert into product_trn(transaction_date,transaction_type,qty,company_id,branch_id,product_id) 
+			values('".$mytime."','Balance','".$productId[0]->opening."','".$productId[0]->company_id."','".$productId[0]->branch_id."','".$productId[0]->product_id."')");
+			DB::commit();
+			
 		}
 		
 		if($raw==1)
@@ -560,6 +586,24 @@ class ProductModel extends Model
 		where product_id = '".$productId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
+		DB::beginTransaction();
+		$productUpdateData = DB::connection($databaseName)->select("select 
+		product_id,
+		opening,
+		company_id,
+		branch_id
+		from product_mst 
+		where product_id='".$productId."' and deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+
+		$mytime = Carbon\Carbon::now();
+		DB::beginTransaction();
+		$productTrn = DB::connection($databaseName)->statement("update product_trn set
+		updated_at = '".$mytime."',
+		qty = '".$productUpdateData[0]->opening."'
+		where product_id = '".$productUpdateData[0]->product_id."' and deleted_at='0000-00-00 00:00:00'");
+		DB::commit();
+
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -652,6 +696,24 @@ class ProductModel extends Model
 			$raw = DB::connection($databaseName)->statement("update product_mst 
 			set ".$keyValueString."updated_at='".$mytime."'
 			where product_id = '".$productId[$data]."' and deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+
+			DB::beginTransaction();
+			$productUpdateData = DB::connection($databaseName)->select("select 
+			product_id,
+			opening,
+			company_id,
+			branch_id
+			from product_mst 
+			where product_id='".$productId[$data]."' and deleted_at='0000-00-00 00:00:00'");
+			DB::commit();
+
+			$mytime = Carbon\Carbon::now();
+			DB::beginTransaction();
+			$productTrn = DB::connection($databaseName)->statement("update product_trn set
+			updated_at = '".$mytime."',
+			qty = '".$productUpdateData[0]->opening."'
+			where product_id = '".$productUpdateData[0]->product_id."' and deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
 		}
 		//get exception message
@@ -1137,6 +1199,7 @@ class ProductModel extends Model
 		best_before_type,
 		cess_flat,
 		cess_percentage,
+		opening,
 		document_name,
 		document_format,
 		is_display,
@@ -1410,6 +1473,7 @@ class ProductModel extends Model
 		best_before_type,
 		cess_flat,
 		cess_percentage,
+		opening,
 		document_name,
 		document_format,
 		created_at,
@@ -1482,6 +1546,7 @@ class ProductModel extends Model
 		best_before_type,
 		cess_flat,
 		cess_percentage,
+		opening,
 		document_name,
 		document_format,
 		created_at,
@@ -1555,6 +1620,7 @@ class ProductModel extends Model
 		best_before_type,
 		cess_flat,
 		cess_percentage,
+		opening,
 		document_name,
 		document_format,
 		created_at,
@@ -1628,6 +1694,7 @@ class ProductModel extends Model
 		best_before_type,
 		cess_flat,
 		cess_percentage,
+		opening,
 		document_name,
 		document_format,
 		created_at,
@@ -1714,6 +1781,7 @@ class ProductModel extends Model
 		best_before_type,
 		cess_flat,
 		cess_percentage,
+		opening,
 		document_name,
 		document_format,
 		created_at,
@@ -1888,6 +1956,7 @@ class ProductModel extends Model
 		best_before_type,
 		cess_flat,
 		cess_percentage,
+		opening,
 		document_name,
 		document_format,
 		minimum_stock_level,

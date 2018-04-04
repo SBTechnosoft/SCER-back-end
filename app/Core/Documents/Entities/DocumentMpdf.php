@@ -37,6 +37,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 		$constantClass = new ConstantClass();
 		$constantArray = $constantClass->constantVariable();
 		$commentArray = $constantClass->getCommentMessage();
+		$smsSettingArray = $constantClass->setSmsPassword();
 		if(array_key_exists("operation",$headerData))
 		{
 			if(strcmp($headerData['operation'][0],'preprint')==0)
@@ -550,11 +551,12 @@ class DocumentMpdf extends CurrencyToWordConversion
 					//replace 'p' tag
 					$smsHtmlBody = str_replace('<p>','', $smsHtmlBody);
 					$smsHtmlBody = str_replace('</p>','', $smsHtmlBody);
+					$smsSettingArray
 					$data = array(
-						'user' => "siliconbrain",
-						'password' => "demo54321",
+						'user' => $smsSettingArray['user'],
+						'password' =>$smsSettingArray['password'],
 						'msisdn' => $decodedBillData->client->contactNo,
-						'sid' => "ERPAKC",
+						'sid' => $smsSettingArray['sid'],
 						'msg' => $smsHtmlBody,
 						'fl' =>"0",
 						'gwid'=>"2"

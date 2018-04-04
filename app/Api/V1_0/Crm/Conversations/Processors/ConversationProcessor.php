@@ -410,6 +410,7 @@ class ConversationProcessor extends BaseProcessor
 		$constantArray = $constantClass->constantVariable();
 
 		$commentMessage = $constantClass->getCommentMessage();
+		$smsSettingArray = $constantClass->setSmsPassword();
 
 		$emailflag=0;
 
@@ -736,13 +737,13 @@ class ConversationProcessor extends BaseProcessor
 
 				$data = array(
 
-					'user' => "siliconbrain",
+					'user' => $smsSettingArray['user'],
 
-					'password' => "demo54321",
+					'password' => $smsSettingArray['password'],
 
 					'msisdn' => $contactNo,
 
-					'sid' => "ERPAKC",
+					'sid' => $smsSettingArray['sid'],
 
 					'msg' => $trimRequest['conversation'],
 

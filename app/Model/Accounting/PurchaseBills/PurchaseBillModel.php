@@ -852,44 +852,44 @@ class PurchaseBillModel extends Model
 		$purchaseIdData = $this->getPurchaseBillData($purchaseArray);
 		$jsonDecodedPurchaseData = json_decode(json_decode($purchaseIdData)->purchaseBillData);
 		
-		$productArray = $jsonDecodedPurchaseData[0]->product_array;
-		$inventoryCount = count(json_decode($productArray));
-		for($productArrayData=0;$productArrayData<$inventoryCount;$productArrayData++)
-		{
-			$inventoryData = json_decode($productArray);
-			DB::beginTransaction();
-			$getTransactionSummaryData[$productArrayData] = DB::connection($databaseName)->select("select 
-			product_trn_summary_id,
-			qty
-			from product_trn_summary
-			where product_id='".$inventoryData[$productArrayData]->productId."' and
-			deleted_at='0000-00-00 00:00:00'");
-			DB::commit();
-			if(count($getTransactionSummaryData[$productArrayData])==0)
-			{
-				$qty = $inventoryData[$productArrayData]->qty*(-1);
-				//insert data
-				DB::beginTransaction();
-				$insertionResult[$productArrayData] = DB::connection($databaseName)->statement("insert into 
-				product_trn_summary(qty,company_id,branch_id,product_id)
-				values('".$qty."',
-					   '".$jsonDecodedPurchaseData[0]->company_id."',
-					   0,
-					   '".$inventoryData[$productArrayData]->productId."')");
-				DB::commit();
-			}
-			else
-			{
-				$qty = $getTransactionSummaryData[$productArrayData][0]->qty-$inventoryData[$productArrayData]->qty;
-				//update data
-				DB::beginTransaction();
-				$updateResult = DB::connection($databaseName)->statement("update 
-				product_trn_summary set qty='".$qty."'
-				where product_trn_summary_id='".$getTransactionSummaryData[$productArrayData][0]->product_trn_summary_id."' and
-				deleted_at='0000-00-00 00:00:00'");
-				DB::commit();
-			}
-		}
+		// $productArray = $jsonDecodedPurchaseData[0]->product_array;
+		// $inventoryCount = count(json_decode($productArray));
+		// for($productArrayData=0;$productArrayData<$inventoryCount;$productArrayData++)
+		// {
+		// 	$inventoryData = json_decode($productArray);
+		// 	DB::beginTransaction();
+		// 	$getTransactionSummaryData[$productArrayData] = DB::connection($databaseName)->select("select 
+		// 	product_trn_summary_id,
+		// 	qty
+		// 	from product_trn_summary
+		// 	where product_id='".$inventoryData[$productArrayData]->productId."' and
+		// 	deleted_at='0000-00-00 00:00:00'");
+		// 	DB::commit();
+		// 	if(count($getTransactionSummaryData[$productArrayData])==0)
+		// 	{
+		// 		// $qty = $inventoryData[$productArrayData]->qty*(-1);
+		// 		// //insert data
+		// 		// DB::beginTransaction();
+		// 		// $insertionResult[$productArrayData] = DB::connection($databaseName)->statement("insert into 
+		// 		// product_trn_summary(qty,company_id,branch_id,product_id)
+		// 		// values('".$qty."',
+		// 		// 	   '".$jsonDecodedPurchaseData[0]->company_id."',
+		// 		// 	   0,
+		// 		// 	   '".$inventoryData[$productArrayData]->productId."')");
+		// 		// DB::commit();
+		// 	}
+		// 	else
+		// 	{
+		// 		$qty = $getTransactionSummaryData[$productArrayData][0]->qty-$inventoryData[$productArrayData]->qty;
+		// 		//update data
+		// 		DB::beginTransaction();
+		// 		$updateResult = DB::connection($databaseName)->statement("update 
+		// 		product_trn_summary set qty='".$qty."'
+		// 		where product_trn_summary_id='".$getTransactionSummaryData[$productArrayData][0]->product_trn_summary_id."' and
+		// 		deleted_at='0000-00-00 00:00:00'");
+		// 		DB::commit();
+		// 	}
+		// }
 		//get ledger id from journal
 		$journalModel = new JournalModel();
 		$journalData = $journalModel->getJfIdArrayData($jsonDecodedPurchaseData[0]->jf_id);

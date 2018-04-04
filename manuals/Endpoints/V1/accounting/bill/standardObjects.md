@@ -38,6 +38,9 @@
             	"company":{
 					... standard company object
 				},
+				"user":{
+					... standard user object
+				},
 				"invoiceNumber":string,	
 				"quotationNumber":string,	
 				"jobCardNumber":string,
@@ -101,6 +104,7 @@
 				"checkNumber":string,
 				"poNumber":string,
 				"remark":string,
+				"userId":int,
 				"file":
 				{
 					{

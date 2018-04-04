@@ -53,6 +53,7 @@ class ProductTransformer extends ExceptionMessage
 		$tCompanyId = trim($request->input('companyId'));
 		$tProductCatId = trim($request->input('productCategoryId'));
 		$tProductGrpId = trim($request->input('productGroupId'));
+		$tOpening = trim($request->input('opening'));
 		$tBranchId = trim($request->input('branchId'));
 
 		if(strcmp("product",trim($request->input('productType')))==0 || strcmp("accessories",trim($request->input('productType')))==0 || 
@@ -181,6 +182,7 @@ class ProductTransformer extends ExceptionMessage
 			$data['best_before_type'] = $tBestBeforeType;
 			$data['cess_flat'] = $tCessFlat;
 			$data['cess_percentage'] = $tCessPercentage;
+			$data['opening'] = $tOpening;
 			return $data;
 		}
 	}
@@ -283,6 +285,7 @@ class ProductTransformer extends ExceptionMessage
 				// $tBestBeforeType= trim($inputRequestData[$arrayData]['bestBeforeType']);
 				$tCessFlat = trim($inputRequestData[$arrayData]['cessFlat']);
 				$tCessPercentage = trim($inputRequestData[$arrayData]['cessPercentage']);
+				$tOpening = trim($inputRequestData[$arrayData]['opening']);
 
 				$tCompanyId = trim($inputRequestData[$arrayData]['companyId']);
 				$tProductCatId = trim($inputRequestData[$arrayData]['productCategoryId']);
@@ -360,6 +363,7 @@ class ProductTransformer extends ExceptionMessage
 					$errorArray[$errorIndex]['bestBeforeType'] = $tBestBeforeType;
 					$errorArray[$errorIndex]['cessFlat'] = $tCessFlat;
 					$errorArray[$errorIndex]['cessPercentage'] = $tCessPercentage;
+					$errorArray[$errorIndex]['opening'] = $tOpening;
 					$errorArray[$errorIndex]['companyId'] = $tCompanyId;
 					$errorArray[$errorIndex]['productCategoryId'] = $tProductCatId;
 					$errorArray[$errorIndex]['productGroupId'] = $tProductGrpId;
@@ -419,6 +423,7 @@ class ProductTransformer extends ExceptionMessage
 					$data[$dataIndex]['best_before_type'] = $tBestBeforeType;
 					$data[$dataIndex]['cess_flat'] = $tCessFlat;
 					$data[$dataIndex]['cess_percentage'] = $tCessPercentage;
+					$data[$dataIndex]['opening'] = $tOpening;
 					$data[$dataIndex]['semi_wholesale_margin'] = $tSemiWholeSaleMargin;
 					$data[$dataIndex]['company_id'] = $tCompanyId;
 					$data[$dataIndex]['product_category_id'] = $tProductCatId;
@@ -461,7 +466,7 @@ class ProductTransformer extends ExceptionMessage
 				return $exceptionArray['mapping'];
 			}
 		}
-		if(count($mappingArray)!=27)
+		if(count($mappingArray)!=28)
 		{
 			return $exceptionArray['missingField'];
 		}
@@ -610,6 +615,7 @@ class ProductTransformer extends ExceptionMessage
 				$requestArray[$arrayData][array_keys($keyNameCount)[24]] = $dataArray[$arrayData][24];
 				$requestArray[$arrayData][array_keys($keyNameCount)[25]] = $dataArray[$arrayData][25];
 				$requestArray[$arrayData][array_keys($keyNameCount)[26]] = $dataArray[$arrayData][26];
+				$requestArray[$arrayData][array_keys($keyNameCount)[27]] = $dataArray[$arrayData][27];
 			}
 		}
 		return $requestArray;

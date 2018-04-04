@@ -316,7 +316,6 @@ class ProductProcessor extends BaseProcessor
 					$convertedProductCode = strtoupper($tRequest['product_code']);
 					$tRequest['product_code'] = $convertedProductCode;
 					
-					
 					// validation
 					$status = $productValidate->validate($tRequest);
 					
@@ -392,6 +391,7 @@ class ProductProcessor extends BaseProcessor
 						$trimData['errorArray'][$totalErrorArray]['bestBeforeType'] = $trimData['dataArray'][$dataArray]['best_before_type'];
 						$trimData['errorArray'][$totalErrorArray]['cessFlat'] = $trimData['dataArray'][$dataArray]['cess_flat'];
 						$trimData['errorArray'][$totalErrorArray]['cessPercentage'] = $trimData['dataArray'][$dataArray]['cess_percentage'];
+						$trimData['errorArray'][$totalErrorArray]['opening'] = $trimData['dataArray'][$dataArray]['opening'];
 
 						$trimData['errorArray'][$totalErrorArray]['semiWholesaleMargin'] = $trimData['dataArray'][$dataArray]['semi_wholesale_margin'];
 						$trimData['errorArray'][$totalErrorArray]['companyId'] = $trimData['dataArray'][$dataArray]['company_id'];

@@ -200,6 +200,22 @@ class ConstantClass
 		// $mailPasswordArray['password'] = 'nrana1551';
 		return $mailPasswordArray;
 	}
+
+	/**
+	 * making an array contains constant data 
+	 * @param (no parameter)
+	*/
+    public function setSmsPassword()
+	{
+		$mailPasswordArray = array();
+		$mailPasswordArray['user'] = 'swaminarayancycles';
+		$mailPasswordArray['password'] = 'demo123';
+		$mailPasswordArray['sid'] = 'CYCLES';
+
+		// $mailPasswordArray['emailId'] = 'nrana1551@gmail.com';
+		// $mailPasswordArray['password'] = 'nrana1551';
+		return $mailPasswordArray;
+	}
 	
 	/**
 	 * making an array contains comment data 
