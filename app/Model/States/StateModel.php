@@ -20,6 +20,7 @@ class StateModel extends Model
 	*/
 	public function insertData()
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -46,8 +47,8 @@ class StateModel extends Model
 		}
 		
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into state_mst(".$keyName.") 
-		values(".$stateData.")");
+		$raw = DB::connection($databaseName)->statement("insert into state_mst(".$keyName.",created_at) 
+		values(".$stateData.",'".$mytime."')");
 		DB::commit();
 		
 		//get exception message

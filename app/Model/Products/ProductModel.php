@@ -25,6 +25,7 @@ class ProductModel extends Model
 	*/
 	public function insertData()
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -60,8 +61,8 @@ class ProductModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into product_mst(".$keyName.") 
-		values(".$productData.")");
+		$raw = DB::connection($databaseName)->statement("insert into product_mst(".$keyName.",created_at) 
+		values(".$productData.",'".$mytime."')");
 		DB::commit();
 		if($raw==1)
 		{
@@ -78,8 +79,8 @@ class ProductModel extends Model
 			//insert into product-trn
 			$mytime = Carbon\Carbon::now();
 			DB::beginTransaction();
-			$productTrn = DB::connection($databaseName)->statement("insert into product_trn(transaction_date,transaction_type,qty,company_id,branch_id,product_id) 
-			values('.$mytime.','Balance','".$productId[0]->opening."','".$productId[0]->company_id."','".$productId[0]->branch_id."','".$productId[0]->product_id."')");
+			$productTrn = DB::connection($databaseName)->statement("insert into product_trn(transaction_date,transaction_type,qty,company_id,branch_id,product_id,created_at) 
+			values('.$mytime.','Balance','".$productId[0]->opening."','".$productId[0]->company_id."','".$productId[0]->branch_id."','".$productId[0]->product_id."','".$mytime."')");
 			DB::commit();
 			if(is_array($documentData))
 			{
@@ -146,6 +147,7 @@ class ProductModel extends Model
 	*/
 	public function saveProductDocument($documentData,$productId)
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -164,11 +166,13 @@ class ProductModel extends Model
 			document_name,
 			document_size,
 			document_format,
-			product_id) 
+			product_id,
+			created_at) 
 			values('".$documentData[$documentArray][0]."',
 			".$documentData[$documentArray][1].",
 			'".$documentData[$documentArray][2]."',
-			".$productId.")");
+			".$productId.",
+			'".$mytime."')");
 			DB::commit();
 
 			if(strcmp($documentData[$documentArray][3],$constantArray['productDocumentUrl']."CoverImage/")==0)
@@ -200,6 +204,7 @@ class ProductModel extends Model
 	*/
 	public function insertBatchData()
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$productDetail = "";
@@ -291,8 +296,8 @@ class ProductModel extends Model
 			
 			//insert batch of product data	
 			DB::beginTransaction();
-			$raw = DB::connection($databaseName)->statement("insert into product_mst(".$keyName.",document_name,document_format) 
-			values (".$productData.",'".$documentName."','svg')");
+			$raw = DB::connection($databaseName)->statement("insert into product_mst(".$keyName.",document_name,document_format,created_at) 
+			values (".$productData.",'".$documentName."','svg','".$mytime."')");
 			DB::commit();
 			if($raw==1)
 			{
@@ -308,8 +313,8 @@ class ProductModel extends Model
 				
 				$mytime = Carbon\Carbon::now();
 				DB::beginTransaction();
-				$productTrn = DB::connection($databaseName)->statement("insert into product_trn(transaction_date,transaction_type,qty,company_id,branch_id,product_id) 
-				values('".$mytime."','Balance','".$productId[0]->opening."','".$productId[0]->company_id."','".$productId[0]->branch_id."','".$productId[0]->product_id."')");
+				$productTrn = DB::connection($databaseName)->statement("insert into product_trn(transaction_date,transaction_type,qty,company_id,branch_id,product_id,created_at) 
+				values('".$mytime."','Balance','".$productId[0]->opening."','".$productId[0]->company_id."','".$productId[0]->branch_id."','".$productId[0]->product_id."','".$mytime."')");
 				DB::commit();
 			}
 		}
@@ -382,6 +387,7 @@ class ProductModel extends Model
 	*/
 	public function insertInOutwardData()
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -443,7 +449,8 @@ class ProductModel extends Model
 			invoice_number,
 			bill_number,
 			jf_id,
-			tax) 
+			tax,
+			created_at) 
 			values('".$transactionDateArray[$data]."',
 			'".$transactionTypeArray[$data]."',
 			'".$qtyArray[$data]."',
@@ -457,7 +464,8 @@ class ProductModel extends Model
 			'".$invoiceNumberArray[$data]."',
 			'".$billNumberArray[$data]."',
 			'".$jfId."',
-			'".$taxArray[$data]."')");
+			'".$taxArray[$data]."',
+			'".$mytime."')");
 			DB::commit();
 			
 			$totalPrice = $totalPrice+$priceArray[$data];
@@ -526,7 +534,8 @@ class ProductModel extends Model
 				transaction_type,
 				transaction_date,
 				company_id,
-				jf_id) 
+				jf_id,
+				created_at) 
 				values(
 				'".$vendorId."',
 				'".$encodedJsonArray."',
@@ -537,7 +546,8 @@ class ProductModel extends Model
 				'".$purchaseType."',
 				'".$transactionDateArray[0]."',
 				'".$companyIdArray[0]."',
-				'".$jfId."')");
+				'".$jfId."',
+				'".$mytime."')");
 				DB::commit();
 				if($purchaseBill!=1)
 				{
@@ -857,6 +867,7 @@ class ProductModel extends Model
 		// }
 		// $flag=0;
 		// $arrayData['inventory'] = array();
+		$mytime = Carbon\Carbon::now();
 		if($raw==1)
 		{
 			//insert data
@@ -873,7 +884,8 @@ class ProductModel extends Model
 				product_id,
 				updated_at,
 				jf_id) 
-				values(
+				values,
+				created_at(
 				".$productData."
 				'".$multipleArary[$arrayData]['discount']."',
 				'".$multipleArary[$arrayData]['discount_value']."',
@@ -882,7 +894,8 @@ class ProductModel extends Model
 				'".$multipleArary[$arrayData]['qty']."',
 				'".$multipleArary[$arrayData]['product_id']."',
 				'".$mytime."',
-				'".$jfId."'
+				'".$jfId."',
+				'".$mytime."'
 				)");  
 				DB::commit();
 				if(strcmp($transactionTypeArray[$data],'Inward')==0)
@@ -920,6 +933,7 @@ class ProductModel extends Model
 	*/
 	public function updateTransactionData()
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -929,7 +943,6 @@ class ProductModel extends Model
 		$jfId = func_get_arg(1);
 		$inOutWardData = func_get_arg(2);
 		$arrayDataFlag=0;
-		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
 		
 		//get exception message
@@ -1008,7 +1021,8 @@ class ProductModel extends Model
 					qty,
 					product_id,
 					updated_at,
-					jf_id) 
+					jf_id,
+					created_at) 
 					values(
 					'".$transactionData[0]->transaction_date."',
 					'".$inOutWardData."',
@@ -1024,7 +1038,8 @@ class ProductModel extends Model
 					'".$productTransactionData[$arrayData]['qty']."',
 					'".$productTransactionData[$arrayData]['product_id']."',
 					'".$mytime."',
-					'".$jfId."')");  
+					'".$jfId."',
+					'".$mytime."')");  
 					DB::commit();
 					
 					if(strcmp($inOutWardData,'Inward')==0)
@@ -1091,7 +1106,8 @@ class ProductModel extends Model
 						transaction_type,
 						transaction_date,
 						company_id,
-						jf_id) 
+						jf_id,
+						created_at) 
 						values(
 						'".$vendorId."',
 						'".$encodedJsonArray."',
@@ -1102,7 +1118,8 @@ class ProductModel extends Model
 						'".$purchaseType."',
 						'".$transactionData[0]->transaction_date."',
 						'".$transactionData[0]->company_id."',
-						'".$jfId."')");
+						'".$jfId."',
+						'".$mytime."')");
 						DB::commit();
 						if($purchaseBill!=1)
 						{

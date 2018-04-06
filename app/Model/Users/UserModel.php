@@ -23,6 +23,7 @@ class UserModel extends Model
 	*/
 	public function insertData()
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -48,8 +49,8 @@ class UserModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into user_mst(".$keyName.") 
-		values(".$userData.")");
+		$raw = DB::connection($databaseName)->statement("insert into user_mst(".$keyName.",created_at) 
+		values(".$userData.",'".$mytime."')");
 		DB::commit();
 		
 		// get exception message

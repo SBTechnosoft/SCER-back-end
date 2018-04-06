@@ -28,6 +28,7 @@ class PurchaseBillModel extends Model
 	*/
 	public function insertData($getData,$keyName,$documentArray)
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -63,8 +64,8 @@ class PurchaseBillModel extends Model
 		}
 		//purchase-data save
 		DB::beginTransaction();
-		$purchaseBillResult = DB::connection($databaseName)->statement("insert into purchase_bill(".$keyData.") 
-		values(".$purchaseData.")");
+		$purchaseBillResult = DB::connection($databaseName)->statement("insert into purchase_bill(".$keyData.",created_at) 
+		values(".$purchaseData.",'".$mytime."')");
 		DB::commit();
 
 		//get latest purchase-id from database
@@ -87,14 +88,16 @@ class PurchaseBillModel extends Model
 				expense_value,
 				expense_operation,
 				purchase_id,
-				expense_id)
+				expense_id,
+				created_at)
 				values(
 				'".$decodedJsonExpense[$expenseData]->expenseName."',
 				'".$decodedJsonExpense[$expenseData]->expenseType."',
 				'".$decodedJsonExpense[$expenseData]->expenseValue."',
 				'".$decodedJsonExpense[$expenseData]->expenseOperation."',
 				'".$purchaseIdResult[0]->purchase_id."',
-				'".$decodedJsonExpense[$expenseData]->expenseId."')");
+				'".$decodedJsonExpense[$expenseData]->expenseId."',
+				'".$mytime."')");
 				DB::commit();
 			}
 		}
@@ -110,12 +113,14 @@ class PurchaseBillModel extends Model
 				(document_name,
 				document_size,
 				document_format,
-				purchase_id) 
+				purchase_id,
+				created_at) 
 				values(
 				'".$documentArray[$documentData]['document_name']."',
 				".$documentArray[$documentData]['document_size'].",
 				'".$documentArray[$documentData]['document_format']."',
-				".$purchaseIdResult[0]->purchase_id.")");
+				".$purchaseIdResult[0]->purchase_id.",
+				'".$mytime."')");
 				DB::commit();
 			}
 		}
@@ -184,13 +189,15 @@ class PurchaseBillModel extends Model
 				expense_value,
 				expense_operation,
 				purchase_id,
-				expense_id)
+				expense_id,
+				created_at)
 				values('".$decodedExpenseData[$expenseData]->expenseType."',
 				'".$decodedExpenseData[$expenseData]->expenseName."',
 				'".$decodedExpenseData[$expenseData]->expenseValue."',
 				'".$decodedExpenseData[$expenseData]->expenseOperation."',
 				'".$purchaseId."',
-				'".$decodedExpenseData[$expenseData]->expenseId."')");
+				'".$decodedExpenseData[$expenseData]->expenseId."',
+				'".$mytime."')");
 				DB::commit();
 			}
 		}
@@ -206,12 +213,14 @@ class PurchaseBillModel extends Model
 				(document_name,
 				document_size,
 				document_format,
-				purchase_id) 
+				purchase_id,
+				created_at) 
 				values(
 				'".$documentArray[$documentData]['document_name']."',
 				".$documentArray[$documentData]['document_size'].",
 				'".$documentArray[$documentData]['document_format']."',
-				".$purchaseId.")");
+				".$purchaseId.",
+				'".$mytime."')");
 				DB::commit();
 			}
 		}

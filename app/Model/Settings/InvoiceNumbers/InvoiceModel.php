@@ -20,12 +20,13 @@ class InvoiceModel extends Model
 	*/
 	public function insertData()
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
-		date_default_timezone_set("Asia/Calcutta");
+		// date_default_timezone_set("Asia/Calcutta");
 		$getInvoiceData = array();
 		$getInvoiceKey = array();
 		$getInvoiceData = func_get_arg(0);
@@ -46,8 +47,8 @@ class InvoiceModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into invoice_dtl(".$keyName.") 
-		values(".$invoiceData.")");
+		$raw = DB::connection($databaseName)->statement("insert into invoice_dtl(".$keyName.",created_at) 
+		values(".$invoiceData.",'".$mytime."')");
 		DB::commit();
 		
 		//get exception message

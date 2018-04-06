@@ -20,6 +20,7 @@ class ProductGroupModel extends Model
 	*/
 	public function insertData()
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -45,8 +46,8 @@ class ProductGroupModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into product_group_mst(".$keyName.") 
-		values(".$productGrpData.")");
+		$raw = DB::connection($databaseName)->statement("insert into product_group_mst(".$keyName.",created_at) 
+		values(".$productGrpData.",'".$mytime."')");
 		DB::commit();
 		
 		//get exception message
@@ -69,6 +70,7 @@ class ProductGroupModel extends Model
 	*/
 	public function insertBatchData()
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -149,8 +151,8 @@ class ProductGroupModel extends Model
 				}
 				//database insertion
 				DB::beginTransaction();
-				$groupInsertionResult = DB::connection($databaseName)->statement("insert into product_group_mst(".$keyName.") 
-				values(".$productGrpData.")");
+				$groupInsertionResult = DB::connection($databaseName)->statement("insert into product_group_mst(".$keyName.",created_at) 
+				values(".$productGrpData.",'".$mytime."')");
 				DB::commit();
 				if($groupInsertionResult!=1)
 				{

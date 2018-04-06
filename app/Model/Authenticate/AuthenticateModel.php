@@ -20,6 +20,7 @@ class AuthenticateModel extends Model
 	*/
 	public function insertData($userId,$token)
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -30,10 +31,12 @@ class AuthenticateModel extends Model
 		$raw = DB::connection($databaseName)->statement("insert into active_session
 		(user_id,
 		token,
-		updated_at)
+		updated_at,
+		created_at)
 		values(
 		'".$userId."',
 		'".$token."',
+		'".$mytime."',
 		'".$mytime."'
 		)");
 		DB::commit();

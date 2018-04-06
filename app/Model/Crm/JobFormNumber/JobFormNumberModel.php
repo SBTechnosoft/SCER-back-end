@@ -20,6 +20,7 @@ class JobFormNumberModel extends Model
 	*/
 	public function insertData()
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -45,8 +46,8 @@ class JobFormNumberModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into job_card_number_dtl(".$keyName.") 
-		values(".$jobFormNumberData.")");
+		$raw = DB::connection($databaseName)->statement("insert into job_card_number_dtl(".$keyName.",created_at) 
+		values(".$jobFormNumberData.",'".$mytime."')");
 		DB::commit();
 		
 		//get exception message

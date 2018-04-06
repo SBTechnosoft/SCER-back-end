@@ -24,6 +24,7 @@ class LedgerModel extends Model
 	*/
 	public function insertData()
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -49,8 +50,8 @@ class LedgerModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into ledger_mst(".$keyName.") 
-		values(".$ledgerData.")");
+		$raw = DB::connection($databaseName)->statement("insert into ledger_mst(".$keyName.",created_at) 
+		values(".$ledgerData.",'".$mytime."')");
 		DB::commit();
 		
 		//get exception message
@@ -66,7 +67,7 @@ class LedgerModel extends Model
 			 `entry_date` date NOT NULL DEFAULT '0000-00-00',
 			 `jf_id` int(11) NOT NULL,
 			 `balance_flag` enum('','opening','closing') NOT NULL DEFAULT '',
-			 `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			 `created_at` datetime NOT NULL,
 			 `updated_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 			 `deleted_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 			 `ledger_id` int(11) NOT NULL,
@@ -136,6 +137,7 @@ class LedgerModel extends Model
 		$exceptionArray = $exception->messageArrays();
 		
 		$mytime = Carbon\Carbon::now();
+		
 		$getLedgerData = array();
 		$getLedgerKey = array();
 		$getLedgerData = func_get_arg(0);
@@ -177,8 +179,8 @@ class LedgerModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into ledger_mst(".$keyName.") 
-		values(".$ledgerData.")");
+		$raw = DB::connection($databaseName)->statement("insert into ledger_mst(".$keyName.",created_at) 
+		values(".$ledgerData.",'".$mytime."')");
 		DB::commit();
 		
 		if($raw==1)
@@ -191,7 +193,7 @@ class LedgerModel extends Model
 			 `entry_date` date NOT NULL DEFAULT '0000-00-00',
 			 `jf_id` int(11) NOT NULL,
 			 `balance_flag` enum('','opening','closing') NOT NULL  DEFAULT '',
-			 `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			 `created_at` datetime NOT NULL,
 			 `updated_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 			 `deleted_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 			 `ledger_id` int(11) NOT NULL,
@@ -201,8 +203,8 @@ class LedgerModel extends Model
 			if($result==1)
 			{
 				//insertion of balance data in ledger table
-				$ledgerInsertionResult = DB::connection($databaseName)->statement("insert into ".$ledgerId[0]->ledger_id."_ledger_dtl(".$balanceKeyName.",ledger_id,entry_date) 
-				values(".$ledgerBalanceData.",'".$ledgerId[0]->ledger_id."','".$mytime."')");
+				$ledgerInsertionResult = DB::connection($databaseName)->statement("insert into ".$ledgerId[0]->ledger_id."_ledger_dtl(".$balanceKeyName.",ledger_id,entry_date,created_at) 
+				values(".$ledgerBalanceData.",'".$ledgerId[0]->ledger_id."','".$mytime."','".$mytime."')");
 				if($ledgerInsertionResult==1)
 				{
 					DB::beginTransaction();
@@ -262,6 +264,7 @@ class LedgerModel extends Model
 	*/
 	public function insertGeneralLedger($companyId)
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -291,14 +294,16 @@ class LedgerModel extends Model
 			state_abb,
 			city_id,
 			ledger_group_id,
-			company_id)
+			company_id,
+			created_at)
 			values
 			('".$generalLedgerArray[$arrayData]."',
 			'yes',
 			'".$stateAbb."',
 			'".$cityId."',
 			'".$generalLedgerGrpArray[$arrayData]."',
-			'".$companyId[0]->company_id."')");
+			'".$companyId[0]->company_id."',
+			'".$mytime."')");
 			DB::commit();
 			
 			if($ledgerInsertionResult==0)
@@ -331,7 +336,7 @@ class LedgerModel extends Model
 				 `entry_date` date NOT NULL DEFAULT '0000-00-00',
 				 `jf_id` int(11) NOT NULL,
 				 `balance_flag` enum('','opening','closing') NOT NULL  DEFAULT '',
-				 `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				 `created_at` datetime NOT NULL,
 				 `updated_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 				 `deleted_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 				 `ledger_id` int(11) NOT NULL,
@@ -347,14 +352,16 @@ class LedgerModel extends Model
 				balance_flag,
 				entry_date,
 				jf_id,
-				ledger_id)
+				ledger_id,
+				created_at)
 				values
 				('0.00',
 				'credit',
 				'opening',
 				'".$ledgerIdData[$ledgerIdArray]->created_at."',
 				'0',
-				'".$ledgerIdData[$ledgerIdArray]->ledger_id."')");
+				'".$ledgerIdData[$ledgerIdArray]->ledger_id."',
+				'".$mytime."')");
 				DB::commit();
 				if($ledgerTrnData==0)
 				{

@@ -118,8 +118,9 @@ class ProfitLossModel extends Model
 				$profitLossResult = DB::connection($databaseName)->statement("insert into profit_loss_dtl(
 				amount,
 				amount_type,
-				ledger_id)
-				values('".$totalBalance."','".$balanceType."','".$ledgerResult[$ledgerData]->ledger_id."')");
+				ledger_id,
+				created_at)
+				values('".$totalBalance."','".$balanceType."','".$ledgerResult[$ledgerData]->ledger_id."','".$mytime."')");
 				DB::commit();
 			}
 		}

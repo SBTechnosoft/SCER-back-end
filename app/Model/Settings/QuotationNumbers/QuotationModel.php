@@ -19,12 +19,13 @@ class QuotationModel extends Model
 	*/
 	public function insertData()
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
-		date_default_timezone_set("Asia/Calcutta");
+		// date_default_timezone_set("Asia/Calcutta");
 		$getQuotationData = array();
 		$getQuotationKey = array();
 		$getQuotationData = func_get_arg(0);
@@ -45,8 +46,8 @@ class QuotationModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into quotation_dtl(".$keyName.") 
-		values(".$quotationData.")");
+		$raw = DB::connection($databaseName)->statement("insert into quotation_dtl(".$keyName.",created_at) 
+		values(".$quotationData.",'".$mytime."')");
 		DB::commit();
 		
 		//get exception message

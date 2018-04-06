@@ -20,6 +20,7 @@ class CompanyModel extends Model
 	*/
 	public function insertAllData()
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -48,8 +49,8 @@ class CompanyModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into company_mst(".$keyName.",document_name,document_size,document_format) 
-		values(".$companyData.",'".$getDocumentData[0][0]."','".$getDocumentData[0][1]."','".$getDocumentData[0][2]."')");
+		$raw = DB::connection($databaseName)->statement("insert into company_mst(".$keyName.",document_name,document_size,document_format,created_at) 
+		values(".$companyData.",'".$getDocumentData[0][0]."','".$getDocumentData[0][1]."','".$getDocumentData[0][2]."','".$mytime."')");
 		DB::commit();
 		
 		// get exception message
@@ -117,6 +118,7 @@ class CompanyModel extends Model
 	*/
 	public function insertData()
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -144,8 +146,8 @@ class CompanyModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into company_mst(".$keyName.") 
-		values(".$companyData.")");
+		$raw = DB::connection($databaseName)->statement("insert into company_mst(".$keyName.",created_at) 
+		values(".$companyData.",'".$mytime."')");
 		DB::commit();
 		
 		//get latest company_id
@@ -174,6 +176,7 @@ class CompanyModel extends Model
 			pincode, 
 			is_display, 
 			is_default,
+			created_at,
 			updated_at,
 			deleted_at,
 			state_abb,
@@ -186,6 +189,7 @@ class CompanyModel extends Model
 			'395000', 
 			'yes',
 			'not',
+			'".$mytime."',
 			'0000-00-00 00:00:00',
 			'0000-00-00 00:00:00',
 			'".$latestCompanyId[0]->state_abb."',
@@ -220,6 +224,7 @@ class CompanyModel extends Model
 	*/
 	public function templateInsertion($companyName,$companyId)
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -245,12 +250,14 @@ class CompanyModel extends Model
 			template_name,
 			template_body,
 			template_type,
-			company_id)
+			company_id,
+			created_at)
 			values(
 			'".$companyName.' '.$templateData[$templateArrayData]."',
 			'".$templateArray[$templateData[$templateArrayData]]."',
 			'".$constantTemplateData[$templateData[$templateArrayData]]."',
-			'".$companyId."')");
+			'".$companyId."',
+			'".$mytime."')");
 			DB::commit();
 			if($templateInsertion!=1)
 			{

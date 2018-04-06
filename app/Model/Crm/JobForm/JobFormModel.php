@@ -57,7 +57,8 @@ class JobFormModel extends Model
 		client_id,
 		bank_name,
 		cheque_no,
-		product_array) 
+		product_array,
+		created_at) 
 		values(
 		'".$dataArray['clientName']."',
 		'".$dataArray['address']."',
@@ -78,7 +79,8 @@ class JobFormModel extends Model
 		'".$dataArray['clientId']."',
 		'".$dataArray['bankName']."',
 		'".$dataArray['chequeNo']."',
-		'".$encodedArray."') on duplicate key update 
+		'".$encodedArray."',
+		'".$mytime."') on duplicate key update 
 		client_name='".$dataArray['clientName']."',
 		address='".$dataArray['address']."',
 		contact_no='".$dataArray['contactNo']."',
@@ -338,6 +340,7 @@ class JobFormModel extends Model
 	*/
 	public function jobFormDocumentData($jobFormId,$documentName,$documentFormat,$documentType)
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -346,8 +349,9 @@ class JobFormModel extends Model
 		job_card_id,
 		document_name,
 		document_format,
-		document_type)
-		values('".$jobFormId."','".$documentName."','".$documentFormat."','".$documentType."')");
+		document_type,
+		created_at)
+		values('".$jobFormId."','".$documentName."','".$documentFormat."','".$documentType."','".$mytime."')");
 		DB::commit();
 		//get exception message
 		$exception = new ExceptionMessage();

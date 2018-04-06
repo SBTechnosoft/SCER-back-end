@@ -24,6 +24,7 @@ class ClientModel extends Model
 	*/
 	public function insertData()
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -65,8 +66,8 @@ class ClientModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into client_mst(".$keyName.") 
-		values(".$clientData.")");
+		$raw = DB::connection($databaseName)->statement("insert into client_mst(".$keyName.",created_at) 
+		values(".$clientData.",'".$mytime."')");
 		DB::commit();
 		
 		// get exception message

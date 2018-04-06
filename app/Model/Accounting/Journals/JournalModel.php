@@ -21,6 +21,7 @@ class JournalModel extends Model
 	*/
 	public function insertData()
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -64,8 +65,9 @@ class JournalModel extends Model
 			entry_date,
 			ledger_id,
 			company_id,
-			journal_type) 
-			values('".$jfIdArray[$data]."','".$amountArray[$data]."','".$amountTypeArray[$data]."','".$entryDateArray[$data]."','".$ledgerIdArray[$data]."','".$companyIdArray[$data]."','".$journalTypeArray[$data]."')");
+			journal_type,
+			created_at) 
+			values('".$jfIdArray[$data]."','".$amountArray[$data]."','".$amountTypeArray[$data]."','".$entryDateArray[$data]."','".$ledgerIdArray[$data]."','".$companyIdArray[$data]."','".$journalTypeArray[$data]."','".$mytime."')");
 			DB::commit();
 			if($raw==1)
 			{
@@ -100,8 +102,9 @@ class JournalModel extends Model
 						amount,
 						amount_type,
 						entry_date,
-						ledger_id) 
-						values('".$jfIdArray[$data]."','".$creditAmount[$creditLoop]."','".$amountTypeArray[$data]."','".$entryDateArray[$data]."','".$creditLedger[$creditLoop]."')");
+						ledger_id,
+						created_at) 
+						values('".$jfIdArray[$data]."','".$creditAmount[$creditLoop]."','".$amountTypeArray[$data]."','".$entryDateArray[$data]."','".$creditLedger[$creditLoop]."','".$mytime."')");
 						DB::commit();
 					}
 				}
@@ -115,8 +118,9 @@ class JournalModel extends Model
 					amount,
 					amount_type,
 					entry_date,
-					ledger_id) 
-					values('".$jfIdArray[$data]."','".$amountArray[$data]."','".$amountTypeArray[$data]."','".$entryDateArray[$data]."','".$creditLedger[0]."')");
+					ledger_id,
+					created_at) 
+					values('".$jfIdArray[$data]."','".$amountArray[$data]."','".$amountTypeArray[$data]."','".$entryDateArray[$data]."','".$creditLedger[0]."','".$mytime."')");
 					DB::commit();
 				}
 			}
@@ -134,8 +138,9 @@ class JournalModel extends Model
 						amount,
 						amount_type,
 						entry_date,
-						ledger_id) 
-						values('".$jfIdArray[$data]."','".$debitAmount[$debitLoop]."','".$amountTypeArray[$data]."','".$entryDateArray[$data]."','".$debitLedger[$debitLoop]."')");
+						ledger_id,
+						created_at) 
+						values('".$jfIdArray[$data]."','".$debitAmount[$debitLoop]."','".$amountTypeArray[$data]."','".$entryDateArray[$data]."','".$debitLedger[$debitLoop]."','".$mytime."')");
 						DB::commit();
 					}
 				}
@@ -149,8 +154,9 @@ class JournalModel extends Model
 					amount,
 					amount_type,
 					entry_date,
-					ledger_id) 
-					values('".$jfIdArray[$data]."','".$amountArray[$data]."','".$amountTypeArray[$data]."','".$entryDateArray[$data]."','".$debitLedger[0]."')");
+					ledger_id,
+					created_at) 
+					values('".$jfIdArray[$data]."','".$amountArray[$data]."','".$amountTypeArray[$data]."','".$entryDateArray[$data]."','".$debitLedger[0]."','".$mytime."')");
 					DB::commit();
 				}
 			}
@@ -895,8 +901,9 @@ class JournalModel extends Model
 					ledger_id,
 					company_id,
 					journal_type,
-					updated_at) 
-					values('".$jfId."','".$journalArray[$data]['amount']."','".$journalArray[$data]['amount_type']."','".$entryDate."','".$journalArray[$data]['ledger_id']."','".$companyId."','".$journalType."','".$mytime."')");
+					updated_at,
+					created_at) 
+					values('".$jfId."','".$journalArray[$data]['amount']."','".$journalArray[$data]['amount_type']."','".$entryDate."','".$journalArray[$data]['ledger_id']."','".$companyId."','".$journalType."','".$mytime."','".$mytime."')");
 					DB::commit();
 					if($journalInsertResult==1)
 					{
@@ -936,8 +943,9 @@ class JournalModel extends Model
 								amount_type,
 								entry_date,
 								ledger_id,
-								updated_at) 
-								values('".$jfId."','".$creditAmount[$creditLoop]."','".$journalArray[$data]['amount_type']."','".$entryDate."','".$creditLedger[$creditLoop]."','".$mytime."')");
+								updated_at,
+								created_at) 
+								values('".$jfId."','".$creditAmount[$creditLoop]."','".$journalArray[$data]['amount_type']."','".$entryDate."','".$creditLedger[$creditLoop]."','".$mytime."','".$mytime."')");
 								DB::commit();
 							}
 						}
@@ -952,8 +960,9 @@ class JournalModel extends Model
 							amount_type,
 							entry_date,
 							ledger_id,
-							updated_at) 
-							values('".$jfId."','".$journalArray[$data]['amount']."','".$journalArray[$data]['amount_type']."','".$entryDate."','".$creditLedger[0]."','".$mytime."')");
+							updated_at,
+							created_at) 
+							values('".$jfId."','".$journalArray[$data]['amount']."','".$journalArray[$data]['amount_type']."','".$entryDate."','".$creditLedger[0]."','".$mytime."','".$mytime."')");
 							DB::commit();
 						}
 					}
@@ -972,8 +981,9 @@ class JournalModel extends Model
 								amount_type,
 								entry_date,
 								ledger_id,
-								updated_at) 
-								values('".$jfId."','".$debitAmount[$debitLoop]."','".$journalArray[$data]['amount_type']."','".$entryDate."','".$debitLedger[$debitLoop]."','".$mytime."')");
+								updated_at,
+								created_at) 
+								values('".$jfId."','".$debitAmount[$debitLoop]."','".$journalArray[$data]['amount_type']."','".$entryDate."','".$debitLedger[$debitLoop]."','".$mytime."','".$mytime."')");
 								DB::commit();
 							}
 						}
@@ -988,8 +998,9 @@ class JournalModel extends Model
 							amount_type,
 							entry_date,
 							ledger_id,
-							updated_at) 
-							values('".$jfId."','".$journalArray[$data]['amount']."','".$journalArray[$data]['amount_type']."','".$entryDate."','".$debitLedger[0]."','".$mytime."')");
+							updated_at,
+							created_at) 
+							values('".$jfId."','".$journalArray[$data]['amount']."','".$journalArray[$data]['amount_type']."','".$entryDate."','".$debitLedger[0]."','".$mytime."','".$mytime."')");
 							DB::commit();
 						}
 					}
@@ -1132,8 +1143,9 @@ class JournalModel extends Model
 					ledger_id,
 					company_id,
 					journal_type,
-					updated_at) 
-					values('".$jfId."','".$journalArray[$data]['amount']."','".$journalArray[$data]['amount_type']."','".$entryDate."','".$journalArray[$data]['ledger_id']."','".$companyId."','".$journalType."','".$mytime."')");
+					updated_at,
+					created_at) 
+					values('".$jfId."','".$journalArray[$data]['amount']."','".$journalArray[$data]['amount_type']."','".$entryDate."','".$journalArray[$data]['ledger_id']."','".$companyId."','".$journalType."','".$mytime."','".$mytime."')");
 					DB::commit();
 					if($journalInsertResult==1)
 					{
@@ -1173,8 +1185,9 @@ class JournalModel extends Model
 								amount_type,
 								entry_date,
 								ledger_id,
-								updated_at) 
-								values('".$jfId."','".$creditAmount[$creditLoop]."','".$journalArray[$data]['amount_type']."','".$entryDate."','".$creditLedger[$creditLoop]."','".$mytime."')");
+								updated_at,
+								created_at) 
+								values('".$jfId."','".$creditAmount[$creditLoop]."','".$journalArray[$data]['amount_type']."','".$entryDate."','".$creditLedger[$creditLoop]."','".$mytime."','".$mytime."')");
 								DB::commit();
 							}
 						}
@@ -1189,8 +1202,9 @@ class JournalModel extends Model
 							amount_type,
 							entry_date,
 							ledger_id,
-							updated_at) 
-							values('".$jfId."','".$journalArray[$data]['amount']."','".$journalArray[$data]['amount_type']."','".$entryDate."','".$creditLedger[0]."','".$mytime."')");
+							updated_at,
+							created_at) 
+							values('".$jfId."','".$journalArray[$data]['amount']."','".$journalArray[$data]['amount_type']."','".$entryDate."','".$creditLedger[0]."','".$mytime."','".$mytime."')");
 							DB::commit();
 						}
 					}
@@ -1209,8 +1223,9 @@ class JournalModel extends Model
 								amount_type,
 								entry_date,
 								ledger_id,
-								updated_at) 
-								values('".$jfId."','".$debitAmount[$debitLoop]."','".$journalArray[$data]['amount_type']."','".$entryDate."','".$debitLedger[$debitLoop]."','".$mytime."')");
+								updated_at,
+								created_at) 
+								values('".$jfId."','".$debitAmount[$debitLoop]."','".$journalArray[$data]['amount_type']."','".$entryDate."','".$debitLedger[$debitLoop]."','".$mytime."','".$mytime."')");
 								DB::commit();
 							}
 						}
@@ -1225,8 +1240,9 @@ class JournalModel extends Model
 							amount_type,
 							entry_date,
 							ledger_id,
-							updated_at) 
-							values('".$jfId."','".$journalArray[$data]['amount']."','".$journalArray[$data]['amount_type']."','".$entryDate."','".$debitLedger[0]."','".$mytime."')");
+							updated_at,
+							created_at) 
+							values('".$jfId."','".$journalArray[$data]['amount']."','".$journalArray[$data]['amount_type']."','".$entryDate."','".$debitLedger[0]."','".$mytime."','".$mytime."')");
 							DB::commit();
 						}
 					}

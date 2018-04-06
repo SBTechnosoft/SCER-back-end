@@ -20,6 +20,7 @@ class TemplateModel extends Model
 	*/
 	public function insertData()
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -45,8 +46,8 @@ class TemplateModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into template_mst(".$keyName.") 
-		values(".$templateData.")");
+		$raw = DB::connection($databaseName)->statement("insert into template_mst(".$keyName.",created_at) 
+		values(".$templateData.",'".$mytime."')");
 		DB::commit();
 		
 		//get exception message

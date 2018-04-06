@@ -127,8 +127,9 @@ class BillModel extends Model
 				company_id,
 				sales_type,
 				client_id,
-				jf_id) 
-				values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$poNumber."','".$userId."','".$isSalesOrderInsert."','".$remark."','".$entryDate."','".$serviceDate."','".$companyId."','".$salesType."','".$ClientId."','".$jfId."')");
+				jf_id,
+				created_at) 
+				values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$poNumber."','".$userId."','".$isSalesOrderInsert."','".$remark."','".$entryDate."','".$serviceDate."','".$companyId."','".$salesType."','".$ClientId."','".$jfId."','".$mytime."')");
 				DB::commit();
 				
 				//update invoice-number
@@ -198,14 +199,16 @@ class BillModel extends Model
 						expense_value,
 						expense_operation,
 						sale_id,
-						expense_id)
+						expense_id,
+						created_at)
 						values(
 						'".$decodedJsonExpense[$expenseArray]->expenseName."',
 						'".$decodedJsonExpense[$expenseArray]->expenseType."',
 						'".$decodedJsonExpense[$expenseArray]->expenseValue."',
 						'".$decodedJsonExpense[$expenseArray]->expense_operation."',
 						'".$saleId[0]->sale_id."',
-						'".$decodedJsonExpense[$expenseArray]->expenseId."')");
+						'".$decodedJsonExpense[$expenseArray]->expenseId."',
+						'".$mytime."')");
 						DB::commit();
 					}
 				}
@@ -236,8 +239,9 @@ class BillModel extends Model
 			sales_type,
 			client_id,
 			sale_id,
-			jf_id) 
-			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$poNumber."','".$userId."','".$isSalesOrderInsert."','".$remark."','".$entryDate."','".$serviceDate."','".$companyId."','".$salesType."','".$ClientId."','".$saleId[0]->sale_id."','".$jfId."')");
+			jf_id,
+			created_at) 
+			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$poNumber."','".$userId."','".$isSalesOrderInsert."','".$remark."','".$entryDate."','".$serviceDate."','".$companyId."','".$salesType."','".$ClientId."','".$saleId[0]->sale_id."','".$jfId."','".$mytime."')");
 			DB::commit();
 			if(is_array($saleId))
 			{
@@ -249,8 +253,9 @@ class BillModel extends Model
 					sale_id,
 					document_name,
 					document_size,
-					document_format) 
-					values('".$saleId[0]->sale_id."','".$documentArray[$docArray][0]."','".$documentArray[$docArray][1]."','".$documentArray[$docArray][2]."')");
+					document_format,
+					created_at) 
+					values('".$saleId[0]->sale_id."','".$documentArray[$docArray][0]."','".$documentArray[$docArray][1]."','".$documentArray[$docArray][2]."','".$mytime."')");
 					DB::commit();
 					
 					// add documents in client database
@@ -260,8 +265,9 @@ class BillModel extends Model
 					document_name,
 					document_size,
 					document_format,
-					client_id) 
-					values('".$saleId[0]->sale_id."','".$documentArray[$docArray][0]."','".$documentArray[$docArray][1]."','".$documentArray[$docArray][2]."','".$ClientId."')");
+					client_id,
+					created_at) 
+					values('".$saleId[0]->sale_id."','".$documentArray[$docArray][0]."','".$documentArray[$docArray][1]."','".$documentArray[$docArray][2]."','".$ClientId."','".$mytime."')");
 					DB::commit();
 					if($saleDocumentResult==0 || $clientDocumentResult==0)
 					{
@@ -441,8 +447,9 @@ class BillModel extends Model
 				company_id,
 				client_id,
 				sales_type,
-				jf_id) 
-				values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$poNumber."','".$userId."','".$salesOrderInsert."','".$remark."','".$entryDate."','".$serviceDate."','".$companyId."','".$ClientId."','".$salesType."','".$jfId."')");
+				jf_id,
+				created_at) 
+				values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$poNumber."','".$userId."','".$salesOrderInsert."','".$remark."','".$entryDate."','".$serviceDate."','".$companyId."','".$ClientId."','".$salesType."','".$jfId."','".$mytime."')");
 				DB::commit();
 				
 				//update invoice-number
@@ -509,14 +516,16 @@ class BillModel extends Model
 						expense_value,
 						expense_operation,
 						sale_id,
-						expense_id)
+						expense_id,
+						created_at)
 						values(
 						'".$decodedJsonExpense[$expenseArray]->expenseName."',
 						'".$decodedJsonExpense[$expenseArray]->expenseType."',
 						'".$decodedJsonExpense[$expenseArray]->expenseValue."',
 						'".$decodedJsonExpense[$expenseArray]->expenseOperation."',
 						'".$saleId[0]->sale_id."',
-						'".$decodedJsonExpense[$expenseArray]->expenseId."')");
+						'".$decodedJsonExpense[$expenseArray]->expenseId."',
+						'".$mytime."')");
 						DB::commit();
 					}
 				}
@@ -548,8 +557,9 @@ class BillModel extends Model
 			client_id,
 			sales_type,
 			sale_id,
-			jf_id) 
-			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$poNumber."','".$userId."','".$salesOrderInsert."','".$remark."','".$entryDate."','".$serviceDate."','".$companyId."','".$ClientId."','".$salesType."','".$saleId[0]->sale_id."','".$jfId."')");
+			jf_id,
+			created_at) 
+			values('".$productArray."','".$paymentMode."','".$invoiceNumber."','".$jobCardNumber."','".$bankName."','".$checkNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$advance."','".$balance."','".$poNumber."','".$userId."','".$salesOrderInsert."','".$remark."','".$entryDate."','".$serviceDate."','".$companyId."','".$ClientId."','".$salesType."','".$saleId[0]->sale_id."','".$jfId."','".$mytime."')");
 			DB::commit();
 			//get latest inserted sale bill data
 			DB::beginTransaction();
@@ -680,8 +690,8 @@ class BillModel extends Model
 			//insert sale-bill draft data
 			DB::beginTransaction();
 			$raw = DB::connection($databaseName)->statement("insert into sales_bill
-			(".$keyString."product_array,is_draft)
-			values(".$valueString."'".$inventoryDecodedData."','yes')");
+			(".$keyString."product_array,is_draft,created_at)
+			values(".$valueString."'".$inventoryDecodedData."','yes','".$mytime."')");
 			DB::commit();
 		}
 		if($raw==1)
@@ -732,6 +742,7 @@ class BillModel extends Model
 	*/
 	public function billDocumentData($saleId,$documentName,$documentFormat,$documentType)
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -742,8 +753,9 @@ class BillModel extends Model
 		sale_id,
 		document_name,
 		document_format,
-		document_type)
-		values('".$saleId."','".$documentName."','".$documentFormat."','".$documentType."')");
+		document_type,
+		created_at)
+		values('".$saleId."','".$documentName."','".$documentFormat."','".$documentType."','".$mytime."')");
 		DB::commit();
 		
 		//get client-id from sale-bill
@@ -761,8 +773,9 @@ class BillModel extends Model
 		document_name,
 		document_format,
 		document_type,
-		client_id)
-		values('".$saleId."','".$documentName."','".$documentFormat."','".$documentType."','".$saleBillData[0]->client_id."')");
+		client_id,
+		created_at)
+		values('".$saleId."','".$documentName."','".$documentFormat."','".$documentType."','".$saleBillData[0]->client_id."','".$mytime."')");
 		DB::commit();
 		
 		//get exception message
@@ -1887,8 +1900,9 @@ class BillModel extends Model
 				sale_id,
 				document_name,
 				document_size,
-				document_format) 
-				values('".$saleId."','".$documentArray[$docArray][0]."','".$documentArray[$docArray][1]."','".$documentArray[$docArray][2]."')");
+				document_format,
+				created_at) 
+				values('".$saleId."','".$documentArray[$docArray][0]."','".$documentArray[$docArray][1]."','".$documentArray[$docArray][2]."','".$mytime."')");
 				DB::commit();
 				
 				//get client-id from sale-bill
@@ -1906,8 +1920,9 @@ class BillModel extends Model
 				document_name,
 				document_format,
 				document_size,
-				client_id)
-				values('".$saleId."','".$documentArray[$docArray][0]."','".$documentArray[$docArray][2]."','".$documentArray[$docArray][1]."','".$saleBillData[0]->client_id."')");
+				client_id,
+				created_at)
+				values('".$saleId."','".$documentArray[$docArray][0]."','".$documentArray[$docArray][2]."','".$documentArray[$docArray][1]."','".$saleBillData[0]->client_id."','".$mytime."')");
 				DB::commit();
 				if($documentResult==0)
 				{
@@ -1939,13 +1954,15 @@ class BillModel extends Model
 				expense_value,
 				expense_operation,
 				sale_id,
-				expense_id)
+				expense_id,
+				created_at)
 				values('".$decodedExpenseData[$expenseArray]->expenseType."',
 				'".$decodedExpenseData[$expenseArray]->expenseName."',
 				'".$decodedExpenseData[$expenseArray]->expenseValue."',
 				'".$decodedExpenseData[$expenseArray]->expenseOperation."',
 				'".$saleId."',
-				'".$decodedExpenseData[$expenseArray]->expenseId."')");
+				'".$decodedExpenseData[$expenseArray]->expenseId."',
+				'".$mytime."')");
 				DB::commit();
 			}
 			//remode expense from an array
@@ -2152,6 +2169,7 @@ class BillModel extends Model
 	*/
 	public function updateImageData($saleId,$documentArray)
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -2170,8 +2188,9 @@ class BillModel extends Model
 				sale_id,
 				document_name,
 				document_size,
-				document_format) 
-				values('".$saleId."','".$documentArray[$docArray][0]."','".$documentArray[$docArray][1]."','".$documentArray[$docArray][2]."')");
+				document_format,
+				created_at) 
+				values('".$saleId."','".$documentArray[$docArray][0]."','".$documentArray[$docArray][1]."','".$documentArray[$docArray][2]."','".$mytime."')");
 				DB::commit();
 				
 				//get client-id from sale-bill
@@ -2192,8 +2211,9 @@ class BillModel extends Model
 				document_name,
 				document_format,
 				document_size,
-				client_id)
-				values('".$saleId."','".$documentArray[$docArray][0]."','".$documentArray[$docArray][2]."','".$documentArray[$docArray][1]."','".$saleBillData[0]->client_id."')");
+				client_id,
+				created_at)
+				values('".$saleId."','".$documentArray[$docArray][0]."','".$documentArray[$docArray][2]."','".$documentArray[$docArray][1]."','".$saleBillData[0]->client_id."','".$mytime."')");
 				DB::commit();
 				if($documentResult==0)
 				{

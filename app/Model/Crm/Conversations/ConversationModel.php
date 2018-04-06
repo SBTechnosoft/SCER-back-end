@@ -22,6 +22,7 @@ class ConversationModel extends Model
 	*/
 	public function insertEmailData()
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -61,8 +62,8 @@ class ConversationModel extends Model
 				$conversationData = rtrim($conversationData,',');
 			}
 			DB::beginTransaction();
-			$raw = DB::connection($databaseName)->statement("insert into conversation_dtl(".$keyName."".$documentKey.",user_id)
-			values(".$conversationData."".$documentData.",'".$userId."')");
+			$raw = DB::connection($databaseName)->statement("insert into conversation_dtl(".$keyName."".$documentKey.",user_id,created_at)
+			values(".$conversationData."".$documentData.",'".$userId."','".$mytime."')");
 			DB::commit();
 		}
 		if($raw==1)
@@ -78,6 +79,7 @@ class ConversationModel extends Model
 	*/
 	public function insertSmsData()
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -106,8 +108,8 @@ class ConversationModel extends Model
 				$conversationData = $conversationData."'".$getDataArray[$insertQueryIndex][$innerArray]."',";
 			}
 			DB::beginTransaction();
-			$raw = DB::connection($databaseName)->statement("insert into conversation_dtl(".$keyName."user_id)
-			values(".$conversationData."".$userId.")");
+			$raw = DB::connection($databaseName)->statement("insert into conversation_dtl(".$keyName."user_id,created_at)
+			values(".$conversationData."".$userId.",'".$mytime."')");
 			DB::commit();
 		}
 		if($raw==1)
@@ -123,6 +125,7 @@ class ConversationModel extends Model
 	*/
 	public function saveMailDataFromBill($emailId,$subject,$conversationType,$conversation,$documentName,$documentFormat,$documentPath,$comment,$companyId,$clientId,$headerData)
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -146,8 +149,8 @@ class ConversationModel extends Model
 		DB::beginTransaction();
 		$raw = DB::connection($databaseName)->statement("insert into conversation_dtl
 		(email_id,subject,conversation,conversation_type,attachment_name,attachment_format,attachment_path,comment,client_id,
-		company_id,user_id)values('".$emailId."','".$subject."','".$conversation."','".$conversationType."','".$documentName."','".$documentFormat."','".$documentPath."',
-		'".$comment."','".$clientId."','".$companyId."','".$userId."')");
+		company_id,user_id,created_at)values('".$emailId."','".$subject."','".$conversation."','".$conversationType."','".$documentName."','".$documentFormat."','".$documentPath."',
+		'".$comment."','".$clientId."','".$companyId."','".$userId."','".$mytime."')");
 		DB::commit();
 		
 		if($raw==1)

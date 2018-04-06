@@ -25,6 +25,7 @@ class SettingModel extends Model
 	*/
 	public function insertData()
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -122,64 +123,64 @@ class SettingModel extends Model
 				}
 			}
 			DB::beginTransaction();
-			$raw = DB::connection($databaseName)->statement("insert into setting_mst(setting_type,setting_data) 
-			values('".$constantArray['barcodeSetting']."','".json_encode($barcodeArray)."')");
+			$raw = DB::connection($databaseName)->statement("insert into setting_mst(setting_type,setting_data,created_at) 
+			values('".$constantArray['barcodeSetting']."','".json_encode($barcodeArray)."','".$mytime."')");
 			DB::commit();
 		}
 		else if($chequeNoFlag==1)
 		{
 			DB::beginTransaction();
-			$raw = DB::connection($databaseName)->statement("insert into setting_mst(setting_type,setting_data) 
-			values('".$constantArray['chequeNoSetting']."','".json_encode($chequeNoArray)."')");
+			$raw = DB::connection($databaseName)->statement("insert into setting_mst(setting_type,setting_data,created_at) 
+			values('".$constantArray['chequeNoSetting']."','".json_encode($chequeNoArray)."','".$mytime."')");
 			DB::commit();
 		}
 		else if($serviceDateFlag==1)
 		{
 			DB::beginTransaction();
-			$raw = DB::connection($databaseName)->statement("insert into setting_mst(setting_type,setting_data) 
-			values('".$constantArray['serviceDateSetting']."','".json_encode($serviceDateArray)."')");
+			$raw = DB::connection($databaseName)->statement("insert into setting_mst(setting_type,setting_data,created_at) 
+			values('".$constantArray['serviceDateSetting']."','".json_encode($serviceDateArray)."','".$mytime."')");
 			DB::commit();
 		}
 		else if($paymaneDateFlag==1)
 		{
 			DB::beginTransaction();
-			$raw = DB::connection($databaseName)->statement("insert into setting_mst(setting_type,setting_data) 
-			values('".$constantArray['paymentDateSetting']."','".json_encode($paymaneDateArray)."')");
+			$raw = DB::connection($databaseName)->statement("insert into setting_mst(setting_type,setting_data,created_at) 
+			values('".$constantArray['paymentDateSetting']."','".json_encode($paymaneDateArray)."','".$mytime."')");
 			DB::commit();
 		}
 		else if($birthDateFlag==1)
 		{
 			DB::beginTransaction();
-			$raw = DB::connection($databaseName)->statement("insert into setting_mst(setting_type,setting_data) 
-			values('".$constantArray['birthDateReminderSetting']."','".json_encode($birthDateArray)."')");
+			$raw = DB::connection($databaseName)->statement("insert into setting_mst(setting_type,setting_data,created_at) 
+			values('".$constantArray['birthDateReminderSetting']."','".json_encode($birthDateArray)."','".$mytime."')");
 			DB::commit();
 		}
 		else if($anniDateFlag==1)
 		{
 			DB::beginTransaction();
-			$raw = DB::connection($databaseName)->statement("insert into setting_mst(setting_type,setting_data) 
-			values('".$constantArray['anniDateReminderSetting']."','".json_encode($anniDateArray)."')");
+			$raw = DB::connection($databaseName)->statement("insert into setting_mst(setting_type,setting_data,created_at) 
+			values('".$constantArray['anniDateReminderSetting']."','".json_encode($anniDateArray)."','".$mytime."')");
 			DB::commit();
 		}
 		else if($productFlag==1)
 		{
 			DB::beginTransaction();
-			$raw = DB::connection($databaseName)->statement("insert into setting_mst(setting_type,setting_data) 
-			values('".$constantArray['productSetting']."','".json_encode($productArray)."')");
+			$raw = DB::connection($databaseName)->statement("insert into setting_mst(setting_type,setting_data,created_at) 
+			values('".$constantArray['productSetting']."','".json_encode($productArray)."','".$mytime."')");
 			DB::commit();
 		}
 		else if($clientFlag==1)
 		{
 			DB::beginTransaction();
-			$raw = DB::connection($databaseName)->statement("insert into setting_mst(setting_type,setting_data) 
-			values('".$constantArray['clientSetting']."','".json_encode($clientArray)."')");
+			$raw = DB::connection($databaseName)->statement("insert into setting_mst(setting_type,setting_data,created_at) 
+			values('".$constantArray['clientSetting']."','".json_encode($clientArray)."','".$mytime."')");
 			DB::commit();
 		}
 		else if($billFlag==1)
 		{
 			DB::beginTransaction();
-			$raw = DB::connection($databaseName)->statement("insert into setting_mst(setting_type,setting_data) 
-			values('".$constantArray['billSetting']."','".json_encode($billArray)."')");
+			$raw = DB::connection($databaseName)->statement("insert into setting_mst(setting_type,setting_data,created_at) 
+			values('".$constantArray['billSetting']."','".json_encode($billArray)."','".$mytime."')");
 			DB::commit();
 		}
 

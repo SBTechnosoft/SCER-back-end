@@ -92,8 +92,9 @@ class CashFlowModel extends Model
 				amount,
 				amount_type,
 				entry_date,
-				ledger_id)
-				values('".$ledgerAmountResult[$arrayData]->amount."','".$ledgerAmountResult[$arrayData]->amount_type."','".$ledgerAmountResult[$arrayData]->entry_date."','".$ledgerAmountResult[$arrayData]->ledger_id."')");
+				ledger_id,
+				created_at)
+				values('".$ledgerAmountResult[$arrayData]->amount."','".$ledgerAmountResult[$arrayData]->amount_type."','".$ledgerAmountResult[$arrayData]->entry_date."','".$ledgerAmountResult[$arrayData]->ledger_id."','".$mytime."')");
 				DB::commit();
 			}
 		}

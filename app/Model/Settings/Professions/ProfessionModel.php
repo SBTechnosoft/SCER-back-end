@@ -20,6 +20,7 @@ class ProfessionModel extends Model
 	*/
 	public function insertData()
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -45,8 +46,8 @@ class ProfessionModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into profession_mst(".$keyName.") 
-		values(".$professionData.")");
+		$raw = DB::connection($databaseName)->statement("insert into profession_mst(".$keyName.",created_at) 
+		values(".$professionData.",'".$mytime."')");
 		DB::commit();
 		
 		//get exception message

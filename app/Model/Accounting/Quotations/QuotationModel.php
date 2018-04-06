@@ -30,6 +30,7 @@ class QuotationModel extends Model
 	*/
 	public function insertData($productArray,$quotationNumber,$total,$extraCharge,$tax,$grandTotal,$remark,$entryDate,$companyId,$ClientId,$jfId,$totalDiscounttype,$totalDiscount,$documentArray,$headerData,$poNumber,$paymentMode,$invoiceNumber,$bankName,$checkNumber)
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -72,8 +73,9 @@ class QuotationModel extends Model
 			entry_date,
 			company_id,
 			client_id,
-			jf_id) 
-			values('".$productArray."','".$quotationNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$jfId."')");
+			jf_id,
+			created_at) 
+			values('".$productArray."','".$quotationNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$jfId."','".$mytime."')");
 			DB::commit();
 			//update quotation-number
 			$quotationResult = $this->updateQuotationNumber($companyId);
@@ -104,8 +106,9 @@ class QuotationModel extends Model
 				company_id,
 				client_id,
 				quotation_bill_id,
-				jf_id) 
-				values('".$productArray."','".$quotationNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$quotationId[0]->quotation_bill_id."','".$jfId."')");
+				jf_id,
+				created_at) 
+				values('".$productArray."','".$quotationNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."','".$quotationId[0]->quotation_bill_id."','".$jfId."','".$mytime."')");
 				DB::commit();
 				
 				//get latest inserted quotation bill data
@@ -152,6 +155,7 @@ class QuotationModel extends Model
 	
 	public function insertSalesOrderData($productArray,$total,$extraCharge,$tax,$grandTotal,$remark,$entryDate,$companyId,	 $ClientId,$jfId,$totalDiscounttype,$totalDiscount,$documentArrayData,$headerData,$poNumber,$paymentMode,$invoiceNumber,$bankName,$checkNumber)
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -179,9 +183,10 @@ class QuotationModel extends Model
 		bank_name,
 		check_number,
 		is_salesorder,
-		jf_id) 
+		jf_id,
+		created_at) 
 		values('".$productArray."','".$invoiceNumber."','".$total."','".$totalDiscounttype."','".$totalDiscount."','".$extraCharge."','".$tax."','".$grandTotal."','".$remark."','".$entryDate."','".$companyId."','".$ClientId."',
-		'".$poNumber."','".$paymentMode."','".$bankName."','".$checkNumber."','ok','".$jfId."')");
+		'".$poNumber."','".$paymentMode."','".$bankName."','".$checkNumber."','ok','".$jfId."','".$mytime."')");
 		DB::commit();
 		//update invoice-number
 		$billModel = new BillModel();
@@ -230,8 +235,9 @@ class QuotationModel extends Model
 				sale_id,
 				document_name,
 				document_format,
-				document_size)
-				values('".$saleId[0]->sale_id."','".$documentArrayData[$documentArray][0]."','".$documentArrayData[$documentArray][2]."','".$documentArrayData[$documentArray][1]."')");
+				document_size,
+				created_at)
+				values('".$saleId[0]->sale_id."','".$documentArrayData[$documentArray][0]."','".$documentArrayData[$documentArray][2]."','".$documentArrayData[$documentArray][1]."','".$mytime."')");
 				DB::commit();
 			}
 		}
@@ -275,6 +281,7 @@ class QuotationModel extends Model
 	*/
 	public function quotationDocumentData($quotationBillId,$documentName,$documentFormat,$documentType)
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -283,8 +290,9 @@ class QuotationModel extends Model
 		quotation_bill_id,
 		document_name,
 		document_format,
-		document_type)
-		values('".$quotationBillId."','".$documentName."','".$documentFormat."','".$documentType."')");
+		document_type,
+		created_at)
+		values('".$quotationBillId."','".$documentName."','".$documentFormat."','".$documentType."','".$mytime."')");
 		DB::commit();
 		//get exception message
 		$exception = new ExceptionMessage();
@@ -864,6 +872,7 @@ class QuotationModel extends Model
 	*/
 	public function updateSalesOrderData($keyValueString,$mytime,$quotationId,$documentData,$dataFlag)
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -923,8 +932,9 @@ class QuotationModel extends Model
 				sale_id,
 				document_name,
 				document_format,
-				document_size)
-				values('".$quotationId."','".$documentData[$documentArray][0]."','".$documentData[$documentArray][2]."','".$documentData[$documentArray][1]."')");
+				document_size,
+				created_at)
+				values('".$quotationId."','".$documentData[$documentArray][0]."','".$documentData[$documentArray][2]."','".$documentData[$documentArray][1]."','".$mytime."')");
 				DB::commit();
 				// add documents in client database
 				DB::beginTransaction();
@@ -933,8 +943,9 @@ class QuotationModel extends Model
 				document_name,
 				document_format,
 				document_size,
-				client_id) 
-				values('".$quotationId."','".$documentData[$documentArray][0]."','".$documentData[$documentArray][2]."','".$documentData[$documentArray][1]."','".$saleBillData[0]->client_id."')");
+				client_id,
+				created_at) 
+				values('".$quotationId."','".$documentData[$documentArray][0]."','".$documentData[$documentArray][2]."','".$documentData[$documentArray][1]."','".$saleBillData[0]->client_id."','".$mytime."')");
 				DB::commit();
 			}
 		}

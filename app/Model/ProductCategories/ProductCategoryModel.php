@@ -20,6 +20,7 @@ class ProductCategoryModel extends Model
 	*/
 	public function insertData()
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -45,8 +46,8 @@ class ProductCategoryModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into product_category_mst(".$keyName.") 
-		values(".$productCatData.")");
+		$raw = DB::connection($databaseName)->statement("insert into product_category_mst(".$keyName.",created_at) 
+		values(".$productCatData.",'".$mytime."')");
 		DB::commit();
 		
 		//get exception message
@@ -69,6 +70,7 @@ class ProductCategoryModel extends Model
 	*/
 	public function insertBatchData()
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -149,8 +151,8 @@ class ProductCategoryModel extends Model
 				}
 				//database insertion
 				DB::beginTransaction();
-				$categoryInsertionResult = DB::connection($databaseName)->statement("insert into product_category_mst(".$keyName.") 
-				values(".$productCatData.")");
+				$categoryInsertionResult = DB::connection($databaseName)->statement("insert into product_category_mst(".$keyName.",created_at) 
+				values(".$productCatData.",'".$mytime."')");
 				DB::commit();
 				if($categoryInsertionResult!=1)
 				{

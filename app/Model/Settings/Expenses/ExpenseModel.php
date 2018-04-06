@@ -20,6 +20,7 @@ class ExpenseModel extends Model
 	*/
 	public function insertData()
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -45,8 +46,8 @@ class ExpenseModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into expense_type_mst(".$keyName.") 
-		values(".$expenseData.")");
+		$raw = DB::connection($databaseName)->statement("insert into expense_type_mst(".$keyName.",created_at) 
+		values(".$expenseData.",'".$mytime."')");
 		DB::commit();
 		
 		//get exception message

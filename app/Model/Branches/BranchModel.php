@@ -21,6 +21,7 @@ class BranchModel extends Model
 	*/
 	public function insertData()
 	{
+		$mytime = Carbon\Carbon::now();
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
@@ -46,8 +47,8 @@ class BranchModel extends Model
 			}
 		}
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into branch_mst(".$keyName.") 
-		values(".$branchData.")");
+		$raw = DB::connection($databaseName)->statement("insert into branch_mst(".$keyName.",created_at) 
+		values(".$branchData.",'".$mytime."')");
 		DB::commit();
 		
 		//get exception message
