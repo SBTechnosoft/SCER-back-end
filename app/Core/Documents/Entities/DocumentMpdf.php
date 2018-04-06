@@ -551,7 +551,7 @@ class DocumentMpdf extends CurrencyToWordConversion
 					//replace 'p' tag
 					$smsHtmlBody = str_replace('<p>','', $smsHtmlBody);
 					$smsHtmlBody = str_replace('</p>','', $smsHtmlBody);
-					$smsSettingArray
+					// $smsSettingArray
 					$data = array(
 						'user' => $smsSettingArray['user'],
 						'password' =>$smsSettingArray['password'],

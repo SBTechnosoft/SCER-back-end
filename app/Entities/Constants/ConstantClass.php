@@ -208,12 +208,9 @@ class ConstantClass
     public function setSmsPassword()
 	{
 		$mailPasswordArray = array();
-		$mailPasswordArray['user'] = 'swaminarayancycles';
-		$mailPasswordArray['password'] = 'demo123';
-		$mailPasswordArray['sid'] = 'CYCLES';
-
-		// $mailPasswordArray['emailId'] = 'nrana1551@gmail.com';
-		// $mailPasswordArray['password'] = 'nrana1551';
+		$mailPasswordArray['user'] = 'siliconbrain';
+		$mailPasswordArray['password'] = 'demo54321';
+		$mailPasswordArray['sid'] = 'ERPAKC';
 		return $mailPasswordArray;
 	}
 	

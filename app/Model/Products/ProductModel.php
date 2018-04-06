@@ -294,25 +294,25 @@ class ProductModel extends Model
 			$raw = DB::connection($databaseName)->statement("insert into product_mst(".$keyName.",document_name,document_format) 
 			values (".$productData.",'".$documentName."','svg')");
 			DB::commit();
-
-			DB::beginTransaction();
-			$productId = DB::connection($databaseName)->select("select 
-			product_id,
-			opening,
-			company_id,
-			branch_id
-			from product_mst 
-			order by product_id desc limit 1");
-			DB::commit();
-			
-			$mytime = Carbon\Carbon::now();
-			DB::beginTransaction();
-			$productTrn = DB::connection($databaseName)->statement("insert into product_trn(transaction_date,transaction_type,qty,company_id,branch_id,product_id) 
-			values('".$mytime."','Balance','".$productId[0]->opening."','".$productId[0]->company_id."','".$productId[0]->branch_id."','".$productId[0]->product_id."')");
-			DB::commit();
-			
+			if($raw==1)
+			{
+				DB::beginTransaction();
+				$productId = DB::connection($databaseName)->select("select 
+				product_id,
+				opening,
+				company_id,
+				branch_id
+				from product_mst 
+				order by product_id desc limit 1");
+				DB::commit();
+				
+				$mytime = Carbon\Carbon::now();
+				DB::beginTransaction();
+				$productTrn = DB::connection($databaseName)->statement("insert into product_trn(transaction_date,transaction_type,qty,company_id,branch_id,product_id) 
+				values('".$mytime."','Balance','".$productId[0]->opening."','".$productId[0]->company_id."','".$productId[0]->branch_id."','".$productId[0]->product_id."')");
+				DB::commit();
+			}
 		}
-		
 		if($raw==1)
 		{
 			if(count($getErrorArray)==0)
@@ -601,7 +601,7 @@ class ProductModel extends Model
 		$productTrn = DB::connection($databaseName)->statement("update product_trn set
 		updated_at = '".$mytime."',
 		qty = '".$productUpdateData[0]->opening."'
-		where product_id = '".$productUpdateData[0]->product_id."' and deleted_at='0000-00-00 00:00:00'");
+		where product_id = '".$productUpdateData[0]->product_id."' and transaction_type='Balance' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 
 		//get exception message
@@ -713,7 +713,7 @@ class ProductModel extends Model
 			$productTrn = DB::connection($databaseName)->statement("update product_trn set
 			updated_at = '".$mytime."',
 			qty = '".$productUpdateData[0]->opening."'
-			where product_id = '".$productUpdateData[0]->product_id."' and deleted_at='0000-00-00 00:00:00'");
+			where product_id = '".$productUpdateData[0]->product_id."' and transaction_type='Balance' and deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
 		}
 		//get exception message
