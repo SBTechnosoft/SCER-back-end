@@ -78,7 +78,7 @@ class ProductController extends BaseController implements ContainerInterface
 				}
 				else if(is_array($productPersistable))
 				{
-					$status = $productService->insert($productPersistable);
+					$status = $productService->insert($productPersistable,$request->header());
 					return $status;
 				}
 				else
@@ -124,7 +124,7 @@ class ProductController extends BaseController implements ContainerInterface
 				$productPersistable = $processor->createPersistableBatchData($this->request);
 				if(is_array($productPersistable))
 				{
-					$status = $productService->insertBatchData($productPersistable);
+					$status = $productService->insertBatchData($productPersistable,$request->header());
 					return $status;
 				}
 				else
@@ -581,7 +581,7 @@ class ProductController extends BaseController implements ContainerInterface
 				$productPersistable = $processor->createPersistableChange($this->request,$productId,$result);
 				if(is_array($productPersistable))
 				{
-					$status = $productService->update($productPersistable);
+					$status = $productService->update($productPersistable,$request->header());
 					return $status;
 				}
 				else
@@ -623,7 +623,7 @@ class ProductController extends BaseController implements ContainerInterface
 				$productPersistable = $processor->createPersistableBatchUpdateChange($this->request);
 				if(is_array($productPersistable))
 				{
-					$status = $productService->updateBatchData($productPersistable);
+					$status = $productService->updateBatchData($productPersistable,$request->header());
 					return $status;
 				}
 				else
@@ -671,7 +671,7 @@ class ProductController extends BaseController implements ContainerInterface
 			}
 			else
 			{		
-				$status = $productService->delete($productId);
+				$status = $productService->delete($productId,$request->header());
 				return $status;
 			}
 		}

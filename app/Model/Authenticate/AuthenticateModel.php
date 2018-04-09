@@ -263,7 +263,7 @@ class AuthenticateModel extends Model
 			DB::commit();
 		}
 		
-		if(count($raw)!==0)
+		if(count($raw)!=0)
 		{
 			return $raw;
 		}

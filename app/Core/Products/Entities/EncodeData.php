@@ -16,6 +16,9 @@ class EncodeData extends ProductCategoryService
 {
     public function getEncodedData($status)
 	{
+		$constantArray = new ConstantClass();
+		$constantArrayData = $constantArray->constantVariable();
+
 		$decodedJson = json_decode($status,true);
 		$createdAt = $decodedJson[0]['created_at'];
 		$updatedAt= $decodedJson[0]['updated_at'];
@@ -119,6 +122,9 @@ class EncodeData extends ProductCategoryService
 				$documentDataArray[$documentArray]['documentFormat'] = $decodedJson[0]['document'][$documentArray]['document_format'];
 				$documentDataArray[$documentArray]['documentType'] = $decodedJson[0]['document'][$documentArray]['document_type'];
 				$documentDataArray[$documentArray]['productId'] = $decodedJson[0]['document'][$documentArray]['product_id'];
+				$documentDataArray[$documentArray]['documentPath'] = 
+				strcmp($decodedJson[0]['document'][$documentArray]['document_type'],'CoverImage')==0 ? $constantArrayData['productCoverDocumentUrl'] : $constantArrayData['productDocumentUrl'];
+
 				$documentDataArray[$documentArray]['createdAt'] = 
 				$decodedJson[0]['document'][$documentArray]['created_at'] == "0000-00-00 00:00:00" ? "0000-00-00" : Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$decodedJson[0]['document'][$documentArray]['created_at'])->format('d-m-Y');
 
@@ -130,8 +136,7 @@ class EncodeData extends ProductCategoryService
 		{
 			$documentDataArray = array();
 		}
-		$constantArray = new ConstantClass();
-		$constantArrayData = $constantArray->constantVariable();
+		
 		$documentPath = $constantArrayData['productBarcode'];
 		
 		//set all data into json array

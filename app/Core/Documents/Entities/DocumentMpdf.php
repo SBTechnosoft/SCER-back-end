@@ -539,8 +539,8 @@ class DocumentMpdf extends CurrencyToWordConversion
 			//sms send
 			if($decodedBillData->client->contactNo!=0 || $decodedBillData->client->contactNo!="")
 			{
-				if($decodedBillData->company->companyId==7)
-				{
+				// if($decodedBillData->company->companyId==7)
+				// {
 					$smsTemplateBody = json_decode($smsTemplateData)[0]->templateBody;
 					$smsArray = array();
 					$smsArray['ClientName'] = $decodedBillData->client->clientName;
@@ -562,53 +562,53 @@ class DocumentMpdf extends CurrencyToWordConversion
 						'gwid'=>"2"
 					);
 					// list($header,$content) = $this->postRequest("http://login.arihantsms.com//vendorsms/pushsms.aspx",$data);
-				}
-				else if($decodedBillData->company->companyId==9)
-				{
-					$smsTemplateBody = json_decode($smsTemplateData)[0]->templateBody;
-					$smsArray = array();
-					$smsArray['ClientName'] = $decodedBillData->client->clientName;
-					foreach($smsArray as $key => $value)
-					{
-						$smsHtmlBody = str_replace('['.$key.']', $value, $smsTemplateBody);
-					}
-					//replace 'p' tag	
-					$smsHtmlBody = str_replace('<p>','', $smsHtmlBody);
-					$smsHtmlBody = str_replace('</p>','', $smsHtmlBody);
-					$data = array(
-						'user' => "siliconbrain",
-						'password' => "demo54321",
-						'msisdn' => $decodedBillData->client->contactNo,
-						'sid' => "ERPJSC",
-						'msg' => $smsHtmlBody,
-						'fl' =>"0",
-						'gwid'=>"2"
-					);
-					// list($header,$content) = $this->postRequest("http://login.arihantsms.com//vendorsms/pushsms.aspx",$data);
-				}
-				else if($decodedBillData->company->companyId==8)
-				{
-					$smsTemplateBody = json_decode($smsTemplateData)[0]->templateBody;
-					$smsArray = array();
-					$smsArray['ClientName'] = $decodedBillData->client->clientName;
-					foreach($smsArray as $key => $value)
-					{
-						$smsHtmlBody = str_replace('['.$key.']', $value, $smsTemplateBody);
-					}
-					//replace 'p' tag
-					$smsHtmlBody = str_replace('<p>','', $smsHtmlBody);
-					$smsHtmlBody = str_replace('</p>','', $smsHtmlBody);
-					$data = array(
-						'user' => "siliconbrain",
-						'password' => "demo54321",
-						'msisdn' => $decodedBillData->client->contactNo,
-						'sid' => "ERPPMC",
-						'msg' => $smsHtmlBody,
-						'fl' =>"0",
-						'gwid'=>"2"
-					);
-					// list($header,$content) = $this->postRequest("http://login.arihantsms.com//vendorsms/pushsms.aspx",$data);
-				}
+				// }
+				// else if($decodedBillData->company->companyId==9)
+				// {
+				// 	$smsTemplateBody = json_decode($smsTemplateData)[0]->templateBody;
+				// 	$smsArray = array();
+				// 	$smsArray['ClientName'] = $decodedBillData->client->clientName;
+				// 	foreach($smsArray as $key => $value)
+				// 	{
+				// 		$smsHtmlBody = str_replace('['.$key.']', $value, $smsTemplateBody);
+				// 	}
+				// 	//replace 'p' tag	
+				// 	$smsHtmlBody = str_replace('<p>','', $smsHtmlBody);
+				// 	$smsHtmlBody = str_replace('</p>','', $smsHtmlBody);
+				// 	$data = array(
+				// 		'user' => "siliconbrain",
+				// 		'password' => "demo54321",
+				// 		'msisdn' => $decodedBillData->client->contactNo,
+				// 		'sid' => "ERPJSC",
+				// 		'msg' => $smsHtmlBody,
+				// 		'fl' =>"0",
+				// 		'gwid'=>"2"
+				// 	);
+				// 	// list($header,$content) = $this->postRequest("http://login.arihantsms.com//vendorsms/pushsms.aspx",$data);
+				// }
+				// else if($decodedBillData->company->companyId==8)
+				// {
+				// 	$smsTemplateBody = json_decode($smsTemplateData)[0]->templateBody;
+				// 	$smsArray = array();
+				// 	$smsArray['ClientName'] = $decodedBillData->client->clientName;
+				// 	foreach($smsArray as $key => $value)
+				// 	{
+				// 		$smsHtmlBody = str_replace('['.$key.']', $value, $smsTemplateBody);
+				// 	}
+				// 	//replace 'p' tag
+				// 	$smsHtmlBody = str_replace('<p>','', $smsHtmlBody);
+				// 	$smsHtmlBody = str_replace('</p>','', $smsHtmlBody);
+				// 	$data = array(
+				// 		'user' => "siliconbrain",
+				// 		'password' => "demo54321",
+				// 		'msisdn' => $decodedBillData->client->contactNo,
+				// 		'sid' => "ERPPMC",
+				// 		'msg' => $smsHtmlBody,
+				// 		'fl' =>"0",
+				// 		'gwid'=>"2"
+				// 	);
+				// 	// list($header,$content) = $this->postRequest("http://login.arihantsms.com//vendorsms/pushsms.aspx",$data);
+				// }
 			}
 			return $pathArray;
 		}	

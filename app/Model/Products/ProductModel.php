@@ -11,6 +11,8 @@ use TCPDFBarcode;
 use ERP\Model\Settings\SettingModel;
 use stdClass;
 use ERP\Core\Products\Validations\ProductValidate;
+use ERP\Model\Authenticate\AuthenticateModel;
+
 /**
  * @author reema Patel<reema.p@siliconbrain.in>
  */
@@ -40,6 +42,7 @@ class ProductModel extends Model
 		$getProductData = func_get_arg(0);
 		$getProductKey = func_get_arg(1);
 		$documentData = func_get_arg(2);
+		$headerData = func_get_arg(3);
 
 		$productData="";
 		$keyName = "";
@@ -60,9 +63,13 @@ class ProductModel extends Model
 				$keyName =$keyName.$getProductKey[$data].",";
 			}
 		}
+		//get user-id and add it to the database product-insertion operation
+ 		$authenticateModel = new AuthenticateModel();
+ 		$userId = $authenticateModel->getActiveUser($headerData);
+
 		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into product_mst(".$keyName.",created_at) 
-		values(".$productData.",'".$mytime."')");
+		$raw = DB::connection($databaseName)->statement("insert into product_mst(".$keyName.",created_at,created_by) 
+		values(".$productData.",'".$mytime."','".$userId[0]->user_id."')");
 		DB::commit();
 		if($raw==1)
 		{
@@ -243,7 +250,12 @@ class ProductModel extends Model
 		$getProductData = func_get_arg(0);
 		$getProductKey = func_get_arg(1);
 		$getErrorArray = func_get_arg(2);
+		$headerData = func_get_arg(3);
 		$raw=0;
+		//get user-id and add it to the database product-insertion operation
+ 		$authenticateModel = new AuthenticateModel();
+ 		$userId = $authenticateModel->getActiveUser($headerData);
+
 		$getErrorCount = count($getErrorArray);
 		for($dataArray=0;$dataArray<count($getProductData);$dataArray++)
 		{
@@ -296,8 +308,8 @@ class ProductModel extends Model
 			
 			//insert batch of product data	
 			DB::beginTransaction();
-			$raw = DB::connection($databaseName)->statement("insert into product_mst(".$keyName.",document_name,document_format,created_at) 
-			values (".$productData.",'".$documentName."','svg','".$mytime."')");
+			$raw = DB::connection($databaseName)->statement("insert into product_mst(".$keyName.",document_name,document_format,created_at,created_by) 
+			values (".$productData.",'".$documentName."','svg','".$mytime."','".$userId[0]->user_id."')");
 			DB::commit();
 			if($raw==1)
 			{
@@ -570,7 +582,7 @@ class ProductModel extends Model
 	 * @param  product data,key and product id
 	 * returns the status
 	*/
-	public function updateData($productData,$key,$productId,$documentData)
+	public function updateData($productData,$key,$productId,$documentData,$headerArray)
 	{
 		$productCodeFlag=0;
 		//database selection
@@ -589,10 +601,13 @@ class ProductModel extends Model
 			}
 			$keyValueString=$keyValueString.$key[$data]."='".$productData[$data]."',";
 		}
-		
-		DB::beginTransaction();
+		//get user-id and add it to the database product-insertion operation
+ 		$authenticateModel = new AuthenticateModel();
+ 		$userId = $authenticateModel->getActiveUser($headerArray);
+
+ 		DB::beginTransaction();
 		$raw = DB::connection($databaseName)->statement("update product_mst 
-		set ".$keyValueString."updated_at='".$mytime."'
+		set ".$keyValueString."updated_at='".$mytime."',updated_by='".$userId[0]->user_id."'
 		where product_id = '".$productId."' and deleted_at='0000-00-00 00:00:00'");
 		DB::commit();
 		
@@ -685,7 +700,7 @@ class ProductModel extends Model
 	 * returns the status/exception-message
 	*/
 	
-	public function updateBatchData($productData,$key,$productId)
+	public function updateBatchData($productData,$key,$productId,$headerArray)
 	{
 		$productCodeFlag=0;
 		//database selection
@@ -700,11 +715,15 @@ class ProductModel extends Model
 		{
 			$keyValueString=$keyValueString.$key[$data]."='".$productData[$data]."',";
 		}
+		//get user-id and add it to the database product-insertion operation
+ 		$authenticateModel = new AuthenticateModel();
+ 		$userId = $authenticateModel->getActiveUser($headerArray);
+
 		for($data=0;$data<count($productId);$data++)
 		{
 			DB::beginTransaction();
 			$raw = DB::connection($databaseName)->statement("update product_mst 
-			set ".$keyValueString."updated_at='".$mytime."'
+			set ".$keyValueString."updated_at='".$mytime."',updated_by='".$userId[0]->user_id."'
 			where product_id = '".$productId[$data]."' and deleted_at='0000-00-00 00:00:00'");
 			DB::commit();
 
@@ -2055,17 +2074,21 @@ class ProductModel extends Model
 	 * delete data
 	 * returns error-message/status
 	*/
-	public function deleteData($productId)
+	public function deleteData($productId,$headerData)
 	{
 		//database selection
 		$database = "";
 		$constantDatabase = new ConstantClass();
 		$databaseName = $constantDatabase->constantDatabase();
 		
+		//get user-id and add it to the database product-insertion operation
+ 		$authenticateModel = new AuthenticateModel();
+ 		$userId = $authenticateModel->getActiveUser($headerData);
+ 		
 		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
 		$raw = DB::connection($databaseName)->statement("update product_mst 
-		set deleted_at='".$mytime."' 
+		set deleted_at='".$mytime."',deleted_by='".$userId[0]->user_id."' 
 		where product_id=".$productId);
 		DB::commit();
 		

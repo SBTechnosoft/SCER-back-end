@@ -401,10 +401,8 @@ class TemplateDesign
 		$templateArray['Email_AnniversaryDay'] = "<p>Dear [ClientName],</p>
 									<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Wish u a happy Anniversary.Happy Anniversary.</p>";
 
-		$templateArray['Sms_NewOrder'] = "<p>Dear [ClientName],</p><
-									p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Thank you for shopping with us.</p>";
+		$templateArray['Sms_NewOrder'] = "<p>Dear [ClientName],</p>
+											<p>Thank you for shopping with us.</p>";
 
 		$templateArray['Sms_DuePayment'] = "<p>Dear [ClientName],</p>
 									<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Your remaining payment =&nbsp;[RemainingPayment]</p>";

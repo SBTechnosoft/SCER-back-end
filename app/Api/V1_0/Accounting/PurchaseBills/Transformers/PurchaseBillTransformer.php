@@ -125,7 +125,7 @@ class PurchaseBillTransformer
      */
     public function trimUpdateData(Request $request)
     {
-		$purchaseBillArray = array();
+    	$purchaseBillArray = array();
 		//get exception message
 		$exception = new ExceptionMessage();
 		$exceptionArray = $exception->messageArrays();
@@ -196,10 +196,15 @@ class PurchaseBillTransformer
 					$purchaseBillArray[$key]=json_encode($value);
 				}
 				else
-				{
+				{	
 					$key = array_keys($input)[$arrayData];
-					$value = $input[$key];
-					$purchaseBillArray[$key]=trim($value);
+					if(strcmp("scanFile",$key)!=0)
+					{
+						$key = array_keys($input)[$arrayData];
+						$value = $input[$key];
+						$purchaseBillArray[$key]=trim($value);
+						
+					}
 				}
 			}
 		}

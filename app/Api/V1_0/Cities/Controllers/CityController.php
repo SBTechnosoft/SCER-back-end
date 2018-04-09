@@ -50,23 +50,23 @@ class CityController extends BaseController implements ContainerInterface
     public function store(Request $request)
     {
     	//script for change ledgerId_Dtl
-		$mytime = Carbon\Carbon::now();
-		echo "enterrrrdd";
-		DB::beginTransaction();
-		$ledgerDtl = DB::select("SELECT * from ledger_mst where deleted_at='0000-00-00 00:00:00'");
-		DB::commit();
-		for($index=0;$index<count($ledgerDtl);$index++)
-		{
-			DB::beginTransaction();
-			$result = DB::statement("ALTER TABLE ".$ledgerDtl[$index]->ledger_id."_ledger_dtl CHANGE `created_at` `created_at` DATETIME NOT NULL;");
-			DB::commit();
+		// $mytime = Carbon\Carbon::now();
+		// echo "enterrrrdd";
+		// DB::beginTransaction();
+		// $ledgerDtl = DB::select("SELECT * from ledger_mst where deleted_at='0000-00-00 00:00:00'");
+		// DB::commit();
+		// for($index=0;$index<count($ledgerDtl);$index++)
+		// {
+		// 	DB::beginTransaction();
+		// 	$result = DB::statement("ALTER TABLE ".$ledgerDtl[$index]->ledger_id."_ledger_dtl CHANGE `created_at` `created_at` DATETIME NOT NULL;");
+		// 	DB::commit();
 			
-			if($result!=1)
-			{
-				print_r($index);
-				echo "\n";
-			}
-		}
+		// 	if($result!=1)
+		// 	{
+		// 		print_r($index);
+		// 		echo "\n";
+		// 	}
+		// }
 		echo "endd";
 		exit;
 		

@@ -151,6 +151,7 @@ class PurchaseBillModel extends Model
 		
 		$mytime = Carbon\Carbon::now();
 		$keyValueString="";
+		$decodedExpenseData = array();
 		for($data=0;$data<count($getData);$data++)
 		{
 			if(strcmp($keyName[$data],'expense')==0)
@@ -167,7 +168,6 @@ class PurchaseBillModel extends Model
 		$purchaseBillResult = DB::connection($databaseName)->statement("update purchase_bill
 		set ".$keyValueString."updated_at='".$mytime."' where purchase_id='".$purchaseId."'");
 		DB::commit();
-		
 		//delete expense data
 		DB::beginTransaction();
 		$deleteExpenseData = DB::connection($databaseName)->statement("update
@@ -201,8 +201,7 @@ class PurchaseBillModel extends Model
 				DB::commit();
 			}
 		}
-
-		$documentCount = count($documentArray);
+	    $documentCount = count($documentArray);
 		if($documentCount!=0)
 		{
 			//document insertion

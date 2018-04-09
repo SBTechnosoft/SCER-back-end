@@ -435,79 +435,83 @@ class BillTransformer
 			}
 			else
 			{
-				$dataFlag=1;
 				$key = array_keys($billArrayData)[$inputArrayData];
-				$value = $billArrayData[$key];
-				for($asciiChar=0;$asciiChar<strlen($key);$asciiChar++)
+				if(strcmp("scanFile",$key)!=0)
 				{
-					if(ord($key[$asciiChar])<=90 && ord($key[$asciiChar])>=65) 
+					$dataFlag=1;
+					$key = array_keys($billArrayData)[$inputArrayData];
+					$value = $billArrayData[$key];
+					for($asciiChar=0;$asciiChar<strlen($key);$asciiChar++)
 					{
-						$convertedValue1 = "_".chr(ord($key[$asciiChar])+32);
-						$convertedValue=$convertedValue.$convertedValue1;
+						if(ord($key[$asciiChar])<=90 && ord($key[$asciiChar])>=65) 
+						{
+							$convertedValue1 = "_".chr(ord($key[$asciiChar])+32);
+							$convertedValue=$convertedValue.$convertedValue1;
+						}
+						else
+						{
+							$convertedValue=$convertedValue.$key[$asciiChar];
+						}
+					}
+					//check is_display and payment-mode
+					//check enum type of payment-mode
+					if(strcmp('payment_mode',$convertedValue)==0)
+					{
+						$paymentModeArray = array();
+						$paymentModeEnum = new PaymentModeEnum();
+						$paymentModeArray = $paymentModeEnum->enumArrays();
+						
+						$tBillArray[$convertedValue]=trim($value);
+						foreach ($paymentModeArray as $key => $value)
+						{
+							if(strcmp($value,$tBillArray[$convertedValue])==0)
+							{
+								$paymentModeFlag=1;
+								break;
+							}
+						}
+						if($paymentModeFlag==0)
+						{
+							return $exceptionArray['content'];
+						}
+					}
+					else if(strcmp('is_display',$convertedValue)==0)
+					{
+						$isDisplayEnum = new IsDisplayEnum();
+						$isDisplayArray = $isDisplayEnum->enumArrays();
+						
+						$tBillArray[$convertedValue]=trim($value);
+						foreach ($isDisplayArray as $key => $value)
+						{
+							if(strcmp($value,$tBillArray[$convertedValue])==0)
+							{
+								$isDisplayFlag=1;
+								break;
+							}
+						}
+						if($isDisplayFlag==0)
+						{
+							return $exceptionArray['content'];
+						}
+					}
+					else if(strcmp('expense',$convertedValue)==0)
+					{
+						$tBillArray[$convertedValue]=json_encode($value);
+					}
+					else if(strcmp('state_abb',$convertedValue)==0)
+					{
+						$tBillArray[$convertedValue]=$this->checkStringValue(trim($value));
+					}
+					else if(strcmp('city_id',$convertedValue)==0)
+					{
+						$tBillArray[$convertedValue]=$this->checkValue(trim($value));
 					}
 					else
 					{
-						$convertedValue=$convertedValue.$key[$asciiChar];
+						$tBillArray[$convertedValue]=trim($value);
 					}
+					$convertedValue="";
 				}
-				//check is_display and payment-mode
-				//check enum type of payment-mode
-				if(strcmp('payment_mode',$convertedValue)==0)
-				{
-					$paymentModeArray = array();
-					$paymentModeEnum = new PaymentModeEnum();
-					$paymentModeArray = $paymentModeEnum->enumArrays();
-					
-					$tBillArray[$convertedValue]=trim($value);
-					foreach ($paymentModeArray as $key => $value)
-					{
-						if(strcmp($value,$tBillArray[$convertedValue])==0)
-						{
-							$paymentModeFlag=1;
-							break;
-						}
-					}
-					if($paymentModeFlag==0)
-					{
-						return $exceptionArray['content'];
-					}
-				}
-				else if(strcmp('is_display',$convertedValue)==0)
-				{
-					$isDisplayEnum = new IsDisplayEnum();
-					$isDisplayArray = $isDisplayEnum->enumArrays();
-					
-					$tBillArray[$convertedValue]=trim($value);
-					foreach ($isDisplayArray as $key => $value)
-					{
-						if(strcmp($value,$tBillArray[$convertedValue])==0)
-						{
-							$isDisplayFlag=1;
-							break;
-						}
-					}
-					if($isDisplayFlag==0)
-					{
-						return $exceptionArray['content'];
-					}
-				}
-				else if(strcmp('expense',$convertedValue)==0)
-				{
-					$tBillArray[$convertedValue]=json_encode($value);
-				}
-				else if(strcmp('state_abb',$convertedValue)==0)
-				{
-					$tBillArray[$convertedValue]=$this->checkStringValue(trim($value));
-				}
-				else if(strcmp('city_id',$convertedValue)==0)
-				{
-					$tBillArray[$convertedValue]=$this->checkValue(trim($value));
-				}
-				else
-				{
-					$tBillArray[$convertedValue]=trim($value);
-				}
-				$convertedValue="";
 			}
 		}
 		if($tempArrayFlag==1 && $dataFlag==1)

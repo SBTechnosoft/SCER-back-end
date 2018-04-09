@@ -54,6 +54,7 @@ class ProductService extends AbstractService
 		$keyName = array();
 		$funcName = array();
 		$productArray = func_get_arg(0);
+		$authenticationArray = func_get_arg(1);
 		$documentFlag=0;
 		$document = array();
 		//check document is available
@@ -86,7 +87,7 @@ class ProductService extends AbstractService
 		}
 		//data pass to the model object for insert
 		$productModel = new ProductModel();
-		$status = $productModel->insertData($getData,$keyName,$document);
+		$status = $productModel->insertData($getData,$keyName,$document,$authenticationArray);
 		return $status;
 	} 
 	
@@ -101,6 +102,7 @@ class ProductService extends AbstractService
 		$keyArrayData = array();
 		$productArray = array();
 		$productArrayResult = func_get_arg(0);
+		$headerData = func_get_arg(1);
 		$productArray = $productArrayResult['dataArray'];
 		for($arrayData=0;$arrayData<count($productArray);$arrayData++)
 		{
@@ -118,7 +120,7 @@ class ProductService extends AbstractService
 		}
 		//data pass to the model object for insert
 		$productModel = new ProductModel();
-		$status = $productModel->insertBatchData($getArrayData,$keyArrayData,$productArrayResult['errorArray']);
+		$status = $productModel->insertBatchData($getArrayData,$keyArrayData,$productArrayResult['errorArray'],$headerData);
 		return $status;
 	}
 	
@@ -462,6 +464,7 @@ class ProductService extends AbstractService
 		$dataFlag=0;
 		$document = array();
 		$productArray = func_get_arg(0);
+		$headerArray = func_get_arg(1);
 		if(is_array($productArray[count($productArray)-1][0]))
 		{
 			$documentCount = count($productArray[count($productArray)-1]);
@@ -493,7 +496,7 @@ class ProductService extends AbstractService
 		$productId = $productArray[0][0]->getProductId();
 		//data pass to the model object for update
 		$productModel = new ProductModel();
-		$status = $productModel->updateData($getData,$keyName,$productId,$document);
+		$status = $productModel->updateData($getData,$keyName,$productId,$document,$headerArray);
 		return $status;
 	}
 
@@ -509,6 +512,7 @@ class ProductService extends AbstractService
 		$getData = array();
 		$funcName = array();
 		$productArray = func_get_arg(0);
+		$headerArray = func_get_arg(1);
 		for($data=0;$data<count($productArray);$data++)
 		{
 			$funcName[$data] = $productArray[$data][0]->getName();
@@ -518,7 +522,7 @@ class ProductService extends AbstractService
 		$productId = $productArray[0][0]->getProductId();
 		//data pass to the model object for update
 		$productModel = new ProductModel();
-		$status = $productModel->updateBatchData($getData,$keyName,$productId);
+		$status = $productModel->updateBatchData($getData,$keyName,$productId,$headerArray);
 		return $status;
 	}
 	
@@ -625,11 +629,11 @@ class ProductService extends AbstractService
     /**
      * @param int $id
      */
-    public function delete($productId)
+    public function delete($productId,$headerData)
     {      
 		// $productId = $persistable->getProductId();
         $productModel = new ProductModel();
-		$status = $productModel->deleteData($productId);
+		$status = $productModel->deleteData($productId,$headerData);
 		return $status;
     }   
 }

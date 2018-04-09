@@ -16,6 +16,8 @@ class EncodeAllData extends ProductCategoryService
 {
 	public function getEncodedAllData($status)
 	{
+		$constantArray = new ConstantClass();
+		$constantArrayData = $constantArray->constantVariable();
 		$convertedCreatedDate =  array();
 		$convertedUpdatedDate =  array();
 		$encodeAllData =  array();
@@ -25,6 +27,7 @@ class EncodeAllData extends ProductCategoryService
 		$product = new Product();
 		$dataCount = count($decodedJson);
 		$documentDataArray = array();
+
 		for($decodedData=0;$decodedData<$dataCount;$decodedData++)
 		{
 			$createdAt[$decodedData] = $decodedJson[$decodedData]['created_at'];
@@ -127,6 +130,9 @@ class EncodeAllData extends ProductCategoryService
 					$documentDataArray[$decodedData][$documentArray]['documentFormat'] = $decodedJson[$decodedData]['document'][$documentArray]['document_format'];
 					$documentDataArray[$decodedData][$documentArray]['documentType'] = $decodedJson[$decodedData]['document'][$documentArray]['document_type'];
 					$documentDataArray[$decodedData][$documentArray]['productId'] = $decodedJson[$decodedData]['document'][$documentArray]['product_id'];
+					$documentDataArray[$decodedData][$documentArray]['documentPath'] = 
+					strcmp($decodedJson[$decodedData]['document'][$documentArray]['document_type'],'CoverImage')==0 ? $constantArrayData['productCoverDocumentUrl'] : $constantArrayData['productDocumentUrl'];
+
 					$documentDataArray[$decodedData][$documentArray]['createdAt'] = 
 					$decodedJson[$decodedData]['document'][$documentArray]['created_at'] == "0000-00-00 00:00:00" ? "0000-00-00" : Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$decodedJson[$decodedData]['document'][$documentArray]['created_at'])->format('d-m-Y');
 
@@ -140,8 +146,6 @@ class EncodeAllData extends ProductCategoryService
 			}
 		}
 		
-		$constantArray = new ConstantClass();
-		$constantArrayData = $constantArray->constantVariable();
 		$documentPath = $constantArrayData['productBarcode'];
 		$data = array();
 		for($jsonData=0;$jsonData<count($decodedJson);$jsonData++)
