@@ -392,6 +392,8 @@ class ProductProcessor extends BaseProcessor
 						$trimData['errorArray'][$totalErrorArray]['cessFlat'] = $trimData['dataArray'][$dataArray]['cess_flat'];
 						$trimData['errorArray'][$totalErrorArray]['cessPercentage'] = $trimData['dataArray'][$dataArray]['cess_percentage'];
 						$trimData['errorArray'][$totalErrorArray]['opening'] = $trimData['dataArray'][$dataArray]['opening'];
+						$trimData['errorArray'][$totalErrorArray]['igst'] = $trimData['dataArray'][$dataArray]['igst'];
+						$trimData['errorArray'][$totalErrorArray]['hsn'] = $trimData['dataArray'][$dataArray]['hsn'];
 
 						$trimData['errorArray'][$totalErrorArray]['semiWholesaleMargin'] = $trimData['dataArray'][$dataArray]['semi_wholesale_margin'];
 						$trimData['errorArray'][$totalErrorArray]['companyId'] = $trimData['dataArray'][$dataArray]['company_id'];

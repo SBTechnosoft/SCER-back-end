@@ -290,6 +290,8 @@ class ProductTransformer extends ExceptionMessage
 				$tCessFlat = trim($inputRequestData[$arrayData]['cessFlat']);
 				$tCessPercentage = trim($inputRequestData[$arrayData]['cessPercentage']);
 				$tOpening = trim($inputRequestData[$arrayData]['opening']);
+				$tIgst = trim($inputRequestData[$arrayData]['igst']);
+				$tHsn = trim($inputRequestData[$arrayData]['hsn']);
 
 				$tCompanyId = trim($inputRequestData[$arrayData]['companyId']);
 				$tProductCatId = trim($inputRequestData[$arrayData]['productCategoryId']);
@@ -368,6 +370,8 @@ class ProductTransformer extends ExceptionMessage
 					$errorArray[$errorIndex]['cessFlat'] = $tCessFlat;
 					$errorArray[$errorIndex]['cessPercentage'] = $tCessPercentage;
 					$errorArray[$errorIndex]['opening'] = $tOpening;
+					$errorArray[$errorIndex]['igst'] = $tIgst;
+					$errorArray[$errorIndex]['hsn'] = $tHsn;
 					$errorArray[$errorIndex]['companyId'] = $tCompanyId;
 					$errorArray[$errorIndex]['productCategoryId'] = $tProductCatId;
 					$errorArray[$errorIndex]['productGroupId'] = $tProductGrpId;
@@ -428,6 +432,8 @@ class ProductTransformer extends ExceptionMessage
 					$data[$dataIndex]['cess_flat'] = $tCessFlat;
 					$data[$dataIndex]['cess_percentage'] = $tCessPercentage;
 					$data[$dataIndex]['opening'] = $tOpening;
+					$data[$dataIndex]['igst'] = $tIgst;
+					$data[$dataIndex]['hsn'] = $tHsn;
 					$data[$dataIndex]['semi_wholesale_margin'] = $tSemiWholeSaleMargin;
 					$data[$dataIndex]['company_id'] = $tCompanyId;
 					$data[$dataIndex]['product_category_id'] = $tProductCatId;
@@ -470,7 +476,7 @@ class ProductTransformer extends ExceptionMessage
 				return $exceptionArray['mapping'];
 			}
 		}
-		if(count($mappingArray)!=28)
+		if(count($mappingArray)!=30)
 		{
 			return $exceptionArray['missingField'];
 		}
@@ -620,6 +626,8 @@ class ProductTransformer extends ExceptionMessage
 				$requestArray[$arrayData][array_keys($keyNameCount)[25]] = $dataArray[$arrayData][25];
 				$requestArray[$arrayData][array_keys($keyNameCount)[26]] = $dataArray[$arrayData][26];
 				$requestArray[$arrayData][array_keys($keyNameCount)[27]] = $dataArray[$arrayData][27];
+				$requestArray[$arrayData][array_keys($keyNameCount)[28]] = $dataArray[$arrayData][28];
+				$requestArray[$arrayData][array_keys($keyNameCount)[29]] = $dataArray[$arrayData][29];
 			}
 		}
 		return $requestArray;
