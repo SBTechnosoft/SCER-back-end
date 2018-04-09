@@ -54,6 +54,7 @@ class ProductTransformer extends ExceptionMessage
 		$tProductCatId = trim($request->input('productCategoryId'));
 		$tProductGrpId = trim($request->input('productGroupId'));
 		$tOpening = trim($request->input('opening'));
+		$tCommission = trim($request->input('commission'));
 		$tRemark = trim($request->input('remark'));
 		$tBranchId = trim($request->input('branchId'));
 
@@ -184,6 +185,7 @@ class ProductTransformer extends ExceptionMessage
 			$data['cess_flat'] = $tCessFlat;
 			$data['cess_percentage'] = $tCessPercentage;
 			$data['opening'] = $tOpening;
+			$data['commission'] = $tCommission;
 			$data['remark'] = $tRemark;
 			return $data;
 		}

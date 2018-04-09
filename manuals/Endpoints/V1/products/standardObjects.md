@@ -28,6 +28,7 @@
 			"cessFlat":decimal,
 			"cessPercentage":decimal,
 			"opening":decimal,
+			"commission":decimal,
 			"remark":longtext,
 			"coverImage":{
 				... Standard Document Object
@@ -95,6 +96,7 @@
 			"cessFlat":decimal,
 			"cessPercentage":decimal,
 			"opening":decimal,
+			"commission":decimal,
 			"remark":longtext,
 			"additionalTax":decimal,
 			"minimumStockLevel":int,
@@ -138,7 +140,9 @@
 			"cessPercentage":decimal,
 			"additionalTax":decimal,
 			"minimumStockLevel":int,
-			"productId":array
+			"productId":array,
+			"commission":decimal,
+			"opening":decimal
 		}
 ##### Standard Product-Trnsaction-Summary Object
 		{

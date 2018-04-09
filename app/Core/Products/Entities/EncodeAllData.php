@@ -65,11 +65,14 @@ class EncodeAllData extends ProductCategoryService
 			$cessFlat[$decodedData] = $decodedJson[$decodedData]['cess_flat'];
 			$cessPercentage[$decodedData] = $decodedJson[$decodedData]['cess_percentage'];
 			$opening[$decodedData] = $decodedJson[$decodedData]['opening'];
+			$commission[$decodedData] = $decodedJson[$decodedData]['commission'];
 			$remark[$decodedData] = $decodedJson[$decodedData]['remark'];
 			$productCoverId[$decodedData] = $decodedJson[$decodedData]['product_cover_id'];
 
 			$documentName[$decodedData] = $decodedJson[$decodedData]['document_name'];
 			$documentFormat[$decodedData] = $decodedJson[$decodedData]['document_format'];
+			$createdBy[$decodedData] = $decodedJson[$decodedData]['created_by'];
+			$updatedBy[$decodedData] = $decodedJson[$decodedData]['updated_by'];
 			$productCatId[$decodedData] = $decodedJson[$decodedData]['product_category_id'];
 			$productGrpId[$decodedData] = $decodedJson[$decodedData]['product_group_id'];
 			$companyId[$decodedData] = $decodedJson[$decodedData]['company_id'];
@@ -187,8 +190,11 @@ class EncodeAllData extends ProductCategoryService
 				'cessPercentage' => $cessPercentage[$jsonData],
 				'cessPercentage' => $cessPercentage[$jsonData],
 				'opening' => $opening[$jsonData],
+				'commission' => $commission[$jsonData],
 				'remark' => $remark[$jsonData],
 				'productCoverId' => $productCoverId[$jsonData],
+				'createdBy' => $createdBy[$jsonData],
+				'updatedBy' => $updatedBy[$jsonData],
 				'createdAt' => $getCreatedDate[$jsonData],
 				'updatedAt' => $getUpdatedDate[$jsonData],
 				'company' => $getCompanyDetails[$jsonData],

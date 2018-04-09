@@ -55,6 +55,7 @@ class EncodeData extends ProductCategoryService
 		$cessFlat = $decodedJson[0]['cess_flat'];
 		$cessPercentage = $decodedJson[0]['cess_percentage'];
 		$opening = $decodedJson[0]['opening'];
+		$commission = $decodedJson[0]['commission'];
 		$remark = $decodedJson[0]['remark'];
 		$productCoverId = $decodedJson[0]['product_cover_id'];
 
@@ -62,6 +63,8 @@ class EncodeData extends ProductCategoryService
 		$documentFormat= $decodedJson[0]['document_format'];
 		$productCatId= $decodedJson[0]['product_category_id'];
 		$productGrpId= $decodedJson[0]['product_group_id'];
+		$createdBy= $decodedJson[0]['created_by'];
+		$updatedBy= $decodedJson[0]['updated_by'];
 		$companyId= $decodedJson[0]['company_id'];
 		$branchId= $decodedJson[0]['branch_id'];
 		
@@ -173,6 +176,7 @@ class EncodeData extends ProductCategoryService
 		$data['cessFlat'] = $cessFlat;
 		$data['cessPercentage'] = $cessPercentage;
 		$data['opening'] = $opening;
+		$data['commission'] = $commission;
 		$data['remark'] = $remark;
 		$data['productCoverId'] = $productCoverId;
 		$data['documentName'] = $documentName;
@@ -182,6 +186,8 @@ class EncodeData extends ProductCategoryService
 		$data['updatedAt'] = $getUpdatedDate;	
 		$data['productCategory'] = $productCatDecodedJson;
 		$data['productGroup'] = $getProductGrpDetails;
+		$data['createdBy'] = $createdBy;
+		$data['updatedBy'] = $updatedBy;
 		$data['company'] = $getCompanyDetails;
 		$data['branch'] = $getBranchDetails;
 		$data['document'] = $documentDataArray;
