@@ -67,28 +67,13 @@ class ProductModel extends Model
  		$authenticateModel = new AuthenticateModel();
  		$userId = $authenticateModel->getActiveUser($headerData);
 
-		DB::beginTransaction();
-		$raw = DB::connection($databaseName)->statement("insert into product_mst(".$keyName.",created_at,created_by) 
-		values(".$productData.",'".$mytime."','".$userId[0]->user_id."')");
-		DB::commit();
-		if($raw==1)
-		{
-			DB::beginTransaction();
-			$productId = DB::connection($databaseName)->select("select 
-			product_id,
-			opening,
-			company_id,
-			branch_id
-			from product_mst 
-			order by product_id desc limit 1");
-			DB::commit();
+		// DB::beginTransaction();
+		// $raw = DB::connection($databaseName)->statement("insert into product_mst(".$keyName.",created_at,created_by) 
+		// values(".$productData.",'".$mytime."','".$userId[0]->user_id."')");
+		// DB::commit();
+		// if($raw==1)
+		// {
 			
-			//insert into product-trn
-			$mytime = Carbon\Carbon::now();
-			DB::beginTransaction();
-			$productTrn = DB::connection($databaseName)->statement("insert into product_trn(transaction_date,transaction_type,qty,company_id,branch_id,product_id,created_at) 
-			values('.$mytime.','Balance','".$productId[0]->opening."','".$productId[0]->company_id."','".$productId[0]->branch_id."','".$productId[0]->product_id."','".$mytime."')");
-			DB::commit();
 			if(is_array($documentData))
 			{
 				if(count($documentData)!=0)
@@ -134,12 +119,35 @@ class ProductModel extends Model
 			file_put_contents($documentPath,$barcodeobj->getBarcodeSVGcode($width ,$height, 'black'));
 			
 			//update document-data into database
+			// DB::beginTransaction();
+			// $documentStatus = DB::connection($databaseName)->statement("update
+			// product_mst set document_name='".$documentName."', document_format='svg',updated_at='".$mytime."'
+			// where deleted_at='0000-00-00 00:00:00' and product_id='".$productId[0]->product_id."'");
+			// DB::commit();
 			DB::beginTransaction();
-			$documentStatus = DB::connection($databaseName)->statement("update
-			product_mst set document_name='".$documentName."', document_format='svg',updated_at='".$mytime."'
-			where deleted_at='0000-00-00 00:00:00' and product_id='".$productId[0]->product_id."'");
+			$raw = DB::connection($databaseName)->statement("insert into product_mst(".$keyName.",created_at,created_by,document_name,document_format) 
+			values(".$productData.",'".$mytime."','".$userId[0]->user_id."','".$documentName."','svg')");
+			DB::commit();
+
+			DB::beginTransaction();
+			$productId = DB::connection($databaseName)->select("select 
+			product_id,
+			opening,
+			company_id,
+			branch_id
+			from product_mst 
+			order by product_id desc limit 1");
+			DB::commit();
+			
+			//insert into product-trn
+			$mytime = Carbon\Carbon::now();
+			DB::beginTransaction();
+			$productTrn = DB::connection($databaseName)->statement("insert into product_trn(transaction_date,transaction_type,qty,company_id,branch_id,product_id,created_at) 
+			values('.$mytime.','Balance','".$productId[0]->opening."','".$productId[0]->company_id."','".$productId[0]->branch_id."','".$productId[0]->product_id."','".$mytime."')");
 			DB::commit();
 			return $exceptionArray['200'];
+		if($raw==1)
+		{
 		}
 		else
 		{
@@ -2084,7 +2092,7 @@ class ProductModel extends Model
 		//get user-id and add it to the database product-insertion operation
  		$authenticateModel = new AuthenticateModel();
  		$userId = $authenticateModel->getActiveUser($headerData);
- 		
+
 		DB::beginTransaction();
 		$mytime = Carbon\Carbon::now();
 		$raw = DB::connection($databaseName)->statement("update product_mst 
